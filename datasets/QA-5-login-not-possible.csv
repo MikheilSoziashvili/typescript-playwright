@@ -1,0 +1,6 @@
+username,password,expected_username_warning,expected_password_warning,expected_button_status,expected_result,expected_feedback_location,expected_feedback_warning
+,,,,disabled,Login is not possible as there are no credentials entered therefore the login button is disabled,,
+a,a,Username must be longer than 5 characters!,Password must be longer than 5 characters!,disabled,Login is not possible as the credentials entered are invalid therefore the login button is disabled,,
+aaaa,aaaa,Username must be longer than 5 characters!,Password must be longer than 5 characters!,disabled,Login is not possible as the credentials entered are invalid therefore the login button is disabled,,
+aaaa,aaaaa,Username must be longer than 5 characters!,,disabled,Login is not possible as the credentials entered are invalid therefore the login button is disabled,,
+aaaaa,aaaa,,Password must be longer than 5 characters!,disabled,Login is not possible as the credentials entered are invalid therefore the login button is disabled,,

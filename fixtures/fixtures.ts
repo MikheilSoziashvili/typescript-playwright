@@ -1,0 +1,45 @@
+import { HomePage } from "../pages/home-page/home-page";
+import { TestInfo, test as base } from "@playwright/test";
+import { LoginFixtures, superAdminLogin } from "./fixtures-login";
+import { CrashGamePage } from "../pages/crash-game-page/crash-game-page";
+import { DiceGamePage } from "../pages/dice-game-page/dice-game-page";
+import { RouletteGamePage } from "../pages/roulette-game-page/roulette-game-page";
+
+type CustomFixtures = Pages & LoginFixtures;
+
+type Pages = {
+	homePage: HomePage;
+	crashGamePage: CrashGamePage;
+	diceGamePage: DiceGamePage;
+	rouletteGamePage: RouletteGamePage;
+};
+
+export const test = base.extend<CustomFixtures>({
+	homePage: async ({ page }, use) => {
+		await use(new HomePage(page));
+	},
+	crashGamePage: async ({ page }, use) => {
+		await use(new CrashGamePage(page));
+	},
+	diceGamePage: async ({ page }, use) => {
+		await use(new DiceGamePage(page));
+	},
+	rouletteGamePage: async ({ page }, use) => {
+		await use(new RouletteGamePage(page));
+	},
+	superAdminLogin: async ({ homePage, context }) => {
+		await superAdminLogin(homePage, context);
+	},
+});
+
+// TODO: To be revised
+// eslint-disable-next-line no-empty-pattern -- beforeEach in progress
+test.beforeEach(({}, testInfo: TestInfo) => {
+	const issueKeyMatch = testInfo.title.match(new RegExp(`\\[([^\\]]+)\\]`));
+	if (issueKeyMatch) {
+		testInfo.annotations.push({
+			type: "test_key",
+			description: issueKeyMatch[1],
+		});
+	}
+});
