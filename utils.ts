@@ -96,3 +96,7 @@ export function range(
 		.filter((i) => !(i % Math.round(step)))
 		.map((v) => start + v);
 }
+
+export function parseToFloat(num: number, fractionDigits: number = 2): string {
+	return parseFloat(`${num}`).toFixed(fractionDigits);
+}
