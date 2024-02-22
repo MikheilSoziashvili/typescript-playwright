@@ -17,7 +17,7 @@ export class RegisterModal extends BaseModal<RegisterModalMap> {
 		options: {
 			acceptTermsOfService?: boolean;
 			acceptNewsOffers?: boolean;
-		} = {}
+		} = {},
 	): Promise<void> {
 		const { acceptTermsOfService = true, acceptNewsOffers = false } =
 			options;

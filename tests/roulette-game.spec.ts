@@ -32,7 +32,7 @@ test("[QA-121] Place a single bet on Roulette and try to win @smoke", async ({
 			.assertThat()
 			.potentialBenefitValueIs(
 				betTestData.betAmount,
-				RouletteNumberColor.RED
+				RouletteNumberColor.RED,
 			);
 
 		await rouletteGamePage.betOnColor(RouletteNumberColor.RED);
@@ -42,14 +42,14 @@ test("[QA-121] Place a single bet on Roulette and try to win @smoke", async ({
 			.potentialBenefitValueIs(
 				betTestData.betAmount,
 				RouletteNumberColor.RED,
-				false
+				false,
 			);
 		await rouletteGamePage
 			.assertThat()
 			.playerBetDisplayed(
 				RouletteNumberColor.RED,
 				betTestData.username,
-				betTestData.betAmount
+				betTestData.betAmount,
 			);
 
 		await rouletteGamePage
@@ -71,7 +71,7 @@ test("[QA-121] Place a single bet on Roulette and try to win @smoke", async ({
 
 	const expectedProfit = rouletteGamePage.calculateProfit(
 		betTestData.betAmount,
-		RouletteNumberColor.RED
+		RouletteNumberColor.RED,
 	);
 	await homePage
 		.assertThat()
