@@ -28,9 +28,7 @@ test("[QA-77] Place a single bet on Crash and try to cashout @smoke", async ({
 			crashedMultiplier > 0.0 &&
 			crashedMultiplier < betTestData.autoCashoutMultiplier
 		) {
-			logger.warning(
-				"Multiplier crashed below expected. Will retry bet...",
-			);
+			logger.warn("Multiplier crashed below expected. Will retry bet...");
 		}
 
 		await crashGamePage.navigate();

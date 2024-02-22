@@ -63,7 +63,7 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 	}
 
 	public async accountBalanceIs(amount: number): Promise<void> {
-		await expect(this.gamdomPage.map.accountBalance).toHaveText(
+		await expect(await this.gamdomPage.map.accountBalance()).toHaveText(
 			`${formatBalance(amount)}`,
 			{ timeout: Timeout.MEDIUM },
 		);
