@@ -1,5 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "../base/base-map";
+import { RouletteNumberColor } from "../../enums/original-games";
 
 export class RouletteGamePageMap extends BaseMap {
 	public constructor(page: Page) {
@@ -28,13 +29,13 @@ export class RouletteGamePageMap extends BaseMap {
 
 	public get betField(): Locator {
 		return this.betOptions.locator(
-			"*[class*='PlaceBet'] input[class*='AdornedStart']",
+			"*[class*='PlaceBet'] input[class*='AdornedStart']"
 		);
 	}
 
 	public get placeBetBtn(): Locator {
 		return this.betOptions.locator(
-			"> div:nth-child(2) > div:nth-child(2) > div > div:nth-child(6) button",
+			"> div:nth-child(2) > div:nth-child(2) > div > div:nth-child(6) button"
 		);
 	}
 
@@ -52,6 +53,14 @@ export class RouletteGamePageMap extends BaseMap {
 
 	public get betSections(): Locator {
 		return this.betOptions.locator("*[class*='BetButtonWrapper']");
+	}
+
+	public get betSectionsByColor(): Record<RouletteNumberColor, Locator> {
+		return {
+			[RouletteNumberColor.GREEN]: this.greenBetSection,
+			[RouletteNumberColor.RED]: this.redBetSection,
+			[RouletteNumberColor.BLACK]: this.blackBetSection,
+		};
 	}
 
 	public get redBetSection(): Locator {
