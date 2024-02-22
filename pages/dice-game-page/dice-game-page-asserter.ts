@@ -11,7 +11,7 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 
 	public async betAndProfitOnWinValuesAreCorrect(
 		betValue: number,
-		profitOnWin: number
+		profitOnWin: number,
 	): Promise<void> {
 		const fieldValues = [
 			{ field: this.gamdomPage.map.betField, value: betValue.toFixed(2) },
@@ -30,7 +30,7 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		rollover: string,
 		multiplier: string,
 		winChance: string,
-		profitOnWin: string
+		profitOnWin: string,
 	): Promise<void> {
 		const fieldValues = [
 			{ field: this.gamdomPage.map.rollOverField, value: rollover },
@@ -57,7 +57,7 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 	}
 
 	public async diceMessageIs(
-		resultMessage: DiceGameResultMessage
+		resultMessage: DiceGameResultMessage,
 	): Promise<void> {
 		await expect(this.gamdomPage.map.diceGameAreaMessage).not.toBeEmpty({
 			timeout: Timeout.MEDIUM,
@@ -65,7 +65,7 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 
 		await expect(this.gamdomPage.map.diceGameAreaMessage).toHaveText(
 			resultMessage,
-			{ timeout: Timeout.MEDIUM }
+			{ timeout: Timeout.MEDIUM },
 		);
 	}
 

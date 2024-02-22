@@ -22,7 +22,7 @@ export const xray: Record<string, string> = {
 export const storageStateDir: string = getFilePath(".auth");
 export const superAdminStorageState: string = getFilePath(
 	"superAdminStorageState.json",
-	storageStateDir
+	storageStateDir,
 );
 
 export const users: Array<TestUserConfigurationObject> = [

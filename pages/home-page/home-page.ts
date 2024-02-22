@@ -37,14 +37,14 @@ export class HomePage extends BasePage<HomePageMap> {
 		}
 
 		await this.assertThat().titleHasText(
-			"Gamdom - Top Bitcoin & Crypto Casino!"
+			"Gamdom - Top Bitcoin & Crypto Casino!",
 		);
 	}
 
 	// Temporary solution to authenticate in cloudflare using environment from coder
 	public async loginToGoogle(
 		username: string = "testautomation@teamgamdom.com",
-		password: string = "automation@pass1"
+		password: string = "automation@pass1",
 	): Promise<void> {
 		await this.map.gEmailField.fill(username);
 		await this.map.gMoveForwardBtn.click();

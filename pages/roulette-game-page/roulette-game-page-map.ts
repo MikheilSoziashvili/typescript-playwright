@@ -29,13 +29,13 @@ export class RouletteGamePageMap extends BaseMap {
 
 	public get betField(): Locator {
 		return this.betOptions.locator(
-			"*[class*='PlaceBet'] input[class*='AdornedStart']"
+			"*[class*='PlaceBet'] input[class*='AdornedStart']",
 		);
 	}
 
 	public get placeBetBtn(): Locator {
 		return this.betOptions.locator(
-			"> div:nth-child(2) > div:nth-child(2) > div > div:nth-child(6) button"
+			"> div:nth-child(2) > div:nth-child(2) > div > div:nth-child(6) button",
 		);
 	}
 

@@ -19,7 +19,7 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 	}
 
 	public async waitBettingWindowAvailable(
-		timeout: number = 30
+		timeout: number = 30,
 	): Promise<void> {
 		await expect(this.map.spinningCountdownCounter).toBeAttached({
 			timeout: timeout * 1000,
@@ -33,31 +33,31 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 	}
 
 	public async getRoundResultNumber(
-		waitTimeout: number = 30
+		waitTimeout: number = 30,
 	): Promise<string> {
 		await this.waitRoundResultNumber(waitTimeout);
 		return this.map.roundResultNumber.innerText();
 	}
 
 	public async getRoundResultColor(
-		waitTimeout: number = 30
+		waitTimeout: number = 30,
 	): Promise<RouletteNumberColor> {
 		const roundResultNum = Number(
-			await this.getRoundResultNumber(waitTimeout)
+			await this.getRoundResultNumber(waitTimeout),
 		);
 		if (roundResultNum == RouletteNumberColor.GREEN.valueOf()) {
 			return RouletteNumberColor.GREEN;
 		} else if (
 			range(
 				RouletteNumberColor.GREEN + 1,
-				RouletteNumberColor.RED + 1
+				RouletteNumberColor.RED + 1,
 			).includes(roundResultNum)
 		) {
 			return RouletteNumberColor.RED;
 		} else if (
 			range(
 				RouletteNumberColor.RED + 1,
-				RouletteNumberColor.BLACK + 1
+				RouletteNumberColor.BLACK + 1,
 			).includes(roundResultNum)
 		) {
 			return RouletteNumberColor.BLACK;
@@ -71,7 +71,7 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 	}
 
 	public async betOnColor(
-		rouletteNumberColor: RouletteNumberColor
+		rouletteNumberColor: RouletteNumberColor,
 	): Promise<void> {
 		switch (rouletteNumberColor) {
 			case RouletteNumberColor.GREEN:
@@ -90,7 +90,7 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 
 	public async placeBet(
 		betAmount: number,
-		rouletteNumberColor: RouletteNumberColor
+		rouletteNumberColor: RouletteNumberColor,
 	): Promise<void> {
 		await this.insertBet(betAmount);
 		await this.betOnColor(rouletteNumberColor);
@@ -99,7 +99,7 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 	public calculateProfit(
 		betAmount: number,
 		rouletteNumberColor: RouletteNumberColor,
-		includeBetReturn: boolean = true
+		includeBetReturn: boolean = true,
 	): number {
 		let result: number = 0;
 		switch (rouletteNumberColor) {
