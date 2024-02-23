@@ -1,6 +1,7 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "../base/base-map";
 import { OriginalGame } from "../../enums/original-games";
+import { promisify } from "util";
 
 export class HomePageMap extends BaseMap {
 	public constructor(page: Page) {
@@ -63,9 +64,11 @@ export class HomePageMap extends BaseMap {
 		);
 	}
 
-	public get accountBalance(): Locator {
-		return this.page.locator(
-			"div[class*='header'] > div:nth-child(2) > div:nth-child(2) div[style*='tabular']",
+	public async accountBalance(): Promise<Locator> {
+		return await this.waitUntilVisible(
+			this.page.locator(
+				"div[class*='header'] > div:nth-child(2) > div:nth-child(2) div[style*='tabular']",
+			),
 		);
 	}
 

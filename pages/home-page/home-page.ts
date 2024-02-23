@@ -53,7 +53,9 @@ export class HomePage extends BasePage<HomePageMap> {
 	}
 
 	public async getAccountBalance(): Promise<number> {
-		return parseBalance(await this.map.accountBalance.innerText());
+		return parseBalance(
+			await (await this.map.accountBalance()).innerText(),
+		);
 	}
 
 	public get loginModal(): LoginModal {
