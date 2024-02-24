@@ -6,7 +6,7 @@ const buildUrl = process.env.BUILD_URL;
 
 const summary =
 	`Test Execution [Automation] - ${timestamp} ` +
-	(buildNumber ? `- Build: #${buildNumber}` : "- Local");
+	(buildNumber ? `- Build #${buildNumber}` : "- Local");
 const execution = buildUrl ? `Build URL - ${buildUrl}` : "Local test execution";
 
 export const createExecutionBody = {
