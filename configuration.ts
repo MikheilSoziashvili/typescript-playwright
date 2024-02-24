@@ -2,7 +2,7 @@ import { TestUserConfigurationObject } from "./types";
 import { getFilePath } from "./utils";
 
 export const logLevel: string = "info";
-export const createExecution: boolean = true;
+export const createExecution: boolean = process.env.CI ? true : false;
 export const reportName: string = getFilePath("results.xml");
 export const keystore: string = getFilePath("keystore.json");
 

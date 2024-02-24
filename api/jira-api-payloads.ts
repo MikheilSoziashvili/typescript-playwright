@@ -1,10 +1,13 @@
-import { exec } from "child_process";
 import * as Configuration from "../configuration";
 
 const timestamp = new Date().toISOString();
-const buildNumber = process.env.BUILD_NUMBER || "local";
-const summary = `Test Execution [Automation] - ${timestamp} - Build: #${buildNumber}`;
-const execution = `Build URL - ${process.env.BUILD_URL || "N/A"}`;
+const buildNumber = process.env.BUILD_NUMBER;
+const buildUrl = process.env.BUILD_URL;
+
+const summary =
+	`Test Execution [Automation] - ${timestamp} ` +
+	(buildNumber ? `- Build: #${buildNumber}` : "- Local");
+const execution = buildUrl ? `Build URL - ${buildUrl}` : "Local test execution";
 
 export const createExecutionBody = {
 	fields: {
