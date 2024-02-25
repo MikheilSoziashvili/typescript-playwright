@@ -2,7 +2,7 @@ import { Timeout } from "../../enums/timeout";
 import { BaseAsserter } from "../base/base-asserter";
 import { HomePage } from "./home-page";
 import { expect } from "@playwright/test";
-import { formatBalance } from "../../utils";
+import { formatBalance } from "../../core/utils";
 
 export class HomePageAsserter extends BaseAsserter<HomePage> {
 	public constructor(page: HomePage) {

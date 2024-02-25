@@ -1,7 +1,7 @@
 import { DiceGameResultMessage } from "../enums/dice-result-messages";
 import { test } from "../fixtures/fixtures";
-import { logger } from "../logger";
-import { DiceBetTestData } from "../test-data";
+import { logger } from "../logger/logger";
+import { DiceBetTestData } from "../dtos/test-data";
 
 test("[QA-122] Place a single bet on Dice and try to win @smoke", async ({
 	homePage,
@@ -57,7 +57,7 @@ test("[QA-122] Place a single bet on Dice and try to win @smoke", async ({
 		if (diceBetData.multiplier != undefined) {
 			const expectedBalance = isWin
 				? accountBalanceBeforeBet +
-					diceBetData.betAmount * (diceBetData.multiplier - 1)
+				  diceBetData.betAmount * (diceBetData.multiplier - 1)
 				: accountBalanceBeforeBet - diceBetData.betAmount;
 			await homePage.assertThat().accountBalanceIs(expectedBalance);
 		}

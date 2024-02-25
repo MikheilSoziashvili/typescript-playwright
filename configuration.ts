@@ -1,5 +1,5 @@
-import { TestUserConfigurationObject } from "./types";
-import { getFilePath } from "./utils";
+import { TestUserConfigurationObject } from "./core/types";
+import { getFilePath } from "./core/utils";
 
 export const logLevel: string = "info";
 export const createExecution: boolean = process.env.CI ? true : false;

@@ -1,5 +1,5 @@
 import * as winston from "winston";
-import * as Configuration from "./configuration";
+import * as Configuration from "../configuration";
 
 // TODO: Work in progress
 export const logger = winston.createLogger({

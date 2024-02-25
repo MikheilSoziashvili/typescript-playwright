@@ -1,5 +1,5 @@
 import { test } from "../fixtures/fixtures";
-import { RegisterTestData } from "../test-data";
+import { RegisterTestData } from "../dtos/test-data";
 
 test("[QA-52] Register with email @smoke", async ({ homePage }) => {
 	await homePage.navigateAndCheckTitle();
