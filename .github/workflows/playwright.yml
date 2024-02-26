@@ -20,10 +20,7 @@ jobs:
             - name: Install Playwright Browsers
               run: yarn playwright install --with-deps
             - name: Run Playwright tests
-              # Temporary set one game only to test CI/CD flow
-              run: yarn playwright test dice-game.spec.ts
-            - name: List directory structure
-              run: ls -R
+              run: yarn playwright test --grep "@smoke"
             - uses: actions/upload-artifact@v3
               if: always()
               with:
