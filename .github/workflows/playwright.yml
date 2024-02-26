@@ -1,0 +1,29 @@
+name: Playwright E2E Tests
+on:
+    push:
+        branches: ["**"]
+
+jobs:
+    test:
+        timeout-minutes: 60
+        runs-on: ubuntu-latest
+        env:
+            BUILD_NUMBER: ${{ github.run_number }}
+            BUILD_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: 20
+            - name: Install dependencies
+              run: yarn install --immutable --immutable-cache --check-cache
+            - name: Install Playwright Browsers
+              run: yarn playwright install --with-deps
+            - name: Run Playwright tests
+              run: yarn playwright test --grep "@smoke"
+            - uses: actions/upload-artifact@v3
+              if: always()
+              with:
+                  name: playwright-report
+                  path: playwright-report/
+                  retention-days: 30
