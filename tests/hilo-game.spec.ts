@@ -11,7 +11,7 @@ test("[QA-129] Place a single bet on Hilo and try to win @smoke", async ({
     homePage,
     hiloGamePage,
 }) => {
-    const testData: HiloBetTestData = new HiloBetTestData("user1", 200, HiloBetOption.RED, HiloBetMultiplierByBetOption.RED)
+    const testData: HiloBetTestData = new HiloBetTestData("user1", 100, HiloBetOption.RED, HiloBetMultiplierByBetOption.RED)
     await homePage.navigateAndCheckTitle();
     await homePage.openLoginModal();
     await homePage.loginModal.loginAsUser(testData.username);
