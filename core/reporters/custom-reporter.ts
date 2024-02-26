@@ -9,14 +9,13 @@ export default class CustomReporter implements Reporter {
 	async onExit(): Promise<void> {
 		// TODO: Move keystore.json to Configuration
 		const keystore = await readFromJSONFile(Configuration.keystore);
+		const issueKey = keystore.issueKey as string;
 
-		if (keystore.createExecution) {
+		if (keystore.createExecution && issueKey) {
 			logger.info("Uploading XML report...");
 
 			const xrayApi = new XrayApi();
 			await xrayApi.initialize();
-
-			const issueKey = keystore.issueKey as string;
 
 			const response = await xrayApi.importXmlResult(issueKey);
 
@@ -24,6 +23,8 @@ export default class CustomReporter implements Reporter {
 			logger.info(
 				`Report is uploaded successfully in Test Execution ${issueKey}`,
 			);
+		} else {
+			logger.info("Test results are not imported into XRay.");
 		}
 	}
 }

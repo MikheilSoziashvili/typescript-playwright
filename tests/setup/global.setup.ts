@@ -15,6 +15,14 @@ globalSetup("global setup", async () => {
 		expect(response.status()).toBe(201);
 
 		const responseBody = (await response.json()) as JsonData;
+		const responseKey = responseBody["key"] as string;
+
+		if (!responseKey) {
+			logger.info(
+				`Response received from JIRA: ${JSON.stringify(responseBody)}`,
+			);
+			throw new Error("Test execution key is empty or invalid.");
+		}
 
 		logger.info(
 			`Test Execution with key ${
