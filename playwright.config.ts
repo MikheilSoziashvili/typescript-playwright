@@ -8,12 +8,15 @@ import * as Configuration from "./configuration";
 
 // When tests are aligned with CI/CD workflow, a more comprehensive report will be selected instead of HTML
 function getReporter(): ReporterDescription[] {
-	return Configuration.createExecution
-		? [
-				["junit", { outputFile: Configuration.reportName }],
-				["./custom-reporter.ts"],
-			] // JUnit report with additional logic for XRay/JIRA integration
-		: [["html"]]; // Default HTML report
+	if (Configuration.createExecution) {
+		return [
+			["junit", { outputFile: Configuration.reportName }],
+			["./core/reporters/custom-reporter.ts"], // Custom reporter for XRay/JIRA integration
+			["html"],
+		];
+	} else {
+		return [["html"]];
+	}
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- default config file

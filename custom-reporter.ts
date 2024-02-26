@@ -1,9 +1,9 @@
 import { Reporter } from "@playwright/test/reporter";
-import { XrayApi } from "../../api/xray-api";
-import { readFromJSONFile } from "../utils";
-import { logger } from "../../logger/logger";
+import { XrayApi } from "./api/xray-api";
+import { readFromJSONFile } from "./core/utils";
+import { logger } from "./logger/logger";
 import { expect } from "@playwright/test";
-import * as Configuration from "../../configuration";
+import * as Configuration from "./configuration";
 
 export default class CustomReporter implements Reporter {
 	async onExit(): Promise<void> {
