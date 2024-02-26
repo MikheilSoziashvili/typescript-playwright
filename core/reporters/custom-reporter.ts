@@ -12,6 +12,7 @@ export default class CustomReporter implements Reporter {
 		const issueKey = keystore.issueKey as string;
 
 		if (keystore.createExecution && issueKey) {
+			logger.info(`Text execution key is ${issueKey}`);
 			logger.info("Uploading XML report...");
 
 			const xrayApi = new XrayApi();
