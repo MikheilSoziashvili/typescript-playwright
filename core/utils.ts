@@ -43,11 +43,9 @@ export async function prependXmlHeaderToFile(
 	return '<?xml version="1.0" encoding="UTF-8" ?>\n' + xmlContent;
 }
 
-// When calling getFilePath for files in subdirectories,
-// explicitly pass the path of the subdirectory where the file is located
 export function getFilePath(
 	filename: string,
-	baseDir: string = process.cwd(),
+	baseDir: string = __dirname,
 ): string {
 	return path.join(baseDir, filename);
 }
