@@ -1,12 +1,10 @@
-import { expect } from "@playwright/test";
-import { DiceGameResultMessage } from "../enums/dice-result-messages";
 import {
 	HiloGameResultColor,
 	HiloGameStatusMessage,
 } from "../enums/hilo-result-messages";
 import { test } from "../fixtures/fixtures";
 import { logger } from "../logger/logger";
-import { DiceBetTestData, HiloBetTestData } from "../dtos/test-data";
+import { HiloBetTestData } from "../dtos/test-data";
 import { HiloBetMultiplierByBetOption } from "../enums/original-games";
 import { HiloBetOption } from "../enums/hilo-bet-options";
 
