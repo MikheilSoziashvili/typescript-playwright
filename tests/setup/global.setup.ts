@@ -1,10 +1,10 @@
 import { test as globalSetup, expect } from "@playwright/test";
-import { JiraApi } from "../api/jira-api";
-import { createExecutionBody } from "../api/jira-api-payloads";
-import { writeToJSONFile } from "../utils";
-import { logger } from "../logger";
-import * as Configuration from "../configuration";
-import { JsonData } from "../interfaces";
+import { JiraApi } from "../../api/jira-api";
+import { createExecutionBody } from "../../api/jira-api-payloads";
+import { writeToJSONFile } from "../../core/utils";
+import { logger } from "../../logger/logger";
+import * as Configuration from "../../configuration";
+import { JsonData } from "../../core/interfaces";
 
 globalSetup("global setup", async () => {
 	if (Configuration.createExecution) {
@@ -15,6 +15,14 @@ globalSetup("global setup", async () => {
 		expect(response.status()).toBe(201);
 
 		const responseBody = (await response.json()) as JsonData;
+		const responseKey = responseBody["key"] as string;
+
+		if (!responseKey) {
+			logger.info(
+				`Response received from JIRA: ${JSON.stringify(responseBody)}`,
+			);
+			throw new Error("Test execution key is empty or invalid.");
+		}
 
 		logger.info(
 			`Test Execution with key ${

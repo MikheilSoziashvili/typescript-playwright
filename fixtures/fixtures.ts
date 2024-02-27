@@ -13,7 +13,7 @@ type Pages = {
 	crashGamePage: CrashGamePage;
 	diceGamePage: DiceGamePage;
 	rouletteGamePage: RouletteGamePage;
-	hiloGamePage: HiloGamePage
+	hiloGamePage: HiloGamePage;
 };
 
 export const test = base.extend<CustomFixtures>({
@@ -39,7 +39,7 @@ export const test = base.extend<CustomFixtures>({
 
 // TODO: To be revised
 // eslint-disable-next-line no-empty-pattern -- beforeEach in progress
-test.beforeEach(({ }, testInfo: TestInfo) => {
+test.beforeEach(({}, testInfo: TestInfo) => {
 	const issueKeyMatch = testInfo.title.match(new RegExp(`\\[([^\\]]+)\\]`));
 	if (issueKeyMatch) {
 		testInfo.annotations.push({

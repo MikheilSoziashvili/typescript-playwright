@@ -1,7 +1,7 @@
 import { Page } from "@playwright/test";
 import { BaseModal } from "../../base/base-modal";
 import { RegisterModalMap } from "./register-modal-map";
-import { RegisterTestData } from "../../../test-data";
+import { RegisterTestData } from "../../../dtos/test-data";
 
 export class RegisterModal extends BaseModal<RegisterModalMap> {
 	constructor(page: Page) {

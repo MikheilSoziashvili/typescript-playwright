@@ -4,7 +4,7 @@ import { HomePageMap } from "./home-page-map";
 import { LoginModal } from "../modals/login-modal/login-modal";
 import { HomePageAsserter } from "./home-page-asserter";
 import { RegisterModal } from "../modals/register-modal/register-modal";
-import { parseBalance } from "../../utils";
+import { parseBalance } from "../../core/utils";
 import { OriginalGame } from "../../enums/original-games";
 
 export class HomePage extends BasePage<HomePageMap> {

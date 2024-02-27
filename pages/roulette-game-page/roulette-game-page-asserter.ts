@@ -2,8 +2,8 @@ import { Locator, expect } from "@playwright/test";
 import { BaseAsserter } from "../base/base-asserter";
 import { RouletteGamePage } from "./roulette-game-page";
 import { RouletteNumberColor } from "../../enums/original-games";
-import { plusSignWithExactDecimalCurrency } from "../../regex-patterns";
-import { parseToFloat } from "../../utils";
+import { plusSignWithExactDecimalCurrency } from "../../support/regex-patterns";
+import { parseToFloat } from "../../core/utils";
 
 export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 	public constructor(page: RouletteGamePage) {
@@ -20,10 +20,10 @@ export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 		beforeBetPlacement
 			? await expect(
 					this.gamdomPage.map.betPotentialProfit(betSection),
-				).toContainText(parseToFloat(value))
+			  ).toContainText(parseToFloat(value))
 			: await expect(
 					this.gamdomPage.map.betProfit(betSection),
-				).toContainText(parseToFloat(value));
+			  ).toContainText(parseToFloat(value));
 	}
 
 	public async betButtonsEnabled(): Promise<void> {

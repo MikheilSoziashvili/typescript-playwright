@@ -1,10 +1,10 @@
 import { promises as fs } from "fs";
-import { logger } from "./logger";
+import { logger } from "../logger/logger";
 import { JsonData } from "./interfaces";
 import * as path from "path";
 import { parse } from "csv-parse/sync";
 import { readFileSync } from "fs";
-import { users } from "./configuration";
+import { users } from "../configuration";
 import { TestUserConfigurationObject } from "./types";
 import * as accounting from "accounting";
 
@@ -51,8 +51,8 @@ export function getFilePath(
 }
 
 export function parse_csv(...filePath: string[]): unknown {
-	const filePathRoot = [__dirname, ...filePath];
-	const csvFile = readFileSync(path.join(...filePathRoot));
+	const filePathRoot = path.join(__dirname, "..", ...filePath);
+	const csvFile = readFileSync(filePathRoot);
 	return parse(csvFile, {
 		columns: true,
 		skip_empty_lines: true,

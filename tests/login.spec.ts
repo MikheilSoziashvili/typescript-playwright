@@ -1,7 +1,7 @@
 // import { superAdminStorageState } from "../configuration";
 import { users } from "../configuration";
 import { test } from "../fixtures/fixtures";
-import { parse_csv, toJson } from "../utils";
+import { parse_csv, toJson } from "../core/utils";
 
 // test("[QA-19] Login with Email", async ({ superAdminLogin }) => {
 // 	// Actions with logged in super admin

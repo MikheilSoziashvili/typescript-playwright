@@ -1,7 +1,7 @@
 import { test } from "../fixtures/fixtures";
-import { logger } from "../logger";
-import { BetTestData } from "../test-data";
-import { parseMultiplier } from "../utils";
+import { logger } from "../logger/logger";
+import { BetTestData } from "../dtos/test-data";
+import { parseMultiplier } from "../core/utils";
 
 test("[QA-77] Place a single bet on Crash and try to cashout @smoke", async ({
 	homePage,

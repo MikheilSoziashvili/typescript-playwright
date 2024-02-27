@@ -1,7 +1,7 @@
 import { RouletteNumberColor } from "../enums/original-games";
 import { test } from "../fixtures/fixtures";
-import { logger } from "../logger";
-import { BetTestData } from "../test-data";
+import { logger } from "../logger/logger";
+import { BetTestData } from "../dtos/test-data";
 
 test("[QA-121] Place a single bet on Roulette and try to win @smoke", async ({
 	homePage,
