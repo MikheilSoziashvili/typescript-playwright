@@ -1,0 +1,1 @@
+export const HILO_GAME_ENDPOINT = "/hilo"

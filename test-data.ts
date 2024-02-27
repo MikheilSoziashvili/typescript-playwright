@@ -1,4 +1,6 @@
 import { faker } from "@faker-js/faker";
+import { HiloBetMultiplierByBetOption } from "./enums/original-games";
+import { HiloBetOption } from "./enums/hilo-bet-options";
 
 export class RegisterTestData {
 	#username: string;
@@ -59,5 +61,24 @@ export class DiceBetTestData {
 		this.multiplier = multiplier;
 		this.rollOver = rollOver;
 		this.winChance = winChance;
+	}
+}
+
+export class HiloBetTestData {
+	public username: string
+	public betAmount: number
+	public betOption: HiloBetOption
+	public betMultiplierByBetOption: HiloBetMultiplierByBetOption
+
+	constructor(
+		username: string,
+		betAmount: number,
+		betOption: HiloBetOption,
+		betMultiplierByBetOption: HiloBetMultiplierByBetOption,
+	) {
+		this.username = username
+		this.betAmount = betAmount
+		this.betOption = betOption
+		this.betMultiplierByBetOption = betMultiplierByBetOption
 	}
 }
