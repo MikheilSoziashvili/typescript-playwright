@@ -1,7 +1,7 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "../base/base-map";
 import { OriginalGame } from "../../enums/original-games";
-import { promisify } from "util";
+import { decimalNumber } from "../../support/regex-patterns";
 
 export class HomePageMap extends BaseMap {
 	public constructor(page: Page) {
@@ -65,11 +65,13 @@ export class HomePageMap extends BaseMap {
 	}
 
 	public async accountBalance(): Promise<Locator> {
-		return await this.waitUntilVisible(
+		const accountBalance = await this.waitUntilVisible(
 			this.page.locator(
 				"div[class*='header'] > div:nth-child(2) > div:nth-child(2) div[style*='tabular']",
 			),
 		);
+
+		return await this.waitUntilContainsText(accountBalance, decimalNumber); //workaround for $0 balance on page load bug
 	}
 
 	public get originalGamesMenuLink(): Locator {

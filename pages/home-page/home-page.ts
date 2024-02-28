@@ -6,6 +6,7 @@ import { HomePageAsserter } from "./home-page-asserter";
 import { RegisterModal } from "../modals/register-modal/register-modal";
 import { parseBalance } from "../../core/utils";
 import { OriginalGame } from "../../enums/original-games";
+import { HomePageSteps } from "./home-page-steps";
 
 export class HomePage extends BasePage<HomePageMap> {
 	public constructor(page: Page) {
@@ -18,6 +19,10 @@ export class HomePage extends BasePage<HomePageMap> {
 
 	public override assertThat(): HomePageAsserter {
 		return new HomePageAsserter(this);
+	}
+
+	public steps(): HomePageSteps {
+		return new HomePageSteps(this);
 	}
 
 	public async openLoginModal(): Promise<void> {

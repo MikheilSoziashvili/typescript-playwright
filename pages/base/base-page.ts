@@ -1,5 +1,6 @@
 import { Page } from "@playwright/test";
 import { BaseMap } from "./base-map";
+import { BasePageStep } from "../../core/helpers/base-page-step";
 
 export abstract class BasePage<T = BaseMap> {
 	readonly page: Page;
@@ -12,4 +13,8 @@ export abstract class BasePage<T = BaseMap> {
 
 	abstract navigate(): void;
 	abstract assertThat(): void;
+
+	public steps(): void {
+		throw new Error("Method not implemented");
+	}
 }

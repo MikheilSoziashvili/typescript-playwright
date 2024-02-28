@@ -2,6 +2,9 @@ import { Page, expect } from "@playwright/test";
 import { BasePage } from "../base/base-page";
 import { CrashGamePageMap } from "./crash-game-page-map";
 import { CrashGamePageAsserter } from "./crash-game-page-asserter";
+import { CrashGamePageSteps } from "./crash-game-page-steps";
+import { logger } from "../../logger/logger";
+import { parseMultiplier } from "../../core/utils";
 
 export class CrashGamePage extends BasePage<CrashGamePageMap> {
 	public constructor(page: Page) {
@@ -14,6 +17,37 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 
 	public override assertThat(): CrashGamePageAsserter {
 		return new CrashGamePageAsserter(this);
+	}
+
+	public steps(): CrashGamePageSteps {
+		return new CrashGamePageSteps(this);
+	}
+
+	public async playUntilMultiplierIs(
+		multiplier: number,
+		...actions: (() => Promise<void>)[]
+	): Promise<void> {
+		let crashedMultiplier: number = 0.0;
+		do {
+			if (crashedMultiplier == 0.0) {
+				logger.info("New Crash game will be opened");
+			} else if (
+				crashedMultiplier > 0.0 &&
+				crashedMultiplier < multiplier
+			) {
+				logger.warn(
+					"Multiplier crashed below expected. Will retry bet...",
+				);
+			}
+
+			for (const action of actions) {
+				await action();
+			}
+
+			crashedMultiplier = parseMultiplier(
+				await this.getCrashedMultiplier(),
+			);
+		} while (crashedMultiplier < multiplier);
 	}
 
 	public async waitBettingWindowAvailable(
