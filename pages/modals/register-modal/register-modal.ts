@@ -30,6 +30,7 @@ export class RegisterModal extends BaseModal<RegisterModalMap> {
 		if (acceptNewsOffers) await this.map.newsAndOffersCheckbox.click();
 	}
 
+	//Flakiness observed => click event is registered, but nothing happens. Might be env related.
 	public async clickStartPlayingBtn(): Promise<void> {
 		await this.map.startPlayingBtn.click();
 	}
