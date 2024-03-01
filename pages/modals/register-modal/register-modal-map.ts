@@ -22,8 +22,8 @@ export class RegisterModalMap extends BaseMap {
 	public get termsOfServiceCheckbox(): Locator {
 		return this.page
 			.locator("label")
-			.filter({ hasText: "I certify that I am at least" })
-			.locator("rect");
+			.filter({ hasText: "I agree with the Terms of" })
+			.locator("span");
 	}
 
 	// @TODO: Locator to be updated accordingly using data-testid
@@ -31,7 +31,7 @@ export class RegisterModalMap extends BaseMap {
 		return this.page
 			.locator("label")
 			.filter({ hasText: "I want to receive News and" })
-			.locator("rect");
+			.locator("span");
 	}
 
 	public get startPlayingBtn(): Locator {

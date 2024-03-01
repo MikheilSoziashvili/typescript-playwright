@@ -42,7 +42,7 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		await expect.soft(this.gamdomPage.map.walletBtn).toBeVisible({
 			timeout: Timeout.MAX,
 		});
-		await expect.soft(this.gamdomPage.map.userIcon).toBeVisible({
+		await expect.soft(this.gamdomPage.map.userAvatar).toBeVisible({
 			timeout: Timeout.MAX,
 		});
 		await expect

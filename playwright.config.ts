@@ -49,6 +49,12 @@ export default defineConfig({
 		launchOptions: {
 			slowMo: 300,
 		},
+
+		video: {
+			mode: "retain-on-failure",
+			size: { width: 1920, height: 1080 },
+		},
+		screenshot: "only-on-failure",
 	},
 
 	/* Configure projects for major browsers */
