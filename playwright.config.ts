@@ -34,6 +34,10 @@ export default defineConfig({
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
 	reporter: getReporter(),
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+	globalSetup: require.resolve("./global-setup"),
+	/* Global setup. */
+	globalTeardown: require.resolve("./global-teardown"),
+	/* Gobal teardown. */
 	use: {
 		/* Base URL to use in actions like `await page.goto('/')`. */
 		baseURL: "https://gamdom--main--auto1--svetoslav-coder.teamgamdom.com",
@@ -53,22 +57,23 @@ export default defineConfig({
 
 	/* Configure projects for major browsers */
 	projects: [
-		{
-			name: "global-setup",
-			testMatch: /global\.setup\.ts/,
-			teardown: "teardown",
-		},
-		{
-			name: "teardown",
-			testMatch: /global\.teardown\.ts/,
-		},
+		{ name: "authenticationSetup", testMatch: /.*\.setup\.ts/, fullyParallel: true, use: { headless: true } },
+		// {
+		// 	name: "global-setup",
+		// 	testMatch: /global\.setup\.ts/,
+		// 	teardown: "teardown",
+		// },
+		// {
+		// 	name: "teardown",
+		// 	testMatch: /global\.teardown\.ts/,
+		// },
 		{
 			name: "chromium",
 			use: {
 				...devices["Desktop Chrome"],
 				viewport: { width: 1920, height: 1080 },
 			},
-			dependencies: ["global-setup"],
+			dependencies: ["authenticationSetup"],
 		},
 
 		// TODO: Test against mobile viewports.

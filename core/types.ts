@@ -6,3 +6,5 @@ export type TestUserConfigurationObject = {
 	affCode?: string;
 	additional_info: string;
 };
+
+export type credentialsType = { username: string, password: string, email?: string };

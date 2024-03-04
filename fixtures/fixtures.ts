@@ -1,12 +1,11 @@
 import { HomePage } from "../pages/home-page/home-page";
 import { TestInfo, test as base } from "@playwright/test";
-import { LoginFixtures, superAdminLogin } from "./fixtures-login";
 import { CrashGamePage } from "../pages/crash-game-page/crash-game-page";
 import { DiceGamePage } from "../pages/dice-game-page/dice-game-page";
 import { RouletteGamePage } from "../pages/roulette-game-page/roulette-game-page";
 import { HiloGamePage } from "../pages/hilo-game-page/hilo-game-page";
 
-type CustomFixtures = Pages & LoginFixtures;
+type CustomFixtures = Pages;
 
 type Pages = {
 	homePage: HomePage;
@@ -32,14 +31,11 @@ export const test = base.extend<CustomFixtures>({
 	rouletteGamePage: async ({ page }, use) => {
 		await use(new RouletteGamePage(page));
 	},
-	superAdminLogin: async ({ homePage, context }) => {
-		await superAdminLogin(homePage, context);
-	},
 });
 
 // TODO: To be revised
 // eslint-disable-next-line no-empty-pattern -- beforeEach in progress
-test.beforeEach(({}, testInfo: TestInfo) => {
+test.beforeEach(({ }, testInfo: TestInfo) => {
 	const issueKeyMatch = testInfo.title.match(new RegExp(`\\[([^\\]]+)\\]`));
 	if (issueKeyMatch) {
 		testInfo.annotations.push({

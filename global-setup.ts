@@ -1,12 +1,12 @@
-import { test as globalSetup, expect } from "@playwright/test";
-import { JiraApi } from "../../api/jira-api";
-import { createExecutionBody } from "../../api/jira-api-payloads";
-import { writeToJSONFile } from "../../core/utils";
-import { logger } from "../../logger/logger";
-import * as Configuration from "../../configuration";
-import { JsonData } from "../../core/interfaces";
+import { expect } from "@playwright/test";
+import { JiraApi } from "./api/jira-api";
+import { createExecutionBody } from "./api/jira-api-payloads";
+import { writeToJSONFile } from "./core/utils";
+import { logger } from "./logger/logger";
+import * as Configuration from "./configuration";
+import { JsonData } from "./core/interfaces";
 
-globalSetup("global setup", async () => {
+async function globalSetup() {
 	if (Configuration.createExecution) {
 		logger.info("Creating an Test Execution in JIRA...");
 		const jiraApi = new JiraApi();
@@ -25,8 +25,7 @@ globalSetup("global setup", async () => {
 		}
 
 		logger.info(
-			`Test Execution with key ${
-				responseBody["key"] as string
+			`Test Execution with key ${responseBody["key"] as string
 			} have been created!`,
 		);
 
@@ -40,4 +39,6 @@ globalSetup("global setup", async () => {
 			keystore,
 		);
 	}
-});
+};
+
+export default globalSetup
