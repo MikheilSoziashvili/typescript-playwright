@@ -64,15 +64,6 @@ export default defineConfig({
 	/* Configure projects for major browsers */
 	projects: [
 		{ name: "authenticationSetup", testMatch: /.*\.setup\.ts/, fullyParallel: true, use: { headless: true } },
-		// {
-		// 	name: "global-setup",
-		// 	testMatch: /global\.setup\.ts/,
-		// 	teardown: "teardown",
-		// },
-		// {
-		// 	name: "teardown",
-		// 	testMatch: /global\.teardown\.ts/,
-		// },
 		{
 			name: "chromium",
 			use: {
