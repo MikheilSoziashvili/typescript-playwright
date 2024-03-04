@@ -1,5 +1,3 @@
-async function globalTeardown() {
-    console.log('MAOOOOO GLOBAL TEARDOWN')
-}
+async function globalTeardown() { };
 
-export default globalTeardown
+export default globalTeardown;
