@@ -24,10 +24,6 @@ export class HomePageMap extends BaseMap {
 	public get toastMessage(): Locator {
 		return this.page.locator("*[role='alert']");
 	}
-	// The same as userAvatar, but there are locator discrepancies across different branches
-	public get userIcon(): Locator {
-		return this.page.locator("svg.MuiSvgIcon-root.MuiAvatar-fallback");
-	}
 
 	public get balanceDropdownArrow(): Locator {
 		return this.page.locator("i.bal-arrow.icon-angle-down");
