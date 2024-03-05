@@ -9,7 +9,7 @@ import { HiloBetMultiplierByBetOption } from "../enums/original-games";
 import { HiloBetOption } from "../enums/hilo-bet-options";
 import { SUPER_ADMIN_AUTH_STATE_FILE_PATH } from "../constants/file-paths";
 
-test.describe.only("Hilo tests", () => {
+test.describe("Hilo tests", () => {
 	test.use({ storageState: SUPER_ADMIN_AUTH_STATE_FILE_PATH });
 	test("[QA-129] Place a single bet on Hilo and try to win @smoke", async ({
 		homePage,
