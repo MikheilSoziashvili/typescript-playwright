@@ -67,7 +67,6 @@ export default defineConfig({
 			name: "authenticationSetup",
 			testMatch: /.*\.setup\.ts/,
 			fullyParallel: true,
-			use: { headless: true },
 		},
 		{
 			name: "chromium",
