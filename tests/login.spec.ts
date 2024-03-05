@@ -41,7 +41,7 @@ test.describe("Login tests", () => {
 					);
 			}
 
-			await homePage.loginModal.assertThat().loginBtnIsDisabled();
+			// await homePage.loginModal.assertThat().loginBtnIsDisabled(); //previously button was disabled until inputs are correct, now it is not
 		});
 	}
 
