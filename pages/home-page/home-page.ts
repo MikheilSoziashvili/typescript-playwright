@@ -7,6 +7,7 @@ import { RegisterModal } from "../modals/register-modal/register-modal";
 import { parseBalance } from "../../core/utils";
 import { OriginalGame } from "../../enums/original-games";
 import { HomePageSteps } from "./home-page-steps";
+import { GoogleAuthPage } from "../external/google-auth-page";
 
 export class HomePage extends BasePage<HomePageMap> {
 	public constructor(page: Page) {
@@ -38,23 +39,13 @@ export class HomePage extends BasePage<HomePageMap> {
 
 		// Applicable only for coder environment
 		if (this.page.url().includes("google")) {
-			await this.loginToGoogle();
+			const googleAuthPage = new GoogleAuthPage(this.page);
+			await googleAuthPage.loginToGoogle();
 		}
 
 		await this.assertThat().titleHasText(
 			"Gamdom - Top Bitcoin & Crypto Casino!",
 		);
-	}
-
-	// Temporary solution to authenticate in cloudflare using environment from coder
-	public async loginToGoogle(
-		username: string = "testautomation@teamgamdom.com",
-		password: string = "automation@pass1",
-	): Promise<void> {
-		await this.map.gEmailField.fill(username);
-		await this.map.gMoveForwardBtn.click();
-		await this.map.gPasswordField.fill(password);
-		await this.map.gPasswordNextBtn.click();
 	}
 
 	public async getAccountBalance(): Promise<number> {

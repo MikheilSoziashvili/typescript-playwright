@@ -17,23 +17,6 @@ export class HomePageMap extends BaseMap {
 		return this.page.getByTestId("signup-nav");
 	}
 
-	// Temporary google auth locators needed for authentication in cloudflare using environment from coder
-	public get gEmailField(): Locator {
-		return this.page.locator("#identifierId");
-	}
-
-	public get gMoveForwardBtn(): Locator {
-		return this.page.locator("#identifierNext > div > button > span");
-	}
-
-	public get gPasswordField(): Locator {
-		return this.page.locator("input[name='Passwd']");
-	}
-
-	public get gPasswordNextBtn(): Locator {
-		return this.page.locator("#passwordNext > div > button > span");
-	}
-
 	public get userAvatar(): Locator {
 		return this.page.locator("img[class*='MuiAvatar-img']");
 	}

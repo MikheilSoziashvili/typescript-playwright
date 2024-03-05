@@ -1,3 +1,4 @@
+import { tr } from "@faker-js/faker";
 import { TestUserConfigurationObject } from "./core/types";
 import { getFilePath } from "./core/utils";
 
@@ -18,12 +19,6 @@ export const xray: Record<string, string> = {
 	clientSecret:
 		"a4568714fb23a430645da341e2b1475c94b787e18a4777154f933d841d67ff8c",
 };
-
-export const storageStateDir: string = getFilePath(".auth");
-export const superAdminStorageState: string = getFilePath(
-	"superAdminStorageState.json",
-	storageStateDir,
-);
 
 export const users: Array<TestUserConfigurationObject> = [
 	{

@@ -17,6 +17,5 @@ export enum HiloBetMultiplierByBetOption {
 	SYMBOL = 1.5,
 	BIG_SYMBOL = 3,
 	ACE = 6,
-	JOKER = 24
-
+	JOKER = 24,
 }
