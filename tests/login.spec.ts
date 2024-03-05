@@ -2,7 +2,7 @@ import { users } from "../configuration";
 import { test } from "../fixtures/fixtures";
 import { parse_csv, toJson } from "../core/utils";
 
-test.describe.skip('Login tests', () => {
+test.describe('Login tests', () => {
 	test.use({ storageState: { cookies: [], origins: [] } });
 
 	for (const record of parse_csv("datasets", "QA-5-login-not-possible.csv") as {

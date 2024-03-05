@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
-import { HiloBetMultiplierByBetOption } from "./enums/original-games";
-import { HiloBetOption } from "./enums/hilo-bet-options";
+import { HiloBetOption } from "../enums/hilo-bet-options";
+import { HiloBetMultiplierByBetOption } from "../enums/original-games";
 
 export class RegisterTestData {
 	#username: string;

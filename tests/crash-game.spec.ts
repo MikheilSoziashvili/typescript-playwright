@@ -1,8 +1,9 @@
 import { test } from "../fixtures/fixtures";
 import { BetTestData } from "../dtos/test-data";
+import { USER_1_AUTH_STATE_FILE_PATH } from "../constants/file-paths";
 
 test.describe('Crash tests', () => {
-	test.use({ storageState: '.auth/user1.json' });
+	test.use({ storageState: USER_1_AUTH_STATE_FILE_PATH });
 	test("[QA-77] Place a single bet on Crash and try to cashout @smoke", async ({
 		homePage,
 		crashGamePage,
