@@ -4,7 +4,7 @@ import { logger } from "../logger/logger";
 import { BetTestData } from "../dtos/test-data";
 import { USER_1_AUTH_STATE_FILE_PATH } from "../constants/file-paths";
 
-test.describe('Roulette tests', () => {
+test.describe("Roulette tests", () => {
 	test.use({ storageState: USER_1_AUTH_STATE_FILE_PATH });
 	test("[QA-121] Place a single bet on Roulette and try to win @smoke", async ({
 		homePage,
@@ -54,7 +54,8 @@ test.describe('Roulette tests', () => {
 
 			accountBalanceLeft = await homePage.getAccountBalance();
 
-			rouletteResultNumber = await rouletteGamePage.getRoundResultNumber();
+			rouletteResultNumber =
+				await rouletteGamePage.getRoundResultNumber();
 			isWin =
 				(await rouletteGamePage.getRoundResultColor()) as RouletteNumberColor;
 
@@ -63,7 +64,10 @@ test.describe('Roulette tests', () => {
 
 		await rouletteGamePage
 			.assertThat()
-			.profitAmountDisplayed(RouletteNumberColor.RED, betTestData.betAmount);
+			.profitAmountDisplayed(
+				RouletteNumberColor.RED,
+				betTestData.betAmount,
+			);
 
 		const expectedProfit = rouletteGamePage.calculateProfit(
 			betTestData.betAmount,

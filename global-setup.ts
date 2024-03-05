@@ -25,7 +25,8 @@ async function globalSetup() {
 		}
 
 		logger.info(
-			`Test Execution with key ${responseBody["key"] as string
+			`Test Execution with key ${
+				responseBody["key"] as string
 			} have been created!`,
 		);
 
@@ -39,6 +40,6 @@ async function globalSetup() {
 			keystore,
 		);
 	}
-};
+}
 
-export default globalSetup
+export default globalSetup;

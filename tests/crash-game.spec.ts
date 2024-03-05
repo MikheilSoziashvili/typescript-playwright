@@ -2,7 +2,7 @@ import { test } from "../fixtures/fixtures";
 import { BetTestData } from "../dtos/test-data";
 import { USER_1_AUTH_STATE_FILE_PATH } from "../constants/file-paths";
 
-test.describe('Crash tests', () => {
+test.describe("Crash tests", () => {
 	test.use({ storageState: USER_1_AUTH_STATE_FILE_PATH });
 	test("[QA-77] Place a single bet on Crash and try to cashout @smoke", async ({
 		homePage,
@@ -13,13 +13,14 @@ test.describe('Crash tests', () => {
 			10,
 			Number("1.10"),
 		);
-		await crashGamePage.navigate()
+		await crashGamePage.navigate();
 		await crashGamePage.playUntilMultiplierIs(
 			betTestData.autoCashoutMultiplier,
 			async () => {
 				await crashGamePage.navigate();
 
-				const accountBalanceBeforeBet = await homePage.getAccountBalance();
+				const accountBalanceBeforeBet =
+					await homePage.getAccountBalance();
 
 				await crashGamePage.steps().placeBet(betTestData);
 

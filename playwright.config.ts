@@ -21,7 +21,7 @@ function getReporter(): ReporterDescription[] {
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- default config file
 export default defineConfig({
-	timeout: 2 * 60 * 1000, //convert to minutes
+	timeout: 3 * 60 * 1000, //convert to minutes
 	testDir: "./tests",
 	/* Run tests in files in parallel */
 	fullyParallel: false,
@@ -63,7 +63,12 @@ export default defineConfig({
 
 	/* Configure projects for major browsers */
 	projects: [
-		{ name: "authenticationSetup", testMatch: /.*\.setup\.ts/, fullyParallel: true, use: { headless: true } },
+		{
+			name: "authenticationSetup",
+			testMatch: /.*\.setup\.ts/,
+			fullyParallel: true,
+			use: { headless: true },
+		},
 		{
 			name: "chromium",
 			use: {

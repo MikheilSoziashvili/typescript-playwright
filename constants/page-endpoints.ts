@@ -1,1 +1,1 @@
-export const HILO_GAME_ENDPOINT = "/hilo"
+export const HILO_GAME_ENDPOINT = "/hilo";

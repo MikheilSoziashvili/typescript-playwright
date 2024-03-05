@@ -7,4 +7,8 @@ export type TestUserConfigurationObject = {
 	additional_info: string;
 };
 
-export type credentialsType = { username: string, password: string, email?: string };
+export type credentialsType = {
+	username: string;
+	password: string;
+	email?: string;
+};

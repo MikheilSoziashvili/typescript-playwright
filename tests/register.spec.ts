@@ -1,7 +1,7 @@
 import { test } from "../fixtures/fixtures";
 import { RegisterTestData } from "../dtos/test-data";
 
-test.describe('Register tests', () => {
+test.describe("Register tests", () => {
 	test.use({ storageState: { cookies: [], origins: [] } });
 	test("[QA-52] Register with email @smoke", async ({ homePage }) => {
 		await homePage.navigateAndCheckTitle();

@@ -2,10 +2,13 @@ import { users } from "../configuration";
 import { test } from "../fixtures/fixtures";
 import { parse_csv, toJson } from "../core/utils";
 
-test.describe('Login tests', () => {
+test.describe("Login tests", () => {
 	test.use({ storageState: { cookies: [], origins: [] } });
 
-	for (const record of parse_csv("datasets", "QA-5-login-not-possible.csv") as {
+	for (const record of parse_csv(
+		"datasets",
+		"QA-5-login-not-possible.csv",
+	) as {
 		username: string;
 		password: string;
 		expected_username_warning: string;
@@ -25,13 +28,17 @@ test.describe('Login tests', () => {
 			if (record.expected_username_warning) {
 				await homePage.loginModal
 					.assertThat()
-					.usernameFieldErrorTooltipIs(record.expected_username_warning);
+					.usernameFieldErrorTooltipIs(
+						record.expected_username_warning,
+					);
 			}
 
 			if (record.expected_password_warning) {
 				await homePage.loginModal
 					.assertThat()
-					.passwordFieldErrorTooltipIs(record.expected_password_warning);
+					.passwordFieldErrorTooltipIs(
+						record.expected_password_warning,
+					);
 			}
 
 			await homePage.loginModal.assertThat().loginBtnIsDisabled();
@@ -55,13 +62,17 @@ test.describe('Login tests', () => {
 			if (record.expected_feedback_location.includes("username")) {
 				await homePage.loginModal
 					.assertThat()
-					.usernameFieldErrorTooltipIs(record.expected_feedback_warning);
+					.usernameFieldErrorTooltipIs(
+						record.expected_feedback_warning,
+					);
 			}
 
 			if (record.expected_feedback_location.includes("password")) {
 				await homePage.loginModal
 					.assertThat()
-					.passwordFieldErrorTooltipIs(record.expected_feedback_warning);
+					.passwordFieldErrorTooltipIs(
+						record.expected_feedback_warning,
+					);
 			}
 
 			if (record.expected_feedback_location.includes("toast")) {
@@ -83,5 +94,4 @@ test.describe('Login tests', () => {
 			await homePage.assertThat().userIsLoggedIn();
 		});
 	}
-
 });

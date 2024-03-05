@@ -1,3 +1,4 @@
+import { tr } from "@faker-js/faker";
 import { TestUserConfigurationObject } from "./core/types";
 import { getFilePath } from "./core/utils";
 

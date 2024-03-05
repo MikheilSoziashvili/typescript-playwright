@@ -39,7 +39,7 @@ export class HomePage extends BasePage<HomePageMap> {
 
 		// Applicable only for coder environment
 		if (this.page.url().includes("google")) {
-			const googleAuthPage = new GoogleAuthPage(this.page)
+			const googleAuthPage = new GoogleAuthPage(this.page);
 			await googleAuthPage.loginToGoogle();
 		}
 

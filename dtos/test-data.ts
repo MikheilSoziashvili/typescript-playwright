@@ -65,10 +65,10 @@ export class DiceBetTestData {
 }
 
 export class HiloBetTestData {
-	public username: string
-	public betAmount: number
-	public betOption: HiloBetOption
-	public betMultiplierByBetOption: HiloBetMultiplierByBetOption
+	public username: string;
+	public betAmount: number;
+	public betOption: HiloBetOption;
+	public betMultiplierByBetOption: HiloBetMultiplierByBetOption;
 
 	constructor(
 		username: string,
@@ -76,9 +76,9 @@ export class HiloBetTestData {
 		betOption: HiloBetOption,
 		betMultiplierByBetOption: HiloBetMultiplierByBetOption,
 	) {
-		this.username = username
-		this.betAmount = betAmount
-		this.betOption = betOption
-		this.betMultiplierByBetOption = betMultiplierByBetOption
+		this.username = username;
+		this.betAmount = betAmount;
+		this.betOption = betOption;
+		this.betMultiplierByBetOption = betMultiplierByBetOption;
 	}
 }

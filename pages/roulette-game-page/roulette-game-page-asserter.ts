@@ -20,10 +20,10 @@ export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 		beforeBetPlacement
 			? await expect(
 					this.gamdomPage.map.betPotentialProfit(betSection),
-			  ).toContainText(parseToFloat(value))
+				).toContainText(parseToFloat(value))
 			: await expect(
 					this.gamdomPage.map.betProfit(betSection),
-			  ).toContainText(parseToFloat(value));
+				).toContainText(parseToFloat(value));
 	}
 
 	public async betButtonsEnabled(): Promise<void> {

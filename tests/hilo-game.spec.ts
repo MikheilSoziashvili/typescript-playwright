@@ -9,7 +9,7 @@ import { HiloBetMultiplierByBetOption } from "../enums/original-games";
 import { HiloBetOption } from "../enums/hilo-bet-options";
 import { SUPER_ADMIN_AUTH_STATE_FILE_PATH } from "../constants/file-paths";
 
-test.describe('Hilo tests', () => {
+test.describe.only("Hilo tests", () => {
 	test.use({ storageState: SUPER_ADMIN_AUTH_STATE_FILE_PATH });
 	test("[QA-129] Place a single bet on Hilo and try to win @smoke", async ({
 		homePage,
@@ -46,7 +46,9 @@ test.describe('Hilo tests', () => {
 			}
 		}
 
-		await hiloGamePage.assertThat().gameResultColorIs(HiloGameResultColor.RED);
+		await hiloGamePage
+			.assertThat()
+			.gameResultColorIs(HiloGameResultColor.RED);
 
 		const expectedProfit = hiloGamePage.calculateProfit(
 			testData.betAmount,

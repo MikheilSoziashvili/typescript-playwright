@@ -5,24 +5,24 @@ import { GoogleAuthPageAsserter } from "./google-auth-asserter";
 import { GOOGLE_AUTH_CREDENTIALS } from "../../constants/credentials";
 
 export class GoogleAuthPage extends BasePage<GooglePageMap> {
-    public constructor(page: Page) {
-        super(page, new GooglePageMap(page));
-    }
-    public override async navigate(): Promise<void> {
-        await this.page.goto("/");
-    }
+	public constructor(page: Page) {
+		super(page, new GooglePageMap(page));
+	}
+	public override async navigate(): Promise<void> {
+		await this.page.goto("/");
+	}
 
-    public override assertThat(): GoogleAuthPageAsserter {
-        return new GoogleAuthPageAsserter(this);
-    }
+	public override assertThat(): GoogleAuthPageAsserter {
+		return new GoogleAuthPageAsserter(this);
+	}
 
-    public async loginToGoogle(
-        username: string = GOOGLE_AUTH_CREDENTIALS.username,
-        password: string = GOOGLE_AUTH_CREDENTIALS.password,
-    ): Promise<void> {
-        await this.map.gEmailField.fill(username);
-        await this.map.gMoveForwardBtn.click();
-        await this.map.gPasswordField.fill(password);
-        await this.map.gPasswordNextBtn.click();
-    }
+	public async loginToGoogle(
+		username: string = GOOGLE_AUTH_CREDENTIALS.username,
+		password: string = GOOGLE_AUTH_CREDENTIALS.password,
+	): Promise<void> {
+		await this.map.gEmailField.fill(username);
+		await this.map.gMoveForwardBtn.click();
+		await this.map.gPasswordField.fill(password);
+		await this.map.gPasswordNextBtn.click();
+	}
 }
