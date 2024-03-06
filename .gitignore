@@ -135,3 +135,4 @@ dist
 /playwright/.cache/
 .auth/
 .DS_Store
+results.xml
