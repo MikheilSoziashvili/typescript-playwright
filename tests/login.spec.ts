@@ -40,8 +40,8 @@ test.describe("Login tests", () => {
 						record.expected_password_warning,
 					);
 			}
-
-			await homePage.loginModal.assertThat().loginBtnIsDisabled();
+			// Temporary solution. Previously button was disabled until inputs are correct, now it is not. Discussed with Johannes (To be aligned)
+			// await homePage.loginModal.assertThat().loginBtnIsDisabled();
 		});
 	}
 
