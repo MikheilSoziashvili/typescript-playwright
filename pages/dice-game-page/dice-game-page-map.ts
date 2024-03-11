@@ -6,31 +6,49 @@ export class DiceGamePageMap extends BaseMap {
 		super(page);
 	}
 
+	public get yourBetContainer(): Locator {
+		return this.page.locator("div[data-testid=diceYourBetContainer]");
+	}
 	public get betField(): Locator {
-		return this.page.locator("input[class*='AdornedStart']").first();
+		return this.yourBetContainer.locator("input");
+	}
+
+	public get profitOnWinContainer(): Locator {
+		return this.page.locator("div[data-testid=diceProfitOnWinContainer]");
 	}
 
 	public get profitOnWinField(): Locator {
-		return this.page.locator("input[class*='AdornedStart']").nth(1);
+		return this.profitOnWinContainer.locator("input");
 	}
 
-	// TODO: Locator should be updated with appropriate data-testid-*
+	public get multiplierContainer(): Locator {
+		return this.page.locator(
+			"div[data-testid=diceRollMultiplierContainer]",
+		);
+	}
+
 	public get multiplierField(): Locator {
-		return this.page.getByLabel("Multiplier");
+		return this.multiplierContainer.locator("input");
+	}
+
+	public get rollOverContainer(): Locator {
+		return this.page.locator("div[data-testid=diceRollOverContainer]");
+	}
+
+	public get rollOverField(): Locator {
+		return this.rollOverContainer.locator("input");
+	}
+
+	public get winChanceContainer(): Locator {
+		return this.page.locator("div[data-testid=diceRollWinChanceContainer]");
+	}
+
+	public get winChanceField(): Locator {
+		return this.winChanceContainer.locator("input");
 	}
 
 	public get rollDiceBtn(): Locator {
-		return this.page.locator('button[class*="MuiButton-sizeLarge"]');
-	}
-
-	// TODO: Locator should be updated with appropriate data-testid-*
-	public get rollOverField(): Locator {
-		return this.page.getByLabel("Roll Over");
-	}
-
-	// TODO: Locator should be updated with appropriate data-testid-*
-	public get winChanceField(): Locator {
-		return this.page.getByLabel("Win Chance");
+		return this.page.locator("button[data-testid=rollDiceBtn]");
 	}
 
 	public get diceSliderValue(): Locator {
@@ -38,16 +56,18 @@ export class DiceGamePageMap extends BaseMap {
 	}
 
 	public get diceGameAreaMessage(): Locator {
-		return this.page.locator("div[class*='GameArea-styled__Message']");
+		return this.page.locator("div[data-testid=diceGameAreaMessage]");
 	}
 
 	public get diceResultNumberGameArea(): Locator {
-		return this.page.locator("div[class*='GameArea-styled__ResultNumber']");
+		return this.page.locator("div[data-testid=diceResult]");
 	}
 
-	public get diceResultNumberHistory(): Locator {
-		return this.page.locator(
-			"div[style*='transform: none; transition: transform 500ms']",
-		);
+	public get diceResultsHistory(): Locator {
+		return this.page.locator("div[data-testid=diceRollHistoryResults]");
+	}
+
+	public get diceLastResultNumber(): Locator {
+		return this.diceResultsHistory.locator("div").first();
 	}
 }

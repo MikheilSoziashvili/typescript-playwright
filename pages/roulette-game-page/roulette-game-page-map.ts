@@ -15,44 +15,52 @@ export class RouletteGamePageMap extends BaseMap {
 		return this.mainContainer.locator("*[class*='ContainerAnimate']");
 	}
 
-	public get roulette(): Locator {
-		return this.gameContainer.locator("> div:nth-child(1)");
-	}
-
 	public get gameStatusContainer(): Locator {
-		return this.roulette.locator("*[class*='GameStatusWrapper']");
-	}
-
-	public get betOptions(): Locator {
-		return this.gameContainer.locator("> div:nth-child(2)");
-	}
-
-	public get betField(): Locator {
-		return this.betOptions.locator(
-			"*[class*='PlaceBet'] input[class*='AdornedStart']",
+		return this.gameContainer.locator(
+			"div[data-testid=rouletteGameStatusContainer]",
 		);
 	}
 
-	public get placeBetBtn(): Locator {
-		return this.betOptions.locator(
-			"> div:nth-child(2) > div:nth-child(2) > div > div:nth-child(6) button",
+	public get placeBetGrid(): Locator {
+		return this.gameContainer.locator(
+			"div[data-testid=roulettePlaceBetGrid]",
+		);
+	}
+
+	public get yourBetGrid(): Locator {
+		return this.placeBetGrid.locator(
+			"div[data-testid=rouletteYourBetGrid]",
+		);
+	}
+
+	public get betField(): Locator {
+		return this.yourBetGrid.locator("input[class*='AdornedStart']");
+	}
+
+	public get spinningStateLocator(): Locator {
+		return this.gameStatusContainer.locator(
+			"div[data-testid=rouletteSpinningInState]",
 		);
 	}
 
 	public get spinningCountdownCounter(): Locator {
-		return this.gameStatusContainer.locator("h3");
+		return this.spinningStateLocator.locator(
+			"+div[class*='GameStatus'] h3",
+		);
+	}
+
+	public get gameResultStateLocator(): Locator {
+		return this.gameStatusContainer.locator(
+			"div[data-testid=rouletteGameResult]",
+		);
 	}
 
 	public get roundResultNumber(): Locator {
-		return this.gameStatusContainer
-			.filter({
-				has: this.page.locator("*[class*='RoundResultNumber']"),
-			})
-			.locator("h5");
+		return this.gameResultStateLocator.locator("h5");
 	}
 
-	public get betSections(): Locator {
-		return this.betOptions.locator("*[class*='BetButtonWrapper']");
+	public get betOptionsGrid(): Locator {
+		return this.gameContainer.locator("div[data-testid=rouletteBetGrid]");
 	}
 
 	public get betSectionsByColor(): Record<RouletteNumberColor, Locator> {
@@ -64,64 +72,84 @@ export class RouletteGamePageMap extends BaseMap {
 	}
 
 	public get redBetSection(): Locator {
-		return this.betSections.nth(0);
+		return this.betOptionsGrid.locator(
+			"div[data-testid=rouletteBetSection-red]",
+		);
 	}
 
 	public get greenBetSection(): Locator {
-		return this.betSections.nth(1);
+		return this.betOptionsGrid.locator(
+			"div[data-testid=rouletteBetSection-green]",
+		);
 	}
 
 	public get blackBetSection(): Locator {
-		return this.betSections.nth(2);
+		return this.betOptionsGrid.locator(
+			"div[data-testid=rouletteBetSection-black]",
+		);
 	}
 
 	public betPotentialProfit(betSection: Locator): Locator {
-		return betSection.locator("*[class*='PotentialProfit']");
+		return betSection.locator(
+			"div[data-testid*=rouletteBetPotentialProfit]",
+		);
 	}
 
 	public betProfit(betSection: Locator): Locator {
-		return betSection.locator("> div:nth-child(1)");
+		return betSection.locator("div[data-testid*=rouletteBetProfit]");
 	}
 
 	public betButton(betSection: Locator): Locator {
-		return betSection.locator("button");
+		return betSection.locator("button[data-testid*=rouletteBetBtn]");
+	}
+
+	public betDetails(betSection: Locator): Locator {
+		return betSection.locator("div[data-testid*=rouletteBetDetails]");
 	}
 
 	public betTotalBetsCount(betSection: Locator): Locator {
-		return betSection
-			.locator("> div:nth-child(2) > div:nth-child(2) > div")
-			.nth(0);
+		return this.betDetails(betSection).locator(
+			"div[data-testid*=rouletteNbOfBetsDetails]",
+		);
 	}
 
 	public betTotalBetsAmount(betSection: Locator): Locator {
-		return betSection
-			.locator("> div:nth-child(2) > div:nth-child(2) > div")
-			.nth(1);
+		return this.betDetails(betSection).locator(
+			"h6[data-testid*=rouletteTotalBetAmount]",
+		);
+	}
+
+	public get previousResultsList(): Locator {
+		return this.gameContainer.locator(
+			"div[data-testid=roulettePreviousRollsList]",
+		);
+	}
+
+	public get latestRollResultNumber(): Locator {
+		return this.previousResultsList
+			.locator("div[data-testid*=roulettePreviousRollsItem]")
+			.first();
 	}
 
 	public playersGridContainer(betSection: Locator): Locator {
-		return betSection.locator("*[class*='BetsList']");
+		return betSection.locator("div[data-testid*=roulettePlayersGrid]");
 	}
 
-	public playersGrid(betSection: Locator): Locator {
-		return this.playersGridContainer(betSection).locator("> div");
-	}
-
-	public playersGridRows(betSection: Locator): Promise<Locator[]> {
-		return this.playersGrid(betSection)
-			.locator("> *[class*='BetListItem']")
+	public async playersGridRows(betSection: Locator): Promise<Locator[]> {
+		return this.playersGridContainer(betSection)
+			.locator("div[data-testid*=roulettePlayersGridRow]")
 			.all();
 	}
 
 	public playersGridRowPlayerUsername(playerGridRow: Locator): Locator {
-		return playerGridRow.locator("*[class*='UserName']");
+		return playerGridRow.locator(
+			"div[data-testid*=roulettePlayersGridUsername]",
+		);
 	}
 
 	public playersGridRowBetAmount(playerGridRow: Locator): Locator {
-		return playerGridRow.locator("*[class*='currency-amount']");
-	}
-
-	public get latestRollResultNumber(): Locator {
-		return this.roulette.locator("*[class*=PreviousRollItem]").first();
+		return playerGridRow.locator(
+			"p[data-testid*=roulettePlayersGridBetAmount]",
+		);
 	}
 }
