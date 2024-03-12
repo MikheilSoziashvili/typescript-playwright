@@ -7,14 +7,14 @@ export class DiceGamePageMap extends BaseMap {
 	}
 
 	public get yourBetContainer(): Locator {
-		return this.page.locator("div[data-testid=diceYourBetContainer]");
+		return this.page.getByTestId("diceYourBetContainer");
 	}
 	public get betField(): Locator {
 		return this.yourBetContainer.locator("input");
 	}
 
 	public get profitOnWinContainer(): Locator {
-		return this.page.locator("div[data-testid=diceProfitOnWinContainer]");
+		return this.page.getByTestId("diceProfitOnWinContainer");
 	}
 
 	public get profitOnWinField(): Locator {
@@ -22,9 +22,7 @@ export class DiceGamePageMap extends BaseMap {
 	}
 
 	public get multiplierContainer(): Locator {
-		return this.page.locator(
-			"div[data-testid=diceRollMultiplierContainer]",
-		);
+		return this.page.getByTestId("diceRollMultiplierContainer");
 	}
 
 	public get multiplierField(): Locator {
@@ -32,7 +30,7 @@ export class DiceGamePageMap extends BaseMap {
 	}
 
 	public get rollOverContainer(): Locator {
-		return this.page.locator("div[data-testid=diceRollOverContainer]");
+		return this.page.getByTestId("diceRollOverContainer");
 	}
 
 	public get rollOverField(): Locator {
@@ -40,7 +38,7 @@ export class DiceGamePageMap extends BaseMap {
 	}
 
 	public get winChanceContainer(): Locator {
-		return this.page.locator("div[data-testid=diceRollWinChanceContainer]");
+		return this.page.getByTestId("diceRollWinChanceContainer");
 	}
 
 	public get winChanceField(): Locator {
@@ -48,7 +46,7 @@ export class DiceGamePageMap extends BaseMap {
 	}
 
 	public get rollDiceBtn(): Locator {
-		return this.page.locator("button[data-testid=rollDiceBtn]");
+		return this.page.getByTestId("rollDiceBtn");
 	}
 
 	public get diceSliderValue(): Locator {
@@ -56,15 +54,15 @@ export class DiceGamePageMap extends BaseMap {
 	}
 
 	public get diceGameAreaMessage(): Locator {
-		return this.page.locator("div[data-testid=diceGameAreaMessage]");
+		return this.page.getByTestId("diceGameAreaMessage");
 	}
 
 	public get diceResultNumberGameArea(): Locator {
-		return this.page.locator("div[data-testid=diceResult]");
+		return this.page.getByTestId("diceResult");
 	}
 
 	public get diceResultsHistory(): Locator {
-		return this.page.locator("div[data-testid=diceRollHistoryResults]");
+		return this.page.getByTestId("diceRollHistoryResults");
 	}
 
 	public get diceLastResultNumber(): Locator {

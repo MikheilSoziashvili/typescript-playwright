@@ -15,57 +15,47 @@ export class HiloGamePageMap extends BaseMap {
 	}
 
 	public get usersInfoArea(): Locator {
-		return this.gameContainer.locator(
-			"div[class^='gui-styled__LeftColumn-']",
-		);
+		return this.gameContainer.getByTestId("hiloUsersInfoAreaColumn");
 	}
 
 	public get gameArea(): Locator {
-		return this.gameContainer.locator(
-			"div[class^='gui-styled__CenterColumn-']",
-		);
+		return this.gameContainer.getByTestId("hiloGameAreaColumn");
 	}
 
 	public get betControlsArea(): Locator {
-		return this.gameContainer.locator(
-			"div[class^='gui-styled__RightColumn-']",
-		);
+		return this.gameContainer.getByTestId("hiloBetControlsAreaColumn");
 	}
 
 	public get statsArea(): Locator {
-		return this.gameContainer.locator(
-			"div[class^='gui-styled__BottomColumn-']",
-		);
+		return this.gameContainer.getByTestId("hiloStatsAreaColumn");
 	}
 
 	// game area
+	public get gameStateLocator(): Locator {
+		return this.gameArea.getByTestId("hiloGamestate");
+	}
+
 	public get gameStatusLocator(): Locator {
-		return this.gameArea.locator("div[class*='Status-']");
+		return this.gameStateLocator.locator("div[class*='Status-']");
 	}
 
 	public get gamRoundResultLocator(): Locator {
-		return this.gameArea.locator(
+		return this.gameStateLocator.locator(
 			"div[class*='GameStateUi-styled__RoundResultNumber']",
 		);
 	}
 
 	public get yourBetContainer(): Locator {
-		return this.gameArea.locator(
-			"div[class*='BetButtonAmount-styled__BetsContainer-']",
-		);
+		return this.gameArea.getByTestId("hiloBetAmountSection");
 	}
 
 	public get yourBetField(): Locator {
-		return this.yourBetContainer.locator(
-			"input[class*='MuiInputBase-inputAdornedStart'] ",
-		);
+		return this.yourBetContainer.locator("input");
 	}
 
 	//bet controls
 	private get betButtonsContainer(): Locator {
-		return this.betControlsArea.locator(
-			"div[class*='gui-styled__BetButtonsContainer']",
-		);
+		return this.betControlsArea.getByTestId("hiloBetButtonsArea");
 	}
 
 	private get otherButtonsContainer(): Locator {
@@ -75,16 +65,14 @@ export class HiloGamePageMap extends BaseMap {
 	}
 
 	private get colorButtonsContainer(): Locator {
-		return this.otherButtonsContainer.locator(
-			"div[class*='gui-styled__ColorButtonsContainer-']",
-		);
+		return this.otherButtonsContainer.getByTestId("hiloColorBetButtons");
 	}
 
 	public get redButton(): Locator {
-		return this.colorButtonsContainer.locator("button:has-text('Red')");
+		return this.colorButtonsContainer.getByText("Red");
 	}
 
 	public get blackButton(): Locator {
-		return this.colorButtonsContainer.locator("button:has-text('Black')");
+		return this.colorButtonsContainer.getByText("Black");
 	}
 }

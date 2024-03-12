@@ -16,21 +16,15 @@ export class RouletteGamePageMap extends BaseMap {
 	}
 
 	public get gameStatusContainer(): Locator {
-		return this.gameContainer.locator(
-			"div[data-testid=rouletteGameStatusContainer]",
-		);
+		return this.gameContainer.getByTestId("rouletteGameStatusContainer");
 	}
 
 	public get placeBetGrid(): Locator {
-		return this.gameContainer.locator(
-			"div[data-testid=roulettePlaceBetGrid]",
-		);
+		return this.gameContainer.getByTestId("roulettePlaceBetGrid");
 	}
 
 	public get yourBetGrid(): Locator {
-		return this.placeBetGrid.locator(
-			"div[data-testid=rouletteYourBetGrid]",
-		);
+		return this.placeBetGrid.getByTestId("rouletteYourBetGrid");
 	}
 
 	public get betField(): Locator {
@@ -38,9 +32,7 @@ export class RouletteGamePageMap extends BaseMap {
 	}
 
 	public get spinningStateLocator(): Locator {
-		return this.gameStatusContainer.locator(
-			"div[data-testid=rouletteSpinningInState]",
-		);
+		return this.gameStatusContainer.getByTestId("rouletteSpinningInState");
 	}
 
 	public get spinningCountdownCounter(): Locator {
@@ -50,9 +42,7 @@ export class RouletteGamePageMap extends BaseMap {
 	}
 
 	public get gameResultStateLocator(): Locator {
-		return this.gameStatusContainer.locator(
-			"div[data-testid=rouletteGameResult]",
-		);
+		return this.gameStatusContainer.getByTestId("rouletteGameResult");
 	}
 
 	public get roundResultNumber(): Locator {
@@ -60,7 +50,7 @@ export class RouletteGamePageMap extends BaseMap {
 	}
 
 	public get betOptionsGrid(): Locator {
-		return this.gameContainer.locator("div[data-testid=rouletteBetGrid]");
+		return this.gameContainer.getByTestId("rouletteBetGrid");
 	}
 
 	public get betSectionsByColor(): Record<RouletteNumberColor, Locator> {
@@ -72,21 +62,15 @@ export class RouletteGamePageMap extends BaseMap {
 	}
 
 	public get redBetSection(): Locator {
-		return this.betOptionsGrid.locator(
-			"div[data-testid=rouletteBetSection-red]",
-		);
+		return this.betOptionsGrid.getByTestId("rouletteBetSection-red");
 	}
 
 	public get greenBetSection(): Locator {
-		return this.betOptionsGrid.locator(
-			"div[data-testid=rouletteBetSection-green]",
-		);
+		return this.betOptionsGrid.getByTestId("rouletteBetSection-green");
 	}
 
 	public get blackBetSection(): Locator {
-		return this.betOptionsGrid.locator(
-			"div[data-testid=rouletteBetSection-black]",
-		);
+		return this.betOptionsGrid.getByTestId("rouletteBetSection-black");
 	}
 
 	public betPotentialProfit(betSection: Locator): Locator {
@@ -120,9 +104,7 @@ export class RouletteGamePageMap extends BaseMap {
 	}
 
 	public get previousResultsList(): Locator {
-		return this.gameContainer.locator(
-			"div[data-testid=roulettePreviousRollsList]",
-		);
+		return this.gameContainer.getByTestId("roulettePreviousRollsList");
 	}
 
 	public get latestRollResultNumber(): Locator {

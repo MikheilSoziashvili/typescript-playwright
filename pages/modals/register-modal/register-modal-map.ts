@@ -18,20 +18,12 @@ export class RegisterModalMap extends BaseMap {
 		return this.page.locator('input[name="email"]');
 	}
 
-	// @TODO: Locator to be updated accordingly using data-testid
 	public get termsOfServiceCheckbox(): Locator {
-		return this.page
-			.locator("label")
-			.filter({ hasText: "I agree with the Terms of" })
-			.locator("span");
+		return this.page.getByTestId("agree-terms-signup").locator("span");
 	}
 
-	// @TODO: Locator to be updated accordingly using data-testid
 	public get newsAndOffersCheckbox(): Locator {
-		return this.page
-			.locator("label")
-			.filter({ hasText: "I want to receive News and" })
-			.locator("span");
+		return this.page.getByTestId("want-news-signup").locator("span");
 	}
 
 	public get startPlayingBtn(): Locator {
