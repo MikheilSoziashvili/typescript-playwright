@@ -97,6 +97,9 @@ export function range(
 		.map((v) => start + v);
 }
 
+export function parseToFloat(num: number, fractionDigits: number = 2): string {
+    return parseFloat(`${num}`).toFixed(fractionDigits);
+
 export async function clearDirectoryContent(directory: string) {
 	try {
 		await fs
