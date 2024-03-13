@@ -43,6 +43,20 @@ export async function prependXmlHeaderToFile(
 	return '<?xml version="1.0" encoding="UTF-8" ?>\n' + xmlContent;
 }
 
+export async function clearDirectoryContent(directory: string) {
+	try {
+		await fs
+			.readdir(directory)
+			.then((files) =>
+				Promise.all(
+					files.map((file) => fs.unlink(`${directory}/${file}`)),
+				),
+			);
+	} catch (err) {
+		logger.error(err);
+	}
+}
+
 export function getFilePath(
 	filename: string,
 	baseDir: string = __dirname,
@@ -99,18 +113,4 @@ export function range(
 
 export function parseToFloat(num: number, fractionDigits: number = 2): string {
 	return parseFloat(`${num}`).toFixed(fractionDigits);
-}
-
-export async function clearDirectoryContent(directory: string) {
-	try {
-		await fs
-			.readdir(directory)
-			.then((files) =>
-				Promise.all(
-					files.map((file) => fs.unlink(`${directory}/${file}`)),
-				),
-			);
-	} catch (err) {
-		logger.error(err);
-	}
 }
