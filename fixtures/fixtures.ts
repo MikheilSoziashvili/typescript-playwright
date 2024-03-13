@@ -7,7 +7,7 @@ import { HiloGamePage } from "../pages/hilo-game-page/hilo-game-page";
 
 type CustomFixtures = Pages;
 
-type Pages = {
+export type Pages = {
 	homePage: HomePage;
 	crashGamePage: CrashGamePage;
 	diceGamePage: DiceGamePage;

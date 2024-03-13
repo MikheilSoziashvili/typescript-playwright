@@ -11,6 +11,7 @@ import {
 	USER_1_AUTH_STATE_FILE_PATH,
 } from "../../constants/file-paths";
 
+// Setup left for backward compatability. Might be removed later.
 setup("[QA-193] Authenticate as admin", async ({ page }) => {
 	const homePage: HomePage = new HomePage(page);
 	const googleAuthPage = new GoogleAuthPage(page);

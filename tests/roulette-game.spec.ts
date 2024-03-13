@@ -2,10 +2,10 @@ import { RouletteNumberColor } from "../enums/original-games";
 import { test } from "../fixtures/fixtures";
 import { logger } from "../logger/logger";
 import { BetTestData } from "../dtos/test-data";
-import { USER_1_AUTH_STATE_FILE_PATH } from "../constants/file-paths";
+import { storageStateUser1 } from "../fixtures/auth-fixtures";
 
 test.describe("Roulette tests", () => {
-	test.use({ storageState: USER_1_AUTH_STATE_FILE_PATH });
+	test.use(storageStateUser1);
 	test("[QA-121] Place a single bet on Roulette and try to win @smoke", async ({
 		homePage,
 		rouletteGamePage,

@@ -2,10 +2,10 @@ import { DiceGameResultMessage } from "../enums/dice-result-messages";
 import { test } from "../fixtures/fixtures";
 import { logger } from "../logger/logger";
 import { DiceBetTestData } from "../dtos/test-data";
-import { USER_1_AUTH_STATE_FILE_PATH } from "../constants/file-paths";
+import { storageStateUser1 } from "../fixtures/auth-fixtures";
 
 test.describe("Dice tests", () => {
-	test.use({ storageState: USER_1_AUTH_STATE_FILE_PATH });
+	test.use(storageStateUser1);
 	test("[QA-122] Place a single bet on Dice and try to win @smoke", async ({
 		homePage,
 		diceGamePage,
