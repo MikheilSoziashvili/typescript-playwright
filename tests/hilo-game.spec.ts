@@ -7,10 +7,10 @@ import { logger } from "../logger/logger";
 import { HiloBetTestData } from "../dtos/test-data";
 import { HiloBetMultiplierByBetOption } from "../enums/original-games";
 import { HiloBetOption } from "../enums/hilo-bet-options";
-import { SUPER_ADMIN_AUTH_STATE_FILE_PATH } from "../constants/file-paths";
+import { storageStateSuperadmin } from "../fixtures/auth-fixtures";
 
 test.describe("Hilo tests", () => {
-	test.use({ storageState: SUPER_ADMIN_AUTH_STATE_FILE_PATH });
+	test.use(storageStateSuperadmin);
 	test("[QA-129] Place a single bet on Hilo and try to win @smoke", async ({
 		homePage,
 		hiloGamePage,
