@@ -55,7 +55,7 @@ test.describe("Dice tests", () => {
 			if (diceBetData.multiplier != undefined) {
 				const expectedBalance = isWin
 					? accountBalanceBeforeBet +
-						diceBetData.betAmount * (diceBetData.multiplier - 1)
+					  diceBetData.betAmount * (diceBetData.multiplier - 1)
 					: accountBalanceBeforeBet - diceBetData.betAmount;
 				await homePage.assertThat().accountBalanceIs(expectedBalance);
 			}

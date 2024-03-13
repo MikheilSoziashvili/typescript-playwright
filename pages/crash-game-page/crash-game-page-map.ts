@@ -11,7 +11,7 @@ export class CrashGamePageMap extends BaseMap {
 	}
 
 	public get gameContainer(): Locator {
-		return this.mainContainer.locator("*[class*='GridControls']");
+		return this.mainContainer.getByTestId("crashGridControls");
 	}
 
 	public get chart(): Locator {
@@ -19,39 +19,47 @@ export class CrashGamePageMap extends BaseMap {
 	}
 
 	public get multiplierCounterProgressing(): Locator {
-		return this.chart.locator("> div:nth-child(1) div:nth-child(1)");
+		return this.chart.getByTestId("crashInProgressState");
 	}
 
 	public get multiplierCounterCrashed(): Locator {
-		return this.multiplierCounterProgressing.locator("div:nth-child(1)");
+		return this.chart.getByTestId("crashStateCrashed");
 	}
 
 	public get betOptions(): Locator {
-		return this.gameContainer.locator("*[class*='GridPlaceBet']");
+		return this.gameContainer.getByTestId("crashPlaceBetGrid");
+	}
+
+	public get yourBetContainer(): Locator {
+		return this.betOptions.getByTestId("crashYourBetContainer");
 	}
 
 	public get betField(): Locator {
-		return this.betOptions.locator("input[class*='AdornedStart']");
+		return this.yourBetContainer.locator("input[class*='AdornedStart']");
+	}
+
+	public get autoCashoutContainer(): Locator {
+		return this.betOptions.getByTestId("crashAutoCashoutContainer");
 	}
 
 	public get autoCashOutField(): Locator {
-		return this.betOptions.locator(
-			"input[type='number'][class*='AdornedEnd']",
+		return this.autoCashoutContainer.locator(
+			"input[placeholder='Auto Cashout']",
 		);
 	}
 
 	public get placeBetBtn(): Locator {
-		return this.betOptions.locator(
-			"> div:nth-child(2) > div:nth-child(2) > div > div:nth-child(6) button",
-		);
+		return this.betOptions
+			.getByTestId("crashPlaceBetButton")
+			.locator("button");
 	}
 
 	public get spinningCountdownCounter(): Locator {
-		return this.chart.locator("> div:nth-child(1) div:nth-child(2)");
+		return this.chart.getByTestId("crashSpinningCountdownCounter");
 	}
 
 	public get playersGridContainer(): Locator {
-		return this.mainContainer.locator("div[class*='PlayersList']");
+		return this.mainContainer.getByTestId("crashPlayersListContainer");
 	}
 
 	public get playersGrid(): Locator {
@@ -73,10 +81,12 @@ export class CrashGamePageMap extends BaseMap {
 			.getByRole("gridcell");
 	}
 
+	public get betBoxesContainer(): Locator {
+		return this.betOptions.getByTestId("crashCurrentBetBoxesContainer");
+	}
+
 	public get betBoxes(): Promise<Locator[]> {
-		return this.betOptions
-			.locator("> div:nth-child(2) > div:nth-child(4) #MultiBetRow > div")
-			.all();
+		return this.betBoxesContainer.locator("div#MultiBetRow > div").all();
 	}
 
 	public betBoxBetAmount(betBox: Locator): Locator {
