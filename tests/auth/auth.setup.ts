@@ -1,4 +1,4 @@
-import { test as setup, expect } from "@playwright/test";
+import { test as setup } from "../../fixtures/fixtures";
 import { HomePage } from "../../pages/home-page/home-page";
 import { GoogleAuthPage } from "../../pages/external/google-auth-page";
 import {
