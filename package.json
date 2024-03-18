@@ -6,7 +6,8 @@
 	"devDependencies": {
 		"@playwright/test": "^1.41.2",
 		"@types/accounting": "^0.4.5",
-		"@types/node": "^20.11.19"
+		"@types/node": "^20.11.19",
+		"@types/xml2js": "^0.4.14"
 	},
 	"dependencies": {
 		"@faker-js/faker": "^8.3.1",
@@ -14,7 +15,8 @@
 		"accounting-js": "^1.1.1",
 		"csv-parse": "^5.5.3",
 		"pino-pretty": "^10.3.0",
-		"winston": "^3.11.0"
+		"winston": "^3.11.0",
+		"xml2js": "^0.6.2"
 	},
 	"scripts": {
 		"test-pretty": "playwright test --headed | pino-pretty"

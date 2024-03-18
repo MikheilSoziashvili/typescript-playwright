@@ -1,5 +1,5 @@
 import { HomePage } from "../pages/home-page/home-page";
-import { TestInfo, test as base } from "@playwright/test";
+import { test as base } from "@playwright/test";
 import { CrashGamePage } from "../pages/crash-game-page/crash-game-page";
 import { DiceGamePage } from "../pages/dice-game-page/dice-game-page";
 import { RouletteGamePage } from "../pages/roulette-game-page/roulette-game-page";
@@ -51,16 +51,4 @@ export const test = base.extend<CustomFixtures>({
 	faqPage: async ({ page }, use) => {
 		await use(new FaqPage(page));
 	},
-});
-
-// TODO: To be revised
-// eslint-disable-next-line no-empty-pattern -- beforeEach in progress
-test.beforeEach(({}, testInfo: TestInfo) => {
-	const issueKeyMatch = testInfo.title.match(new RegExp(`\\[([^\\]]+)\\]`));
-	if (issueKeyMatch) {
-		testInfo.annotations.push({
-			type: "test_key",
-			description: issueKeyMatch[1],
-		});
-	}
 });
