@@ -28,15 +28,7 @@ test.describe.only("Affiliates tests", () => {
 			.userIsRegistered(user_1_register_data.username);
 
 		await affiliatesPage.navigate();
-		await affiliatesPage.addNewCode(AUTOMATION_AFFILIATES_CODE);
-		await affiliatesPage
-			.assertThat()
-			.isCreatedAffiliateCodeVisible(AUTOMATION_AFFILIATES_CODE);
-		await affiliatesPage
-			.assertThat()
-			.isCreatedAffiliateCodeVisibleInCopyToClipboardField(
-				AUTOMATION_AFFILIATES_CODE,
-			);
+		await affiliatesPage.steps().addCode(AUTOMATION_AFFILIATES_CODE);
 
 		await profilePage.navigate();
 		await profilePage.logout();
@@ -56,10 +48,7 @@ test.describe.only("Affiliates tests", () => {
 			.userIsRegistered(user_2_register_data.username);
 
 		await rewardsPage.navigate();
-		await rewardsPage.clickActivateNowButton();
-		await rewardsPage.promoCodeModal.claimCode(AUTOMATION_AFFILIATES_CODE);
-		await rewardsPage.assertThat().isClaimedBadgeVisible();
-		await rewardsPage.assertThat().isPromotionInProgress();
+		await rewardsPage.steps().claimCode(AUTOMATION_AFFILIATES_CODE);
 
 		//TODO: Add assertion for notification and for toast when components are implemented QT-334 and QT-335
 

@@ -2,6 +2,7 @@ import { Page } from "@playwright/test";
 import { BasePage } from "../base/base-page";
 import { AffiliatesPageMap } from "./affiliates-page-map";
 import { AffiliatesPageAsserter } from "./affiliates-page-asserter";
+import { AffiliatesPageSteps } from "./affiliates-page-steps";
 
 export class AffiliatesPage extends BasePage<AffiliatesPageMap> {
 	public constructor(page: Page) {
@@ -14,6 +15,10 @@ export class AffiliatesPage extends BasePage<AffiliatesPageMap> {
 
 	public override assertThat(): AffiliatesPageAsserter {
 		return new AffiliatesPageAsserter(this);
+	}
+
+	public steps(): AffiliatesPageSteps {
+		return new AffiliatesPageSteps(this);
 	}
 
 	public async addNewCode(code: string): Promise<void> {

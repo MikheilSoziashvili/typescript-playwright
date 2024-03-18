@@ -3,6 +3,7 @@ import { BasePage } from "../base/base-page";
 import { RewardsPageMap } from "./rewards-page-map";
 import { RewardsPageAsserter } from "./rewards-page-asserter";
 import { PromoCodeModal } from "../modals/promo-code-modal/promo-code-modal";
+import { RewardsPageSteps } from "./rewards-page-steps";
 
 export class RewardsPage extends BasePage<RewardsPageMap> {
 	public constructor(page: Page) {
@@ -15,6 +16,10 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 
 	public override assertThat(): RewardsPageAsserter {
 		return new RewardsPageAsserter(this);
+	}
+
+	public steps(): RewardsPageSteps {
+		return new RewardsPageSteps(this);
 	}
 
 	public get promoCodeModal(): PromoCodeModal {
