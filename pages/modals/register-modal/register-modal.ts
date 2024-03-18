@@ -2,6 +2,7 @@ import { Page } from "@playwright/test";
 import { BaseModal } from "../../base/base-modal";
 import { RegisterModalMap } from "./register-modal-map";
 import { RegisterTestData } from "../../../dtos/test-data";
+import { hardWait } from "../../../core/utils";
 
 export class RegisterModal extends BaseModal<RegisterModalMap> {
 	constructor(page: Page) {
@@ -32,6 +33,8 @@ export class RegisterModal extends BaseModal<RegisterModalMap> {
 
 	//Flakiness observed => click event is registered, but nothing happens. Might be env related.
 	public async clickStartPlayingBtn(): Promise<void> {
+		//TODO: Remove hardwait when fixing the click event issue, this is a workaround to remove flakyness
+		await hardWait(3000);
 		await this.map.startPlayingBtn.click();
 	}
 }

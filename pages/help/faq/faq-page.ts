@@ -1,0 +1,36 @@
+import { Page } from "@playwright/test";
+import { FaqPageMap } from "./faq-page-map";
+import { BasePage } from "../../base/base-page";
+import { FaqPageAsserter } from "./faq-page-asserter";
+import { logger } from "../../../logger/logger";
+
+export class FaqPage extends BasePage<FaqPageMap> {
+	public constructor(page: Page) {
+		super(page, new FaqPageMap(page));
+	}
+
+	public override async navigate(): Promise<void> {
+		await this.page.goto("/help/faq");
+	}
+
+	public override assertThat(): FaqPageAsserter {
+		return new FaqPageAsserter(this);
+	}
+
+	public async expandAffiliateCodeRegisteredUnderSection(): Promise<void> {
+		await this.map.expandAffiliateCodeReqisterButtonLocator.waitFor({
+			state: "visible",
+		});
+		const sectionAriaExpandedAttribute =
+			await this.map.expandAffiliateCodeReqisterButtonLocator.getAttribute(
+				"aria-expanded",
+			);
+		if (sectionAriaExpandedAttribute !== "true") {
+			await this.map.expandAffiliateCodeReqisterButtonLocator.click();
+		} else {
+			logger.info(
+				"Affilaite code registered under section already expanded",
+			);
+		}
+	}
+}
