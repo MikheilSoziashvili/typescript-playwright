@@ -34,6 +34,20 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		});
 	}
 
+	public async userIsLoggedOut(): Promise<void> {
+		await expect.soft(this.gamdomPage.map.signUpBtn).toBeVisible({
+			timeout: Timeout.MAX,
+		});
+
+		await expect.soft(this.gamdomPage.map.loginBtn).toBeVisible({
+			timeout: Timeout.MAX,
+		});
+
+		await expect.soft(this.gamdomPage.map.walletBtn).not.toBeVisible({
+			timeout: Timeout.MAX,
+		});
+	}
+
 	public async toastMessageContainsText(text: string): Promise<void> {
 		await expect(this.gamdomPage.map.toastMessage).toContainText(text);
 	}

@@ -114,3 +114,19 @@ export function range(
 export function parseToFloat(num: number, fractionDigits: number = 2): string {
 	return parseFloat(`${num}`).toFixed(fractionDigits);
 }
+export async function hardWait(timeoutInMilliseconds: number): Promise<void> {
+	await new Promise((resolve) => setTimeout(resolve, timeoutInMilliseconds));
+}
+
+export function generateRandomString(options?: {
+	prefix?: string;
+	length?: number;
+}): string {
+	const length = options?.length || 4;
+	const randomString = Array(length)
+		.fill(0)
+		.map(() => (~~(Math.random() * 36)).toString(36))
+		.join("");
+
+	return options?.prefix ? `${options.prefix}${randomString}` : randomString;
+}
