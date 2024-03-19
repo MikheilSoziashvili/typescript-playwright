@@ -1,0 +1,13 @@
+# Playwright Specific
+node_modules/
+test-results/
+playwright-report
+summary.json
+
+# IDE - VSCode
+.vscode/*
+
+.eslintrc.cjs
+
+# System Files
+.DS_Store
