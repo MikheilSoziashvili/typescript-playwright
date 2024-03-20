@@ -101,17 +101,13 @@ export function parseMultiplier(rawValue: string): number {
 	return Number(rawValue.replace("x", ""));
 }
 
-export function range(
-	start: number,
-	stop: number,
-	step: number = 1,
-): Array<number> {
+export function range(start: number, stop: number, step = 1): number[] {
 	return [...Array(stop - start).keys()]
 		.filter((i) => !(i % Math.round(step)))
 		.map((v) => start + v);
 }
 
-export function parseToFloat(num: number, fractionDigits: number = 2): string {
+export function parseToFloat(num: number, fractionDigits = 2): string {
 	return parseFloat(`${num}`).toFixed(fractionDigits);
 }
 export async function hardWait(timeoutInMilliseconds: number): Promise<void> {
