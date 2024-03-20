@@ -1,7 +1,5 @@
 name: Playwright E2E Tests
 on:
-    push:
-        branches: ["**"]
     workflow_run:
         workflows: ["Premerge checks"]
         types:
