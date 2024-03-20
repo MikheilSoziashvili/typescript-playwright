@@ -92,7 +92,6 @@ test.describe("Login tests", () => {
 			await homePage.openLoginModal();
 			await homePage.loginModal.login(user.username, user.password);
 			await homePage.assertThat().userIsLoggedIn();
-			//dummy change
 		});
 	}
 });
