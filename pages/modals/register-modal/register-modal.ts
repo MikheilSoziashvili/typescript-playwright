@@ -22,17 +22,16 @@ export class RegisterModal extends BaseModal<RegisterModalMap> {
 		const { acceptTermsOfService = true, acceptNewsOffers = false } =
 			options;
 
-		await this.map.usernameField.type(registerData.username);
-		await this.map.passwordField.type(registerData.password);
-		await this.map.emailField.type(registerData.email);
+		await this.map.usernameField.fill(registerData.username);
+		await this.map.passwordField.fill(registerData.password);
+		await this.map.emailField.fill(registerData.email);
 
 		if (acceptTermsOfService) await this.map.termsOfServiceCheckbox.click();
 		if (acceptNewsOffers) await this.map.newsAndOffersCheckbox.click();
 	}
 
-	//Flakiness observed => click event is registered, but nothing happens. Might be env related.
 	public async clickStartPlayingBtn(): Promise<void> {
-		//TODO: Remove hardwait when fixing the click event issue, this is a workaround to remove flakyness
+		await this.map.startPlayingBtn.focus();
 		await this.map.startPlayingBtn.click();
 	}
 }
