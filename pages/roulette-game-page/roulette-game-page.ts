@@ -18,29 +18,26 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 		return new RouletteGamePageAsserter(this);
 	}
 
-	public async waitBettingWindowAvailable(
-		timeout: number = 30,
-	): Promise<void> {
+	public async waitBettingWindowAvailable(timeout = 30): Promise<void> {
 		await expect(this.map.spinningCountdownCounter).toBeAttached({
 			timeout: timeout * 1000,
 		});
 	}
 
-	public async waitRoundResultNumber(timeout: number = 30): Promise<void> {
+	public async waitRoundResultNumber(timeout = 30): Promise<void> {
 		await expect(this.map.roundResultNumber).toBeVisible({
 			timeout: timeout * 1000,
 		});
 	}
 
-	public async getRoundResultNumber(
-		waitTimeout: number = 30,
-	): Promise<string> {
+	public async getRoundResultNumber(waitTimeout = 30): Promise<string> {
 		await this.waitRoundResultNumber(waitTimeout);
+		// eslint-disable-next-line @typescript-eslint/return-await
 		return this.map.roundResultNumber.innerText();
 	}
 
 	public async getRoundResultColor(
-		waitTimeout: number = 30,
+		waitTimeout = 30,
 	): Promise<RouletteNumberColor> {
 		const roundResultNum = Number(
 			await this.getRoundResultNumber(waitTimeout),
@@ -99,9 +96,9 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 	public calculateProfit(
 		betAmount: number,
 		rouletteNumberColor: RouletteNumberColor,
-		includeBetReturn: boolean = true,
+		includeBetReturn = true,
 	): number {
-		let result: number = 0;
+		let result = 0;
 		switch (rouletteNumberColor) {
 			case RouletteNumberColor.GREEN:
 				return betAmount * 14;

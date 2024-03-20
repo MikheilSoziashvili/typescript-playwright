@@ -2,7 +2,7 @@ import { tr } from "@faker-js/faker";
 import { TestUserConfigurationObject } from "./core/types";
 import { getFilePath } from "./core/utils";
 
-export const logLevel: string = "info";
+export const logLevel = "info";
 export const createExecution: boolean = process.env.CI ? true : false;
 export const reportName: string = getFilePath("results.xml", "./");
 export const keystore: string = getFilePath("keystore.json", "./");
@@ -20,7 +20,7 @@ export const xray: Record<string, string> = {
 		"a4568714fb23a430645da341e2b1475c94b787e18a4777154f933d841d67ff8c",
 };
 
-export const users: Array<TestUserConfigurationObject> = [
+export const users: TestUserConfigurationObject[] = [
 	{
 		username: "superadmin",
 		password: "password",

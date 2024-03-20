@@ -5,7 +5,7 @@ import { Timeout } from "../enums/timeout";
 import { APIResponse } from "@playwright/test";
 
 export class XrayApi extends BaseApi {
-	private APIToken: string = "";
+	private APIToken = "";
 	private headers: Record<string, string> = {};
 	private xrayConfig: Record<string, string> = {};
 

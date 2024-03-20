@@ -13,17 +13,17 @@ export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 	public async potentialBenefitValueIs(
 		value: number,
 		rouletteNumberColor: RouletteNumberColor,
-		beforeBetPlacement: boolean = true,
+		beforeBetPlacement = true,
 	): Promise<void> {
 		const betSection =
 			this.gamdomPage.map.betSectionsByColor[rouletteNumberColor];
 		beforeBetPlacement
 			? await expect(
 					this.gamdomPage.map.betPotentialProfit(betSection),
-				).toContainText(parseToFloat(value))
+			  ).toContainText(parseToFloat(value))
 			: await expect(
 					this.gamdomPage.map.betProfit(betSection),
-				).toContainText(parseToFloat(value));
+			  ).toContainText(parseToFloat(value));
 	}
 
 	public async betButtonsEnabled(): Promise<void> {

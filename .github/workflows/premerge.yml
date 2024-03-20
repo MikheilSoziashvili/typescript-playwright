@@ -18,7 +18,7 @@ jobs:
                   node-version: 20
             - name: Install dependencies
               run: yarn install --immutable --immutable-cache --check-cache
-            - name: ESLint
+            - name: ESLint (Standard and Playwright)
               run: yarn lint
               env:
                   PRETTIER_CHECK: 1

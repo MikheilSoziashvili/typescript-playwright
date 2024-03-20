@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Reporter } from "@playwright/test/reporter";
 import { XrayApi } from "../../api/xray-api";
 import { readFromJSONFile } from "../utils";
