@@ -4,6 +4,8 @@ on:
         workflows: ["Premerge checks"]
         types:
             - completed
+        branches:
+            - "**"
 
 jobs:
     test:
