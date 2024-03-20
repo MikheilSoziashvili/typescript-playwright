@@ -5,7 +5,7 @@ const AUTOMATION_AFFILIATES_CODE = generateRandomString({
 	prefix: "automation",
 });
 
-test.describe.only("Affiliates tests", () => {
+test.describe("Affiliates tests", () => {
 	test.slow();
 	test("[QA-172] Create an affiliate code and use it with a new account @smoke", async ({
 		homePage,
