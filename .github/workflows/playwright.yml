@@ -14,12 +14,15 @@ jobs:
         env:
             BUILD_NUMBER: ${{ github.run_number }}
             BUILD_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        if: ${{ github.event.workflow_run.conclusion == 'success' }}
         steps:
             - uses: actions/checkout@v3
             - uses: actions/setup-node@v3
               with:
                   node-version: 20
+            - name: Print github context
+              env:
+                  GITHUB_CONTEXT: ${{ toJSON(github) }}
+              run: echo "$GITHUB_CONTEXT"
             - name: Install dependencies
               run: yarn install --immutable --immutable-cache --check-cache
             - name: Install Playwright Browsers
