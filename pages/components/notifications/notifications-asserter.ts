@@ -1,7 +1,6 @@
 import { expect } from "@playwright/test";
 import { BaseAsserter } from "../../base/base-asserter";
 import { Notifications } from "./notifications";
-import { Timeout } from "../../../enums/timeout";
 
 export class NotificationsAsserter extends BaseAsserter<Notifications> {
 	public constructor(page: Notifications) {
