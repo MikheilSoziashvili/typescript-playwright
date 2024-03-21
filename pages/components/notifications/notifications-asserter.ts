@@ -12,7 +12,7 @@ export class NotificationsAsserter extends BaseAsserter<Notifications> {
 		title: string,
 		options?: { index?: number },
 	): Promise<void> {
-		expect(
+		await expect(
 			this.gamdomPage.map.notificationTitleLocator(options),
 		).toHaveText(title);
 	}
@@ -21,7 +21,7 @@ export class NotificationsAsserter extends BaseAsserter<Notifications> {
 		subTitle: string,
 		options?: { index?: number; title?: string },
 	): Promise<void> {
-		expect(
+		await expect(
 			this.gamdomPage.map.notificationSubTitleLocator(options),
 		).toHaveText(subTitle);
 	}
@@ -30,7 +30,7 @@ export class NotificationsAsserter extends BaseAsserter<Notifications> {
 		index?: number;
 		title?: string;
 	}): Promise<void> {
-		expect(
+		await expect(
 			this.gamdomPage.map.notificationContainer(options),
 		).toBeVisible();
 	}
@@ -39,6 +39,8 @@ export class NotificationsAsserter extends BaseAsserter<Notifications> {
 		index?: number;
 		title?: string;
 	}): Promise<void> {
-		expect(this.gamdomPage.map.notificationContainer(options)).toBeHidden();
+		await expect(
+			this.gamdomPage.map.notificationContainer(options),
+		).toBeHidden();
 	}
 }
