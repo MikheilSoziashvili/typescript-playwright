@@ -14,6 +14,7 @@ test.describe("Affiliates tests", () => {
 		profilePage,
 		rewardsPage,
 		faqPage,
+		notifications,
 	}) => {
 		await homePage.navigateAndCheckTitle();
 		await homePage.openRegisterModal();
@@ -51,7 +52,15 @@ test.describe("Affiliates tests", () => {
 		await rewardsPage.navigate();
 		await rewardsPage.steps().claimCode(AUTOMATION_AFFILIATES_CODE);
 
-		//TODO: Add assertion for toast when components are implemented QT-334 and QT-335
+		await notifications.assertThat().isDisplayed();
+		await notifications
+			.assertThat()
+			.titleIs(NotificationsTitles.WELCOME_BONUS);
+		await notifications.aknowledge({
+			title: NotificationsTitles.WELCOME_BONUS,
+		});
+		await notifications.assertThat().isNotDisplayed();
+		//TODO: Add assertion for toast when components are implemented QT-334
 
 		await faqPage.navigate();
 		await faqPage.expandAffiliateCodeRegisteredUnderSection();
