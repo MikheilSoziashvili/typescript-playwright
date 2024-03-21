@@ -50,9 +50,9 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 	public calculateProfit(
 		betAmount: number,
 		hiloBetOptions: HiloBetMultiplierByBetOption,
-		includeBetReturn: boolean = true,
+		includeBetReturn = true,
 	): number {
-		let result: number = 0;
+		let result = 0;
 		switch (hiloBetOptions) {
 			case HiloBetMultiplierByBetOption.JOKER:
 				return betAmount * 24;

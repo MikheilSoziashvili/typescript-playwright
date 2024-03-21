@@ -27,7 +27,7 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 		multiplier: number,
 		...actions: (() => Promise<void>)[]
 	): Promise<void> {
-		let crashedMultiplier: number = 0.0;
+		let crashedMultiplier = 0.0;
 		do {
 			if (crashedMultiplier == 0.0) {
 				logger.info("New Crash game will be opened");
@@ -50,24 +50,21 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 		} while (crashedMultiplier < multiplier);
 	}
 
-	public async waitBettingWindowAvailable(
-		timeout: number = 90,
-	): Promise<void> {
+	public async waitBettingWindowAvailable(timeout = 90): Promise<void> {
 		await expect(this.map.spinningCountdownCounter).toBeAttached({
 			timeout: timeout * 1000,
 		});
 	}
 
-	public async waitCrash(timeout: number = 90): Promise<void> {
+	public async waitCrash(timeout = 90): Promise<void> {
 		await expect(this.map.multiplierCounterCrashed).toBeAttached({
 			timeout: timeout * 1000,
 		});
 	}
 
-	public async getCrashedMultiplier(
-		waitCrashTimeout: number = 60,
-	): Promise<string> {
+	public async getCrashedMultiplier(waitCrashTimeout = 60): Promise<string> {
 		await this.waitCrash(waitCrashTimeout);
+		// eslint-disable-next-line @typescript-eslint/return-await
 		return this.map.multiplierCounterCrashed.innerText();
 	}
 
