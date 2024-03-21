@@ -8,8 +8,7 @@ import { AffiliatesPage } from "../pages/affiliates/affiliates-page";
 import { RewardsPage } from "../pages/rewards/rewards-page";
 import { ProfilePage } from "../pages/profile/profile-page";
 import { FaqPage } from "../pages/help/faq/faq-page";
-
-type CustomFixtures = Pages;
+import { Notifications } from "../pages/components/notifications/notifications";
 
 export type Pages = {
 	homePage: HomePage;
@@ -22,6 +21,12 @@ export type Pages = {
 	profilePage: ProfilePage;
 	faqPage: FaqPage;
 };
+
+export type Components = {
+	notifications: Notifications;
+};
+
+type CustomFixtures = Pages & Components;
 
 export const test = base.extend<CustomFixtures>({
 	homePage: async ({ page }, use) => {
@@ -50,5 +55,8 @@ export const test = base.extend<CustomFixtures>({
 	},
 	faqPage: async ({ page }, use) => {
 		await use(new FaqPage(page));
+	},
+	notifications: async ({ page }, use) => {
+		await use(new Notifications(page));
 	},
 });

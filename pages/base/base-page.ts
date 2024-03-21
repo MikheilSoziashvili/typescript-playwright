@@ -17,4 +17,8 @@ export abstract class BasePage<T = BaseMap> {
 	public steps(): void {
 		throw new Error("Method not implemented");
 	}
+
+	public async refresh(): Promise<void> {
+		await this.page.reload();
+	}
 }
