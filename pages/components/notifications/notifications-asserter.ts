@@ -10,7 +10,7 @@ export class NotificationsAsserter extends BaseAsserter<Notifications> {
 
 	public async titleIs(
 		title: string,
-		options?: { index?: number; title?: string },
+		options?: { index?: number },
 	): Promise<void> {
 		const titleText = await this.gamdomPage.map
 			.notificationTitleLocator(options)
