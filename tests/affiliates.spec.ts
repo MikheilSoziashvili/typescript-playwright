@@ -1,15 +1,14 @@
 import { generateRandomString } from "../core/utils";
 import { RegisterTestData } from "../dtos/test-data";
-import { NotificationsTitles } from "../enums/notifications-titles";
-import { ToastsSubTitles } from "../enums/toasts-subtitles";
-import { ToastsTitles } from "../enums/toasts-titles";
+import { NotificationTitles } from "../enums/notification-titles";
+import { ToastSubTitles } from "../enums/toast-subtitles";
+import { ToastTitles } from "../enums/toast-titles";
 import { test } from "../fixtures/fixtures";
 const AUTOMATION_AFFILIATES_CODE = generateRandomString({
 	prefix: "automation",
 });
 
-// eslint-disable-next-line playwright/no-focused-test
-test.describe.only("Affiliates tests", () => {
+test.describe("Affiliates tests", () => {
 	test.slow();
 	test("[QA-172] Create an affiliate code and use it with a new account @smoke", async ({
 		homePage,
@@ -59,17 +58,17 @@ test.describe.only("Affiliates tests", () => {
 		await notifications.assertThat().isDisplayed();
 		await notifications
 			.assertThat()
-			.titleIs(NotificationsTitles.WELCOME_BONUS);
+			.titleIs(NotificationTitles.WELCOME_BONUS);
 		await notifications.aknowledge({
-			title: NotificationsTitles.WELCOME_BONUS,
+			title: NotificationTitles.WELCOME_BONUS,
 		});
 		await notifications.assertThat().isNotDisplayed();
 
-		await toast.assertThat().titleIs(ToastsTitles.SUCCESS, {
-			subTitle: ToastsSubTitles.CLAIMED_BONUS,
+		await toast.assertThat().titleIs(ToastTitles.SUCCESS, {
+			subTitle: ToastSubTitles.CLAIMED_BONUS,
 		});
 		await toast.assertThat().isNotDisplayed({
-			subTitle: ToastsSubTitles.CLAIMED_BONUS,
+			subTitle: ToastSubTitles.CLAIMED_BONUS,
 		});
 
 		await faqPage.navigate();

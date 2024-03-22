@@ -8,14 +8,10 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 	}
 
 	async isClaimedBadgeVisible(): Promise<void> {
-		// eslint-disable-next-line playwright/prefer-web-first-assertions
-		expect(await this.gamdomPage.map.claimedBadge.isVisible()).toBe(true);
+		await expect(this.gamdomPage.map.claimedBadge).toBeVisible();
 	}
 
 	async isPromotionInProgress(): Promise<void> {
-		// eslint-disable-next-line playwright/prefer-web-first-assertions
-		expect(await this.gamdomPage.map.inProgressButton.isVisible()).toBe(
-			true,
-		);
+		await expect(this.gamdomPage.map.inProgressButton).toBeVisible();
 	}
 }

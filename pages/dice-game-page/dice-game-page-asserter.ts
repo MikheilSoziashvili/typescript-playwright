@@ -78,9 +78,11 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		expect.soft(parseFloat(diceResultGameArea ?? "0")).toBeGreaterThan(0);
 
 		const diceResultHistory =
-			await this.gamdomPage.map.diceLastResultNumber.textContent();
+			(await this.gamdomPage.map.diceLastResultNumber.textContent()) ||
+			"";
 
-		// eslint-disable-next-line playwright/prefer-web-first-assertions
-		expect.soft(diceResultGameArea).toEqual(diceResultHistory);
+		await expect
+			.soft(this.gamdomPage.map.diceResultNumberGameArea.first())
+			.toHaveText(diceResultHistory);
 	}
 }

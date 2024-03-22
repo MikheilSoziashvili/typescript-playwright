@@ -1,4 +1,4 @@
-export enum ToastsTitles {
+export enum ToastTitles {
 	SUCCESS = "Success!",
 	FAILED = "Failed!",
 }

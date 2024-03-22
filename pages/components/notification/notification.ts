@@ -1,15 +1,15 @@
 import { Page } from "@playwright/test";
 import { BaseComponent } from "../../base/base-component";
-import { NotificationsMap } from "./notifications-map";
-import { NotificationsAsserter } from "./notifications-asserter";
+import { NotificationMap } from "./notification-map";
+import { NotificationAsserter } from "./notification-asserter";
 
-export class Notifications extends BaseComponent<NotificationsMap> {
+export class Notification extends BaseComponent<NotificationMap> {
 	constructor(page: Page) {
-		super(page, new NotificationsMap(page));
+		super(page, new NotificationMap(page));
 	}
 
-	public assertThat(): NotificationsAsserter {
-		return new NotificationsAsserter(this);
+	public assertThat(): NotificationAsserter {
+		return new NotificationAsserter(this);
 	}
 
 	public async aknowledge(options?: {

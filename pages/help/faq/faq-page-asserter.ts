@@ -8,9 +8,8 @@ export class FaqPageAsserter extends BaseAsserter<FaqPage> {
 	}
 
 	public async isAffiliateCodeVisible(affiliateCode: string): Promise<void> {
-		// eslint-disable-next-line playwright/prefer-web-first-assertions
-		expect(
-			await this.gamdomPage.map.affiliateUnderCodeLinkButtonLocator.textContent(),
-		).toEqual(affiliateCode);
+		await expect(
+			this.gamdomPage.map.affiliateUnderCodeLinkButtonLocator,
+		).toHaveText(affiliateCode);
 	}
 }

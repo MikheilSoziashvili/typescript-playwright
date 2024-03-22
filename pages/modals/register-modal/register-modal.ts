@@ -32,6 +32,7 @@ export class RegisterModal extends BaseModal<RegisterModalMap> {
 
 	public async clickStartPlayingBtn(): Promise<void> {
 		await this.map.startPlayingBtn.focus();
+		await this.map.startPlayingBtn.hover();
 		await this.map.startPlayingBtn.click();
 	}
 }
