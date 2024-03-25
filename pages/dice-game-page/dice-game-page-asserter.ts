@@ -79,8 +79,10 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 
 		const diceResultHistory =
 			await this.gamdomPage.map.diceLastResultNumber.textContent();
-
-		// eslint-disable-next-line playwright/prefer-web-first-assertions
-		expect.soft(diceResultGameArea).toEqual(diceResultHistory);
+		if (diceResultHistory) {
+			await expect(
+				this.gamdomPage.map.diceResultNumberGameArea.first(),
+			).toHaveText(diceResultHistory);
+		}
 	}
 }

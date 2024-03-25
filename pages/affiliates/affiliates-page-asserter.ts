@@ -10,12 +10,9 @@ export class AffiliatesPageAsserter extends BaseAsserter<AffiliatesPage> {
 	public async isCreatedAffiliateCodeVisible(
 		affiliateCode: string,
 	): Promise<void> {
-		// eslint-disable-next-line playwright/prefer-web-first-assertions -- TODO: Fix assertion
-		expect(
-			await this.gamdomPage.map.createdAffiliatesCodeField.getAttribute(
-				"value",
-			),
-		).toEqual(affiliateCode);
+		await expect(
+			this.gamdomPage.map.createdAffiliatesCodeField,
+		).toHaveAttribute("value", affiliateCode);
 	}
 
 	public async isCreatedAffiliateCodeVisibleInCopyToClipboardField(

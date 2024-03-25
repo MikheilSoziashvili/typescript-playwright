@@ -1,9 +1,9 @@
 import { expect } from "@playwright/test";
 import { BaseAsserter } from "../../base/base-asserter";
-import { Notifications } from "./notifications";
+import { Notification } from "./notification";
 
-export class NotificationsAsserter extends BaseAsserter<Notifications> {
-	public constructor(page: Notifications) {
+export class NotificationAsserter extends BaseAsserter<Notification> {
+	public constructor(page: Notification) {
 		super(page);
 	}
 

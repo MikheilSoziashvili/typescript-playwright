@@ -1,6 +1,8 @@
-import { generateRandomString, hardWait } from "../core/utils";
+import { generateRandomString } from "../core/utils";
 import { RegisterTestData } from "../dtos/test-data";
-import { NotificationsTitles } from "../enums/notifications-titles";
+import { NotificationTitles } from "../enums/notification-titles";
+import { ToastSubTitles } from "../enums/toast-subtitles";
+import { ToastTitles } from "../enums/toast-titles";
 import { test } from "../fixtures/fixtures";
 const AUTOMATION_AFFILIATES_CODE = generateRandomString({
 	prefix: "automation",
@@ -15,6 +17,7 @@ test.describe("Affiliates tests", () => {
 		rewardsPage,
 		faqPage,
 		notifications,
+		toast,
 	}) => {
 		await homePage.navigateAndCheckTitle();
 		await homePage.openRegisterModal();
@@ -55,12 +58,18 @@ test.describe("Affiliates tests", () => {
 		await notifications.assertThat().isDisplayed();
 		await notifications
 			.assertThat()
-			.titleIs(NotificationsTitles.WELCOME_BONUS);
+			.titleIs(NotificationTitles.WELCOME_BONUS);
 		await notifications.aknowledge({
-			title: NotificationsTitles.WELCOME_BONUS,
+			title: NotificationTitles.WELCOME_BONUS,
 		});
 		await notifications.assertThat().isNotDisplayed();
-		//TODO: Add assertion for toast when components are implemented QT-334
+
+		await toast.assertThat().titleIs(ToastTitles.SUCCESS, {
+			subTitle: ToastSubTitles.CLAIMED_BONUS,
+		});
+		await toast.assertThat().isNotDisplayed({
+			subTitle: ToastSubTitles.CLAIMED_BONUS,
+		});
 
 		await faqPage.navigate();
 		await faqPage.expandAffiliateCodeRegisteredUnderSection();

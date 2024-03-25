@@ -1,7 +1,7 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "../../base/base-map";
 
-export class NotificationsMap extends BaseMap {
+export class NotificationMap extends BaseMap {
 	public constructor(page: Page) {
 		super(page);
 	}
@@ -13,7 +13,7 @@ export class NotificationsMap extends BaseMap {
 		if (options?.index) {
 			return this.page
 				.getByTestId("notificationContainer")
-				.nth(options?.index - 1);
+				.nth(options.index - 1);
 		} else if (options?.title) {
 			return this.page
 				.locator(
