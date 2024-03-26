@@ -6,17 +6,27 @@ export class RewardsPageMap extends BaseMap {
 		super(page);
 	}
 
-	//TODO: Add locator for special offer container and make sure child locators are descending from it
-	
+	public get specialOffersList(): Locator {
+		return this.page.getByTestId("rewardsSpecialOffersList");
+	}
+
+	public get rewardsSpecialOfferCard(): Locator {
+		return this.specialOffersList.getByTestId("rewardsSpecialOfferCard");
+	}
+
 	public get activateNowButton(): Locator {
-		return this.page.getByText("Activate Now");
+		return this.rewardsSpecialOfferCard.getByTestId(
+			"rewardsSpecialOfferActivateNowButton",
+		);
 	}
 
 	public get inProgressButton(): Locator {
-		return this.page.getByText("In Progress");
+		return this.rewardsSpecialOfferCard.getByTestId(
+			"rewardsSpecialOfferInProgressButton",
+		);
 	}
 
 	public get claimedBadge(): Locator {
-		return this.page.locator("div:text-is('Claimed')");
+		return this.rewardsSpecialOfferCard.locator("div:text-is('Claimed')");
 	}
 }

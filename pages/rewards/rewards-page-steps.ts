@@ -8,7 +8,7 @@ export class RewardsPageSteps extends BasePageStep<RewardsPage> {
 
 	public async claimCode(code: string): Promise<void> {
 		await this.gamdomPage.clickActivateNowButton();
-		await this.gamdomPage.promoCodeModal.claimCode(code);
+		await this.gamdomPage.welcomeBonusModal.claimCode(code);
 		await this.gamdomPage.assertThat().isClaimedBadgeVisible();
 		await this.gamdomPage.assertThat().isPromotionInProgress();
 	}

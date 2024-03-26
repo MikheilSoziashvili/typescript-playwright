@@ -2,6 +2,7 @@ import { Page } from "@playwright/test";
 import { BaseModal } from "../../base/base-modal";
 import { RegisterModalMap } from "./register-modal-map";
 import { RegisterTestData } from "../../../dtos/test-data";
+import { hardWait } from "../../../core/utils";
 
 export class RegisterModal extends BaseModal<RegisterModalMap> {
 	constructor(page: Page) {
@@ -31,6 +32,7 @@ export class RegisterModal extends BaseModal<RegisterModalMap> {
 	}
 
 	public async clickStartPlayingBtn(): Promise<void> {
+		await hardWait(3000);
 		await this.map.startPlayingBtn.focus();
 		await this.map.startPlayingBtn.hover();
 		await this.map.startPlayingBtn.click();

@@ -1,9 +1,9 @@
 import { expect } from "@playwright/test";
 import { BaseAsserter } from "../../base/base-asserter";
-import { PromoCodeModal } from "./promo-code-modal";
+import { WelcomeBonusModal } from "./welcome-bonus-modal";
 
-export class PromoCodeModalAsserter extends BaseAsserter<PromoCodeModal> {
-	public constructor(page: PromoCodeModal) {
+export class WelcomeBonusModalAsserter extends BaseAsserter<WelcomeBonusModal> {
+	public constructor(page: WelcomeBonusModal) {
 		super(page);
 	}
 
