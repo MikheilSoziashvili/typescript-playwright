@@ -5,6 +5,13 @@ import { HiloGamePageAsserter } from "./hilo-game-page-asserter";
 import { HILO_GAME_ENDPOINT } from "../../constants/page-endpoints";
 import { HiloBetMultiplierByBetOption } from "../../enums/original-games";
 import { HiloBetOption } from "../../enums/hilo-bet-options";
+import {
+	HiloGameResultColor,
+	HiloGameStatusMessage,
+} from "../../enums/hilo-result-messages";
+import { HomePage } from "../home-page/home-page";
+import { HiloBetTestData } from "../../dtos/test-data";
+import { logger } from "../../logger/logger";
 
 export class HiloGamePage extends BasePage<HiloGamePageMap> {
 	public constructor(page: Page) {
@@ -72,5 +79,32 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 		result = !includeBetReturn ? result - betAmount : result;
 
 		return result;
+	}
+
+	public async playUntilResultColorIs(
+		resultColor: HiloGameResultColor,
+		testData: HiloBetTestData,
+		homePage: HomePage,
+	): Promise<number> {
+		let isWin = false;
+		let accountBalance = await homePage.getAccountBalance();
+
+		while (!isWin) {
+			await this.fillInBetAmount(testData.betAmount);
+			await this.placeBet(testData.betOption);
+			await this.assertThat().gameMessageIs(
+				HiloGameStatusMessage.DRAWING,
+			);
+			accountBalance = await homePage.getAccountBalance();
+
+			const roundresult = await this.getRoundResult();
+			isWin = roundresult.includes(resultColor);
+
+			if (!isWin) {
+				logger.info("Hilo game lost! Trying again...");
+			}
+		}
+
+		return accountBalance;
 	}
 }

@@ -1,6 +1,5 @@
 import { DiceGameResultMessage } from "../enums/dice-result-messages";
 import { test } from "../fixtures/fixtures";
-import { logger } from "../logger/logger";
 import { DiceBetTestData } from "../dtos/test-data";
 import { storageStateUser1 } from "../fixtures/auth-fixtures";
 
@@ -28,42 +27,11 @@ test.describe("Dice tests", () => {
 				parseFloat("1.00"),
 			);
 
-		let isWin = false;
-
-		while (!isWin) {
-			const accountBalanceBeforeBet = await homePage.getAccountBalance();
-
-			await diceGamePage.fillInBetData(
-				diceBetData.betAmount,
-				diceBetData.multiplier,
-			);
-
-			await diceGamePage
-				.assertThat()
-				.betValuesAreCorrect("34.000000", "1.50", "66.00", "0.50");
-			await diceGamePage.assertThat().diceValueIsCorrect("34.00");
-
-			await diceGamePage.rollDice();
-
-			await diceGamePage.assertThat().diceMessageIsNotEmpty();
-			await diceGamePage.assertThat().diceResultIsDisplayed();
-
-			const diceGameAreaMessage =
-				await diceGamePage.map.diceGameAreaMessage.textContent();
-			isWin = diceGameAreaMessage === DiceGameResultMessage.WIN;
-
-			if (diceBetData.multiplier != undefined) {
-				const expectedBalance = isWin
-					? accountBalanceBeforeBet +
-					  diceBetData.betAmount * (diceBetData.multiplier - 1)
-					: accountBalanceBeforeBet - diceBetData.betAmount;
-				await homePage.assertThat().accountBalanceIs(expectedBalance);
-			}
-
-			if (!isWin) {
-				logger.info("Dice game lost! Rolling dice again...");
-			}
-		}
+		await diceGamePage.playUntilResultMesssageIs(
+			DiceGameResultMessage.WIN,
+			diceBetData,
+			homePage,
+		);
 
 		await diceGamePage
 			.assertThat()

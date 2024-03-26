@@ -34,12 +34,20 @@ export class XrayApi extends BaseApi {
 
 		this.headers["Content-Type"] = "application/xml";
 
-		return await this.post(
-			"/api/v2/import/execution/junit",
-			data,
-			this.headers,
-			{ projectKey, testExecKey: testExecutionKey },
-			Timeout.EXTRA_LONG,
-		);
+		try {
+			return await this.post(
+				"/api/v2/import/execution/junit",
+				data,
+				this.headers,
+				{ projectKey: projectKey, testExecKey: testExecutionKey },
+				Timeout.EXTRA_LONG,
+			);
+		} catch (error: unknown) {
+			const msg = "Error importing xml result";
+			if (error instanceof Error) {
+				throw new Error(`${msg}: ${error.message}`);
+			}
+			throw new Error(msg);
+		}
 	}
 }

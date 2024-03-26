@@ -1,6 +1,5 @@
 import { Page } from "@playwright/test";
 import { BaseMap } from "./base-map";
-import { BasePageStep } from "../../core/helpers/base-page-step";
 
 export abstract class BasePage<T = BaseMap> {
 	readonly page: Page;

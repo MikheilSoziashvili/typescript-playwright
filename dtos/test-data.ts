@@ -12,8 +12,8 @@ export class RegisterTestData {
 		this.#password = faker.internet.password({
 			length: 15,
 			pattern: new RegExp("[A-Za-z0-9!@#$%^]+"),
-		}) as string;
-		this.#email = faker.internet.email() as string;
+		});
+		this.#email = faker.internet.email();
 	}
 
 	get username(): string {

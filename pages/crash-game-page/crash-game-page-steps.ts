@@ -7,7 +7,7 @@ export class CrashGamePageSteps extends BasePageStep<CrashGamePage> {
 		super(gamdomPage);
 	}
 
-	public async placeBet(betTestData: BetTestData) {
+	public async placeBet(betTestData: BetTestData): Promise<void> {
 		await this.gamdomPage.placeBet(
 			betTestData.betAmount,
 			betTestData.autoCashoutMultiplier,
