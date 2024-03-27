@@ -2,7 +2,7 @@ import { Page } from "@playwright/test";
 import { BasePage } from "../base/base-page";
 import { RewardsPageMap } from "./rewards-page-map";
 import { RewardsPageAsserter } from "./rewards-page-asserter";
-import { PromoCodeModal } from "../modals/promo-code-modal/promo-code-modal";
+import { WelcomeBonusModal } from "../modals/promo-code-modal/welcome-bonus-modal";
 import { RewardsPageSteps } from "./rewards-page-steps";
 
 export class RewardsPage extends BasePage<RewardsPageMap> {
@@ -22,8 +22,8 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 		return new RewardsPageSteps(this);
 	}
 
-	public get promoCodeModal(): PromoCodeModal {
-		return new PromoCodeModal(this.page);
+	public get welcomeBonusModal(): WelcomeBonusModal {
+		return new WelcomeBonusModal(this.page);
 	}
 
 	public async clickActivateNowButton(): Promise<void> {

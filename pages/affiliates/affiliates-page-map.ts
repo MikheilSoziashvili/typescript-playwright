@@ -6,27 +6,33 @@ export class AffiliatesPageMap extends BaseMap {
 		super(page);
 	}
 
-	public get affiliatesContainer(): Locator {
-		return this.page.locator(
-			"div:has(p:text-is('Create your code below to start earning FREE rewards'))",
-		);
+	public get affiliatesBox(): Locator {
+		return this.page.getByTestId("affilitesContainerBox");
+	}
+
+	public get affiliatesEnterCodeContainer(): Locator {
+		return this.page.getByTestId("afiliatesEnterCodeContainer");
 	}
 
 	public get newAffilitatesCodeField(): Locator {
-		return this.affiliatesContainer.getByPlaceholder(
-			"Enter your desired code..",
-		);
+		return this.affiliatesEnterCodeContainer.locator("input");
 	}
 
 	public get saveAffiliatesCodeButton(): Locator {
-		return this.affiliatesContainer.locator("button:has-text('Save')");
+		return this.affiliatesEnterCodeContainer.getByTestId(
+			"afiliatesSaveCodeButton",
+		);
 	}
 
 	public get createdAffiliatesCodeField(): Locator {
-		return this.affiliatesContainer.locator("input[name=affiliates]");
+		return this.affiliatesBox
+			.getByTestId("affiliatesCodeInputContainer")
+			.locator("input");
 	}
 
 	public get copyCodeToClipboardField(): Locator {
-		return this.affiliatesContainer.locator("input[name=copyToClipboard]");
+		return this.affiliatesBox
+			.getByTestId("affiliatesCopyCodeContainer")
+			.locator("input");
 	}
 }
