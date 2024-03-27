@@ -1,4 +1,4 @@
-import { ReporterDescription, defineConfig, devices } from "@playwright/test";
+import { ReporterDescription, defineConfig } from "@playwright/test";
 import * as Configuration from "./configuration";
 
 /** Read environment variables from file. https://github.com/motdotla/dotenv */
@@ -21,7 +21,7 @@ function getReporter(): ReporterDescription[] {
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- default config file
 export default defineConfig({
-	timeout: 3 * 60 * 1000, //convert to minutes
+	timeout: 2 * 60 * 1000, //convert to minutes
 	testDir: "./tests",
 	/* Run tests in files in parallel */
 	fullyParallel: false,
@@ -40,7 +40,7 @@ export default defineConfig({
 	/* Gobal teardown. */
 	use: {
 		/* Base URL to use in actions like `await page.goto('/')`. */
-		baseURL: "https://gamdom--main--auto1--svetoslav-coder.teamgamdom.com",
+		baseURL: "https://gamdom--main--mao1--marius-coder.teamgamdom.com",
 		/* HTTP credentials for basic auth on dev servers */
 		// httpCredentials: {
 		// 	username: "trebleclef",
@@ -66,8 +66,11 @@ export default defineConfig({
 		{
 			name: "chromium",
 			use: {
-				...devices["Desktop Chrome"],
-				viewport: { width: 1920, height: 1080 },
+				channel: "chrome",
+				viewport: null,
+				launchOptions: {
+					args: ["--start-maximized"],
+				},
 			},
 		},
 

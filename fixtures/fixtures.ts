@@ -10,6 +10,7 @@ import { ProfilePage } from "../pages/profile/profile-page";
 import { FaqPage } from "../pages/help/faq/faq-page";
 import { Notification } from "../pages/components/notification/notification";
 import { Toast } from "../pages/components/toast/toast";
+import { Chat } from "../pages/components/chat/chat";
 
 export type Pages = {
 	homePage: HomePage;
@@ -26,6 +27,7 @@ export type Pages = {
 export type Components = {
 	notifications: Notification;
 	toast: Toast;
+	chat: Chat;
 };
 
 type CustomFixtures = Pages & Components;
@@ -63,5 +65,8 @@ export const test = base.extend<CustomFixtures>({
 	},
 	toast: async ({ page }, use) => {
 		await use(new Toast(page));
+	},
+	chat: async ({ page }, use) => {
+		await use(new Chat(page));
 	},
 });
