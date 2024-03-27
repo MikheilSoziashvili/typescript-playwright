@@ -1,19 +1,17 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "../../base/base-map";
 
-export class PromoCodeModalMap extends BaseMap {
+export class WelcomeBonusModalMap extends BaseMap {
 	public constructor(page: Page) {
 		super(page);
 	}
 
 	public get modalLocator(): Locator {
-		return this.page.locator(
-			"div.MuiPaper-elevation:has(div > img[alt='Promo Icon'])",
-		);
+		return this.page.getByTestId("welcomeBonusModalInner");
 	}
 
 	public get claimButton(): Locator {
-		return this.modalLocator.locator("button:text-is('Claim')");
+		return this.modalLocator.getByTestId("welcomeBonusClaimButton");
 	}
 
 	public get codeInputFiled(): Locator {
