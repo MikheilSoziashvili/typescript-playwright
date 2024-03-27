@@ -27,11 +27,13 @@ test.describe("Dice tests", () => {
 				parseFloat("1.00"),
 			);
 
-		await diceGamePage.playUntilResultMesssageIs(
-			DiceGameResultMessage.WIN,
-			diceBetData,
-			homePage,
-		);
+		await diceGamePage
+			.steps()
+			.playUntilResultMesssageIs(
+				DiceGameResultMessage.WIN,
+				diceBetData,
+				homePage,
+			);
 
 		await diceGamePage
 			.assertThat()

@@ -26,11 +26,13 @@ test.describe("Hilo tests", () => {
 			.assertThat()
 			.gameMessageIs(HiloGameStatusMessage.SPINNING_IN);
 
-		const accountBalance = await hiloGamePage.playUntilResultColorIs(
-			HiloGameResultColor.RED,
-			testData,
-			homePage,
-		);
+		const accountBalance = await hiloGamePage
+			.steps()
+			.playUntilResultColorIs(
+				HiloGameResultColor.RED,
+				testData,
+				homePage,
+			);
 
 		await hiloGamePage
 			.assertThat()
