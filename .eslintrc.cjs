@@ -6,7 +6,9 @@ module.exports = {
   ],
   rules: {
 		"@typescript-eslint/naming-convention": "off",
-		"@typescript-eslint/return-await": ["warn", "always"],
+		// Note: disable the base rule as it can report incorrect errors
+		"no-return-await": "off",
+		"@typescript-eslint/return-await": ["warn", "in-try-catch"],
 		"arrow-body-style": "warn",
 		"no-console": "off",
 		"no-var": "warn",
@@ -36,7 +38,7 @@ module.exports = {
 		],
 		"require-atomic-updates": "off", // until https://github.com/eslint/eslint/issues/11899
 		"no-throw-literal": "error",
-		"object-shorthand": "warn",
+		"object-shorthand": ["warn", "consistent"],
 		"@typescript-eslint/explicit-function-return-type": "off",
 		"@typescript-eslint/no-use-before-define": "off",
 		"@typescript-eslint/prefer-interface": "off",

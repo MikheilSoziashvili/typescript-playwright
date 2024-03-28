@@ -5,6 +5,7 @@ import { HiloGamePageAsserter } from "./hilo-game-page-asserter";
 import { HILO_GAME_ENDPOINT } from "../../constants/page-endpoints";
 import { HiloBetMultiplierByBetOption } from "../../enums/original-games";
 import { HiloBetOption } from "../../enums/hilo-bet-options";
+import { HiloGamePageSteps } from "./hilo-game-page-steps";
 
 export class HiloGamePage extends BasePage<HiloGamePageMap> {
 	public constructor(page: Page) {
@@ -17,6 +18,10 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 
 	public override assertThat(): HiloGamePageAsserter {
 		return new HiloGamePageAsserter(this);
+	}
+
+	public steps(): HiloGamePageSteps {
+		return new HiloGamePageSteps(this);
 	}
 
 	public async fillInBetAmount(betAmount: number): Promise<void> {

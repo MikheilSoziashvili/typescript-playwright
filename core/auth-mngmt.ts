@@ -1,4 +1,4 @@
-import { Page, chromium } from "@playwright/test";
+import { Page } from "@playwright/test";
 import { HomePage } from "../pages/home-page/home-page";
 import { GoogleAuthPage } from "../pages/external/google-auth-page";
 import {
@@ -23,9 +23,9 @@ export async function getStorageStateUser(
 	user: credentialsType,
 	page: Page,
 	baseURL?: string,
-) {
+): Promise<string> {
 	if (fs.existsSync(CREDENTIALS_AUTH_STATE_MAP[user.username])) {
-		page.close();
+		await page.close();
 		return CREDENTIALS_AUTH_STATE_MAP[user.username];
 	}
 
@@ -46,7 +46,7 @@ export async function getStorageStateUser(
 		.context()
 		.storageState({ path: CREDENTIALS_AUTH_STATE_MAP[user.username] });
 
-	page.close();
+	await page.close();
 
 	return CREDENTIALS_AUTH_STATE_MAP[user.username];
 }

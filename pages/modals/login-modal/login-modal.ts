@@ -10,8 +10,8 @@ export class LoginModal extends BaseModal<LoginModalMap> {
 		super(page, new LoginModalMap(page));
 	}
 
-	public assertThat(): LoginModalAsserter {
-		return new LoginModalAsserter(this);
+	public assertThat(fromCsv = false): LoginModalAsserter {
+		return new LoginModalAsserter(this, fromCsv);
 	}
 
 	// TODO: Add test data in a separate class

@@ -1,5 +1,4 @@
 import { BasePageStep } from "../../core/helpers/base-page-step";
-import { BetTestData } from "../../dtos/test-data";
 import { HomePage } from "./home-page";
 
 export class HomePageSteps extends BasePageStep<HomePage> {
@@ -7,7 +6,7 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 		super(gamdomPage);
 	}
 
-	public async loginUsername(username: string) {
+	public async loginUsername(username: string): Promise<void> {
 		await this.gamdomPage.navigateAndCheckTitle();
 		await this.gamdomPage.openLoginModal();
 

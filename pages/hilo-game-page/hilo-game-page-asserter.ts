@@ -4,7 +4,6 @@ import {
 	HiloGameStatusMessage,
 } from "../../enums/hilo-result-messages";
 import { BaseAsserter } from "../base/base-asserter";
-import { RouletteGamePage } from "../roulette-game-page/roulette-game-page";
 import { HiloGamePage } from "./hilo-game-page";
 import { Timeout } from "../../enums/timeout";
 

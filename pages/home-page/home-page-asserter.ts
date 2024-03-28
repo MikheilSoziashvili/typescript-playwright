@@ -5,8 +5,10 @@ import { expect } from "@playwright/test";
 import { formatBalance } from "../../core/utils";
 
 export class HomePageAsserter extends BaseAsserter<HomePage> {
-	public constructor(page: HomePage) {
+	public fromCsv: boolean;
+	public constructor(page: HomePage, fromCsv = false) {
 		super(page);
+		this.fromCsv = fromCsv;
 	}
 
 	private async loggedInUserElementsPresent(): Promise<void> {
@@ -49,6 +51,9 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 	}
 
 	public async toastMessageContainsText(text: string): Promise<void> {
+		if (!text && this.fromCsv) {
+			return undefined; // if the value comes from csv and is empty - do nothing
+		}
 		await expect(this.gamdomPage.map.toastMessage).toContainText(text);
 	}
 

@@ -3,7 +3,6 @@ import {
 	HiloGameStatusMessage,
 } from "../enums/hilo-result-messages";
 import { test } from "../fixtures/fixtures";
-import { logger } from "../logger/logger";
 import { HiloBetTestData } from "../dtos/test-data";
 import { HiloBetMultiplierByBetOption } from "../enums/original-games";
 import { HiloBetOption } from "../enums/hilo-bet-options";
@@ -27,24 +26,13 @@ test.describe("Hilo tests", () => {
 			.assertThat()
 			.gameMessageIs(HiloGameStatusMessage.SPINNING_IN);
 
-		let isWin = false;
-		let accountBalance = await homePage.getAccountBalance();
-
-		while (!isWin) {
-			await hiloGamePage.fillInBetAmount(testData.betAmount);
-			await hiloGamePage.placeBet(testData.betOption);
-			await hiloGamePage
-				.assertThat()
-				.gameMessageIs(HiloGameStatusMessage.DRAWING);
-			accountBalance = await homePage.getAccountBalance();
-
-			const roundresult = await hiloGamePage.getRoundResult();
-			isWin = roundresult.includes(HiloGameResultColor.RED);
-
-			if (!isWin) {
-				logger.info("Hilo game lost! Trying again...");
-			}
-		}
+		const accountBalance = await hiloGamePage
+			.steps()
+			.playUntilResultColorIs(
+				HiloGameResultColor.RED,
+				testData,
+				homePage,
+			);
 
 		await hiloGamePage
 			.assertThat()

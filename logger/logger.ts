@@ -3,7 +3,7 @@ import * as Configuration from "../configuration";
 
 // TODO: Work in progress
 export const logger = winston.createLogger({
-	level: Configuration.logLevel || "info",
+	level: Configuration.logLevel,
 	format: winston.format.combine(
 		winston.format((info) => {
 			info.level = info.level.toUpperCase();
