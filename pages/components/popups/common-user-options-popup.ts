@@ -14,6 +14,7 @@ export class CommonUserOptionsPopup extends BaseComponent<CommonUserOptionsPopup
 	}
 
 	public async clickOption(option: CommonUserPopupOptions): Promise<void> {
-		await this.map.popupOption(option).click();
+		await this.map.popupLocator.waitFor({ state: "visible" });
+		await this.map.popupOption(option).click({ timeout: 2000, delay: 500 });
 	}
 }

@@ -1,5 +1,4 @@
 import { BaseComponentStep } from "../../../core/helpers/base-component-step";
-import { hardWait } from "../../../core/utils";
 import { CommonUserPopupOptions } from "../../../enums/common-user-popup-options";
 import { TipUserModal } from "../../modals/tip-user-modal/tip-user-modal";
 import { CommonUserOptionsPopup } from "../popups/common-user-options-popup";
@@ -12,20 +11,14 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 	}
 
 	public async openTipUserModal(options?: ChatMessageOptions): Promise<void> {
-		const message = this.component.map.messageLocator(options);
-		await message.waitFor({ state: "visible" });
-		await hardWait(5 * 1000);
+		const messageUserLevel = this.component.map.messageUserLevel(options);
+		await messageUserLevel.waitFor({ state: "visible" });
 
-		await message
-			.locator("img")
-			// eslint-disable-next-line playwright/no-force-option
-			.click({ force: true, position: { x: 23, y: 32 }, timeout: 3000 });
-		console.log("maoooo clicked");
+		await messageUserLevel.click();
 
 		const commonUserOptionsPopup = new CommonUserOptionsPopup(
 			this.component.page,
 		);
-		await hardWait(10 * 1000);
 		await commonUserOptionsPopup.assertThat().isDisplayed();
 
 		await commonUserOptionsPopup.clickOption(

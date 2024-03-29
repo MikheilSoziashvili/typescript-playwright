@@ -28,7 +28,7 @@ export class TipUserModalMap extends BaseMap {
 		return this.modalContent.locator("div[class*=InputContainer]");
 	}
 
-	public get tipAmountFiled(): Locator {
+	public get tipAmountField(): Locator {
 		return this.inputContainer.locator("input");
 	}
 

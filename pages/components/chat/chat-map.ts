@@ -49,10 +49,28 @@ export class ChatMap extends BaseMap {
 		}
 	}
 
-	public messageUserLevelArea(options?: ChatMessageOptions): Locator {
+	public messageUserLevel(options?: ChatMessageOptions): Locator {
 		return this.messageLocator(options).locator(
-			"span[class*= LevelButtonArea]",
+			"span[class*= LevelButtonArea] div[class*=_FlexContainer]",
 		);
+	}
+
+	public messageUserAvatar(options?: ChatMessageOptions): Locator {
+		return this.messageLocator(options).locator(
+			"span[class*= UserPofile]:has(img)",
+		);
+	}
+
+	public infoMessageLocator(index?: number): Locator {
+		if (index) {
+			return this.chatMessagesList
+				.locator("li[class*= MessageMix-] span[class*= client-message]")
+				.nth(index - 1);
+		} else {
+			return this.chatMessagesList
+				.locator("li[class*= MessageMix-] span[class*= client-message]")
+				.last();
+		}
 	}
 
 	public get chatFooter(): Locator {
@@ -64,7 +82,7 @@ export class ChatMap extends BaseMap {
 	}
 
 	public get chatTextBoxPlaceholder(): Locator {
-		return this.chatTextBox.locator("span[data-slate-placeholder]");
+		return this.chatFooter.locator("span[data-slate-placeholder]");
 	}
 
 	public get sendMessageButton(): Locator {

@@ -40,7 +40,7 @@ export default defineConfig({
 	/* Gobal teardown. */
 	use: {
 		/* Base URL to use in actions like `await page.goto('/')`. */
-		baseURL: "https://gamdom--main--mao1--marius-coder.teamgamdom.com",
+		baseURL: "https://gamdom--main--auto1--svetoslav-coder.teamgamdom.com",
 		/* HTTP credentials for basic auth on dev servers */
 		// httpCredentials: {
 		// 	username: "trebleclef",
@@ -66,7 +66,6 @@ export default defineConfig({
 		{
 			name: "chromium",
 			use: {
-				channel: "chrome",
 				viewport: null,
 				launchOptions: {
 					args: ["--start-maximized"],
