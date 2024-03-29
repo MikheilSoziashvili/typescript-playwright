@@ -7,6 +7,7 @@ import { expect } from "@playwright/test";
 import * as Configuration from "../../configuration";
 import fs from "fs";
 import xml2js from "xml2js";
+import { xmlData, xmlDataTestCase, xmlDataTestSuite } from "../types";
 
 // TODO: Move to utils
 async function parseXmlFile(filePath: string) {
@@ -19,9 +20,10 @@ async function parseXmlFile(filePath: string) {
 	return parser.parseStringPromise(xmlContent);
 }
 
-async function updateXmlWithTestKeys(filePath: string, xmlData: any) {
-	xmlData.testsuites.testsuite.forEach((suite: any) => {
-		suite.testcase.forEach((testcase: any) => {
+async function updateXmlWithTestKeys(filePath: string, xmlData: xmlData) {
+	logger.warn(`updateXmlWithTestKeys: ${typeof xmlData}`);
+	xmlData.testsuites.testsuite.forEach((suite: xmlDataTestSuite) => {
+		suite.testcase.forEach((testcase: xmlDataTestCase) => {
 			const match = testcase.$.name.match(/\[(QA-\d+)\]/);
 			if (match) {
 				if (!testcase.properties) {
@@ -40,7 +42,7 @@ async function updateXmlWithTestKeys(filePath: string, xmlData: any) {
 }
 
 async function addTestKeysToXmlReport(filePath: string) {
-	const xmlData = await parseXmlFile(filePath);
+	const xmlData = (await parseXmlFile(filePath)) as xmlData;
 	await updateXmlWithTestKeys(filePath, xmlData);
 }
 

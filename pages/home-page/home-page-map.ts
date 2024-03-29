@@ -50,7 +50,18 @@ export class HomePageMap extends BaseMap {
 			),
 		);
 
-		return await this.waitUntilContainsText(accountBalance, decimalNumber); //workaround for $0 balance on page load bug
+		try {
+			return await this.waitUntilContainsText(
+				accountBalance,
+				decimalNumber,
+			); //workaround for $0 balance on page load bug
+		} catch (error) {
+			const msg = "Error resolving account balance";
+			if (error instanceof Error) {
+				throw new Error(`${msg}: ${error.message}`);
+			}
+			throw new Error(msg);
+		}
 	}
 
 	public get originalGamesMenuLink(): Locator {

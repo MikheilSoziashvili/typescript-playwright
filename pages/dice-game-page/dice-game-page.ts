@@ -2,6 +2,7 @@ import { Page } from "@playwright/test";
 import { BasePage } from "../base/base-page";
 import { DiceGamePageMap } from "./dice-game-page-map";
 import { DiceGamePageAsserter } from "./dice-game-page-asserter";
+import { DiceGamePageSteps } from "./dice-game-page-steps";
 
 export class DiceGamePage extends BasePage<DiceGamePageMap> {
 	public constructor(page: Page) {
@@ -14,6 +15,10 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 
 	public override assertThat(): DiceGamePageAsserter {
 		return new DiceGamePageAsserter(this);
+	}
+
+	public steps(): DiceGamePageSteps {
+		return new DiceGamePageSteps(this);
 	}
 
 	public async fillInBetData(

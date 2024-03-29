@@ -19,8 +19,8 @@ export class HomePage extends BasePage<HomePageMap> {
 		await this.page.waitForLoadState()
 	}
 
-	public override assertThat(): HomePageAsserter {
-		return new HomePageAsserter(this);
+	public override assertThat(fromCsv = false): HomePageAsserter {
+		return new HomePageAsserter(this, fromCsv);
 	}
 
 	public steps(): HomePageSteps {

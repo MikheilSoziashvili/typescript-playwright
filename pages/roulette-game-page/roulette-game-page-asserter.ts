@@ -1,4 +1,4 @@
-import {  expect } from "@playwright/test";
+import { expect } from "@playwright/test";
 import { BaseAsserter } from "../base/base-asserter";
 import { RouletteGamePage } from "./roulette-game-page";
 import { RouletteNumberColor } from "../../enums/original-games";

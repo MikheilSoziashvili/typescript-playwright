@@ -1,7 +1,5 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "../base/base-map";
-import { OriginalGame } from "../../enums/original-games";
-import { decimalNumber } from "../../support/regex-patterns";
 
 export class GooglePageMap extends BaseMap {
 	public constructor(page: Page) {

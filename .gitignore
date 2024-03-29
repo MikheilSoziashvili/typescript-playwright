@@ -135,3 +135,5 @@ dist
 /playwright/.cache/
 .DS_Store
 results.xml
+keystore.json
+auth.json

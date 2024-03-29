@@ -25,21 +25,14 @@ test.describe("Login tests", () => {
 				record.password,
 			);
 
-			if (record.expected_username_warning) {
-				await homePage.loginModal
-					.assertThat()
-					.usernameFieldErrorTooltipIs(
-						record.expected_username_warning,
-					);
-			}
+			await homePage.loginModal
+				.assertThat(true)
+				.usernameFieldErrorTooltipIs(record.expected_username_warning);
 
-			if (record.expected_password_warning) {
-				await homePage.loginModal
-					.assertThat()
-					.passwordFieldErrorTooltipIs(
-						record.expected_password_warning,
-					);
-			}
+			await homePage.loginModal
+				.assertThat(true)
+				.passwordFieldErrorTooltipIs(record.expected_password_warning);
+
 			// Temporary solution. Previously button was disabled until inputs are correct, now it is not. Discussed with Johannes (To be aligned)
 			// await homePage.loginModal.assertThat().loginBtnIsDisabled();
 		});
@@ -51,6 +44,19 @@ test.describe("Login tests", () => {
 		expected_feedback_location: string;
 		expected_feedback_warning: string;
 	}[]) {
+		const expected_feedback_warning_username =
+			record.expected_feedback_location.includes("username")
+				? record.expected_feedback_warning
+				: "";
+		const expected_feedback_warning_password =
+			record.expected_feedback_location.includes("password")
+				? record.expected_feedback_warning
+				: "";
+		const expected_feedback_warning_toast =
+			record.expected_feedback_location.includes("toast")
+				? record.expected_feedback_warning
+				: "";
+
 		test(`[QA-5] Login using username - Login is rejected: [Username: ${record.username}] [Password: ${record.password}]`, async ({
 			homePage,
 		}) => {
@@ -59,27 +65,21 @@ test.describe("Login tests", () => {
 			await homePage.openLoginModal();
 			await homePage.loginModal.login(record.username, record.password);
 
-			if (record.expected_feedback_location.includes("username")) {
-				await homePage.loginModal
-					.assertThat()
-					.usernameFieldErrorTooltipIs(
-						record.expected_feedback_warning,
-					);
-			}
+			await homePage.loginModal
+				.assertThat(true)
+				.usernameFieldErrorTooltipIs(
+					expected_feedback_warning_username,
+				);
 
-			if (record.expected_feedback_location.includes("password")) {
-				await homePage.loginModal
-					.assertThat()
-					.passwordFieldErrorTooltipIs(
-						record.expected_feedback_warning,
-					);
-			}
+			await homePage.loginModal
+				.assertThat(true)
+				.passwordFieldErrorTooltipIs(
+					expected_feedback_warning_password,
+				);
 
-			if (record.expected_feedback_location.includes("toast")) {
-				await homePage
-					.assertThat()
-					.toastMessageContainsText(record.expected_feedback_warning);
-			}
+			await homePage
+				.assertThat(true)
+				.toastMessageContainsText(expected_feedback_warning_toast);
 		});
 	}
 

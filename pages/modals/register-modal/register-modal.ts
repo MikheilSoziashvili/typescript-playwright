@@ -27,14 +27,14 @@ export class RegisterModal extends BaseModal<RegisterModalMap> {
 		await this.map.passwordField.fill(registerData.password);
 		await this.map.emailField.fill(registerData.email);
 
-		if (acceptTermsOfService) await this.map.termsOfServiceCheckbox.click();
-		if (acceptNewsOffers) await this.map.newsAndOffersCheckbox.click();
+		if (acceptTermsOfService)
+			await this.map.termsOfServiceCheckbox.click({ delay: 500 });
+		if (acceptNewsOffers)
+			await this.map.newsAndOffersCheckbox.click({ delay: 500 });
 	}
 
 	public async clickStartPlayingBtn(): Promise<void> {
-		await hardWait(3000);
 		await this.map.startPlayingBtn.focus();
-		await this.map.startPlayingBtn.hover();
-		await this.map.startPlayingBtn.click();
+		await this.map.startPlayingBtn.click({ delay: 500 });
 	}
 }

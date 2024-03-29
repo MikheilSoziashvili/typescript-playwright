@@ -6,7 +6,7 @@ import { logger } from "./logger/logger";
 import * as Configuration from "./configuration";
 import { JsonData } from "./core/interfaces";
 
-async function globalSetup() {
+async function globalSetup(): Promise<void> {
 	if (Configuration.createExecution) {
 		logger.info("Creating an Test Execution in JIRA...");
 		const jiraApi = new JiraApi();

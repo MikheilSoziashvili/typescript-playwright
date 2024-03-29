@@ -56,8 +56,7 @@ test.describe("Roulette tests", () => {
 
 			rouletteResultNumber =
 				await rouletteGamePage.getRoundResultNumber();
-			isWin =
-				(await rouletteGamePage.getRoundResultColor()) as RouletteNumberColor;
+			isWin = await rouletteGamePage.getRoundResultColor();
 
 			logger.info(`Roulette result: ${RouletteNumberColor[isWin]}`);
 		} while (isWin !== RouletteNumberColor.RED);
