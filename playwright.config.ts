@@ -1,4 +1,4 @@
-import { ReporterDescription, defineConfig } from "@playwright/test";
+import { ReporterDescription, defineConfig, devices } from "@playwright/test";
 import * as Configuration from "./configuration";
 
 /** Read environment variables from file. https://github.com/motdotla/dotenv */
@@ -65,11 +65,9 @@ export default defineConfig({
 	projects: [
 		{
 			name: "chromium",
+			...devices["Desktop Chrome"],
 			use: {
-				viewport: null,
-				launchOptions: {
-					args: ["--start-maximized"],
-				},
+				viewport: { width: 1920, height: 1080 },
 			},
 		},
 

@@ -18,16 +18,7 @@ const tipValue = "10.00";
 
 test.describe("Tip user tests", () => {
 	test.beforeEach(async ({ homePage, chat, profilePage }) => {
-		await homePage.navigateAndCheckTitle();
-
-		await homePage.openLoginModal();
-		await homePage.loginModal.login(
-			USER_1_CREDENTIALS.username,
-			USER_1_CREDENTIALS.password,
-		);
-		await homePage.assertThat().userIsLoggedIn();
-
-		await chat.waitChatToBeDisplayed();
+		await homePage.steps().loginUsername(USER_1_CREDENTIALS.username);
 		await chat.sendMessage(message_1);
 		// need to send second message as a workaround until bug DEV-1919 is fixed by dev team
 		const message_2 = generateRandomString({
@@ -53,12 +44,7 @@ test.describe("Tip user tests", () => {
 			.assertThat()
 			.isPlaceholderVisible(ChatFooterPlaceholders.LOGIN_TO_CHAT);
 
-		await homePage.openLoginModal();
-		await homePage.loginModal.login(
-			USER_2_CREDENTIALS.username,
-			USER_2_CREDENTIALS.password,
-		);
-		await homePage.assertThat().userIsLoggedIn();
+		await homePage.steps().loginUsername(USER_2_CREDENTIALS.username);
 		await chat.assertThat().isDisplayed();
 		await chat
 			.assertThat()
@@ -93,14 +79,8 @@ test.describe("Tip user tests", () => {
 
 		await profilePage.navigate();
 		await profilePage.logout();
-		await homePage.navigateAndCheckTitle();
 
-		await homePage.openLoginModal();
-		await homePage.loginModal.login(
-			USER_1_CREDENTIALS.username,
-			USER_1_CREDENTIALS.password,
-		);
-		await homePage.assertThat().userIsLoggedIn();
+		await homePage.steps().loginUsername(USER_1_CREDENTIALS.username);
 		await homePage
 			.assertThat()
 			.accountBalanceIs(user1AccountBalance + Number(tipValue));
