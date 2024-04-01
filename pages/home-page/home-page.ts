@@ -16,7 +16,7 @@ export class HomePage extends BasePage<HomePageMap> {
 
 	public override async navigate(): Promise<void> {
 		await this.page.goto("/");
-		await this.page.waitForLoadState()
+		await this.page.waitForLoadState();
 	}
 
 	public override assertThat(fromCsv = false): HomePageAsserter {
@@ -47,6 +47,10 @@ export class HomePage extends BasePage<HomePageMap> {
 		await this.assertThat().titleHasText(
 			"Gamdom - Top Bitcoin & Crypto Casino!",
 		);
+	}
+
+	public async clickUserProfileButton(): Promise<void> {
+		await this.map.userAvatarMenuButton.click();
 	}
 
 	public async getAccountBalance(): Promise<number> {

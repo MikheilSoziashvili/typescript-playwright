@@ -12,6 +12,7 @@ import { Notification } from "../pages/components/notification/notification";
 import { Toast } from "../pages/components/toast/toast";
 import { Chat } from "../pages/components/chat/chat";
 import { TipUserModal } from "../pages/modals/tip-user-modal/tip-user-modal";
+import { UserProfileModal } from "../pages/modals/user-profile-modal/user-profile-modal";
 
 export type Pages = {
 	homePage: HomePage;
@@ -33,6 +34,7 @@ export type Components = {
 
 export type Modals = {
 	tipUserModal: TipUserModal;
+	userProfileModal: UserProfileModal;
 };
 
 type CustomFixtures = Pages & Components & Modals;
@@ -76,5 +78,9 @@ export const test = base.extend<CustomFixtures>({
 	},
 	tipUserModal: async ({ page }, use) => {
 		await use(new TipUserModal(page));
+	},
+
+	userProfileModal: async ({ page }, use) => {
+		await use(new UserProfileModal(page));
 	},
 });

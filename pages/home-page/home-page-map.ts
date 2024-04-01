@@ -17,6 +17,10 @@ export class HomePageMap extends BaseMap {
 		return this.page.getByTestId("signup-nav");
 	}
 
+	public get userAvatarMenuButton(): Locator {
+		return this.page.locator("div[class*= UserAvatarWithMenu]");
+	}
+
 	public get userAvatar(): Locator {
 		return this.page.locator("img[class*='MuiAvatar-img']");
 	}

@@ -14,6 +14,6 @@ export class CommonUserOptionsPopupMap extends BaseMap {
 	}
 
 	public popupOption(option: CommonUserPopupOptions): Locator {
-		return this.popupLocator.locator(`ul li:text-is("${option}")`);
+		return this.popupLocator.locator("ul li").filter({ hasText: option });
 	}
 }
