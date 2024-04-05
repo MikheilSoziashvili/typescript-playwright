@@ -8,6 +8,7 @@ import { parseBalance } from "../../core/utils";
 import { OriginalGame } from "../../enums/original-games";
 import { HomePageSteps } from "./home-page-steps";
 import { GoogleAuthPage } from "../external/google-auth-page";
+import { HOME_PAGE_ENDPOINT } from "../../constants/page-endpoints";
 
 export class HomePage extends BasePage<HomePageMap> {
 	public constructor(page: Page) {
@@ -15,7 +16,24 @@ export class HomePage extends BasePage<HomePageMap> {
 	}
 
 	public override async navigate(): Promise<void> {
-		await this.page.goto("/");
+		await this.page.goto(HOME_PAGE_ENDPOINT);
+	}
+
+	// use this method for proxy servers where retries are needed
+	public async tryNavigate(options?: { retries?: number }): Promise<void> {
+		const maxRetries = options?.retries || 3;
+		for (let attempt = 1; attempt <= maxRetries; attempt++) {
+			try {
+				await this.page.goto(HOME_PAGE_ENDPOINT);
+				return;
+			} catch (error) {
+				// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+				console.error(`Attempt ${attempt} failed: ${error}`);
+				if (attempt === maxRetries) {
+					throw error;
+				}
+			}
+		}
 	}
 
 	public override assertThat(fromCsv = false): HomePageAsserter {
