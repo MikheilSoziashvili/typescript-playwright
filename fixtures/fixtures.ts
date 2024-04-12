@@ -10,8 +10,13 @@ import { ProfilePage } from "../pages/profile/profile-page";
 import { FaqPage } from "../pages/help/faq/faq-page";
 import { Notification } from "../pages/components/notification/notification";
 import { Toast } from "../pages/components/toast/toast";
+import { UserInfoAdminPage } from "../pages/admin/user-info-admin/user-info-admin-page";
+import { BannedUserPage } from "../pages/banned-user/banned-user-page";
+import { InfoAdminPage } from "../pages/admin/info-admin/info-admin-page";
 
 export type Pages = {
+	userInfoAdminPage: UserInfoAdminPage;
+	infoAdminPage: InfoAdminPage;
 	homePage: HomePage;
 	crashGamePage: CrashGamePage;
 	diceGamePage: DiceGamePage;
@@ -21,6 +26,7 @@ export type Pages = {
 	rewardsPage: RewardsPage;
 	profilePage: ProfilePage;
 	faqPage: FaqPage;
+	bannedUserPage: BannedUserPage;
 };
 
 export type Components = {
@@ -57,6 +63,15 @@ export const test = base.extend<CustomFixtures>({
 	},
 	faqPage: async ({ page }, use) => {
 		await use(new FaqPage(page));
+	},
+	userInfoAdminPage: async ({ page }, use) => {
+		await use(new UserInfoAdminPage(page));
+	},
+	infoAdminPage: async ({ page }, use) => {
+		await use(new InfoAdminPage(page));
+	},
+	bannedUserPage: async ({ page }, use) => {
+		await use(new BannedUserPage(page));
 	},
 	notifications: async ({ page }, use) => {
 		await use(new Notification(page));
