@@ -2,7 +2,6 @@ import { Page } from "@playwright/test";
 import { BaseModal } from "../../base/base-modal";
 import { RegisterModalMap } from "./register-modal-map";
 import { RegisterTestData } from "../../../dtos/test-data";
-import { hardWait } from "../../../core/utils";
 
 export class RegisterModal extends BaseModal<RegisterModalMap> {
 	constructor(page: Page) {

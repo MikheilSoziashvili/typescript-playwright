@@ -4,6 +4,7 @@ import { RouletteGamePageMap } from "./roulette-game-page-map";
 import { RouletteGamePageAsserter } from "./roulette-game-page-asserter";
 import { RouletteNumberColor } from "../../enums/original-games";
 import { range } from "../../core/utils";
+import { ROULETTE_GAME_PAGE_ENDPOINT } from "../../constants/page-endpoints";
 
 export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 	public constructor(page: Page) {
@@ -11,7 +12,7 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 	}
 
 	public override async navigate(): Promise<void> {
-		await this.page.goto("/roulette");
+		await this.page.goto(ROULETTE_GAME_PAGE_ENDPOINT);
 	}
 
 	public override assertThat(): RouletteGamePageAsserter {

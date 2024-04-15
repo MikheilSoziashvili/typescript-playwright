@@ -2,10 +2,11 @@ import { Page } from "@playwright/test";
 import { BasePage } from "../base/base-page";
 import { HiloGamePageMap } from "./hilo-game-page.map";
 import { HiloGamePageAsserter } from "./hilo-game-page-asserter";
-import { HILO_GAME_ENDPOINT } from "../../constants/page-endpoints";
+import { HILO_GAME_PAGE_ENDPOINT } from "../../constants/page-endpoints";
 import { HiloBetMultiplierByBetOption } from "../../enums/original-games";
 import { HiloBetOption } from "../../enums/hilo-bet-options";
 import { HiloGamePageSteps } from "./hilo-game-page-steps";
+import { VisibilityStates } from "../../enums/playwright/visibility-states";
 
 export class HiloGamePage extends BasePage<HiloGamePageMap> {
 	public constructor(page: Page) {
@@ -13,7 +14,7 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 	}
 
 	public override async navigate(): Promise<void> {
-		await this.page.goto(HILO_GAME_ENDPOINT);
+		await this.page.goto(HILO_GAME_PAGE_ENDPOINT);
 	}
 
 	public override assertThat(): HiloGamePageAsserter {
@@ -42,8 +43,12 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 	}
 
 	public async waitRoundResult(): Promise<void> {
-		await this.map.gamRoundResultLocator.waitFor({ state: "attached" });
-		await this.map.gamRoundResultLocator.waitFor({ state: "visible" });
+		await this.map.gamRoundResultLocator.waitFor({
+			state: VisibilityStates.ATTACHED,
+		});
+		await this.map.gamRoundResultLocator.waitFor({
+			state: VisibilityStates.VISIBLE,
+		});
 	}
 
 	public async getRoundResult(): Promise<string> {

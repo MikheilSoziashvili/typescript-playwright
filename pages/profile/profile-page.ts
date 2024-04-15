@@ -3,6 +3,7 @@ import { BasePage } from "../base/base-page";
 import { ProfilePageMap } from "./profile-page-map";
 import { ProfilePageAsserter } from "./profile-page-asserter";
 import { ContinueModal } from "../modals/continue-modal/continue-modal";
+import { PROFILE_PAGE_ENDPOINT } from "../../constants/page-endpoints";
 import { ProfilePageSteps } from "./profile-page-steps";
 
 export class ProfilePage extends BasePage<ProfilePageMap> {
@@ -11,7 +12,7 @@ export class ProfilePage extends BasePage<ProfilePageMap> {
 	}
 
 	public override async navigate(): Promise<void> {
-		await this.page.goto("/profile");
+		await this.page.goto(PROFILE_PAGE_ENDPOINT);
 	}
 
 	public override assertThat(): ProfilePageAsserter {
