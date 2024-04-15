@@ -10,6 +10,8 @@ import { ProfilePage } from "../pages/profile/profile-page";
 import { FaqPage } from "../pages/help/faq/faq-page";
 import { Notification } from "../pages/components/notification/notification";
 import { Toast } from "../pages/components/toast/toast";
+import { Chat } from "../pages/components/chat/chat";
+import { TipUserModal } from "../pages/modals/tip-user-modal/tip-user-modal";
 
 export type Pages = {
 	homePage: HomePage;
@@ -26,9 +28,14 @@ export type Pages = {
 export type Components = {
 	notifications: Notification;
 	toast: Toast;
+	chat: Chat;
 };
 
-type CustomFixtures = Pages & Components;
+export type Modals = {
+	tipUserModal: TipUserModal;
+};
+
+type CustomFixtures = Pages & Components & Modals;
 
 export const test = base.extend<CustomFixtures>({
 	homePage: async ({ page }, use) => {
@@ -63,5 +70,11 @@ export const test = base.extend<CustomFixtures>({
 	},
 	toast: async ({ page }, use) => {
 		await use(new Toast(page));
+	},
+	chat: async ({ page }, use) => {
+		await use(new Chat(page));
+	},
+	tipUserModal: async ({ page }, use) => {
+		await use(new TipUserModal(page));
 	},
 });

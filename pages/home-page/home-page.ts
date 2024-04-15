@@ -16,6 +16,7 @@ export class HomePage extends BasePage<HomePageMap> {
 
 	public override async navigate(): Promise<void> {
 		await this.page.goto("/");
+		await this.page.waitForLoadState()
 	}
 
 	public override assertThat(fromCsv = false): HomePageAsserter {

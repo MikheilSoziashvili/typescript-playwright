@@ -1,4 +1,5 @@
 export const Timeout = {
+	EXTRA_SHORT: 2000,
 	SHORT: 5000,
 	MEDIUM: 10000,
 	LONG: 30000,
