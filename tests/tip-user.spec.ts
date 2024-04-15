@@ -8,15 +8,15 @@ import {
 } from "../constants/credentials";
 import { ToastTitles } from "../enums/toast-titles";
 
-const message_1 = generateRandomString({ prefix: "automation_message_" });
-const messageInfo_1: ChatMessageOptions = {
-	username: USER_1_CREDENTIALS.username,
-	message: message_1,
-};
-let user1AccountBalance: number;
-const tipValue = "10.00";
-
 test.describe("Tip user tests", () => {
+	const message_1 = generateRandomString({ prefix: "automation_message_" });
+	const messageInfo_1: ChatMessageOptions = {
+		username: USER_1_CREDENTIALS.username,
+		message: message_1,
+	};
+	let user1AccountBalance: number;
+	const tipValue = "10.00";
+
 	test.beforeEach(async ({ homePage, chat, profilePage }) => {
 		await homePage.steps().loginUsername(USER_1_CREDENTIALS.username);
 		await chat.sendMessage(message_1);
