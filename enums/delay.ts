@@ -1,0 +1,8 @@
+export const Delay = {
+	EXTRA_SHORT: 500,
+	SHORT: 1000,
+	MEDIUM: 3000,
+	LONG: 5000,
+	EXTRA_LONG: 10000,
+	MAX: 20000,
+};

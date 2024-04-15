@@ -21,7 +21,7 @@ function getReporter(): ReporterDescription[] {
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- default config file
 export default defineConfig({
-	timeout: 3 * 60 * 1000, //convert to minutes
+	timeout: 2 * 60 * 1000, //convert to minutes
 	testDir: "./tests",
 	/* Run tests in files in parallel */
 	fullyParallel: false,
@@ -51,6 +51,8 @@ export default defineConfig({
 		trace: "on-first-retry",
 
 		launchOptions: {
+			// Browser proxy option is required for Chromium on Windows.
+			proxy: { server: "per-context" },
 			slowMo: 300,
 		},
 
@@ -65,8 +67,8 @@ export default defineConfig({
 	projects: [
 		{
 			name: "chromium",
+			...devices["Desktop Chrome"],
 			use: {
-				...devices["Desktop Chrome"],
 				viewport: { width: 1920, height: 1080 },
 			},
 		},

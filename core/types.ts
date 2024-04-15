@@ -7,24 +7,30 @@ export type TestUserConfigurationObject = {
 	additional_info: string;
 };
 
-export type credentialsType = {
+export type CredentialsType = {
 	username: string;
 	password: string;
 	email?: string;
 };
 
-export type xmlData = {
-	testsuites: { testsuite: xmlDataTestSuite[] };
+export type XmlData = {
+	testsuites: { testsuite: XmlDataTestSuite[] };
 };
 
-export type xmlDataTestSuite = { testcase: xmlDataTestCase[] };
-export type xmlDataTestCase = {
-	$: xmlData$;
-	properties?: xmlDataProperty[];
+export type XmlDataTestSuite = { testcase: XmlDataTestCase[] };
+export type XmlDataTestCase = {
+	$: XmlData$;
+	properties?: XmlDataProperty[];
 };
 
-export type xmlDataProperty = { property: { $: xmlData$ }[] };
-export type xmlData$ = {
+export type XmlDataProperty = { property: { $: XmlData$ }[] };
+export type XmlData$ = {
 	name: string;
 	value?: string;
+};
+
+export type ProxyCredentialsType = {
+	server: string;
+	username: string;
+	password: string;
 };
