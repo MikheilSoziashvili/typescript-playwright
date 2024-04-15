@@ -7,8 +7,8 @@ export class UserInfoAdminPageSteps extends BasePageStep<UserInfoAdminPage> {
 	}
 
 	public async showUserDetails(username: string): Promise<void> {
-		await this.gamdomPage.map.seachByUsernameInput.fill(username);
-		await this.gamdomPage.map.seachByUsernameMenuOption(username).click();
+		await this.gamdomPage.map.searchByUsernameInput.fill(username);
+		await this.gamdomPage.map.searchByUsernameMenuOption(username).click();
 		await this.gamdomPage.map.showUserInfoButton.click();
 	}
 }

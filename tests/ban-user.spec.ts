@@ -2,10 +2,9 @@ import { SUPER_ADMIN_CREDENTIALS } from "../constants/credentials";
 import { RegisterTestData } from "../dtos/test-data";
 import { test } from "../fixtures/fixtures";
 
-const NEW_USER_REGISTER_DATA = new RegisterTestData();
-const BAN_REASON = "automation test";
-
 test.describe("Ban user", () => {
+	const NEW_USER_REGISTER_DATA = new RegisterTestData();
+	const BAN_REASON = "automation test";
 	test.beforeEach(async ({ homePage, profilePage }) => {
 		await homePage.navigateAndCheckTitle();
 		await homePage.steps().registerNewUser(NEW_USER_REGISTER_DATA);
@@ -42,6 +41,7 @@ test.describe("Ban user", () => {
 				{ expectErrors: true },
 			);
 
+		await bannedUserPage.waitRedContainerToBeVisible();
 		await bannedUserPage.assertThat().isBannedTitleDisplayed();
 		await bannedUserPage.assertThat().isBannedReasonDisplayed(BAN_REASON);
 	});

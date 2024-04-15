@@ -10,22 +10,22 @@ export class UserInfoAdminPageMap extends BaseMap {
 		return this.page.locator('div.user_inf:has(h3:text-is("View user"))');
 	}
 
-	public get seachByUsernameContainer(): Locator {
+	public get searchByUsernameContainer(): Locator {
 		return this.viewUserInfoBox.locator("div.search-by-username");
 	}
 
-	public get seachByUsernameInput(): Locator {
-		return this.seachByUsernameContainer.locator("input");
+	public get searchByUsernameInput(): Locator {
+		return this.searchByUsernameContainer.locator("input");
 	}
 
-	public get seachByUsernameMenu(): Locator {
-		return this.seachByUsernameContainer.locator(
+	public get searchByUsernameMenu(): Locator {
+		return this.searchByUsernameContainer.locator(
 			"div.Select-menu-outer div.Select-menu",
 		);
 	}
 
-	public seachByUsernameMenuOption(option: string): Locator {
-		return this.seachByUsernameContainer.locator(
+	public searchByUsernameMenuOption(option: string): Locator {
+		return this.searchByUsernameContainer.locator(
 			`div.Select-option:has-text("${option}")`,
 		);
 	}

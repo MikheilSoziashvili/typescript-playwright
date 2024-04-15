@@ -1,4 +1,5 @@
 import { BasePageStep } from "../../../core/helpers/base-page-step";
+import { VisibilityStates } from "../../../enums/playwright/visibility-states";
 import { InfoAdminPage } from "./info-admin-page";
 
 export class InfoAdminPageSteps extends BasePageStep<InfoAdminPage> {
@@ -8,7 +9,7 @@ export class InfoAdminPageSteps extends BasePageStep<InfoAdminPage> {
 
 	public async banUser(options?: { reason?: string }): Promise<void> {
 		await this.gamdomPage.map.banUserContainer.waitFor({
-			state: "visible",
+			state: VisibilityStates.VISIBLE
 		});
 		if (options?.reason) {
 			await this.gamdomPage.map.banUserInput.fill(options.reason);
