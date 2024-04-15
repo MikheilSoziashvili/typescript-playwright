@@ -13,8 +13,13 @@ import { Toast } from "../pages/components/toast/toast";
 import { Chat } from "../pages/components/chat/chat";
 import { TipUserModal } from "../pages/modals/tip-user-modal/tip-user-modal";
 import { GeoblockedPage } from "../pages/geoblocked/geoblocked-page";
+import { UserInfoAdminPage } from "../pages/admin/user-info-admin/user-info-admin-page";
+import { BannedUserPage } from "../pages/banned-user/banned-user-page";
+import { InfoAdminPage } from "../pages/admin/info-admin/info-admin-page";
 
 export type Pages = {
+	userInfoAdminPage: UserInfoAdminPage;
+	infoAdminPage: InfoAdminPage;
 	homePage: HomePage;
 	crashGamePage: CrashGamePage;
 	diceGamePage: DiceGamePage;
@@ -25,6 +30,7 @@ export type Pages = {
 	profilePage: ProfilePage;
 	faqPage: FaqPage;
 	geoblockedPage: GeoblockedPage;
+	bannedUserPage: BannedUserPage;
 };
 
 export type Components = {
@@ -69,6 +75,15 @@ export const test = base.extend<CustomFixtures>({
 	},
 	geoblockedPage: async ({ page }, use) => {
 		await use(new GeoblockedPage(page));
+	},
+	userInfoAdminPage: async ({ page }, use) => {
+		await use(new UserInfoAdminPage(page));
+	},
+	infoAdminPage: async ({ page }, use) => {
+		await use(new InfoAdminPage(page));
+	},
+	bannedUserPage: async ({ page }, use) => {
+		await use(new BannedUserPage(page));
 	},
 	notifications: async ({ page }, use) => {
 		await use(new Notification(page));

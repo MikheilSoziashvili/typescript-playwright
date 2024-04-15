@@ -6,6 +6,7 @@ import { HILO_GAME_PAGE_ENDPOINT } from "../../constants/page-endpoints";
 import { HiloBetMultiplierByBetOption } from "../../enums/original-games";
 import { HiloBetOption } from "../../enums/hilo-bet-options";
 import { HiloGamePageSteps } from "./hilo-game-page-steps";
+import { VisibilityStates } from "../../enums/playwright/visibility-states";
 
 export class HiloGamePage extends BasePage<HiloGamePageMap> {
 	public constructor(page: Page) {
@@ -42,8 +43,12 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 	}
 
 	public async waitRoundResult(): Promise<void> {
-		await this.map.gamRoundResultLocator.waitFor({ state: "attached" });
-		await this.map.gamRoundResultLocator.waitFor({ state: "visible" });
+		await this.map.gamRoundResultLocator.waitFor({
+			state: VisibilityStates.ATTACHED,
+		});
+		await this.map.gamRoundResultLocator.waitFor({
+			state: VisibilityStates.VISIBLE,
+		});
 	}
 
 	public async getRoundResult(): Promise<string> {

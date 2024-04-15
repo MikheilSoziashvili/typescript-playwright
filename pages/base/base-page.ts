@@ -10,7 +10,7 @@ export abstract class BasePage<T = BaseMap> {
 		this.map = map;
 	}
 
-	abstract navigate(): void;
+	abstract navigate(options?: { id?: string; param?: string }): void;
 	abstract assertThat(): void;
 
 	public steps(): void {
