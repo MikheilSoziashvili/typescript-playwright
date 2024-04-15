@@ -4,6 +4,7 @@ import { BasePage } from "../../base/base-page";
 import { FaqPageAsserter } from "./faq-page-asserter";
 import { logger } from "../../../logger/logger";
 import { VisibilityStates } from "../../../enums/playwright/visibility-states";
+import { FAQ_PAGE_ENDPOINT } from "../../../constants/page-endpoints";
 
 export class FaqPage extends BasePage<FaqPageMap> {
 	public constructor(page: Page) {
@@ -11,7 +12,7 @@ export class FaqPage extends BasePage<FaqPageMap> {
 	}
 
 	public override async navigate(): Promise<void> {
-		await this.page.goto("/help/faq");
+		await this.page.goto(FAQ_PAGE_ENDPOINT);
 	}
 
 	public override assertThat(): FaqPageAsserter {

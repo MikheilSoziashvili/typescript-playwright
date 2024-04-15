@@ -71,6 +71,10 @@ export class HomePage extends BasePage<HomePageMap> {
 		);
 	}
 
+	public async clickUserProfileButton(): Promise<void> {
+		await this.map.userAvatarMenuButton.click();
+	}
+
 	public async getAccountBalance(): Promise<number> {
 		return parseBalance(
 			await (await this.map.accountBalance()).innerText(),

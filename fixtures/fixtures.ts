@@ -16,6 +16,7 @@ import { GeoblockedPage } from "../pages/geoblocked/geoblocked-page";
 import { UserInfoAdminPage } from "../pages/admin/user-info-admin/user-info-admin-page";
 import { BannedUserPage } from "../pages/banned-user/banned-user-page";
 import { InfoAdminPage } from "../pages/admin/info-admin/info-admin-page";
+import { UserProfileModal } from "../pages/modals/user-profile-modal/user-profile-modal";
 
 export type Pages = {
 	userInfoAdminPage: UserInfoAdminPage;
@@ -41,6 +42,7 @@ export type Components = {
 
 export type Modals = {
 	tipUserModal: TipUserModal;
+	userProfileModal: UserProfileModal;
 };
 
 type CustomFixtures = Pages & Components & Modals;
@@ -96,5 +98,9 @@ export const test = base.extend<CustomFixtures>({
 	},
 	tipUserModal: async ({ page }, use) => {
 		await use(new TipUserModal(page));
+	},
+
+	userProfileModal: async ({ page }, use) => {
+		await use(new UserProfileModal(page));
 	},
 });

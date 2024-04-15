@@ -4,6 +4,7 @@ import { ProfilePageMap } from "./profile-page-map";
 import { ProfilePageAsserter } from "./profile-page-asserter";
 import { ContinueModal } from "../modals/continue-modal/continue-modal";
 import { PROFILE_PAGE_ENDPOINT } from "../../constants/page-endpoints";
+import { ProfilePageSteps } from "./profile-page-steps";
 
 export class ProfilePage extends BasePage<ProfilePageMap> {
 	public constructor(page: Page) {
@@ -18,6 +19,9 @@ export class ProfilePage extends BasePage<ProfilePageMap> {
 		return new ProfilePageAsserter(this);
 	}
 
+	public steps(): ProfilePageSteps {
+		return new ProfilePageSteps(this);
+	}
 	public get continueModal(): ContinueModal {
 		return new ContinueModal(this.page);
 	}
