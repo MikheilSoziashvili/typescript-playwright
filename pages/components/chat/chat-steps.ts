@@ -1,5 +1,6 @@
 import { BaseComponentStep } from "../../../core/helpers/base-component-step";
 import { CommonUserPopupOptions } from "../../../enums/common-user-popup-options";
+import { VisibilityStates } from "../../../enums/playwright/visibility-states";
 import { TipUserModal } from "../../modals/tip-user-modal/tip-user-modal";
 import { UserProfileModal } from "../../modals/user-profile-modal/user-profile-modal";
 import { CommonUserOptionsPopup } from "../popups/common-user-options-popup";
@@ -13,7 +14,7 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 
 	public async openTipUserModal(options?: ChatMessageOptions): Promise<void> {
 		const messageUserLevel = this.component.map.messageUserLevel(options);
-		await messageUserLevel.waitFor({ state: "visible" });
+		await messageUserLevel.waitFor({ state: VisibilityStates.VISIBLE });
 
 		await messageUserLevel.click();
 
@@ -34,7 +35,7 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		options?: ChatMessageOptions,
 	): Promise<void> {
 		const messageUserLevel = this.component.map.messageUserLevel(options);
-		await messageUserLevel.waitFor({ state: "visible" });
+		await messageUserLevel.waitFor({ state: VisibilityStates.VISIBLE });
 
 		await messageUserLevel.click();
 

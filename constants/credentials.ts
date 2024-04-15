@@ -19,7 +19,7 @@ export const USER_1_CREDENTIALS: CredentialsType = {
 	password: "password",
 };
 
-export const USER_2_CREDENTIALS: credentialsType = {
+export const USER_2_CREDENTIALS: CredentialsType = {
 	username: "user2",
 	password: "password",
 };

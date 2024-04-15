@@ -18,7 +18,7 @@ test.describe("User statistics tests", () => {
 		await homePage.steps().loginUsername(USER_2_CREDENTIALS.username);
 		await homePage.clickUserProfileButton();
 
-		await profilePage.steps().setHideUserStatisticsMode();
+		await profilePage.steps().toggleUserStatisticsMode("off");
 
 		await chat.sendMessage(message);
 		// need to send second message as a workaround until bug DEV-1919 is fixed by dev team
@@ -53,6 +53,6 @@ test.describe("User statistics tests", () => {
 		await homePage.steps().loginUsername(USER_2_CREDENTIALS.username);
 		await homePage.clickUserProfileButton();
 
-		await profilePage.steps().setShowUserStatisticsMode();
+		await profilePage.steps().toggleUserStatisticsMode("on");
 	});
 });

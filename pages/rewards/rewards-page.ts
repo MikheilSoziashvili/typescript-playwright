@@ -4,6 +4,7 @@ import { RewardsPageMap } from "./rewards-page-map";
 import { RewardsPageAsserter } from "./rewards-page-asserter";
 import { WelcomeBonusModal } from "../modals/promo-code-modal/welcome-bonus-modal";
 import { RewardsPageSteps } from "./rewards-page-steps";
+import { REWARDS_PAGE_ENDPOINT } from "../../constants/page-endpoints";
 
 export class RewardsPage extends BasePage<RewardsPageMap> {
 	public constructor(page: Page) {
@@ -11,7 +12,7 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 	}
 
 	public override async navigate(): Promise<void> {
-		await this.page.goto("/rewards");
+		await this.page.goto(REWARDS_PAGE_ENDPOINT);
 	}
 
 	public override assertThat(): RewardsPageAsserter {
