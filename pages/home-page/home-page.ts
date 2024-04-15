@@ -17,6 +17,7 @@ export class HomePage extends BasePage<HomePageMap> {
 
 	public override async navigate(): Promise<void> {
 		await this.page.goto(HOME_PAGE_ENDPOINT);
+		await this.page.waitForLoadState();
 	}
 
 	// use this method for proxy servers where retries are needed
@@ -37,6 +38,7 @@ export class HomePage extends BasePage<HomePageMap> {
 				}
 			}
 		}
+		await this.page.waitForLoadState();
 	}
 
 	public override assertThat(fromCsv = false): HomePageAsserter {
