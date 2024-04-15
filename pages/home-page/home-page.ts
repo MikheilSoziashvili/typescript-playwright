@@ -27,10 +27,13 @@ export class HomePage extends BasePage<HomePageMap> {
 				await this.page.goto(HOME_PAGE_ENDPOINT);
 				return;
 			} catch (error) {
-				// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-				console.error(`Attempt ${attempt} failed: ${error}`);
-				if (attempt === maxRetries) {
-					throw error;
+				if (error instanceof Error) {
+					console.error(
+						`Attempt ${attempt} failed: ${error.message}`,
+					);
+					if (attempt === maxRetries) {
+						throw error;
+					}
 				}
 			}
 		}
