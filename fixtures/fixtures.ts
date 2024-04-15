@@ -12,6 +12,7 @@ import { Notification } from "../pages/components/notification/notification";
 import { Toast } from "../pages/components/toast/toast";
 import { Chat } from "../pages/components/chat/chat";
 import { TipUserModal } from "../pages/modals/tip-user-modal/tip-user-modal";
+import { GeoblockedPage } from "../pages/geoblocked/geoblocked-page";
 
 export type Pages = {
 	homePage: HomePage;
@@ -23,6 +24,7 @@ export type Pages = {
 	rewardsPage: RewardsPage;
 	profilePage: ProfilePage;
 	faqPage: FaqPage;
+	geoblockedPage: GeoblockedPage;
 };
 
 export type Components = {
@@ -64,6 +66,9 @@ export const test = base.extend<CustomFixtures>({
 	},
 	faqPage: async ({ page }, use) => {
 		await use(new FaqPage(page));
+	},
+	geoblockedPage: async ({ page }, use) => {
+		await use(new GeoblockedPage(page));
 	},
 	notifications: async ({ page }, use) => {
 		await use(new Notification(page));

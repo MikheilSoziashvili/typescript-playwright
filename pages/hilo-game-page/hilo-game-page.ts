@@ -2,7 +2,7 @@ import { Page } from "@playwright/test";
 import { BasePage } from "../base/base-page";
 import { HiloGamePageMap } from "./hilo-game-page.map";
 import { HiloGamePageAsserter } from "./hilo-game-page-asserter";
-import { HILO_GAME_ENDPOINT } from "../../constants/page-endpoints";
+import { HILO_GAME_PAGE_ENDPOINT } from "../../constants/page-endpoints";
 import { HiloBetMultiplierByBetOption } from "../../enums/original-games";
 import { HiloBetOption } from "../../enums/hilo-bet-options";
 import { HiloGamePageSteps } from "./hilo-game-page-steps";
@@ -13,7 +13,7 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 	}
 
 	public override async navigate(): Promise<void> {
-		await this.page.goto(HILO_GAME_ENDPOINT);
+		await this.page.goto(HILO_GAME_PAGE_ENDPOINT);
 	}
 
 	public override assertThat(): HiloGamePageAsserter {

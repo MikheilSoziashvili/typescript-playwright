@@ -12,7 +12,7 @@ import {
 } from "../constants/file-paths";
 
 import * as fs from "fs";
-import { credentialsType } from "./types";
+import { CredentialsType } from "./types";
 
 const CREDENTIALS_AUTH_STATE_MAP = {
 	[SUPER_ADMIN_CREDENTIALS.username]: SUPER_ADMIN_AUTH_STATE_FILE_PATH,
@@ -20,7 +20,7 @@ const CREDENTIALS_AUTH_STATE_MAP = {
 };
 
 export async function getStorageStateUser(
-	user: credentialsType,
+	user: CredentialsType,
 	page: Page,
 	baseURL?: string,
 ): Promise<string> {
