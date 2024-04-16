@@ -51,8 +51,6 @@ export default defineConfig({
 		trace: "on-first-retry",
 
 		launchOptions: {
-			// Browser proxy option is required for Chromium on Windows.
-			proxy: { server: "per-context" },
 			slowMo: 300,
 		},
 
