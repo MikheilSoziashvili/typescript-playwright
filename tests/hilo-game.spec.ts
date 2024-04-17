@@ -10,7 +10,7 @@ import { storageStateSuperadmin } from "../fixtures/auth-fixtures";
 
 test.describe("Hilo tests", () => {
 	test.use(storageStateSuperadmin);
-	test("[QA-129] Place a single bet on Hilo and try to win @smoke", async ({
+	test("[ENG-298] Place a single bet on Hilo and try to win @smoke", async ({
 		homePage,
 		hiloGamePage,
 	}) => {

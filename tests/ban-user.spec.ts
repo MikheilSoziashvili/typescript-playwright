@@ -13,7 +13,7 @@ test.describe("Ban user", () => {
 	});
 
 	test.slow();
-	test("[QA-392] Banning an user @smoke", async ({
+	test("[ENG-288] Banning an user @smoke", async ({
 		homePage,
 		userInfoAdminPage,
 		infoAdminPage,

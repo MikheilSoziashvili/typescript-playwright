@@ -7,14 +7,14 @@ test.describe("Login tests", () => {
 
 	for (const record of parse_csv(
 		"datasets",
-		"QA-5-login-not-possible.csv",
+		"ENG-294-login-not-possible.csv",
 	) as {
 		username: string;
 		password: string;
 		expected_username_warning: string;
 		expected_password_warning: string;
 	}[]) {
-		test(`[QA-5] Login using username - Login is not possible: [Username: ${record.username}] [Password: ${record.password}]`, async ({
+		test(`[ENG-294] Login using username - Login is not possible: [Username: ${record.username}] [Password: ${record.password}]`, async ({
 			homePage,
 		}) => {
 			await homePage.navigateAndCheckTitle();
@@ -38,7 +38,10 @@ test.describe("Login tests", () => {
 		});
 	}
 
-	for (const record of parse_csv("datasets", "QA-5-login-rejected.csv") as {
+	for (const record of parse_csv(
+		"datasets",
+		"ENG-294-login-rejected.csv",
+	) as {
 		username: string;
 		password: string;
 		expected_feedback_location: string;
@@ -57,7 +60,7 @@ test.describe("Login tests", () => {
 				? record.expected_feedback_warning
 				: "";
 
-		test(`[QA-5] Login using username - Login is rejected: [Username: ${record.username}] [Password: ${record.password}]`, async ({
+		test(`[ENG-294] Login using username - Login is rejected: [Username: ${record.username}] [Password: ${record.password}]`, async ({
 			homePage,
 		}) => {
 			await homePage.navigateAndCheckTitle();
@@ -84,7 +87,7 @@ test.describe("Login tests", () => {
 	}
 
 	for (const user of users) {
-		test(`[QA-54] Login with username using different user types: [${toJson(
+		test(`[ENG-295] Login with username using different user types: [${toJson(
 			user,
 		)}]`, async ({ homePage }) => {
 			await homePage.navigateAndCheckTitle();
