@@ -30,7 +30,7 @@ test.describe("Tip user tests", () => {
 		await profilePage.logout();
 	});
 
-	test("[QA-278] Tip user @smoke", async ({
+	test("[ENG-290] 'Tip User' from the chat @smoke", async ({
 		homePage,
 		chat,
 		tipUserModal,

@@ -26,7 +26,7 @@ for (const country of countries) {
 			proxy: geoblockedCredentialsMap.get(country),
 			baseURL: PRODUCTION_BASE_URL,
 		});
-		test(`[QA-391] Geoblocked in ${country}`, async ({
+		test(`[ENG-289] Check the geoblock page : Geoblocked in ${country}`, async ({
 			homePage,
 			geoblockedPage,
 		}) => {

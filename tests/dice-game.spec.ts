@@ -5,7 +5,7 @@ import { storageStateUser1 } from "../fixtures/auth-fixtures";
 
 test.describe("Dice tests", () => {
 	test.use(storageStateUser1);
-	test("[QA-122] Place a single bet on Dice and try to win @smoke", async ({
+	test("[ENG-299] Place a single bet on Dice and try to win @smoke", async ({
 		homePage,
 		diceGamePage,
 	}) => {

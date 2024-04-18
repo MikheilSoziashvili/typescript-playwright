@@ -8,7 +8,7 @@ export const keystore: string = getFilePath("keystore.json", "./");
 
 export const jira: Record<string, string> = {
 	baseUrl: "https://gamdom.atlassian.net",
-	projectKey: "QA",
+	projectKey: "ENG",
 	username: "svetoslav@teamgamdom.com",
 	token: "ATATT3xFfGF0-Irm_9ielcXkBzEExePR8829sVSS8C6J5EcB17dqUhVRZ84od23sse3w_6xeuqSktS1Ubf0vg6lV5TcK0bFMTghPa32IYPugFtt_bca7ttpEzxn9_tC46Z-mlOwUoYe1RkH1nt7xV1cpalTUUpwvT5PXI_djQapB4U3EBLUhw2I=6AA17D65",
 };

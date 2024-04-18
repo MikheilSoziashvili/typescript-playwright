@@ -6,7 +6,7 @@ import { storageStateUser1 } from "../fixtures/auth-fixtures";
 
 test.describe("Roulette tests", () => {
 	test.use(storageStateUser1);
-	test("[QA-121] Place a single bet on Roulette and try to win @smoke", async ({
+	test("[ENG-264] Place a single bet on Roulette and try to win @smoke", async ({
 		homePage,
 		rouletteGamePage,
 	}) => {
