@@ -24,7 +24,9 @@ async function updateXmlWithTestKeys(filePath: string, xmlData: XmlData) {
 	logger.warn(`updateXmlWithTestKeys: ${typeof xmlData}`);
 	xmlData.testsuites.testsuite.forEach((suite: XmlDataTestSuite) => {
 		suite.testcase.forEach((testcase: XmlDataTestCase) => {
-			const match = testcase.$.name.match(/\[(QA-\d+)\]/);
+			const match = testcase.$.name.match(
+				new RegExp(`\\[(${Configuration.jira.projectKey}-\\d+)\\]`),
+			);
 			if (match) {
 				if (!testcase.properties) {
 					testcase.properties = [{ property: [] }];
