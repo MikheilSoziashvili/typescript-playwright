@@ -9,7 +9,26 @@ export class RewardsPageSteps extends BasePageStep<RewardsPage> {
 	public async claimCode(code: string): Promise<void> {
 		await this.gamdomPage.clickActivateNowButton();
 		await this.gamdomPage.welcomeBonusModal.claimCode(code);
-		await this.gamdomPage.assertThat().isClaimedBadgeVisible();
-		await this.gamdomPage.assertThat().isPromotionInProgress();
+		await this.gamdomPage.assertThat().isSpecialOfferClaimedBadgeVisible();
+		await this.gamdomPage.assertThat().isSpecialOfferPromotionInProgress();
+	}
+
+	public async claimInstantRakebackReward(
+		expectedAmount: string,
+		currency?: string,
+	): Promise<void> {
+		await this.gamdomPage
+			.assertThat()
+			.isInstantRakebackAmountVisible(expectedAmount, currency);
+		await this.gamdomPage.clickInstantRakebackClaimRewardButton();
+		await this.gamdomPage
+			.assertThat()
+			.isInstantRakebackLockedButtonVisibile();
+		await this.gamdomPage
+			.assertThat()
+			.isInstantRakebackLockedButtonDisabled();
+		await this.gamdomPage
+			.assertThat()
+			.isInstantRakebackAmountVisible("0.00", currency);
 	}
 }
