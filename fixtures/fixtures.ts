@@ -17,6 +17,7 @@ import { UserInfoAdminPage } from "../pages/admin/user-info-admin/user-info-admi
 import { BannedUserPage } from "../pages/banned-user/banned-user-page";
 import { InfoAdminPage } from "../pages/admin/info-admin/info-admin-page";
 import { UserProfileModal } from "../pages/modals/user-profile-modal/user-profile-modal";
+import { RewardsExplorePage } from "../pages/rewards/explore/rewards-explore-page";
 
 export type Pages = {
 	userInfoAdminPage: UserInfoAdminPage;
@@ -28,6 +29,7 @@ export type Pages = {
 	hiloGamePage: HiloGamePage;
 	affiliatesPage: AffiliatesPage;
 	rewardsPage: RewardsPage;
+	rewardsExplorePage: RewardsExplorePage;
 	profilePage: ProfilePage;
 	faqPage: FaqPage;
 	geoblockedPage: GeoblockedPage;
@@ -68,6 +70,9 @@ export const test = base.extend<CustomFixtures>({
 	},
 	rewardsPage: async ({ page }, use) => {
 		await use(new RewardsPage(page));
+	},
+	rewardsExplorePage: async ({ page }, use) => {
+		await use(new RewardsExplorePage(page));
 	},
 	profilePage: async ({ page }, use) => {
 		await use(new ProfilePage(page));

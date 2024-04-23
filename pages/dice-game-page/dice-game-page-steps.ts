@@ -52,4 +52,16 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 			}
 		}
 	}
+
+	public async rollDice(diceBetData: DiceBetTestData): Promise<void> {
+		await this.gamdomPage.fillInBetData(diceBetData.betAmount);
+		const multiplier = diceBetData.multiplier || 1;
+		await this.gamdomPage
+			.assertThat()
+			.betAndProfitOnWinValuesAreCorrect(
+				diceBetData.betAmount,
+				diceBetData.betAmount * multiplier,
+			);
+		await this.gamdomPage.rollDice();
+	}
 }
