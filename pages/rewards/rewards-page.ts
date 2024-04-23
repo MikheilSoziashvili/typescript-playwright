@@ -7,6 +7,7 @@ import { RewardsPageSteps } from "./rewards-page-steps";
 import { REWARDS_PAGE_ENDPOINT } from "../../constants/page-endpoints";
 import { RatebackHouseEdge } from "../../enums/rateback-house-edge-options";
 import { SPECIAL_OFFER_RATEBACK } from "../../constants/specialoffers";
+import { calculateRakeback } from "../../formulas/rakeback";
 
 export class RewardsPage extends BasePage<RewardsPageMap> {
 	public constructor(page: Page) {
@@ -45,15 +46,17 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 		const { wager, rateback, houseEdge } = parameters;
 		let ratebackAmount: number;
 		if (await this.map.specialOfferInProgressButton.isVisible()) {
-			ratebackAmount =
-				parseFloat(wager) *
-				(SPECIAL_OFFER_RATEBACK / 100) *
-				(houseEdge / 100);
+			ratebackAmount = calculateRakeback(
+				parseFloat(wager),
+				SPECIAL_OFFER_RATEBACK,
+				houseEdge,
+			);
 		} else {
-			ratebackAmount =
-				parseFloat(wager) *
-				(parseFloat(rateback) / 100) *
-				(houseEdge / 100);
+			ratebackAmount = calculateRakeback(
+				parseFloat(wager),
+				parseFloat(rateback),
+				houseEdge,
+			);
 		}
 
 		return ratebackAmount.toString();

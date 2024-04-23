@@ -7,9 +7,9 @@ export class RewardsExplorePageMap extends BaseMap {
 	}
 
 	public get currentRoyaltyContainer(): Locator {
-		return this.page.locator("div.sc-cxtRbA").filter({
-			has: this.page.locator('div.sc-cHWeeV:text-is("CURRENT")'),
-		});
+		return this.page
+			.locator('div div[role=button]:has(div:text-is("CURRENT"))')
+			.locator("..");
 	}
 
 	public get currentRoyaltyContainerExpandButton(): Locator {
