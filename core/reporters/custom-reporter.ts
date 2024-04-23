@@ -21,7 +21,6 @@ async function parseXmlFile(filePath: string) {
 }
 
 async function updateXmlWithTestKeys(filePath: string, xmlData: XmlData) {
-	logger.warn(`updateXmlWithTestKeys: ${typeof xmlData}`);
 	xmlData.testsuites.testsuite.forEach((suite: XmlDataTestSuite) => {
 		suite.testcase.forEach((testcase: XmlDataTestCase) => {
 			const match = testcase.$.name.match(

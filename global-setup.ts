@@ -8,7 +8,7 @@ import { JsonData } from "./core/interfaces";
 
 async function globalSetup(): Promise<void> {
 	if (Configuration.createExecution) {
-		logger.info("Creating an Test Execution in JIRA...");
+		logger.info("Creating a Test Execution in JIRA...");
 		const jiraApi = new JiraApi();
 		const response = await jiraApi.createExecution(createExecutionBody);
 
@@ -27,7 +27,7 @@ async function globalSetup(): Promise<void> {
 		logger.info(
 			`Test Execution with key ${
 				responseBody["key"] as string
-			} have been created!`,
+			} has been created!`,
 		);
 
 		const keystore = Configuration.keystore;
