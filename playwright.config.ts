@@ -23,6 +23,9 @@ function getReporter(): ReporterDescription[] {
 export default defineConfig({
 	timeout: 2 * 60 * 1000, //convert to minutes
 	testDir: "./tests",
+	expect: {
+		timeout: 10 * 1000,
+	},
 	/* Run tests in files in parallel */
 	fullyParallel: false,
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -39,6 +42,9 @@ export default defineConfig({
 	globalTeardown: require.resolve("./global-teardown"),
 	/* Gobal teardown. */
 	use: {
+		viewport: { width: 1920, height: 1080 },
+		actionTimeout: 10 * 1000,
+		navigationTimeout: 30 * 1000,
 		/* Base URL to use in actions like `await page.goto('/')`. */
 		baseURL: "https://gamdom--main--auto1--svetoslav-coder.teamgamdom.com",
 		/* HTTP credentials for basic auth on dev servers */
@@ -66,9 +72,6 @@ export default defineConfig({
 		{
 			name: "chromium",
 			...devices["Desktop Chrome"],
-			use: {
-				viewport: { width: 1920, height: 1080 },
-			},
 		},
 
 		// TODO: Test against mobile viewports.
