@@ -5,7 +5,6 @@ import {
 	HiloGameStatusMessage,
 } from "../../enums/hilo-result-messages";
 import { logger } from "../../logger/logger";
-import { HomePage } from "../home-page/home-page";
 import { HiloGamePage } from "./hilo-game-page";
 
 export class HiloGamePageSteps extends BasePageStep<HiloGamePage> {
@@ -16,10 +15,10 @@ export class HiloGamePageSteps extends BasePageStep<HiloGamePage> {
 	public async playUntilResultColorIs(
 		resultColor: HiloGameResultColor,
 		testData: HiloBetTestData,
-		homePage: HomePage,
 	): Promise<number> {
 		let isWin = false;
-		let accountBalance = await homePage.getAccountBalance();
+		let accountBalance =
+			await this.gamdomPage.authenticatedHeader.getAccountBalance();
 
 		while (!isWin) {
 			await this.gamdomPage.fillInBetAmount(testData.betAmount);
@@ -27,7 +26,8 @@ export class HiloGamePageSteps extends BasePageStep<HiloGamePage> {
 			await this.gamdomPage
 				.assertThat()
 				.gameMessageIs(HiloGameStatusMessage.DRAWING);
-			accountBalance = await homePage.getAccountBalance();
+			accountBalance =
+				await this.gamdomPage.authenticatedHeader.getAccountBalance();
 
 			const roundresult = await this.gamdomPage.getRoundResult();
 			isWin = roundresult.includes(resultColor);

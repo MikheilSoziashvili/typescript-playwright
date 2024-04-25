@@ -3,6 +3,7 @@ import { DiceBetTestData } from "../dtos/test-data";
 import { storageStateUser1 } from "../fixtures/auth-fixtures";
 import { ToastTitles } from "../enums/toast-titles";
 import { RatebackHouseEdge } from "../enums/rateback-house-edge-options";
+import { DEFAULT_CURRENCY } from "../constants/defaults";
 
 test.describe("Rakeback reward with special offers tests", () => {
 	test.use(storageStateUser1);
@@ -13,6 +14,11 @@ test.describe("Rakeback reward with special offers tests", () => {
 		rewardsExplorePage,
 		toast,
 	}) => {
+		await rewardsPage.navigate();
+		await rewardsPage
+			.steps()
+			.claimInstantRakebackReward({ claimAnyReward: true });
+
 		const diceBetAmount = "100.00";
 		const diceBetData = new DiceBetTestData(parseFloat(diceBetAmount));
 		await diceGamePage.navigate();
@@ -23,7 +29,8 @@ test.describe("Rakeback reward with special offers tests", () => {
 		const instantRatebackByCurrentLevel =
 			await rewardsExplorePage.getCurrentRoyaltyInstantRateback();
 
-		const accountBalance = await homePage.getAccountBalance();
+		const accountBalance =
+			await rewardsExplorePage.authenticatedHeader.getAccountBalance();
 
 		await rewardsPage.navigate();
 		await rewardsPage.assertThat().isSpecialOfferPromotionInProgress();
@@ -33,15 +40,19 @@ test.describe("Rakeback reward with special offers tests", () => {
 			houseEdge: RatebackHouseEdge.DICE_CUSTOM_GAMES,
 		});
 
-		await rewardsPage.steps().claimInstantRakebackReward(ratebackAmount);
+		await rewardsPage
+			.steps()
+			.claimInstantRakebackReward({ expectedAmount: ratebackAmount });
 
 		await toast.assertThat().isDisplayed();
 		await toast.assertThat().titleIs(ToastTitles.SUCCESS);
 		await toast
 			.assertThat()
-			.subTitleIs(`You have successfully claimed $${ratebackAmount}!`);
+			.subTitleIs(
+				`You have successfully claimed ${DEFAULT_CURRENCY}${ratebackAmount}!`,
+			);
 
-		await homePage
+		await homePage.authenticatedHeader
 			.assertThat()
 			.accountBalanceIs(accountBalance + parseFloat(ratebackAmount));
 	});

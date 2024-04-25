@@ -5,7 +5,7 @@ test.describe("Register tests", () => {
 	test.use({ storageState: { cookies: [], origins: [] } });
 	test("[ENG-296] Register with email @smoke", async ({ homePage }) => {
 		await homePage.navigateAndCheckTitle();
-		await homePage.openRegisterModal();
+		await homePage.unauthenticatedHeader.openRegisterModal();
 
 		const registeredData = new RegisterTestData();
 		await homePage.registerModal.fillInCredentials(registeredData, {

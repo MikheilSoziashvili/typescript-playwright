@@ -2,6 +2,7 @@ import { Page } from "@playwright/test";
 import { BaseModal } from "../../base/base-modal";
 import { RegisterModalMap } from "./register-modal-map";
 import { RegisterTestData } from "../../../dtos/test-data";
+import { Delay } from "../../../enums/delay";
 
 export class RegisterModal extends BaseModal<RegisterModalMap> {
 	constructor(page: Page) {
@@ -27,13 +28,17 @@ export class RegisterModal extends BaseModal<RegisterModalMap> {
 		await this.map.emailField.fill(registerData.email);
 
 		if (acceptTermsOfService)
-			await this.map.termsOfServiceCheckbox.click({ delay: 500 });
+			await this.map.termsOfServiceCheckbox.click({
+				delay: Delay.EXTRA_SHORT,
+			});
 		if (acceptNewsOffers)
-			await this.map.newsAndOffersCheckbox.click({ delay: 500 });
+			await this.map.newsAndOffersCheckbox.click({
+				delay: Delay.EXTRA_SHORT,
+			});
 	}
 
 	public async clickStartPlayingBtn(): Promise<void> {
 		await this.map.startPlayingBtn.focus();
-		await this.map.startPlayingBtn.click({ delay: 500 });
+		await this.map.startPlayingBtn.click({ delay: Delay.SHORT });
 	}
 }

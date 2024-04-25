@@ -8,7 +8,7 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 	}
 
 	public async loginUsername(username: string): Promise<void> {
-		await this.gamdomPage.openLoginModal();
+		await this.gamdomPage.unauthenticatedHeader.openLoginModal();
 
 		await this.gamdomPage.loginModal.loginAsUser(username);
 		await this.gamdomPage.assertThat().userIsLoggedIn();
@@ -19,7 +19,7 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 		password: string,
 		options?: { expectErrors?: boolean },
 	): Promise<void> {
-		await this.gamdomPage.openLoginModal();
+		await this.gamdomPage.unauthenticatedHeader.openLoginModal();
 
 		await this.gamdomPage.loginModal.login(username, password);
 		if (!options?.expectErrors) {
@@ -30,7 +30,7 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 	public async registerNewUser(
 		newUserRegisterData: RegisterTestData,
 	): Promise<void> {
-		await this.gamdomPage.openRegisterModal();
+		await this.gamdomPage.unauthenticatedHeader.openRegisterModal();
 
 		await this.gamdomPage.registerModal.fillInCredentials(
 			newUserRegisterData,

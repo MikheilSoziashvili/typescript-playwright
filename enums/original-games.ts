@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-duplicate-enum-values */
-export enum OriginalGame {
+export enum OriginalGames {
 	Crash = "crash",
 	Dice = "dice",
 	Roulette = "roulette",

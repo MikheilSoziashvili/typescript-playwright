@@ -7,6 +7,7 @@ import {
 	USER_2_CREDENTIALS,
 } from "../constants/credentials";
 import { ToastTitles } from "../enums/toast-titles";
+import { DEFAULT_CURRENCY } from "../constants/defaults";
 
 test.describe("Tip user tests", () => {
 	const message_1 = generateRandomString({ prefix: "automation_message_" });
@@ -18,14 +19,18 @@ test.describe("Tip user tests", () => {
 	const tipValue = "10.00";
 
 	test.beforeEach(async ({ homePage, chat, profilePage }) => {
+		await homePage.navigateAndCheckTitle();
 		await homePage.steps().loginUsername(USER_1_CREDENTIALS.username);
-		await chat.sendMessage(message_1);
+		await homePage.authenticatedHeader.expandChatIfNotVisible();
+
+		await chat.steps().sendMessage(message_1);
 		// need to send second message as a workaround until bug DEV-1919 is fixed by dev team
 		const message_2 = generateRandomString({
 			prefix: "automation_message_",
 		});
-		await chat.sendMessage(message_2);
-		user1AccountBalance = await homePage.getAccountBalance();
+		await chat.steps().sendMessage(message_2);
+		user1AccountBalance =
+			await homePage.authenticatedHeader.getAccountBalance();
 		await profilePage.navigate();
 		await profilePage.logout();
 	});
@@ -46,12 +51,10 @@ test.describe("Tip user tests", () => {
 
 		await homePage.steps().loginUsername(USER_2_CREDENTIALS.username);
 		await chat.assertThat().isDisplayed();
-		await chat
-			.assertThat()
-			.isPlaceholderVisible(ChatFooterPlaceholders.START_TYPING);
 		await chat.assertThat().isMessageVisible(messageInfo_1);
 
-		const user2AccountBalance = await homePage.getAccountBalance();
+		const user2AccountBalance =
+			await homePage.authenticatedHeader.getAccountBalance();
 
 		await chat.steps().openTipUserModal(messageInfo_1);
 		await tipUserModal.insertTipValue(tipValue);
@@ -66,22 +69,25 @@ test.describe("Tip user tests", () => {
 		await toast
 			.assertThat()
 			.subTitleIs(
-				`You have given ${messageInfo_1.username} a tip of $${tipValue}.`,
+				`You have given ${messageInfo_1.username} a tip of ${DEFAULT_CURRENCY}${tipValue}.`,
 			);
 		await chat
 			.assertThat()
 			.isInfoMessageVisible(
-				`${USER_2_CREDENTIALS.username} just gave $${tipValue} to ${USER_1_CREDENTIALS.username}`,
+				`${USER_2_CREDENTIALS.username} just gave ${DEFAULT_CURRENCY}${tipValue} to ${USER_1_CREDENTIALS.username}`,
 			);
-		await homePage
+		await homePage.authenticatedHeader
 			.assertThat()
 			.accountBalanceIs(user2AccountBalance - Number(tipValue));
+		await chat
+			.assertThat()
+			.isPlaceholderVisible(ChatFooterPlaceholders.START_TYPING);
 
 		await profilePage.navigate();
 		await profilePage.logout();
 
 		await homePage.steps().loginUsername(USER_1_CREDENTIALS.username);
-		await homePage
+		await homePage.authenticatedHeader
 			.assertThat()
 			.accountBalanceIs(user1AccountBalance + Number(tipValue));
 	});

@@ -38,6 +38,15 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 		await this.map.instantRakebackClaimRewardButton.click();
 	}
 
+	public async getRakebackAmount(): Promise<string> {
+		const amount = await this.map.instatRakebackAmount.textContent();
+		if (amount) {
+			return amount;
+		} else {
+			throw new Error("Amount not displayed!");
+		}
+	}
+
 	public async calculateRatebackAmount(parameters: {
 		wager: string;
 		rateback: string;
