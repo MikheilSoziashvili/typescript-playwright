@@ -15,7 +15,7 @@ export class BaseAsserter<T extends BasePage | BaseModal | BaseComponent> {
 		timeout?: number,
 	): Promise<void> {
 		for (const element of elements) {
-			await expect.soft(element).not.toBeVisible({ timeout });
+			await expect.soft(element).toBeVisible({ timeout });
 		}
 	}
 
