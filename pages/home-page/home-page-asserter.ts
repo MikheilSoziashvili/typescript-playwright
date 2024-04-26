@@ -10,7 +10,7 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		this.fromCsv = fromCsv;
 	}
 
-	public async hasTitle(title: string): Promise<void> {
+	public async titleHasText(title: string): Promise<void> {
 		await expect(this.gamdomPage.page).toHaveTitle(title, {
 			timeout: Timeout.MAX,
 		});

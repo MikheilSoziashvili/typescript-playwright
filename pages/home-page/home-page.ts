@@ -56,11 +56,10 @@ export class HomePage extends BasePage<HomePageMap> {
 			await googleAuthPage.loginToGoogle();
 		}
 
-		await this.assertThat().hasTitle(
+		await this.assertThat().titleHasText(
 			"Gamdom - Top Bitcoin & Crypto Casino!",
 		);
 	}
-
 
 	public get loginModal(): LoginModal {
 		return new LoginModal(this.page);
