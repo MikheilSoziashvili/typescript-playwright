@@ -1,4 +1,3 @@
-import { expect } from "@playwright/test";
 import { BaseAsserter } from "../../../base/base-asserter";
 import { UnauthenticatedHeader } from "./unauthenticated-header";
 import { Timeout } from "../../../../enums/timeout";
@@ -9,12 +8,9 @@ export class UnauthenticatedHeaderAsserter extends BaseAsserter<UnauthenticatedH
 	}
 
 	async loggedOutUserElementsAreVisible(): Promise<void> {
-		await expect.soft(this.gamdomPage.map.loginBtn).toBeVisible({
-			timeout: Timeout.MAX,
-		});
-
-		await expect.soft(this.gamdomPage.map.signUpBtn).toBeVisible({
-			timeout: Timeout.MAX,
-		});
+		await this.checkElementsAreVisible(
+			[this.gamdomPage.map.loginBtn, this.gamdomPage.map.signUpBtn],
+			Timeout.MAX,
+		);
 	}
 }

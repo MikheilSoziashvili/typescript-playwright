@@ -1,6 +1,7 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "../../../base/base-map";
 import { decimalNumber } from "../../../../support/regex-patterns";
+import { OriginalGame } from "../../../../enums/original-games";
 
 export class AuthenticatedHeaderMap extends BaseMap {
 	public constructor(page: Page) {
@@ -46,5 +47,19 @@ export class AuthenticatedHeaderMap extends BaseMap {
 			}
 			throw new Error(msg);
 		}
+	}
+
+	public get originalGamesMenuLink(): Locator {
+		return this.page.locator('header a[class*="MenuLink"][href="/"]');
+	}
+
+	public get originalGamesSubMenuContainer(): Locator {
+		return this.page.locator("div[class*='GamdomOriginalsContainer']");
+	}
+
+	public gameSubMenuLink(game: OriginalGame): Locator {
+		return this.originalGamesSubMenuContainer.filter({
+			has: this.page.locator(`a[href='/${game}']`),
+		});
 	}
 }
