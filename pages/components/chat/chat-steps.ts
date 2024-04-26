@@ -9,15 +9,19 @@ import { Chat } from "./chat";
 import { ChatMessageOptions } from "./chat-map";
 
 export class ChatSteps extends BaseComponentStep<Chat> {
+	private authenticatedHeader: AuthenticatedHeader;
+
 	public constructor(component: Chat) {
 		super(component);
+		this.authenticatedHeader = this.createAuthenticatedHeader();
+	}
+
+	private createAuthenticatedHeader(): AuthenticatedHeader {
+		return new AuthenticatedHeader(this.component.page);
 	}
 
 	public async sendMessage(message: string): Promise<void> {
-		const authenticatedHeader = new AuthenticatedHeader(
-			this.component.page,
-		);
-		await authenticatedHeader.expandChatIfNotVisible();
+		await this.authenticatedHeader.expandChatIfNotVisible();
 		await this.component.map.chatTextBox.fill(message);
 		await this.component.map.sendMessageButton.click();
 	}

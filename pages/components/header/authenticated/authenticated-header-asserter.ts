@@ -10,35 +10,25 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 	}
 
 	async loggedInUserElementsAreVisible(): Promise<void> {
-		await expect.soft(this.gamdomPage.map.walletBtn).toBeVisible({
-			timeout: Timeout.MAX,
-		});
-
-		await expect
-			.soft(this.gamdomPage.map.balanceDropdownArrow)
-			.toBeVisible({
-				timeout: Timeout.MAX,
-			});
-
-		await expect.soft(this.gamdomPage.map.userAvatar).toBeVisible({
-			timeout: Timeout.MEDIUM,
-		});
+		await this.checkElementsAreVisible(
+			[
+				this.gamdomPage.map.walletBtn,
+				this.gamdomPage.map.balanceDropdownArrow,
+				this.gamdomPage.map.userAvatar,
+			],
+			Timeout.MAX,
+		);
 	}
 
 	async loggedInUserElementsAreNotVisible(): Promise<void> {
-		await expect.soft(this.gamdomPage.map.walletBtn).not.toBeVisible({
-			timeout: Timeout.MAX,
-		});
-
-		await expect
-			.soft(this.gamdomPage.map.balanceDropdownArrow)
-			.not.toBeVisible({
-				timeout: Timeout.MAX,
-			});
-
-		await expect.soft(this.gamdomPage.map.userAvatar).not.toBeVisible({
-			timeout: Timeout.MEDIUM,
-		});
+		await this.checkElementsAreNotVisible(
+			[
+				this.gamdomPage.map.walletBtn,
+				this.gamdomPage.map.balanceDropdownArrow,
+				this.gamdomPage.map.userAvatar,
+			],
+			Timeout.MAX,
+		);
 	}
 
 	public async accountBalanceIs(amount: number): Promise<void> {
