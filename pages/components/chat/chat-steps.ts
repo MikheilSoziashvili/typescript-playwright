@@ -3,13 +3,27 @@ import { CommonUserPopupOptions } from "../../../enums/common-user-popup-options
 import { VisibilityStates } from "../../../enums/playwright/visibility-states";
 import { TipUserModal } from "../../modals/tip-user-modal/tip-user-modal";
 import { UserProfileModal } from "../../modals/user-profile-modal/user-profile-modal";
+import { AuthenticatedHeader } from "../header/authenticated/authenticated-header";
 import { CommonUserOptionsPopup } from "../popups/common-user-options-popup";
 import { Chat } from "./chat";
 import { ChatMessageOptions } from "./chat-map";
 
 export class ChatSteps extends BaseComponentStep<Chat> {
+	private authenticatedHeader: AuthenticatedHeader;
+
 	public constructor(component: Chat) {
 		super(component);
+		this.authenticatedHeader = this.createAuthenticatedHeader();
+	}
+
+	private createAuthenticatedHeader(): AuthenticatedHeader {
+		return new AuthenticatedHeader(this.component.page);
+	}
+
+	public async sendMessage(message: string): Promise<void> {
+		await this.authenticatedHeader.expandChatIfNotVisible();
+		await this.component.map.chatTextBox.fill(message);
+		await this.component.map.sendMessageButton.click();
 	}
 
 	public async openTipUserModal(options?: ChatMessageOptions): Promise<void> {

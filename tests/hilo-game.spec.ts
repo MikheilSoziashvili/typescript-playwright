@@ -11,7 +11,6 @@ import { storageStateSuperadmin } from "../fixtures/auth-fixtures";
 test.describe("Hilo tests", () => {
 	test.use(storageStateSuperadmin);
 	test("[ENG-298] Place a single bet on Hilo and try to win @smoke", async ({
-		homePage,
 		hiloGamePage,
 	}) => {
 		const testData: HiloBetTestData = new HiloBetTestData(
@@ -28,11 +27,7 @@ test.describe("Hilo tests", () => {
 
 		const accountBalance = await hiloGamePage
 			.steps()
-			.playUntilResultColorIs(
-				HiloGameResultColor.RED,
-				testData,
-				homePage,
-			);
+			.playUntilResultColorIs(HiloGameResultColor.RED, testData);
 
 		await hiloGamePage
 			.assertThat()
@@ -42,7 +37,7 @@ test.describe("Hilo tests", () => {
 			testData.betAmount,
 			testData.betMultiplierByBetOption,
 		);
-		await homePage
+		await hiloGamePage.authenticatedHeader
 			.assertThat()
 			.accountBalanceIs(accountBalance + expectedProfit);
 	});

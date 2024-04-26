@@ -38,7 +38,7 @@ export async function getStorageStateUser(
 		GOOGLE_AUTH_CREDENTIALS.username,
 		GOOGLE_AUTH_CREDENTIALS.password,
 	);
-	await homePage.openLoginModal();
+	await homePage.unauthenticatedHeader.openLoginModal();
 	await homePage.loginModal.login(user.username, user.password);
 	await homePage.assertThat().userIsLoggedIn();
 

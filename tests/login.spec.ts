@@ -19,7 +19,7 @@ test.describe("Login tests", () => {
 		}) => {
 			await homePage.navigateAndCheckTitle();
 
-			await homePage.openLoginModal();
+			await homePage.unauthenticatedHeader.openLoginModal();
 			await homePage.loginModal.fillInCredentials(
 				record.username,
 				record.password,
@@ -65,7 +65,7 @@ test.describe("Login tests", () => {
 		}) => {
 			await homePage.navigateAndCheckTitle();
 
-			await homePage.openLoginModal();
+			await homePage.unauthenticatedHeader.openLoginModal();
 			await homePage.loginModal.login(record.username, record.password);
 
 			await homePage.loginModal
@@ -92,7 +92,7 @@ test.describe("Login tests", () => {
 		)}]`, async ({ homePage }) => {
 			await homePage.navigateAndCheckTitle();
 
-			await homePage.openLoginModal();
+			await homePage.unauthenticatedHeader.openLoginModal();
 			await homePage.loginModal.login(user.username, user.password);
 			await homePage.assertThat().userIsLoggedIn();
 		});

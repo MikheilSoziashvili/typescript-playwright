@@ -2,25 +2,12 @@ import { Timeout } from "../../enums/timeout";
 import { BaseAsserter } from "../base/base-asserter";
 import { HomePage } from "./home-page";
 import { expect } from "@playwright/test";
-import { formatBalance } from "../../core/utils";
 
 export class HomePageAsserter extends BaseAsserter<HomePage> {
 	public fromCsv: boolean;
 	public constructor(page: HomePage, fromCsv = false) {
 		super(page);
 		this.fromCsv = fromCsv;
-	}
-
-	private async loggedInUserElementsPresent(): Promise<void> {
-		await expect.soft(this.gamdomPage.map.walletBtn).toBeVisible({
-			timeout: Timeout.MAX,
-		});
-
-		await expect
-			.soft(this.gamdomPage.map.balanceDropdownArrow)
-			.toBeVisible({
-				timeout: Timeout.MAX,
-			});
 	}
 
 	public async titleHasText(title: string): Promise<void> {
@@ -30,24 +17,18 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 	}
 
 	public async userIsLoggedIn(): Promise<void> {
-		await this.loggedInUserElementsPresent();
-		await expect(this.gamdomPage.map.userAvatar).toBeAttached({
-			timeout: Timeout.MEDIUM,
-		});
+		await this.gamdomPage.authenticatedHeader
+			.assertThat()
+			.loggedInUserElementsAreVisible();
 	}
 
 	public async userIsLoggedOut(): Promise<void> {
-		await expect.soft(this.gamdomPage.map.signUpBtn).toBeVisible({
-			timeout: Timeout.MAX,
-		});
-
-		await expect.soft(this.gamdomPage.map.loginBtn).toBeVisible({
-			timeout: Timeout.MAX,
-		});
-
-		await expect.soft(this.gamdomPage.map.walletBtn).not.toBeVisible({
-			timeout: Timeout.MAX,
-		});
+		await this.gamdomPage.authenticatedHeader
+			.assertThat()
+			.loggedInUserElementsAreNotVisible();
+		await this.gamdomPage.unauthenticatedHeader
+			.assertThat()
+			.loggedOutUserElementsAreVisible();
 	}
 
 	public async toastMessageContainsText(text: string): Promise<void> {
@@ -58,17 +39,9 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 	}
 
 	public async userIsRegistered(username: string): Promise<void> {
-		await expect.soft(this.gamdomPage.map.walletBtn).toBeVisible({
-			timeout: Timeout.MAX,
-		});
-		await expect.soft(this.gamdomPage.map.userAvatar).toBeVisible({
-			timeout: Timeout.MAX,
-		});
-		await expect
-			.soft(this.gamdomPage.map.balanceDropdownArrow)
-			.toBeVisible({
-				timeout: Timeout.MAX,
-			});
+		await this.gamdomPage.authenticatedHeader
+			.assertThat()
+			.loggedInUserElementsAreVisible();
 		await expect
 			.soft(this.gamdomPage.map.registerSuccessMessage)
 			.toBeVisible();
@@ -79,12 +52,5 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 			});
 
 		expect.soft(receivedUsername?.trim()).toBe(`${username}!`);
-	}
-
-	public async accountBalanceIs(amount: number): Promise<void> {
-		await expect(await this.gamdomPage.map.accountBalance()).toHaveText(
-			`${formatBalance(amount)}`,
-			{ timeout: Timeout.MEDIUM },
-		);
 	}
 }

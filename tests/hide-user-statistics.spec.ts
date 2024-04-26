@@ -15,16 +15,16 @@ const messageInfo: ChatMessageOptions = {
 
 test.describe("User statistics tests", () => {
 	test.beforeEach(async ({ homePage, chat, profilePage }) => {
+		await homePage.navigateAndCheckTitle();
 		await homePage.steps().loginUsername(USER_2_CREDENTIALS.username);
-		await homePage.clickUserProfileButton();
+		await homePage.authenticatedHeader.clickUserProfileButton();
 
-		await profilePage.steps().toggleUserStatisticsMode("off");
-
-		await chat.sendMessage(message);
+		await profilePage.steps().toggleUserStatisticsMode("on");
+		await chat.steps().sendMessage(message);
 		// need to send second message as a workaround until bug DEV-1919 is fixed by dev team
-		await chat.sendMessage(
-			generateRandomString({ prefix: "automation_msg_2" }),
-		);
+		await chat
+			.steps()
+			.sendMessage(generateRandomString({ prefix: "automation_msg_2" }));
 		await profilePage.logout();
 	});
 
@@ -51,8 +51,8 @@ test.describe("User statistics tests", () => {
 		await profilePage.logout();
 
 		await homePage.steps().loginUsername(USER_2_CREDENTIALS.username);
-		await homePage.clickUserProfileButton();
+		await homePage.authenticatedHeader.clickUserProfileButton();
 
-		await profilePage.steps().toggleUserStatisticsMode("on");
+		await profilePage.steps().toggleUserStatisticsMode("off");
 	});
 });

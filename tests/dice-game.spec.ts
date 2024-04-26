@@ -6,7 +6,6 @@ import { storageStateUser1 } from "../fixtures/auth-fixtures";
 test.describe("Dice tests", () => {
 	test.use(storageStateUser1);
 	test("[ENG-299] Place a single bet on Dice and try to win @smoke", async ({
-		homePage,
 		diceGamePage,
 	}) => {
 		await diceGamePage.navigate();
@@ -29,11 +28,7 @@ test.describe("Dice tests", () => {
 
 		await diceGamePage
 			.steps()
-			.playUntilResultMesssageIs(
-				DiceGameResultMessage.WIN,
-				diceBetData,
-				homePage,
-			);
+			.playUntilResultMesssageIs(DiceGameResultMessage.WIN, diceBetData);
 
 		await diceGamePage
 			.assertThat()

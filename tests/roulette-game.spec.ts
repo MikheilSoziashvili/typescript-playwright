@@ -7,7 +7,6 @@ import { storageStateUser1 } from "../fixtures/auth-fixtures";
 test.describe("Roulette tests", () => {
 	test.use(storageStateUser1);
 	test("[ENG-264] Place a single bet on Roulette and try to win @smoke", async ({
-		homePage,
 		rouletteGamePage,
 	}) => {
 		test.slow(); // it takes some more time until a 'red' number is in
@@ -52,7 +51,8 @@ test.describe("Roulette tests", () => {
 				.assertThat()
 				.totalBetsAre(RouletteNumberColor.RED, 1, 1);
 
-			accountBalanceLeft = await homePage.getAccountBalance();
+			accountBalanceLeft =
+				await rouletteGamePage.authenticatedHeader.getAccountBalance();
 
 			rouletteResultNumber =
 				await rouletteGamePage.getRoundResultNumber();
@@ -72,7 +72,7 @@ test.describe("Roulette tests", () => {
 			betTestData.betAmount,
 			RouletteNumberColor.RED,
 		);
-		await homePage
+		await rouletteGamePage.authenticatedHeader
 			.assertThat()
 			.accountBalanceIs(accountBalanceLeft + expectedProfit);
 

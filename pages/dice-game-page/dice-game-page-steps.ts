@@ -2,7 +2,6 @@ import { BasePageStep } from "../../core/helpers/base-page-step";
 import { DiceBetTestData } from "../../dtos/test-data";
 import { DiceGameResultMessage } from "../../enums/dice-result-messages";
 import { logger } from "../../logger/logger";
-import { HomePage } from "../home-page/home-page";
 import { DiceGamePage } from "./dice-game-page";
 
 export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
@@ -13,12 +12,12 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 	public async playUntilResultMesssageIs(
 		gameResultMessage: DiceGameResultMessage,
 		diceBetData: DiceBetTestData,
-		homePage: HomePage,
 	): Promise<void> {
 		let isWin = false;
 
 		while (!isWin) {
-			const accountBalanceBeforeBet = await homePage.getAccountBalance();
+			const accountBalanceBeforeBet =
+				await this.gamdomPage.authenticatedHeader.getAccountBalance();
 
 			await this.gamdomPage.fillInBetData(
 				diceBetData.betAmount,
@@ -44,7 +43,9 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 					? accountBalanceBeforeBet +
 					  diceBetData.betAmount * (diceBetData.multiplier - 1)
 					: accountBalanceBeforeBet - diceBetData.betAmount;
-				await homePage.assertThat().accountBalanceIs(expectedBalance);
+				await this.gamdomPage.authenticatedHeader
+					.assertThat()
+					.accountBalanceIs(expectedBalance);
 			}
 
 			if (!isWin) {
