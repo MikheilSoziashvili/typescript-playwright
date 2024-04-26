@@ -18,11 +18,6 @@ export class Chat extends BaseComponent<ChatMap> {
 		return new ChatSteps(this);
 	}
 
-	public async sendMessage(message: string): Promise<void> {
-		await this.map.chatTextBox.fill(message);
-		await this.map.sendMessageButton.click();
-	}
-
 	public async waitChatToBeDisplayed(): Promise<void> {
 		await this.map.chatLocator.waitFor({
 			state: VisibilityStates.ATTACHED,

@@ -22,7 +22,7 @@ setup("[QA-193] Authenticate as admin", async ({ page }) => {
 		GOOGLE_AUTH_CREDENTIALS.username,
 		GOOGLE_AUTH_CREDENTIALS.password,
 	);
-	await homePage.openLoginModal();
+	await homePage.unauthenticatedHeader.openLoginModal();
 	await homePage.loginModal.login(
 		SUPER_ADMIN_CREDENTIALS.username,
 		SUPER_ADMIN_CREDENTIALS.password,
@@ -43,7 +43,7 @@ setup("[QA-194] Authenticate as user_1", async ({ page }) => {
 		GOOGLE_AUTH_CREDENTIALS.username,
 		GOOGLE_AUTH_CREDENTIALS.password,
 	);
-	await homePage.openLoginModal();
+	await homePage.unauthenticatedHeader.openLoginModal();
 	await homePage.loginModal.login(
 		USER_1_CREDENTIALS.username,
 		USER_1_CREDENTIALS.password,

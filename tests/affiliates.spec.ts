@@ -22,7 +22,7 @@ test.describe("Affiliates tests", () => {
 		toast,
 	}) => {
 		await homePage.navigateAndCheckTitle();
-		await homePage.openRegisterModal();
+		await homePage.unauthenticatedHeader.openRegisterModal();
 
 		const user_1_register_data = new RegisterTestData();
 		await homePage.registerModal.fillInCredentials(user_1_register_data, {
@@ -42,7 +42,7 @@ test.describe("Affiliates tests", () => {
 		await homePage.assertThat().userIsLoggedOut();
 
 		await homePage.refresh();
-		await homePage.openRegisterModal();
+		await homePage.unauthenticatedHeader.openRegisterModal();
 
 		const user_2_register_data = new RegisterTestData();
 		await homePage.registerModal.fillInCredentials(user_2_register_data, {

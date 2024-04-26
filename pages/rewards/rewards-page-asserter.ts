@@ -1,6 +1,7 @@
 import { expect } from "@playwright/test";
 import { BaseAsserter } from "../base/base-asserter";
 import { RewardsPage } from "./rewards-page";
+import { DEFAULT_CURRENCY } from "../../constants/defaults";
 
 export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 	public constructor(page: RewardsPage) {
@@ -41,7 +42,7 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 		amount: string,
 		currency?: string,
 	): Promise<void> {
-		const amountCurrency = currency ?? "$";
+		const amountCurrency = currency ?? DEFAULT_CURRENCY;
 		await expect
 			.soft(this.gamdomPage.map.instatRakebackAmount)
 			.toHaveText(`${amountCurrency}${amount}`);

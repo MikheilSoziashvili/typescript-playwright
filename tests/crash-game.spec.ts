@@ -4,8 +4,8 @@ import { storageStateUser1 } from "../fixtures/auth-fixtures";
 
 test.describe("Crash tests", () => {
 	test.use(storageStateUser1);
+	test.slow();
 	test("[ENG-265] Place a single bet on Crash and try to cashout @smoke", async ({
-		homePage,
 		crashGamePage,
 	}) => {
 		const betTestData: BetTestData = new BetTestData(
@@ -20,11 +20,11 @@ test.describe("Crash tests", () => {
 				await crashGamePage.navigate();
 
 				const accountBalanceBeforeBet =
-					await homePage.getAccountBalance();
+					await crashGamePage.authenticatedHeader.getAccountBalance();
 
 				await crashGamePage.steps().placeBet(betTestData);
 
-				await homePage
+				await crashGamePage.authenticatedHeader
 					.assertThat()
 					.accountBalanceIs(
 						accountBalanceBeforeBet - betTestData.betAmount,

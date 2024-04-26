@@ -4,8 +4,6 @@ import { HomePageMap } from "./home-page-map";
 import { LoginModal } from "../modals/login-modal/login-modal";
 import { HomePageAsserter } from "./home-page-asserter";
 import { RegisterModal } from "../modals/register-modal/register-modal";
-import { parseBalance } from "../../core/utils";
-import { OriginalGame } from "../../enums/original-games";
 import { HomePageSteps } from "./home-page-steps";
 import { GoogleAuthPage } from "../external/google-auth-page";
 import { HOME_PAGE_ENDPOINT } from "../../constants/page-endpoints";
@@ -49,14 +47,6 @@ export class HomePage extends BasePage<HomePageMap> {
 		return new HomePageSteps(this);
 	}
 
-	public async openLoginModal(): Promise<void> {
-		await this.map.loginBtn.click();
-	}
-
-	public async openRegisterModal(): Promise<void> {
-		await this.map.signUpBtn.click();
-	}
-
 	public async navigateAndCheckTitle(): Promise<void> {
 		await this.navigate();
 
@@ -71,26 +61,11 @@ export class HomePage extends BasePage<HomePageMap> {
 		);
 	}
 
-	public async clickUserProfileButton(): Promise<void> {
-		await this.map.userAvatarMenuButton.click();
-	}
-
-	public async getAccountBalance(): Promise<number> {
-		return parseBalance(
-			await (await this.map.accountBalance()).innerText(),
-		);
-	}
-
 	public get loginModal(): LoginModal {
 		return new LoginModal(this.page);
 	}
 
 	public get registerModal(): RegisterModal {
 		return new RegisterModal(this.page);
-	}
-
-	public async openGame(game: OriginalGame): Promise<void> {
-		await this.map.originalGamesMenuLink.click();
-		await this.map.gameSubMenuLink(game).click();
 	}
 }

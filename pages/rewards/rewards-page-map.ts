@@ -41,7 +41,7 @@ export class RewardsPageMap extends BaseMap {
 	public get instantRakebackClaimRewardButton(): Locator {
 		return this.instantRakebackCard
 			.getByTestId("rewardsCardBottom-instant")
-			.locator('button:has-text("Claim reward")');
+			.locator('button:has(span:text-is("Claim reward"))');
 	}
 
 	public get instantRakebackLockedButton(): Locator {
