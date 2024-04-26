@@ -1,17 +1,43 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import {
+	Browser,
 	Fixtures,
+	Page,
 	PlaywrightTestArgs,
 	PlaywrightTestOptions,
 	PlaywrightWorkerArgs,
 	PlaywrightWorkerOptions,
+	devices,
 } from "@playwright/test";
 import { Pages } from "./fixtures";
-import { getStorageStateUser } from "../core/auth-mngmt";
+import {
+	getStorageStateGoogleAuth,
+	getStorageStateUser,
+} from "../core/auth-mngmt";
 import {
 	SUPER_ADMIN_CREDENTIALS,
 	USER_1_CREDENTIALS,
 } from "../constants/credentials";
+
+function authPage(browser: Browser): Promise<Page> {
+	return browser.newPage({
+		...devices["Desktop Chrome"],
+		viewport: { width: 1920, height: 1080 },
+	});
+}
+
+export const storageStateGoogleAuth: Fixtures<
+	{},
+	{},
+	PlaywrightTestArgs & PlaywrightTestOptions & Pages,
+	PlaywrightWorkerArgs & PlaywrightWorkerOptions
+> = {
+	storageState: async ({ browser, baseURL }, use) => {
+		await use(
+			await getStorageStateGoogleAuth(await authPage(browser), baseURL),
+		);
+	},
+};
 
 export const storageStateUser1: Fixtures<
 	{},
@@ -23,7 +49,7 @@ export const storageStateUser1: Fixtures<
 		await use(
 			await getStorageStateUser(
 				USER_1_CREDENTIALS,
-				await browser.newPage(),
+				await authPage(browser),
 				baseURL,
 			),
 		);
@@ -40,7 +66,7 @@ export const storageStateSuperadmin: Fixtures<
 		await use(
 			await getStorageStateUser(
 				SUPER_ADMIN_CREDENTIALS,
-				await browser.newPage(),
+				await authPage(browser),
 				baseURL,
 			),
 		);
