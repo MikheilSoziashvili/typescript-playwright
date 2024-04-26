@@ -20,20 +20,19 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 	}
 
 	public async waitBettingWindowAvailable(timeout = 30): Promise<void> {
-		await expect(this.map.spinningCountdownCounter).toBeAttached({
+		await expect.soft(this.map.spinningCountdownCounter).toBeAttached({
 			timeout: timeout * 1000,
 		});
 	}
 
 	public async waitRoundResultNumber(timeout = 30): Promise<void> {
-		await expect(this.map.roundResultNumber).toBeVisible({
+		await expect.soft(this.map.roundResultNumber).toBeVisible({
 			timeout: timeout * 1000,
 		});
 	}
 
 	public async getRoundResultNumber(waitTimeout = 30): Promise<string> {
 		await this.waitRoundResultNumber(waitTimeout);
-		// eslint-disable-next-line @typescript-eslint/return-await
 		return this.map.roundResultNumber.innerText();
 	}
 

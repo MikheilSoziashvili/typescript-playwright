@@ -9,16 +9,16 @@ export class GeoblockedPageAsserter extends BaseAsserter<GeoblockedPage> {
 	}
 
 	public async isGeoblockedErrorTitleDisplayed(): Promise<void> {
-		await expect(this.gamdomPage.map.errorTitleLocator).toHaveText(
-			"Gamdom is not available in your Country",
-		);
+		await expect
+			.soft(this.gamdomPage.map.errorTitleLocator)
+			.toHaveText("Gamdom is not available in your Country");
 	}
 
 	public async isBlockedCountryNameDisplayed(
 		countryName: GeoblockedCountries,
 	): Promise<void> {
-		await expect(this.gamdomPage.map.errorSubTitleLocator).toHaveText(
-			countryName,
-		);
+		await expect
+			.soft(this.gamdomPage.map.errorSubTitleLocator)
+			.toHaveText(countryName);
 	}
 }

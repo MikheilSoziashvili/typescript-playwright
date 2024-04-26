@@ -20,7 +20,7 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 				timeout: Timeout.MAX,
 			});
 
-		await expect(this.gamdomPage.map.userAvatar).toBeVisible({
+		await expect.soft(this.gamdomPage.map.userAvatar).toBeVisible({
 			timeout: Timeout.MEDIUM,
 		});
 	}
@@ -36,15 +36,16 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 				timeout: Timeout.MAX,
 			});
 
-		await expect(this.gamdomPage.map.userAvatar).not.toBeVisible({
+		await expect.soft(this.gamdomPage.map.userAvatar).not.toBeVisible({
 			timeout: Timeout.MEDIUM,
 		});
 	}
 
 	public async accountBalanceIs(amount: number): Promise<void> {
-		await expect(await this.gamdomPage.map.accountBalance()).toHaveText(
-			`${formatBalance(amount)}`,
-			{ timeout: Timeout.MEDIUM },
-		);
+		await expect
+			.soft(await this.gamdomPage.map.accountBalance())
+			.toHaveText(`${formatBalance(amount)}`, {
+				timeout: Timeout.MEDIUM,
+			});
 	}
 }

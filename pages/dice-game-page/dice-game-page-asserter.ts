@@ -51,22 +51,25 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 	}
 
 	public async diceMessageIsNotEmpty(): Promise<void> {
-		await expect(this.gamdomPage.map.diceGameAreaMessage).not.toBeEmpty({
-			timeout: Timeout.MEDIUM,
-		});
+		await expect
+			.soft(this.gamdomPage.map.diceGameAreaMessage)
+			.not.toBeEmpty({
+				timeout: Timeout.MEDIUM,
+			});
 	}
 
 	public async diceMessageIs(
 		resultMessage: DiceGameResultMessage,
 	): Promise<void> {
-		await expect(this.gamdomPage.map.diceGameAreaMessage).not.toBeEmpty({
-			timeout: Timeout.MEDIUM,
-		});
+		await expect
+			.soft(this.gamdomPage.map.diceGameAreaMessage)
+			.not.toBeEmpty({
+				timeout: Timeout.MEDIUM,
+			});
 
-		await expect(this.gamdomPage.map.diceGameAreaMessage).toHaveText(
-			resultMessage,
-			{ timeout: Timeout.MEDIUM },
-		);
+		await expect
+			.soft(this.gamdomPage.map.diceGameAreaMessage)
+			.toHaveText(resultMessage, { timeout: Timeout.MEDIUM });
 	}
 
 	public async diceResultIsDisplayed(): Promise<void> {
@@ -80,9 +83,9 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		const diceResultHistory =
 			await this.gamdomPage.map.diceLastResultNumber.textContent();
 		if (diceResultHistory) {
-			await expect(
-				this.gamdomPage.map.diceResultNumberGameArea.first(),
-			).toHaveText(diceResultHistory);
+			await expect
+				.soft(this.gamdomPage.map.diceResultNumberGameArea.first())
+				.toHaveText(diceResultHistory);
 		}
 	}
 }

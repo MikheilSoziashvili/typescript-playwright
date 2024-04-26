@@ -15,26 +15,26 @@ export class HiloGamePageAsserter extends BaseAsserter<HiloGamePage> {
 	public async gameMessageIs(
 		resultMessage: HiloGameStatusMessage,
 	): Promise<void> {
-		await expect(this.gamdomPage.map.gameStatusLocator).not.toBeEmpty({
+		await expect.soft(this.gamdomPage.map.gameStatusLocator).not.toBeEmpty({
 			timeout: Timeout.LONG,
 		});
 
-		await expect(this.gamdomPage.map.gameStatusLocator).toHaveText(
-			resultMessage,
-			{ timeout: Timeout.LONG },
-		);
+		await expect
+			.soft(this.gamdomPage.map.gameStatusLocator)
+			.toHaveText(resultMessage, { timeout: Timeout.LONG });
 	}
 
 	public async gameResultColorIs(
 		resultMessage: HiloGameResultColor,
 	): Promise<void> {
-		await expect(this.gamdomPage.map.gamRoundResultLocator).not.toBeEmpty({
-			timeout: Timeout.MEDIUM,
-		});
+		await expect
+			.soft(this.gamdomPage.map.gamRoundResultLocator)
+			.not.toBeEmpty({
+				timeout: Timeout.MEDIUM,
+			});
 
-		await expect(this.gamdomPage.map.gamRoundResultLocator).toContainText(
-			resultMessage,
-			{ timeout: Timeout.MEDIUM },
-		);
+		await expect
+			.soft(this.gamdomPage.map.gamRoundResultLocator)
+			.toContainText(resultMessage, { timeout: Timeout.MEDIUM });
 	}
 }

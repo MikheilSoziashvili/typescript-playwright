@@ -8,10 +8,10 @@ export class InfoAdminPageAsserter extends BaseAsserter<InfoAdminPage> {
 	}
 
 	public async isUserBanned(): Promise<void> {
-		await expect(this.gamdomPage.map.bannedUserInfo).toBeVisible();
+		await expect.soft(this.gamdomPage.map.bannedUserInfo).toBeVisible();
 	}
 
 	public async isUnbanButtonDisplayed(): Promise<void> {
-		await expect(this.gamdomPage.map.unbanUserButton).toBeVisible();
+		await expect.soft(this.gamdomPage.map.unbanUserButton).toBeVisible();
 	}
 }

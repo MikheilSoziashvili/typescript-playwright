@@ -10,18 +10,20 @@ export class AffiliatesPageAsserter extends BaseAsserter<AffiliatesPage> {
 	public async isCreatedAffiliateCodeVisible(
 		affiliateCode: string,
 	): Promise<void> {
-		await expect(
-			this.gamdomPage.map.createdAffiliatesCodeField,
-		).toHaveAttribute("value", affiliateCode);
+		await expect
+			.soft(this.gamdomPage.map.createdAffiliatesCodeField)
+			.toHaveAttribute("value", affiliateCode);
 	}
 
 	public async isCreatedAffiliateCodeVisibleInCopyToClipboardField(
 		affiliateCode: string,
 	): Promise<void> {
-		expect(
-			await this.gamdomPage.map.copyCodeToClipboardField.getAttribute(
-				"value",
-			),
-		).toContain(`/r/${affiliateCode}`);
+		expect
+			.soft(
+				await this.gamdomPage.map.copyCodeToClipboardField.getAttribute(
+					"value",
+				),
+			)
+			.toContain(`/r/${affiliateCode}`);
 	}
 }

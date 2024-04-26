@@ -14,9 +14,9 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 			subTitle?: string;
 		},
 	): Promise<void> {
-		await expect(this.gamdomPage.map.toastTitleLocator(options)).toHaveText(
-			title,
-		);
+		await expect
+			.soft(this.gamdomPage.map.toastTitleLocator(options))
+			.toHaveText(title);
 	}
 
 	public async subTitleIs(
@@ -26,22 +26,26 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 			subTitle?: string;
 		},
 	): Promise<void> {
-		await expect(
-			this.gamdomPage.map.toastSubTitleLocator(options),
-		).toHaveText(subTitle);
+		await expect
+			.soft(this.gamdomPage.map.toastSubTitleLocator(options))
+			.toHaveText(subTitle);
 	}
 
 	public async isDisplayed(options?: {
 		index?: number;
 		subTitle?: string;
 	}): Promise<void> {
-		await expect(this.gamdomPage.map.toastContainer(options)).toBeVisible();
+		await expect
+			.soft(this.gamdomPage.map.toastContainer(options))
+			.toBeVisible();
 	}
 
 	public async isNotDisplayed(options?: {
 		index?: number;
 		subTitle?: string;
 	}): Promise<void> {
-		await expect(this.gamdomPage.map.toastContainer(options)).toBeHidden();
+		await expect
+			.soft(this.gamdomPage.map.toastContainer(options))
+			.toBeHidden();
 	}
 }
