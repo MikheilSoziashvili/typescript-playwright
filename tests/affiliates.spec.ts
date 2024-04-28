@@ -3,6 +3,7 @@ import { RegisterTestData } from "../dtos/test-data";
 import { NotificationTitles } from "../enums/notification-titles";
 import { ToastSubTitles } from "../enums/toast-subtitles";
 import { ToastTitles } from "../enums/toast-titles";
+import { storageStateGoogleAuth } from "../fixtures/auth-fixtures";
 import { test } from "../fixtures/fixtures";
 const AUTOMATION_AFFILIATES_CODE = generateRandomString({
 	prefix: "automation",
@@ -10,6 +11,7 @@ const AUTOMATION_AFFILIATES_CODE = generateRandomString({
 
 test.describe("Affiliates tests", () => {
 	test.slow();
+	test.use(storageStateGoogleAuth);
 	test("[ENG-297] Create an affiliate code and use it with a new account @smoke", async ({
 		homePage,
 		affiliatesPage,
