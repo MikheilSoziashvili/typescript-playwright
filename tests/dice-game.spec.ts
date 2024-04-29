@@ -13,17 +13,14 @@ test.describe("Dice tests", () => {
 			.assertThat()
 			.diceMessageIs(DiceGameResultMessage.PLACE_YOUR_BETS);
 
-		const diceBetData = new DiceBetTestData(
-			parseFloat("1.00"),
-			parseFloat("1.50"),
-		);
+		const diceBetData = new DiceBetTestData(1, 1.5);
 
 		await diceGamePage.fillInBetData(diceBetData.betAmount);
 		await diceGamePage
 			.assertThat()
 			.betAndProfitOnWinValuesAreCorrect(
 				diceBetData.betAmount,
-				parseFloat("1.00"),
+				diceBetData.betAmount,
 			);
 
 		await diceGamePage

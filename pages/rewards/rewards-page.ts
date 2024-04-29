@@ -48,26 +48,22 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 	}
 
 	public async calculateRatebackAmount(parameters: {
-		wager: string;
-		rateback: string;
+		wager: number;
+		rateback: number;
 		houseEdge: RatebackHouseEdge;
-	}): Promise<string> {
+	}): Promise<number> {
 		const { wager, rateback, houseEdge } = parameters;
 		let ratebackAmount: number;
 		if (await this.map.specialOfferInProgressButton.isVisible()) {
 			ratebackAmount = calculateRakeback(
-				parseFloat(wager),
+				wager,
 				SPECIAL_OFFER_RATEBACK,
 				houseEdge,
 			);
 		} else {
-			ratebackAmount = calculateRakeback(
-				parseFloat(wager),
-				parseFloat(rateback),
-				houseEdge,
-			);
+			ratebackAmount = calculateRakeback(wager, rateback, houseEdge);
 		}
 
-		return ratebackAmount.toString();
+		return ratebackAmount;
 	}
 }

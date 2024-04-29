@@ -15,7 +15,7 @@ export class RewardsPageSteps extends BasePageStep<RewardsPage> {
 	}
 
 	public async claimInstantRakebackReward(options: {
-		expectedAmount?: string;
+		expectedAmount?: number;
 		currency?: string;
 		claimAnyReward?: boolean;
 	}): Promise<void> {

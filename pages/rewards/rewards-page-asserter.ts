@@ -39,12 +39,12 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 	}
 
 	async isInstantRakebackAmountVisible(
-		amount: string,
+		amount: number,
 		currency?: string,
 	): Promise<void> {
 		const amountCurrency = currency ?? DEFAULT_CURRENCY;
 		await expect
 			.soft(this.gamdomPage.map.instatRakebackAmount)
-			.toHaveText(`${amountCurrency}${amount}`);
+			.toHaveText(`${amountCurrency}${amount.toFixed(2)}`);
 	}
 }

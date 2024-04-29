@@ -19,8 +19,8 @@ test.describe("Rakeback instant reward tests", () => {
 			.steps()
 			.claimInstantRakebackReward({ claimAnyReward: true });
 
-		const diceBetAmount = "100.00";
-		const diceBetData = new DiceBetTestData(parseFloat(diceBetAmount));
+		const diceBetAmount = 100;
+		const diceBetData = new DiceBetTestData(diceBetAmount);
 		await diceGamePage.navigate();
 		await diceGamePage.steps().rollDice(diceBetData);
 
@@ -54,6 +54,6 @@ test.describe("Rakeback instant reward tests", () => {
 
 		await homePage.authenticatedHeader
 			.assertThat()
-			.accountBalanceIs(accountBalance + parseFloat(ratebackAmount));
+			.accountBalanceIs(accountBalance + ratebackAmount);
 	});
 });
