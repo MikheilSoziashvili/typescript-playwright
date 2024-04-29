@@ -8,6 +8,6 @@ export class ContinueModalAsserter extends BaseAsserter<ContinueModal> {
 	}
 
 	public async isDisplayed(): Promise<void> {
-		await expect.soft(this.gamdomPage.map.modalLocator).toBeVisible();
+		await expect(this.gamdomPage.map.modalLocator).toBeVisible();
 	}
 }

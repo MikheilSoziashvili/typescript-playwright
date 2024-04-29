@@ -15,15 +15,15 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 	}
 
 	async isSpecialOfferPromotionInProgress(): Promise<void> {
-		await expect
-			.soft(this.gamdomPage.map.specialOfferInProgressButton)
-			.toBeVisible();
+		await expect(
+			this.gamdomPage.map.specialOfferInProgressButton,
+		).toBeVisible();
 	}
 
 	async isSpecialOfferPromotionNotInPrgress(): Promise<void> {
-		await expect
-			.soft(this.gamdomPage.map.specialOfferInProgressButton)
-			.toBeHidden();
+		await expect(
+			this.gamdomPage.map.specialOfferInProgressButton,
+		).toBeHidden();
 	}
 
 	async isInstantRakebackLockedButtonVisibile(): Promise<void> {

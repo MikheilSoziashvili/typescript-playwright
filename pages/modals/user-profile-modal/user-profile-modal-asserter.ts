@@ -8,14 +8,14 @@ export class UserProfileModalAsserter extends BaseAsserter<UserProfileModal> {
 	}
 
 	public async isDisplayed(): Promise<void> {
-		await expect.soft(this.gamdomPage.map.modalLocator).toBeVisible();
+		await expect(this.gamdomPage.map.modalLocator).toBeVisible();
 	}
 
 	public async isPrivateUserModeDisplayed(): Promise<void> {
-		await expect
-			.soft(this.gamdomPage.map.privateStatisticsLocator)
-			.toBeVisible();
-		await expect.soft(this.gamdomPage.map.tipUserButton).toBeVisible();
-		await expect.soft(this.gamdomPage.map.ignoreButton).toBeVisible();
+		await expect(
+			this.gamdomPage.map.privateStatisticsLocator,
+		).toBeVisible();
+		await expect(this.gamdomPage.map.tipUserButton).toBeVisible();
+		await expect(this.gamdomPage.map.ignoreButton).toBeVisible();
 	}
 }

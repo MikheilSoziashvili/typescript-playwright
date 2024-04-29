@@ -22,7 +22,7 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		];
 
 		for (const { field, value } of fieldValues) {
-			await expect.soft(field).toHaveValue(value);
+			await expect(field).toHaveValue(value);
 		}
 	}
 
@@ -40,7 +40,7 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		];
 
 		for (const { field, value } of fieldValues) {
-			await expect.soft(field).toHaveValue(value);
+			await expect(field).toHaveValue(value);
 		}
 	}
 
@@ -78,14 +78,14 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 				.first()
 				.textContent();
 
-		expect.soft(parseFloat(diceResultGameArea ?? "0")).toBeGreaterThan(0);
+		expect(parseFloat(diceResultGameArea ?? "0")).toBeGreaterThan(0);
 
 		const diceResultHistory =
 			await this.gamdomPage.map.diceLastResultNumber.textContent();
 		if (diceResultHistory) {
-			await expect
-				.soft(this.gamdomPage.map.diceResultNumberGameArea.first())
-				.toHaveText(diceResultHistory);
+			await expect(
+				this.gamdomPage.map.diceResultNumberGameArea.first(),
+			).toHaveText(diceResultHistory);
 		}
 	}
 }
