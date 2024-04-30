@@ -51,6 +51,6 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 				timeout: Timeout.MAX,
 			});
 
-		expect.soft(receivedUsername?.trim()).toBe(`${username}!`);
+		expect(receivedUsername?.trim()).toBe(`${username}!`);
 	}
 }

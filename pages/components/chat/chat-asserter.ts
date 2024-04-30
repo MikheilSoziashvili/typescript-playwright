@@ -25,9 +25,9 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 	public async isMessageVisible(
 		messageInfo: ChatMessageOptions,
 	): Promise<void> {
-		await expect
-			.soft(this.gamdomPage.map.messageLocator(messageInfo))
-			.toBeVisible();
+		await expect(
+			this.gamdomPage.map.messageLocator(messageInfo),
+		).toBeVisible();
 	}
 
 	public async isInfoMessageVisible(

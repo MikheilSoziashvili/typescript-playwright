@@ -11,12 +11,12 @@ export class BaseMap {
 		locator: Locator,
 		text: string | RegExp,
 	): Promise<Locator> {
-		await expect.soft(locator).toContainText(text);
+		await expect(locator).toContainText(text);
 		return locator;
 	}
 
 	protected async waitUntilVisible(locator: Locator): Promise<Locator> {
-		await expect.soft(locator).toBeVisible();
+		await expect(locator).toBeVisible();
 		return locator;
 	}
 }

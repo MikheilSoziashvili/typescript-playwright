@@ -8,8 +8,8 @@ export class FaqPageAsserter extends BaseAsserter<FaqPage> {
 	}
 
 	public async isAffiliateCodeVisible(affiliateCode: string): Promise<void> {
-		await expect
-			.soft(this.gamdomPage.map.affiliateUnderCodeLinkButtonLocator)
-			.toHaveText(affiliateCode);
+		await expect(
+			this.gamdomPage.map.affiliateUnderCodeLinkButtonLocator,
+		).toHaveText(affiliateCode);
 	}
 }

@@ -20,13 +20,13 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 	}
 
 	public async waitBettingWindowAvailable(timeout = 30): Promise<void> {
-		await expect.soft(this.map.spinningCountdownCounter).toBeAttached({
+		await expect(this.map.spinningCountdownCounter).toBeAttached({
 			timeout: timeout * 1000,
 		});
 	}
 
 	public async waitRoundResultNumber(timeout = 30): Promise<void> {
-		await expect.soft(this.map.roundResultNumber).toBeVisible({
+		await expect(this.map.roundResultNumber).toBeVisible({
 			timeout: timeout * 1000,
 		});
 	}

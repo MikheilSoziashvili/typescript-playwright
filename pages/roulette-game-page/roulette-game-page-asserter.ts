@@ -30,7 +30,7 @@ export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 		for (const betButton of Object.values(
 			this.gamdomPage.map.betSectionsByColor,
 		)) {
-			await expect.soft(betButton).toHaveCSS("opacity", "1");
+			await expect(betButton).toHaveCSS("opacity", "1");
 		}
 	}
 
@@ -45,12 +45,12 @@ export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 		for (const betRow of await this.gamdomPage.map.playersGridRows(
 			betSection,
 		)) {
-			await expect
-				.soft(this.gamdomPage.map.playersGridRowPlayerUsername(betRow))
-				.toHaveText(username);
-			await expect
-				.soft(this.gamdomPage.map.playersGridRowBetAmount(betRow))
-				.toContainText(parseToFloat(betAmount));
+			await expect(
+				this.gamdomPage.map.playersGridRowPlayerUsername(betRow),
+			).toHaveText(username);
+			await expect(
+				this.gamdomPage.map.playersGridRowBetAmount(betRow),
+			).toContainText(parseToFloat(betAmount));
 		}
 	}
 

@@ -35,17 +35,13 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 		index?: number;
 		subTitle?: string;
 	}): Promise<void> {
-		await expect
-			.soft(this.gamdomPage.map.toastContainer(options))
-			.toBeVisible();
+		await expect(this.gamdomPage.map.toastContainer(options)).toBeVisible();
 	}
 
 	public async isNotDisplayed(options?: {
 		index?: number;
 		subTitle?: string;
 	}): Promise<void> {
-		await expect
-			.soft(this.gamdomPage.map.toastContainer(options))
-			.toBeHidden();
+		await expect(this.gamdomPage.map.toastContainer(options)).toBeHidden();
 	}
 }

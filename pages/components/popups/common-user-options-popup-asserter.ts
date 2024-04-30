@@ -8,6 +8,6 @@ export class CommonUserOptionsPopupAsserter extends BaseAsserter<CommonUserOptio
 	}
 
 	public async isDisplayed(): Promise<void> {
-		await expect.soft(this.gamdomPage.map.popupLocator).toBeVisible();
+		await expect(this.gamdomPage.map.popupLocator).toBeVisible();
 	}
 }

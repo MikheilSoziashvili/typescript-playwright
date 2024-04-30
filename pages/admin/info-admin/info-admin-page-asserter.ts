@@ -12,6 +12,6 @@ export class InfoAdminPageAsserter extends BaseAsserter<InfoAdminPage> {
 	}
 
 	public async isUnbanButtonDisplayed(): Promise<void> {
-		await expect.soft(this.gamdomPage.map.unbanUserButton).toBeVisible();
+		await expect(this.gamdomPage.map.unbanUserButton).toBeVisible();
 	}
 }

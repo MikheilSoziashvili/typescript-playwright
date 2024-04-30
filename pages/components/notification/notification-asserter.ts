@@ -29,17 +29,17 @@ export class NotificationAsserter extends BaseAsserter<Notification> {
 		index?: number;
 		title?: string;
 	}): Promise<void> {
-		await expect
-			.soft(this.gamdomPage.map.notificationContainer(options))
-			.toBeVisible();
+		await expect(
+			this.gamdomPage.map.notificationContainer(options),
+		).toBeVisible();
 	}
 
 	public async isNotDisplayed(options?: {
 		index?: number;
 		title?: string;
 	}): Promise<void> {
-		await expect
-			.soft(this.gamdomPage.map.notificationContainer(options))
-			.toBeHidden();
+		await expect(
+			this.gamdomPage.map.notificationContainer(options),
+		).toBeHidden();
 	}
 }

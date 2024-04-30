@@ -10,7 +10,7 @@ export class LoginModalAsserter extends BaseAsserter<LoginModal> {
 	}
 
 	public async loginBtnIsDisabled(): Promise<void> {
-		await expect.soft(this.gamdomPage.map.loginBtn).toBeDisabled();
+		await expect(this.gamdomPage.map.loginBtn).toBeDisabled();
 	}
 
 	public async usernameFieldErrorTooltipIs(text: string): Promise<void> {
