@@ -1,5 +1,5 @@
 import { TestUserConfigurationObject } from "./core/types";
-import { getFilePath } from "./core/utils";
+import { asString, getFilePath } from "./core/utils";
 
 export const logLevel = "info";
 export const createExecution: boolean = process.env.CI ? true : false;
@@ -9,14 +9,13 @@ export const keystore: string = getFilePath("keystore.json", "./");
 export const jira: Record<string, string> = {
 	baseUrl: "https://gamdom.atlassian.net",
 	projectKey: "ENG",
-	username: "svetoslav@teamgamdom.com",
-	token: "ATATT3xFfGF0-Irm_9ielcXkBzEExePR8829sVSS8C6J5EcB17dqUhVRZ84od23sse3w_6xeuqSktS1Ubf0vg6lV5TcK0bFMTghPa32IYPugFtt_bca7ttpEzxn9_tC46Z-mlOwUoYe1RkH1nt7xV1cpalTUUpwvT5PXI_djQapB4U3EBLUhw2I=6AA17D65",
+	username: asString(process.env.JIRA_USERNAME),
+	token: asString(process.env.JIRA_TOKEN),
 };
 export const xray: Record<string, string> = {
 	baseUrl: "https://xray.cloud.getxray.app",
-	clientId: "C75A05CA9D9C4D1696F160C8618AC7EC",
-	clientSecret:
-		"a4568714fb23a430645da341e2b1475c94b787e18a4777154f933d841d67ff8c",
+	clientId: asString(process.env.XRAY_CLIENT_ID),
+	clientSecret: asString(process.env.XRAY_CLIENT_SECRET),
 };
 
 export const users: TestUserConfigurationObject[] = [
