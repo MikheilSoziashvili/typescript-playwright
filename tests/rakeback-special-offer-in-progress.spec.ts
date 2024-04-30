@@ -4,6 +4,7 @@ import { storageStateUser1 } from "../fixtures/auth-fixtures";
 import { ToastTitles } from "../enums/toast-titles";
 import { RatebackHouseEdge } from "../enums/rateback-house-edge-options";
 import { DEFAULT_CURRENCY } from "../constants/defaults";
+import { parseToFloat } from "../core/utils";
 
 test.describe("Rakeback reward with special offers tests", () => {
 	test.use(storageStateUser1);
@@ -49,7 +50,9 @@ test.describe("Rakeback reward with special offers tests", () => {
 		await toast
 			.assertThat()
 			.subTitleIs(
-				`You have successfully claimed ${DEFAULT_CURRENCY}${ratebackAmount}!`,
+				`You have successfully claimed ${DEFAULT_CURRENCY}${parseToFloat(
+					ratebackAmount,
+				)}!`,
 			);
 
 		await homePage.authenticatedHeader

@@ -1,7 +1,7 @@
 import { test } from "../fixtures/fixtures";
 import { ChatFooterPlaceholders } from "../enums/chat-footer-palceholders";
 import { ChatMessageOptions } from "../pages/components/chat/chat-map";
-import { generateRandomString } from "../core/utils";
+import { generateRandomString, parseToFloat } from "../core/utils";
 import {
 	USER_1_CREDENTIALS,
 	USER_2_CREDENTIALS,
@@ -16,7 +16,7 @@ test.describe("Tip user tests", () => {
 		message: message_1,
 	};
 	let user1AccountBalance: number;
-	const tipValue = "10.00";
+	const tipValue = 10;
 
 	test.beforeEach(async ({ homePage, chat, profilePage }) => {
 		await homePage.navigateAndCheckTitle();
@@ -61,7 +61,7 @@ test.describe("Tip user tests", () => {
 		await tipUserModal.assertThat().isValueVisible(tipValue);
 
 		await tipUserModal.clearTipValue();
-		await tipUserModal.assertThat().isValueVisible("0.00");
+		await tipUserModal.assertThat().isValueVisible(0);
 
 		await tipUserModal.tipUser(tipValue);
 
@@ -69,12 +69,18 @@ test.describe("Tip user tests", () => {
 		await toast
 			.assertThat()
 			.subTitleIs(
-				`You have given ${messageInfo_1.username} a tip of ${DEFAULT_CURRENCY}${tipValue}.`,
+				`You have given ${
+					messageInfo_1.username
+				} a tip of ${DEFAULT_CURRENCY}${parseToFloat(tipValue)}.`,
 			);
 		await chat
 			.assertThat()
 			.isInfoMessageVisible(
-				`${USER_2_CREDENTIALS.username} just gave ${DEFAULT_CURRENCY}${tipValue} to ${USER_1_CREDENTIALS.username}`,
+				`${
+					USER_2_CREDENTIALS.username
+				} just gave ${DEFAULT_CURRENCY}${parseToFloat(tipValue)} to ${
+					USER_1_CREDENTIALS.username
+				}`,
 			);
 		await homePage.authenticatedHeader
 			.assertThat()
