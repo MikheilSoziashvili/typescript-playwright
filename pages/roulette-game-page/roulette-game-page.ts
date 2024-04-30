@@ -33,7 +33,6 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 
 	public async getRoundResultNumber(waitTimeout = 30): Promise<string> {
 		await this.waitRoundResultNumber(waitTimeout);
-		// eslint-disable-next-line @typescript-eslint/return-await
 		return this.map.roundResultNumber.innerText();
 	}
 

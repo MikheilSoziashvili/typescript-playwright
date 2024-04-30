@@ -14,9 +14,9 @@ export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 		}[],
 	): Promise<void> {
 		for (const bet of bets as { username: string; betAmount: string }[]) {
-			await expect(this.gamdomPage.map.playersGridRowCells).toContainText(
-				[bet.username, bet.betAmount],
-			);
+			await expect
+				.soft(this.gamdomPage.map.playersGridRowCells)
+				.toContainText([bet.username, bet.betAmount]);
 		}
 	}
 
@@ -26,12 +26,12 @@ export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 		}[],
 	): Promise<void> {
 		const betBoxes: Locator[] = await this.gamdomPage.map.betBoxes;
-		expect(betBoxes).toHaveLength(bets.length);
+		expect.soft(betBoxes).toHaveLength(bets.length);
 		for (const bet of bets as { betAmount: string }[]) {
 			for (const betBox of betBoxes) {
-				await expect(
-					this.gamdomPage.map.betBoxBetAmount(betBox),
-				).toHaveAttribute("value", bet.betAmount);
+				await expect
+					.soft(this.gamdomPage.map.betBoxBetAmount(betBox))
+					.toHaveAttribute("value", bet.betAmount);
 			}
 		}
 	}

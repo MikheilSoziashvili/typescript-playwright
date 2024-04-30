@@ -9,9 +9,9 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 	}
 
 	async isSpecialOfferClaimedBadgeVisible(): Promise<void> {
-		await expect(
-			this.gamdomPage.map.specialOfferClaimedBadge,
-		).toBeVisible();
+		await expect
+			.soft(this.gamdomPage.map.specialOfferClaimedBadge)
+			.toBeVisible();
 	}
 
 	async isSpecialOfferPromotionInProgress(): Promise<void> {
@@ -27,15 +27,15 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 	}
 
 	async isInstantRakebackLockedButtonVisibile(): Promise<void> {
-		await expect(
-			this.gamdomPage.map.instantRakebackLockedButton,
-		).toBeVisible();
+		await expect
+			.soft(this.gamdomPage.map.instantRakebackLockedButton)
+			.toBeVisible();
 	}
 
 	async isInstantRakebackLockedButtonDisabled(): Promise<void> {
-		await expect(
-			this.gamdomPage.map.instantRakebackLockedButton,
-		).toBeDisabled();
+		await expect
+			.soft(this.gamdomPage.map.instantRakebackLockedButton)
+			.toBeDisabled();
 	}
 
 	async isInstantRakebackAmountVisible(

@@ -11,18 +11,18 @@ export class NotificationAsserter extends BaseAsserter<Notification> {
 		title: string,
 		options?: { index?: number },
 	): Promise<void> {
-		await expect(
-			this.gamdomPage.map.notificationTitleLocator(options),
-		).toHaveText(title);
+		await expect
+			.soft(this.gamdomPage.map.notificationTitleLocator(options))
+			.toHaveText(title);
 	}
 
 	public async subTitleIs(
 		subTitle: string,
 		options?: { index?: number; title?: string },
 	): Promise<void> {
-		await expect(
-			this.gamdomPage.map.notificationSubTitleLocator(options),
-		).toHaveText(subTitle);
+		await expect
+			.soft(this.gamdomPage.map.notificationSubTitleLocator(options))
+			.toHaveText(subTitle);
 	}
 
 	public async isDisplayed(options?: {
