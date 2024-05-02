@@ -10,7 +10,7 @@ import { ToastTitles } from "../enums/toast-titles";
 import {
 	buildTipUserMessageInfo,
 	buildTipUserSubTitle,
-} from "../core/feedback-utils";
+} from "../core/helpers/asserter-helpers/text-asserters";
 
 test.describe("Tip user tests", () => {
 	const message_1 = generateRandomString({ prefix: "automation_message_" });
@@ -74,9 +74,6 @@ test.describe("Tip user tests", () => {
 				username: messageInfo_1.username,
 				tipAmount: tipValue,
 			}),
-			// `You have given ${
-			// 	messageInfo_1.username
-			// } a tip of ${DEFAULT_CURRENCY}${parseToFloat(tipValue)}.`,
 		);
 		await chat.assertThat().isInfoMessageVisible(
 			buildTipUserMessageInfo({

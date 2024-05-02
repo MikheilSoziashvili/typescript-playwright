@@ -7,6 +7,7 @@ import { readFileSync } from "fs";
 import { users } from "../configuration";
 import { TestUserConfigurationObject } from "./types";
 import * as accounting from "accounting";
+import { DEFAULT_CURRENCY } from "../constants/defaults";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -126,4 +127,13 @@ export function generateRandomString(options?: {
 
 export function asString(str: string | undefined): string {
 	return str as string;
+}
+
+export function buildAmountWithCurrency(
+	amount: number,
+	currency = DEFAULT_CURRENCY,
+): string {
+	const amountWithCurrency = `${currency}${parseToFloat(amount)}`;
+
+	return amountWithCurrency;
 }

@@ -1,12 +1,13 @@
-import { DEFAULT_CURRENCY } from "../constants/defaults";
-import { parseToFloat } from "./utils";
+import { DEFAULT_CURRENCY } from "../../../constants/defaults";
+import { buildAmountWithCurrency } from "../../utils";
 
 export function buildClaimedAmountSubTitle(
 	amount: number,
 	currency = DEFAULT_CURRENCY,
 ): string {
-	const subTitle = `You have successfully claimed ${currency}${parseToFloat(
+	const subTitle = `You have successfully claimed ${buildAmountWithCurrency(
 		amount,
+		currency,
 	)}!`;
 
 	return subTitle;
@@ -20,7 +21,7 @@ export function buildTipUserSubTitle(params: {
 	const currency = params.currency ?? DEFAULT_CURRENCY;
 	const message = `You have given ${
 		params.username
-	} a tip of ${currency}${parseToFloat(params.tipAmount)}.`;
+	} a tip of ${buildAmountWithCurrency(params.tipAmount, currency)}.`;
 
 	return message;
 }
@@ -34,7 +35,7 @@ export function buildTipUserMessageInfo(params: {
 	const currency = params.currency ?? DEFAULT_CURRENCY;
 	const message = `${
 		params.senderUsername
-	} just gave ${currency}${parseToFloat(params.tipAmount)} to ${
+	} just gave ${buildAmountWithCurrency(params.tipAmount, currency)} to ${
 		params.receiverUsername
 	}`;
 
