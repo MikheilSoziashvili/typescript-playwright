@@ -1,8 +1,6 @@
 import { test as setup } from "../../fixtures/fixtures";
 import { HomePage } from "../../pages/home-page/home-page";
-import { GoogleAuthPage } from "../../pages/external/google-auth-page";
 import {
-	GOOGLE_AUTH_CREDENTIALS,
 	SUPER_ADMIN_CREDENTIALS,
 	USER_1_CREDENTIALS,
 } from "../../constants/credentials";
@@ -14,14 +12,8 @@ import {
 // Setup left for backward compatability. Might be removed later.
 setup("[QA-193] Authenticate as admin", async ({ page }) => {
 	const homePage: HomePage = new HomePage(page);
-	const googleAuthPage = new GoogleAuthPage(page);
 	await homePage.navigate();
 
-	// Applicable only for coder environment
-	await googleAuthPage.loginToGoogle(
-		GOOGLE_AUTH_CREDENTIALS.username,
-		GOOGLE_AUTH_CREDENTIALS.password,
-	);
 	await homePage.unauthenticatedHeader.openLoginModal();
 	await homePage.loginModal.login(
 		SUPER_ADMIN_CREDENTIALS.username,
@@ -36,13 +28,8 @@ setup("[QA-193] Authenticate as admin", async ({ page }) => {
 
 setup("[QA-194] Authenticate as user_1", async ({ page }) => {
 	const homePage: HomePage = new HomePage(page);
-	const googleAuthPage = new GoogleAuthPage(page);
 	await homePage.navigate();
-	// Applicable only for coder environment
-	await googleAuthPage.loginToGoogle(
-		GOOGLE_AUTH_CREDENTIALS.username,
-		GOOGLE_AUTH_CREDENTIALS.password,
-	);
+
 	await homePage.unauthenticatedHeader.openLoginModal();
 	await homePage.loginModal.login(
 		USER_1_CREDENTIALS.username,

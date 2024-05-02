@@ -16,6 +16,7 @@ export class GoogleAuthPage extends BasePage<GooglePageMap> {
 		return new GoogleAuthPageAsserter(this);
 	}
 
+	// Deprecated - used when Google login was required to pass Cloudflare auth - now done via Cloudflare Client ID & Client Secret headers
 	public async loginToGoogle(
 		username: string = GOOGLE_AUTH_CREDENTIALS.username,
 		password: string = GOOGLE_AUTH_CREDENTIALS.password,
