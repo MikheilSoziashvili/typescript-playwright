@@ -1,5 +1,6 @@
 import { ReporterDescription, defineConfig, devices } from "@playwright/test";
 import * as Configuration from "./configuration";
+import { asString } from "./core/utils";
 
 /** Read environment variables from file. https://github.com/motdotla/dotenv */
 // require('dotenv').config();
@@ -13,9 +14,10 @@ function getReporter(): ReporterDescription[] {
 			["junit", { outputFile: Configuration.reportName }],
 			["./core/reporters/custom-reporter.ts"], // Custom reporter for XRay/JIRA integration
 			["html"],
+			["list"],
 		];
 	} else {
-		return [["html"]];
+		return [["list"], ["html"]];
 	}
 }
 
@@ -47,6 +49,12 @@ export default defineConfig({
 		navigationTimeout: 30 * 1000,
 		/* Base URL to use in actions like `await page.goto('/')`. */
 		baseURL: "https://gamdom--main--auto1--svetoslav-coder.teamgamdom.com",
+		extraHTTPHeaders: {
+			"CF-Access-Client-Id": asString(process.env.CF_ACCESS_CLIENT_ID),
+			"CF-Access-Client-Secret": asString(
+				process.env.CF_ACCESS_CLIENT_SECRET,
+			),
+		},
 		/* HTTP credentials for basic auth on dev servers */
 		// httpCredentials: {
 		// 	username: "trebleclef",

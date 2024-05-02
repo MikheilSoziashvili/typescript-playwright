@@ -1,15 +1,40 @@
 name: Playwright E2E Tests
 on:
     workflow_call:
-
+        secrets:
+            CF_ACCESS_CLIENT_ID:
+                required: true
+                description: "CloudFlare Access Client ID"
+            CF_ACCESS_CLIENT_SECRET:
+                required: true
+                description: "CloudFlare Access Client Secret"
+            JIRA_TOKEN:
+                required: true
+                description: "Jira Token"
+            JIRA_USERNAME:
+                required: true
+                description: "Jira Username"
+            XRAY_CLIENT_ID:
+                required: true
+                description: "X-Ray Client ID"
+            XRAY_CLIENT_SECRET:
+                required: true
+                description: "X-Ray Client Secret"
 jobs:
     tests:
         timeout-minutes: 60
         runs-on: ubuntu-latest
         env:
+            CI: true
             BUILD_NUMBER: ${{ github.run_number }}
             BUILD_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        if: ${{ 'skip' == 'temporary' }}
+
+            CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+            CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+            JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
+            JIRA_USERNAME: ${{ secrets.JIRA_USERNAME }}
+            XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
+            XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
@@ -20,7 +45,7 @@ jobs:
             - name: Install Playwright Browsers
               run: yarn playwright install --with-deps
             - name: Run Playwright tests
-              run: yarn playwright test --grep "@smoke" --workers=1
+              run: yarn playwright test --grep "@smoke"
             - uses: actions/upload-artifact@v3
               if: always()
               with:
