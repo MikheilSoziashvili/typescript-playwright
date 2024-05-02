@@ -7,7 +7,10 @@ import {
 	USER_2_CREDENTIALS,
 } from "../constants/credentials";
 import { ToastTitles } from "../enums/toast-titles";
-import { DEFAULT_CURRENCY } from "../constants/defaults";
+import {
+	buildTipUserMessageInfo,
+	buildTipUserSubTitle,
+} from "../core/helpers/asserter-helpers/text-asserters";
 
 test.describe("Tip user tests", () => {
 	const message_1 = generateRandomString({ prefix: "automation_message_" });
@@ -16,7 +19,7 @@ test.describe("Tip user tests", () => {
 		message: message_1,
 	};
 	let user1AccountBalance: number;
-	const tipValue = "10.00";
+	const tipValue = 10;
 
 	test.beforeEach(async ({ homePage, chat, profilePage }) => {
 		await homePage.navigateAndCheckTitle();
@@ -61,21 +64,24 @@ test.describe("Tip user tests", () => {
 		await tipUserModal.assertThat().isValueVisible(tipValue);
 
 		await tipUserModal.clearTipValue();
-		await tipUserModal.assertThat().isValueVisible("0.00");
+		await tipUserModal.assertThat().isValueVisible(0);
 
 		await tipUserModal.tipUser(tipValue);
 
 		await toast.assertThat().titleIs(ToastTitles.SUCCESS);
-		await toast
-			.assertThat()
-			.subTitleIs(
-				`You have given ${messageInfo_1.username} a tip of ${DEFAULT_CURRENCY}${tipValue}.`,
-			);
-		await chat
-			.assertThat()
-			.isInfoMessageVisible(
-				`${USER_2_CREDENTIALS.username} just gave ${DEFAULT_CURRENCY}${tipValue} to ${USER_1_CREDENTIALS.username}`,
-			);
+		await toast.assertThat().subTitleIs(
+			buildTipUserSubTitle({
+				username: messageInfo_1.username,
+				tipAmount: tipValue,
+			}),
+		);
+		await chat.assertThat().isInfoMessageVisible(
+			buildTipUserMessageInfo({
+				senderUsername: USER_2_CREDENTIALS.username,
+				receiverUsername: USER_1_CREDENTIALS.username,
+				tipAmount: tipValue,
+			}),
+		);
 		await homePage.authenticatedHeader
 			.assertThat()
 			.accountBalanceIs(user2AccountBalance - Number(tipValue));

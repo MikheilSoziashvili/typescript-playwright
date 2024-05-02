@@ -3,6 +3,7 @@ import { BaseAsserter } from "../base/base-asserter";
 import { DiceGamePage } from "./dice-game-page";
 import { DiceGameResultMessage } from "../../enums/dice-result-messages";
 import { Timeout } from "../../enums/timeout";
+import { parseToFloat } from "../../core/utils";
 
 export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 	public constructor(page: DiceGamePage) {
@@ -14,10 +15,13 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		profitOnWin: number,
 	): Promise<void> {
 		const fieldValues = [
-			{ field: this.gamdomPage.map.betField, value: betValue.toFixed(2) },
+			{
+				field: this.gamdomPage.map.betField,
+				value: parseToFloat(betValue),
+			},
 			{
 				field: this.gamdomPage.map.profitOnWinField,
-				value: profitOnWin.toFixed(2),
+				value: parseToFloat(profitOnWin),
 			},
 		];
 

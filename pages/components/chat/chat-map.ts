@@ -3,7 +3,7 @@ import { BaseMap } from "../../base/base-map";
 
 export type ChatMessageOptions = {
 	index?: number;
-	username?: string;
+	username: string;
 	message?: string;
 };
 

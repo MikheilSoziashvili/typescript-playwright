@@ -21,12 +21,12 @@ export class RewardsExplorePage extends BasePage<RewardsExplorePageMap> {
 		await this.map.currentRoyaltyContainerExpandButton.click();
 	}
 
-	public async getCurrentRoyaltyInstantRateback(): Promise<string> {
+	public async getCurrentRoyaltyInstantRateback(): Promise<number> {
 		const ratebackText =
 			await this.map.currentRoyaltyContainerInstantRakebackLocator.textContent();
 
 		if (ratebackText) {
-			return ratebackText.replace("%", "");
+			return Number(ratebackText.replace("%", ""));
 		} else {
 			throw new Error(
 				"No instant rateback text found for current royalty!",

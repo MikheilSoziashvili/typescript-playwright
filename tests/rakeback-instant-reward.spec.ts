@@ -3,7 +3,7 @@ import { DiceBetTestData } from "../dtos/test-data";
 import { storageStateSuperadmin } from "../fixtures/auth-fixtures";
 import { ToastTitles } from "../enums/toast-titles";
 import { RatebackHouseEdge } from "../enums/rateback-house-edge-options";
-import { DEFAULT_CURRENCY } from "../constants/defaults";
+import { buildClaimedAmountSubTitle } from "../core/helpers/asserter-helpers/text-asserters";
 
 test.describe("Rakeback instant reward tests", () => {
 	test.use(storageStateSuperadmin);
@@ -19,8 +19,7 @@ test.describe("Rakeback instant reward tests", () => {
 			.steps()
 			.claimInstantRakebackReward({ claimAnyReward: true });
 
-		const diceBetAmount = "100.00";
-		const diceBetData = new DiceBetTestData(parseFloat(diceBetAmount));
+		const diceBetData = new DiceBetTestData(100);
 		await diceGamePage.navigate();
 		await diceGamePage.steps().rollDice(diceBetData);
 
@@ -35,7 +34,7 @@ test.describe("Rakeback instant reward tests", () => {
 		await rewardsPage.navigate();
 		await rewardsPage.assertThat().isSpecialOfferPromotionNotInPrgress();
 		const ratebackAmount = await rewardsPage.calculateRatebackAmount({
-			wager: diceBetAmount,
+			wager: diceBetData.betAmount,
 			rateback: instantRatebackByCurrentLevel,
 			houseEdge: RatebackHouseEdge.DICE_CUSTOM_GAMES,
 		});
@@ -48,12 +47,10 @@ test.describe("Rakeback instant reward tests", () => {
 		await toast.assertThat().titleIs(ToastTitles.SUCCESS);
 		await toast
 			.assertThat()
-			.subTitleIs(
-				`You have successfully claimed ${DEFAULT_CURRENCY}${ratebackAmount}!`,
-			);
+			.subTitleIs(buildClaimedAmountSubTitle(ratebackAmount));
 
 		await homePage.authenticatedHeader
 			.assertThat()
-			.accountBalanceIs(accountBalance + parseFloat(ratebackAmount));
+			.accountBalanceIs(accountBalance + ratebackAmount);
 	});
 });

@@ -2,6 +2,7 @@ import { Page } from "@playwright/test";
 import { BaseModal } from "../../base/base-modal";
 import { TipUserModalMap } from "./tip-user-modal-map";
 import { TipUserModalAsserter } from "./tip-user-modal-asserter";
+import { parseToFloat } from "../../../core/utils";
 
 export class TipUserModal extends BaseModal<TipUserModalMap> {
 	constructor(page: Page) {
@@ -12,16 +13,16 @@ export class TipUserModal extends BaseModal<TipUserModalMap> {
 		return new TipUserModalAsserter(this);
 	}
 
-	public async insertTipValue(value: string): Promise<void> {
-		await this.map.tipAmountField.fill(value);
+	public async insertTipValue(value: number): Promise<void> {
+		await this.map.tipAmountField.fill(parseToFloat(value));
 	}
 
 	public async clearTipValue(): Promise<void> {
 		await this.map.clearAmountButton.click();
 	}
 
-	async tipUser(value: string): Promise<void> {
-		await this.map.tipAmountField.fill(value);
+	async tipUser(value: number): Promise<void> {
+		await this.map.tipAmountField.fill(parseToFloat(value));
 		await this.map.tipButton.click();
 	}
 }
