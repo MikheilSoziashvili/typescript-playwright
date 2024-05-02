@@ -5,10 +5,8 @@ export function buildClaimedAmountSubTitle(
 	amount: number,
 	currency = DEFAULT_CURRENCY,
 ): string {
-	const subTitle = `You have successfully claimed ${buildAmountWithCurrency(
-		amount,
-		currency,
-	)}!`;
+	const amountWithCurrency = buildAmountWithCurrency(amount, currency);
+	const subTitle = `You have successfully claimed ${amountWithCurrency}!`;
 
 	return subTitle;
 }
@@ -19,9 +17,11 @@ export function buildTipUserSubTitle(params: {
 	currency?: string;
 }): string {
 	const currency = params.currency ?? DEFAULT_CURRENCY;
-	const message = `You have given ${
-		params.username
-	} a tip of ${buildAmountWithCurrency(params.tipAmount, currency)}.`;
+	const amountWithCurrency = buildAmountWithCurrency(
+		params.tipAmount,
+		currency,
+	);
+	const message = `You have given ${params.username} a tip of ${amountWithCurrency}.`;
 
 	return message;
 }
@@ -33,11 +33,11 @@ export function buildTipUserMessageInfo(params: {
 	currency?: string;
 }): string {
 	const currency = params.currency ?? DEFAULT_CURRENCY;
-	const message = `${
-		params.senderUsername
-	} just gave ${buildAmountWithCurrency(params.tipAmount, currency)} to ${
-		params.receiverUsername
-	}`;
+	const amountWithCurrency = buildAmountWithCurrency(
+		params.tipAmount,
+		currency,
+	);
+	const message = `${params.senderUsername} just gave ${amountWithCurrency} to ${params.receiverUsername}`;
 
 	return message;
 }
