@@ -18,11 +18,13 @@ import {
 	SUPER_ADMIN_CREDENTIALS,
 	USER_1_CREDENTIALS,
 } from "../constants/credentials";
+import * as Configuration from "../configuration";
 
 function authPage(browser: Browser): Promise<Page> {
 	return browser.newPage({
 		...devices["Desktop Chrome"],
 		viewport: { width: 1920, height: 1080 },
+		extraHTTPHeaders: Configuration.cloudflare,
 	});
 }
 

@@ -5,7 +5,6 @@ import { LoginModal } from "../modals/login-modal/login-modal";
 import { HomePageAsserter } from "./home-page-asserter";
 import { RegisterModal } from "../modals/register-modal/register-modal";
 import { HomePageSteps } from "./home-page-steps";
-import { GoogleAuthPage } from "../external/google-auth-page";
 import { HOME_PAGE_ENDPOINT } from "../../constants/page-endpoints";
 
 export class HomePage extends BasePage<HomePageMap> {
@@ -49,13 +48,6 @@ export class HomePage extends BasePage<HomePageMap> {
 
 	public async navigateAndCheckTitle(): Promise<void> {
 		await this.navigate();
-
-		// Applicable only for coder environment
-		if (this.page.url().includes("google")) {
-			const googleAuthPage = new GoogleAuthPage(this.page);
-			await googleAuthPage.loginToGoogle();
-		}
-
 		await this.assertThat().titleHasText(
 			"Gamdom - Top Bitcoin & Crypto Casino!",
 		);
