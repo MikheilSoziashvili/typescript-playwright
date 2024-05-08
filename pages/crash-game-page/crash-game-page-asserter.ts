@@ -1,5 +1,5 @@
 import { Locator, expect } from "@playwright/test";
-import { BaseAsserter } from "base/base-asserter";
+import { BaseAsserter } from "@base/base-asserter";
 import { CrashGamePage } from "./crash-game-page";
 
 export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {

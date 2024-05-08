@@ -11,7 +11,7 @@ function getReporter(): ReporterDescription[] {
 	if (Configuration.createExecution) {
 		return [
 			["junit", { outputFile: Configuration.reportName }],
-			["core/reporters/custom-reporter.ts"], // Custom reporter for XRay/JIRA integration
+			["@core/reporters/custom-reporter.ts"], // Custom reporter for XRay/JIRA integration
 			["html"],
 			["list"],
 		];
@@ -23,7 +23,7 @@ function getReporter(): ReporterDescription[] {
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- default config file
 export default defineConfig({
 	timeout: 2 * 60 * 1000, //convert to minutes
-	testDir: "tests",
+	testDir: "./tests",
 	expect: {
 		timeout: 10 * 1000,
 	},

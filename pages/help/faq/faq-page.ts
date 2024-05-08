@@ -1,10 +1,10 @@
 import { Page } from "@playwright/test";
 import { FaqPageMap } from "./faq-page-map";
-import { BasePage } from "base/base-page";
+import { BasePage } from "@base/base-page";
 import { FaqPageAsserter } from "./faq-page-asserter";
-import { logger } from "logger/logger";
-import { VisibilityStates } from "enums/playwright/visibility-states";
-import { FAQ_PAGE_ENDPOINT } from "constants/page-endpoints";
+import { logger } from "@logger/logger";
+import { VisibilityStates } from "@enums/playwright/visibility-states";
+import { FAQ_PAGE_ENDPOINT } from "@constants/page-endpoints";
 
 export class FaqPage extends BasePage<FaqPageMap> {
 	public constructor(page: Page) {

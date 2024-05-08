@@ -10,47 +10,47 @@
 		"resolveJsonModule": true,
 		"baseUrl": ".",
 		"paths": {
-			"constants/*": [
+			"@api/*": [
+				"./api/*",
+			],
+			"@constants/*": [
 				"./constants/*",
 			],
-			"core/*": [
+			"@core/*": [
 				"./core/*",
 			],
-			"datesets/*": [
+			"@datesets/*": [
 				"./datesets/*",
 			],
-			"dtos/*": [
+			"@dtos/*": [
 				"./dtos/*",
 			],
-			"enums/*": [
+			"@enums/*": [
 				"./enums/*",
 			],
-			"fixtures/*": [
+			"@fixtures/*": [
 				"./fixtures/*",
 			],
-			"formulas/*": [
+			"@formulas/*": [
 				"./formulas/*",
 			],
-			"logger/*": [
+			"@logger/*": [
 				"./logger/*",
 			],
-			"pages/*": [
+			"@pages/*": [
 				"./pages/*",
 			],
-			"base/*": [
-				"pages/base/*",
+			"@base/*": [
+				"./pages/base/*",
 			],
-			"components/*": [
-				"pages/components/*",
+			"@components/*": [
+				"./pages/components/*",
 			],
-			"modals/*": [
-				"pages/modals/*",
+			"@modals/*": [
+				"./pages/modals/*",
 			],
-			"support/*": [
+			"@support/*": [
 				"./support/*",
-			],
-			"tests/*": [
-				"./tests/*",
 			]
 		}
 	}

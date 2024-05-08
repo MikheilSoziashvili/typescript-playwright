@@ -1,6 +1,6 @@
-import { SUPER_ADMIN_CREDENTIALS } from "constants/credentials";
-import { RegisterTestData } from "dtos/test-data";
-import { test } from "fixtures/fixtures";
+import { SUPER_ADMIN_CREDENTIALS } from "@constants/credentials";
+import { RegisterTestData } from "@dtos/test-data";
+import { test } from "@fixtures/fixtures";
 
 test.describe("Ban user", () => {
 	const NEW_USER_REGISTER_DATA = new RegisterTestData();

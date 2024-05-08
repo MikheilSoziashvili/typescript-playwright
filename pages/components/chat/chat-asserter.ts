@@ -1,9 +1,9 @@
 import { expect } from "@playwright/test";
-import { BaseAsserter } from "base/base-asserter";
+import { BaseAsserter } from "@base/base-asserter";
 import { Chat } from "./chat";
-import { ChatFooterPlaceholders } from "enums/chat-footer-palceholders";
+import { ChatFooterPlaceholders } from "@enums/chat-footer-palceholders";
 import { ChatMessageOptions } from "./chat-map";
-import { Timeout } from "enums/timeout";
+import { Timeout } from "@enums/timeout";
 
 export class ChatAsserter extends BaseAsserter<Chat> {
 	public constructor(chat: Chat) {

@@ -1,7 +1,7 @@
 import { Page } from "@playwright/test";
-import { BasePage } from "base/base-page";
+import { BasePage } from "@base/base-page";
 import { InfoAdminPageMap } from "./info-admin-page-map";
-import { INFO_ADMIN_PAGE_ENDPOINT } from "constants/page-endpoints";
+import { INFO_ADMIN_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { InfoAdminPageAsserter } from "./info-admin-page-asserter";
 import { InfoAdminPageSteps } from "./info-admin-page-steps";
 

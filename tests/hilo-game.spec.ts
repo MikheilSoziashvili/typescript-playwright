@@ -1,12 +1,12 @@
 import {
 	HiloGameResultColor,
 	HiloGameStatusMessage,
-} from "enums/hilo-result-messages";
-import { test } from "fixtures/fixtures";
-import { HiloBetTestData } from "dtos/test-data";
-import { HiloBetMultiplierByBetOption } from "enums/original-games";
-import { HiloBetOption } from "enums/hilo-bet-options";
-import { storageStateSuperadmin } from "fixtures/auth-fixtures";
+} from "@enums/hilo-result-messages";
+import { test } from "@fixtures/fixtures";
+import { HiloBetTestData } from "@dtos/test-data";
+import { HiloBetMultiplierByBetOption } from "@enums/original-games";
+import { HiloBetOption } from "@enums/hilo-bet-options";
+import { storageStateSuperadmin } from "@fixtures/auth-fixtures";
 
 test.describe("Hilo tests", () => {
 	test.use(storageStateSuperadmin);

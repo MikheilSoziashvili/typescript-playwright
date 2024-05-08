@@ -1,9 +1,9 @@
 import { Page } from "@playwright/test";
-import { BasePage } from "base/base-page";
+import { BasePage } from "@base/base-page";
 import { ProfilePageMap } from "./profile-page-map";
 import { ProfilePageAsserter } from "./profile-page-asserter";
-import { ContinueModal } from "modals/continue-modal/continue-modal";
-import { PROFILE_PAGE_ENDPOINT } from "constants/page-endpoints";
+import { ContinueModal } from "@modals/continue-modal/continue-modal";
+import { PROFILE_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { ProfilePageSteps } from "./profile-page-steps";
 
 export class ProfilePage extends BasePage<ProfilePageMap> {

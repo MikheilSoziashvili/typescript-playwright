@@ -1,5 +1,5 @@
-import { ZERO_RAKEBACK_AMOUNT } from "constants/specialoffers";
-import { BasePageStep } from "core/helpers/base-page-step";
+import { ZERO_RAKEBACK_AMOUNT } from "@constants/specialoffers";
+import { BasePageStep } from "@core/helpers/base-page-step";
 import { RewardsPage } from "./rewards-page";
 
 export class RewardsPageSteps extends BasePageStep<RewardsPage> {

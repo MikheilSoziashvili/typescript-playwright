@@ -1,7 +1,7 @@
 import * as Configuration from "../configuration";
 import { BaseApi } from "./base-api";
-import { prependXmlHeaderToFile } from "../core/utils";
-import { Timeout } from "../enums/timeout";
+import { prependXmlHeaderToFile } from "@core/utils";
+import { Timeout } from "@enums/timeout";
 import { APIResponse } from "@playwright/test";
 
 export class XrayApi extends BaseApi {

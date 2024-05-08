@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import { BaseAsserter } from "base/base-asserter";
+import { BaseAsserter } from "@base/base-asserter";
 import { ContinueModal } from "./continue-modal";
 
 export class ContinueModalAsserter extends BaseAsserter<ContinueModal> {

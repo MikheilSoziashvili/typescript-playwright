@@ -13,11 +13,11 @@ import { Pages } from "./fixtures";
 import {
 	getStorageStateGoogleAuth,
 	getStorageStateUser,
-} from "core/auth-mngmt";
+} from "@core/auth-mngmt";
 import {
 	SUPER_ADMIN_CREDENTIALS,
 	USER_1_CREDENTIALS,
-} from "constants/credentials";
+} from "@constants/credentials";
 import * as Configuration from "configuration";
 
 function authPage(browser: Browser): Promise<Page> {

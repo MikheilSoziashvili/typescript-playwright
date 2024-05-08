@@ -1,13 +1,13 @@
 import { Page } from "@playwright/test";
-import { BasePage } from "base/base-page";
+import { BasePage } from "@base/base-page";
 import { RewardsPageMap } from "./rewards-page-map";
 import { RewardsPageAsserter } from "./rewards-page-asserter";
-import { WelcomeBonusModal } from "modals/promo-code-modal/welcome-bonus-modal";
+import { WelcomeBonusModal } from "@modals/promo-code-modal/welcome-bonus-modal";
 import { RewardsPageSteps } from "./rewards-page-steps";
-import { REWARDS_PAGE_ENDPOINT } from "constants/page-endpoints";
-import { RatebackHouseEdge } from "enums/rateback-house-edge-options";
-import { SPECIAL_OFFER_RATEBACK } from "constants/specialoffers";
-import { calculateRakeback } from "formulas/rakeback";
+import { REWARDS_PAGE_ENDPOINT } from "@constants/page-endpoints";
+import { RatebackHouseEdge } from "@enums/rateback-house-edge-options";
+import { SPECIAL_OFFER_RATEBACK } from "@constants/specialoffers";
+import { calculateRakeback } from "@formulas/rakeback";
 
 export class RewardsPage extends BasePage<RewardsPageMap> {
 	public constructor(page: Page) {

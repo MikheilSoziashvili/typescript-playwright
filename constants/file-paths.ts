@@ -1,4 +1,4 @@
-import { getFilePath } from "core/utils";
+import { getFilePath } from "@core/utils";
 import {
 	GOOGLE_AUTH_CREDENTIALS,
 	SUPER_ADMIN_CREDENTIALS,

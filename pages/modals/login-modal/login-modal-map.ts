@@ -1,5 +1,5 @@
 import { Locator, Page } from "@playwright/test";
-import { BaseMap } from "pages/base/base-map";
+import { BaseMap } from "@base/base-map";
 
 export class LoginModalMap extends BaseMap {
 	public constructor(page: Page) {

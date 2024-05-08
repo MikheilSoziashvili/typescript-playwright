@@ -1,4 +1,4 @@
-import { BaseAsserter } from "base/base-asserter";
+import { BaseAsserter } from "@base/base-asserter";
 import { expect } from "@playwright/test";
 import { LoginModal } from "./login-modal";
 

@@ -1,4 +1,4 @@
-import { BasePageStep } from "core/helpers/base-page-step";
+import { BasePageStep } from "@core/helpers/base-page-step";
 import { AffiliatesPage } from "./affiliates-page";
 
 export class AffiliatesPageSteps extends BasePageStep<AffiliatesPage> {

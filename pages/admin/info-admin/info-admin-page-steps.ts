@@ -1,5 +1,5 @@
-import { BasePageStep } from "core/helpers/base-page-step";
-import { VisibilityStates } from "enums/playwright/visibility-states";
+import { BasePageStep } from "@core/helpers/base-page-step";
+import { VisibilityStates } from "@enums/playwright/visibility-states";
 import { InfoAdminPage } from "./info-admin-page";
 
 export class InfoAdminPageSteps extends BasePageStep<InfoAdminPage> {

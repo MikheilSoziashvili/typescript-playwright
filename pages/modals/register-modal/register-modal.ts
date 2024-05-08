@@ -1,8 +1,8 @@
 import { Page } from "@playwright/test";
-import { BaseModal } from "base/base-modal";
+import { BaseModal } from "@base/base-modal";
 import { RegisterModalMap } from "./register-modal-map";
-import { RegisterTestData } from "dtos/test-data";
-import { Delay } from "enums/delay";
+import { RegisterTestData } from "@dtos/test-data";
+import { Delay } from "@enums/delay";
 
 export class RegisterModal extends BaseModal<RegisterModalMap> {
 	constructor(page: Page) {

@@ -1,11 +1,11 @@
 import { Page } from "@playwright/test";
-import { BasePage } from "base/base-page";
+import { BasePage } from "@base/base-page";
 import { HomePageMap } from "./home-page-map";
-import { LoginModal } from "modals/login-modal/login-modal";
+import { LoginModal } from "@modals/login-modal/login-modal";
 import { HomePageAsserter } from "./home-page-asserter";
-import { RegisterModal } from "modals/register-modal/register-modal";
+import { RegisterModal } from "@modals/register-modal/register-modal";
 import { HomePageSteps } from "./home-page-steps";
-import { HOME_PAGE_ENDPOINT } from "constants/page-endpoints";
+import { HOME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 
 export class HomePage extends BasePage<HomePageMap> {
 	public constructor(page: Page) {

@@ -1,9 +1,9 @@
 import { expect } from "@playwright/test";
-import { BaseAsserter } from "base/base-asserter";
+import { BaseAsserter } from "@base/base-asserter";
 import { RouletteGamePage } from "./roulette-game-page";
-import { RouletteNumberColor } from "enums/original-games";
-import { plusSignWithExactDecimalCurrency } from "support/regex-patterns";
-import { parseToFloat } from "core/utils";
+import { RouletteNumberColor } from "@enums/original-games";
+import { plusSignWithExactDecimalCurrency } from "@support/regex-patterns";
+import { parseToFloat } from "@core/utils";
 
 export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 	public constructor(page: RouletteGamePage) {

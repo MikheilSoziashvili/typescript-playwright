@@ -1,6 +1,6 @@
 import { Locator, Page } from "@playwright/test";
-import { BaseMap } from "base/base-map";
-import { RouletteNumberColor } from "enums/original-games";
+import { BaseMap } from "@base/base-map";
+import { RouletteNumberColor } from "@enums/original-games";
 
 export class RouletteGamePageMap extends BaseMap {
 	public constructor(page: Page) {

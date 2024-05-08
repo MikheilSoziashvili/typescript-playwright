@@ -1,5 +1,5 @@
-import { Timeout } from "enums/timeout";
-import { BaseAsserter } from "base/base-asserter";
+import { Timeout } from "@enums/timeout";
+import { BaseAsserter } from "@base/base-asserter";
 import { HomePage } from "./home-page";
 import { expect } from "@playwright/test";
 

@@ -1,8 +1,8 @@
-import { RouletteNumberColor } from "enums/original-games";
-import { test } from "fixtures/fixtures";
-import { logger } from "logger/logger";
-import { BetTestData } from "dtos/test-data";
-import { storageStateUser1 } from "fixtures/auth-fixtures";
+import { RouletteNumberColor } from "@enums/original-games";
+import { test } from "@fixtures/fixtures";
+import { logger } from "@logger/logger";
+import { BetTestData } from "@dtos/test-data";
+import { storageStateUser1 } from "@fixtures/auth-fixtures";
 
 test.describe("Roulette tests", () => {
 	test.use(storageStateUser1);

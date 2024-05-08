@@ -1,4 +1,4 @@
-import { BaseComponent } from "pages/base/base-component";
+import { BaseComponent } from "@base/base-component";
 
 export class BaseComponentStep<T extends BaseComponent> {
 	readonly component: T;

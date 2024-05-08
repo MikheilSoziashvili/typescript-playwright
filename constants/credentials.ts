@@ -1,4 +1,4 @@
-import { CredentialsType } from "core/types";
+import { CredentialsType } from "@core/types";
 
 // google auth
 export const GOOGLE_AUTH_CREDENTIALS: CredentialsType = {

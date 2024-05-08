@@ -1,5 +1,5 @@
 import { promises as fs } from "fs";
-import { logger } from "logger/logger";
+import { logger } from "@logger/logger";
 import { JsonData } from "./interfaces";
 import * as path from "path";
 import { parse } from "csv-parse/sync";
@@ -7,7 +7,7 @@ import { readFileSync } from "fs";
 import { users } from "configuration";
 import { TestUserConfigurationObject } from "./types";
 import accounting from "accounting";
-import { DEFAULT_CURRENCY } from "constants/defaults";
+import { DEFAULT_CURRENCY } from "@constants/defaults";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
