@@ -1,5 +1,5 @@
 import { Page } from "@playwright/test";
-import { BaseModal } from "../../base/base-modal";
+import { BaseModal } from "base/base-modal";
 import { WelcomeBonusModalMap } from "./welcome-bonus-modal-map";
 import { WelcomeBonusModalAsserter } from "./welcome-bonus-modal-asserter";
 

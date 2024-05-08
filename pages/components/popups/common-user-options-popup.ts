@@ -1,11 +1,11 @@
 import { Page } from "@playwright/test";
-import { BaseComponent } from "../../base/base-component";
+import { BaseComponent } from "base/base-component";
 import { CommonUserOptionsPopupMap } from "./common-user-options-popup-map";
 import { CommonUserOptionsPopupAsserter } from "./common-user-options-popup-asserter";
-import { CommonUserPopupOptions } from "../../../enums/common-user-popup-options";
-import { Timeout } from "../../../enums/timeout";
-import { Delay } from "../../../enums/delay";
-import { VisibilityStates } from "../../../enums/playwright/visibility-states";
+import { CommonUserPopupOptions } from "enums/common-user-popup-options";
+import { Timeout } from "enums/timeout";
+import { Delay } from "enums/delay";
+import { VisibilityStates } from "enums/playwright/visibility-states";
 
 export class CommonUserOptionsPopup extends BaseComponent<CommonUserOptionsPopupMap> {
 	constructor(page: Page) {

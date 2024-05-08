@@ -11,5 +11,6 @@ export function calculateRakeback(
 	rakeback: number,
 	houseEdge: number,
 ): number {
+	
 	return wager * (rakeback / 100) * (houseEdge / 100);
 }

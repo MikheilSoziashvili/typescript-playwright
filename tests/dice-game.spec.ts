@@ -1,7 +1,7 @@
-import { DiceGameResultMessage } from "../enums/dice-result-messages";
-import { test } from "../fixtures/fixtures";
-import { DiceBetTestData } from "../dtos/test-data";
-import { storageStateUser1 } from "../fixtures/auth-fixtures";
+import { DiceGameResultMessage } from "enums/dice-result-messages";
+import { test } from "fixtures/fixtures";
+import { DiceBetTestData } from "dtos/test-data";
+import { storageStateUser1 } from "fixtures/auth-fixtures";
 
 test.describe("Dice tests", () => {
 	test.use(storageStateUser1);

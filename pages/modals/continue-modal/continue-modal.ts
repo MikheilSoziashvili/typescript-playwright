@@ -1,5 +1,5 @@
 import { Page } from "@playwright/test";
-import { BaseModal } from "../../base/base-modal";
+import { BaseModal } from "base/base-modal";
 import { ContinueModalMap } from "./continue-modal-map";
 import { ContinueModalAsserter } from "./continue-modal-asserter";
 

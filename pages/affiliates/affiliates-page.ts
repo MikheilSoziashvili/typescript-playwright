@@ -1,9 +1,9 @@
 import { Page } from "@playwright/test";
-import { BasePage } from "../base/base-page";
+import { BasePage } from "base/base-page";
 import { AffiliatesPageMap } from "./affiliates-page-map";
 import { AffiliatesPageAsserter } from "./affiliates-page-asserter";
 import { AffiliatesPageSteps } from "./affiliates-page-steps";
-import { AFFILIATES_PAGE_ENDPOINT } from "../../constants/page-endpoints";
+import { AFFILIATES_PAGE_ENDPOINT } from "constants/page-endpoints";
 
 export class AffiliatesPage extends BasePage<AffiliatesPageMap> {
 	public constructor(page: Page) {

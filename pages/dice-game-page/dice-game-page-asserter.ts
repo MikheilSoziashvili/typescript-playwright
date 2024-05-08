@@ -1,9 +1,9 @@
 import { expect } from "@playwright/test";
-import { BaseAsserter } from "../base/base-asserter";
+import { BaseAsserter } from "base/base-asserter";
 import { DiceGamePage } from "./dice-game-page";
-import { DiceGameResultMessage } from "../../enums/dice-result-messages";
-import { Timeout } from "../../enums/timeout";
-import { parseToFloat } from "../../core/utils";
+import { DiceGameResultMessage } from "enums/dice-result-messages";
+import { Timeout } from "enums/timeout";
+import { parseToFloat } from "core/utils";
 
 export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 	public constructor(page: DiceGamePage) {

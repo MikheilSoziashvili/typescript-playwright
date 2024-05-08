@@ -1,6 +1,6 @@
-import { test } from "../fixtures/fixtures";
-import { BetTestData } from "../dtos/test-data";
-import { storageStateUser1 } from "../fixtures/auth-fixtures";
+import { test } from "fixtures/fixtures";
+import { BetTestData } from "dtos/test-data";
+import { storageStateUser1 } from "fixtures/auth-fixtures";
 
 test.describe("Crash tests", () => {
 	test.use(storageStateUser1);

@@ -1,12 +1,12 @@
-import { test } from "../fixtures/fixtures";
+import { test } from "fixtures/fixtures";
 import {
 	BL_PROXY_CREDENTIALS,
 	NL_PROXY_CREDENTIALS,
 	US_PROXY_CREDENTIALS,
-} from "../constants/proxies";
-import { PRODUCTION_BASE_URL } from "../constants/page-urls";
-import { GeoblockedCountries } from "../enums/geoblocked-countries";
-import { ProxyCredentialsType } from "../core/types";
+} from "constants/proxies";
+import { PRODUCTION_BASE_URL } from "constants/page-urls";
+import { GeoblockedCountries } from "enums/geoblocked-countries";
+import { ProxyCredentialsType } from "core/types";
 
 const countries = [
 	GeoblockedCountries.UNITED_STATED,

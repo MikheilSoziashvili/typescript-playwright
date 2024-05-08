@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Reporter } from "@playwright/test/reporter";
-import { XrayApi } from "../../api/xray-api";
+import { XrayApi } from "api/xray-api";
 import { readFromJSONFile } from "../utils";
-import { logger } from "../../logger/logger";
+import { logger } from "logger/logger";
 import { expect } from "@playwright/test";
-import * as Configuration from "../../configuration";
+import * as Configuration from "configuration";
 import fs from "fs";
 import xml2js from "xml2js";
 import { XmlData, XmlDataTestCase, XmlDataTestSuite } from "../types";

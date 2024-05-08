@@ -1,8 +1,8 @@
 import { expect } from "@playwright/test";
-import { BaseAsserter } from "../base/base-asserter";
+import { BaseAsserter } from "base/base-asserter";
 import { RewardsPage } from "./rewards-page";
-import { DEFAULT_CURRENCY } from "../../constants/defaults";
-import { parseToFloat } from "../../core/utils";
+import { DEFAULT_CURRENCY } from "constants/defaults";
+import { parseToFloat } from "core/utils";
 
 export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 	public constructor(page: RewardsPage) {

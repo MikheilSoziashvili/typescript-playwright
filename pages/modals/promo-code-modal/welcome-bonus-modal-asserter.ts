@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import { BaseAsserter } from "../../base/base-asserter";
+import { BaseAsserter } from "base/base-asserter";
 import { WelcomeBonusModal } from "./welcome-bonus-modal";
 
 export class WelcomeBonusModalAsserter extends BaseAsserter<WelcomeBonusModal> {

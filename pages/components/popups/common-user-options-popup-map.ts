@@ -1,6 +1,6 @@
 import { Locator, Page } from "@playwright/test";
-import { BaseMap } from "../../base/base-map";
-import { CommonUserPopupOptions } from "../../../enums/common-user-popup-options";
+import { BaseMap } from "base/base-map";
+import { CommonUserPopupOptions } from "enums/common-user-popup-options";
 
 export class CommonUserOptionsPopupMap extends BaseMap {
 	public constructor(page: Page) {

@@ -1,11 +1,11 @@
 import { Page } from "@playwright/test";
 import { AuthenticatedHeaderMap } from "./authenticated-header-map";
-import { BaseComponent } from "../../../base/base-component";
+import { BaseComponent } from "base/base-component";
 import { AuthenticatedHeaderAsserter } from "./authenticated-header-asserter";
-import { parseBalance } from "../../../../core/utils";
-import { logger } from "../../../../logger/logger";
+import { parseBalance } from "core/utils";
+import { logger } from "logger/logger";
 import { Chat } from "../../chat/chat";
-import { Timeout } from "../../../../enums/timeout";
+import { Timeout } from "enums/timeout";
 
 export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 	constructor(page: Page) {

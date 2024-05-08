@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import { BaseAsserter } from "../base/base-asserter";
+import { BaseAsserter } from "base/base-asserter";
 import { BannedUserPage } from "./banned-user-page";
 
 export class BannedUserPageAsserter extends BaseAsserter<BannedUserPage> {

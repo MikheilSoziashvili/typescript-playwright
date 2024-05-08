@@ -1,10 +1,10 @@
-import { generateRandomString } from "../core/utils";
-import { RegisterTestData } from "../dtos/test-data";
-import { NotificationTitles } from "../enums/notification-titles";
-import { ToastSubTitles } from "../enums/toast-subtitles";
-import { ToastTitles } from "../enums/toast-titles";
-import { storageStateGoogleAuth } from "../fixtures/auth-fixtures";
-import { test } from "../fixtures/fixtures";
+import { generateRandomString } from "core/utils";
+import { RegisterTestData } from "dtos/test-data";
+import { NotificationTitles } from "enums/notification-titles";
+import { ToastSubTitles } from "enums/toast-subtitles";
+import { ToastTitles } from "enums/toast-titles";
+import { storageStateGoogleAuth } from "fixtures/auth-fixtures";
+import { test } from "fixtures/fixtures";
 const AUTOMATION_AFFILIATES_CODE = generateRandomString({
 	prefix: "automation",
 });

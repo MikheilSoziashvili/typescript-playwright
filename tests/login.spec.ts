@@ -1,6 +1,6 @@
-import { users } from "../configuration";
-import { test } from "../fixtures/fixtures";
-import { parse_csv, toJson } from "../core/utils";
+import { users } from "configuration";
+import { test } from "fixtures/fixtures";
+import { parse_csv, toJson } from "core/utils";
 
 test.describe("Login tests", () => {
 	test.use({ storageState: { cookies: [], origins: [] } });

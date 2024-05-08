@@ -1,4 +1,4 @@
-import { ProxyCredentialsType } from "../core/types";
+import { ProxyCredentialsType } from "core/types";
 
 // US server
 export const US_PROXY_CREDENTIALS: ProxyCredentialsType = {

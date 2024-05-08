@@ -5,12 +5,12 @@ import {
 	GOOGLE_AUTH_CREDENTIALS,
 	SUPER_ADMIN_CREDENTIALS,
 	USER_1_CREDENTIALS,
-} from "../constants/credentials";
+} from "constants/credentials";
 import {
 	GOOGLE_AUTH_STATE_FILE_PATH,
 	SUPER_ADMIN_AUTH_STATE_FILE_PATH,
 	USER_1_AUTH_STATE_FILE_PATH,
-} from "../constants/file-paths";
+} from "constants/file-paths";
 
 import * as fs from "fs";
 import { CredentialsType } from "./types";

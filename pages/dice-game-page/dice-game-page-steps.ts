@@ -1,7 +1,7 @@
-import { BasePageStep } from "../../core/helpers/base-page-step";
-import { DiceBetTestData } from "../../dtos/test-data";
-import { DiceGameResultMessage } from "../../enums/dice-result-messages";
-import { logger } from "../../logger/logger";
+import { BasePageStep } from "core/helpers/base-page-step";
+import { DiceBetTestData } from "dtos/test-data";
+import { DiceGameResultMessage } from "enums/dice-result-messages";
+import { logger } from "logger/logger";
 import { DiceGamePage } from "./dice-game-page";
 
 export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {

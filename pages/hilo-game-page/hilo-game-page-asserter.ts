@@ -2,10 +2,10 @@ import { expect } from "@playwright/test";
 import {
 	HiloGameResultColor,
 	HiloGameStatusMessage,
-} from "../../enums/hilo-result-messages";
-import { BaseAsserter } from "../base/base-asserter";
+} from "enums/hilo-result-messages";
+import { BaseAsserter } from "base/base-asserter";
 import { HiloGamePage } from "./hilo-game-page";
-import { Timeout } from "../../enums/timeout";
+import { Timeout } from "enums/timeout";
 
 export class HiloGamePageAsserter extends BaseAsserter<HiloGamePage> {
 	public constructor(page: HiloGamePage) {

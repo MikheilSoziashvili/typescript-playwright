@@ -1,7 +1,7 @@
 import { Page } from "@playwright/test";
-import { BasePage } from "../../base/base-page";
+import { BasePage } from "base/base-page";
 import { RewardsExplorePageMap } from "./rewards-explore-page-map";
-import { REWARDS_EXPLORE_PAGE_ENDPOINT } from "../../../constants/page-endpoints";
+import { REWARDS_EXPLORE_PAGE_ENDPOINT } from "constants/page-endpoints";
 import { RewardsExplorePageAsserter } from "./rewards-explore-page-asserter";
 
 export class RewardsExplorePage extends BasePage<RewardsExplorePageMap> {

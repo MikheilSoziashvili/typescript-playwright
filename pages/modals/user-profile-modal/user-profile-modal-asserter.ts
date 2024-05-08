@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import { BaseAsserter } from "../../base/base-asserter";
+import { BaseAsserter } from "base/base-asserter";
 import { UserProfileModal } from "./user-profile-modal";
 
 export class UserProfileModalAsserter extends BaseAsserter<UserProfileModal> {

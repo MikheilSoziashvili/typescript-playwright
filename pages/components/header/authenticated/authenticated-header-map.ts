@@ -1,7 +1,7 @@
 import { Locator, Page } from "@playwright/test";
-import { BaseMap } from "../../../base/base-map";
-import { decimalNumber } from "../../../../support/regex-patterns";
-import { OriginalGame } from "../../../../enums/original-games";
+import { BaseMap } from "base/base-map";
+import { decimalNumber } from "support/regex-patterns";
+import { OriginalGame } from "enums/original-games";
 
 export class AuthenticatedHeaderMap extends BaseMap {
 	public constructor(page: Page) {

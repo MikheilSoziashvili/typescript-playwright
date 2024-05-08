@@ -1,10 +1,10 @@
-import { BasePageStep } from "../../core/helpers/base-page-step";
-import { HiloBetTestData } from "../../dtos/test-data";
+import { BasePageStep } from "core/helpers/base-page-step";
+import { HiloBetTestData } from "dtos/test-data";
 import {
 	HiloGameResultColor,
 	HiloGameStatusMessage,
-} from "../../enums/hilo-result-messages";
-import { logger } from "../../logger/logger";
+} from "enums/hilo-result-messages";
+import { logger } from "logger/logger";
 import { HiloGamePage } from "./hilo-game-page";
 
 export class HiloGamePageSteps extends BasePageStep<HiloGamePage> {
