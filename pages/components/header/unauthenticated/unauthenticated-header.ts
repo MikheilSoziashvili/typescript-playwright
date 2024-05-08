@@ -1,5 +1,5 @@
 import { Page } from "@playwright/test";
-import { BaseComponent } from "../../../base/base-component";
+import { BaseComponent } from "@base/base-component";
 import { UnauthenticatedHeaderMap } from "./unauthenticated-header-map";
 import { UnauthenticatedHeaderAsserter } from "./unauthenticated-header-asserter";
 

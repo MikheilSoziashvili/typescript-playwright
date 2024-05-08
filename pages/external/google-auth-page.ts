@@ -1,8 +1,8 @@
 import { Page } from "@playwright/test";
-import { BasePage } from "../base/base-page";
+import { BasePage } from "@base/base-page";
 import { GooglePageMap } from "./google-page-map";
 import { GoogleAuthPageAsserter } from "./google-auth-asserter";
-import { GOOGLE_AUTH_CREDENTIALS } from "../../constants/credentials";
+import { GOOGLE_AUTH_CREDENTIALS } from "@constants/credentials";
 
 export class GoogleAuthPage extends BasePage<GooglePageMap> {
 	public constructor(page: Page) {

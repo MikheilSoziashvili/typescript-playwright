@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Reporter } from "@playwright/test/reporter";
-import { XrayApi } from "../../api/xray-api";
-import { readFromJSONFile } from "../utils";
-import { logger } from "../../logger/logger";
+import { XrayApi } from "@api/xray-api";
+import { readFromJSONFile } from "@core/utils";
+import { logger } from "@logger/logger";
 import { expect } from "@playwright/test";
-import * as Configuration from "../../configuration";
+import * as Configuration from "configuration";
 import fs from "fs";
 import xml2js from "xml2js";
-import { XmlData, XmlDataTestCase, XmlDataTestSuite } from "../types";
+import { XmlData, XmlDataTestCase, XmlDataTestSuite } from "@core/types";
 
 // TODO: Move to utils
 async function parseXmlFile(filePath: string) {

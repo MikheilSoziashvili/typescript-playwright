@@ -1,5 +1,5 @@
 import { Page } from "@playwright/test";
-import { BaseComponent } from "../../base/base-component";
+import { BaseComponent } from "@base/base-component";
 import { ToastMap as ToastMap } from "./toast-map";
 import { ToastAsserter as ToastAsserter } from "./toast-asserter";
 

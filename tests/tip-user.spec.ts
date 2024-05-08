@@ -1,16 +1,13 @@
-import { test } from "../fixtures/fixtures";
-import { ChatFooterPlaceholders } from "../enums/chat-footer-palceholders";
-import { ChatMessageOptions } from "../pages/components/chat/chat-map";
-import { generateRandomString } from "../core/utils";
-import {
-	USER_1_CREDENTIALS,
-	USER_2_CREDENTIALS,
-} from "../constants/credentials";
-import { ToastTitles } from "../enums/toast-titles";
+import { test } from "@fixtures/fixtures";
+import { ChatFooterPlaceholders } from "@enums/chat-footer-palceholders";
+import { ChatMessageOptions } from "@components/chat/chat-map";
+import { generateRandomString } from "@core/utils";
+import { USER_1_CREDENTIALS, USER_2_CREDENTIALS } from "@constants/credentials";
+import { ToastTitles } from "@enums/toast-titles";
 import {
 	buildTipUserMessageInfo,
 	buildTipUserSubTitle,
-} from "../core/helpers/asserter-helpers/text-asserters";
+} from "@core/helpers/asserter-helpers/text-asserters";
 
 test.describe("Tip user tests", () => {
 	const message_1 = generateRandomString({ prefix: "automation_message_" });

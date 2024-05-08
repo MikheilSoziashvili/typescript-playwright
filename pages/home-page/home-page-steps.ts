@@ -1,5 +1,5 @@
-import { BasePageStep } from "../../core/helpers/base-page-step";
-import { RegisterTestData } from "../../dtos/test-data";
+import { BasePageStep } from "@core/helpers/base-page-step";
+import { RegisterTestData } from "@dtos/test-data";
 import { HomePage } from "./home-page";
 
 export class HomePageSteps extends BasePageStep<HomePage> {

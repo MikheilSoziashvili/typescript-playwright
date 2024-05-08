@@ -1,5 +1,5 @@
-import { BasePageStep } from "../../core/helpers/base-page-step";
-import { logger } from "../../logger/logger";
+import { BasePageStep } from "@core/helpers/base-page-step";
+import { logger } from "@logger/logger";
 import { ProfilePage } from "./profile-page";
 
 export class ProfilePageSteps extends BasePageStep<ProfilePage> {

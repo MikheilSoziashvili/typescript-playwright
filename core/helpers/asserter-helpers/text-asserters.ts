@@ -1,4 +1,4 @@
-import { DEFAULT_CURRENCY } from "../../../constants/defaults";
+import { DEFAULT_CURRENCY } from "@constants/defaults";
 import { buildAmountWithCurrency } from "../../utils";
 
 export function buildClaimedAmountSubTitle(

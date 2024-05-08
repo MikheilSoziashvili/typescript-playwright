@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
-import { BaseAsserter } from "../../base/base-asserter";
+import { BaseAsserter } from "@base/base-asserter";
 import { TipUserModal } from "./tip-user-modal";
-import { parseToFloat } from "../../../core/utils";
+import { parseToFloat } from "@core/utils";
 
 export class TipUserModalAsserter extends BaseAsserter<TipUserModal> {
 	public constructor(page: TipUserModal) {

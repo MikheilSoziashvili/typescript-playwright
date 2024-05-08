@@ -1,6 +1,6 @@
-import { BasePageStep } from "../../core/helpers/base-page-step";
-import { parseToFloat } from "../../core/utils";
-import { BetTestData } from "../../dtos/test-data";
+import { BasePageStep } from "@core/helpers/base-page-step";
+import { parseToFloat } from "@core/utils";
+import { BetTestData } from "@dtos/test-data";
 import { CrashGamePage } from "./crash-game-page";
 
 export class CrashGamePageSteps extends BasePageStep<CrashGamePage> {

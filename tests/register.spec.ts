@@ -1,5 +1,5 @@
-import { test } from "../fixtures/fixtures";
-import { RegisterTestData } from "../dtos/test-data";
+import { test } from "@fixtures/fixtures";
+import { RegisterTestData } from "@dtos/test-data";
 
 test.describe("Register tests", () => {
 	test.use({ storageState: { cookies: [], origins: [] } });

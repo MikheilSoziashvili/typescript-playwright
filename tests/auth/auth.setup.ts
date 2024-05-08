@@ -1,13 +1,13 @@
-import { test as setup } from "../../fixtures/fixtures";
-import { HomePage } from "../../pages/home-page/home-page";
+import { test as setup } from "@fixtures/fixtures";
+import { HomePage } from "@pages/home-page/home-page";
 import {
 	SUPER_ADMIN_CREDENTIALS,
 	USER_1_CREDENTIALS,
-} from "../../constants/credentials";
+} from "@constants/credentials";
 import {
 	SUPER_ADMIN_AUTH_STATE_FILE_PATH,
 	USER_1_AUTH_STATE_FILE_PATH,
-} from "../../constants/file-paths";
+} from "@constants/file-paths";
 
 // Setup left for backward compatability. Might be removed later.
 setup("[QA-193] Authenticate as admin", async ({ page }) => {

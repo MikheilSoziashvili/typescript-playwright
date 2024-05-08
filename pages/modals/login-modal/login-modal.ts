@@ -1,9 +1,9 @@
 import { Page } from "@playwright/test";
-import { BaseModal } from "../../base/base-modal";
+import { BaseModal } from "@base/base-modal";
 import { LoginModalMap } from "./login-modal-map";
 import { LoginModalAsserter } from "./login-modal-asserter";
-import { findUser } from "../../../core/utils";
-import { TestUserConfigurationObject } from "../../../core/types";
+import { findUser } from "@core/utils";
+import { TestUserConfigurationObject } from "@core/types";
 
 export class LoginModal extends BaseModal<LoginModalMap> {
 	constructor(page: Page) {

@@ -1,8 +1,8 @@
 import { Page } from "@playwright/test";
-import { BaseComponent } from "../../base/base-component";
+import { BaseComponent } from "@base/base-component";
 import { NotificationMap } from "./notification-map";
 import { NotificationAsserter } from "./notification-asserter";
-import { VisibilityStates } from "../../../enums/playwright/visibility-states";
+import { VisibilityStates } from "@enums/playwright/visibility-states";
 
 export class Notification extends BaseComponent<NotificationMap> {
 	constructor(page: Page) {

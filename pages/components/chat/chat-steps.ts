@@ -1,8 +1,8 @@
-import { BaseComponentStep } from "../../../core/helpers/base-component-step";
-import { CommonUserPopupOptions } from "../../../enums/common-user-popup-options";
-import { VisibilityStates } from "../../../enums/playwright/visibility-states";
-import { TipUserModal } from "../../modals/tip-user-modal/tip-user-modal";
-import { UserProfileModal } from "../../modals/user-profile-modal/user-profile-modal";
+import { BaseComponentStep } from "@core/helpers/base-component-step";
+import { CommonUserPopupOptions } from "@enums/common-user-popup-options";
+import { VisibilityStates } from "@enums/playwright/visibility-states";
+import { TipUserModal } from "@modals/tip-user-modal/tip-user-modal";
+import { UserProfileModal } from "@modals/user-profile-modal/user-profile-modal";
 import { AuthenticatedHeader } from "../header/authenticated/authenticated-header";
 import { CommonUserOptionsPopup } from "../popups/common-user-options-popup";
 import { Chat } from "./chat";

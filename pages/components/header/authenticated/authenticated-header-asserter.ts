@@ -1,8 +1,8 @@
 import { expect } from "@playwright/test";
-import { BaseAsserter } from "../../../base/base-asserter";
+import { BaseAsserter } from "@base/base-asserter";
 import { AuthenticatedHeader } from "./authenticated-header";
-import { Timeout } from "../../../../enums/timeout";
-import { formatBalance } from "../../../../core/utils";
+import { Timeout } from "@enums/timeout";
+import { formatBalance } from "@core/utils";
 
 export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeader> {
 	public constructor(authenticatedHeader: AuthenticatedHeader) {

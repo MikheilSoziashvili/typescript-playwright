@@ -1,4 +1,4 @@
-import { BaseAsserter } from "../base/base-asserter";
+import { BaseAsserter } from "@base/base-asserter";
 import { ProfilePage } from "./profile-page";
 
 export class ProfilePageAsserter extends BaseAsserter<ProfilePage> {

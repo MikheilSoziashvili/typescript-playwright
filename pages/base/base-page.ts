@@ -1,7 +1,7 @@
 import { Page } from "@playwright/test";
 import { BaseMap } from "./base-map";
-import { AuthenticatedHeader } from "../components/header/authenticated/authenticated-header";
-import { UnauthenticatedHeader } from "../components/header/unauthenticated/unauthenticated-header";
+import { AuthenticatedHeader } from "@components/header/authenticated/authenticated-header";
+import { UnauthenticatedHeader } from "@components/header/unauthenticated/unauthenticated-header";
 
 export abstract class BasePage<T = BaseMap> {
 	readonly page: Page;

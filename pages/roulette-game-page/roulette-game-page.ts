@@ -1,10 +1,10 @@
 import { Page, expect } from "@playwright/test";
-import { BasePage } from "../base/base-page";
 import { RouletteGamePageMap } from "./roulette-game-page-map";
 import { RouletteGamePageAsserter } from "./roulette-game-page-asserter";
-import { RouletteNumberColor } from "../../enums/original-games";
-import { range } from "../../core/utils";
-import { ROULETTE_GAME_PAGE_ENDPOINT } from "../../constants/page-endpoints";
+import { RouletteNumberColor } from "@enums/original-games";
+import { range } from "@core/utils";
+import { ROULETTE_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
+import { BasePage } from "@base/base-page";
 
 export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 	public constructor(page: Page) {
