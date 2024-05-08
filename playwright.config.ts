@@ -11,7 +11,7 @@ function getReporter(): ReporterDescription[] {
 	if (Configuration.createExecution) {
 		return [
 			["junit", { outputFile: Configuration.reportName }],
-			["@core/reporters/custom-reporter.ts"], // Custom reporter for XRay/JIRA integration
+			["core/reporters/custom-reporter.ts"], // Custom reporter for XRay/JIRA integration
 			["html"],
 			["list"],
 		];
