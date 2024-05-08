@@ -49,13 +49,6 @@ export class HomePage extends BasePage<HomePageMap> {
 
 	public async navigateAndCheckTitle(): Promise<void> {
 		await this.navigate();
-
-		// Applicable only for coder environment
-		if (this.page.url().includes("google")) {
-			const googleAuthPage = new GoogleAuthPage(this.page);
-			await googleAuthPage.loginToGoogle();
-		}
-
 		await this.assertThat().titleHasText(
 			"Gamdom - Top Bitcoin & Crypto Casino!",
 		);

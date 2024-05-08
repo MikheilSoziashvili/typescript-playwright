@@ -18,6 +18,11 @@ export const xray: Record<string, string> = {
 	clientSecret: asString(process.env.XRAY_CLIENT_SECRET),
 };
 
+export const cloudflare: Record<string, string> = {
+	"CF-Access-Client-Id": asString(process.env.CF_ACCESS_CLIENT_ID),
+	"CF-Access-Client-Secret": asString(process.env.CF_ACCESS_CLIENT_SECRET),
+};
+
 export const users: TestUserConfigurationObject[] = [
 	{
 		username: "superadmin",

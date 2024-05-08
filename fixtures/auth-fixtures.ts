@@ -23,6 +23,7 @@ function authPage(browser: Browser): Promise<Page> {
 	return browser.newPage({
 		...devices["Desktop Chrome"],
 		viewport: { width: 1920, height: 1080 },
+		extraHTTPHeaders: Configuration.cloudflare,
 	});
 }
 

@@ -1,6 +1,5 @@
 import { Page } from "@playwright/test";
 import { HomePage } from "../pages/home-page/home-page";
-import { GoogleAuthPage } from "../pages/external/google-auth-page";
 import {
 	GOOGLE_AUTH_CREDENTIALS,
 	SUPER_ADMIN_CREDENTIALS,
@@ -21,6 +20,7 @@ const CREDENTIALS_AUTH_STATE_MAP = {
 	[USER_1_CREDENTIALS.username]: USER_1_AUTH_STATE_FILE_PATH,
 };
 
+//Deprecated since CF auth introduced
 export async function getStorageStateGoogleAuth(
 	page: Page,
 	baseURL?: string,
@@ -35,18 +35,8 @@ export async function getStorageStateGoogleAuth(
 	}
 
 	const homePage: HomePage = new HomePage(page);
-	const googleAuthPage = new GoogleAuthPage(page);
 	await page.goto(baseURL || "/"); //https://github.com/microsoft/playwright/issues/27557#issuecomment-1991479852
 
-	// Applicable only for coder environment
-	if (!page.url().includes("google")) {
-		return;
-	}
-
-	await googleAuthPage.loginToGoogle(
-		GOOGLE_AUTH_CREDENTIALS.username,
-		GOOGLE_AUTH_CREDENTIALS.password,
-	);
 	await homePage
 		.assertThat()
 		.titleHasText("Gamdom - Top Bitcoin & Crypto Casino!");
@@ -71,14 +61,8 @@ export async function getStorageStateUser(
 	}
 
 	const homePage: HomePage = new HomePage(page);
-	const googleAuthPage = new GoogleAuthPage(page);
 	await page.goto(baseURL || "/"); //https://github.com/microsoft/playwright/issues/27557#issuecomment-1991479852
 
-	// Applicable only for coder environment
-	await googleAuthPage.loginToGoogle(
-		GOOGLE_AUTH_CREDENTIALS.username,
-		GOOGLE_AUTH_CREDENTIALS.password,
-	);
 	await homePage.unauthenticatedHeader.openLoginModal();
 	await homePage.loginModal.login(user.username, user.password);
 	await homePage.assertThat().userIsLoggedIn();

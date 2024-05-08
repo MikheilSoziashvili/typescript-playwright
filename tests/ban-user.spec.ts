@@ -1,6 +1,5 @@
 import { SUPER_ADMIN_CREDENTIALS } from "constants/credentials";
 import { RegisterTestData } from "dtos/test-data";
-import { storageStateGoogleAuth } from "fixtures/auth-fixtures";
 import { test } from "fixtures/fixtures";
 
 test.describe("Ban user", () => {
@@ -14,7 +13,6 @@ test.describe("Ban user", () => {
 	});
 
 	test.slow();
-	test.use(storageStateGoogleAuth);
 	test("[ENG-288] Banning an user @smoke", async ({
 		homePage,
 		userInfoAdminPage,
