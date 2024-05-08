@@ -1,6 +1,5 @@
 import { ReporterDescription, defineConfig, devices } from "@playwright/test";
 import * as Configuration from "configuration";
-import { asString } from "core/utils";
 
 /** Read environment variables from file. https://github.com/motdotla/dotenv */
 // require('dotenv').config();
