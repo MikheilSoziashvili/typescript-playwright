@@ -2,6 +2,8 @@ import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
 import { decimalNumber } from "@support/regex-patterns";
 import { OriginalGame } from "@enums/original-games";
+import { hardWait } from "@core/utils";
+import { VisibilityStates } from "@enums/playwright/visibility-states";
 
 export class AuthenticatedHeaderMap extends BaseMap {
 	public constructor(page: Page) {
@@ -29,15 +31,18 @@ export class AuthenticatedHeaderMap extends BaseMap {
 	}
 
 	public async accountBalance(): Promise<Locator> {
-		const accountBalance = await this.waitUntilVisible(
-			this.page.locator(
-				"div[class*='header'] > div:nth-child(2) > div:nth-child(2) div[style*='tabular']",
-			),
+		const accountBalanceLocator = this.page.locator(
+			"div[class*='header'] > div:nth-child(2) > div:nth-child(2) div[style*='tabular']",
 		);
+		await accountBalanceLocator.waitFor({
+			state: VisibilityStates.VISIBLE,
+		});
 
 		try {
+			// to remove this when find a better method for balance animation
+			await hardWait(2 * 1000);
 			return await this.waitUntilContainsText(
-				accountBalance,
+				accountBalanceLocator,
 				decimalNumber,
 			); //workaround for $0 balance on page load bug
 		} catch (error) {
