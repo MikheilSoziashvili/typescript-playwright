@@ -45,7 +45,7 @@ jobs:
             - name: Install Playwright Browsers
               run: yarn playwright install --with-deps
             - name: Run Playwright tests
-              run: yarn playwright test --grep "@smoke" --retries=1
+              run: yarn playwright test --grep "@smoke"
             - uses: actions/upload-artifact@v3
               if: always()
               with:
