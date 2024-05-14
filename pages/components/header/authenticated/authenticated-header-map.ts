@@ -2,7 +2,6 @@ import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
 import { decimalNumber } from "@support/regex-patterns";
 import { OriginalGame } from "@enums/original-games";
-import { hardWait } from "@core/utils";
 import { VisibilityStates } from "@enums/playwright/visibility-states";
 
 export class AuthenticatedHeaderMap extends BaseMap {
@@ -39,8 +38,6 @@ export class AuthenticatedHeaderMap extends BaseMap {
 		});
 
 		try {
-			// to remove this when find a better method for balance animation
-			await hardWait(2 * 1000);
 			return await this.waitUntilContainsText(
 				accountBalanceLocator,
 				decimalNumber,

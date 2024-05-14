@@ -46,7 +46,6 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 				);
 			}
 			await this.navigate();
-
 			await this.steps().placeBet(betTestData);
 
 			crashedMultiplier = parseMultiplier(

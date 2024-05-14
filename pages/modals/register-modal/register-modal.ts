@@ -3,7 +3,7 @@ import { BaseModal } from "@base/base-modal";
 import { RegisterModalMap } from "./register-modal-map";
 import { RegisterTestData } from "@dtos/test-data";
 import { Delay } from "@enums/delay";
-import { hardWait } from "@core/utils";
+import { VisibilityStates } from "@enums/playwright/visibility-states";
 
 export class RegisterModal extends BaseModal<RegisterModalMap> {
 	constructor(page: Page) {
@@ -28,20 +28,26 @@ export class RegisterModal extends BaseModal<RegisterModalMap> {
 		await this.map.passwordField.fill(registerData.password);
 		await this.map.emailField.fill(registerData.email);
 
-		if (acceptTermsOfService)
+		if (acceptTermsOfService) {
 			await this.map.termsOfServiceCheckbox.click({
 				delay: Delay.EXTRA_SHORT,
 			});
-		if (acceptNewsOffers)
+			await this.map.termsOfServiceCheckbox.waitFor({
+				state: VisibilityStates.VISIBLE,
+			});
+		}
+		if (acceptNewsOffers) {
 			await this.map.newsAndOffersCheckbox.click({
 				delay: Delay.EXTRA_SHORT,
 			});
+			await this.map.checkedNewsAndOffersCheckbox.waitFor({
+				state: VisibilityStates.VISIBLE,
+			});
+		}
 	}
 
 	public async clickStartPlayingBtn(): Promise<void> {
 		await this.map.startPlayingBtn.focus();
-		// to remove this wait when a better approach is found
-		await hardWait(3000);
 		await this.map.startPlayingBtn.click({ delay: Delay.SHORT });
 	}
 }

@@ -22,8 +22,20 @@ export class RegisterModalMap extends BaseMap {
 		return this.page.getByTestId("agree-terms-signup").locator("span");
 	}
 
+	public get checkedTermsOfServiceCheckbox(): Locator {
+		return this.page
+			.getByTestId("agree-terms-signup")
+			.locator("span[class*=checked]");
+	}
+
 	public get newsAndOffersCheckbox(): Locator {
 		return this.page.getByTestId("want-news-signup").locator("span");
+	}
+
+	public get checkedNewsAndOffersCheckbox(): Locator {
+		return this.page
+			.getByTestId("want-news-signup")
+			.locator("span[class*=checked]");
 	}
 
 	public get startPlayingBtn(): Locator {
