@@ -1,4 +1,4 @@
-import { BaseComponentStep } from "@core/helpers/base-component-step";
+import { BaseComponentStep } from "@pages/base/base-component-step";
 import { CommonUserPopupOptions } from "@enums/common-user-popup-options";
 import { VisibilityStates } from "@enums/playwright/visibility-states";
 import { TipUserModal } from "@modals/tip-user-modal/tip-user-modal";

@@ -19,7 +19,7 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 	): Promise<void> {
 		await expect
 			.soft(this.gamdomPage.map.chatTextBoxPlaceholder)
-			.toHaveText(placeholder, { timeout: Timeout.SHORT });
+			.toHaveText(placeholder, { timeout: Timeout.MEDIUM });
 	}
 
 	public async isMessageVisible(

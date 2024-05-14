@@ -21,7 +21,7 @@ export class AuthenticatedHeaderMap extends BaseMap {
 	}
 
 	public get userAvatar(): Locator {
-		return this.page.locator("img[class*='MuiAvatar-img']");
+		return this.page.locator("div.MuiAvatar-rounded");
 	}
 
 	public get chatButton(): Locator {

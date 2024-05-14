@@ -6,6 +6,8 @@ import { CrashGamePageSteps } from "./crash-game-page-steps";
 import { logger } from "@logger/logger";
 import { parseMultiplier } from "@core/utils";
 import { CRASH_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
+import { BetTestData } from "@dtos/test-data";
+import { VisibilityStates } from "@enums/playwright/visibility-states";
 
 export class CrashGamePage extends BasePage<CrashGamePageMap> {
 	public constructor(page: Page) {
@@ -14,6 +16,9 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 
 	public override async navigate(): Promise<void> {
 		await this.page.goto(CRASH_GAME_PAGE_ENDPOINT);
+		await this.map.gameContainer.waitFor({
+			state: VisibilityStates.VISIBLE,
+		});
 	}
 
 	public override assertThat(): CrashGamePageAsserter {
@@ -26,7 +31,7 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 
 	public async playUntilMultiplierIs(
 		multiplier: number,
-		...actions: (() => Promise<void>)[]
+		betTestData: BetTestData,
 	): Promise<void> {
 		let crashedMultiplier = 0.0;
 		do {
@@ -40,10 +45,9 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 					"Multiplier crashed below expected. Will retry bet...",
 				);
 			}
+			await this.navigate();
 
-			for (const action of actions) {
-				await action();
-			}
+			await this.steps().placeBet(betTestData);
 
 			crashedMultiplier = parseMultiplier(
 				await this.getCrashedMultiplier(),
@@ -64,9 +68,11 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 	}
 
 	public async getCrashedMultiplier(waitCrashTimeout = 60): Promise<string> {
-		await this.waitCrash(waitCrashTimeout);
-		// eslint-disable-next-line @typescript-eslint/return-await
-		return this.map.multiplierCounterCrashed.innerText();
+		await this.waitCrash(waitCrashTimeout * 1000);
+		const crashedMultiplierText =
+			await this.map.multiplierCounterCrashed.innerText();
+
+		return crashedMultiplierText;
 	}
 
 	public async placeBet(

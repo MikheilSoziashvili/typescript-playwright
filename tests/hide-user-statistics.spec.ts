@@ -25,7 +25,7 @@ test.describe("User statistics tests", () => {
 		await profilePage.logout();
 	});
 
-	test("[ENG-300] Hide statistics from other users @smoke", async ({
+	test("[ENG-300] Hide statistics from other users", async ({
 		homePage,
 		chat,
 		userProfileModal,

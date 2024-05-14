@@ -1,4 +1,4 @@
-import { BasePageStep } from "@core/helpers/base-page-step";
+import { BasePageStep } from "@pages/base/base-page-step";
 import { DiceBetTestData } from "@dtos/test-data";
 import { DiceGameResultMessage } from "@enums/dice-result-messages";
 import { logger } from "@logger/logger";

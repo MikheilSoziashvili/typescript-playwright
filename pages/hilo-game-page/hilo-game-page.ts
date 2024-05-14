@@ -15,6 +15,7 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 
 	public override async navigate(): Promise<void> {
 		await this.page.goto(HILO_GAME_PAGE_ENDPOINT);
+		await this.map.gameArea.waitFor({ state: VisibilityStates.VISIBLE });
 	}
 
 	public override assertThat(): HiloGamePageAsserter {

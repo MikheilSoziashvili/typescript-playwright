@@ -1,4 +1,4 @@
-import { BasePageStep } from "@core/helpers/base-page-step";
+import { BasePageStep } from "@pages/base/base-page-step";
 import { parseToFloat } from "@core/utils";
 import { BetTestData } from "@dtos/test-data";
 import { CrashGamePage } from "./crash-game-page";
@@ -9,6 +9,9 @@ export class CrashGamePageSteps extends BasePageStep<CrashGamePage> {
 	}
 
 	public async placeBet(betTestData: BetTestData): Promise<void> {
+		const accountBalanceBeforeBet =
+			await this.gamdomPage.authenticatedHeader.getAccountBalance();
+
 		await this.gamdomPage.placeBet(
 			betTestData.betAmount,
 			betTestData.autoCashoutMultiplier,
@@ -24,5 +27,8 @@ export class CrashGamePageSteps extends BasePageStep<CrashGamePage> {
 			.playerBetBoxesDisplayed([
 				{ betAmount: parseToFloat(betTestData.betAmount) },
 			]);
+		await this.gamdomPage.authenticatedHeader
+			.assertThat()
+			.accountBalanceIs(accountBalanceBeforeBet - betTestData.betAmount);
 	}
 }
