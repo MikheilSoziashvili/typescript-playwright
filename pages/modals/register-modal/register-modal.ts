@@ -32,7 +32,7 @@ export class RegisterModal extends BaseModal<RegisterModalMap> {
 			await this.map.termsOfServiceCheckbox.click({
 				delay: Delay.EXTRA_SHORT,
 			});
-			await this.map.termsOfServiceCheckbox.waitFor({
+			await this.map.checkedTermsOfServiceCheckbox.waitFor({
 				state: VisibilityStates.VISIBLE,
 			});
 		}

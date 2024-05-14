@@ -67,7 +67,7 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 	}
 
 	public async getCrashedMultiplier(waitCrashTimeout = 60): Promise<string> {
-		await this.waitCrash(waitCrashTimeout * 1000);
+		await this.waitCrash(waitCrashTimeout);
 		const crashedMultiplierText =
 			await this.map.multiplierCounterCrashed.innerText();
 
