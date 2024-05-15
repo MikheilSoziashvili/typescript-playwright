@@ -16,7 +16,20 @@ test.describe("Crash tests", () => {
 		await crashGamePage.navigate();
 		await crashGamePage.playUntilMultiplierIs(
 			betTestData.autoCashoutMultiplier,
-			betTestData,
+			async () => {
+				await crashGamePage.navigate();
+
+				const accountBalanceBeforeBet =
+					await crashGamePage.authenticatedHeader.getAccountBalance();
+
+				await crashGamePage.steps().placeBet(betTestData);
+
+				await crashGamePage.authenticatedHeader
+					.assertThat()
+					.accountBalanceIs(
+						accountBalanceBeforeBet - betTestData.betAmount,
+					);
+			},
 		);
 	});
 });

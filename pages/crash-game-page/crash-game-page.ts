@@ -31,7 +31,7 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 
 	public async playUntilMultiplierIs(
 		multiplier: number,
-		betTestData: BetTestData,
+		...actions: (() => Promise<void>)[]
 	): Promise<void> {
 		let crashedMultiplier = 0.0;
 		do {
@@ -45,8 +45,10 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 					"Multiplier crashed below expected. Will retry bet...",
 				);
 			}
-			await this.navigate();
-			await this.steps().placeBet(betTestData);
+
+			for (const action of actions) {
+				await action();
+			}
 
 			crashedMultiplier = parseMultiplier(
 				await this.getCrashedMultiplier(),
