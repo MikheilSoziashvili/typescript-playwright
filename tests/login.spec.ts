@@ -32,6 +32,9 @@ test.describe("Login tests", () => {
 			await homePage.loginModal
 				.assertThat(true)
 				.passwordFieldErrorTooltipIs(record.expected_password_warning);
+
+			// Temporary solution. Previously button was disabled until inputs are correct, now it is not. Discussed with Johannes (To be aligned)
+			// await homePage.loginModal.assertThat().loginBtnIsDisabled();
 		});
 	}
 
