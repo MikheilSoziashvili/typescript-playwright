@@ -6,7 +6,6 @@ import { CrashGamePageSteps } from "./crash-game-page-steps";
 import { logger } from "@logger/logger";
 import { parseMultiplier } from "@core/utils";
 import { CRASH_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
-import { BetTestData } from "@dtos/test-data";
 import { VisibilityStates } from "@enums/playwright/visibility-states";
 
 export class CrashGamePage extends BasePage<CrashGamePageMap> {

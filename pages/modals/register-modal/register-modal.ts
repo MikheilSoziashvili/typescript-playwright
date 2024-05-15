@@ -1,9 +1,8 @@
-import { Page } from "@playwright/test";
+import { Locator, Page, expect } from "@playwright/test";
 import { BaseModal } from "@base/base-modal";
 import { RegisterModalMap } from "./register-modal-map";
 import { RegisterTestData } from "@dtos/test-data";
 import { Delay } from "@enums/delay";
-import { VisibilityStates } from "@enums/playwright/visibility-states";
 
 export class RegisterModal extends BaseModal<RegisterModalMap> {
 	constructor(page: Page) {
@@ -12,6 +11,10 @@ export class RegisterModal extends BaseModal<RegisterModalMap> {
 
 	public assertThat(): void {
 		throw new Error("Method not implemented.");
+	}
+
+	private async waitUntilChecked(locator: Locator): Promise<void> {
+		await expect(locator).toHaveClass(/.*checked.*/);
 	}
 
 	public async fillInCredentials(
@@ -29,20 +32,22 @@ export class RegisterModal extends BaseModal<RegisterModalMap> {
 		await this.map.emailField.fill(registerData.email);
 
 		if (acceptTermsOfService) {
-			await this.map.termsOfServiceCheckbox.click({
+			const termsOfServiceCheckbox = this.map.termsOfServiceCheckbox;
+
+			await termsOfServiceCheckbox.click({
 				delay: Delay.EXTRA_SHORT,
 			});
-			await this.map.checkedTermsOfServiceCheckbox.waitFor({
-				state: VisibilityStates.VISIBLE,
-			});
+
+			await this.waitUntilChecked(termsOfServiceCheckbox);
 		}
 		if (acceptNewsOffers) {
-			await this.map.newsAndOffersCheckbox.click({
+			const newsAndOffersCheckbox = this.map.newsAndOffersCheckbox;
+
+			await newsAndOffersCheckbox.click({
 				delay: Delay.EXTRA_SHORT,
 			});
-			await this.map.checkedNewsAndOffersCheckbox.waitFor({
-				state: VisibilityStates.VISIBLE,
-			});
+
+			await this.waitUntilChecked(newsAndOffersCheckbox);
 		}
 	}
 
