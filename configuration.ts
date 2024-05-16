@@ -1,11 +1,18 @@
 import { TestUserConfigurationObject } from "@core/types";
 import { asString, getFilePath } from "@core/utils";
 
+export const environment_url = process.env.CI
+	? asString(process.env.ENVIRONMENT_URL)
+	: "https://staging-for-e2e-tests.teamgamdom.com";
 export const logLevel = "info";
 export const createExecution: boolean = process.env.CI ? true : false;
+export const slackReporter: boolean = process.env.CI ? true : false;
 export const reportName: string = getFilePath("results.xml", "./");
 export const keystore: string = getFilePath("keystore.json", "./");
 
+export const slack: Record<string, string> = {
+	webHookUrl: asString(process.env.SLACK_REPORTER_WEBHOOK_URL),
+};
 export const jira: Record<string, string> = {
 	baseUrl: "https://gamdom.atlassian.net",
 	projectKey: "ENG",

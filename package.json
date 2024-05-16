@@ -20,6 +20,7 @@
 		"accounting-js": "^1.1.1",
 		"csv-parse": "^5.5.3",
 		"pino-pretty": "^10.3.0",
+		"playwright-slack-report": "^1.1.72",
 		"winston": "^3.11.0",
 		"xml2js": "^0.6.2"
 	},

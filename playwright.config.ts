@@ -1,3 +1,4 @@
+import { slackReporterConfig } from "@core/reporters/slack-reporter";
 import { ReporterDescription, defineConfig, devices } from "@playwright/test";
 import * as Configuration from "configuration";
 
@@ -8,16 +9,29 @@ import * as Configuration from "configuration";
 
 // When tests are aligned with CI/CD workflow, a more comprehensive report will be selected instead of HTML
 function getReporter(): ReporterDescription[] {
+	const reporters: ReporterDescription[] = [["list"], ["html"]];
+
 	if (Configuration.createExecution) {
-		return [
+		//Enable Jira Custom Reporter
+		reporters.push(
 			["junit", { outputFile: Configuration.reportName }],
-			["./core/reporters/custom-reporter.ts"], // Custom reporter for XRay/JIRA integration
-			["html"],
-			["list"],
-		];
-	} else {
-		return [["list"], ["html"]];
+			["./core/reporters/custom-reporter.ts"], // Custom reporter for XRay/JIRA integration);
+		);
 	}
+
+	if (Configuration.slackReporter) {
+		//Enable Slack Reporter
+		reporters.push(
+			slackReporterConfig(Configuration.slack, [
+				{
+					key: "ENVIRONMENT_URL",
+					value: Configuration.environment_url,
+				},
+			]),
+		);
+	}
+
+	return reporters;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- default config file
@@ -47,7 +61,7 @@ export default defineConfig({
 		actionTimeout: 10 * 1000,
 		navigationTimeout: 30 * 1000,
 		/* Base URL to use in actions like `await page.goto('/')`. */
-		baseURL: "https://staging-for-e2e-tests.teamgamdom.com",
+		baseURL: Configuration.environment_url,
 		extraHTTPHeaders: Configuration.cloudflare,
 		/* HTTP credentials for basic auth on dev servers */
 		// httpCredentials: {
