@@ -1,4 +1,4 @@
-import { BasePageStep } from "@core/helpers/base-page-step";
+import { BasePageStep } from "@pages/base/base-page-step";
 import { logger } from "@logger/logger";
 import { ProfilePage } from "./profile-page";
 

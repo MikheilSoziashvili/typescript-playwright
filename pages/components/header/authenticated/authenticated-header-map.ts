@@ -2,6 +2,7 @@ import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
 import { decimalNumber } from "@support/regex-patterns";
 import { OriginalGame } from "@enums/original-games";
+import { VisibilityStates } from "@enums/playwright/visibility-states";
 
 export class AuthenticatedHeaderMap extends BaseMap {
 	public constructor(page: Page) {
@@ -21,7 +22,7 @@ export class AuthenticatedHeaderMap extends BaseMap {
 	}
 
 	public get userAvatar(): Locator {
-		return this.page.locator("img[class*='MuiAvatar-img']");
+		return this.page.locator("div.MuiAvatar-rounded");
 	}
 
 	public get chatButton(): Locator {
@@ -29,15 +30,16 @@ export class AuthenticatedHeaderMap extends BaseMap {
 	}
 
 	public async accountBalance(): Promise<Locator> {
-		const accountBalance = await this.waitUntilVisible(
-			this.page.locator(
-				"div[class*='header'] > div:nth-child(2) > div:nth-child(2) div[style*='tabular']",
-			),
+		const accountBalanceLocator = this.page.locator(
+			"div[class*='header'] > div:nth-child(2) > div:nth-child(2) div[style*='tabular']",
 		);
+		await accountBalanceLocator.waitFor({
+			state: VisibilityStates.VISIBLE,
+		});
 
 		try {
 			return await this.waitUntilContainsText(
-				accountBalance,
+				accountBalanceLocator,
 				decimalNumber,
 			); //workaround for $0 balance on page load bug
 		} catch (error) {

@@ -136,4 +136,5 @@ dist
 .DS_Store
 results.xml
 keystore.json
-/core/.auth/
+/core/.auth/*
+/core/.auth/auth.json

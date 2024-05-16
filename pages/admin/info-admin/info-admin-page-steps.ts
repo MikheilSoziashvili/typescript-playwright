@@ -1,4 +1,4 @@
-import { BasePageStep } from "@core/helpers/base-page-step";
+import { BasePageStep } from "@pages/base/base-page-step";
 import { VisibilityStates } from "@enums/playwright/visibility-states";
 import { InfoAdminPage } from "./info-admin-page";
 

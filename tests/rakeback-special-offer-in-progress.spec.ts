@@ -7,7 +7,7 @@ import { buildClaimedAmountSubTitle } from "@core/helpers/asserter-helpers/text-
 
 test.describe("Rakeback reward with special offers tests", () => {
 	test.use(storageStateUser1);
-	test("[ENG-929] Rakeback instant reward when special offer is in progress @smoke", async ({
+	test("[ENG-929] Rakeback instant reward when special offer is in progress", async ({
 		homePage,
 		diceGamePage,
 		rewardsPage,

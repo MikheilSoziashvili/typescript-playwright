@@ -1,10 +1,10 @@
 import { users } from "configuration";
 import { test } from "@fixtures/fixtures";
 import { parse_csv, toJson } from "@core/utils";
+import { USER_1_CREDENTIALS } from "@constants/credentials";
 
 test.describe("Login tests", () => {
 	test.use({ storageState: { cookies: [], origins: [] } });
-
 	for (const record of parse_csv(
 		"datasets",
 		"ENG-294-login-not-possible.csv",
@@ -97,4 +97,18 @@ test.describe("Login tests", () => {
 			await homePage.assertThat().userIsLoggedIn();
 		});
 	}
+
+	test("[ENG-1070] Login with username @smoke", async ({ homePage }) => {
+		await homePage.navigateAndCheckTitle();
+
+		await homePage.unauthenticatedHeader.openLoginModal();
+		await homePage.loginModal.login(
+			USER_1_CREDENTIALS.username,
+			USER_1_CREDENTIALS.password,
+		);
+
+		await homePage.authenticatedHeader
+			.assertThat()
+			.loggedInUserElementsAreVisible();
+	});
 });

@@ -25,7 +25,7 @@ export class RegisterModalMap extends BaseMap {
 	public get newsAndOffersCheckbox(): Locator {
 		return this.page.getByTestId("want-news-signup").locator("span");
 	}
-
+	
 	public get startPlayingBtn(): Locator {
 		return this.page.getByTestId("start-playing-signup");
 	}

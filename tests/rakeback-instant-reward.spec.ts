@@ -7,7 +7,7 @@ import { buildClaimedAmountSubTitle } from "@core/helpers/asserter-helpers/text-
 
 test.describe("Rakeback instant reward tests", () => {
 	test.use(storageStateSuperadmin);
-	test("[ENG-266] Rakeback instant reward @smoke", async ({
+	test("[ENG-266] Rakeback instant reward", async ({
 		homePage,
 		diceGamePage,
 		rewardsPage,

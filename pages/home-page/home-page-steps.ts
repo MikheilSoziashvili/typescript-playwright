@@ -1,4 +1,4 @@
-import { BasePageStep } from "@core/helpers/base-page-step";
+import { BasePageStep } from "@pages/base/base-page-step";
 import { RegisterTestData } from "@dtos/test-data";
 import { HomePage } from "./home-page";
 

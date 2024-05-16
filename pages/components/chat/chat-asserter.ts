@@ -3,7 +3,6 @@ import { BaseAsserter } from "@base/base-asserter";
 import { Chat } from "./chat";
 import { ChatFooterPlaceholders } from "@enums/chat-footer-palceholders";
 import { ChatMessageOptions } from "./chat-map";
-import { Timeout } from "@enums/timeout";
 
 export class ChatAsserter extends BaseAsserter<Chat> {
 	public constructor(chat: Chat) {
@@ -19,7 +18,7 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 	): Promise<void> {
 		await expect
 			.soft(this.gamdomPage.map.chatTextBoxPlaceholder)
-			.toHaveText(placeholder, { timeout: Timeout.SHORT });
+			.toHaveText(placeholder);
 	}
 
 	public async isMessageVisible(

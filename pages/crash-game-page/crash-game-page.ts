@@ -6,6 +6,7 @@ import { CrashGamePageSteps } from "./crash-game-page-steps";
 import { logger } from "@logger/logger";
 import { parseMultiplier } from "@core/utils";
 import { CRASH_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
+import { VisibilityStates } from "@enums/playwright/visibility-states";
 
 export class CrashGamePage extends BasePage<CrashGamePageMap> {
 	public constructor(page: Page) {
@@ -14,6 +15,9 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 
 	public override async navigate(): Promise<void> {
 		await this.page.goto(CRASH_GAME_PAGE_ENDPOINT);
+		await this.map.gameContainer.waitFor({
+			state: VisibilityStates.VISIBLE,
+		});
 	}
 
 	public override assertThat(): CrashGamePageAsserter {
@@ -65,8 +69,10 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 
 	public async getCrashedMultiplier(waitCrashTimeout = 60): Promise<string> {
 		await this.waitCrash(waitCrashTimeout);
-		// eslint-disable-next-line @typescript-eslint/return-await
-		return this.map.multiplierCounterCrashed.innerText();
+		const crashedMultiplierText =
+			await this.map.multiplierCounterCrashed.innerText();
+
+		return crashedMultiplierText;
 	}
 
 	public async placeBet(

@@ -47,7 +47,7 @@ export default defineConfig({
 		actionTimeout: 10 * 1000,
 		navigationTimeout: 30 * 1000,
 		/* Base URL to use in actions like `await page.goto('/')`. */
-		baseURL: "https://gamdom--main--auto1--svetoslav-coder.teamgamdom.com",
+		baseURL: "https://staging-for-e2e-tests.teamgamdom.com",
 		extraHTTPHeaders: Configuration.cloudflare,
 		/* HTTP credentials for basic auth on dev servers */
 		// httpCredentials: {

@@ -44,6 +44,7 @@ test.describe("Tip user tests", () => {
 	}) => {
 		test.slow();
 		await homePage.navigateAndCheckTitle();
+		await homePage.authenticatedHeader.expandChatIfNotVisible();
 		await chat.assertThat().isDisplayed();
 		await chat
 			.assertThat()
