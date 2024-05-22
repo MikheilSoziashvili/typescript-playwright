@@ -1,4 +1,4 @@
-import { slackReporterConfig } from "@core/reporters/slack-reporter";
+import { slackReporterConfig } from "@core/reporters/slack-reporter/slack-reporter";
 import { ReporterDescription, defineConfig, devices } from "@playwright/test";
 import * as Configuration from "configuration";
 

@@ -12,6 +12,7 @@ export const keystore: string = getFilePath("keystore.json", "./");
 
 export const slack: Record<string, string> = {
 	webHookUrl: asString(process.env.SLACK_REPORTER_WEBHOOK_URL),
+	oAuthToken: asString(process.env.SLACK_BOT_USER_OAUTH_TOKEN),
 };
 export const jira: Record<string, string> = {
 	baseUrl: "https://gamdom.atlassian.net",
