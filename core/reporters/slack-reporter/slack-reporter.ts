@@ -1,8 +1,7 @@
 import { ReporterDescription } from "@playwright/test";
 import { Block, KnownBlock } from "@slack/types";
 import { SummaryResults } from "playwright-slack-report/dist/src";
-// import fs from "fs";
-
+import archiver from "archiver";
 import { promises as fs } from "fs";
 
 import { WebClient } from "@slack/web-api";
@@ -20,6 +19,8 @@ const SlackReporterEmoji = {
 	playwright: ":performing_arts:",
 	flaky: ":warning:",
 };
+const REPORT_ZIP_FILE_NAME = "playwright-report.zip";
+const REPORT_HTML_DIR_NAME = "playwright-report";
 
 function initSlackWebApi(slackConfig: Record<string, string>): WebClient {
 	return new WebClient(slackConfig.oAuthToken);
@@ -95,42 +96,6 @@ export async function generateCustomLayout(
 				text: testDetailsRow,
 			},
 		});
-
-		// if (t.attachments) {
-		// 	for (const a of t.attachments) {
-		// 		const file = await uploadFile(a.path);
-
-		// 		if (file) {
-		// 			if (a.name === "screenshot" && file.permalink) {
-		// 				testDetails.push({
-		// 					alt_text: "",
-		// 					image_url: file.permalink,
-		// 					title: {
-		// 						type: "plain_text",
-		// 						text: file.name || "",
-		// 					},
-		// 					type: "image",
-		// 				});
-		// 			}
-
-		// 			if (a.name === "video" && file.permalink) {
-		// 				testDetails.push({
-		// 					alt_text: "",
-		// 					// NOTE:
-		// 					// Slack requires thumbnail_url length to be more that 0
-		// 					// Either set screenshot url as the thumbnail or add a placeholder image url
-		// 					thumbnail_url: "",
-		// 					title: {
-		// 						type: "plain_text",
-		// 						text: file.name || "",
-		// 					},
-		// 					type: "video",
-		// 					video_url: file.permalink,
-		// 				});
-		// 			}
-		// 		}
-		// 	}
-		// }
 	}
 
 	const meta: { type: string; text: { type: string; text: string } }[] = [];
@@ -148,17 +113,19 @@ export async function generateCustomLayout(
 		}
 	}
 
-	const htmlReport = await uploadFile(
-		join(process.cwd(), "playwright-report", "index.html"),
-	);
+	// await zipReport();
 
-	meta.push({
-		type: "section",
-		text: {
-			type: "mrkdwn",
-			text: `\n*HTML Results* :\t'<${htmlReport?.files[0]?.files[0]?.permalink}|📊>'`,
-		},
-	});
+	// const htmlReport = await uploadFile(
+	// 	join(process.cwd(), REPORT_ZIP_FILE_NAME),
+	// );
+
+	// meta.push({
+	// 	type: "section",
+	// 	text: {
+	// 		type: "mrkdwn",
+	// 		text: `\n*HTML Results* :\t<${htmlReport?.files[0]?.files[0]?.permalink}|📊>`,
+	// 	},
+	// });
 
 	return [
 		header,
@@ -187,4 +154,22 @@ async function uploadFile(
 	} catch (error) {
 		console.log("error", error);
 	}
+}
+
+async function zipReport(): Promise<void> {
+	const sourceDir = join(process.cwd(), REPORT_HTML_DIR_NAME);
+	const zipFilePath = join(process.cwd(), REPORT_ZIP_FILE_NAME);
+	const archive = archiver("zip", { zlib: { level: 9 } });
+	const zipFile = await fs.open(zipFilePath, "w");
+	const stream = zipFile.createWriteStream();
+
+	return new Promise((resolve, reject) => {
+		archive
+			.directory(sourceDir, false)
+			.on("error", (err) => reject(err))
+			.pipe(stream);
+
+		stream.on("close", () => resolve());
+		void archive.finalize();
+	});
 }
