@@ -113,19 +113,19 @@ export async function generateCustomLayout(
 		}
 	}
 
-	// await zipReport();
+	await zipReport();
 
-	// const htmlReport = await uploadFile(
-	// 	join(process.cwd(), REPORT_ZIP_FILE_NAME),
-	// );
+	const htmlReport = await uploadFile(
+		join(process.cwd(), REPORT_ZIP_FILE_NAME),
+	);
 
-	// meta.push({
-	// 	type: "section",
-	// 	text: {
-	// 		type: "mrkdwn",
-	// 		text: `\n*HTML Results* :\t<${htmlReport?.files[0]?.files[0]?.permalink}|📊>`,
-	// 	},
-	// });
+	meta.push({
+		type: "section",
+		text: {
+			type: "mrkdwn",
+			text: `\n*HTML Results*: \t<${htmlReport?.files[0]?.files[0]?.permalink}|📊>`,
+		},
+	});
 
 	return [
 		header,
