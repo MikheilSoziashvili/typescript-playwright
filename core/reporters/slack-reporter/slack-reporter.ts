@@ -35,7 +35,6 @@ export function slackReporterConfig(
 		"./node_modules/playwright-slack-report/dist/src/SlackReporter.js",
 		{
 			channels: ["e2e-tests-reporting"],
-			// slackWebHookUrl: slackConfig.webHookUrl,
 			slackOAuthToken: slackConfig.oAuthToken,
 			sendResults: "always",
 			disableUnfurl: true,
