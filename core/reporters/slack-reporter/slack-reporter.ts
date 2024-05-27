@@ -7,34 +7,32 @@ import { promises as fs } from "fs";
 import { WebClient } from "@slack/web-api";
 import { join } from "path";
 import { FileUploadResult } from "./slack-reporter-interfaces";
+import {
+	ARCHIVER_ZLIB_LEVEL,
+	REPORT_HTML_DIR_NAME,
+	REPORT_SLACK_CHANNEL_ID,
+	REPORT_ZIP_FILE_NAME,
+	SlackReporterEmoji,
+} from "./slack-reporter-constants";
+import { logger } from "@logger/logger";
 
 let slackClient: WebClient;
 
-const SlackReporterEmoji = {
-	passed: ":white_check_mark:",
-	failed: ":x:",
-	timedOut: ":timeout-clock:",
-	interrupted: ":fast_forward:",
-	skipped: ":fast_forward:",
-	playwright: ":performing_arts:",
-	flaky: ":warning:",
-};
-const REPORT_ZIP_FILE_NAME = "playwright-report.zip";
-const REPORT_HTML_DIR_NAME = "playwright-report";
-
-function initSlackWebApi(slackConfig: Record<string, string>): WebClient {
-	return new WebClient(slackConfig.oAuthToken);
+function initSlackWebApi(
+	slackConfig: Record<string, string | string[]>,
+): WebClient {
+	return new WebClient(slackConfig.oAuthToken as string);
 }
 
 export function slackReporterConfig(
-	slackConfig: Record<string, string>,
+	slackConfig: Record<string, string | string[]>,
 	metaData: { key: string; value: string }[],
 ): ReporterDescription {
 	slackClient = initSlackWebApi(slackConfig);
 	return [
 		"./node_modules/playwright-slack-report/dist/src/SlackReporter.js",
 		{
-			channels: ["e2e-tests-reporting"],
+			channels: slackConfig.channels,
 			slackOAuthToken: slackConfig.oAuthToken,
 			sendResults: "always",
 			disableUnfurl: true,
@@ -141,24 +139,21 @@ async function uploadFile(
 ): Promise<FileUploadResult | undefined> {
 	try {
 		const result = await slackClient.files.uploadV2({
-			channel_id: "C072SMUNXNH", // channel id not channel name
+			channel_id: REPORT_SLACK_CHANNEL_ID, // channel id not channel name
 			file: await fs.readFile(filePath),
 			filename: filePath.split("/").at(-1),
 		});
 
-		console.log(JSON.stringify(result));
-		console.log("result", result);
-
 		return result as unknown as FileUploadResult;
 	} catch (error) {
-		console.log("error", error);
+		logger.error(error);
 	}
 }
 
 async function zipReport(): Promise<void> {
 	const sourceDir = join(process.cwd(), REPORT_HTML_DIR_NAME);
 	const zipFilePath = join(process.cwd(), REPORT_ZIP_FILE_NAME);
-	const archive = archiver("zip", { zlib: { level: 9 } });
+	const archive = archiver("zip", { zlib: { level: ARCHIVER_ZLIB_LEVEL } });
 	const zipFile = await fs.open(zipFilePath, "w");
 	const stream = zipFile.createWriteStream();
 

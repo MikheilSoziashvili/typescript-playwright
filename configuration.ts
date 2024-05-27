@@ -10,9 +10,10 @@ export const slackReporter: boolean = process.env.CI ? true : false;
 export const reportName: string = getFilePath("results.xml", "./");
 export const keystore: string = getFilePath("keystore.json", "./");
 
-export const slack: Record<string, string> = {
+export const slack: Record<string, string | string[]> = {
 	webHookUrl: asString(process.env.SLACK_REPORTER_WEBHOOK_URL),
 	oAuthToken: asString(process.env.SLACK_BOT_USER_OAUTH_TOKEN),
+	channels: ["e2e-tests-reporting"],
 };
 export const jira: Record<string, string> = {
 	baseUrl: "https://gamdom.atlassian.net",
