@@ -32,4 +32,5 @@ jobs:
             JIRA_USERNAME: ${{ secrets.JIRA_USERNAME }}
             XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
             XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
+            SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
         needs: premerge-checks

@@ -20,6 +20,11 @@ on:
             XRAY_CLIENT_SECRET:
                 required: true
                 description: "X-Ray Client Secret"
+            SLACK_BOT_USER_OAUTH_TOKEN:
+                required: true
+                description: "Slack Bot User Oauth Token"
+
+            
 jobs:
     tests:
         timeout-minutes: 60
@@ -35,6 +40,8 @@ jobs:
             JIRA_USERNAME: ${{ secrets.JIRA_USERNAME }}
             XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
             XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
+            ENVIRONMENT_URL: ${{ vars.ENVIRONMENT_URL }}
+            SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
