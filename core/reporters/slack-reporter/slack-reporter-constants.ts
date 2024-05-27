@@ -1,6 +1,6 @@
 export const REPORT_HTML_DIR_NAME = "playwright-report";
 export const REPORT_ZIP_FILE_NAME = `${REPORT_HTML_DIR_NAME}.zip`;
-export const REPORT_SLACK_CHANNEL_ID = "C072SMUNXNH";
+export const REPORT_SLACK_CHANNEL_ID = "C0751MKCDSA";
 export const SlackReporterEmoji = {
 	passed: ":white_check_mark:",
 	failed: ":x:",

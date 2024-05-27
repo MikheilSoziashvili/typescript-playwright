@@ -13,7 +13,7 @@ export const keystore: string = getFilePath("keystore.json", "./");
 export const slack: Record<string, string | string[]> = {
 	webHookUrl: asString(process.env.SLACK_REPORTER_WEBHOOK_URL),
 	oAuthToken: asString(process.env.SLACK_BOT_USER_OAUTH_TOKEN),
-	channels: ["e2e-tests-reporting"],
+	channels: ["playwright-e2e-reporting"],
 };
 export const jira: Record<string, string> = {
 	baseUrl: "https://gamdom.atlassian.net",
