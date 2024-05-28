@@ -1,4 +1,4 @@
-import { Page } from "@playwright/test";
+import { Page, expect } from "@playwright/test";
 import { HomePage } from "../pages/home-page/home-page";
 import {
 	GOOGLE_AUTH_CREDENTIALS,
@@ -13,6 +13,7 @@ import {
 
 import * as fs from "fs";
 import { CredentialsType } from "./types";
+import { GamdomApi } from "@api/gamdom-api";
 
 const CREDENTIALS_AUTH_STATE_MAP = {
 	[GOOGLE_AUTH_CREDENTIALS.username]: GOOGLE_AUTH_STATE_FILE_PATH,
@@ -72,6 +73,26 @@ export async function getStorageStateUser(
 		.storageState({ path: CREDENTIALS_AUTH_STATE_MAP[user.username] });
 
 	await page.close();
+
+	return CREDENTIALS_AUTH_STATE_MAP[user.username];
+}
+
+export async function getStorageStateUserAPI(
+	user: CredentialsType,
+): Promise<string> {
+	const gamdomApi = new GamdomApi();
+	const response = await gamdomApi.login(user.username, user.password);
+
+	expect(response.status(), "Login failed").toBe(200);
+	expect(
+		response.headers()["set-cookie"],
+		"No cookies received from login response",
+	).toBeTruthy();
+
+	const context = await gamdomApi.context;
+	await context.storageState({
+		path: CREDENTIALS_AUTH_STATE_MAP[user.username],
+	});
 
 	return CREDENTIALS_AUTH_STATE_MAP[user.username];
 }

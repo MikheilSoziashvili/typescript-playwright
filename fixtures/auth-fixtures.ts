@@ -13,6 +13,7 @@ import { Pages } from "./fixtures";
 import {
 	getStorageStateGoogleAuth,
 	getStorageStateUser,
+	getStorageStateUserAPI,
 } from "@core/auth-mngmt";
 import {
 	SUPER_ADMIN_CREDENTIALS,
@@ -28,6 +29,7 @@ function authPage(browser: Browser): Promise<Page> {
 	});
 }
 
+// Preserved in case UI-based login is required
 export const storageStateGoogleAuth: Fixtures<
 	{},
 	{},
@@ -41,6 +43,7 @@ export const storageStateGoogleAuth: Fixtures<
 	},
 };
 
+// Preserved in case UI-based login is required
 export const storageStateUser1: Fixtures<
 	{},
 	{},
@@ -58,6 +61,7 @@ export const storageStateUser1: Fixtures<
 	},
 };
 
+// Preserved in case UI-based login is required
 export const storageStateSuperadmin: Fixtures<
 	{},
 	{},
@@ -72,5 +76,33 @@ export const storageStateSuperadmin: Fixtures<
 				baseURL,
 			),
 		);
+	},
+};
+
+export const storageStateUser1API: Fixtures<
+	{},
+	{},
+	PlaywrightTestArgs & PlaywrightTestOptions,
+	PlaywrightWorkerArgs & PlaywrightWorkerOptions
+> = {
+	storageState: async ({}, use) => {
+		const storageStatePath = await getStorageStateUserAPI(
+			USER_1_CREDENTIALS,
+		);
+		await use(storageStatePath);
+	},
+};
+
+export const storageStateSuperadminAPI: Fixtures<
+	{},
+	{},
+	PlaywrightTestArgs & PlaywrightTestOptions,
+	PlaywrightWorkerArgs & PlaywrightWorkerOptions
+> = {
+	storageState: async ({}, use) => {
+		const storageStatePath = await getStorageStateUserAPI(
+			SUPER_ADMIN_CREDENTIALS,
+		);
+		await use(storageStatePath);
 	},
 };

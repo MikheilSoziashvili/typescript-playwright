@@ -1,12 +1,12 @@
 import { test } from "@fixtures/fixtures";
 import { DiceBetTestData } from "@dtos/test-data";
-import { storageStateSuperadmin } from "@fixtures/auth-fixtures";
+import { storageStateSuperadminAPI } from "@fixtures/auth-fixtures";
 import { ToastTitles } from "@enums/toast-titles";
 import { RatebackHouseEdge } from "@enums/rateback-house-edge-options";
 import { buildClaimedAmountSubTitle } from "@core/helpers/asserter-helpers/text-asserters";
 
 test.describe("Rakeback instant reward tests", () => {
-	test.use(storageStateSuperadmin);
+	test.use(storageStateSuperadminAPI);
 	test("[ENG-266] Rakeback instant reward", async ({
 		homePage,
 		diceGamePage,
