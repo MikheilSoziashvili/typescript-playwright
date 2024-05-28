@@ -44,11 +44,13 @@ export async function prependXmlHeaderToFile(
 	return '<?xml version="1.0" encoding="UTF-8" ?>\n' + xmlContent;
 }
 
-export async function clearDirectoryContent(directory: string): Promise<void> {
+export async function clearDirectoryContent(directory: string, exclude: string[] = []): Promise<void> {
 	try {
 		const files = await fs.readdir(directory);
+		const filesToDelete = files.filter(file => !exclude.includes(file));
+		
 		await Promise.all(
-			files.map((file) => fs.unlink(`${directory}/${file}`)),
+			filesToDelete.map((file) => fs.unlink(`${directory}/${file}`)),
 		);
 	} catch (err) {
 		logger.error(err);

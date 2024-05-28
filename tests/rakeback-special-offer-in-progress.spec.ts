@@ -1,12 +1,12 @@
 import { test } from "@fixtures/fixtures";
 import { DiceBetTestData } from "@dtos/test-data";
-import { storageStateUser1 } from "@fixtures/auth-fixtures";
+import { storageStateUser1API } from "@fixtures/auth-fixtures";
 import { ToastTitles } from "@enums/toast-titles";
 import { RatebackHouseEdge } from "@enums/rateback-house-edge-options";
 import { buildClaimedAmountSubTitle } from "@core/helpers/asserter-helpers/text-asserters";
 
 test.describe("Rakeback reward with special offers tests", () => {
-	test.use(storageStateUser1);
+	test.use(storageStateUser1API);
 	test("[ENG-929] Rakeback instant reward when special offer is in progress", async ({
 		homePage,
 		diceGamePage,
