@@ -2,7 +2,7 @@ import { BaseApi } from "./base-api";
 import * as Configuration from "../configuration";
 import { APIResponse } from "@playwright/test";
 import { RegisterTestData } from "@dtos/test-data";
-import { LoginRequest } from "@dtos/request/login-request";
+import { LoginRequest } from "@dtos/requests/login-request";
 
 export class GamdomApi extends BaseApi {
 	private headers: Record<string, string> = {};
