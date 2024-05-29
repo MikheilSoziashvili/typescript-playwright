@@ -1,5 +1,20 @@
 name: Playwright E2E Tests
 on:
+    workflow_dispatch:
+        inputs:
+            environment:
+                description: "Environment to run tests against"
+                type: string
+                required: true
+            tag:
+                description: "Tag scope"
+                required: true
+                default: "all"
+                type: choice
+                options:
+                    - all
+                    - smoke
+
     workflow_call:
         secrets:
             CF_ACCESS_CLIENT_ID:
@@ -24,7 +39,6 @@ on:
                 required: true
                 description: "Slack Bot User Oauth Token"
 
-            
 jobs:
     tests:
         timeout-minutes: 60
@@ -40,8 +54,11 @@ jobs:
             JIRA_USERNAME: ${{ secrets.JIRA_USERNAME }}
             XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
             XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
-            ENVIRONMENT_URL: ${{ vars.ENVIRONMENT_URL }}
+
+            ENVIRONMENT_URL: ${{ inputs.environment == '' && vars.ENVIRONMENT_URL || inputs.environment }}
             SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
+            TAG: ${{ inputs.tag == '' && 'smoke' || inputs.tag }}
+
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
@@ -52,7 +69,7 @@ jobs:
             - name: Install Playwright Browsers
               run: yarn playwright install --with-deps
             - name: Run Playwright tests
-              run: yarn playwright test --grep "@smoke"
+              run: yarn playwright test ${{ inputs.tag != 'all' && '--grep "$TAG"' || '' }}
             - uses: actions/upload-artifact@v3
               if: always()
               with:
