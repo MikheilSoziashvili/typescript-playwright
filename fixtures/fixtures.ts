@@ -18,6 +18,7 @@ import { BannedUserPage } from "@pages/banned-user/banned-user-page";
 import { InfoAdminPage } from "@pages/admin/info-admin/info-admin-page";
 import { UserProfileModal } from "@modals/user-profile-modal/user-profile-modal";
 import { RewardsExplorePage } from "@pages/rewards/explore/rewards-explore-page";
+import { MailinatorApi } from "@api/mailinator-api";
 
 export type Pages = {
 	userInfoAdminPage: UserInfoAdminPage;
@@ -47,7 +48,11 @@ export type Modals = {
 	userProfileModal: UserProfileModal;
 };
 
-type CustomFixtures = Pages & Components & Modals;
+export type Apis = {
+	mailinatorApi: MailinatorApi;
+};
+
+type CustomFixtures = Pages & Components & Modals & Apis;
 
 export const test = base.extend<CustomFixtures>({
 	homePage: async ({ page }, use) => {
@@ -107,5 +112,9 @@ export const test = base.extend<CustomFixtures>({
 
 	userProfileModal: async ({ page }, use) => {
 		await use(new UserProfileModal(page));
+	},
+
+	mailinatorApi: async ({}, use) => {
+		await use(new MailinatorApi());
 	},
 });

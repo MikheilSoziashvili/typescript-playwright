@@ -14,6 +14,22 @@ export class BaseApi {
 		});
 	}
 
+	public async get(parameters: {
+		endpoint: string;
+		headers?: Record<string, string>;
+		form?: Record<string, string>;
+		data?: object | string;
+		timeout?: number;
+	}): Promise<APIResponse> {
+		const { endpoint, headers, form, data, timeout } = parameters;
+		return (await this.context).get(this.baseUrl + endpoint, {
+			headers,
+			form,
+			data,
+			timeout,
+		});
+	}
+
 	public async post(
 		url: string,
 		data: object | string,
