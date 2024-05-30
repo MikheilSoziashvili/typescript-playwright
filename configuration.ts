@@ -21,6 +21,10 @@ export const jira: Record<string, string> = {
 	username: asString(process.env.JIRA_USERNAME),
 	token: asString(process.env.JIRA_TOKEN),
 };
+export const mailinator: Record<string, string> = {
+	baseUrl: "https://api.mailinator.com/api/v2",
+	apiKey: "b02f2d0121374fe3bef23d2b6ce34052",
+};
 export const xray: Record<string, string> = {
 	baseUrl: "https://xray.cloud.getxray.app",
 	clientId: asString(process.env.XRAY_CLIENT_ID),
