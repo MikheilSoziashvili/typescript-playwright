@@ -19,7 +19,6 @@ import { InfoAdminPage } from "@pages/admin/info-admin/info-admin-page";
 import { UserProfileModal } from "@modals/user-profile-modal/user-profile-modal";
 import { RewardsExplorePage } from "@pages/rewards/explore/rewards-explore-page";
 import { MailinatorApi } from "@api/mailinator-api";
-import { MailinatorApi } from "@api/mailinator-api";
 
 type Pages = {
 	userInfoAdminPage: UserInfoAdminPage;
