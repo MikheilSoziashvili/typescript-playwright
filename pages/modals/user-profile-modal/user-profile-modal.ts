@@ -14,8 +14,12 @@ export class UserProfileModal extends BaseModal<UserProfileModalMap> {
 	}
 
 	public async waitContentToLoad(): Promise<void> {
-		await this.map.userAvatar.waitFor({ state: VisibilityStates.VISIBLE });
-		await this.map.userProfileTitle.waitFor({
+		await this.map.waitForVisibility({
+			locator: this.map.userAvatar,
+			state: VisibilityStates.VISIBLE,
+		});
+		await this.map.waitForVisibility({
+			locator: this.map.userProfileTitle,
 			state: VisibilityStates.VISIBLE,
 		});
 	}

@@ -1,6 +1,7 @@
 import { ZERO_RAKEBACK_AMOUNT } from "@constants/specialoffers";
 import { BasePageStep } from "@pages/base/base-page-step";
 import { RewardsPage } from "./rewards-page";
+import { VisibilityStates } from "@enums/playwright/visibility-states";
 
 export class RewardsPageSteps extends BasePageStep<RewardsPage> {
 	public constructor(gamdomPage: RewardsPage) {
@@ -19,8 +20,9 @@ export class RewardsPageSteps extends BasePageStep<RewardsPage> {
 		currency?: string;
 		claimAnyReward?: boolean;
 	}): Promise<void> {
-		await this.gamdomPage.map.instantRakebackCard.waitFor({
-			state: "visible",
+		await this.gamdomPage.map.waitForVisibility({
+			locator: this.gamdomPage.map.instantRakebackCard,
+			state: VisibilityStates.VISIBLE,
 		});
 		if (options.expectedAmount) {
 			await this.gamdomPage

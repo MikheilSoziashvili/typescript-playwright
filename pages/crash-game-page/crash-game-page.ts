@@ -15,7 +15,8 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 
 	public override async navigate(): Promise<void> {
 		await this.page.goto(CRASH_GAME_PAGE_ENDPOINT);
-		await this.map.gameContainer.waitFor({
+		await this.map.waitForVisibility({
+			locator: this.map.gameContainer,
 			state: VisibilityStates.VISIBLE,
 		});
 	}

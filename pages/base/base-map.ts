@@ -1,3 +1,4 @@
+import { VisibilityStates } from "@enums/playwright/visibility-states";
 import { Locator, Page, expect } from "@playwright/test";
 
 export class BaseMap {
@@ -18,5 +19,17 @@ export class BaseMap {
 	protected async waitUntilVisible(locator: Locator): Promise<Locator> {
 		await expect(locator).toBeVisible();
 		return locator;
+	}
+
+	async waitForVisibility(parameters: {
+		locator: Locator;
+		state: VisibilityStates;
+		timeout?: number;
+	}): Promise<void> {
+		const { locator, state, timeout } = parameters;
+		await locator.waitFor({
+			state,
+			timeout,
+		});
 	}
 }
