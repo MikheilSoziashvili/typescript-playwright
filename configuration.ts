@@ -23,7 +23,7 @@ export const jira: Record<string, string> = {
 };
 export const mailinator: Record<string, string> = {
 	baseUrl: "https://api.mailinator.com/api/v2",
-	apiKey: "b02f2d0121374fe3bef23d2b6ce34052",
+	apiKey: asString(process.env.MAILINATOR_API_KEY),
 };
 export const xray: Record<string, string> = {
 	baseUrl: "https://xray.cloud.getxray.app",

@@ -20,7 +20,7 @@ import { UserProfileModal } from "@modals/user-profile-modal/user-profile-modal"
 import { RewardsExplorePage } from "@pages/rewards/explore/rewards-explore-page";
 import { MailinatorApi } from "@api/mailinator-api";
 
-export type Pages = {
+type Pages = {
 	userInfoAdminPage: UserInfoAdminPage;
 	infoAdminPage: InfoAdminPage;
 	homePage: HomePage;
@@ -37,18 +37,18 @@ export type Pages = {
 	bannedUserPage: BannedUserPage;
 };
 
-export type Components = {
+type Components = {
 	notifications: Notification;
 	toast: Toast;
 	chat: Chat;
 };
 
-export type Modals = {
+type Modals = {
 	tipUserModal: TipUserModal;
 	userProfileModal: UserProfileModal;
 };
 
-export type Apis = {
+type Apis = {
 	mailinatorApi: MailinatorApi;
 };
 

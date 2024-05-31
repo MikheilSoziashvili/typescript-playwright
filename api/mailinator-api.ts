@@ -51,8 +51,7 @@ export class MailinatorApi extends BaseApi {
 			);
 		}
 
-		const data = (await response.json()) as T;
-		return data;
+		return response.json() as T;
 	}
 
 	async getMessages(): Promise<Message[]> {
@@ -61,9 +60,7 @@ export class MailinatorApi extends BaseApi {
 				MAILINATOR_MESSAGES_ENDPOINT,
 			);
 
-		const messages = messagesResponse["msgs"];
-
-		return messages;
+		return messagesResponse["msgs"];
 	}
 
 	async countMessages(): Promise<number> {
@@ -76,8 +73,7 @@ export class MailinatorApi extends BaseApi {
 		const emailResponse: EmailResponse = await this.fetchMailinator(
 			`${MAILINATOR_EMAIL_ENDPOINT}/${emailId}`,
 		);
-		const email = emailResponse;
 
-		return email;
+		return emailResponse;
 	}
 }
