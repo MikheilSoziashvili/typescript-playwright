@@ -19,11 +19,11 @@ export class Chat extends BaseComponent<ChatMap> {
 	}
 
 	public async waitChatToBeDisplayed(): Promise<void> {
-		await this.map.waitForVisibility({
+		await this.map.waitFor({
 			locator: this.map.chatLocator,
 			state: VisibilityStates.ATTACHED,
 		});
-		await this.map.waitForVisibility({
+		await this.map.waitFor({
 			locator: this.map.chatLocator,
 			state: VisibilityStates.VISIBLE,
 		});

@@ -20,7 +20,7 @@ export class RewardsPageSteps extends BasePageStep<RewardsPage> {
 		currency?: string;
 		claimAnyReward?: boolean;
 	}): Promise<void> {
-		await this.gamdomPage.map.waitForVisibility({
+		await this.gamdomPage.map.waitFor({
 			locator: this.gamdomPage.map.instantRakebackCard,
 			state: VisibilityStates.VISIBLE,
 		});

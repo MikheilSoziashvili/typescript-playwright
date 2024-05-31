@@ -15,7 +15,7 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 
 	public override async navigate(): Promise<void> {
 		await this.page.goto(HILO_GAME_PAGE_ENDPOINT);
-		await this.map.waitForVisibility({
+		await this.map.waitFor({
 			locator: this.map.gameArea,
 			state: VisibilityStates.VISIBLE,
 		});
@@ -47,11 +47,11 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 	}
 
 	public async waitRoundResult(): Promise<void> {
-		await this.map.waitForVisibility({
+		await this.map.waitFor({
 			locator: this.map.gamRoundResultLocator,
 			state: VisibilityStates.ATTACHED,
 		});
-		await this.map.waitForVisibility({
+		await this.map.waitFor({
 			locator: this.map.gamRoundResultLocator,
 			state: VisibilityStates.VISIBLE,
 		});

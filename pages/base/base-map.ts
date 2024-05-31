@@ -21,7 +21,7 @@ export class BaseMap {
 		return locator;
 	}
 
-	async waitForVisibility(parameters: {
+	async waitFor(parameters: {
 		locator: Locator;
 		state: VisibilityStates;
 		timeout?: number;

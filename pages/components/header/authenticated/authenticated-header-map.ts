@@ -33,7 +33,7 @@ export class AuthenticatedHeaderMap extends BaseMap {
 		const accountBalanceLocator = this.page.locator(
 			"div[class*='header'] > div:nth-child(2) > div:nth-child(2) div[style*='tabular']",
 		);
-		await this.waitForVisibility({
+		await this.waitFor({
 			locator: accountBalanceLocator,
 			state: VisibilityStates.VISIBLE,
 		});

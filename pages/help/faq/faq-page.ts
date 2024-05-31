@@ -20,7 +20,7 @@ export class FaqPage extends BasePage<FaqPageMap> {
 	}
 
 	public async expandAffiliateCodeRegisteredUnderSection(): Promise<void> {
-		await this.map.waitForVisibility({
+		await this.map.waitFor({
 			locator: this.map.expandAffiliateCodeReqisterButtonLocator,
 			state: VisibilityStates.VISIBLE,
 		});

@@ -17,12 +17,12 @@ export class Notification extends BaseComponent<NotificationMap> {
 		index?: number;
 		title?: string;
 	}): Promise<void> {
-		await this.map.waitForVisibility({
+		await this.map.waitFor({
 			locator: this.map.notificationContainer(options),
 			state: VisibilityStates.VISIBLE,
 		});
 		await this.map.notificationGotItButtonLocator(options).click();
-		await this.map.waitForVisibility({
+		await this.map.waitFor({
 			locator: this.map.notificationContainer(options),
 			state: VisibilityStates.HIDDEN,
 		});

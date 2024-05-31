@@ -14,7 +14,7 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 
 	public override async navigate(): Promise<void> {
 		await this.page.goto(ROULETTE_GAME_PAGE_ENDPOINT);
-		await this.map.waitForVisibility({
+		await this.map.waitFor({
 			locator: this.map.gameContainer,
 			state: VisibilityStates.VISIBLE,
 		});
