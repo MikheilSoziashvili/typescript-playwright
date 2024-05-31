@@ -20,7 +20,7 @@ import { UserProfileModal } from "@modals/user-profile-modal/user-profile-modal"
 import { RewardsExplorePage } from "@pages/rewards/explore/rewards-explore-page";
 import { MailinatorApi } from "@api/mailinator-api";
 
-type Pages = {
+export type Pages = {
 	userInfoAdminPage: UserInfoAdminPage;
 	infoAdminPage: InfoAdminPage;
 	homePage: HomePage;
