@@ -28,7 +28,10 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 
 	public async openTipUserModal(options?: ChatMessageOptions): Promise<void> {
 		const messageUserLevel = this.component.map.messageUserLevel(options);
-		await messageUserLevel.waitFor({ state: VisibilityStates.VISIBLE });
+		await this.component.map.waitFor({
+			locator: messageUserLevel,
+			state: VisibilityStates.VISIBLE,
+		});
 
 		await messageUserLevel.click();
 
@@ -49,7 +52,10 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		options?: ChatMessageOptions,
 	): Promise<void> {
 		const messageUserLevel = this.component.map.messageUserLevel(options);
-		await messageUserLevel.waitFor({ state: VisibilityStates.VISIBLE });
+		await this.component.map.waitFor({
+			locator: messageUserLevel,
+			state: VisibilityStates.VISIBLE,
+		});
 
 		await messageUserLevel.click();
 

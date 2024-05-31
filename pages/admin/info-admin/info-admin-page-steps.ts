@@ -8,7 +8,8 @@ export class InfoAdminPageSteps extends BasePageStep<InfoAdminPage> {
 	}
 
 	public async banUser(options?: { reason?: string }): Promise<void> {
-		await this.gamdomPage.map.banUserContainer.waitFor({
+		await this.gamdomPage.map.waitFor({
+			locator: this.gamdomPage.map.banUserContainer,
 			state: VisibilityStates.VISIBLE,
 		});
 		if (options?.reason) {

@@ -20,7 +20,8 @@ export class FaqPage extends BasePage<FaqPageMap> {
 	}
 
 	public async expandAffiliateCodeRegisteredUnderSection(): Promise<void> {
-		await this.map.expandAffiliateCodeReqisterButtonLocator.waitFor({
+		await this.map.waitFor({
+			locator: this.map.expandAffiliateCodeReqisterButtonLocator,
 			state: VisibilityStates.VISIBLE,
 		});
 		const sectionAriaExpandedAttribute =
