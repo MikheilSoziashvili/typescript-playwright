@@ -1,6 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
-import { CommonUserPopupOptions } from "@enums/common-user-popup-options";
+import { CommonUserPopupOption } from "@enums/common-user-popup-options";
 
 export class CommonUserOptionsPopupMap extends BaseMap {
 	public constructor(page: Page) {
@@ -13,7 +13,7 @@ export class CommonUserOptionsPopupMap extends BaseMap {
 		);
 	}
 
-	public popupOption(option: CommonUserPopupOptions): Locator {
+	public popupOption(option: CommonUserPopupOption): Locator {
 		return this.popupLocator.locator("ul li").filter({ hasText: option });
 	}
 }

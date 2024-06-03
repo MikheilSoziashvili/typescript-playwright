@@ -2,10 +2,10 @@ import { Page } from "@playwright/test";
 import { BaseComponent } from "@base/base-component";
 import { CommonUserOptionsPopupMap } from "./common-user-options-popup-map";
 import { CommonUserOptionsPopupAsserter } from "./common-user-options-popup-asserter";
-import { CommonUserPopupOptions } from "@enums/common-user-popup-options";
+import { CommonUserPopupOption } from "@enums/common-user-popup-options";
 import { Timeout } from "@enums/timeout";
 import { Delay } from "@enums/delay";
-import { VisibilityStates } from "@enums/playwright/visibility-states";
+import { VisibilityState } from "@enums/playwright/visibility-states";
 
 export class CommonUserOptionsPopup extends BaseComponent<CommonUserOptionsPopupMap> {
 	constructor(page: Page) {
@@ -16,10 +16,10 @@ export class CommonUserOptionsPopup extends BaseComponent<CommonUserOptionsPopup
 		return new CommonUserOptionsPopupAsserter(this);
 	}
 
-	public async clickOption(option: CommonUserPopupOptions): Promise<void> {
+	public async clickOption(option: CommonUserPopupOption): Promise<void> {
 		await this.map.waitFor({
 			locator: this.map.popupLocator,
-			state: VisibilityStates.VISIBLE,
+			state: VisibilityState.VISIBLE,
 		});
 		await this.map
 			.popupOption(option)

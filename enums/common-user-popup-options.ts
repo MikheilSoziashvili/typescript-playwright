@@ -1,4 +1,4 @@
-export enum CommonUserPopupOptions {
+export enum CommonUserPopupOption {
 	PROFILE = "Profile",
 	TIP_USER = "Tip User",
 	IGNORE = "Ignore",

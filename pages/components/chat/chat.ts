@@ -3,7 +3,7 @@ import { BaseComponent } from "../../base/base-component";
 import { ChatMap } from "./chat-map";
 import { ChatAsserter } from "./chat-asserter";
 import { ChatSteps } from "./chat-steps";
-import { VisibilityStates } from "../../../enums/playwright/visibility-states";
+import { VisibilityState } from "../../../enums/playwright/visibility-states";
 
 export class Chat extends BaseComponent<ChatMap> {
 	constructor(page: Page) {
@@ -21,11 +21,11 @@ export class Chat extends BaseComponent<ChatMap> {
 	public async waitChatToBeDisplayed(): Promise<void> {
 		await this.map.waitFor({
 			locator: this.map.chatLocator,
-			state: VisibilityStates.ATTACHED,
+			state: VisibilityState.ATTACHED,
 		});
 		await this.map.waitFor({
 			locator: this.map.chatLocator,
-			state: VisibilityStates.VISIBLE,
+			state: VisibilityState.VISIBLE,
 		});
 	}
 }

@@ -1,9 +1,9 @@
 import { test } from "@fixtures/fixtures";
-import { ChatFooterPlaceholders } from "@enums/chat-footer-palceholders";
+import { ChatFooterPlaceholder } from "@enums/chat-footer-palceholders";
 import { ChatMessageOptions } from "@components/chat/chat-map";
 import { generateRandomString } from "@core/utils";
 import { USER_1_CREDENTIALS, USER_2_CREDENTIALS } from "@constants/credentials";
-import { ToastTitles } from "@enums/toast-titles";
+import { ToastTitle } from "@enums/toast-titles";
 import {
 	buildTipUserMessageInfo,
 	buildTipUserSubTitle,
@@ -48,7 +48,7 @@ test.describe("Tip user tests", () => {
 		await chat.assertThat().isDisplayed();
 		await chat
 			.assertThat()
-			.isPlaceholderVisible(ChatFooterPlaceholders.LOGIN_TO_CHAT);
+			.isPlaceholderVisible(ChatFooterPlaceholder.LOGIN_TO_CHAT);
 
 		await homePage.steps().loginUsername(USER_2_CREDENTIALS.username);
 		await chat.assertThat().isDisplayed();
@@ -66,7 +66,7 @@ test.describe("Tip user tests", () => {
 
 		await tipUserModal.tipUser(tipValue);
 
-		await toast.assertThat().titleIs(ToastTitles.SUCCESS);
+		await toast.assertThat().titleIs(ToastTitle.SUCCESS);
 		await toast.assertThat().subTitleIs(
 			buildTipUserSubTitle({
 				username: messageInfo_1.username,
@@ -85,7 +85,7 @@ test.describe("Tip user tests", () => {
 			.accountBalanceIs(user2AccountBalance - Number(tipValue));
 		await chat
 			.assertThat()
-			.isPlaceholderVisible(ChatFooterPlaceholders.START_TYPING);
+			.isPlaceholderVisible(ChatFooterPlaceholder.START_TYPING);
 
 		await profilePage.navigate();
 		await profilePage.logout();

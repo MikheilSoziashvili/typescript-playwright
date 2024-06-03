@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
 import { BaseAsserter } from "@base/base-asserter";
 import { Chat } from "./chat";
-import { ChatFooterPlaceholders } from "@enums/chat-footer-palceholders";
+import { ChatFooterPlaceholder } from "@enums/chat-footer-palceholders";
 import { ChatMessageOptions } from "./chat-map";
 
 export class ChatAsserter extends BaseAsserter<Chat> {
@@ -14,7 +14,7 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 	}
 
 	public async isPlaceholderVisible(
-		placeholder: ChatFooterPlaceholders,
+		placeholder: ChatFooterPlaceholder,
 	): Promise<void> {
 		await expect
 			.soft(this.gamdomPage.map.chatTextBoxPlaceholder)

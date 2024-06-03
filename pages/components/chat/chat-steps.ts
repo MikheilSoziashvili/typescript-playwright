@@ -1,6 +1,6 @@
 import { BaseComponentStep } from "@pages/base/base-component-step";
-import { CommonUserPopupOptions } from "@enums/common-user-popup-options";
-import { VisibilityStates } from "@enums/playwright/visibility-states";
+import { CommonUserPopupOption } from "@enums/common-user-popup-options";
+import { VisibilityState } from "@enums/playwright/visibility-states";
 import { TipUserModal } from "@modals/tip-user-modal/tip-user-modal";
 import { UserProfileModal } from "@modals/user-profile-modal/user-profile-modal";
 import { AuthenticatedHeader } from "../header/authenticated/authenticated-header";
@@ -30,7 +30,7 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		const messageUserLevel = this.component.map.messageUserLevel(options);
 		await this.component.map.waitFor({
 			locator: messageUserLevel,
-			state: VisibilityStates.VISIBLE,
+			state: VisibilityState.VISIBLE,
 		});
 
 		await messageUserLevel.click();
@@ -41,7 +41,7 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		await commonUserOptionsPopup.assertThat().isDisplayed();
 
 		await commonUserOptionsPopup.clickOption(
-			CommonUserPopupOptions.TIP_USER,
+			CommonUserPopupOption.TIP_USER,
 		);
 
 		const tipUserModal = new TipUserModal(this.component.page);
@@ -54,7 +54,7 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		const messageUserLevel = this.component.map.messageUserLevel(options);
 		await this.component.map.waitFor({
 			locator: messageUserLevel,
-			state: VisibilityStates.VISIBLE,
+			state: VisibilityState.VISIBLE,
 		});
 
 		await messageUserLevel.click();
@@ -64,9 +64,7 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		);
 		await commonUserOptionsPopup.assertThat().isDisplayed();
 
-		await commonUserOptionsPopup.clickOption(
-			CommonUserPopupOptions.PROFILE,
-		);
+		await commonUserOptionsPopup.clickOption(CommonUserPopupOption.PROFILE);
 
 		const userProfileModal = new UserProfileModal(this.component.page);
 		await userProfileModal.waitContentToLoad();

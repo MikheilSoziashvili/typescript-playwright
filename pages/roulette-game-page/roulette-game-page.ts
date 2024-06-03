@@ -5,7 +5,7 @@ import { RouletteNumberColor } from "@enums/original-games";
 import { range } from "@core/utils";
 import { ROULETTE_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePage } from "@base/base-page";
-import { VisibilityStates } from "@enums/playwright/visibility-states";
+import { VisibilityState } from "@enums/playwright/visibility-states";
 
 export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 	public constructor(page: Page) {
@@ -16,7 +16,7 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 		await this.page.goto(ROULETTE_GAME_PAGE_ENDPOINT);
 		await this.map.waitFor({
 			locator: this.map.gameContainer,
-			state: VisibilityStates.VISIBLE,
+			state: VisibilityState.VISIBLE,
 		});
 	}
 

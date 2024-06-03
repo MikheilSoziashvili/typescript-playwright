@@ -2,7 +2,7 @@ import { test } from "@fixtures/fixtures";
 import { ChatMessageOptions } from "@components/chat/chat-map";
 import { generateRandomString } from "@core/utils";
 import { USER_1_CREDENTIALS, USER_2_CREDENTIALS } from "@constants/credentials";
-import { ChatFooterPlaceholders } from "@enums/chat-footer-palceholders";
+import { ChatFooterPlaceholder } from "@enums/chat-footer-palceholders";
 
 const message = generateRandomString({ prefix: "automation_msg_" });
 const messageInfo: ChatMessageOptions = {
@@ -36,7 +36,7 @@ test.describe("User statistics tests", () => {
 		await chat.assertThat().isDisplayed();
 		await chat
 			.assertThat()
-			.isPlaceholderVisible(ChatFooterPlaceholders.START_TYPING);
+			.isPlaceholderVisible(ChatFooterPlaceholder.START_TYPING);
 		await chat.assertThat().isMessageVisible(messageInfo);
 
 		await chat.steps().openUserProfileModal(messageInfo);
