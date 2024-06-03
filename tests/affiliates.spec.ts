@@ -1,8 +1,8 @@
 import { generateRandomString } from "@core/utils";
 import { RegisterTestData } from "@dtos/test-data";
-import { NotificationTitles } from "@enums/notification-titles";
-import { ToastSubTitles } from "@enums/toast-subtitles";
-import { ToastTitles } from "@enums/toast-titles";
+import { NotificationTitle } from "@enums/notification-titles";
+import { ToastSubTitle } from "@enums/toast-subtitles";
+import { ToastTitle } from "@enums/toast-titles";
 import { test } from "@fixtures/fixtures";
 const AUTOMATION_AFFILIATES_CODE = generateRandomString({
 	prefix: "automation",
@@ -58,17 +58,17 @@ test.describe("Affiliates tests", () => {
 		await notifications.assertThat().isDisplayed();
 		await notifications
 			.assertThat()
-			.titleIs(NotificationTitles.WELCOME_BONUS);
+			.titleIs(NotificationTitle.WELCOME_BONUS);
 		await notifications.aknowledge({
-			title: NotificationTitles.WELCOME_BONUS,
+			title: NotificationTitle.WELCOME_BONUS,
 		});
 		await notifications.assertThat().isNotDisplayed();
 
-		await toast.assertThat().titleIs(ToastTitles.SUCCESS, {
-			subTitle: ToastSubTitles.CLAIMED_BONUS,
+		await toast.assertThat().titleIs(ToastTitle.SUCCESS, {
+			subTitle: ToastSubTitle.CLAIMED_BONUS,
 		});
 		await toast.assertThat().isNotDisplayed({
-			subTitle: ToastSubTitles.CLAIMED_BONUS,
+			subTitle: ToastSubTitle.CLAIMED_BONUS,
 		});
 
 		await faqPage.navigate();

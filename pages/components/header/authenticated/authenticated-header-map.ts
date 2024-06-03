@@ -2,7 +2,7 @@ import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
 import { decimalNumber } from "@support/regex-patterns";
 import { OriginalGame } from "@enums/original-games";
-import { VisibilityStates } from "@enums/playwright/visibility-states";
+import { VisibilityState } from "@enums/playwright/visibility-states";
 
 export class AuthenticatedHeaderMap extends BaseMap {
 	public constructor(page: Page) {
@@ -35,7 +35,7 @@ export class AuthenticatedHeaderMap extends BaseMap {
 		);
 		await this.waitFor({
 			locator: accountBalanceLocator,
-			state: VisibilityStates.VISIBLE,
+			state: VisibilityState.VISIBLE,
 		});
 
 		try {

@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
 import { BaseAsserter } from "@base/base-asserter";
 import { GeoblockedPage } from "./geoblocked-page";
-import { GeoblockedCountries } from "@enums/geoblocked-countries";
+import { GeoblockedCountry } from "@enums/geoblocked-countries";
 
 export class GeoblockedPageAsserter extends BaseAsserter<GeoblockedPage> {
 	public constructor(page: GeoblockedPage) {
@@ -15,7 +15,7 @@ export class GeoblockedPageAsserter extends BaseAsserter<GeoblockedPage> {
 	}
 
 	public async isBlockedCountryNameDisplayed(
-		countryName: GeoblockedCountries,
+		countryName: GeoblockedCountry,
 	): Promise<void> {
 		await expect
 			.soft(this.gamdomPage.map.errorSubTitleLocator)

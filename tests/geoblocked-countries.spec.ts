@@ -5,18 +5,18 @@ import {
 	US_PROXY_CREDENTIALS,
 } from "@constants/proxies";
 import { PRODUCTION_BASE_URL } from "@constants/page-urls";
-import { GeoblockedCountries } from "@enums/geoblocked-countries";
+import { GeoblockedCountry } from "@enums/geoblocked-countries";
 import { ProxyCredentialsType } from "@core/types";
 
 const countries = [
-	GeoblockedCountries.UNITED_STATED,
-	GeoblockedCountries.NETHERLANDS,
-	GeoblockedCountries.BELARUS,
+	GeoblockedCountry.UNITED_STATED,
+	GeoblockedCountry.NETHERLANDS,
+	GeoblockedCountry.BELARUS,
 ];
 const geoblockedCredentialsMap = new Map<string, ProxyCredentialsType>([
-	[GeoblockedCountries.UNITED_STATED, US_PROXY_CREDENTIALS],
-	[GeoblockedCountries.NETHERLANDS, NL_PROXY_CREDENTIALS],
-	[GeoblockedCountries.BELARUS, BL_PROXY_CREDENTIALS],
+	[GeoblockedCountry.UNITED_STATED, US_PROXY_CREDENTIALS],
+	[GeoblockedCountry.NETHERLANDS, NL_PROXY_CREDENTIALS],
+	[GeoblockedCountry.BELARUS, BL_PROXY_CREDENTIALS],
 ]);
 
 // TODO: Check why proxy not working for BELARUS. Check when change providers if it works and delete this comment

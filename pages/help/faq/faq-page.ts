@@ -3,7 +3,7 @@ import { FaqPageMap } from "./faq-page-map";
 import { BasePage } from "@base/base-page";
 import { FaqPageAsserter } from "./faq-page-asserter";
 import { logger } from "@logger/logger";
-import { VisibilityStates } from "@enums/playwright/visibility-states";
+import { VisibilityState } from "@enums/playwright/visibility-states";
 import { FAQ_PAGE_ENDPOINT } from "@constants/page-endpoints";
 
 export class FaqPage extends BasePage<FaqPageMap> {
@@ -22,7 +22,7 @@ export class FaqPage extends BasePage<FaqPageMap> {
 	public async expandAffiliateCodeRegisteredUnderSection(): Promise<void> {
 		await this.map.waitFor({
 			locator: this.map.expandAffiliateCodeReqisterButtonLocator,
-			state: VisibilityStates.VISIBLE,
+			state: VisibilityState.VISIBLE,
 		});
 		const sectionAriaExpandedAttribute =
 			await this.map.expandAffiliateCodeReqisterButtonLocator.getAttribute(

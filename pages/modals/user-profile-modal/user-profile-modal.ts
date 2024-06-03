@@ -2,7 +2,7 @@ import { Page } from "@playwright/test";
 import { BaseModal } from "@base/base-modal";
 import { UserProfileModalMap } from "./user-profile-modal-map";
 import { UserProfileModalAsserter } from "./user-profile-modal-asserter";
-import { VisibilityStates } from "@enums/playwright/visibility-states";
+import { VisibilityState } from "@enums/playwright/visibility-states";
 
 export class UserProfileModal extends BaseModal<UserProfileModalMap> {
 	constructor(page: Page) {
@@ -16,11 +16,11 @@ export class UserProfileModal extends BaseModal<UserProfileModalMap> {
 	public async waitContentToLoad(): Promise<void> {
 		await this.map.waitFor({
 			locator: this.map.userAvatar,
-			state: VisibilityStates.VISIBLE,
+			state: VisibilityState.VISIBLE,
 		});
 		await this.map.waitFor({
 			locator: this.map.userProfileTitle,
-			state: VisibilityStates.VISIBLE,
+			state: VisibilityState.VISIBLE,
 		});
 	}
 }

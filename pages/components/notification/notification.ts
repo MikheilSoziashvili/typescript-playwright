@@ -2,7 +2,7 @@ import { Page } from "@playwright/test";
 import { BaseComponent } from "@base/base-component";
 import { NotificationMap } from "./notification-map";
 import { NotificationAsserter } from "./notification-asserter";
-import { VisibilityStates } from "@enums/playwright/visibility-states";
+import { VisibilityState } from "@enums/playwright/visibility-states";
 
 export class Notification extends BaseComponent<NotificationMap> {
 	constructor(page: Page) {
@@ -19,12 +19,12 @@ export class Notification extends BaseComponent<NotificationMap> {
 	}): Promise<void> {
 		await this.map.waitFor({
 			locator: this.map.notificationContainer(options),
-			state: VisibilityStates.VISIBLE,
+			state: VisibilityState.VISIBLE,
 		});
 		await this.map.notificationGotItButtonLocator(options).click();
 		await this.map.waitFor({
 			locator: this.map.notificationContainer(options),
-			state: VisibilityStates.HIDDEN,
+			state: VisibilityState.HIDDEN,
 		});
 	}
 }
