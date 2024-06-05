@@ -21,7 +21,6 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 	}
 
 	public async sendMessage(message: string): Promise<void> {
-		await this.authenticatedHeader.expandChatIfNotVisible();
 		await this.component.map.chatTextBox.fill(message);
 		await this.component.map.sendMessageButton.click();
 	}

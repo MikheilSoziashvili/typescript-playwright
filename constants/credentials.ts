@@ -17,6 +17,7 @@ export const SUPER_ADMIN_CREDENTIALS: CredentialsType = {
 export const USER_1_CREDENTIALS: CredentialsType = {
 	username: "user1",
 	password: "password",
+	email: "user1@example.com",
 };
 
 export const USER_2_CREDENTIALS: CredentialsType = {

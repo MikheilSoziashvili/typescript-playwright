@@ -1,4 +1,4 @@
-import { users } from "configuration";
+import { smokeUsers, users } from "configuration";
 import { test } from "@fixtures/fixtures";
 import { parse_csv, toJson } from "@core/utils";
 import { USER_1_CREDENTIALS } from "@constants/credentials";
@@ -98,17 +98,21 @@ test.describe("Login tests", () => {
 		});
 	}
 
-	test("[ENG-1070] Login with username @smoke", async ({ homePage }) => {
-		await homePage.navigateAndCheckTitle();
+	for (const user of smokeUsers) {
+		test(`[ENG-1070] Login with ${user.usernameOrEmail} @smoke`, async ({
+			homePage,
+		}) => {
+			await homePage.navigateAndCheckTitle();
 
-		await homePage.unauthenticatedHeader.openLoginModal();
-		await homePage.loginModal.login(
-			USER_1_CREDENTIALS.username,
-			USER_1_CREDENTIALS.password,
-		);
+			await homePage.unauthenticatedHeader.openLoginModal();
+			await homePage.loginModal.login(
+				user.usernameOrEmail,
+				USER_1_CREDENTIALS.password,
+			);
 
-		await homePage.authenticatedHeader
-			.assertThat()
-			.loggedInUserElementsAreVisible();
-	});
+			await homePage.authenticatedHeader
+				.assertThat()
+				.loggedInUserElementsAreVisible();
+		});
+	}
 });

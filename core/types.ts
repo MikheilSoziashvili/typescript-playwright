@@ -13,6 +13,11 @@ export type CredentialsType = {
 	email?: string;
 };
 
+export type LoginCredentialsType = {
+	usernameOrEmail: string;
+	password: string;
+};
+
 export type XmlData = {
 	testsuites: { testsuite: XmlDataTestSuite[] };
 };

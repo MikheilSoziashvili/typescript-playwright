@@ -1,4 +1,5 @@
-import { TestUserConfigurationObject } from "@core/types";
+import { USER_1_CREDENTIALS } from "@constants/credentials";
+import { LoginCredentialsType, TestUserConfigurationObject } from "@core/types";
 import { asString, getFilePath } from "@core/utils";
 
 export const environment_url = process.env.CI
@@ -174,5 +175,16 @@ export const users: TestUserConfigurationObject[] = [
 		role: "user",
 		tags: [],
 		additional_info: "not email verified",
+	},
+];
+
+export const smokeUsers: LoginCredentialsType[] = [
+	{
+		usernameOrEmail: USER_1_CREDENTIALS.email as string,
+		password: USER_1_CREDENTIALS.password,
+	},
+	{
+		usernameOrEmail: USER_1_CREDENTIALS.username,
+		password: USER_1_CREDENTIALS.password,
 	},
 ];
