@@ -13,39 +13,34 @@ export class ChatMap extends BaseMap {
 	}
 
 	public get chatLocator(): Locator {
-		return this.page.locator(
-			"div[class*=ChatSection] > div[class*=ChatRooms]",
-		);
+		return this.page.getByTestId("chatSection");
 	}
 
 	public get chatHeader(): Locator {
-		return this.chatLocator.locator("div[class*=ChatRoomsHeader]");
-	}
-
-	public get chatMessagesContainer(): Locator {
-		return this.chatLocator.locator(" > div[class*= ChatMessages-]");
+		return this.chatLocator.getByTestId("chatHeader");
 	}
 
 	public get chatMessagesList(): Locator {
-		return this.chatMessagesContainer.locator("ul#chat-messages");
+		return this.chatLocator.locator("ul#chat-messages");
 	}
 
 	public messageLocator(options?: ChatMessageOptions): Locator {
+		const messageLocator = this.chatMessagesList.locator(
+			"li[class*= MessageSay-]",
+		);
 		if (options?.index) {
-			return this.chatMessagesContainer
-				.locator("li[class*= MessageSay-]")
-				.nth(options.index - 1);
+			return messageLocator.nth(options.index - 1);
 		} else if (options?.username && options.message) {
-			return this.chatMessagesContainer
-				.locator("li[class*= MessageSay-]")
+			return messageLocator
 				.filter({
-					hasText: `${options.username}: ${options.message}`,
+					hasText: `${options.username}:`,
+				})
+				.filter({
+					hasText: `${options.message}`,
 				})
 				.last();
 		} else {
-			return this.chatMessagesContainer
-				.locator("li[class*= MessageSay-]")
-				.last();
+			return messageLocator.last();
 		}
 	}
 
@@ -62,19 +57,18 @@ export class ChatMap extends BaseMap {
 	}
 
 	public infoMessageLocator(index?: number): Locator {
+		const infoLocator = this.chatMessagesList.locator(
+			"li[class*= MessageMix-] span[class*= client-message]",
+		);
 		if (index) {
-			return this.chatMessagesList
-				.locator("li[class*= MessageMix-] span[class*= client-message]")
-				.nth(index - 1);
+			return infoLocator.nth(index - 1);
 		} else {
-			return this.chatMessagesList
-				.locator("li[class*= MessageMix-] span[class*= client-message]")
-				.last();
+			return infoLocator.last();
 		}
 	}
 
 	public get chatFooter(): Locator {
-		return this.chatLocator.locator("div[class*=ChatRoomsFooter]");
+		return this.chatLocator.getByTestId("chatFooter");
 	}
 
 	public get chatTextBox(): Locator {

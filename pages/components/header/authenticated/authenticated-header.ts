@@ -30,9 +30,9 @@ export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 		const chat = new Chat(this.page);
 
 		if (
-			!(await chat.map.chatMessagesContainer.isVisible({
+			await this.map.chatButton.isVisible({
 				timeout: Timeout.SHORT,
-			}))
+			})
 		) {
 			await this.map.chatButton.click();
 			await chat.waitChatToBeDisplayed();

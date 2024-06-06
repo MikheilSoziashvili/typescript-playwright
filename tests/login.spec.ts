@@ -1,14 +1,15 @@
 import { users } from "configuration";
 import { test } from "@fixtures/fixtures";
 import { parse_csv, toJson } from "@core/utils";
-import { USER_1_CREDENTIALS } from "@constants/credentials";
+
+const DATASETS_FOLDER = "datasets";
+const LOGIN_NOT_POSSIBLE_CSV = "ENG-294-login-not-possible.csv";
+const LOGIN_REJECTED_CSV = "ENG-294-login-rejected.csv";
+const LOGIN_SUCCESSFUL_CSV = "ENG-1070-login-successful.csv";
 
 test.describe("Login tests", () => {
 	test.use({ storageState: { cookies: [], origins: [] } });
-	for (const record of parse_csv(
-		"datasets",
-		"ENG-294-login-not-possible.csv",
-	) as {
+	for (const record of parse_csv(DATASETS_FOLDER, LOGIN_NOT_POSSIBLE_CSV) as {
 		username: string;
 		password: string;
 		expected_username_warning: string;
@@ -38,10 +39,7 @@ test.describe("Login tests", () => {
 		});
 	}
 
-	for (const record of parse_csv(
-		"datasets",
-		"ENG-294-login-rejected.csv",
-	) as {
+	for (const record of parse_csv(DATASETS_FOLDER, LOGIN_REJECTED_CSV) as {
 		username: string;
 		password: string;
 		expected_feedback_location: string;
@@ -98,17 +96,21 @@ test.describe("Login tests", () => {
 		});
 	}
 
-	test("[ENG-1070] Login with username @smoke", async ({ homePage }) => {
-		await homePage.navigateAndCheckTitle();
+	for (const user of parse_csv(DATASETS_FOLDER, LOGIN_SUCCESSFUL_CSV) as {
+		username: string;
+		password: string;
+	}[]) {
+		test(`[ENG-1070] Login with ${user.username} @smoke`, async ({
+			homePage,
+		}) => {
+			await homePage.navigateAndCheckTitle();
 
-		await homePage.unauthenticatedHeader.openLoginModal();
-		await homePage.loginModal.login(
-			USER_1_CREDENTIALS.username,
-			USER_1_CREDENTIALS.password,
-		);
+			await homePage.unauthenticatedHeader.openLoginModal();
+			await homePage.loginModal.login(user.username, user.password);
 
-		await homePage.authenticatedHeader
-			.assertThat()
-			.loggedInUserElementsAreVisible();
-	});
+			await homePage.authenticatedHeader
+				.assertThat()
+				.loggedInUserElementsAreVisible();
+		});
+	}
 });
