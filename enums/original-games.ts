@@ -11,6 +11,12 @@ export enum RouletteNumberColor {
 	BLACK = 14,
 }
 
+export enum RouletteBetColor {
+	RED = "red",
+	GREEN = "green",
+	BLACK = "black",
+}
+
 export enum HiloBetMultiplierByBetOption {
 	RED = 2,
 	BLACK = 2,
