@@ -1,6 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
-import { RouletteNumberColor } from "@enums/original-games";
+import { RouletteBetColor } from "@enums/original-games";
 
 export class RouletteGamePageMap extends BaseMap {
 	public constructor(page: Page) {
@@ -53,11 +53,11 @@ export class RouletteGamePageMap extends BaseMap {
 		return this.gameContainer.getByTestId("rouletteBetGrid");
 	}
 
-	public get betSectionsByColor(): Record<RouletteNumberColor, Locator> {
+	public get betSectionsByColor(): Record<RouletteBetColor, Locator> {
 		return {
-			[RouletteNumberColor.GREEN]: this.greenBetSection,
-			[RouletteNumberColor.RED]: this.redBetSection,
-			[RouletteNumberColor.BLACK]: this.blackBetSection,
+			[RouletteBetColor.GREEN]: this.greenBetSection,
+			[RouletteBetColor.RED]: this.redBetSection,
+			[RouletteBetColor.BLACK]: this.blackBetSection,
 		};
 	}
 

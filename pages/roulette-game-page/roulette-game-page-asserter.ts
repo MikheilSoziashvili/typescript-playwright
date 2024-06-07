@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
 import { BaseAsserter } from "@base/base-asserter";
 import { RouletteGamePage } from "./roulette-game-page";
-import { RouletteNumberColor } from "@enums/original-games";
+import { RouletteBetColor } from "@enums/original-games";
 import { plusSignWithExactDecimalCurrency } from "@support/regex-patterns";
 import { parseToFloat } from "@core/utils";
 
@@ -12,11 +12,10 @@ export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 
 	public async potentialBenefitValueIs(
 		value: number,
-		rouletteNumberColor: RouletteNumberColor,
+		betColor: RouletteBetColor,
 		beforeBetPlacement = true,
 	): Promise<void> {
-		const betSection =
-			this.gamdomPage.map.betSectionsByColor[rouletteNumberColor];
+		const betSection = this.gamdomPage.map.betSectionsByColor[betColor];
 		beforeBetPlacement
 			? await expect
 					.soft(this.gamdomPage.map.betPotentialProfit(betSection))
@@ -35,12 +34,15 @@ export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 	}
 
 	public async playerBetDisplayed(
-		rouletteNumberColor: RouletteNumberColor,
+		betColor: RouletteBetColor,
 		username: string,
 		betAmount: number,
 	): Promise<void> {
-		const betSection =
-			this.gamdomPage.map.betSectionsByColor[rouletteNumberColor];
+		const betSection = this.gamdomPage.map.betSectionsByColor[betColor];
+
+		expect(
+			(await this.gamdomPage.map.playersGridRows(betSection)).length,
+		).toBeGreaterThan(0);
 
 		for (const betRow of await this.gamdomPage.map.playersGridRows(
 			betSection,
@@ -55,12 +57,11 @@ export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 	}
 
 	public async totalBetsAre(
-		rouletteNumberColor: RouletteNumberColor,
+		betColor: RouletteBetColor,
 		betsCount: number,
 		betsAmount: number,
 	): Promise<void> {
-		const betSection =
-			this.gamdomPage.map.betSectionsByColor[rouletteNumberColor];
+		const betSection = this.gamdomPage.map.betSectionsByColor[betColor];
 
 		await expect
 			.soft(this.gamdomPage.map.betTotalBetsCount(betSection))
@@ -71,11 +72,10 @@ export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 	}
 
 	public async profitAmountDisplayed(
-		rouletteNumberColor: RouletteNumberColor,
+		betColor: RouletteBetColor,
 		betAmount: number,
 	): Promise<void> {
-		const betSection =
-			this.gamdomPage.map.betSectionsByColor[rouletteNumberColor];
+		const betSection = this.gamdomPage.map.betSectionsByColor[betColor];
 
 		await expect
 			.soft(this.gamdomPage.map.betProfit(betSection))

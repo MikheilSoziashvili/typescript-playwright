@@ -1,7 +1,7 @@
 import { Page, expect } from "@playwright/test";
 import { RouletteGamePageMap } from "./roulette-game-page-map";
 import { RouletteGamePageAsserter } from "./roulette-game-page-asserter";
-import { RouletteNumberColor } from "@enums/original-games";
+import { RouletteBetColor, RouletteNumberColor } from "@enums/original-games";
 import { range } from "@core/utils";
 import { ROULETTE_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePage } from "@base/base-page";
@@ -72,17 +72,15 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 		await this.map.betField.fill(`${betAmount}`);
 	}
 
-	public async betOnColor(
-		rouletteNumberColor: RouletteNumberColor,
-	): Promise<void> {
-		switch (rouletteNumberColor) {
-			case RouletteNumberColor.GREEN:
+	public async betOnColor(betColor: RouletteBetColor): Promise<void> {
+		switch (betColor) {
+			case RouletteBetColor.GREEN:
 				await this.map.betButton(this.map.greenBetSection).click();
 				break;
-			case RouletteNumberColor.RED:
+			case RouletteBetColor.RED:
 				await this.map.betButton(this.map.redBetSection).click();
 				break;
-			case RouletteNumberColor.BLACK:
+			case RouletteBetColor.BLACK:
 				await this.map.betButton(this.map.blackBetSection).click();
 				break;
 			default:
@@ -92,24 +90,24 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 
 	public async placeBet(
 		betAmount: number,
-		rouletteNumberColor: RouletteNumberColor,
+		betColor: RouletteBetColor,
 	): Promise<void> {
 		await this.insertBet(betAmount);
-		await this.betOnColor(rouletteNumberColor);
+		await this.betOnColor(betColor);
 	}
 
 	public calculateProfit(
 		betAmount: number,
-		rouletteNumberColor: RouletteNumberColor,
+		betColor: RouletteBetColor,
 		includeBetReturn = true,
 	): number {
 		let result = 0;
-		switch (rouletteNumberColor) {
-			case RouletteNumberColor.GREEN:
+		switch (betColor) {
+			case RouletteBetColor.GREEN:
 				return betAmount * 14;
 				break;
-			case RouletteNumberColor.BLACK:
-			case RouletteNumberColor.RED:
+			case RouletteBetColor.BLACK:
+			case RouletteBetColor.RED:
 				return betAmount * 2;
 			default:
 				break;

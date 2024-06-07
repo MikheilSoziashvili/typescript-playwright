@@ -1,4 +1,4 @@
-import { RouletteNumberColor } from "@enums/original-games";
+import { RouletteBetColor, RouletteNumberColor } from "@enums/original-games";
 import { test } from "@fixtures/fixtures";
 import { logger } from "@logger/logger";
 import { BetTestData } from "@dtos/test-data";
@@ -27,29 +27,29 @@ test.describe("Roulette tests", () => {
 				.assertThat()
 				.potentialBenefitValueIs(
 					betTestData.betAmount,
-					RouletteNumberColor.RED,
+					RouletteBetColor.RED,
 				);
 
-			await rouletteGamePage.betOnColor(RouletteNumberColor.RED);
+			await rouletteGamePage.betOnColor(RouletteBetColor.RED);
 
 			await rouletteGamePage
 				.assertThat()
 				.potentialBenefitValueIs(
 					betTestData.betAmount,
-					RouletteNumberColor.RED,
+					RouletteBetColor.RED,
 					false,
 				);
 			await rouletteGamePage
 				.assertThat()
 				.playerBetDisplayed(
-					RouletteNumberColor.RED,
+					RouletteBetColor.BLACK,
 					betTestData.username,
 					betTestData.betAmount,
 				);
 
 			await rouletteGamePage
 				.assertThat()
-				.totalBetsAre(RouletteNumberColor.RED, 1, 1);
+				.totalBetsAre(RouletteBetColor.RED, 1, 1);
 
 			accountBalanceLeft =
 				await rouletteGamePage.authenticatedHeader.getAccountBalance();
@@ -63,14 +63,11 @@ test.describe("Roulette tests", () => {
 
 		await rouletteGamePage
 			.assertThat()
-			.profitAmountDisplayed(
-				RouletteNumberColor.RED,
-				betTestData.betAmount,
-			);
+			.profitAmountDisplayed(RouletteBetColor.RED, betTestData.betAmount);
 
 		const expectedProfit = rouletteGamePage.calculateProfit(
 			betTestData.betAmount,
-			RouletteNumberColor.RED,
+			RouletteBetColor.RED,
 		);
 		await rouletteGamePage.authenticatedHeader
 			.assertThat()
