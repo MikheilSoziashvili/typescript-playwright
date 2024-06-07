@@ -137,3 +137,6 @@ dist
 results.xml
 keystore.json
 playwright-report.zip
+
+# common
+.env

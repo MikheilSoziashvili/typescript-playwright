@@ -21,6 +21,7 @@
 		"accounting-js": "^1.1.1",
 		"archiver": "^7.0.1",
 		"csv-parse": "^5.5.3",
+		"dotenv": "^16.4.5",
 		"pino-pretty": "^10.3.0",
 		"playwright-slack-report": "^1.1.72",
 		"winston": "^3.11.0",
