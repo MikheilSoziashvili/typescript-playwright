@@ -42,7 +42,7 @@ test.describe("Roulette tests", () => {
 			await rouletteGamePage
 				.assertThat()
 				.playerBetDisplayed(
-					RouletteBetColor.BLACK,
+					RouletteBetColor.RED,
 					betTestData.username,
 					betTestData.betAmount,
 				);
