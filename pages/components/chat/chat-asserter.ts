@@ -10,15 +10,15 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 	}
 
 	public async isDisplayed(): Promise<void> {
-		await expect.soft(this.gamdomPage.map.chatLocator).toBeVisible();
+		await expect(this.gamdomPage.map.chatLocator).toBeVisible();
 	}
 
 	public async isPlaceholderVisible(
 		placeholder: ChatFooterPlaceholder,
 	): Promise<void> {
-		await expect
-			.soft(this.gamdomPage.map.chatTextBoxPlaceholder)
-			.toHaveText(placeholder);
+		await expect(this.gamdomPage.map.chatTextBoxPlaceholder).toHaveText(
+			placeholder,
+		);
 	}
 
 	public async isMessageVisible(
@@ -33,8 +33,8 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 		infoMessage: string,
 		index?: number,
 	): Promise<void> {
-		await expect
-			.soft(this.gamdomPage.map.infoMessageLocator(index))
-			.toHaveText(infoMessage);
+		await expect(this.gamdomPage.map.infoMessageLocator(index)).toHaveText(
+			infoMessage,
+		);
 	}
 }
