@@ -13,8 +13,9 @@ export class TipUserModalAsserter extends BaseAsserter<TipUserModal> {
 	}
 
 	public async isValueVisible(value: number): Promise<void> {
-		await expect
-			.soft(this.gamdomPage.map.tipAmountField)
-			.toHaveAttribute("value", parseToFloat(value));
+		await expect(this.gamdomPage.map.tipAmountField).toHaveAttribute(
+			"value",
+			parseToFloat(value),
+		);
 	}
 }

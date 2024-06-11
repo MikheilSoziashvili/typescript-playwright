@@ -11,7 +11,7 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 	}
 
 	public async titleHasText(title: string): Promise<void> {
-		await expect.soft(this.gamdomPage.page).toHaveTitle(title, {
+		await expect(this.gamdomPage.page).toHaveTitle(title, {
 			timeout: Timeout.MAX,
 		});
 	}
@@ -35,16 +35,14 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		if (!text && this.fromCsv) {
 			return undefined; // if the value comes from csv and is empty - do nothing
 		}
-		await expect.soft(this.gamdomPage.map.toastMessage).toContainText(text);
+		await expect(this.gamdomPage.map.toastMessage).toContainText(text);
 	}
 
 	public async userIsRegistered(username: string): Promise<void> {
 		await this.gamdomPage.authenticatedHeader
 			.assertThat()
 			.loggedInUserElementsAreVisible();
-		await expect
-			.soft(this.gamdomPage.map.registerSuccessMessage)
-			.toBeVisible();
+		await expect(this.gamdomPage.map.registerSuccessMessage).toBeVisible();
 
 		const receivedUsername =
 			await this.gamdomPage.map.welcomeBackMessage.textContent({

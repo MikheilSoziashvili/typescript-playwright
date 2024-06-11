@@ -8,15 +8,15 @@ export class BannedUserPageAsserter extends BaseAsserter<BannedUserPage> {
 	}
 
 	public async isBannedTitleDisplayed(): Promise<void> {
-		await expect
-			.soft(this.gamdomPage.map.restrictionTitle)
-			.toHaveText("Your account has been Banned!");
+		await expect(this.gamdomPage.map.restrictionTitle).toHaveText(
+			"Your account has been Banned!",
+		);
 	}
 
 	public async isBannedReasonDisplayed(reason?: string): Promise<void> {
 		const bannedReason = reason || "Banned";
-		await expect
-			.soft(this.gamdomPage.map.bannedReason)
-			.toHaveText(`Reason: ${bannedReason}`);
+		await expect(this.gamdomPage.map.bannedReason).toHaveText(
+			`Reason: ${bannedReason}`,
+		);
 	}
 }

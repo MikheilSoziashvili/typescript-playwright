@@ -49,31 +49,26 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 	}
 
 	public async diceValueIsCorrect(diceValue: string): Promise<void> {
-		await expect
-			.soft(this.gamdomPage.map.diceSliderValue)
-			.toHaveText(diceValue);
+		await expect(this.gamdomPage.map.diceSliderValue).toHaveText(diceValue);
 	}
 
 	public async diceMessageIsNotEmpty(): Promise<void> {
-		await expect
-			.soft(this.gamdomPage.map.diceGameAreaMessage)
-			.not.toBeEmpty({
-				timeout: Timeout.MEDIUM,
-			});
+		await expect(this.gamdomPage.map.diceGameAreaMessage).not.toBeEmpty({
+			timeout: Timeout.MEDIUM,
+		});
 	}
 
 	public async diceMessageIs(
 		resultMessage: DiceGameResultMessage,
 	): Promise<void> {
-		await expect
-			.soft(this.gamdomPage.map.diceGameAreaMessage)
-			.not.toBeEmpty({
-				timeout: Timeout.MEDIUM,
-			});
+		await expect(this.gamdomPage.map.diceGameAreaMessage).not.toBeEmpty({
+			timeout: Timeout.MEDIUM,
+		});
 
-		await expect
-			.soft(this.gamdomPage.map.diceGameAreaMessage)
-			.toHaveText(resultMessage, { timeout: Timeout.MEDIUM });
+		await expect(this.gamdomPage.map.diceGameAreaMessage).toHaveText(
+			resultMessage,
+			{ timeout: Timeout.MEDIUM },
+		);
 	}
 
 	public async diceResultIsDisplayed(): Promise<void> {
