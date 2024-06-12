@@ -193,7 +193,7 @@ export class RouletteGamePageMap extends BaseMap {
 	}
 
 	public greenHuntTypeList(): Locator {
-		return this.page.locator(" ul[role=listbox]");
+		return this.page.locator("ul[role=listbox]");
 	}
 
 	public greenHuntTypeOption(option: GreenHuntTypeOption): Locator {

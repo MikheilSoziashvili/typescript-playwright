@@ -4,12 +4,11 @@ import { BetTestData } from "@dtos/test-data";
 import { storageStateUser1API } from "@fixtures/auth-fixtures";
 import { GreenHuntTypeOption } from "@enums/roulette-autobet-section";
 import { USER_1_CREDENTIALS } from "@constants/credentials";
+import { calculateGreenHuntAmountByPercentage } from "@formulas/roulette";
 
 test.describe("Green hunt", () => {
 	test.use(storageStateUser1API);
-	test("[ENG-1090] Roulette - green hunt", async ({
-		rouletteGamePage,
-	}) => {
+	test("[ENG-1090] Roulette - green hunt", async ({ rouletteGamePage }) => {
 		const betTestData: BetTestData = new BetTestData(
 			USER_1_CREDENTIALS.username,
 			100,
@@ -23,7 +22,7 @@ test.describe("Green hunt", () => {
 			.steps()
 			.startGreenHunt(greenHuntPercentage, GreenHuntTypeOption.PERCENT);
 		const greenHuntAmountByPercentage =
-			rouletteGamePage.calculateGreenHuntAmountByPercentage(
+			calculateGreenHuntAmountByPercentage(
 				betTestData.betAmount,
 				greenHuntPercentage,
 			);

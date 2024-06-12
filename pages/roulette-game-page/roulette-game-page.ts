@@ -137,13 +137,6 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 		return result;
 	}
 
-	public calculateGreenHuntAmountByPercentage(
-		betAmount: number,
-		percentage: number,
-	): number {
-		return betAmount * (percentage / 100);
-	}
-
 	public async expandAutobetSection(): Promise<void> {
 		if (await this.map.autobetContainer().isVisible()) {
 			logger.info("Autobet section already expanded");
@@ -158,14 +151,11 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 
 	public async selectGreenHuntType(type: GreenHuntTypeOption): Promise<void> {
 		await this.map.greenHuntTypeDropdown().click();
-		if (type === GreenHuntTypeOption.PERCENT) {
-			await this.map
-				.greenHuntTypeOption(GreenHuntTypeOption.PERCENT)
-				.click();
-		} else {
-			await this.map
-				.greenHuntTypeOption(GreenHuntTypeOption.MONEY)
-				.click();
-		}
+		const option =
+			type === GreenHuntTypeOption.PERCENT
+				? GreenHuntTypeOption.PERCENT
+				: GreenHuntTypeOption.MONEY;
+
+		await this.map.greenHuntTypeOption(option).click();
 	}
 }
