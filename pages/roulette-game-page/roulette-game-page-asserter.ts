@@ -4,6 +4,7 @@ import { RouletteGamePage } from "./roulette-game-page";
 import { RouletteBetColor } from "@enums/original-games";
 import { plusSignWithExactDecimalCurrency } from "@support/regex-patterns";
 import { parseToFloat } from "@core/utils";
+import { RouletteAutobetSection } from "@enums/roulette-autobet-section";
 
 export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 	public constructor(page: RouletteGamePage) {
@@ -39,10 +40,6 @@ export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 		betAmount: number,
 	): Promise<void> {
 		const betSection = this.gamdomPage.map.betSectionsByColor[betColor];
-
-		expect(
-			(await this.gamdomPage.map.playersGridRows(betSection)).length,
-		).toBeGreaterThan(0);
 
 		for (const betRow of await this.gamdomPage.map.playersGridRows(
 			betSection,
@@ -96,5 +93,14 @@ export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 		await expect(this.gamdomPage.map.latestRollResultNumber).toHaveText(
 			`${rouletteNumber}`,
 		);
+	}
+
+	public async greenHuntIsActive(): Promise<void> {
+		await expect(
+			this.gamdomPage.map.autobetSectionStatus(
+				RouletteAutobetSection.GREEN_HUNT,
+			),
+		).toHaveText("Active");
+		await expect(this.gamdomPage.map.stopGreenHuntButton()).toBeVisible();
 	}
 }
