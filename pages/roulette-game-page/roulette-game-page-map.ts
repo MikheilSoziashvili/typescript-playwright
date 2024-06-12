@@ -1,6 +1,10 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
 import { RouletteBetColor } from "@enums/original-games";
+import {
+	GreenHuntTypeOption,
+	RouletteAutobetSection,
+} from "@enums/roulette-autobet-section";
 
 export class RouletteGamePageMap extends BaseMap {
 	public constructor(page: Page) {
@@ -29,6 +33,12 @@ export class RouletteGamePageMap extends BaseMap {
 
 	public get betField(): Locator {
 		return this.yourBetGrid.locator("input[class*='AdornedStart']");
+	}
+
+	public get autobetButton(): Locator {
+		return this.placeBetGrid
+			.getByTestId("rouletteAutoBetGrid")
+			.locator("button");
 	}
 
 	public get spinningStateLocator(): Locator {
@@ -133,5 +143,76 @@ export class RouletteGamePageMap extends BaseMap {
 		return playerGridRow.locator(
 			"p[data-testid*=roulettePlayersGridBetAmount]",
 		);
+	}
+
+	public autobetContainer(): Locator {
+		return this.gameContainer.locator("div[class*='AutoBetContainer']");
+	}
+
+	public autobetSectionContainer(
+		sectionName: RouletteAutobetSection,
+	): Locator {
+		return this.autobetContainer()
+			.locator("div[class*='MuiGrid-grid-md-4']")
+			.filter({
+				has: this.page.locator(
+					`div[class*='BoxTitleWrapper'] h5:text-is("${sectionName}")`,
+				),
+			});
+	}
+
+	public autobetSectionStatus(
+		sectionName:
+			| RouletteAutobetSection.ROULETTE_AUTO_BET
+			| RouletteAutobetSection.GREEN_HUNT,
+	): Locator {
+		return this.autobetSectionContainer(sectionName).locator("div[mode]");
+	}
+
+	public greenHuntAutomaticallyBetTextInput(): Locator {
+		return this.autobetSectionContainer(RouletteAutobetSection.GREEN_HUNT)
+			.locator("div[inputmode=numeric]")
+			.filter({
+				has: this.page.locator('label:text-is("Automatically Bet")'),
+			})
+			.locator("input");
+	}
+
+	public greenHuntTypeDropdown(): Locator {
+		return this.autobetSectionContainer(
+			RouletteAutobetSection.GREEN_HUNT,
+		).locator("div[class*='DropdownContainer']");
+	}
+
+	public greenHuntTypeTextInput(): Locator {
+		return this.greenHuntTypeDropdown()
+			.filter({
+				has: this.page.locator('label:text-is("When")'),
+			})
+			.locator("input");
+	}
+
+	public greenHuntTypeList(): Locator {
+		return this.page.locator(" ul[role=listbox]");
+	}
+
+	public greenHuntTypeOption(option: GreenHuntTypeOption): Locator {
+		return this.greenHuntTypeList().locator(`li[data-value="${option}"]`);
+	}
+
+	public startGreenHuntButton(): Locator {
+		return this.autobetSectionContainer(RouletteAutobetSection.GREEN_HUNT)
+			.locator("button")
+			.filter({
+				hasText: "Start Green Hunt",
+			});
+	}
+
+	public stopGreenHuntButton(): Locator {
+		return this.autobetSectionContainer(RouletteAutobetSection.GREEN_HUNT)
+			.locator("button")
+			.filter({
+				hasText: "Stop",
+			});
 	}
 }
