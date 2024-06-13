@@ -113,4 +113,21 @@ test.describe("Login tests", () => {
 				.loggedInUserElementsAreVisible();
 		});
 	}
+
+	test(`[ENG-292] Login with steam user`, async ({
+		homePage,
+		steamAuthPage,
+		steamBlockedPage,
+	}) => {
+		await homePage.navigateAndCheckTitle();
+
+		await homePage.unauthenticatedHeader.openLoginModal();
+		await homePage.loginModal.clickSteamButton();
+		await steamAuthPage.loginToSteam();
+		await steamBlockedPage.continueAndSignIn();
+
+		await homePage.authenticatedHeader
+			.assertThat()
+			.loggedInUserElementsAreVisible();
+	});
 });

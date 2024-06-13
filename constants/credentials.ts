@@ -7,6 +7,12 @@ export const GOOGLE_AUTH_CREDENTIALS: CredentialsType = {
 	email: "testautomation@teamgamdom.com",
 };
 
+// steam auth
+export const STEAM_AUTH_CREDENTIALS: CredentialsType = {
+	username: "testautomation1",
+	password: "steamautomation1@",
+};
+
 // gamdom admins
 export const SUPER_ADMIN_CREDENTIALS: CredentialsType = {
 	username: "superadmin",
