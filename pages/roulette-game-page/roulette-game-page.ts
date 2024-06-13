@@ -5,7 +5,6 @@ import { RouletteBetColor, RouletteNumberColor } from "@enums/original-games";
 import { range } from "@core/utils";
 import { ROULETTE_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePage } from "@base/base-page";
-import { VisibilityState } from "@enums/playwright/visibility-states";
 import { RouletteGamePageSteps } from "./roulette-game-page-steps";
 import { logger } from "@logger/logger";
 import { GreenHuntTypeOption } from "@enums/roulette-autobet-section";
@@ -17,9 +16,8 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 
 	public override async navigate(): Promise<void> {
 		await this.page.goto(ROULETTE_GAME_PAGE_ENDPOINT);
-		await this.map.waitFor({
+		await this.map.waitForVisibility({
 			locator: this.map.gameContainer,
-			state: VisibilityState.VISIBLE,
 		});
 	}
 
@@ -83,23 +81,20 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 		switch (betColor) {
 			case RouletteBetColor.GREEN:
 				await this.map.betButton(this.map.greenBetSection).click();
-				await this.map.waitFor({
+				await this.map.waitForVisibility({
 					locator: this.map.betSectionsByColor.green,
-					state: VisibilityState.VISIBLE,
 				});
 				break;
 			case RouletteBetColor.RED:
 				await this.map.betButton(this.map.redBetSection).click();
-				await this.map.waitFor({
+				await this.map.waitForVisibility({
 					locator: this.map.betSectionsByColor.red,
-					state: VisibilityState.VISIBLE,
 				});
 				break;
 			case RouletteBetColor.BLACK:
 				await this.map.betButton(this.map.blackBetSection).click();
-				await this.map.waitFor({
+				await this.map.waitForVisibility({
 					locator: this.map.betSectionsByColor.black,
-					state: VisibilityState.VISIBLE,
 				});
 				break;
 			default:
@@ -142,9 +137,8 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 			logger.info("Autobet section already expanded");
 		} else {
 			await this.map.autobetButton.click();
-			await this.map.waitFor({
+			await this.map.waitForVisibility({
 				locator: this.map.autobetContainer(),
-				state: VisibilityState.VISIBLE,
 			});
 		}
 	}

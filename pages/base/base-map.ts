@@ -32,4 +32,14 @@ export class BaseMap {
 			timeout,
 		});
 	}
+
+	async waitForVisibility(parameters: {
+        locator: Locator;
+        timeout?: number;
+    }): Promise<void> {
+        await this.waitFor({
+            ...parameters,
+            state: VisibilityState.VISIBLE,
+        });
+    }
 }
