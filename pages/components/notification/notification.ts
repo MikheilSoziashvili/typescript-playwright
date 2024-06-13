@@ -17,9 +17,8 @@ export class Notification extends BaseComponent<NotificationMap> {
 		index?: number;
 		title?: string;
 	}): Promise<void> {
-		await this.map.waitFor({
+		await this.map.waitForVisibility({
 			locator: this.map.notificationContainer(options),
-			state: VisibilityState.VISIBLE,
 		});
 		await this.map.notificationGotItButtonLocator(options).click();
 		await this.map.waitFor({

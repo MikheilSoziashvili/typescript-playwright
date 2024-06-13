@@ -5,7 +5,6 @@ import { CommonUserOptionsPopupAsserter } from "./common-user-options-popup-asse
 import { CommonUserPopupOption } from "@enums/common-user-popup-options";
 import { Timeout } from "@enums/timeout";
 import { Delay } from "@enums/delay";
-import { VisibilityState } from "@enums/playwright/visibility-states";
 
 export class CommonUserOptionsPopup extends BaseComponent<CommonUserOptionsPopupMap> {
 	constructor(page: Page) {
@@ -17,9 +16,8 @@ export class CommonUserOptionsPopup extends BaseComponent<CommonUserOptionsPopup
 	}
 
 	public async clickOption(option: CommonUserPopupOption): Promise<void> {
-		await this.map.waitFor({
+		await this.map.waitForVisibility({
 			locator: this.map.popupLocator,
-			state: VisibilityState.VISIBLE,
 		});
 		await this.map
 			.popupOption(option)
