@@ -3,6 +3,7 @@ import { BaseApi } from "./base-api";
 import { prependXmlHeaderToFile } from "@core/utils";
 import { Timeout } from "@enums/timeout";
 import { APIResponse } from "@playwright/test";
+import { RequestParameters } from "./request-parameters";
 
 export class XrayApi extends BaseApi {
 	private APIToken = "";
@@ -15,10 +16,14 @@ export class XrayApi extends BaseApi {
 	}
 
 	private async authenticate(): Promise<string> {
-		const response = await this.post("/api/v2/authenticate", {
-			client_id: this.xrayConfig.clientId,
-			client_secret: this.xrayConfig.clientSecret,
-		});
+		const parameters: RequestParameters = {
+			endpoint: "/api/v2/authenticate",
+			data: {
+				client_id: this.xrayConfig.clientId,
+				client_secret: this.xrayConfig.clientSecret,
+			} as Record<string, string>,
+		};
+		const response = await this.post(parameters);
 		return (await response.json()) as string;
 	}
 
@@ -26,22 +31,26 @@ export class XrayApi extends BaseApi {
 		this.APIToken = await this.authenticate();
 		this.headers["Authorization"] = `Bearer ${this.APIToken}`;
 	}
+
 	public async importXmlResult(
 		testExecutionKey: string,
 		projectKey: string = Configuration.jira.projectKey,
 	): Promise<APIResponse> {
 		const data = await prependXmlHeaderToFile(Configuration.reportName);
 
-		this.headers["Content-Type"] = "application/xml";
+		const parameters: RequestParameters = {
+			endpoint: "/api/v2/import/execution/junit",
+			headers: {
+				"Content-Type": "application/xml",
+				Authorization: `Bearer ${this.APIToken}`,
+			},
+			data: data,
+			params: { projectKey: projectKey, testExecKey: testExecutionKey },
+			timeout: Timeout.EXTRA_LONG,
+		};
 
 		try {
-			return await this.post(
-				"/api/v2/import/execution/junit",
-				data,
-				this.headers,
-				{ projectKey: projectKey, testExecKey: testExecutionKey },
-				Timeout.EXTRA_LONG,
-			);
+			return await this.post(parameters);
 		} catch (error: unknown) {
 			const msg = "Error importing xml result";
 			if (error instanceof Error) {

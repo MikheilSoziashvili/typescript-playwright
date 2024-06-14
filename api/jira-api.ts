@@ -2,6 +2,7 @@ import { APIResponse } from "@playwright/test";
 import { BaseApi } from "./base-api";
 import * as Configuration from "../configuration";
 import { encodeCredentials } from "@core/utils";
+import { RequestParameters } from "./request-parameters";
 
 export class JiraApi extends BaseApi {
 	private headers: Record<string, string> = {};
@@ -25,10 +26,11 @@ export class JiraApi extends BaseApi {
 		data: object,
 		_headers?: Record<string, string>,
 	): Promise<APIResponse> {
-		return this.post(
-			"/rest/api/2/issue",
-			data,
-			_headers ? { ...this.headers, ..._headers } : this.headers,
-		);
+		const parameters: RequestParameters = {
+			endpoint: "/rest/api/2/issue",
+			headers: _headers ? { ...this.headers, ..._headers } : this.headers,
+			data: data as Record<string, string | number | boolean | object>,
+		};
+		return this.post(parameters);
 	}
 }
