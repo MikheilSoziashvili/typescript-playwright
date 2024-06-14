@@ -1,11 +1,13 @@
 import { Page, expect } from "@playwright/test";
 import { RouletteGamePageMap } from "./roulette-game-page-map";
 import { RouletteGamePageAsserter } from "./roulette-game-page-asserter";
-import { RouletteNumberColor } from "@enums/original-games";
+import { RouletteBetColor, RouletteNumberColor } from "@enums/original-games";
 import { range } from "@core/utils";
 import { ROULETTE_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePage } from "@base/base-page";
-import { VisibilityState } from "@enums/playwright/visibility-states";
+import { RouletteGamePageSteps } from "./roulette-game-page-steps";
+import { logger } from "@logger/logger";
+import { GreenHuntTypeOption } from "@enums/roulette-autobet-section";
 
 export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 	public constructor(page: Page) {
@@ -14,10 +16,13 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 
 	public override async navigate(): Promise<void> {
 		await this.page.goto(ROULETTE_GAME_PAGE_ENDPOINT);
-		await this.map.waitFor({
+		await this.map.waitForVisibility({
 			locator: this.map.gameContainer,
-			state: VisibilityState.VISIBLE,
 		});
+	}
+
+	public steps(): RouletteGamePageSteps {
+		return new RouletteGamePageSteps(this);
 	}
 
 	public override assertThat(): RouletteGamePageAsserter {
@@ -72,18 +77,25 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 		await this.map.betField.fill(`${betAmount}`);
 	}
 
-	public async betOnColor(
-		rouletteNumberColor: RouletteNumberColor,
-	): Promise<void> {
-		switch (rouletteNumberColor) {
-			case RouletteNumberColor.GREEN:
+	public async betOnColor(betColor: RouletteBetColor): Promise<void> {
+		switch (betColor) {
+			case RouletteBetColor.GREEN:
 				await this.map.betButton(this.map.greenBetSection).click();
+				await this.map.waitForVisibility({
+					locator: this.map.betSectionsByColor.green,
+				});
 				break;
-			case RouletteNumberColor.RED:
+			case RouletteBetColor.RED:
 				await this.map.betButton(this.map.redBetSection).click();
+				await this.map.waitForVisibility({
+					locator: this.map.betSectionsByColor.red,
+				});
 				break;
-			case RouletteNumberColor.BLACK:
+			case RouletteBetColor.BLACK:
 				await this.map.betButton(this.map.blackBetSection).click();
+				await this.map.waitForVisibility({
+					locator: this.map.betSectionsByColor.black,
+				});
 				break;
 			default:
 				break;
@@ -92,24 +104,24 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 
 	public async placeBet(
 		betAmount: number,
-		rouletteNumberColor: RouletteNumberColor,
+		betColor: RouletteBetColor,
 	): Promise<void> {
 		await this.insertBet(betAmount);
-		await this.betOnColor(rouletteNumberColor);
+		await this.betOnColor(betColor);
 	}
 
 	public calculateProfit(
 		betAmount: number,
-		rouletteNumberColor: RouletteNumberColor,
+		betColor: RouletteBetColor,
 		includeBetReturn = true,
 	): number {
 		let result = 0;
-		switch (rouletteNumberColor) {
-			case RouletteNumberColor.GREEN:
+		switch (betColor) {
+			case RouletteBetColor.GREEN:
 				return betAmount * 14;
 				break;
-			case RouletteNumberColor.BLACK:
-			case RouletteNumberColor.RED:
+			case RouletteBetColor.BLACK:
+			case RouletteBetColor.RED:
 				return betAmount * 2;
 			default:
 				break;
@@ -118,5 +130,26 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 		result = !includeBetReturn ? result - betAmount : result;
 
 		return result;
+	}
+
+	public async expandAutobetSection(): Promise<void> {
+		if (await this.map.autobetContainer().isVisible()) {
+			logger.info("Autobet section already expanded");
+		} else {
+			await this.map.autobetButton.click();
+			await this.map.waitForVisibility({
+				locator: this.map.autobetContainer(),
+			});
+		}
+	}
+
+	public async selectGreenHuntType(type: GreenHuntTypeOption): Promise<void> {
+		await this.map.greenHuntTypeDropdown().click();
+		const option =
+			type === GreenHuntTypeOption.PERCENT
+				? GreenHuntTypeOption.PERCENT
+				: GreenHuntTypeOption.MONEY;
+
+		await this.map.greenHuntTypeOption(option).click();
 	}
 }

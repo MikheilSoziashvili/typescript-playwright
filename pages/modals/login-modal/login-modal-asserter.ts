@@ -18,9 +18,7 @@ export class LoginModalAsserter extends BaseAsserter<LoginModal> {
 			return undefined; // if the value comes from csv and is empty - do nothing
 		}
 		await this.gamdomPage.map.usernameFieldErrorIcon.hover();
-		await expect
-			.soft(this.gamdomPage.map.fieldErrorTooltip)
-			.toHaveText(text);
+		await expect(this.gamdomPage.map.fieldErrorTooltip).toHaveText(text);
 
 		await this.gamdomPage.map.usernameFieldErrorIcon.click(); // click remove icon to remove tooltip
 	}
@@ -30,9 +28,7 @@ export class LoginModalAsserter extends BaseAsserter<LoginModal> {
 			return undefined; // if the value comes from csv and is empty - do nothing
 		}
 		await this.gamdomPage.map.passwordFieldErrorIcon.hover();
-		await expect
-			.soft(this.gamdomPage.map.fieldErrorTooltip)
-			.toHaveText(text);
+		await expect(this.gamdomPage.map.fieldErrorTooltip).toHaveText(text);
 
 		await this.gamdomPage.map.passwordFieldErrorIcon.click(); // click remove icon to remove tooltip
 	}

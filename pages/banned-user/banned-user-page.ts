@@ -3,7 +3,6 @@ import { BasePage } from "@base/base-page";
 import { BannedUserPageMap } from "./banned-user-page-map";
 import { BannedUserPageAsserter } from "./banned-user-page-asserter";
 import { BANNED_USER_PAGE_ENDPOINT } from "@constants/page-endpoints";
-import { VisibilityState } from "@enums/playwright/visibility-states";
 
 export class BannedUserPage extends BasePage<BannedUserPageMap> {
 	public constructor(page: Page) {
@@ -19,9 +18,8 @@ export class BannedUserPage extends BasePage<BannedUserPageMap> {
 	}
 
 	public async waitRedContainerToBeVisible(): Promise<void> {
-		await this.map.waitFor({
+		await this.map.waitForVisibility({
 			locator: this.map.redContainer,
-			state: VisibilityState.VISIBLE,
 		});
 	}
 }
