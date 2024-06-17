@@ -114,7 +114,7 @@ test.describe("Login tests", () => {
 		});
 	}
 
-	test(`[ENG-292] Login with steam user`, async ({
+	test("[ENG-292] Login with steam user @smoke", async ({
 		homePage,
 		steamAuthPage,
 		steamBlockedPage,
