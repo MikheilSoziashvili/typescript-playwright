@@ -6,7 +6,6 @@ import { logger } from "@logger/logger";
 /**
  * This BaseApi class serves as a foundation for all controllers managing HTTP requests.
  */
-
 export class BaseApi {
 	private context: Promise<APIRequestContext>;
 	private baseUrl: string;
@@ -20,13 +19,14 @@ export class BaseApi {
 
 	// The request module from Playwright does not have a newContext method directly on it.
 	// Instead, the newContext method is available on an instance of APIRequestContext, which is obtained by calling request.newContext()
+
 	constructor(baseUrl: string) {
 		this.baseUrl = baseUrl;
 		this.context = request.newContext({
 			baseURL: this.baseUrl,
 			ignoreHTTPSErrors: true,
 		});
-		this.requestHeaders["Content-Type"] = "application/json"; // Could be a weak point (for example x-ray api uses xml)
+		this.requestHeaders["Content-Type"] = "application/json";
 	}
 
 	/**
@@ -41,9 +41,9 @@ export class BaseApi {
 	/**
 	 * Sets a specific header for HTTP requests.
 	 *
-	 * @param headerKey The key/name of the header.
-	 * @param headerValue The value of the header.
-	 * @returns The instance of this controller, allowing for method chaining.
+	 * @param headerKey - The key/name of the header.
+	 * @param headerValue - The value of the header.
+	 * @returns {this} The instance of this controller, allowing for method chaining.
 	 */
 	public setHeader(headerKey: string, headerValue: string): this {
 		this.requestHeaders[headerKey] = headerValue;
@@ -62,9 +62,9 @@ export class BaseApi {
 	 * URL, body data, and query parameters. It also handles errors directly,
 	 * including both Playwright errors and HTTP status error responses.
 	 *
-	 * @param method The HTTP method to use.
-	 * @param parameters The parameters for the request.
-	 * @returns A promise resolving to the response data.
+	 * @param {HttpMethod} method - The HTTP method to use (GET, POST, PUT, DELETE, PATCH).
+	 * @param {RequestParameters} parameters - The parameters for the request, including endpoint, headers, data, params, and timeout.
+	 * @returns {Promise<APIResponse>} A promise resolving to the API response.
 	 */
 	private async makeRequest(
 		method: HttpMethod,
@@ -74,7 +74,7 @@ export class BaseApi {
 		const context = await this.context;
 		const response = await context[method](this.baseUrl + endpoint, {
 			headers: { ...this.requestHeaders, ...headers },
-			...(data && { data }), // '&&' is used in order to conditionally add properties in the object preventing properties being set to 'undefined'.
+			...(data && { data }),
 			...(params && { params }),
 			...(timeout && { timeout }),
 		});

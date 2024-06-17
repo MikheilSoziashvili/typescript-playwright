@@ -19,7 +19,7 @@ export class GamdomApi extends BaseApi {
 		const parameters: RequestParameters = {
 			endpoint: "/signup",
 			headers: _headers ? { ...this.headers, ..._headers } : this.headers,
-			data: payload as Record<string, string | number | boolean | object>,
+			data: payload,
 		};
 		return this.post(parameters);
 	}

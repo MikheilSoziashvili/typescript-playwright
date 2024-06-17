@@ -3,6 +3,7 @@ import { BaseApi } from "./base-api";
 import * as Configuration from "../configuration";
 import { encodeCredentials } from "@core/utils";
 import { RequestParameters } from "./request-parameters";
+import { PayloadType } from "@core/types";
 
 export class JiraApi extends BaseApi {
 	private headers: Record<string, string> = {};
@@ -29,7 +30,7 @@ export class JiraApi extends BaseApi {
 		const parameters: RequestParameters = {
 			endpoint: "/rest/api/2/issue",
 			headers: _headers ? { ...this.headers, ..._headers } : this.headers,
-			data: data as Record<string, string | number | boolean | object>,
+			data: data as PayloadType,
 		};
 		return this.post(parameters);
 	}

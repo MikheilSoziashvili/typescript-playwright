@@ -1,7 +1,9 @@
+import { PayloadType } from "@core/types";
+
 export interface RequestParameters {
 	endpoint: string;
 	headers?: Record<string, string>;
-	data?: Record<string, string | number | boolean | object> | string;
+	data?: PayloadType;
 	params?: Record<string, string>;
 	timeout?: number;
 }
