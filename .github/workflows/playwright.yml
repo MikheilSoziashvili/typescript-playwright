@@ -38,13 +38,12 @@ on:
             SLACK_BOT_USER_OAUTH_TOKEN:
                 required: true
                 description: "Slack Bot User Oauth Token"
-            STEAM_USERNAME: 
-            required: true
+            STEAM_USERNAME:
+                required: true
                 description: "Steam authentication username"
-            STEAM_PASSWORD: 
-            required: true
+            STEAM_PASSWORD:
+                required: true
                 description: "Steam authentication password"
-
 
 jobs:
     tests:
