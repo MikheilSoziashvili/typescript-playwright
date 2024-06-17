@@ -7,9 +7,7 @@ export class SteamBlockedPageMap extends BaseMap {
 	}
 
 	public get continueAnywayButton(): Locator {
-		return this.page.locator(
-			'a[href="javascript:ContinueToBlacklisted();"]',
-		);
+		return this.page.locator('a:text-is("continue anyway")');
 	}
 
 	public get signInButton(): Locator {
