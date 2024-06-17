@@ -2,7 +2,7 @@ import { Page } from "@playwright/test";
 import { SteamAuthPageMap } from "./steam-auth-map";
 import { BasePage } from "@pages/base/base-page";
 import { SteamAuthPageAsserter } from "./steam-auth-page-asserter";
-import { STEAM_AUTH_CREDENTIALS } from "@constants/credentials";
+import * as Configuration from "configuration";
 import { STEAM_LOGIN_URL } from "@constants/page-urls";
 
 export class SteamAuthPage extends BasePage<SteamAuthPageMap> {
@@ -18,8 +18,8 @@ export class SteamAuthPage extends BasePage<SteamAuthPageMap> {
 	}
 
 	public async loginToSteam(
-		username: string = STEAM_AUTH_CREDENTIALS.username,
-		password: string = STEAM_AUTH_CREDENTIALS.password,
+		username: string = Configuration.steam.username,
+		password: string = Configuration.steam.password,
 	): Promise<void> {
 		await this.map.usernameTextInput.fill(username);
 		await this.map.passwordTextInput.fill(password);

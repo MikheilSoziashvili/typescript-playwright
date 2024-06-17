@@ -38,6 +38,13 @@ on:
             SLACK_BOT_USER_OAUTH_TOKEN:
                 required: true
                 description: "Slack Bot User Oauth Token"
+            STEAM_USERNAME: 
+            required: true
+                description: "Steam authentication username"
+            STEAM_PASSWORD: 
+            required: true
+                description: "Steam authentication password"
+
 
 jobs:
     tests:
@@ -54,6 +61,8 @@ jobs:
             JIRA_USERNAME: ${{ secrets.JIRA_USERNAME }}
             XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
             XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
+            STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
+            STEAM_PASSWORD: ${{ secrets.STEAM_PASSWORD }}
 
             ENVIRONMENT_URL: ${{ inputs.environment == '' && vars.ENVIRONMENT_URL || inputs.environment }}
             SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}

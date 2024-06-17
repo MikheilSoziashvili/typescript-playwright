@@ -31,6 +31,11 @@ export const xray: Record<string, string> = {
 	clientSecret: asString(process.env.XRAY_CLIENT_SECRET),
 };
 
+export const steam: Record<string, string> = {
+	username: asString(process.env.STEAM_USERNAME),
+	password: asString(process.env.STEAM_PASSWORD),
+};
+
 export const cloudflare: Record<string, string> = {
 	"CF-Access-Client-Id": asString(process.env.CF_ACCESS_CLIENT_ID),
 	"CF-Access-Client-Secret": asString(process.env.CF_ACCESS_CLIENT_SECRET),
