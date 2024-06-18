@@ -11,7 +11,6 @@ test.describe("Grant free spins", () => {
 		vipManagerAdminPage,
 		toast,
 	}) => {
-		test.slow();
 		await vipManagerAdminPage.navigate();
 
 		await vipManagerAdminPage.steps().getFreeSpins({
