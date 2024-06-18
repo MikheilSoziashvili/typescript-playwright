@@ -33,4 +33,10 @@ export class LoginModalMap extends BaseMap {
 	public get fieldErrorTooltip(): Locator {
 		return this.page.locator("*[role='tooltip']");
 	}
+
+	public get steamButton(): Locator {
+		return this.page
+			.locator("div[class*=PopupSocialWrapper] button")
+			.first();
+	}
 }
