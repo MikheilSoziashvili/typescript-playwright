@@ -32,6 +32,10 @@ export class LoginModal extends BaseModal<LoginModalMap> {
 		await this.map.loginBtn.click();
 	}
 
+	public async clickSteamButton(): Promise<void> {
+		await this.map.steamButton.click();
+	}
+
 	public async loginAsUser(usernm: string): Promise<void> {
 		const user: TestUserConfigurationObject | undefined = findUser({
 			username: usernm,
