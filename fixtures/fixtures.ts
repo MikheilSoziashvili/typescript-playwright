@@ -20,7 +20,6 @@ import { UserProfileModal } from "@modals/user-profile-modal/user-profile-modal"
 import { RewardsExplorePage } from "@pages/rewards/explore/rewards-explore-page";
 import { MailinatorApi } from "@api/mailinator-api";
 import { VipManagerAdminPage } from "@pages/admin/vip-manager-admin/vip-manager-admin-page";
-import { VipManagerAdminPage } from "@pages/admin/vip-manager-admin/vip-manager-admin-page";
 
 export type Pages = {
 	userInfoAdminPage: UserInfoAdminPage;
@@ -96,9 +95,6 @@ export const test = base.extend<CustomFixtures>({
 	},
 	infoAdminPage: async ({ page }, use) => {
 		await use(new InfoAdminPage(page));
-	},
-	vipManagerAdminPage: async ({ page }, use) => {
-		await use(new VipManagerAdminPage(page));
 	},
 	vipManagerAdminPage: async ({ page }, use) => {
 		await use(new VipManagerAdminPage(page));
