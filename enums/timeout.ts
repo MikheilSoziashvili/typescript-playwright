@@ -5,4 +5,5 @@ export const Timeout = {
 	LONG: 30000,
 	EXTRA_LONG: 50000,
 	MAX: 80000,
+	EXTRA_MAX: 300000,
 };

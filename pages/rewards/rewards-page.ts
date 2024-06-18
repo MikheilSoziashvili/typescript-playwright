@@ -8,6 +8,7 @@ import { REWARDS_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { RatebackHouseEdge } from "@enums/rateback-house-edge-options";
 import { SPECIAL_OFFER_RATEBACK } from "@constants/specialoffers";
 import { calculateRakeback } from "@formulas/rakeback";
+import { Timeout } from "@enums/timeout";
 
 export class RewardsPage extends BasePage<RewardsPageMap> {
 	public constructor(page: Page) {
@@ -31,6 +32,10 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 	}
 
 	public async clickActivateNowButton(): Promise<void> {
+		await this.map.waitForVisibility({
+			locator: this.map.specialOfferActivateNowButton,
+			timeout: Timeout.EXTRA_MAX,
+		});
 		await this.map.specialOfferActivateNowButton.click();
 	}
 

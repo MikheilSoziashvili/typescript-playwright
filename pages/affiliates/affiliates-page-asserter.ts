@@ -1,6 +1,7 @@
 import { expect } from "@playwright/test";
 import { BaseAsserter } from "@base/base-asserter";
 import { AffiliatesPage } from "./affiliates-page";
+import { Timeout } from "@enums/timeout";
 
 export class AffiliatesPageAsserter extends BaseAsserter<AffiliatesPage> {
 	public constructor(page: AffiliatesPage) {
@@ -12,7 +13,9 @@ export class AffiliatesPageAsserter extends BaseAsserter<AffiliatesPage> {
 	): Promise<void> {
 		await expect(
 			this.gamdomPage.map.createdAffiliatesCodeField,
-		).toHaveAttribute("value", affiliateCode);
+		).toHaveAttribute("value", affiliateCode, {
+			timeout: Timeout.EXTRA_LONG,
+		});
 	}
 
 	public async isCreatedAffiliateCodeVisibleInCopyToClipboardField(

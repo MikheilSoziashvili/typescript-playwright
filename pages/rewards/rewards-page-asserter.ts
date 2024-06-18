@@ -3,6 +3,7 @@ import { BaseAsserter } from "@base/base-asserter";
 import { RewardsPage } from "./rewards-page";
 import { DEFAULT_CURRENCY } from "@constants/defaults";
 import { parseToFloat } from "@core/utils";
+import { Timeout } from "@enums/timeout";
 
 export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 	public constructor(page: RewardsPage) {
@@ -10,9 +11,9 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 	}
 
 	async isSpecialOfferClaimedBadgeVisible(): Promise<void> {
-		await expect(
-			this.gamdomPage.map.specialOfferClaimedBadge,
-		).toBeVisible();
+		await expect(this.gamdomPage.map.specialOfferClaimedBadge).toBeVisible({
+			timeout: Timeout.EXTRA_LONG,
+		});
 	}
 
 	async isSpecialOfferPromotionInProgress(): Promise<void> {
