@@ -10,7 +10,7 @@ const AUTOMATION_AFFILIATES_CODE = generateRandomString({
 
 test.describe("Create affiliate code", () => {
 	test.slow();
-	test("[ENG-1135] Create an affiliate code @smoke", async ({
+	test("[ENG-1135] Create an affiliate code", async ({
 		homePage,
 		affiliatesPage,
 		toast,

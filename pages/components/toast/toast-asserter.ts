@@ -25,7 +25,6 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 		subTitle: string,
 		options?: {
 			index?: number;
-			subTitle?: string;
 			timeout?: number;
 		},
 	): Promise<void> {
