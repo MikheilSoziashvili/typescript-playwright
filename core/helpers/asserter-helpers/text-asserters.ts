@@ -41,3 +41,11 @@ export function buildTipUserMessageInfo(params: {
 
 	return message;
 }
+
+export function buildCreateAffiliateCodeSubTitle(
+	affiliateCode: string,
+): string {
+	const subTitle = `You have successfully created code ${affiliateCode}!`;
+
+	return subTitle;
+}
