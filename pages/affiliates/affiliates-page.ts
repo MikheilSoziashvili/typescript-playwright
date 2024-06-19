@@ -25,7 +25,7 @@ export class AffiliatesPage extends BasePage<AffiliatesPageMap> {
 
 	public async addNewCode(code: string): Promise<void> {
 		await this.map.newAffilitatesCodeField.fill(code, {
-			timeout: Timeout.LONG,
+			timeout: Timeout.LONG, // To be removed when issues in e2e environment are resolved
 		});
 		await this.map.saveAffiliatesCodeButton.click();
 	}

@@ -14,7 +14,7 @@ export class AffiliatesPageAsserter extends BaseAsserter<AffiliatesPage> {
 		await expect(
 			this.gamdomPage.map.createdAffiliatesCodeField,
 		).toHaveAttribute("value", affiliateCode, {
-			timeout: Timeout.EXTRA_LONG,
+			timeout: Timeout.EXTRA_LONG, // To be removed when issues with e2e environment are resolved
 		});
 	}
 

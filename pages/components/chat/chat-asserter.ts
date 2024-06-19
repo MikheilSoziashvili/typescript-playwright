@@ -19,7 +19,7 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 	): Promise<void> {
 		await expect(this.gamdomPage.map.chatTextBoxPlaceholder).toHaveText(
 			placeholder,
-			{ timeout: Timeout.MAX },
+			{ timeout: Timeout.MAX }, // To be removed when issues with e2e environment are resolved
 		);
 	}
 

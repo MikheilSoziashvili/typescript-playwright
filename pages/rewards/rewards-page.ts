@@ -34,7 +34,7 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 	public async clickActivateNowButton(): Promise<void> {
 		await this.map.waitForVisibility({
 			locator: this.map.specialOfferActivateNowButton,
-			timeout: Timeout.EXTRA_MAX,
+			timeout: Timeout.EXTRA_MAX, // To be removed when issues with e2e environment are resolved
 		});
 		await this.map.specialOfferActivateNowButton.click();
 	}
