@@ -12,10 +12,12 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 		options?: {
 			index?: number;
 			subTitle?: string;
+			timeout?: number;
 		},
 	): Promise<void> {
 		await expect(this.gamdomPage.map.toastTitleLocator(options)).toHaveText(
 			title,
+			{ timeout: options?.timeout },
 		);
 	}
 
@@ -23,19 +25,22 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 		subTitle: string,
 		options?: {
 			index?: number;
-			subTitle?: string;
+			timeout?: number;
 		},
 	): Promise<void> {
 		await expect(
 			this.gamdomPage.map.toastSubTitleLocator(options),
-		).toHaveText(subTitle);
+		).toHaveText(subTitle, { timeout: options?.timeout });
 	}
 
 	public async isDisplayed(options?: {
 		index?: number;
 		subTitle?: string;
+		timeout?: number;
 	}): Promise<void> {
-		await expect(this.gamdomPage.map.toastContainer(options)).toBeVisible();
+		await expect(this.gamdomPage.map.toastContainer(options)).toBeVisible({
+			timeout: options?.timeout,
+		});
 	}
 
 	public async isNotDisplayed(options?: {
