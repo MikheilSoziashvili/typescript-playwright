@@ -44,11 +44,14 @@ export async function prependXmlHeaderToFile(
 	return '<?xml version="1.0" encoding="UTF-8" ?>\n' + xmlContent;
 }
 
-export async function clearDirectoryContent(directory: string, exclude: string[] = []): Promise<void> {
+export async function clearDirectoryContent(
+	directory: string,
+	exclude: string[] = [],
+): Promise<void> {
 	try {
 		const files = await fs.readdir(directory);
-		const filesToDelete = files.filter(file => !exclude.includes(file));
-		
+		const filesToDelete = files.filter((file) => !exclude.includes(file));
+
 		await Promise.all(
 			filesToDelete.map((file) => fs.unlink(`${directory}/${file}`)),
 		);
@@ -138,4 +141,13 @@ export function buildAmountWithCurrency(
 	const amountWithCurrency = `${currency}${parseToFloat(amount)}`;
 
 	return amountWithCurrency;
+}
+
+export function conformLinkWithProtocol(link: string): string {
+	let conformedLink = link;
+	const urlPattern = /^(https?|http):\/\/[^\s/$.?#].[^\s]*$/i;
+	if (!urlPattern.test(conformedLink)) {
+		conformedLink = `https://${link}`;
+	}
+	return conformedLink;
 }
