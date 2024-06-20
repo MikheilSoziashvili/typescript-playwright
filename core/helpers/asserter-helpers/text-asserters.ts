@@ -45,7 +45,5 @@ export function buildTipUserMessageInfo(params: {
 export function buildCreateAffiliateCodeSubTitle(
 	affiliateCode: string,
 ): string {
-	const subTitle = `You have successfully created code ${affiliateCode}!`;
-
-	return subTitle;
+	return `You have successfully created code ${affiliateCode}!`;
 }
