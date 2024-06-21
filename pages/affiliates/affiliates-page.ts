@@ -5,7 +5,6 @@ import { AffiliatesPageAsserter } from "./affiliates-page-asserter";
 import { AffiliatesPageSteps } from "./affiliates-page-steps";
 import { AFFILIATES_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { Timeout } from "@enums/timeout";
-import { asString } from "@core/utils";
 
 export class AffiliatesPage extends BasePage<AffiliatesPageMap> {
 	public constructor(page: Page) {
@@ -32,8 +31,8 @@ export class AffiliatesPage extends BasePage<AffiliatesPageMap> {
 	}
 
 	public async getAffiliateLink(): Promise<string> {
-		return asString(
-			await this.map.copyCodeToClipboardField.getAttribute("value"),
-		);
+		return (await this.map.copyCodeToClipboardField.getAttribute(
+			"value",
+		)) as string;
 	}
 }

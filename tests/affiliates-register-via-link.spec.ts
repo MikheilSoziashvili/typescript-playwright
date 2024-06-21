@@ -10,6 +10,7 @@ let affiliateLink = "";
 test.describe("Register with affiliate link", () => {
 	test.slow();
 	test.beforeEach(async ({ homePage, affiliatesPage, profilePage }) => {
+        // TODO Move this part in fixtures when register via API is working
 		await homePage.navigateAndCheckTitle();
 		await homePage.unauthenticatedHeader.openRegisterModal();
 

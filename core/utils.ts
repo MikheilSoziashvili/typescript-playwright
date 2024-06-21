@@ -131,7 +131,7 @@ export function generateRandomString(options?: {
 	return options?.prefix ? `${options.prefix}${randomString}` : randomString;
 }
 
-export function asString(str: string | undefined | null): string {
+export function asString(str: string | undefined): string {
 	return str as string;
 }
 
