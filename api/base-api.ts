@@ -1,10 +1,11 @@
-import { HttpMethod } from "@enums/http-methods";
+import { HttpMethod } from "@enums/api/http-methods";
 import { APIRequestContext, APIResponse, request } from "@playwright/test";
-import { RequestParameters } from "./request-parameters";
+import { RequestParameters } from "../core/api/interfaces/request-parameters";
 import { logger } from "@logger/logger";
+import { PayloadType } from "@core/types";
 
 /**
- * This BaseApi class serves as a foundation for all controllers managing HTTP requests.
+ * This BaseApi class serves as a foundation for managing HTTP requests.
  */
 export class BaseApi {
 	private context: Promise<APIRequestContext>;
@@ -43,7 +44,7 @@ export class BaseApi {
 	 *
 	 * @param headerKey - The key/name of the header.
 	 * @param headerValue - The value of the header.
-	 * @returns {this} The instance of this controller, allowing for method chaining.
+	 * @returns {this} The instance, allowing for method chaining.
 	 */
 	public setHeader(headerKey: string, headerValue: string): this {
 		this.requestHeaders[headerKey] = headerValue;
@@ -55,6 +56,38 @@ export class BaseApi {
 	 */
 	public logRequestHeaders(): void {
 		logger.info("Request headers:", this.requestHeaders);
+	}
+
+	/**
+	 * Concatenates base URL and endpoint, ensuring there is exactly one slash between them.
+	 *
+	 * @param endpoint - The endpoint to be concatenated with the base URL.
+	 * @returns {string} The concatenated URL.
+	 */
+
+	private concatenateUrl(endpoint: string): string { return new URL(endpoint, this.baseUrl).toString(); }
+
+	/**
+	 * Constructs the request parameters object.
+	 *
+	 * @param endpoint - The endpoint for the request.
+	 * @param data - The payload for the request.
+	 * @param _headers - Optional additional headers for the request.
+	 * @returns {RequestParameters} The constructed request parameters object.
+	 */
+	protected buildParameters(
+		endpoint: string,
+		data?: PayloadType,
+		_headers?: Record<string, string>,
+	): RequestParameters {
+		const headers = _headers
+			? { ...this.requestHeaders, ..._headers }
+			: this.requestHeaders;
+		return {
+			endpoint,
+			headers,
+			data,
+		};
 	}
 
 	/**
@@ -72,19 +105,14 @@ export class BaseApi {
 	): Promise<APIResponse> {
 		const { endpoint, headers, data, params, timeout } = parameters;
 		const context = await this.context;
-		const response = await context[method](this.baseUrl + endpoint, {
+		const url = this.concatenateUrl(endpoint);
+		const response = await context[method](url, {
 			headers: { ...this.requestHeaders, ...headers },
 			...(data && { data }),
 			...(params && { params }),
 			...(timeout && { timeout }),
 		});
-		if (response.ok()) {
-			return response;
-		} else {
-			throw new Error(
-				`Request failed: ${response.status()} ${response.statusText()}`,
-			);
-		}
+		return response;
 	}
 
 	/**

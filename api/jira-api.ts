@@ -2,7 +2,6 @@ import { APIResponse } from "@playwright/test";
 import { BaseApi } from "./base-api";
 import * as Configuration from "../configuration";
 import { encodeCredentials } from "@core/utils";
-import { RequestParameters } from "./request-parameters";
 import { PayloadType } from "@core/types";
 
 export class JiraApi extends BaseApi {
@@ -27,11 +26,11 @@ export class JiraApi extends BaseApi {
 		data: object,
 		_headers?: Record<string, string>,
 	): Promise<APIResponse> {
-		const parameters: RequestParameters = {
-			endpoint: "/rest/api/2/issue",
-			headers: _headers ? { ...this.headers, ..._headers } : this.headers,
-			data: data as PayloadType,
-		};
+		const parameters = this.buildParameters(
+			"/rest/api/2/issue",
+			data as PayloadType,
+			_headers,
+		);
 		return this.post(parameters);
 	}
 }

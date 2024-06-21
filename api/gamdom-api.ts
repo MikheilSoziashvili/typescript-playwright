@@ -1,7 +1,6 @@
 import { BaseApi } from "./base-api";
 import * as Configuration from "../configuration";
 import { APIResponse } from "@playwright/test";
-import { RequestParameters } from "./request-parameters";
 import { LoginRequest } from "@dtos/requests/gamdom-api/login-request";
 import { RegisterRequest } from "@dtos/requests/gamdom-api/register-request";
 
@@ -16,11 +15,7 @@ export class GamdomApi extends BaseApi {
 		payload: RegisterRequest,
 		_headers?: Record<string, string>,
 	): Promise<APIResponse> {
-		const parameters: RequestParameters = {
-			endpoint: "/signup",
-			headers: _headers ? { ...this.headers, ..._headers } : this.headers,
-			data: payload,
-		};
+		const parameters = this.buildParameters("/signup", payload, _headers);
 		return this.post(parameters);
 	}
 
@@ -36,11 +31,7 @@ export class GamdomApi extends BaseApi {
 			totp_token: "",
 		};
 
-		const parameters: RequestParameters = {
-			endpoint: "/login2",
-			headers: _headers ? { ...this.headers, ..._headers } : this.headers,
-			data: payload,
-		};
+		const parameters = this.buildParameters("/login2", payload, _headers);
 		return this.post(parameters);
 	}
 }

@@ -28,7 +28,7 @@ export class RegisterTestData {
 		return this.#email;
 	}
 
-	toRecord(): Record<string, string> {
+	toObject(): Record<string, string> {
 		return {
 			username: this.#username,
 			password: this.#password,

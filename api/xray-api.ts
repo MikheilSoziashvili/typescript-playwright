@@ -3,7 +3,7 @@ import { BaseApi } from "./base-api";
 import { prependXmlHeaderToFile } from "@core/utils";
 import { Timeout } from "@enums/timeout";
 import { APIResponse } from "@playwright/test";
-import { RequestParameters } from "./request-parameters";
+import { RequestParameters } from "../core/api/interfaces/request-parameters";
 
 export class XrayApi extends BaseApi {
 	private APIToken = "";
@@ -21,7 +21,7 @@ export class XrayApi extends BaseApi {
 			data: {
 				client_id: this.xrayConfig.clientId,
 				client_secret: this.xrayConfig.clientSecret,
-			} as Record<string, string>,
+			},
 		};
 		const response = await this.post(parameters);
 		return (await response.json()) as string;
