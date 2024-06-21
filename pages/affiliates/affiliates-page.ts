@@ -29,4 +29,10 @@ export class AffiliatesPage extends BasePage<AffiliatesPageMap> {
 		});
 		await this.map.saveAffiliatesCodeButton.click();
 	}
+
+	public async getAffiliateLink(): Promise<string> {
+		return (await this.map.copyCodeToClipboardField.getAttribute(
+			"value",
+		)) as string;
+	}
 }

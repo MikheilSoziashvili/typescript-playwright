@@ -8,6 +8,7 @@ import { users } from "configuration";
 import { TestUserConfigurationObject } from "./types";
 import accounting from "accounting";
 import { DEFAULT_CURRENCY } from "@constants/defaults";
+import { pageUrl } from "@support/regex-patterns";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -44,11 +45,14 @@ export async function prependXmlHeaderToFile(
 	return '<?xml version="1.0" encoding="UTF-8" ?>\n' + xmlContent;
 }
 
-export async function clearDirectoryContent(directory: string, exclude: string[] = []): Promise<void> {
+export async function clearDirectoryContent(
+	directory: string,
+	exclude: string[] = [],
+): Promise<void> {
 	try {
 		const files = await fs.readdir(directory);
-		const filesToDelete = files.filter(file => !exclude.includes(file));
-		
+		const filesToDelete = files.filter((file) => !exclude.includes(file));
+
 		await Promise.all(
 			filesToDelete.map((file) => fs.unlink(`${directory}/${file}`)),
 		);
@@ -138,4 +142,16 @@ export function buildAmountWithCurrency(
 	const amountWithCurrency = `${currency}${parseToFloat(amount)}`;
 
 	return amountWithCurrency;
+}
+
+export function conformLinkWithProtocol(
+	link: string,
+	protocol: "http" | "https", // TODO Change to enum when api refactor is done
+): string {
+	let conformedLink = link;
+	const urlPattern = pageUrl;
+	if (!urlPattern.test(conformedLink)) {
+		conformedLink = `${protocol}://${link}`;
+	}
+	return conformedLink;
 }
