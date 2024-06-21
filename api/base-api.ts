@@ -40,14 +40,13 @@ export class BaseApi {
 	}
 
 	/**
-	 * Sets a specific header for HTTP requests.
+	 * Sets multiple headers for HTTP requests.
 	 *
-	 * @param headerKey - The key/name of the header.
-	 * @param headerValue - The value of the header.
+	 * @param headers - An object containing header key-value pairs.
 	 * @returns {this} The instance, allowing for method chaining.
 	 */
-	public setHeader(headerKey: string, headerValue: string): this {
-		this.requestHeaders[headerKey] = headerValue;
+	public setHeaders(headers: Record<string, string>): this {
+		this.requestHeaders = { ...this.requestHeaders, ...headers };
 		return this;
 	}
 
@@ -64,8 +63,9 @@ export class BaseApi {
 	 * @param endpoint - The endpoint to be concatenated with the base URL.
 	 * @returns {string} The concatenated URL.
 	 */
-
-	private concatenateUrl(endpoint: string): string { return new URL(endpoint, this.baseUrl).toString(); }
+	private concatenateUrl(endpoint: string): string {
+		return new URL(endpoint, this.baseUrl).toString();
+	}
 
 	/**
 	 * Constructs the request parameters object.

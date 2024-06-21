@@ -5,10 +5,11 @@ import { LoginRequest } from "@dtos/requests/gamdom-api/login-request";
 import { RegisterRequest } from "@dtos/requests/gamdom-api/register-request";
 
 export class GamdomApi extends BaseApi {
-	private headers: Record<string, string> = {};
-
 	constructor(base_url: string = Configuration.environment_url) {
 		super(base_url);
+		this.setHeaders({
+			"Content-Type": "application/json",
+		});
 	}
 
 	public async register(

@@ -7,29 +7,34 @@ import { RequestParameters } from "../core/api/interfaces/request-parameters";
 
 export class XrayApi extends BaseApi {
 	private APIToken = "";
-	private headers: Record<string, string> = {};
 	private xrayConfig: Record<string, string> = {};
 
 	constructor(xrayConfig: Record<string, string> = Configuration.xray) {
 		super(xrayConfig.baseUrl);
 		this.xrayConfig = xrayConfig;
+
+		this.setHeaders({
+			"Content-Type": "application/json",
+		});
 	}
 
 	private async authenticate(): Promise<string> {
-		const parameters: RequestParameters = {
-			endpoint: "/api/v2/authenticate",
-			data: {
+		const parameters: RequestParameters = this.buildParameters(
+			"/api/v2/authenticate",
+			{
 				client_id: this.xrayConfig.clientId,
 				client_secret: this.xrayConfig.clientSecret,
 			},
-		};
+		);
 		const response = await this.post(parameters);
 		return (await response.json()) as string;
 	}
 
 	public async initialize(): Promise<void> {
 		this.APIToken = await this.authenticate();
-		this.headers["Authorization"] = `Bearer ${this.APIToken}`;
+		this.setHeaders({
+			Authorization: `Bearer ${this.APIToken}`,
+		});
 	}
 
 	public async importXmlResult(
@@ -38,16 +43,20 @@ export class XrayApi extends BaseApi {
 	): Promise<APIResponse> {
 		const data = await prependXmlHeaderToFile(Configuration.reportName);
 
-		const parameters: RequestParameters = {
-			endpoint: "/api/v2/import/execution/junit",
-			headers: {
+		const parameters = this.buildParameters(
+			"/api/v2/import/execution/junit",
+			data,
+			{
 				"Content-Type": "application/xml",
 				Authorization: `Bearer ${this.APIToken}`,
 			},
-			data: data,
-			params: { projectKey: projectKey, testExecKey: testExecutionKey },
-			timeout: Timeout.EXTRA_LONG,
+		);
+
+		parameters.params = {
+			projectKey: projectKey,
+			testExecKey: testExecutionKey,
 		};
+		parameters.timeout = Timeout.EXTRA_LONG;
 
 		try {
 			return await this.post(parameters);
