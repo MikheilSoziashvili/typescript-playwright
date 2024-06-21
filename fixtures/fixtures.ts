@@ -19,10 +19,14 @@ import { InfoAdminPage } from "@pages/admin/info-admin/info-admin-page";
 import { UserProfileModal } from "@modals/user-profile-modal/user-profile-modal";
 import { RewardsExplorePage } from "@pages/rewards/explore/rewards-explore-page";
 import { MailinatorApi } from "@api/mailinator-api";
+import { VipManagerAdminPage } from "@pages/admin/vip-manager-admin/vip-manager-admin-page";
+import { SteamAuthPage } from "@pages/external/steam/steam-auth-page";
+import { SteamBlockedPage } from "@pages/external/steam/steam-blocked-page";
 
 export type Pages = {
 	userInfoAdminPage: UserInfoAdminPage;
 	infoAdminPage: InfoAdminPage;
+	vipManagerAdminPage: VipManagerAdminPage;
 	homePage: HomePage;
 	crashGamePage: CrashGamePage;
 	diceGamePage: DiceGamePage;
@@ -35,6 +39,11 @@ export type Pages = {
 	faqPage: FaqPage;
 	geoblockedPage: GeoblockedPage;
 	bannedUserPage: BannedUserPage;
+};
+
+type ExternalPages = {
+	steamAuthPage: SteamAuthPage;
+	steamBlockedPage: SteamBlockedPage;
 };
 
 type Components = {
@@ -52,7 +61,7 @@ type Apis = {
 	mailinatorApi: MailinatorApi;
 };
 
-type CustomFixtures = Pages & Components & Modals & Apis;
+type CustomFixtures = Pages & ExternalPages & Components & Modals & Apis;
 
 export const test = base.extend<CustomFixtures>({
 	homePage: async ({ page }, use) => {
@@ -94,6 +103,9 @@ export const test = base.extend<CustomFixtures>({
 	infoAdminPage: async ({ page }, use) => {
 		await use(new InfoAdminPage(page));
 	},
+	vipManagerAdminPage: async ({ page }, use) => {
+		await use(new VipManagerAdminPage(page));
+	},
 	bannedUserPage: async ({ page }, use) => {
 		await use(new BannedUserPage(page));
 	},
@@ -116,5 +128,11 @@ export const test = base.extend<CustomFixtures>({
 
 	mailinatorApi: async ({}, use) => {
 		await use(new MailinatorApi());
+	},
+	steamAuthPage: async ({ page }, use) => {
+		await use(new SteamAuthPage(page));
+	},
+	steamBlockedPage: async ({ page }, use) => {
+		await use(new SteamBlockedPage(page));
 	},
 });

@@ -1,7 +1,6 @@
 import { ZERO_RAKEBACK_AMOUNT } from "@constants/specialoffers";
 import { BasePageStep } from "@pages/base/base-page-step";
 import { RewardsPage } from "./rewards-page";
-import { VisibilityState } from "@enums/playwright/visibility-states";
 
 export class RewardsPageSteps extends BasePageStep<RewardsPage> {
 	public constructor(gamdomPage: RewardsPage) {
