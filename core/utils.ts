@@ -8,6 +8,7 @@ import { users } from "configuration";
 import { TestUserConfigurationObject } from "./types";
 import accounting from "accounting";
 import { DEFAULT_CURRENCY } from "@constants/defaults";
+import { pageUrl } from "@support/regex-patterns";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -130,7 +131,7 @@ export function generateRandomString(options?: {
 	return options?.prefix ? `${options.prefix}${randomString}` : randomString;
 }
 
-export function asString(str: string | undefined): string {
+export function asString(str: string | undefined | null): string {
 	return str as string;
 }
 
@@ -143,11 +144,14 @@ export function buildAmountWithCurrency(
 	return amountWithCurrency;
 }
 
-export function conformLinkWithProtocol(link: string): string {
+export function conformLinkWithProtocol(
+	link: string,
+	protocol: "http" | "https", // TODO Change to enum when api refactor is done
+): string {
 	let conformedLink = link;
-	const urlPattern = /^(https?|http):\/\/[^\s/$.?#].[^\s]*$/i;
+	const urlPattern = pageUrl;
 	if (!urlPattern.test(conformedLink)) {
-		conformedLink = `https://${link}`;
+		conformedLink = `${protocol}://${link}`;
 	}
 	return conformedLink;
 }

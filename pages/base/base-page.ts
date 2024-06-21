@@ -17,7 +17,7 @@ export abstract class BasePage<T = BaseMap> {
 	abstract assertThat(): void;
 
 	public async goToPage(link: string): Promise<void> {
-		await this.page.goto(conformLinkWithProtocol(link));
+		await this.page.goto(conformLinkWithProtocol(link, "https"));
 		await this.page.waitForLoadState();
 	}
 
