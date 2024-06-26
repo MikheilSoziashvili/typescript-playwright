@@ -4,23 +4,24 @@ import { DiceGamePage } from "./dice-game-page";
 import { DiceGameResultMessage } from "@enums/dice-result-messages";
 import { Timeout } from "@enums/timeout";
 import { parseToFloat } from "@core/utils";
+import { DiceAutobetTestData } from "@dtos/test-data";
 
 export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 	public constructor(page: DiceGamePage) {
 		super(page);
 	}
 
-	public async betAndProfitOnWinValuesAreCorrect(
+	public async manualBetAndProfitOnWinValuesAreCorrect(
 		betValue: number,
 		profitOnWin: number,
 	): Promise<void> {
 		const fieldValues = [
 			{
-				field: this.gamdomPage.map.betField,
+				field: this.gamdomPage.map.manualBetField,
 				value: parseToFloat(betValue),
 			},
 			{
-				field: this.gamdomPage.map.profitOnWinField,
+				field: this.gamdomPage.map.manualProfitOnWinField,
 				value: parseToFloat(profitOnWin),
 			},
 		];
@@ -30,17 +31,26 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		}
 	}
 
-	public async betValuesAreCorrect(
+	public async manualBetValueAreCorrect(
 		rollover: string,
 		multiplier: string,
 		winChance: string,
 		profitOnWin: string,
 	): Promise<void> {
 		const fieldValues = [
-			{ field: this.gamdomPage.map.rollOverField, value: rollover },
-			{ field: this.gamdomPage.map.multiplierField, value: multiplier },
-			{ field: this.gamdomPage.map.winChanceField, value: winChance },
-			{ field: this.gamdomPage.map.profitOnWinField, value: profitOnWin },
+			{ field: this.gamdomPage.map.manualRollOverField, value: rollover },
+			{
+				field: this.gamdomPage.map.manualMultiplierField,
+				value: multiplier,
+			},
+			{
+				field: this.gamdomPage.map.manualWinChanceField,
+				value: winChance,
+			},
+			{
+				field: this.gamdomPage.map.manualProfitOnWinField,
+				value: profitOnWin,
+			},
 		];
 
 		for (const { field, value } of fieldValues) {
@@ -48,7 +58,7 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		}
 	}
 
-	public async diceValueIsCorrect(diceValue: string): Promise<void> {
+	public async diceSliderValueIsCorrect(diceValue: string): Promise<void> {
 		await expect(this.gamdomPage.map.diceSliderValue).toHaveText(diceValue);
 	}
 
@@ -86,5 +96,38 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 				this.gamdomPage.map.diceResultNumberGameArea.first(),
 			).toHaveText(diceResultHistory);
 		}
+	}
+
+	public async autobetValuesAreCorrect(
+		autobetData: DiceAutobetTestData,
+	): Promise<void> {
+		await expect(this.gamdomPage.map.autobetYourBetInput).toHaveValue(
+			parseToFloat(autobetData.betAmount).toString(),
+		);
+		if (autobetData.nbOfBets) {
+			await expect(this.gamdomPage.map.autobetNbOfBetsInput).toHaveValue(
+				autobetData.nbOfBets.toString(),
+			);
+		}
+		if (autobetData.rollOver) {
+			await expect(this.gamdomPage.map.autobetRollOverInput).toHaveValue(
+				parseToFloat(autobetData.rollOver, 6).toString(),
+			);
+		}
+		if (autobetData.stopOnProfit) {
+			await expect(
+				this.gamdomPage.map.autobetStopOnProfitInput,
+			).toHaveValue(parseToFloat(autobetData.stopOnProfit).toString());
+		}
+
+		if (autobetData.stopOnLoss) {
+			await expect(
+				this.gamdomPage.map.autobetStopOnLossInput,
+			).toHaveValue(parseToFloat(autobetData.stopOnLoss).toString());
+		}
+	}
+
+	public async diceStopAutobetButtonIsDisplayed(): Promise<void> {
+		await expect(this.gamdomPage.map.stopAutobetButton).toBeVisible();
 	}
 }
