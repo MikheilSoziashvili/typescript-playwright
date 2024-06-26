@@ -1,4 +1,4 @@
-import { APIResponse, errors as PlaywrightErrors } from "@playwright/test";
+import { APIResponse } from "@playwright/test";
 
 export type TestUserConfigurationObject = {
 	username: string;
