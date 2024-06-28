@@ -22,6 +22,8 @@ import { MailinatorApi } from "@api/mailinator-api";
 import { VipManagerAdminPage } from "@pages/admin/vip-manager-admin/vip-manager-admin-page";
 import { SteamAuthPage } from "@pages/external/steam/steam-auth-page";
 import { SteamBlockedPage } from "@pages/external/steam/steam-blocked-page";
+import { EsportsPage } from "@pages/esports-page/esports-page";
+import { SlotsBattlePage } from "@pages/slot-battle/slots-battle-page";
 
 export type Pages = {
 	userInfoAdminPage: UserInfoAdminPage;
@@ -39,6 +41,8 @@ export type Pages = {
 	faqPage: FaqPage;
 	geoblockedPage: GeoblockedPage;
 	bannedUserPage: BannedUserPage;
+	esportsPage: EsportsPage;
+	slotsBattlePage: SlotsBattlePage;
 };
 
 type ExternalPages = {
@@ -134,5 +138,11 @@ export const test = base.extend<CustomFixtures>({
 	},
 	steamBlockedPage: async ({ page }, use) => {
 		await use(new SteamBlockedPage(page));
+	},
+	esportsPage: async ({ page }, use) => {
+		await use(new EsportsPage(page));
+	},
+	slotsBattlePage: async ({ page }, use) => {
+		await use(new SlotsBattlePage(page));
 	},
 });

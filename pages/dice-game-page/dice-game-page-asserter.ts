@@ -10,6 +10,16 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		super(page);
 	}
 
+	async pageElementsAreVisible(): Promise<void> {
+		await this.checkElementsAreVisible(
+			[
+				this.gamdomPage.map.yourBetContainer,
+				this.gamdomPage.map.rollDiceBtn,
+			],
+			Timeout.MAX,
+		);
+	}
+
 	public async betAndProfitOnWinValuesAreCorrect(
 		betValue: number,
 		profitOnWin: number,

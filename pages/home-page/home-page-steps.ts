@@ -1,6 +1,7 @@
 import { BasePageStep } from "@pages/base/base-page-step";
 import { RegisterTestData } from "@dtos/test-data";
 import { HomePage } from "./home-page";
+import { HomePageBannerCarouselSlideTitle } from "@enums/homepage-banner-carousel-slide-title";
 
 export class HomePageSteps extends BasePageStep<HomePage> {
 	public constructor(gamdomPage: HomePage) {
@@ -43,5 +44,12 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 		await this.gamdomPage
 			.assertThat()
 			.userIsRegistered(newUserRegisterData.username);
+	}
+
+	public async goToCarouselSlide(
+		slideName: HomePageBannerCarouselSlideTitle,
+	): Promise<void> {
+		await this.gamdomPage.waitCarouselSlideToBeActive(slideName);
+		await this.gamdomPage.clickCarouselSlide(slideName);
 	}
 }
