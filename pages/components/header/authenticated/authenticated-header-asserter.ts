@@ -39,4 +39,15 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 			},
 		);
 	}
+
+	public async accountBalanceHasChanged(
+		initialBalance: number,
+	): Promise<void> {
+		await expect(await this.gamdomPage.map.accountBalance()).not.toHaveText(
+			`${formatBalance(initialBalance)}`,
+			{
+				timeout: Timeout.MEDIUM,
+			},
+		);
+	}
 }

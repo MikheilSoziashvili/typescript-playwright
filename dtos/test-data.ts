@@ -27,6 +27,14 @@ export class RegisterTestData {
 	get email(): string {
 		return this.#email;
 	}
+
+	toObject(): Record<string, string> {
+		return {
+			username: this.#username,
+			password: this.#password,
+			email: this.#email,
+		};
+	}
 }
 
 export class BetTestData {
@@ -51,16 +59,38 @@ export class DiceBetTestData {
 	public rollOver?: number;
 	public winChance?: number;
 
-	constructor(
-		betAmount: number,
-		multiplier?: number,
-		rollOver?: number,
-		winChance?: number,
-	) {
-		this.betAmount = betAmount;
-		this.multiplier = multiplier;
-		this.rollOver = rollOver;
-		this.winChance = winChance;
+	constructor(options: {
+		betAmount: number;
+		multiplier?: number;
+		rollOver?: number;
+		winChance?: number;
+	}) {
+		this.betAmount = options.betAmount;
+		this.multiplier = options.multiplier;
+		this.rollOver = options.rollOver;
+		this.winChance = options.winChance;
+	}
+}
+
+export class DiceAutobetTestData {
+	public betAmount: number;
+	public nbOfBets?: number;
+	public rollOver?: number;
+	public stopOnProfit?: number;
+	public stopOnLoss?: number;
+
+	constructor(options: {
+		betAmount: number;
+		nbOfBets?: number;
+		rollOver?: number;
+		stopOnProfit?: number;
+		stopOnLoss?: number;
+	}) {
+		this.betAmount = options.betAmount;
+		this.nbOfBets = options.nbOfBets;
+		this.rollOver = options.rollOver;
+		this.stopOnProfit = options.stopOnProfit;
+		this.stopOnLoss = options.stopOnLoss;
 	}
 }
 
