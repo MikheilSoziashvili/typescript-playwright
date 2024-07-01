@@ -14,7 +14,7 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 	async pageElementsAreVisible(): Promise<void> {
 		await this.checkElementsAreVisible(
 			[
-				this.gamdomPage.map.manualYourBetContainer,
+				this.gamdomPage.map.diceGameAreaMessage,
 				this.gamdomPage.map.rollDiceBtn,
 			],
 			Timeout.MAX,
