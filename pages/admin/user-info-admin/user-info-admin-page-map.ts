@@ -11,7 +11,9 @@ export class UserInfoAdminPageMap extends BaseMap {
 	}
 
 	public get searchByUsernameContainer(): Locator {
-		return this.viewUserInfoBox.locator("div.search-by-username");
+		return this.viewUserInfoBox.getByTestId(
+			"adminUserInfoSearchByUsername",
+		);
 	}
 
 	public get searchByUsernameInput(): Locator {
@@ -21,6 +23,12 @@ export class UserInfoAdminPageMap extends BaseMap {
 	public get searchByUsernameMenu(): Locator {
 		return this.searchByUsernameContainer.locator(
 			"div.Select-menu-outer div.Select-menu",
+		);
+	}
+
+	public get searchByUsernameMenuNoResults(): Locator {
+		return this.searchByUsernameContainer.locator(
+			'div.Select-noresults:text-is("Type to search")',
 		);
 	}
 

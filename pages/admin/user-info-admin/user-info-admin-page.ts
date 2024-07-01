@@ -21,4 +21,20 @@ export class UserInfoAdminPage extends BasePage<UserInfoAdminPageMap> {
 	public steps(): UserInfoAdminPageSteps {
 		return new UserInfoAdminPageSteps(this);
 	}
+
+	public async clickSearchByUsernameField(): Promise<void> {
+		await this.map.searchByUsernameContainer.click();
+	}
+
+	public async insertUsernameInSearchByUsernameInput(
+		username: string,
+	): Promise<void> {
+		await this.map.searchByUsernameInput.fill(username);
+	}
+
+	public async selectUsernameFromSearchForUsernameFiledResults(
+		username: string,
+	): Promise<void> {
+		await this.map.searchByUsernameMenuOption(username).click();
+	}
 }

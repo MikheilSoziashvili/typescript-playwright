@@ -6,9 +6,32 @@ export class UserInfoAdminPageSteps extends BasePageStep<UserInfoAdminPage> {
 		super(gamdomPage);
 	}
 
-	public async showUserDetails(username: string): Promise<void> {
+	public async searchUser(parameters: {
+		username: string;
+		expectToBeFound?: boolean;
+	}): Promise<void> {
+		const { username, expectToBeFound } = parameters;
 		await this.gamdomPage.map.searchByUsernameInput.fill(username);
-		await this.gamdomPage.map.searchByUsernameMenuOption(username).click();
+
+		if (expectToBeFound) {
+			await this.gamdomPage
+				.assertThat()
+				.isSearchByUsernameResultDisplayed(username);
+		} else {
+			await this.gamdomPage
+				.assertThat()
+				.areNoResultsDisplayedForSearchByUsernameField();
+		}
+	}
+
+	public async showUserDetails(username: string): Promise<void> {
+		await this.searchUser({
+			username: username,
+			expectToBeFound: true,
+		});
+		await this.gamdomPage.selectUsernameFromSearchForUsernameFiledResults(
+			username,
+		);
 		await this.gamdomPage.map.showUserInfoButton.click();
 	}
 }
