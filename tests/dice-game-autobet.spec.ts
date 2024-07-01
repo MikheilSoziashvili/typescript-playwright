@@ -10,7 +10,7 @@ const DICE_AUTOBET_CSV = "ENG-1415-dice-autobet.csv";
 test.describe("Dice game autobet", () => {
 	test.use(storageStateUser1API);
 	for (const betData of parse_csv(DATASETS_FOLDER, DICE_AUTOBET_CSV) as {
-		yourBet: number;
+		betAmount: number;
 		rollOver: number;
 		numberOfBets: number;
 		stopOnProfit: number;
@@ -24,13 +24,7 @@ test.describe("Dice game autobet", () => {
 				.assertThat()
 				.diceMessageIs(DiceGameResultMessage.PLACE_YOUR_BETS);
 
-			const diceBetData = new DiceAutobetTestData({
-				betAmount: betData.yourBet,
-				rollOver: betData.rollOver,
-				nbOfBets: betData.numberOfBets,
-				stopOnProfit: betData.stopOnProfit,
-				stopOnLoss: betData.stopOnLoss,
-			});
+			const diceBetData = new DiceAutobetTestData(betData);
 
 			await diceGamePage.steps().startAutobet(diceBetData);
 			await diceGamePage.assertThat().diceStopAutobetButtonIsDisplayed();
