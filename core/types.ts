@@ -34,3 +34,7 @@ export type ProxyCredentialsType = {
 	username: string;
 	password: string;
 };
+
+export type PayloadType =
+	| Record<string, string | number | boolean | object>
+	| string;

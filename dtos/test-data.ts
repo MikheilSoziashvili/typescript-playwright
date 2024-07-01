@@ -27,6 +27,14 @@ export class RegisterTestData {
 	get email(): string {
 		return this.#email;
 	}
+
+	toObject(): Record<string, string> {
+		return {
+			username: this.#username,
+			password: this.#password,
+			email: this.#email,
+		};
+	}
 }
 
 export class BetTestData {

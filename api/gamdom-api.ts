@@ -1,25 +1,23 @@
 import { BaseApi } from "./base-api";
 import * as Configuration from "../configuration";
 import { APIResponse } from "@playwright/test";
-import { RegisterTestData } from "@dtos/test-data";
-import { LoginRequest } from "@dtos/requests/login-request";
+import { LoginRequest } from "@dtos/requests/gamdom-api/login-request";
+import { RegisterRequest } from "@dtos/requests/gamdom-api/register-request";
 
 export class GamdomApi extends BaseApi {
-	private headers: Record<string, string> = {};
-
 	constructor(base_url: string = Configuration.environment_url) {
 		super(base_url);
+		this.setHeaders({
+			"Content-Type": "application/json",
+		});
 	}
 
 	public async register(
-		payload: RegisterTestData,
+		payload: RegisterRequest,
 		_headers?: Record<string, string>,
 	): Promise<APIResponse> {
-		return this.post(
-			"/signup",
-			payload,
-			_headers ? { ...this.headers, ..._headers } : this.headers,
-		);
+		const parameters = this.buildParameters("/signup", payload, _headers);
+		return this.post(parameters);
 	}
 
 	public async login(
@@ -34,10 +32,7 @@ export class GamdomApi extends BaseApi {
 			totp_token: "",
 		};
 
-		return this.post(
-			"/login2",
-			payload,
-			_headers ? { ...this.headers, ..._headers } : this.headers,
-		);
+		const parameters = this.buildParameters("/login2", payload, _headers);
+		return this.post(parameters);
 	}
 }
