@@ -47,8 +47,7 @@ export class XrayApi extends BaseApi {
 			"/api/v2/import/execution/junit",
 			data,
 			{
-				"Content-Type": "application/xml",
-				Authorization: `Bearer ${this.APIToken}`,
+				"Content-Type": "application/xml"
 			},
 		);
 
