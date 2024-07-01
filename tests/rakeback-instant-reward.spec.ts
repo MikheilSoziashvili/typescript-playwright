@@ -19,7 +19,7 @@ test.describe("Rakeback instant reward tests", () => {
 			.steps()
 			.claimInstantRakebackReward({ claimAnyReward: true });
 
-		const diceBetData = new DiceBetTestData(100);
+		const diceBetData = new DiceBetTestData({ betAmount: 100 });
 		await diceGamePage.navigate();
 		await diceGamePage.steps().rollDice(diceBetData);
 

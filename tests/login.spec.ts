@@ -1,15 +1,15 @@
 import { users } from "configuration";
 import { test } from "@fixtures/fixtures";
 import { parse_csv, toJson } from "@core/utils";
+import { DATASETS_DIR } from "@constants/file-paths";
 
-const DATASETS_FOLDER = "datasets";
 const LOGIN_NOT_POSSIBLE_CSV = "ENG-294-login-not-possible.csv";
 const LOGIN_REJECTED_CSV = "ENG-294-login-rejected.csv";
 const LOGIN_SUCCESSFUL_CSV = "ENG-1070-login-successful.csv";
 
 test.describe("Login tests", () => {
 	test.use({ storageState: { cookies: [], origins: [] } });
-	for (const record of parse_csv(DATASETS_FOLDER, LOGIN_NOT_POSSIBLE_CSV) as {
+	for (const record of parse_csv(DATASETS_DIR, LOGIN_NOT_POSSIBLE_CSV) as {
 		username: string;
 		password: string;
 		expected_username_warning: string;
@@ -39,7 +39,7 @@ test.describe("Login tests", () => {
 		});
 	}
 
-	for (const record of parse_csv(DATASETS_FOLDER, LOGIN_REJECTED_CSV) as {
+	for (const record of parse_csv(DATASETS_DIR, LOGIN_REJECTED_CSV) as {
 		username: string;
 		password: string;
 		expected_feedback_location: string;
@@ -96,7 +96,7 @@ test.describe("Login tests", () => {
 		});
 	}
 
-	for (const user of parse_csv(DATASETS_FOLDER, LOGIN_SUCCESSFUL_CSV) as {
+	for (const user of parse_csv(DATASETS_DIR, LOGIN_SUCCESSFUL_CSV) as {
 		username: string;
 		password: string;
 	}[]) {

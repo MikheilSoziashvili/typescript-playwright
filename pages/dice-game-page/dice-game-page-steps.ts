@@ -1,8 +1,9 @@
 import { BasePageStep } from "@pages/base/base-page-step";
-import { DiceBetTestData } from "@dtos/test-data";
+import { DiceAutobetTestData, DiceBetTestData } from "@dtos/test-data";
 import { DiceGameResultMessage } from "@enums/dice-result-messages";
 import { logger } from "@logger/logger";
 import { DiceGamePage } from "./dice-game-page";
+import { parseToFloat } from "@core/utils";
 
 export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 	public constructor(gamdomPage: DiceGamePage) {
@@ -19,15 +20,17 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 			const accountBalanceBeforeBet =
 				await this.gamdomPage.authenticatedHeader.getAccountBalance();
 
-			await this.gamdomPage.fillInBetData(
+			await this.gamdomPage.fillInManualBetData(
 				diceBetData.betAmount,
 				diceBetData.multiplier,
 			);
-
+			// TODO Need to refactor this part. If we change the multiplier, this values are not correct anymore
 			await this.gamdomPage
 				.assertThat()
-				.betValuesAreCorrect("34.000000", "1.50", "66.00", "0.50");
-			await this.gamdomPage.assertThat().diceValueIsCorrect("34.00");
+				.manualBetValueAreCorrect("34.000000", "1.50", "66.00", "0.50");
+			await this.gamdomPage
+				.assertThat()
+				.diceSliderValueIsCorrect("34.00");
 
 			await this.gamdomPage.rollDice();
 
@@ -55,14 +58,36 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 	}
 
 	public async rollDice(diceBetData: DiceBetTestData): Promise<void> {
-		await this.gamdomPage.fillInBetData(diceBetData.betAmount);
+		await this.gamdomPage.fillInManualBetData(diceBetData.betAmount);
 		const multiplier = diceBetData.multiplier || 1;
 		await this.gamdomPage
 			.assertThat()
-			.betAndProfitOnWinValuesAreCorrect(
+			.manualBetAndProfitOnWinValuesAreCorrect(
 				diceBetData.betAmount,
 				diceBetData.betAmount * multiplier,
 			);
 		await this.gamdomPage.rollDice();
+	}
+
+	public async startAutobet(diceBetData: DiceAutobetTestData): Promise<void> {
+		const accountBalanceBeforeBet =
+			await this.gamdomPage.authenticatedHeader.getAccountBalance();
+
+		await this.gamdomPage.switchToAutobetSection();
+		await this.gamdomPage.fillInAutobetBetData(diceBetData);
+		await this.gamdomPage
+			.assertThat()
+			.diceSliderValueIsCorrect(
+				parseToFloat(diceBetData.rollOver as number),
+			);
+		await this.gamdomPage.assertThat().autobetValuesAreCorrect(diceBetData);
+
+		await this.gamdomPage.startAutobet();
+
+		await this.gamdomPage.assertThat().diceMessageIsNotEmpty();
+		await this.gamdomPage.assertThat().diceResultIsDisplayed();
+		await this.gamdomPage.authenticatedHeader
+			.assertThat()
+			.accountBalanceHasChanged(accountBalanceBeforeBet);
 	}
 }
