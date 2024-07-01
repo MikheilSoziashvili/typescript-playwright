@@ -89,7 +89,7 @@ export async function getStorageStateUserAPI(
 		"No cookies received from login response",
 	).toBeTruthy();
 
-	const context = await gamdomApi.context;
+	const context = await gamdomApi.getContext();
 	await context.storageState({
 		path: CREDENTIALS_AUTH_STATE_MAP[user.username],
 	});
