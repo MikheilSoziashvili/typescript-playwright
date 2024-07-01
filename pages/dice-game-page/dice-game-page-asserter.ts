@@ -102,7 +102,7 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		autobetData: DiceAutobetTestData,
 	): Promise<void> {
 		await expect(this.gamdomPage.map.autobetYourBetInput).toHaveValue(
-			parseToFloat(autobetData.betAmount).toString(),
+			parseToFloat(autobetData.betAmount),
 		);
 		if (autobetData.nbOfBets) {
 			await expect(this.gamdomPage.map.autobetNbOfBetsInput).toHaveValue(
@@ -111,19 +111,19 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		}
 		if (autobetData.rollOver) {
 			await expect(this.gamdomPage.map.autobetRollOverInput).toHaveValue(
-				parseToFloat(autobetData.rollOver, 6).toString(),
+				parseToFloat(autobetData.rollOver, 6),
 			);
 		}
 		if (autobetData.stopOnProfit) {
 			await expect(
 				this.gamdomPage.map.autobetStopOnProfitInput,
-			).toHaveValue(parseToFloat(autobetData.stopOnProfit).toString());
+			).toHaveValue(parseToFloat(autobetData.stopOnProfit));
 		}
 
 		if (autobetData.stopOnLoss) {
 			await expect(
 				this.gamdomPage.map.autobetStopOnLossInput,
-			).toHaveValue(parseToFloat(autobetData.stopOnLoss).toString());
+			).toHaveValue(parseToFloat(autobetData.stopOnLoss));
 		}
 	}
 
