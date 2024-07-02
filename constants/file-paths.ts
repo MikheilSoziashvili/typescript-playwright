@@ -7,6 +7,8 @@ import {
 
 const storageStateDir: string = getFilePath(".auth");
 
+export const DATASETS_DIR = "datasets";
+
 export const GOOGLE_AUTH_STATE_FILE_PATH: string = getFilePath(
 	`${GOOGLE_AUTH_CREDENTIALS.username}.json`,
 	storageStateDir,
