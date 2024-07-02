@@ -21,7 +21,7 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		);
 	}
 
-	public async betAndProfitOnWinValuesAreCorrect(
+	public async manualBetAndProfitOnWinValuesAreCorrect(
 		betValue: number,
 		profitOnWin: number,
 	): Promise<void> {
