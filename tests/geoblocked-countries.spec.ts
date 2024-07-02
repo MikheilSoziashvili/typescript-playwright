@@ -6,7 +6,7 @@ import {
 } from "@constants/proxies";
 import { PRODUCTION_BASE_URL } from "@constants/page-urls";
 import { GeoblockedCountry } from "@enums/geoblocked-countries";
-import { ProxyCredentialsType } from "@core/types";
+import { ProxyCredentialsType } from "@core/types/types";
 
 const countries = [
 	GeoblockedCountry.UNITED_STATED,

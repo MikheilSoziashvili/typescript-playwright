@@ -1,4 +1,4 @@
-import { TestUserConfigurationObject } from "@core/types";
+import { TestUserConfigurationObject } from "@core/types/types";
 import { asString, getFilePath } from "@core/utils";
 
 export const environment_url = process.env.CI

@@ -2,8 +2,9 @@ import { HttpMethod } from "@enums/api/http-methods";
 import { APIRequestContext, APIResponse, request } from "@playwright/test";
 import { RequestParameters } from "../core/api/interfaces/request-parameters";
 import { logger } from "@logger/logger";
-import { KnownError, PayloadType } from "@core/types";
 import { handleError } from "@core/api/error-handler";
+import { PayloadType } from "@core/types/types";
+import { KnownError } from "@core/types/error-types";
 
 /**
  * This BaseApi class serves as a foundation for managing HTTP requests.
@@ -116,20 +117,12 @@ export class BaseApi {
 				...(timeout && { timeout }),
 			});
 
-			if (!response.ok()) {
-				const error: KnownError = new Error(`HTTP Error ${response.status()}: ${response.statusText()}`);
-				error.response = response;
-				throw error;
-			}
-
 			return response;
 		} catch (error) {
 			handleError(error as KnownError);
 			throw error;
 		}
 	}
-
-
 
 	/**
 	 * Makes a GET request.

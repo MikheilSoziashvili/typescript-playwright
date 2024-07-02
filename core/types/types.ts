@@ -1,5 +1,3 @@
-import { APIResponse } from "@playwright/test";
-
 export type TestUserConfigurationObject = {
 	username: string;
 	password: string;
@@ -40,5 +38,3 @@ export type ProxyCredentialsType = {
 export type PayloadType =
 	| Record<string, string | number | boolean | object>
 	| string;
-
-export type KnownError = Error & { response?: APIResponse };
