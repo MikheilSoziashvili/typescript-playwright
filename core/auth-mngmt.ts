@@ -12,7 +12,7 @@ import {
 } from "@constants/file-paths";
 
 import * as fs from "fs";
-import { CredentialsType } from "./types";
+import { CredentialsType } from "./types/types";
 import { GamdomApi } from "@api/gamdom-api";
 
 const CREDENTIALS_AUTH_STATE_MAP = {

@@ -2,7 +2,9 @@ import { HttpMethod } from "@enums/api/http-methods";
 import { APIRequestContext, APIResponse, request } from "@playwright/test";
 import { RequestParameters } from "../core/api/interfaces/request-parameters";
 import { logger } from "@logger/logger";
-import { PayloadType } from "@core/types";
+import { handleError } from "@core/api/error-handler";
+import { PayloadType } from "@core/types/types";
+import { KnownError } from "@core/types/error-types";
 
 /**
  * This BaseApi class serves as a foundation for managing HTTP requests.
@@ -106,13 +108,20 @@ export class BaseApi {
 		const { endpoint, headers, data, params, timeout } = parameters;
 		const context = await this.context;
 		const url = this.concatenateUrl(endpoint);
-		const response = await context[method](url, {
-			headers: { ...this.requestHeaders, ...headers },
-			...(data && { data }),
-			...(params && { params }),
-			...(timeout && { timeout }),
-		});
-		return response;
+
+		try {
+			const response = await context[method](url, {
+				headers: { ...this.requestHeaders, ...headers },
+				...(data && { data }),
+				...(params && { params }),
+				...(timeout && { timeout }),
+			});
+
+			return response;
+		} catch (error) {
+			handleError(error as KnownError);
+			throw error;
+		}
 	}
 
 	/**
