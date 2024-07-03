@@ -51,4 +51,12 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 
 		expect(receivedUsername?.trim()).toBe(`${username}!`);
 	}
+
+	public async isBannerCarouselDisplayed(): Promise<void> {
+		await expect(this.gamdomPage.map.bannerCarousel).toBeVisible();
+	}
+
+	public async isTopBannerDisplayed(): Promise<void> {
+		await expect(this.gamdomPage.map.topBannerLocator).toBeVisible();
+	}
 }

@@ -15,3 +15,5 @@ export const USER_INFO_ADMIN_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/UserInfoAdm
 export const VIP_MANAGER_ADMIN_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/VipManagerAdmin`;
 export const INFO_ADMIN_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/user`;
 export const BANNED_USER_PAGE_ENDPOINT = "/banned?reason";
+export const ESPORTS_PAGE_ENDPOINT = "/esports";
+export const SLOTS_BATTLE_PAGE_ENDPOINT = "/slots-battles";
