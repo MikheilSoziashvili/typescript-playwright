@@ -5,7 +5,7 @@ import * as path from "path";
 import { parse } from "csv-parse/sync";
 import { readFileSync } from "fs";
 import { users } from "configuration";
-import { TestUserConfigurationObject } from "./types";
+import { TestUserConfigurationObject } from "./types/types";
 import accounting from "accounting";
 import { DEFAULT_CURRENCY } from "@constants/defaults";
 import { pageUrl } from "@support/regex-patterns";

@@ -1,4 +1,4 @@
-import { PayloadType } from "@core/types";
+import { PayloadType } from "@core/types/types";
 
 export interface RequestParameters {
 	endpoint: string;

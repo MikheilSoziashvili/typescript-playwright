@@ -7,7 +7,7 @@ import { expect } from "@playwright/test";
 import * as Configuration from "configuration";
 import fs from "fs";
 import xml2js from "xml2js";
-import { XmlData, XmlDataTestCase, XmlDataTestSuite } from "@core/types";
+import { XmlData, XmlDataTestSuite, XmlDataTestCase } from "@core/types/types";
 
 // TODO: Move to utils
 async function parseXmlFile(filePath: string) {
