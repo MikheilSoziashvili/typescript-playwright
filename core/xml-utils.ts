@@ -12,7 +12,7 @@ export async function parseXmlFile(filePath: string): Promise<XmlData> {
 
 		const xmlContent = await fs.readFile(filePath, { encoding: "utf8" });
 		const parser = new xml2js.Parser();
-		return parser.parseStringPromise(xmlContent) as Promise<XmlData>;
+		return (await parser.parseStringPromise(xmlContent)) as XmlData;
 	} catch (error) {
 		if (error instanceof Error) {
 			throw new Error(`Failed to parse XML file: ${error.message}`);
