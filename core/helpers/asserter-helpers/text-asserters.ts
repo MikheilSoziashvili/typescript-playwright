@@ -1,5 +1,5 @@
 import { DEFAULT_CURRENCY } from "@constants/defaults";
-import { buildAmountWithCurrency } from "../../utils";
+import { buildAmountWithCurrency } from "@core/utils/utils";
 
 export function buildClaimedAmountSubTitle(
 	amount: number,

@@ -3,7 +3,7 @@ import { DiceAutobetTestData, DiceBetTestData } from "@dtos/test-data";
 import { DiceGameResultMessage } from "@enums/dice-result-messages";
 import { logger } from "@logger/logger";
 import { DiceGamePage } from "./dice-game-page";
-import { parseToFloat } from "@core/utils";
+import { parseToFloat } from "@core/utils/utils";
 
 export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 	public constructor(gamdomPage: DiceGamePage) {

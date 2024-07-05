@@ -2,7 +2,7 @@ import { Page } from "@playwright/test";
 import { AuthenticatedHeaderMap } from "./authenticated-header-map";
 import { BaseComponent } from "@base/base-component";
 import { AuthenticatedHeaderAsserter } from "./authenticated-header-asserter";
-import { parseBalance } from "@core/utils";
+import { parseBalance } from "@core/utils/utils";
 import { logger } from "@logger/logger";
 import { Chat } from "../../chat/chat";
 import { Timeout } from "@enums/timeout";

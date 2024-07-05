@@ -2,7 +2,7 @@ import { expect } from "@playwright/test";
 import { BaseAsserter } from "@base/base-asserter";
 import { RewardsPage } from "./rewards-page";
 import { DEFAULT_CURRENCY } from "@constants/defaults";
-import { parseToFloat } from "@core/utils";
+import { parseToFloat } from "@core/utils/utils";
 import { Timeout } from "@enums/timeout";
 
 export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {

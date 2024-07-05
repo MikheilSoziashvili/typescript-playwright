@@ -2,7 +2,7 @@ import { Page } from "@playwright/test";
 import { BaseMap } from "./base-map";
 import { AuthenticatedHeader } from "@components/header/authenticated/authenticated-header";
 import { UnauthenticatedHeader } from "@components/header/unauthenticated/unauthenticated-header";
-import { conformLinkWithProtocol } from "@core/utils";
+import { conformLinkWithProtocol } from "@core/utils/utils";
 
 export abstract class BasePage<T = BaseMap> {
 	readonly page: Page;

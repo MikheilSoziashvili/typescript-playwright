@@ -2,7 +2,7 @@ import { Page } from "@playwright/test";
 import { BaseModal } from "@base/base-modal";
 import { LoginModalMap } from "./login-modal-map";
 import { LoginModalAsserter } from "./login-modal-asserter";
-import { findUser } from "@core/utils";
+import { findUser } from "@core/utils/utils";
 import { TestUserConfigurationObject } from "@core/types/types";
 
 export class LoginModal extends BaseModal<LoginModalMap> {

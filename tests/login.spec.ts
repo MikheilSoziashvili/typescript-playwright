@@ -1,6 +1,6 @@
 import { users } from "configuration";
 import { test } from "@fixtures/fixtures";
-import { parse_csv, toJson } from "@core/utils";
+import { parse_csv, toJson } from "@core/utils/utils";
 import { DATASETS_DIR } from "@constants/file-paths";
 
 const LOGIN_NOT_POSSIBLE_CSV = "ENG-294-login-not-possible.csv";

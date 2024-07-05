@@ -1,5 +1,5 @@
 import { BasePageStep } from "@pages/base/base-page-step";
-import { parseToFloat } from "@core/utils";
+import { parseToFloat } from "@core/utils/utils";
 import { BetTestData } from "@dtos/test-data";
 import { CrashGamePage } from "./crash-game-page";
 

@@ -1,5 +1,5 @@
 import { TestUserConfigurationObject } from "@core/types/types";
-import { asString, getFilePath } from "@core/utils";
+import { asString, getFilePath } from "@core/utils/utils";
 import "dotenv/config";
 
 export const environment_url = process.env.CI

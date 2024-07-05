@@ -2,7 +2,7 @@ import { DiceGameResultMessage } from "@enums/dice-result-messages";
 import { test } from "@fixtures/fixtures";
 import { DiceAutobetTestData } from "@dtos/test-data";
 import { storageStateUser1API } from "@fixtures/auth-fixtures";
-import { parse_csv } from "@core/utils";
+import { parse_csv } from "@core/utils/utils";
 import { DATASETS_DIR } from "@constants/file-paths";
 
 const DICE_AUTOBET_CSV = "ENG-1415-dice-autobet.csv";

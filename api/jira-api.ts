@@ -1,7 +1,7 @@
 import { APIResponse } from "@playwright/test";
 import { BaseApi } from "./base-api";
 import * as Configuration from "../configuration";
-import { encodeCredentials } from "@core/utils";
+import { encodeCredentials } from "@core/utils/utils";
 import { PayloadType } from "@core/types/types";
 
 export class JiraApi extends BaseApi {
