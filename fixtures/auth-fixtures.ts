@@ -9,7 +9,6 @@ import {
 	PlaywrightWorkerOptions,
 	devices,
 } from "@playwright/test";
-import { Pages } from "./fixtures";
 import {
 	getStorageStateGoogleAuth,
 	getStorageStateUser,
@@ -20,6 +19,7 @@ import {
 	USER_1_CREDENTIALS,
 } from "@constants/credentials";
 import * as Configuration from "configuration";
+import { GamdomPages } from "./gamdom-pages";
 
 function authPage(browser: Browser): Promise<Page> {
 	return browser.newPage({
@@ -33,7 +33,7 @@ function authPage(browser: Browser): Promise<Page> {
 export const storageStateGoogleAuth: Fixtures<
 	{},
 	{},
-	PlaywrightTestArgs & PlaywrightTestOptions & Pages,
+	PlaywrightTestArgs & PlaywrightTestOptions & GamdomPages,
 	PlaywrightWorkerArgs & PlaywrightWorkerOptions
 > = {
 	storageState: async ({ browser, baseURL }, use) => {
@@ -47,7 +47,7 @@ export const storageStateGoogleAuth: Fixtures<
 export const storageStateUser1: Fixtures<
 	{},
 	{},
-	PlaywrightTestArgs & PlaywrightTestOptions & Pages,
+	PlaywrightTestArgs & PlaywrightTestOptions & GamdomPages,
 	PlaywrightWorkerArgs & PlaywrightWorkerOptions
 > = {
 	storageState: async ({ browser, baseURL }, use) => {
@@ -65,7 +65,7 @@ export const storageStateUser1: Fixtures<
 export const storageStateSuperadmin: Fixtures<
 	{},
 	{},
-	PlaywrightTestArgs & PlaywrightTestOptions & Pages,
+	PlaywrightTestArgs & PlaywrightTestOptions & GamdomPages,
 	PlaywrightWorkerArgs & PlaywrightWorkerOptions
 > = {
 	storageState: async ({ browser, baseURL }, use) => {
