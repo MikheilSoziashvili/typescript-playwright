@@ -69,7 +69,7 @@ export function getFilePath(
 }
 
 export function parse_csv(...filePath: string[]): unknown {
-	const filePathRoot = path.join(__dirname, "..", ...filePath);
+    const filePathRoot = path.resolve(__dirname, '../..', ...filePath);
 	const csvFile = readFileSync(filePathRoot);
 	return parse(csvFile, {
 		columns: true,
