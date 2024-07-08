@@ -1,14 +1,16 @@
-import { promises as fs } from "fs";
+import { promises as fsPromises } from "fs";
 import { logger } from "@logger/logger";
 import { JsonData } from "@core/interfaces";
 import * as path from "path";
 import { parse } from "csv-parse/sync";
 import { readFileSync } from "fs";
 import { users } from "configuration";
-import { TestUserConfigurationObject } from "@core/types/types";
+import { TestUserConfigurationObject, XmlData } from "@core/types/types";
 import accounting from "accounting";
 import { DEFAULT_CURRENCY } from "@constants/defaults";
 import { pageUrl } from "@support/regex-patterns";
+import fs from "fs";
+import xml2js from "xml2js";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -16,7 +18,7 @@ export function encodeCredentials(username: string, password: string): string {
 }
 
 export async function readFromJSONFile(filePath: string): Promise<JsonData> {
-	const fileContents: string = await fs.readFile(filePath, "utf-8");
+	const fileContents: string = await fsPromises.readFile(filePath, "utf-8");
 	return JSON.parse(fileContents) as JsonData;
 }
 
@@ -26,9 +28,9 @@ export async function writeToJSONFile(
 ): Promise<void> {
 	try {
 		const existingData = JSON.parse(
-			await fs.readFile(filePath, "utf-8"),
+			await fsPromises.readFile(filePath, "utf-8"),
 		) as object;
-		await fs.writeFile(
+		await fsPromises.writeFile(
 			filePath,
 			JSON.stringify({ ...existingData, ...data }, null, 4),
 		);
@@ -41,8 +43,20 @@ export async function writeToJSONFile(
 export async function prependXmlHeaderToFile(
 	filePath: string,
 ): Promise<string> {
-	const xmlContent = await fs.readFile(filePath, "utf-8");
+	const xmlContent = await fsPromises.readFile(filePath, "utf-8");
 	return '<?xml version="1.0" encoding="UTF-8" ?>\n' + xmlContent;
+}
+
+export async function parseXmlFile(filePath: string): Promise<XmlData> {
+	if (!fs.existsSync(filePath)) {
+		throw new Error(`File not found: ${filePath}`);
+	}
+
+	const xmlContent = fs.readFileSync(filePath, { encoding: "utf8" });
+	const parser = new xml2js.Parser();
+	const result = (await parser.parseStringPromise(xmlContent)) as XmlData;
+
+	return result;
 }
 
 export async function clearDirectoryContent(
@@ -50,11 +64,13 @@ export async function clearDirectoryContent(
 	exclude: string[] = [],
 ): Promise<void> {
 	try {
-		const files = await fs.readdir(directory);
+		const files = await fsPromises.readdir(directory);
 		const filesToDelete = files.filter((file) => !exclude.includes(file));
 
 		await Promise.all(
-			filesToDelete.map((file) => fs.unlink(`${directory}/${file}`)),
+			filesToDelete.map((file) =>
+				fsPromises.unlink(`${directory}/${file}`),
+			),
 		);
 	} catch (err) {
 		logger.error(err);
@@ -69,7 +85,7 @@ export function getFilePath(
 }
 
 export function parse_csv(...filePath: string[]): unknown {
-    const filePathRoot = path.resolve(__dirname, '../..', ...filePath);
+	const filePathRoot = path.resolve(__dirname, "../..", ...filePath);
 	const csvFile = readFileSync(filePathRoot);
 	return parse(csvFile, {
 		columns: true,

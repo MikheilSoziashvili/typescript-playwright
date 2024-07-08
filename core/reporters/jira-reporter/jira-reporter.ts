@@ -1,18 +1,18 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Reporter, FullResult } from "@playwright/test/reporter";
+import { Reporter } from "@playwright/test/reporter";
 import { logger } from "@logger/logger";
-import { uploadXmlReport } from "@core/utils/xml-utils";
-import { getKeystore } from "@core/utils/keystore-utils";
+import ReportUploader from "@core/reporters/jira-reporter/report-uploader";
+import { readFromJSONFile } from "@core/utils/utils";
+import { keystore } from "../../../configuration";
 
 export default class JiraReporter implements Reporter {
-	async onEnd(result: FullResult): Promise<void> {
-		const keystore = await getKeystore();
-		const issueKey = keystore.issueKey as string;
-		const createExecution = keystore.createExecution as boolean;
+	async onEnd(): Promise<void> {
+		const keystoreData = await readFromJSONFile(keystore);
+		const issueKey = keystoreData.issueKey as string;
+		const createExecution = keystoreData.createExecution as boolean;
 
-		// Upload test results if there are failed tests or if execution creation is requested
-		if (result.status === "failed" || (createExecution && issueKey)) {
-			await uploadXmlReport(issueKey);
+		if (createExecution && issueKey) {
+			const uploader = new ReportUploader(issueKey);
+			await uploader.uploadXmlReport();
 		} else {
 			logger.info("Test results are not imported into XRay.");
 		}
