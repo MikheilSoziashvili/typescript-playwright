@@ -41,7 +41,7 @@ export default class ReportUploader {
 	}
 
 	private async addTestKeysToXmlReport(): Promise<void> {
-		const xmlData = await parseXmlFile(this.filePath);
+		const xmlData = await parseXmlFile<XmlData>(this.filePath);
 		await this.updateXmlWithTestKeys(xmlData);
 	}
 

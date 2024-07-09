@@ -47,14 +47,14 @@ export async function prependXmlHeaderToFile(
 	return '<?xml version="1.0" encoding="UTF-8" ?>\n' + xmlContent;
 }
 
-export async function parseXmlFile(filePath: string): Promise<XmlData> {
+export async function parseXmlFile<T>(filePath: string): Promise<T> {
 	if (!fs.existsSync(filePath)) {
 		throw new Error(`File not found: ${filePath}`);
 	}
 
 	const xmlContent = fs.readFileSync(filePath, { encoding: "utf8" });
 	const parser = new xml2js.Parser();
-	const result = (await parser.parseStringPromise(xmlContent)) as XmlData;
+	const result = (await parser.parseStringPromise(xmlContent)) as T;
 
 	return result;
 }
