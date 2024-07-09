@@ -2,7 +2,7 @@ import { Page } from "@playwright/test";
 import { BaseModal } from "@base/base-modal";
 import { TipUserModalMap } from "./tip-user-modal-map";
 import { TipUserModalAsserter } from "./tip-user-modal-asserter";
-import { parseToFloat } from "@core/utils";
+import { parseToFloat } from "@core/utils/utils";
 
 export class TipUserModal extends BaseModal<TipUserModalMap> {
 	constructor(page: Page) {

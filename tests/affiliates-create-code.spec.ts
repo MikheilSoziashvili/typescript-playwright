@@ -1,5 +1,5 @@
 import { buildCreateAffiliateCodeSubTitle } from "@core/helpers/asserter-helpers/text-asserters";
-import { generateRandomString } from "@core/utils";
+import { generateRandomString } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { ToastTitle } from "@enums/toast-titles";
 import { test } from "@fixtures/fixtures";

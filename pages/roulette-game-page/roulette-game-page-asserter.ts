@@ -3,7 +3,7 @@ import { BaseAsserter } from "@base/base-asserter";
 import { RouletteGamePage } from "./roulette-game-page";
 import { RouletteBetColor } from "@enums/original-games";
 import { plusSignWithExactDecimalCurrency } from "@support/regex-patterns";
-import { parseToFloat } from "@core/utils";
+import { parseToFloat } from "@core/utils/utils";
 import { RouletteAutobetSection } from "@enums/roulette-autobet-section";
 
 export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {

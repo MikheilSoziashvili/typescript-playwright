@@ -1,4 +1,4 @@
-import { generateRandomString } from "@core/utils";
+import { generateRandomString } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { NotificationTitle } from "@enums/notification-titles";
 import { ToastSubTitle } from "@enums/toast-subtitles";

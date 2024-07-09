@@ -2,7 +2,7 @@ import { Page, expect } from "@playwright/test";
 import { RouletteGamePageMap } from "./roulette-game-page-map";
 import { RouletteGamePageAsserter } from "./roulette-game-page-asserter";
 import { RouletteBetColor, RouletteNumberColor } from "@enums/original-games";
-import { range } from "@core/utils";
+import { range } from "@core/utils/utils";
 import { ROULETTE_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePage } from "@base/base-page";
 import { RouletteGamePageSteps } from "./roulette-game-page-steps";

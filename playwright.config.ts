@@ -15,7 +15,7 @@ function getReporter(): ReporterDescription[] {
 		//Enable Jira Custom Reporter
 		reporters.push(
 			["junit", { outputFile: Configuration.reportName }],
-			["./core/reporters/custom-reporter.ts"], // Custom reporter for XRay/JIRA integration);
+			["./core/reporters/jira-reporter/jira-reporter.ts"], // Custom reporter for XRay/JIRA integration);
 		);
 	}
 

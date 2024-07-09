@@ -8,7 +8,7 @@ import { HomePageSteps } from "./home-page-steps";
 import { HOME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { HomePageBannerCarouselSlideTitle } from "@enums/homepage-banner-carousel-slide-title";
 import { Timeout } from "@enums/timeout";
-import { hardWait } from "@core/utils";
+import { hardWait } from "@core/utils/utils";
 import { VisibilityState } from "@enums/playwright/visibility-states";
 
 export class HomePage extends BasePage<HomePageMap> {

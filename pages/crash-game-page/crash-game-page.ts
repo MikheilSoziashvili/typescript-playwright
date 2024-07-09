@@ -4,7 +4,7 @@ import { CrashGamePageMap } from "./crash-game-page-map";
 import { CrashGamePageAsserter } from "./crash-game-page-asserter";
 import { CrashGamePageSteps } from "./crash-game-page-steps";
 import { logger } from "@logger/logger";
-import { parseMultiplier } from "@core/utils";
+import { parseMultiplier } from "@core/utils/utils";
 import { CRASH_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 
 export class CrashGamePage extends BasePage<CrashGamePageMap> {

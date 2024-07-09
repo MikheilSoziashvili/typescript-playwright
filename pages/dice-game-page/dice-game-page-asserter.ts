@@ -3,7 +3,7 @@ import { BaseAsserter } from "@base/base-asserter";
 import { DiceGamePage } from "./dice-game-page";
 import { DiceGameResultMessage } from "@enums/dice-result-messages";
 import { Timeout } from "@enums/timeout";
-import { parseToFloat } from "@core/utils";
+import { parseToFloat } from "@core/utils/utils";
 import { DiceAutobetTestData } from "@dtos/test-data";
 
 export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {

@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
 import { JiraApi } from "@api/jira-api";
 import { createExecutionBody } from "@api/jira-api-payloads";
-import { writeToJSONFile } from "@core/utils";
+import { writeToJSONFile } from "@core/utils/utils";
 import { logger } from "@logger/logger";
 import * as Configuration from "configuration";
 import { JsonData } from "@core/interfaces";
