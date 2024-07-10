@@ -19,7 +19,7 @@ jobs:
         timeout-minutes: 60
         runs-on: ubuntu-latest
         env:
-            CI: true
+            CI: ""
             BUILD_NUMBER: ${{ github.run_number }}
             BUILD_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
