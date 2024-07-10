@@ -14,6 +14,7 @@ on:
                 options:
                     - all
                     - smoke
+                    - visual
 
     workflow_call:
         secrets:

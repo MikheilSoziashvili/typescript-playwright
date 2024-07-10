@@ -40,6 +40,7 @@ export default defineConfig({
 	testDir: "./tests",
 	expect: {
 		timeout: 10 * 1000,
+		toHaveScreenshot: { maxDiffPixelRatio: 0.1 },
 	},
 	/* Run tests in files in parallel */
 	fullyParallel: false,

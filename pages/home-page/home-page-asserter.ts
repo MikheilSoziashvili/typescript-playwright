@@ -59,4 +59,8 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 	public async isTopBannerDisplayed(): Promise<void> {
 		await expect(this.gamdomPage.map.topBannerLocator).toBeVisible();
 	}
+
+	public async topBannerVisualCorrect(): Promise<void> {
+		await expect(this.gamdomPage.map.topBannerLocator).toHaveScreenshot();
+	}
 }
