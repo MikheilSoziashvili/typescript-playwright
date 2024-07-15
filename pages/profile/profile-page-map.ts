@@ -16,4 +16,12 @@ export class ProfilePageMap extends BaseMap {
 	public get hideStatisticsToggle(): Locator {
 		return this.page.getByTestId("profileHideStatistics").locator("input");
 	}
+
+	public get verifyButton(): Locator {
+		return this.page.locator("button:has-text('Verify')");
+	}
+
+	public get continueVerificationButton(): Locator {
+		return this.page.locator('button:has-text("Continue")');
+	}
 }

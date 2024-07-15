@@ -7,13 +7,16 @@ export class RegisterTestData {
 	#password: string;
 	#email: string;
 
-	constructor() {
-		this.#username = faker.internet.userName().replace(/[^A-Za-z0-9]/g, "");
-		this.#password = faker.internet.password({
-			length: 15,
-			pattern: new RegExp("[A-Za-z0-9!@#$%^]+"),
-		});
-		this.#email = faker.internet.email();
+	constructor(username?: string, password?: string, email?: string) {
+		this.#username =
+			username ?? faker.internet.userName().replace(/[^A-Za-z0-9]/g, "");
+		this.#password =
+			password ??
+			faker.internet.password({
+				length: 15,
+				pattern: new RegExp("[A-Za-z0-9!@#$%^]+"),
+			});
+		this.#email = email ?? faker.internet.email();
 	}
 
 	get username(): string {

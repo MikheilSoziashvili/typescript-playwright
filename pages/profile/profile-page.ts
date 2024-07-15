@@ -1,4 +1,4 @@
-import { Page } from "@playwright/test";
+import { Page, expect } from "@playwright/test";
 import { BasePage } from "@base/base-page";
 import { ProfilePageMap } from "./profile-page-map";
 import { ProfilePageAsserter } from "./profile-page-asserter";
@@ -30,5 +30,14 @@ export class ProfilePage extends BasePage<ProfilePageMap> {
 		await this.map.logOutButton.click();
 		await this.continueModal.assertThat().isDisplayed();
 		await this.continueModal.clickContinueButton();
+	}
+
+	public async verifyButtonNotVisible(): Promise<void> {
+		await expect(this.map.verifyButton).toBeHidden();
+	}
+
+	public async completeVerificationFlow(): Promise<void> {
+		await this.map.verifyButton.click();
+		await this.map.continueVerificationButton.click();
 	}
 }
