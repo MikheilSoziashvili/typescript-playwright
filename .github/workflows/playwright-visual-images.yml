@@ -13,6 +13,10 @@ on:
                 type: choice
                 options:
                     - visual
+            custom_options:
+                description: "Custom command-line options"
+                type: string
+                required: false
 
 jobs:
     visual-tests-images:
@@ -37,6 +41,10 @@ jobs:
             TAG: ${{ inputs.tag == '' && 'visual' || inputs.tag }}
 
         steps:
+            - name: Validation For Environment URL
+              run: |
+                  echo "Validating that Environment URL is valid format (and does not end with slash)"
+                  echo $ENVIRONMENT_URL | grep -E '^(http|https)://[a-zA-Z0-9./?=_-]*[^/]$'
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
               with:
@@ -46,7 +54,7 @@ jobs:
             - name: Install Playwright Browsers
               run: yarn playwright install --with-deps
             - name: Run Playwright tests
-              run: yarn playwright test ${{ inputs.tag != 'all' && '--grep "$TAG"' || '' }}
+              run: yarn playwright test --grep "$TAG" ${{ inputs.custom_options }}
             - uses: actions/upload-artifact@v3
               if: always()
               with:
