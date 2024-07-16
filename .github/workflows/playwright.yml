@@ -45,6 +45,9 @@ on:
             STEAM_PASSWORD:
                 required: true
                 description: "Steam authentication password"
+            MAILINATOR_API_KEY: 
+                required: true
+                description: "Mailinator authentication"
 
 jobs:
     tests:
