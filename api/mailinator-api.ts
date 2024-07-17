@@ -6,6 +6,7 @@ import {
 	EmailResponse,
 	EmailLinksResponse,
 } from "../core/api/interfaces/mailinator-interfaces";
+import { Timeout } from "@enums/timeout";
 
 const MAILINATOR_MESSAGES_ENDPOINT = `${Configuration.mailinator.baseUrl}/domains`;
 
@@ -77,8 +78,8 @@ export class MailinatorApi extends BaseApi {
 	public async pollForMessages(
 		domain: string,
 		inbox: string,
-		timeout = 30000,
-		interval = 2000,
+		timeout = Timeout.LONG,
+		interval = Timeout.EXTRA_SHORT,
 	): Promise<Message[]> {
 		const start = Date.now();
 
@@ -91,7 +92,7 @@ export class MailinatorApi extends BaseApi {
 		}
 
 		throw new Error(
-			`Timeout of ${timeout}ms exceeded while polling for messages in inbox: ${inbox}`,
+			`Timeout of ${timeout}ms exceeded while polling for messages in ${inbox}`,
 		);
 	}
 }

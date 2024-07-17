@@ -2,22 +2,20 @@ import { faker } from "@faker-js/faker";
 import { HiloBetOption } from "@enums/hilo-bet-options";
 import { HiloBetMultiplierByBetOption } from "@enums/original-games";
 import { usernamePattern, passwordPattern } from "@support/regex-patterns";
+import { RegisterTestDataParams } from "@core/interfaces";
 
 export class RegisterTestData {
 	#username: string;
 	#password: string;
 	#email: string;
 
-	constructor(username?: string, password?: string, email?: string) {
+	constructor({ email, username, password }: RegisterTestDataParams = {}) {
 		this.#username =
-			username ?? faker.internet.userName().replace(usernamePattern, "");
+			username || faker.internet.userName().replace(usernamePattern, "");
 		this.#password =
-			password ??
-			faker.internet.password({
-				length: 15,
-				pattern: passwordPattern,
-			});
-		this.#email = email ?? faker.internet.email();
+			password ||
+			faker.internet.password({ length: 15, pattern: passwordPattern });
+		this.#email = email || faker.internet.email();
 	}
 
 	get username(): string {

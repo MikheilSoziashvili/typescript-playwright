@@ -11,6 +11,7 @@ import { DEFAULT_CURRENCY } from "@constants/defaults";
 import { pageUrl } from "@support/regex-patterns";
 import fs from "fs";
 import xml2js from "xml2js";
+import { MAILINATOR_DOMAIN } from "@constants/domains";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -172,13 +173,11 @@ export function conformLinkWithProtocol(
 	return conformedLink;
 }
 
-const domain = "gamdom.testinator.com";
-
 export function generateEmailAndInbox(): { email: string; inbox: string } {
 	const email = `${generateRandomString({
 		prefix: "gmdverify",
 		length: 10,
-	})}@${domain}`;
+	})}@${MAILINATOR_DOMAIN}`;
 	const inbox = email.split("@")[0];
 
 	return { email, inbox };
