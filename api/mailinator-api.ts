@@ -73,4 +73,25 @@ export class MailinatorApi extends BaseApi {
 		const endpoint = `${MAILINATOR_MESSAGES_ENDPOINT}/${domain}/inboxes/${inbox}`;
 		await this.delete({ endpoint });
 	}
+
+	public async pollForMessages(
+		domain: string,
+		inbox: string,
+		timeout = 30000,
+		interval = 2000,
+	): Promise<Message[]> {
+		const start = Date.now();
+
+		while (Date.now() - start < timeout) {
+			const messages = await this.getMessages(domain, inbox);
+			if (messages.length > 0) {
+				return messages;
+			}
+			await new Promise((resolve) => setTimeout(resolve, interval));
+		}
+
+		throw new Error(
+			`Timeout of ${timeout}ms exceeded while polling for messages in inbox: ${inbox}`,
+		);
+	}
 }

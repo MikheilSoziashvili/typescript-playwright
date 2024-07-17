@@ -12,3 +12,7 @@ export const plusSignWithExactDecimalCurrency = (
 
 	return new RegExp(regExpString);
 };
+
+// Add the new regex patterns for username and password
+export const usernamePattern = /[^A-Za-z0-9]/g;
+export const passwordPattern = /[A-Za-z0-9!@#$%^]+/;

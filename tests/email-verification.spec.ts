@@ -1,6 +1,5 @@
+import { generateEmailAndInbox } from "@core/utils/utils";
 import { test } from "fixtures/fixtures";
-import { RegisterTestData } from "@dtos/test-data";
-import { generateRandomString } from "@core/utils/utils";
 
 const domain = "gamdom.testinator.com";
 
@@ -13,49 +12,18 @@ test.describe("Email Verification Tests", () => {
 		page,
 		profilePage,
 	}) => {
-		const email = `${generateRandomString({
-			prefix: "gmdverify",
-			length: 10,
-		})}@${domain}`;
-		const inbox = email.split("@")[0];
+		const { email, inbox } = generateEmailAndInbox();
 
-		// Step 1: Register a new user
-		await homePage.navigateAndCheckTitle();
-		await homePage.unauthenticatedHeader.openRegisterModal();
+		const registeredData = await homePage.registerModal
+			.steps()
+			.registerNewUser(email);
 
-		const registeredData = new RegisterTestData(
-			undefined,
-			undefined,
-			email,
-		);
-		await homePage.registerModal.fillInCredentials(registeredData, {
-			acceptTermsOfService: true,
-			acceptNewsOffers: true,
-		});
-		await homePage.registerModal.clickStartPlayingBtn();
 		await homePage.assertThat().userIsRegistered(registeredData.username);
 
-		// Step 2: Wait for the verification email
-		await new Promise((r) => setTimeout(r, 10000));
-
-		// Step 3: Fetch messages using Mailinator API
-		const messages = await mailinatorApi.getMessages(domain, inbox);
-
-		const verificationEmailId = messages[0].id;
-
-		// Step 4: Fetch the email links and navigate to the verification link
-		const emailLinks = await mailinatorApi.getEmailLinks(
-			domain,
-			inbox,
-			verificationEmailId,
-		);
-		const verificationLink = emailLinks.links[0];
-
-		await page.goto(verificationLink);
-
-		// Step 5: Assert account is already verified
-		await profilePage.navigate();
-		await profilePage.verifyButtonNotVisible();
+		// Poll for the verification email and perform verification
+		await profilePage
+			.steps()
+			.verifyEmailAndCheckProfile(mailinatorApi, domain, inbox, page);
 	});
 
 	test("[ENG-1121] E-mail verification @smoke", async ({
@@ -64,53 +32,25 @@ test.describe("Email Verification Tests", () => {
 		page,
 		profilePage,
 	}) => {
-		const email = `${generateRandomString({
-			prefix: "gmdverify",
-			length: 10,
-		})}@${domain}`;
-		const inbox = email.split("@")[0];
+		const { email, inbox } = generateEmailAndInbox();
 
-		// Step 1: Register a new user
-		await homePage.navigateAndCheckTitle();
-		await homePage.unauthenticatedHeader.openRegisterModal();
+		const registeredData = await homePage.registerModal
+			.steps()
+			.registerNewUser(email);
 
-		const registeredData = new RegisterTestData(
-			undefined,
-			undefined,
-			email,
-		);
-		await homePage.registerModal.fillInCredentials(registeredData, {
-			acceptTermsOfService: true,
-			acceptNewsOffers: true,
-		});
-		await homePage.registerModal.clickStartPlayingBtn();
 		await homePage.assertThat().userIsRegistered(registeredData.username);
 
-		// Step 2: Wait for the verification email and delete the inbox content
-		await new Promise((r) => setTimeout(r, 10000));
+		// Wait for the verification email and delete the inbox content
+		await mailinatorApi.pollForMessages(domain, inbox);
 		await mailinatorApi.deleteInbox(domain, inbox);
 
-		// Step 5: Complete verification flow and wait for the new verification email
+		// Complete verification flow and wait for the new verification email
 		await profilePage.navigate();
-		await profilePage.completeVerificationFlow();
-		await new Promise((r) => setTimeout(r, 10000));
+		await profilePage.steps().completeVerificationFlow();
 
-		// Step 3: Fetch messages using Mailinator API
-		const messages = await mailinatorApi.getMessages(domain, inbox);
-		const verificationEmailId = messages[0].id;
-
-		// Step 4: Fetch the email links and navigate to the new verification link
-		const emailLinks = await mailinatorApi.getEmailLinks(
-			domain,
-			inbox,
-			verificationEmailId,
-		);
-		const verificationLink = emailLinks.links[0];
-
-		await page.goto(verificationLink);
-
-		// Step 5: Assert account is already verified
-		await profilePage.navigate();
-		await profilePage.verifyButtonNotVisible();
+		// Poll for the new verification email and perform verification
+		await profilePage
+			.steps()
+			.verifyEmailAndCheckProfile(mailinatorApi, domain, inbox, page);
 	});
 });

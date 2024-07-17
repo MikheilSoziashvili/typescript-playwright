@@ -171,3 +171,15 @@ export function conformLinkWithProtocol(
 	}
 	return conformedLink;
 }
+
+const domain = "gamdom.testinator.com";
+
+export function generateEmailAndInbox(): { email: string; inbox: string } {
+	const email = `${generateRandomString({
+		prefix: "gmdverify",
+		length: 10,
+	})}@${domain}`;
+	const inbox = email.split("@")[0];
+
+	return { email, inbox };
+}

@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { HiloBetOption } from "@enums/hilo-bet-options";
 import { HiloBetMultiplierByBetOption } from "@enums/original-games";
+import { usernamePattern, passwordPattern } from "@support/regex-patterns";
 
 export class RegisterTestData {
 	#username: string;
@@ -9,12 +10,12 @@ export class RegisterTestData {
 
 	constructor(username?: string, password?: string, email?: string) {
 		this.#username =
-			username ?? faker.internet.userName().replace(/[^A-Za-z0-9]/g, "");
+			username ?? faker.internet.userName().replace(usernamePattern, "");
 		this.#password =
 			password ??
 			faker.internet.password({
 				length: 15,
-				pattern: new RegExp("[A-Za-z0-9!@#$%^]+"),
+				pattern: passwordPattern,
 			});
 		this.#email = email ?? faker.internet.email();
 	}
