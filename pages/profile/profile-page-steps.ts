@@ -60,6 +60,6 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 
 		// Assert account is already verified
 		await this.gamdomPage.navigate();
-		await this.gamdomPage.assertThat().verifyButtonNotVisible();
+		await this.gamdomPage.assertThat().assertButtonNotVisible();
 	}
 }

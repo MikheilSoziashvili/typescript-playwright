@@ -1,14 +1,18 @@
 import { BaseApi } from "./base-api";
 import * as Configuration from "../configuration";
+import { hardWait } from "@core/utils/utils";
 import {
 	Message,
 	MessagesResponse,
 	EmailResponse,
 	EmailLinksResponse,
 } from "../core/api/interfaces/mailinator-interfaces";
+import {
+	MAILINATOR_INBOX_URL,
+	MAILINATOR_MESSAGE_URL,
+	MAILINATOR_MESSAGE_LINKS_URL,
+} from "@constants/mailinator-endpoints";
 import { Timeout } from "@enums/timeout";
-
-const MAILINATOR_MESSAGES_ENDPOINT = `${Configuration.mailinator.baseUrl}/domains`;
 
 export class MailinatorApi extends BaseApi {
 	constructor(
@@ -37,11 +41,14 @@ export class MailinatorApi extends BaseApi {
 		domain: string,
 		inbox: string,
 	): Promise<Message[]> {
-		const endpoint = `${MAILINATOR_MESSAGES_ENDPOINT}/${domain}/inboxes/${inbox}`;
+		const endpoint = MAILINATOR_INBOX_URL(
+			Configuration.mailinator.baseUrl,
+			domain,
+			inbox,
+		);
 		const messagesResponse = await this.fetchMailinator<MessagesResponse>(
 			endpoint,
 		);
-
 		return messagesResponse.msgs;
 	}
 
@@ -55,8 +62,12 @@ export class MailinatorApi extends BaseApi {
 		inbox: string,
 		messageId: string,
 	): Promise<EmailResponse> {
-		const endpoint = `${MAILINATOR_MESSAGES_ENDPOINT}/${domain}/inboxes/${inbox}/messages/${messageId}`;
-
+		const endpoint = MAILINATOR_MESSAGE_URL(
+			Configuration.mailinator.baseUrl,
+			domain,
+			inbox,
+			messageId,
+		);
 		return this.fetchMailinator<EmailResponse>(endpoint);
 	}
 
@@ -65,13 +76,21 @@ export class MailinatorApi extends BaseApi {
 		inbox: string,
 		messageId: string,
 	): Promise<EmailLinksResponse> {
-		const endpoint = `${MAILINATOR_MESSAGES_ENDPOINT}/${domain}/inboxes/${inbox}/messages/${messageId}/links`;
-
+		const endpoint = MAILINATOR_MESSAGE_LINKS_URL(
+			Configuration.mailinator.baseUrl,
+			domain,
+			inbox,
+			messageId,
+		);
 		return this.fetchMailinator<EmailLinksResponse>(endpoint);
 	}
 
 	public async deleteInbox(domain: string, inbox: string): Promise<void> {
-		const endpoint = `${MAILINATOR_MESSAGES_ENDPOINT}/${domain}/inboxes/${inbox}`;
+		const endpoint = MAILINATOR_INBOX_URL(
+			Configuration.mailinator.baseUrl,
+			domain,
+			inbox,
+		);
 		await this.delete({ endpoint });
 	}
 
@@ -88,7 +107,7 @@ export class MailinatorApi extends BaseApi {
 			if (messages.length > 0) {
 				return messages;
 			}
-			await new Promise((resolve) => setTimeout(resolve, interval));
+			await hardWait(interval);
 		}
 
 		throw new Error(

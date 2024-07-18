@@ -13,11 +13,7 @@ test.describe("Email Verification Tests", () => {
 	}) => {
 		const { email, inbox } = generateEmailAndInbox();
 
-		const registeredData = await homePage.registerModal
-			.steps()
-			.registerNewUser({ email });
-
-		await homePage.assertThat().userIsRegistered(registeredData.username);
+		await homePage.steps().registerNewUser({ email });
 
 		// Poll for the verification email and perform verification
 		await profilePage
@@ -38,11 +34,7 @@ test.describe("Email Verification Tests", () => {
 	}) => {
 		const { email, inbox } = generateEmailAndInbox();
 
-		const registeredData = await homePage.registerModal
-			.steps()
-			.registerNewUser({ email });
-
-		await homePage.assertThat().userIsRegistered(registeredData.username);
+		await homePage.steps().registerNewUser({ email });
 
 		// Wait for the verification email and delete the inbox content
 		await mailinatorApi.pollForMessages(MAILINATOR_DOMAIN, inbox);

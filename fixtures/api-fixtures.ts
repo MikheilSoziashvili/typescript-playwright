@@ -8,7 +8,6 @@ export type Apis = {
 
 export const apisFixtures = base.extend<Apis>({
 	mailinatorApi: async ({}, use) => {
-		const api = new MailinatorApi(Configuration.mailinator);
-		await use(api);
+		await use(new MailinatorApi(Configuration.mailinator));
 	},
 });
