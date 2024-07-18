@@ -9,26 +9,16 @@ const AUTOMATION_AFFILIATES_CODE = generateRandomString({
 });
 
 test.describe("Create affiliate code", () => {
-	test.slow();
+	test.beforeEach(async ({ gamdomApiActions }) => {
+		const user_register_data = new RegisterTestData();
+		await gamdomApiActions.authenticateWithNewUser(user_register_data);
+	});
+
 	test("[ENG-1135] Create an affiliate code", async ({
-		homePage,
 		affiliatesPage,
 		toast,
 	}) => {
-		await homePage.navigateAndCheckTitle();
-		await homePage.unauthenticatedHeader.openRegisterModal();
-
-		const user_register_data = new RegisterTestData();
-		await homePage.registerModal.fillInCredentials(user_register_data, {
-			acceptTermsOfService: true,
-			acceptNewsOffers: true,
-		});
-		await homePage.registerModal.clickStartPlayingBtn();
-		await homePage
-			.assertThat()
-			.userIsRegistered(user_register_data.username);
 		await affiliatesPage.navigate();
-
 		await affiliatesPage.steps().addCode(AUTOMATION_AFFILIATES_CODE);
 		await toast.assertThat().titleIs(ToastTitle.SUCCESS, {
 			subTitle: buildCreateAffiliateCodeSubTitle(

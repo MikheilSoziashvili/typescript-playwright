@@ -1,10 +1,11 @@
+import { STAGING_BASE_URL } from "@constants/page-urls";
 import { TestUserConfigurationObject } from "@core/types/types";
 import { asString, getFilePath } from "@core/utils/utils";
 import "dotenv/config";
 
 export const environment_url = process.env.CI
 	? asString(process.env.ENVIRONMENT_URL)
-	: "https://staging-for-e2e-tests.teamgamdom.com";
+	: STAGING_BASE_URL;
 export const logLevel = "info";
 export const createExecution: boolean = process.env.CI ? true : false;
 export const slackReporter: boolean = process.env.CI ? true : false;
