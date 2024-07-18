@@ -3,6 +3,7 @@ import { logger } from "@logger/logger";
 import { ProfilePage } from "./profile-page";
 import { Page } from "@playwright/test";
 import { MailinatorApi } from "@api/mailinator-api";
+import { Timeout } from "@enums/timeout";
 
 export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 	public constructor(gamdomPage: ProfilePage) {
@@ -43,10 +44,19 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		domain: string,
 		inbox: string,
 		page: Page,
+		messageIndex = 1,
+		timeout = Timeout.LONG,
+		interval = Timeout.EXTRA_SHORT,
 	): Promise<void> {
-		// Poll for the new verification email
-		const messages = await mailinatorApi.pollForMessages(domain, inbox);
-		const verificationEmailId = messages[0].id;
+		// Poll for the verification email
+		const message = await mailinatorApi.pollForMessages(
+			domain,
+			inbox,
+			timeout,
+			interval,
+			messageIndex,
+		);
+		const verificationEmailId = message.id;
 
 		// Fetch the email links and navigate to the new verification link
 		const emailLinks = await mailinatorApi.getEmailLinks(

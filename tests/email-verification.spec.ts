@@ -5,7 +5,7 @@ import { test } from "fixtures/fixtures";
 test.describe("Email Verification Tests", () => {
 	test.use({ storageState: { cookies: [], origins: [] } });
 
-	test("[ENG-1133] E-mail verification - new account @smoke", async ({
+	test("[ENG-1133] E-mail verification - new account", async ({
 		homePage,
 		mailinatorApi,
 		page,
@@ -23,10 +23,11 @@ test.describe("Email Verification Tests", () => {
 				MAILINATOR_DOMAIN,
 				inbox,
 				page,
+				1,
 			);
 	});
 
-	test("[ENG-1121] E-mail verification @smoke", async ({
+	test("[ENG-1121] E-mail verification", async ({
 		homePage,
 		mailinatorApi,
 		page,
@@ -38,7 +39,7 @@ test.describe("Email Verification Tests", () => {
 
 		// Wait for the verification email and delete the inbox content
 		await mailinatorApi.pollForMessages(MAILINATOR_DOMAIN, inbox);
-		await mailinatorApi.deleteInbox(MAILINATOR_DOMAIN, inbox);
+		//await mailinatorApi.deleteInbox(MAILINATOR_DOMAIN, inbox);
 
 		// Complete verification flow and wait for the new verification email
 		await profilePage.navigate();
@@ -52,6 +53,7 @@ test.describe("Email Verification Tests", () => {
 				MAILINATOR_DOMAIN,
 				inbox,
 				page,
+				2,
 			);
 	});
 });

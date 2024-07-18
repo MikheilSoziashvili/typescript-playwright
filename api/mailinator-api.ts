@@ -1,6 +1,5 @@
 import { BaseApi } from "./base-api";
 import * as Configuration from "../configuration";
-import { hardWait } from "@core/utils/utils";
 import {
 	Message,
 	MessagesResponse,
@@ -13,6 +12,7 @@ import {
 	MAILINATOR_MESSAGE_LINKS_URL,
 } from "@constants/mailinator-endpoints";
 import { Timeout } from "@enums/timeout";
+import { hardWait } from "@core/utils/utils";
 
 export class MailinatorApi extends BaseApi {
 	constructor(
@@ -25,7 +25,7 @@ export class MailinatorApi extends BaseApi {
 		});
 	}
 
-	private async fetchMailinator<T>(endpoint: string): Promise<T> {
+	private async executeRequest<T>(endpoint: string): Promise<T> {
 		const response = await this.get({ endpoint });
 
 		if (!response.ok()) {
@@ -46,7 +46,7 @@ export class MailinatorApi extends BaseApi {
 			domain,
 			inbox,
 		);
-		const messagesResponse = await this.fetchMailinator<MessagesResponse>(
+		const messagesResponse = await this.executeRequest<MessagesResponse>(
 			endpoint,
 		);
 		return messagesResponse.msgs;
@@ -68,7 +68,7 @@ export class MailinatorApi extends BaseApi {
 			inbox,
 			messageId,
 		);
-		return this.fetchMailinator<EmailResponse>(endpoint);
+		return this.executeRequest<EmailResponse>(endpoint);
 	}
 
 	public async getEmailLinks(
@@ -82,7 +82,7 @@ export class MailinatorApi extends BaseApi {
 			inbox,
 			messageId,
 		);
-		return this.fetchMailinator<EmailLinksResponse>(endpoint);
+		return this.executeRequest<EmailLinksResponse>(endpoint);
 	}
 
 	public async deleteInbox(domain: string, inbox: string): Promise<void> {
@@ -99,13 +99,14 @@ export class MailinatorApi extends BaseApi {
 		inbox: string,
 		timeout = Timeout.LONG,
 		interval = Timeout.EXTRA_SHORT,
-	): Promise<Message[]> {
+		messageIndex = 1,
+	): Promise<Message> {
 		const start = Date.now();
 
 		while (Date.now() - start < timeout) {
 			const messages = await this.getMessages(domain, inbox);
-			if (messages.length > 0) {
-				return messages;
+			if (messages.length >= messageIndex) {
+				return messages[messageIndex - 1];
 			}
 			await hardWait(interval);
 		}
