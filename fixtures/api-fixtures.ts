@@ -1,18 +1,18 @@
 import { test as base } from "@playwright/test";
 
 import { MailinatorApi } from "@api/mailinator-api";
-import { GamdomApiActions } from "@api/gamdom-api-actions";
+import { GamdomApi } from "@api/gamdom-api";
 
 export type Apis = {
 	mailinatorApi: MailinatorApi;
-	gamdomApiActions: GamdomApiActions;
+	gamdomApi: GamdomApi;
 };
 
 export const apisFixtures = base.extend<Apis>({
 	mailinatorApi: async ({}, use) => {
 		await use(new MailinatorApi());
 	},
-	gamdomApiActions: async ({ page }, use) => {
-		await use(new GamdomApiActions(page));
+	gamdomApi: async ({}, use) => {
+		await use(new GamdomApi());
 	},
 });

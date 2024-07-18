@@ -171,3 +171,11 @@ export function conformLinkWithProtocol(
 	}
 	return conformedLink;
 }
+
+export function getCookieName(setCookie: string): string {
+	return setCookie.split("=")[0];
+}
+
+export function getCookieValue(setCookie: string): string {
+	return setCookie.split("=")[1].split(";")[0];
+}

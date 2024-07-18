@@ -10,9 +10,7 @@ let affiliateLink = "";
 test.describe("Register with affiliate link", () => {
 	test.slow();
 	test.beforeEach(async ({ gamdomApiActions, affiliatesPage }) => {
-		const user_register_data = new RegisterTestData();
-		await gamdomApiActions.authenticateWithNewUser(user_register_data);
-
+		await gamdomApiActions.authenticateWithNewUser(new RegisterTestData());
 		await affiliatesPage.navigate();
 		await affiliatesPage.steps().addCode(AUTOMATION_AFFILIATES_CODE);
 		affiliateLink = await affiliatesPage.getAffiliateLink();

@@ -1,7 +1,8 @@
-import { expect, Page } from "@playwright/test";
+import { APIResponse, expect, Page } from "@playwright/test";
 import { RegisterTestData } from "@dtos/test-data";
 import { GamdomApi } from "./gamdom-api";
-import { STAGING_BASE_URL } from "@constants/page-urls";
+import { environment_url } from "configuration";
+import { getCookieName, getCookieValue } from "@core/utils/utils";
 
 export class GamdomApiActions {
 	readonly page: Page;
@@ -13,13 +14,11 @@ export class GamdomApiActions {
 	}
 
 	private async setCookies(setCookie: string): Promise<void> {
-		const cookieName = setCookie.split("=")[0];
-		const cookieValue = setCookie.split("=")[1].split(";")[0];
-		const domain = STAGING_BASE_URL.split("://")[1];
+		const domain = environment_url.split("://")[1];
 		const cookie = [
 			{
-				name: cookieName,
-				value: cookieValue,
+				name: getCookieName(setCookie),
+				value: getCookieValue(setCookie),
 				domain: domain,
 				path: "/",
 				httpOnly: true,
@@ -30,20 +29,46 @@ export class GamdomApiActions {
 		await this.page.context().addCookies(cookie);
 	}
 
-	public async authenticateWithNewUser(
+	public async registerUser(
 		userData: RegisterTestData,
-	): Promise<void> {
+	): Promise<APIResponse> {
 		const registerResponse = await this.api.register(userData);
 		expect(registerResponse.status(), "Register failed").toBe(200);
 
-		const loginResponse = await this.api.login(
-			userData.username,
-			userData.password,
-		);
+		return registerResponse;
+	}
+
+	public async loginUser(
+		username: string,
+		password: string,
+	): Promise<APIResponse> {
+		const loginResponse = await this.api.login(username, password);
 		expect(
 			loginResponse.headers()["set-cookie"],
 			"No cookies received from login response",
 		).toBeTruthy();
+
+		return loginResponse;
+	}
+
+	public async authenticateWithNewUser(
+		userData: RegisterTestData,
+	): Promise<void> {
+		await this.registerUser(userData);
+		const loginResponse = await this.loginUser(
+			userData.username,
+			userData.password,
+		);
+
+		const setCookie = loginResponse.headers()["set-cookie"];
+		await this.setCookies(setCookie);
+	}
+
+	public async authenticateWithExistingUser(
+		username: string,
+		password: string,
+	): Promise<void> {
+		const loginResponse = await this.loginUser(username, password);
 
 		const setCookie = loginResponse.headers()["set-cookie"];
 		await this.setCookies(setCookie);
