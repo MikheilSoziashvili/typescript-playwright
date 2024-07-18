@@ -14,15 +14,13 @@ test.describe("Register with affiliate link", () => {
 		await affiliatesPage.navigate();
 		await affiliatesPage.steps().addCode(AUTOMATION_AFFILIATES_CODE);
 		affiliateLink = await affiliatesPage.getAffiliateLink();
-
-		await gamdomApiActions.clearCookies();
 	});
 
 	test("[ENG-1136] Register via affiliate link", async ({
 		homePage,
 		faqPage,
 	}) => {
-		await homePage.goToPage(affiliateLink);
+		await homePage.goToPage(affiliateLink, { clearCookies: true });
 
 		const affiliate_user_register_data = new RegisterTestData();
 		await homePage.registerModal.fillInCredentials(

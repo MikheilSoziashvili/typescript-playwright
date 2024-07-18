@@ -73,8 +73,4 @@ export class GamdomApiActions {
 		const setCookie = loginResponse.headers()["set-cookie"];
 		await this.setCookies(setCookie);
 	}
-
-	public async clearCookies(): Promise<void> {
-		await this.page.context().clearCookies();
-	}
 }
