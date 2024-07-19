@@ -51,19 +51,6 @@ export class GamdomApiActions {
 		return loginResponse;
 	}
 
-	public async authenticateWithNewUser(
-		userData: RegisterTestData,
-	): Promise<void> {
-		await this.registerUser(userData);
-		const loginResponse = await this.loginUser(
-			userData.username,
-			userData.password,
-		);
-
-		const setCookie = loginResponse.headers()["set-cookie"];
-		await this.setCookies(setCookie);
-	}
-
 	public async authenticateWithExistingUser(
 		username: string,
 		password: string,
@@ -72,5 +59,15 @@ export class GamdomApiActions {
 
 		const setCookie = loginResponse.headers()["set-cookie"];
 		await this.setCookies(setCookie);
+	}
+
+	public async authenticateWithNewUser(
+		userData: RegisterTestData,
+	): Promise<void> {
+		await this.registerUser(userData);
+		await this.authenticateWithExistingUser(
+			userData.username,
+			userData.password,
+		);
 	}
 }
