@@ -37,11 +37,6 @@ export const steam: Record<string, string> = {
 	password: asString(process.env.STEAM_PASSWORD),
 };
 
-export const cloudflare: Record<string, string> = {
-	"CF-Access-Client-Id": asString(process.env.CF_ACCESS_CLIENT_ID),
-	"CF-Access-Client-Secret": asString(process.env.CF_ACCESS_CLIENT_SECRET),
-};
-
 export const users: TestUserConfigurationObject[] = [
 	{
 		username: "superadmin",

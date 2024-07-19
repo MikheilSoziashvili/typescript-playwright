@@ -26,8 +26,6 @@ jobs:
     tests-run:
         uses: ./.github/workflows/playwright.yml
         secrets:
-            CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
-            CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
             JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
             JIRA_USERNAME: ${{ secrets.JIRA_USERNAME }}
             XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
