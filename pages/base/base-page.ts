@@ -16,7 +16,17 @@ export abstract class BasePage<T = BaseMap> {
 	abstract navigate(options?: { id?: string; param?: string }): void;
 	abstract assertThat(): void;
 
-	public async goToPage(link: string): Promise<void> {
+	public async clearCookies(): Promise<void> {
+		await this.page.context().clearCookies();
+	}
+
+	public async goToPage(
+		link: string,
+		cookies: { clearCookies: boolean },
+	): Promise<void> {
+		if (cookies.clearCookies === true) {
+			await this.clearCookies();
+		}
 		await this.page.goto(conformLinkWithProtocol(link, "https"));
 		await this.page.waitForLoadState();
 	}
