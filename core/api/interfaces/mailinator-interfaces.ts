@@ -18,3 +18,7 @@ export interface EmailResponse {
 	seconds_ago: number;
 	headers: Record<string, string>;
 }
+
+export interface EmailLinksResponse {
+	links: string[];
+}

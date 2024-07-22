@@ -22,6 +22,7 @@ export class ProfilePage extends BasePage<ProfilePageMap> {
 	public steps(): ProfilePageSteps {
 		return new ProfilePageSteps(this);
 	}
+
 	public get continueModal(): ContinueModal {
 		return new ContinueModal(this.page);
 	}

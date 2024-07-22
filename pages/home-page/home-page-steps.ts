@@ -2,6 +2,7 @@ import { BasePageStep } from "@pages/base/base-page-step";
 import { RegisterTestData } from "@dtos/test-data";
 import { HomePage } from "./home-page";
 import { HomePageBannerCarouselSlideTitle } from "@enums/homepage-banner-carousel-slide-title";
+import { RegisterTestDataParams } from "@core/interfaces";
 
 export class HomePageSteps extends BasePageStep<HomePage> {
 	public constructor(gamdomPage: HomePage) {
@@ -29,21 +30,22 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 	}
 
 	public async registerNewUser(
-		newUserRegisterData: RegisterTestData,
-	): Promise<void> {
+		params: RegisterTestDataParams = {},
+	): Promise<RegisterTestData> {
+		await this.gamdomPage.navigateAndCheckTitle();
 		await this.gamdomPage.unauthenticatedHeader.openRegisterModal();
 
-		await this.gamdomPage.registerModal.fillInCredentials(
-			newUserRegisterData,
-			{
-				acceptTermsOfService: true,
-				acceptNewsOffers: true,
-			},
-		);
+		const registeredData = new RegisterTestData(params);
+		await this.gamdomPage.registerModal.fillInCredentials(registeredData, {
+			acceptTermsOfService: true,
+			acceptNewsOffers: true,
+		});
 		await this.gamdomPage.registerModal.clickStartPlayingBtn();
 		await this.gamdomPage
 			.assertThat()
-			.userIsRegistered(newUserRegisterData.username);
+			.userIsRegistered(registeredData.username);
+
+		return registeredData;
 	}
 
 	public async goToCarouselSlide(
