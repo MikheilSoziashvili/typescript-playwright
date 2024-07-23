@@ -66,7 +66,6 @@ export default defineConfig({
 		navigationTimeout: 30 * 1000,
 		/* Base URL to use in actions like `await page.goto('/')`. */
 		baseURL: Configuration.environment_url,
-		extraHTTPHeaders: Configuration.cloudflare,
 		/* HTTP credentials for basic auth on dev servers */
 		// httpCredentials: {
 		// 	username: "trebleclef",
