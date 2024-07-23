@@ -24,4 +24,16 @@ export class ProfilePageMap extends BaseMap {
 	public get continueVerificationButton(): Locator {
 		return this.page.locator('button:has-text("Continue")');
 	}
+
+	public get changeEmailButton(): Locator {
+		return this.page.locator('(//button[text()="Change"])[2]');
+	}
+
+	public get changeEmailInput(): Locator {
+		return this.page.locator('input[name="email"]');
+	}
+
+	public get saveEmailButton(): Locator {
+		return this.page.locator('(//button[text()="Save"])[1]');
+	}
 }

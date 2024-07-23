@@ -37,12 +37,36 @@ test.describe("Email Verification Tests", () => {
 
 		await homePage.steps().registerNewUser({ email });
 
-		// Wait for the verification email and delete the inbox content
-		await mailinatorApi.pollForMessages(MAILINATOR_DOMAIN, inbox);
-		//await mailinatorApi.deleteInbox(MAILINATOR_DOMAIN, inbox);
-
 		// Complete verification flow and wait for the new verification email
 		await profilePage.navigate();
+		await profilePage.steps().completeVerificationFlow();
+
+		// Poll for the new verification email and perform verification
+		await profilePage
+			.steps()
+			.verifyEmailAndCheckProfile(
+				mailinatorApi,
+				MAILINATOR_DOMAIN,
+				inbox,
+				page,
+				2,
+			);
+	});
+
+	test("[ENG-1132] E-mail verification - changing e-mail", async ({
+		homePage,
+		mailinatorApi,
+		page,
+		profilePage,
+	}) => {
+		const { email, inbox } = generateEmailAndInbox();
+		const newEmail = generateEmailAndInbox();
+
+		await homePage.steps().registerNewUser({ email });
+
+		// Change the email, complete the verification flow and wait for the new verification email
+		await profilePage.navigate();
+		await profilePage.changeEmail(newEmail.email);
 		await profilePage.steps().completeVerificationFlow();
 
 		// Poll for the new verification email and perform verification

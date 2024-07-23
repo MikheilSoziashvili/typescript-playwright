@@ -7,7 +7,7 @@ export class ProfilePageAsserter extends BaseAsserter<ProfilePage> {
 		super(page);
 	}
 
-	public async assertButtonNotVisible(): Promise<void> {
+	public async assertVerifyButtonNotVisible(): Promise<void> {
 		await expect(this.gamdomPage.map.verifyButton).toBeHidden();
 	}
 }
