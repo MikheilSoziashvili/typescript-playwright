@@ -44,7 +44,7 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		domain: string,
 		inbox: string,
 		page: Page,
-		{ messageIndex }: { messageIndex: number },
+		{ messageIndex = 1 }: { messageIndex?: number } = {},
 		timeout = Timeout.LONG,
 		interval = Timeout.EXTRA_SHORT,
 	): Promise<void> {

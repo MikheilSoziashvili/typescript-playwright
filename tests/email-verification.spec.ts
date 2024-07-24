@@ -15,10 +15,8 @@ test.describe("Email Verification Tests", () => {
 		const { email, inbox } = generateEmailAndInbox();
 		const userData = new RegisterTestData({ email });
 
-		// Register and authenticate the user via the API
 		await gamdomApiActions.authenticateWithNewUser(userData);
 
-		// Poll for the verification email and perform verification
 		await profilePage
 			.steps()
 			.verifyEmailAndCheckProfile(
@@ -26,7 +24,6 @@ test.describe("Email Verification Tests", () => {
 				MAILINATOR_DOMAIN,
 				inbox,
 				page,
-				{ messageIndex: 1 },
 			);
 	});
 
@@ -39,14 +36,11 @@ test.describe("Email Verification Tests", () => {
 		const { email, inbox } = generateEmailAndInbox();
 		const userData = new RegisterTestData({ email });
 
-		// Register and authenticate the user via the API
 		await gamdomApiActions.authenticateWithNewUser(userData);
 
-		// Complete verification flow and wait for the new verification email
 		await profilePage.navigate();
 		await profilePage.steps().completeVerificationFlow();
 
-		// Poll for the new verification email and perform verification
 		await profilePage
 			.steps()
 			.verifyEmailAndCheckProfile(
@@ -68,14 +62,11 @@ test.describe("Email Verification Tests", () => {
 		const newEmailData = generateEmailAndInbox();
 		const userData = new RegisterTestData({ email });
 
-		// Register and authenticate the user via the API
 		await gamdomApiActions.authenticateWithNewUser(userData);
 
-		// Login with the user and change the email
 		await profilePage.navigate();
 		await profilePage.steps().changeEmail(newEmailData.email);
 
-		// Poll for the new verification email and perform verification
 		await profilePage
 			.steps()
 			.verifyEmailAndCheckProfile(
@@ -83,7 +74,6 @@ test.describe("Email Verification Tests", () => {
 				MAILINATOR_DOMAIN,
 				newEmailData.inbox,
 				page,
-				{ messageIndex: 1 },
 			);
 	});
 });
