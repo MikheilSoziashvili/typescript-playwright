@@ -1,4 +1,4 @@
-import { Page, expect } from "@playwright/test";
+import { Page } from "@playwright/test";
 import { BasePage } from "@base/base-page";
 import { ProfilePageMap } from "./profile-page-map";
 import { ProfilePageAsserter } from "./profile-page-asserter";
@@ -31,14 +31,5 @@ export class ProfilePage extends BasePage<ProfilePageMap> {
 		await this.map.logOutButton.click();
 		await this.continueModal.assertThat().isDisplayed();
 		await this.continueModal.clickContinueButton();
-	}
-
-	public async changeEmail(email: string): Promise<void> {
-		await this.map.changeEmailButton.click();
-		await this.map.changeEmailInput.fill(email);
-		await this.map.saveEmailButton.click();
-		await this.continueModal.assertThat().isDisplayed();
-		await this.continueModal.clickContinueButton();
-		await expect(this.map.changeEmailButton).toBeVisible();
 	}
 }

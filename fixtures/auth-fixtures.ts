@@ -18,7 +18,6 @@ import {
 	SUPER_ADMIN_CREDENTIALS,
 	USER_1_CREDENTIALS,
 } from "@constants/credentials";
-import * as Configuration from "configuration";
 import { GamdomPages } from "./gamdom-pages";
 
 function authPage(browser: Browser): Promise<Page> {

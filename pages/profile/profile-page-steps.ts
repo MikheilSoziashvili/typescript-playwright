@@ -44,7 +44,7 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		domain: string,
 		inbox: string,
 		page: Page,
-		messageIndex = 1,
+		{ messageIndex }: { messageIndex: number },
 		timeout = Timeout.LONG,
 		interval = Timeout.EXTRA_SHORT,
 	): Promise<void> {
@@ -71,5 +71,14 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		// Assert account is already verified
 		await this.gamdomPage.navigate();
 		await this.gamdomPage.assertThat().assertVerifyButtonNotVisible();
+	}
+
+	public async changeEmail(email: string): Promise<void> {
+		await this.gamdomPage.map.changeEmailButton.click();
+		await this.gamdomPage.map.changeEmailInput.fill(email);
+		await this.gamdomPage.map.saveEmailButton.click();
+		await this.gamdomPage.continueModal.assertThat().isDisplayed();
+		await this.gamdomPage.continueModal.clickContinueButton();
+		await this.gamdomPage.assertThat().assertChangeEmailButtonVisible();
 	}
 }

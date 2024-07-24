@@ -6,14 +6,15 @@ test.describe("Email Verification Tests", () => {
 	test.use({ storageState: { cookies: [], origins: [] } });
 
 	test("[ENG-1133] E-mail verification - new account", async ({
-		homePage,
 		mailinatorApi,
 		page,
 		profilePage,
+		gamdomApiActions,
 	}) => {
 		const { email, inbox } = generateEmailAndInbox();
 
-		await homePage.steps().registerNewUser({ email });
+		// Register the user via the API
+		await gamdomApiActions.registerUser({ email });
 
 		// Poll for the verification email and perform verification
 		await profilePage
@@ -23,19 +24,26 @@ test.describe("Email Verification Tests", () => {
 				MAILINATOR_DOMAIN,
 				inbox,
 				page,
-				1,
+				{ messageIndex: 1 },
 			);
 	});
 
 	test("[ENG-1121] E-mail verification", async ({
-		homePage,
 		mailinatorApi,
 		page,
 		profilePage,
+		gamdomApiActions,
 	}) => {
 		const { email, inbox } = generateEmailAndInbox();
 
-		await homePage.steps().registerNewUser({ email });
+		// Register the user via the API
+		const userData = await gamdomApiActions.registerUser({ email });
+
+		// Login with the registered user
+		await gamdomApiActions.authenticateWithExistingUser(
+			userData.username,
+			userData.password,
+		);
 
 		// Complete verification flow and wait for the new verification email
 		await profilePage.navigate();
@@ -49,25 +57,29 @@ test.describe("Email Verification Tests", () => {
 				MAILINATOR_DOMAIN,
 				inbox,
 				page,
-				2,
+				{ messageIndex: 2 },
 			);
 	});
 
 	test("[ENG-1132] E-mail verification - changing e-mail", async ({
-		homePage,
 		mailinatorApi,
 		page,
 		profilePage,
+		gamdomApiActions,
 	}) => {
-		const { email, inbox } = generateEmailAndInbox();
-		const newEmail = generateEmailAndInbox();
+		const { email } = generateEmailAndInbox();
+		const newEmailData = generateEmailAndInbox();
 
-		await homePage.steps().registerNewUser({ email });
+		// Register the user via the API
+		const userData = await gamdomApiActions.registerUser({ email });
 
-		// Change the email, complete the verification flow and wait for the new verification email
+		// Login with the user and change the email
+		await gamdomApiActions.authenticateWithExistingUser(
+			userData.username,
+			userData.password,
+		);
 		await profilePage.navigate();
-		await profilePage.changeEmail(newEmail.email);
-		await profilePage.steps().completeVerificationFlow();
+		await profilePage.steps().changeEmail(newEmailData.email);
 
 		// Poll for the new verification email and perform verification
 		await profilePage
@@ -75,9 +87,9 @@ test.describe("Email Verification Tests", () => {
 			.verifyEmailAndCheckProfile(
 				mailinatorApi,
 				MAILINATOR_DOMAIN,
-				inbox,
+				newEmailData.inbox,
 				page,
-				2,
+				{ messageIndex: 1 },
 			);
 	});
 });
