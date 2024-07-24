@@ -3,7 +3,6 @@ import { RegisterTestData } from "@dtos/test-data";
 import { GamdomApi } from "./gamdom-api";
 import { environment_url } from "configuration";
 import { getCookieName, getCookieValue } from "@core/utils/utils";
-import { RegisterTestDataParams } from "@core/interfaces";
 
 export class GamdomApiActions {
 	readonly page: Page;
@@ -30,17 +29,16 @@ export class GamdomApiActions {
 		await this.page.context().addCookies(cookie);
 	}
 
-	public async registerUser(
-		params: RegisterTestDataParams = {},
-	): Promise<RegisterTestData> {
-		const userData = new RegisterTestData(params);
+	private async registerUser(
+		userData: RegisterTestData,
+	): Promise<APIResponse> {
 		const registerResponse = await this.api.register(userData);
 		expect(registerResponse.status(), "Register failed").toBe(200);
 
-		return userData;
+		return registerResponse;
 	}
 
-	public async loginUser(
+	private async loginUser(
 		username: string,
 		password: string,
 	): Promise<APIResponse> {
@@ -64,9 +62,9 @@ export class GamdomApiActions {
 	}
 
 	public async authenticateWithNewUser(
-		params: RegisterTestDataParams = {},
+		userData: RegisterTestData,
 	): Promise<void> {
-		const userData = await this.registerUser(params);
+		await this.registerUser(userData);
 		await this.authenticateWithExistingUser(
 			userData.username,
 			userData.password,

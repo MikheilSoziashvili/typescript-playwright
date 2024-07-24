@@ -1,6 +1,7 @@
 import { MAILINATOR_DOMAIN } from "@constants/domains";
 import { generateEmailAndInbox } from "@core/utils/utils";
 import { test } from "fixtures/fixtures";
+import { RegisterTestData } from "@dtos/test-data";
 
 test.describe("Email Verification Tests", () => {
 	test.use({ storageState: { cookies: [], origins: [] } });
@@ -12,9 +13,10 @@ test.describe("Email Verification Tests", () => {
 		gamdomApiActions,
 	}) => {
 		const { email, inbox } = generateEmailAndInbox();
+		const userData = new RegisterTestData({ email });
 
-		// Register the user via the API
-		await gamdomApiActions.registerUser({ email });
+		// Register and authenticate the user via the API
+		await gamdomApiActions.authenticateWithNewUser(userData);
 
 		// Poll for the verification email and perform verification
 		await profilePage
@@ -35,15 +37,10 @@ test.describe("Email Verification Tests", () => {
 		gamdomApiActions,
 	}) => {
 		const { email, inbox } = generateEmailAndInbox();
+		const userData = new RegisterTestData({ email });
 
-		// Register the user via the API
-		const userData = await gamdomApiActions.registerUser({ email });
-
-		// Login with the registered user
-		await gamdomApiActions.authenticateWithExistingUser(
-			userData.username,
-			userData.password,
-		);
+		// Register and authenticate the user via the API
+		await gamdomApiActions.authenticateWithNewUser(userData);
 
 		// Complete verification flow and wait for the new verification email
 		await profilePage.navigate();
@@ -69,15 +66,12 @@ test.describe("Email Verification Tests", () => {
 	}) => {
 		const { email } = generateEmailAndInbox();
 		const newEmailData = generateEmailAndInbox();
+		const userData = new RegisterTestData({ email });
 
-		// Register the user via the API
-		const userData = await gamdomApiActions.registerUser({ email });
+		// Register and authenticate the user via the API
+		await gamdomApiActions.authenticateWithNewUser(userData);
 
 		// Login with the user and change the email
-		await gamdomApiActions.authenticateWithExistingUser(
-			userData.username,
-			userData.password,
-		);
 		await profilePage.navigate();
 		await profilePage.steps().changeEmail(newEmailData.email);
 
