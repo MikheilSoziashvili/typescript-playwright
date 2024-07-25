@@ -12,6 +12,7 @@ import { pageUrl } from "@support/regex-patterns";
 import fs from "fs";
 import xml2js from "xml2js";
 import { MAILINATOR_DOMAIN } from "@constants/domains";
+import { Protocol } from "@enums/api/protocols";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -163,7 +164,7 @@ export function buildAmountWithCurrency(
 
 export function conformLinkWithProtocol(
 	link: string,
-	protocol: "http" | "https", // TODO Change to enum when api refactor is done
+	protocol: Protocol,
 ): string {
 	let conformedLink = link;
 	const urlPattern = pageUrl;
@@ -181,6 +182,21 @@ export function generateEmailAndInbox(): { email: string; inbox: string } {
 	const inbox = email.split("@")[0];
 
 	return { email, inbox };
+}
+
+export function buildEndpoint(parameters: {
+	path: string;
+	id?: string;
+	param?: string;
+}): string {
+	let endpoint = parameters.path;
+	if (parameters.id) {
+		endpoint = `${endpoint}/${parameters.id}`;
+	}
+	if (parameters.param) {
+		endpoint = `${endpoint}=${parameters.param}`;
+	}
+	return endpoint;
 }
 
 export function getCookieName(setCookie: string): string {

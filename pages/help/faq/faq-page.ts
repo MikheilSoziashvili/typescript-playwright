@@ -4,14 +4,20 @@ import { BasePage } from "@base/base-page";
 import { FaqPageAsserter } from "./faq-page-asserter";
 import { logger } from "@logger/logger";
 import { FAQ_PAGE_ENDPOINT } from "@constants/page-endpoints";
+import { BasePageNavigationParametersType } from "@core/types/types";
 
 export class FaqPage extends BasePage<FaqPageMap> {
 	public constructor(page: Page) {
 		super(page, new FaqPageMap(page));
 	}
 
-	public override async navigate(): Promise<void> {
-		await this.page.goto(FAQ_PAGE_ENDPOINT);
+	public override async navigate(
+		parameters?: BasePageNavigationParametersType,
+	): Promise<void> {
+		await super.navigate({
+			...parameters,
+			endpoint: { path: FAQ_PAGE_ENDPOINT },
+		});
 	}
 
 	public override assertThat(): FaqPageAsserter {

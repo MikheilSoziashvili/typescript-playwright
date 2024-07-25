@@ -38,3 +38,9 @@ export type ProxyCredentialsType = {
 export type PayloadType =
 	| Record<string, string | number | boolean | object>
 	| string;
+
+export type BasePageNavigationParametersType = {
+	endpoint?: { path: string; id?: string; param?: string };
+	link?: string;
+	cookies?: { clearCookies: boolean };
+};

@@ -8,14 +8,20 @@ import { BasePage } from "@base/base-page";
 import { RouletteGamePageSteps } from "./roulette-game-page-steps";
 import { logger } from "@logger/logger";
 import { GreenHuntTypeOption } from "@enums/roulette-autobet-section";
+import { BasePageNavigationParametersType } from "@core/types/types";
 
 export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 	public constructor(page: Page) {
 		super(page, new RouletteGamePageMap(page));
 	}
 
-	public override async navigate(): Promise<void> {
-		await this.page.goto(ROULETTE_GAME_PAGE_ENDPOINT);
+	public override async navigate(
+		parameters?: BasePageNavigationParametersType,
+	): Promise<void> {
+		await super.navigate({
+			...parameters,
+			endpoint: { path: ROULETTE_GAME_PAGE_ENDPOINT },
+		});
 		await this.map.waitForVisibility({
 			locator: this.map.gameContainer,
 		});

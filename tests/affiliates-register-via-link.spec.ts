@@ -20,7 +20,10 @@ test.describe("Register with affiliate link", () => {
 		homePage,
 		faqPage,
 	}) => {
-		await homePage.goToPage(affiliateLink, { clearCookies: true });
+		await homePage.navigate({
+			link: affiliateLink,
+			cookies: { clearCookies: true },
+		});
 
 		const affiliate_user_register_data = new RegisterTestData();
 		await homePage.registerModal.fillInCredentials(

@@ -7,10 +7,6 @@ export class SteamBlockedPage extends BasePage<SteamBlockedPageMap> {
 	public constructor(page: Page) {
 		super(page, new SteamBlockedPageMap(page));
 	}
-	public override async navigate(): Promise<void> {
-		throw new Error("Method not implemented.");
-	}
-
 	public override assertThat(): SteamBlockedPageAsserter {
 		return new SteamBlockedPageAsserter(this);
 	}

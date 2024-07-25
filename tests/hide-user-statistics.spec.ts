@@ -11,28 +11,41 @@ const messageInfo: ChatMessageOptions = {
 };
 
 test.describe("User statistics tests", () => {
-	test.beforeEach(async ({ homePage, chat, profilePage }) => {
-		await homePage.navigateAndCheckTitle();
-		await homePage.steps().loginUsername(USER_2_CREDENTIALS.username);
-		await homePage.authenticatedHeader.clickUserProfileButton();
-
-		await profilePage.steps().toggleUserStatisticsMode("on");
-		await chat.steps().sendMessage(message);
-		// need to send second message as a workaround until bug DEV-1919 is fixed by dev team
-		await chat
-			.steps()
-			.sendMessage(generateRandomString({ prefix: "automation_msg_2" }));
-		await profilePage.logout();
-	});
+	test.beforeEach(
+		async ({ gamdomApiActions, homePage, chat, profilePage }) => {
+			await gamdomApiActions.authenticateWithExistingUser(
+				USER_2_CREDENTIALS.username,
+				USER_2_CREDENTIALS.password,
+			);
+			await profilePage.navigate();
+			await profilePage.steps().toggleUserStatisticsMode("on");
+			await homePage.navigate();
+			await homePage.authenticatedHeader.expandChatIfNotVisible();
+			await chat.steps().sendMessage(message);
+			// need to send second message as a workaround until bug DEV-1919 is fixed by dev team
+			await chat
+				.steps()
+				.sendMessage(
+					generateRandomString({ prefix: "automation_msg_2" }),
+				);
+			await homePage.navigate({ cookies: { clearCookies: true } });
+		},
+	);
 
 	test("[ENG-300] Hide statistics from other users", async ({
+		gamdomApiActions,
 		homePage,
 		chat,
 		userProfileModal,
 	}) => {
 		test.slow();
-		await homePage.navigateAndCheckTitle();
-		await homePage.steps().loginUsername(USER_1_CREDENTIALS.username);
+		await gamdomApiActions.authenticateWithExistingUser(
+			USER_1_CREDENTIALS.username,
+			USER_1_CREDENTIALS.password,
+		);
+		await homePage.navigate();
+		await homePage.authenticatedHeader.expandChatIfNotVisible();
+
 		await chat.assertThat().isDisplayed();
 		await chat
 			.assertThat()
@@ -43,13 +56,13 @@ test.describe("User statistics tests", () => {
 		await userProfileModal.assertThat().isPrivateUserModeDisplayed();
 	});
 
-	test.afterEach(async ({ homePage, profilePage }) => {
+	test.afterEach(async ({ gamdomApiActions, homePage, profilePage }) => {
+		await homePage.navigate({ cookies: { clearCookies: true } });
+		await gamdomApiActions.authenticateWithExistingUser(
+			USER_2_CREDENTIALS.username,
+			USER_2_CREDENTIALS.password,
+		);
 		await profilePage.navigate();
-		await profilePage.logout();
-
-		await homePage.steps().loginUsername(USER_2_CREDENTIALS.username);
-		await homePage.authenticatedHeader.clickUserProfileButton();
-
 		await profilePage.steps().toggleUserStatisticsMode("off");
 	});
 });

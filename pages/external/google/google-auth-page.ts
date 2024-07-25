@@ -3,13 +3,19 @@ import { BasePage } from "@base/base-page";
 import { GooglePageMap } from "./google-page-map";
 import { GoogleAuthPageAsserter } from "./google-auth-asserter";
 import { GOOGLE_AUTH_CREDENTIALS } from "@constants/credentials";
+import { BasePageNavigationParametersType } from "@core/types/types";
 
 export class GoogleAuthPage extends BasePage<GooglePageMap> {
 	public constructor(page: Page) {
 		super(page, new GooglePageMap(page));
 	}
-	public override async navigate(): Promise<void> {
-		await this.page.goto("/");
+	public override async navigate(
+		parameters?: BasePageNavigationParametersType,
+	): Promise<void> {
+		await super.navigate({
+			...parameters,
+			endpoint: { path: "/" },
+		});
 	}
 
 	public override assertThat(): GoogleAuthPageAsserter {

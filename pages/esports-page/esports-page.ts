@@ -3,14 +3,19 @@ import { BasePage } from "@base/base-page";
 import { EsportsPageMap } from "./esports-page-map";
 import { ESPORTS_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { EsportsPageAsserter } from "./esports-page-asserter";
+import { BasePageNavigationParametersType } from "@core/types/types";
 
 export class EsportsPage extends BasePage<EsportsPageMap> {
 	public constructor(page: Page) {
 		super(page, new EsportsPageMap(page));
 	}
-
-	public override async navigate(): Promise<void> {
-		await this.page.goto(ESPORTS_PAGE_ENDPOINT);
+	public override async navigate(
+		parameters?: BasePageNavigationParametersType,
+	): Promise<void> {
+		await super.navigate({
+			...parameters,
+			endpoint: { path: ESPORTS_PAGE_ENDPOINT },
+		});
 	}
 
 	public override assertThat(): EsportsPageAsserter {

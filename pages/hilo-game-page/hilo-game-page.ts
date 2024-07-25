@@ -7,14 +7,20 @@ import { HiloBetMultiplierByBetOption } from "@enums/original-games";
 import { HiloBetOption } from "@enums/hilo-bet-options";
 import { HiloGamePageSteps } from "./hilo-game-page-steps";
 import { VisibilityState } from "@enums/playwright/visibility-states";
+import { BasePageNavigationParametersType } from "@core/types/types";
 
 export class HiloGamePage extends BasePage<HiloGamePageMap> {
 	public constructor(page: Page) {
 		super(page, new HiloGamePageMap(page));
 	}
 
-	public override async navigate(): Promise<void> {
-		await this.page.goto(HILO_GAME_PAGE_ENDPOINT);
+	public override async navigate(
+		parameters?: BasePageNavigationParametersType,
+	): Promise<void> {
+		await super.navigate({
+			...parameters,
+			endpoint: { path: HILO_GAME_PAGE_ENDPOINT },
+		});
 		await this.map.waitForVisibility({
 			locator: this.map.gameArea,
 		});

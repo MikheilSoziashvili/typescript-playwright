@@ -6,14 +6,20 @@ import { CrashGamePageSteps } from "./crash-game-page-steps";
 import { logger } from "@logger/logger";
 import { parseMultiplier } from "@core/utils/utils";
 import { CRASH_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
+import { BasePageNavigationParametersType } from "@core/types/types";
 
 export class CrashGamePage extends BasePage<CrashGamePageMap> {
 	public constructor(page: Page) {
 		super(page, new CrashGamePageMap(page));
 	}
 
-	public override async navigate(): Promise<void> {
-		await this.page.goto(CRASH_GAME_PAGE_ENDPOINT);
+	public override async navigate(
+		parameters?: BasePageNavigationParametersType,
+	): Promise<void> {
+		await super.navigate({
+			...parameters,
+			endpoint: { path: CRASH_GAME_PAGE_ENDPOINT },
+		});
 		await this.map.waitForVisibility({
 			locator: this.map.gameContainer,
 		});

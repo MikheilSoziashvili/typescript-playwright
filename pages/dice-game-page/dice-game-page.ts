@@ -5,14 +5,20 @@ import { DiceGamePageAsserter } from "./dice-game-page-asserter";
 import { DiceGamePageSteps } from "./dice-game-page-steps";
 import { DICE_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { DiceAutobetTestData } from "@dtos/test-data";
+import { BasePageNavigationParametersType } from "@core/types/types";
 
 export class DiceGamePage extends BasePage<DiceGamePageMap> {
 	public constructor(page: Page) {
 		super(page, new DiceGamePageMap(page));
 	}
 
-	public override async navigate(): Promise<void> {
-		await this.page.goto(DICE_GAME_PAGE_ENDPOINT);
+	public override async navigate(
+		parameters?: BasePageNavigationParametersType,
+	): Promise<void> {
+		await super.navigate({
+			...parameters,
+			endpoint: { path: DICE_GAME_PAGE_ENDPOINT },
+		});
 	}
 
 	public override assertThat(): DiceGamePageAsserter {

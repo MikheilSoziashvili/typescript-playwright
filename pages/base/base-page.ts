@@ -2,7 +2,9 @@ import { Page } from "@playwright/test";
 import { BaseMap } from "./base-map";
 import { AuthenticatedHeader } from "@components/header/authenticated/authenticated-header";
 import { UnauthenticatedHeader } from "@components/header/unauthenticated/unauthenticated-header";
-import { conformLinkWithProtocol } from "@core/utils/utils";
+import { buildEndpoint, conformLinkWithProtocol } from "@core/utils/utils";
+import { BasePageNavigationParametersType } from "@core/types/types";
+import { Protocol } from "@enums/api/protocols";
 
 export abstract class BasePage<T = BaseMap> {
 	readonly page: Page;
@@ -13,21 +15,26 @@ export abstract class BasePage<T = BaseMap> {
 		this.map = map;
 	}
 
-	abstract navigate(options?: { id?: string; param?: string }): void;
 	abstract assertThat(): void;
 
 	public async clearCookies(): Promise<void> {
 		await this.page.context().clearCookies();
 	}
 
-	public async goToPage(
-		link: string,
-		cookies: { clearCookies: boolean },
+	public async navigate(
+		parameters: BasePageNavigationParametersType,
 	): Promise<void> {
-		if (cookies.clearCookies === true) {
+		if (parameters.cookies?.clearCookies === true) {
 			await this.clearCookies();
 		}
-		await this.page.goto(conformLinkWithProtocol(link, "https"));
+		if (parameters.endpoint) {
+			await this.page.goto(buildEndpoint(parameters.endpoint));
+		}
+		if (parameters.link) {
+			await this.page.goto(
+				conformLinkWithProtocol(parameters.link, Protocol.HTTPS),
+			);
+		}
 		await this.page.waitForLoadState();
 	}
 

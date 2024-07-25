@@ -5,14 +5,20 @@ import { ProfilePageAsserter } from "./profile-page-asserter";
 import { ContinueModal } from "@modals/continue-modal/continue-modal";
 import { PROFILE_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { ProfilePageSteps } from "./profile-page-steps";
+import { BasePageNavigationParametersType } from "@core/types/types";
 
 export class ProfilePage extends BasePage<ProfilePageMap> {
 	public constructor(page: Page) {
 		super(page, new ProfilePageMap(page));
 	}
 
-	public override async navigate(): Promise<void> {
-		await this.page.goto(PROFILE_PAGE_ENDPOINT);
+	public override async navigate(
+		parameters?: BasePageNavigationParametersType,
+	): Promise<void> {
+		await super.navigate({
+			...parameters,
+			endpoint: { path: PROFILE_PAGE_ENDPOINT },
+		});
 	}
 
 	public override assertThat(): ProfilePageAsserter {

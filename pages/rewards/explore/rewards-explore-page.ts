@@ -3,14 +3,20 @@ import { BasePage } from "@base/base-page";
 import { RewardsExplorePageMap } from "./rewards-explore-page-map";
 import { REWARDS_EXPLORE_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { RewardsExplorePageAsserter } from "./rewards-explore-page-asserter";
+import { BasePageNavigationParametersType } from "@core/types/types";
 
 export class RewardsExplorePage extends BasePage<RewardsExplorePageMap> {
 	public constructor(page: Page) {
 		super(page, new RewardsExplorePageMap(page));
 	}
 
-	public override async navigate(): Promise<void> {
-		await this.page.goto(REWARDS_EXPLORE_PAGE_ENDPOINT);
+	public override async navigate(
+		parameters?: BasePageNavigationParametersType,
+	): Promise<void> {
+		await super.navigate({
+			...parameters,
+			endpoint: { path: REWARDS_EXPLORE_PAGE_ENDPOINT },
+		});
 	}
 
 	public override assertThat(): RewardsExplorePageAsserter {

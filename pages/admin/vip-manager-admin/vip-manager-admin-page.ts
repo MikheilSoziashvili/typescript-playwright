@@ -4,14 +4,20 @@ import { VIP_MANAGER_ADMIN_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { VipManagerAdminPageMap } from "./vip-manager-admin-page-map";
 import { VipManagerAdminPageAsserter } from "./vip-manager-admin-page-asserter";
 import { VipManagerAdminPageSteps } from "./vip-manager-admin-page-steps";
+import { BasePageNavigationParametersType } from "@core/types/types";
 
 export class VipManagerAdminPage extends BasePage<VipManagerAdminPageMap> {
 	public constructor(page: Page) {
 		super(page, new VipManagerAdminPageMap(page));
 	}
 
-	public override async navigate(): Promise<void> {
-		await this.page.goto(VIP_MANAGER_ADMIN_PAGE_ENDPOINT);
+	public override async navigate(
+		parameters?: BasePageNavigationParametersType,
+	): Promise<void> {
+		await super.navigate({
+			...parameters,
+			endpoint: { path: VIP_MANAGER_ADMIN_PAGE_ENDPOINT },
+		});
 	}
 
 	public override assertThat(): VipManagerAdminPageAsserter {

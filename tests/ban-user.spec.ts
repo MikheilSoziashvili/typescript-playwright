@@ -17,11 +17,14 @@ test.describe("Ban user", () => {
 		homePage,
 		userInfoAdminPage,
 		infoAdminPage,
-		profilePage,
 		bannedUserPage,
+		gamdomApiActions,
 	}) => {
-		await homePage.navigateAndCheckTitle();
-		await homePage.steps().loginUsername(SUPER_ADMIN_CREDENTIALS.username);
+		await gamdomApiActions.authenticateWithExistingUser(
+			SUPER_ADMIN_CREDENTIALS.username,
+			SUPER_ADMIN_CREDENTIALS.password,
+		);
+
 		await userInfoAdminPage.navigate();
 		await userInfoAdminPage
 			.steps()
@@ -29,10 +32,7 @@ test.describe("Ban user", () => {
 
 		await infoAdminPage.steps().banUser({ reason: BAN_REASON });
 
-		await profilePage.navigate();
-		await profilePage.logout();
-
-		await homePage.navigateAndCheckTitle();
+		await homePage.navigate({ cookies: { clearCookies: true } });
 		await homePage
 			.steps()
 			.loginUser(

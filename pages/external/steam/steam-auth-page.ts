@@ -4,13 +4,19 @@ import { BasePage } from "@pages/base/base-page";
 import { SteamAuthPageAsserter } from "./steam-auth-page-asserter";
 import * as Configuration from "configuration";
 import { STEAM_LOGIN_URL } from "@constants/page-urls";
+import { BasePageNavigationParametersType } from "@core/types/types";
 
 export class SteamAuthPage extends BasePage<SteamAuthPageMap> {
 	public constructor(page: Page) {
 		super(page, new SteamAuthPageMap(page));
 	}
-	public override async navigate(): Promise<void> {
-		await this.page.goto(STEAM_LOGIN_URL);
+	public override async navigate(
+		parameters?: BasePageNavigationParametersType,
+	): Promise<void> {
+		await super.navigate({
+			...parameters,
+			endpoint: { path: STEAM_LOGIN_URL },
+		});
 	}
 
 	public override assertThat(): SteamAuthPageAsserter {

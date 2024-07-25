@@ -10,15 +10,20 @@ import { HomePageBannerCarouselSlideTitle } from "@enums/homepage-banner-carouse
 import { Timeout } from "@enums/timeout";
 import { hardWait } from "@core/utils/utils";
 import { VisibilityState } from "@enums/playwright/visibility-states";
+import { BasePageNavigationParametersType } from "@core/types/types";
 
 export class HomePage extends BasePage<HomePageMap> {
 	public constructor(page: Page) {
 		super(page, new HomePageMap(page));
 	}
 
-	public override async navigate(): Promise<void> {
-		await this.page.goto(HOME_PAGE_ENDPOINT);
-		await this.page.waitForLoadState();
+	public override async navigate(
+		parameters?: BasePageNavigationParametersType,
+	): Promise<void> {
+		await super.navigate({
+			...parameters,
+			endpoint: { path: HOME_PAGE_ENDPOINT },
+		});
 	}
 
 	// use this method for proxy servers where retries are needed

@@ -18,9 +18,12 @@ test.describe("Tip user tests", () => {
 	let user1AccountBalance: number;
 	const tipValue = 10;
 
-	test.beforeEach(async ({ homePage, chat, profilePage }) => {
-		await homePage.navigateAndCheckTitle();
-		await homePage.steps().loginUsername(USER_1_CREDENTIALS.username);
+	test.beforeEach(async ({ gamdomApiActions, homePage, chat }) => {
+		await gamdomApiActions.authenticateWithExistingUser(
+			USER_1_CREDENTIALS.username,
+			USER_1_CREDENTIALS.password,
+		);
+		await homePage.navigate();
 		await homePage.authenticatedHeader.expandChatIfNotVisible();
 
 		await chat.steps().sendMessage(message_1);
@@ -31,26 +34,27 @@ test.describe("Tip user tests", () => {
 		await chat.steps().sendMessage(message_2);
 		user1AccountBalance =
 			await homePage.authenticatedHeader.getAccountBalance();
-		await profilePage.navigate();
-		await profilePage.logout();
 	});
 
 	test("[ENG-290] 'Tip User' from the chat @smoke", async ({
 		homePage,
+		gamdomApiActions,
 		chat,
 		tipUserModal,
 		toast,
-		profilePage,
 	}) => {
 		test.slow();
-		await homePage.navigateAndCheckTitle();
+		await homePage.navigate({ cookies: { clearCookies: true } });
 		await homePage.authenticatedHeader.expandChatIfNotVisible();
 		await chat.assertThat().isDisplayed();
 		await chat
 			.assertThat()
 			.isPlaceholderVisible(ChatFooterPlaceholder.LOGIN_TO_CHAT);
-
-		await homePage.steps().loginUsername(USER_2_CREDENTIALS.username);
+		await gamdomApiActions.authenticateWithExistingUser(
+			USER_2_CREDENTIALS.username,
+			USER_2_CREDENTIALS.password,
+		);
+		await homePage.navigate();
 		await chat.assertThat().isDisplayed();
 		await chat.assertThat().isMessageVisible(messageInfo_1);
 
@@ -87,10 +91,12 @@ test.describe("Tip user tests", () => {
 			.assertThat()
 			.isPlaceholderVisible(ChatFooterPlaceholder.START_TYPING);
 
-		await profilePage.navigate();
-		await profilePage.logout();
-
-		await homePage.steps().loginUsername(USER_1_CREDENTIALS.username);
+		await homePage.navigate({ cookies: { clearCookies: true } });
+		await gamdomApiActions.authenticateWithExistingUser(
+			USER_1_CREDENTIALS.username,
+			USER_1_CREDENTIALS.password,
+		);
+		await homePage.navigate();
 		await homePage.authenticatedHeader
 			.assertThat()
 			.accountBalanceIs(user1AccountBalance + Number(tipValue));

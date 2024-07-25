@@ -9,14 +9,20 @@ import { RatebackHouseEdge } from "@enums/rateback-house-edge-options";
 import { SPECIAL_OFFER_RATEBACK } from "@constants/specialoffers";
 import { calculateRakeback } from "@formulas/rakeback";
 import { Timeout } from "@enums/timeout";
+import { BasePageNavigationParametersType } from "@core/types/types";
 
 export class RewardsPage extends BasePage<RewardsPageMap> {
 	public constructor(page: Page) {
 		super(page, new RewardsPageMap(page));
 	}
 
-	public override async navigate(): Promise<void> {
-		await this.page.goto(REWARDS_PAGE_ENDPOINT);
+	public override async navigate(
+		parameters?: BasePageNavigationParametersType,
+	): Promise<void> {
+		await super.navigate({
+			...parameters,
+			endpoint: { path: REWARDS_PAGE_ENDPOINT },
+		});
 	}
 
 	public override assertThat(): RewardsPageAsserter {
