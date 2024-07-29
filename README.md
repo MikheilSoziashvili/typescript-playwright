@@ -2,9 +2,15 @@
 
 **Table of Contents**
 
-[TOCM]
-
-[TOC]
+-   [Overview](#overview)
+-   [Getting Started](#getting-started)
+-   [Prerequisites](#prerequisites)
+-   [Project structure](#project-structure)
+-   [Installation](#installation)
+-   [Configuration](#configuration)
+-   [Running Tests](#running-tests)
+-   [Writing Tests](#writing-tests)
+-   [Reporting](#reporting)
 
 ## Overview
 
