@@ -44,14 +44,6 @@ Make sure you have the following installed:
 -   yarn (>= 1.22.x)
 -   IDE (preferrably VSCode)
 
-## Project Structure
-
-```plaintext
-|--- .github
-|    |--- workflows                                       # GitHub Actions pipelines
-|--- api                                                  # REST API Clients
-```
-
 ## Installation
 
 ### Clone repository
@@ -116,7 +108,7 @@ Combining custom modules and patterns along with the capabilities of Playwright 
 
 Playwright fixtures are used to set up the necessary preconditions, state and page objects for each test. Fixtures are reusable components that can initialize data, manage test dependencies, provide access to UI interaction methods, cleanup actions.
 
-#### Custom Page Object Model
+#### Page Object Model
 
 The Page Object Model (POM) is a design pattern in test automation that enhances the maintainability and readability of test scripts. In POM, each web page (or significant page component) is represented by a corresponding class, which encapsulates the page’s elements and interactions. This abstraction layer allows tests to interact with the page objects rather than directly with the page elements, promoting code reuse and reducing duplication.
 
