@@ -16,7 +16,7 @@ test.describe("Dice game autobet", () => {
 		stopOnProfit: number;
 		stopOnLoss: number;
 	}[]) {
-		test(`"[ENG-1415] Dice - autobet with roll over ${betData.rollOver}"`, async ({
+		test(`"[ENG-1415] Dice - autobet with roll over ${betData.rollOver} @originals"`, async ({
 			diceGamePage,
 		}) => {
 			await diceGamePage.navigate();

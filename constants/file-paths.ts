@@ -4,8 +4,9 @@ import {
 	SUPER_ADMIN_CREDENTIALS,
 	USER_1_CREDENTIALS,
 } from "./credentials";
+import path from "path";
 
-const storageStateDir: string = getFilePath(".auth");
+const storageStateDir: string = getFilePath('.auth', path.resolve(__dirname, '../core'));
 
 export const DATASETS_DIR = "datasets";
 

@@ -8,7 +8,7 @@ import { calculateGreenHuntAmountByPercentage } from "@formulas/roulette";
 
 test.describe("Green hunt", () => {
 	test.use(storageStateUser1API);
-	test("[ENG-1090] Roulette - green hunt", async ({ rouletteGamePage }) => {
+	test("[ENG-1090] Roulette - green hunt @originals", async ({ rouletteGamePage }) => {
 		const betTestData: BetTestData = new BetTestData(
 			USER_1_CREDENTIALS.username,
 			100,

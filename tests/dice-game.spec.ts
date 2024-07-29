@@ -5,7 +5,7 @@ import { storageStateUser1API } from "@fixtures/auth-fixtures";
 
 test.describe("Dice tests", () => {
 	test.use(storageStateUser1API);
-	test("[ENG-299] Place a single bet on Dice and try to win @smoke", async ({
+	test("[ENG-299] Place a single bet on Dice and try to win @smoke @originals", async ({
 		diceGamePage,
 	}) => {
 		await diceGamePage.navigate();

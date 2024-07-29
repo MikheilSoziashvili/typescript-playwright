@@ -15,6 +15,7 @@ on:
                     - all
                     - smoke
                     - visual
+                    - originals
             custom_options:
                 description: "Custom command-line options"
                 type: string

@@ -5,7 +5,7 @@ import { storageStateUser1API } from "@fixtures/auth-fixtures";
 test.describe("Crash tests", () => {
 	test.use(storageStateUser1API);
 	test.slow();
-	test("[ENG-265] Place a single bet on Crash and try to cashout @smoke", async ({
+	test("[ENG-265] Place a single bet on Crash and try to cashout @smoke @originals", async ({
 		crashGamePage,
 	}) => {
 		const betTestData: BetTestData = new BetTestData(

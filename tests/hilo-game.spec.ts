@@ -12,7 +12,7 @@ import { SUPER_ADMIN_CREDENTIALS } from "@constants/credentials";
 test.describe("Hilo tests", () => {
 	test.use(storageStateSuperadminAPI);
 	test.slow();
-	test("[ENG-298] Place a single bet on Hilo and try to win @smoke", async ({
+	test("[ENG-298] Place a single bet on Hilo and try to win @smoke @originals", async ({
 		hiloGamePage,
 	}) => {
 		const testData: HiloBetTestData = new HiloBetTestData(
