@@ -11,10 +11,11 @@
 -   [Running Tests](#running-tests)
 -   [Writing Tests](#writing-tests)
 -   [Reporting](#reporting)
+-   [Best Practices](#best-practices)
 
 ## Overview
 
-Playwright-based test automation framework developed with Node.js and Typescript, designed for automated end-to-end testing of Gamdom web application.
+[Playwright](https://playwright.dev)-based test automation framework developed with Node.js and Typescript, designed for automated end-to-end testing of Gamdom web application.
 Leveraging the power of Playwright as the next generation browser automation tool, this framework gives multiple enhanced opportunities and built-in features for more stable and easily manageble automated tests.
 
 ### Playwright Key Features
@@ -128,7 +129,7 @@ yarn install
 
 ## Configuration
 
-The configuration settings for the automation framework are located in the **configuration.ts** file. This file exports constant variables that define various configuration options used throughout the project. These configuration variables can be imported in test files and other parts of the project. Some of the values are taken from environment variables, which are managed using the _dotenv_ package.
+The configuration settings for the automation framework are located in the **configuration.ts** file. This file exports constant variables that define various configuration options used throughout the project. These configuration variables can be imported in test files and other parts of the project. Some of the values are taken from environment variables, which are managed using the _[dotenv](https://github.com/motdotla/dotenv "dotenv")_ package.
 
 ### Environment Variables
 
@@ -137,7 +138,7 @@ For CI/CD ensure environment variables are injected into pipeline.
 
 ### Playwright Configuration File
 
-In addition to the **configuration.ts** file, the framework also utilizes a **playwright.config.ts** Playwright configuration file to define global configuration settings for Playwright and the tests. It reads some of the values directly from **configuration.ts** module and applies them accordingly.
+In addition to the **configuration.ts** file, the framework also utilizes a **[playwright.config.ts](https://playwright.dev/docs/test-configuration)** Playwright configuration file to define global configuration settings for Playwright and the tests. It reads some of the values directly from **configuration.ts** module and applies them accordingly.
 Also there is additional Playwright reporting configuration which depends on **configuration.ts** value and reflected into **playwright.config.ts**.
 
 ## Running Tests
@@ -163,11 +164,12 @@ Combining custom modules and patterns along with the capabilities of Playwright 
 
 #### Playwright Fixtures
 
-Playwright fixtures are used to set up the necessary preconditions, state and page objects for each test. Fixtures are reusable components that can initialize data, manage test dependencies, provide access to UI interaction methods, cleanup actions.
+[Playwright fixtures](https://playwright.dev/docs/test-fixtures) are used to set up the necessary preconditions, state and page objects for each test. Fixtures are reusable components that can initialize data, manage test dependencies, provide access to UI interaction methods, cleanup actions.
 
 #### Page Object Model
 
 The Page Object Model (POM) is a design pattern in test automation that enhances the maintainability and readability of test scripts. In POM, each web page (or significant page component) is represented by a corresponding class, which encapsulates the page’s elements and interactions. This abstraction layer allows tests to interact with the page objects rather than directly with the page elements, promoting code reuse and reducing duplication.
+Read about [the Page Object Model by Playwright](https://playwright.dev/docs/pom)
 
 **Custom Page Object Model** is utilized to represent and interact with the various pages and components of the application under test. Each Page Object class **consists of three classes** which respectively encapsulate **the page elements, interactions and assertions** of a specific page or component, providing a clear and maintainable abstraction layer for test scripts.
 There is an additional **steps** component added to the model, which serves as collection of multiple consecutive actions and assertions performed on the page. This helps for better test readability, maintenance and organization of actions and assertions.
@@ -178,7 +180,7 @@ APIs are used to bypass the need for direct UI interaction. This approach makes 
 
 #### External Services
 
-Integration with external services like **Mailinator** and **proxy servers** is implemented to enhance testing capabilities.
+Integration with external services like **[Mailinator](https://www.mailinator.com/api)** and **proxy servers** is implemented to enhance testing capabilities.
 **Mailinator** is used for handling temporary email addresses, allowing to easily manage and verify email-based workflows.
 **Proxy servers** are utilized to simulate different network conditions and IP addresses, ensuring our tests cover a wide range of real-world scenarios.
 
@@ -275,5 +277,43 @@ The configurable reporters are:
 
 **Custom Reporters:**
 
--   **JIRA/XRay Reporter:** Integrates with JIRA for reporting test results directly into JIRA/XRay
--   **Slack Reporter:** Sends summarized test results to a specified Slack channel. Also attaches the generated Playwright HTML report as an archive so that it can be downloaded and reviewed locally.
+-   **[JIRA](https://developer.atlassian.com/cloud/jira/platform/rest/v2/intro/#about)/[XRay](https://docs.getxray.app/display/XRAYCLOUD/REST+API) Reporter:** Integrates with JIRA for reporting test results directly into JIRA/XRay
+-   **[Slack Reporter](https://github.com/ryanrosello-og/playwright-slack-report):** Sends summarized test results to a specified Slack channel. Also attaches the generated Playwright HTML report as an archive so that it can be downloaded and reviewed locally.
+
+## Best Practices
+
+### General Practices
+
+-   Have consistency in naming conventions and code structure. Follow the framework directory structure when placing files/modules
+-   Add comments and documentation to codebase in cases there is complex logic, specific implementation purpose or noting any tricky or unclear at first glance code.
+-   Any additional comments and documentation that can help in clarifying and understanding the code are much encouraged.
+-   Sensitive information such as API keys and passwords must be consumed from environment variables. Avoid hardcoding and committing them in the repository.
+-   Run the full suite of tests to check for potential regression before committing changes and opening a pull request.
+-   Avoid fixed values. Use configuration files or environment variables for values that may change (e.g., URLs, credentials). If such fixed values are required, they must be on a centralized place and reused.
+-   Ensure the broader picture of the changes is considered. Review the overall architecture and impact of the modifications and apply necessary changes beyond the conrete scope of a task if applicable.
+
+### Tests Practices
+
+-   Follow the Arrange-Act-Assert (AAA) pattern when writing tests.
+-   Use fixtures for test precondition/s to ensure they are consistently applied across all relevant tests
+-   Create granular assertions which can be easily combined into more complex ones.
+-   Isolate tests so that they are independent and can be run in any order. Having such dependencies will cause chained test failures.
+-   Adhere to Custom Page Object Model and its components. Each test (if there is no strong valid reason to do the opposite) should be constructed by mostly page object method calls.
+-   Investigate and use APIs to shorten UI interactions for tests that need to bypass certain steps or scenarios thus improving test execution speed and reducing flakiness.
+
+### Reporting Practices
+
+-   Monitor for any potential failures with reporting in the CI/CD environment, where it is configured to be enabled exclusively. Prioritize these issues as high priority.
+-   Use [Trace Viewer](https://playwright.dev/docs/trace-viewer-intro) when debugging tests and lower-level details are needed.
+
+### CI/CD Practices
+
+-   Investigate nightly run build failures and address them at the earliest opportunity.
+-   Pay attention to environment-under-test healthiness. Sometimes most of the failures could be due to unstable/unhealthy environment (connectivity, unstable build, deployment issues etc)
+-   Supply environment variables to manage sensitive or periodically updated data.
+
+### Maintenance Practices
+
+-   Keep dependencies in the test framework regularly updated to benefit new features and bugfixes.
+-   Refactor the codebase to improve structure, remove duplications and incorporate better practices.
+-   Monitor test flakiness and troubleshoot the underlying causes.
