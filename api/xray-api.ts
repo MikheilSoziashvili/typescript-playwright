@@ -39,8 +39,8 @@ export class XrayApi extends BaseApi {
 
 	public async importXmlResult(
 		testExecutionKey: string,
+		options: RequestOptions = { timeout: Timeout.MAX },
 		projectKey: string = Configuration.jira.projectKey,
-		options?: RequestOptions,
 	): Promise<APIResponse> {
 		const data = await prependXmlHeaderToFile(Configuration.reportName);
 
@@ -52,7 +52,7 @@ export class XrayApi extends BaseApi {
 			},
 		);
 
-		parameters.params = {
+		parameters.queryParams = {
 			projectKey: projectKey,
 			testExecKey: testExecutionKey,
 		};
@@ -60,7 +60,6 @@ export class XrayApi extends BaseApi {
 		try {
 			return await this.post(parameters, {
 				...options,
-				timeout: Timeout.MAX,
 			});
 		} catch (error: unknown) {
 			const msg = "Error importing xml result";

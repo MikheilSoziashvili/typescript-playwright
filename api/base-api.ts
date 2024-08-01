@@ -6,7 +6,9 @@ import { handleError } from "@core/api/error-handler";
 import { PayloadType } from "@core/types/types";
 import { KnownError } from "@core/types/error-types";
 
-// Infer the type for the options parameter from Playwright's fetch method
+/**
+ *Infer the type for the options parameter from Playwright's fetch method
+ */
 export type RequestOptions = NonNullable<
 	Parameters<APIRequestContext["fetch"]>[1]
 >;
@@ -22,7 +24,7 @@ export class BaseApi {
 	/**
 	 * Initializes the request context and sets the base URL and default headers.
 	 *
-	 * @param baseUrl The base URL for all requests made by this instance.
+	 * @param {string} baseUrl - The base URL for all requests made by this instance.
 	 */
 	constructor(baseUrl: string) {
 		this.baseUrl = baseUrl;
@@ -36,7 +38,7 @@ export class BaseApi {
 	/**
 	 * Provides access to the request context.
 	 *
-	 * @returns The API request context.
+	 * @returns {Promise<APIRequestContext>} The API request context.
 	 */
 	public async getContext(): Promise<APIRequestContext> {
 		return this.context;
@@ -45,7 +47,7 @@ export class BaseApi {
 	/**
 	 * Sets multiple headers for HTTP requests.
 	 *
-	 * @param headers - An object containing header key-value pairs.
+	 * @param {Record<string, string>} headers - An object containing header key-value pairs.
 	 * @returns {this} The instance, allowing for method chaining.
 	 */
 	public setHeaders(headers: Record<string, string>): this {
@@ -63,7 +65,7 @@ export class BaseApi {
 	/**
 	 * Concatenates base URL and endpoint, ensuring there is exactly one slash between them.
 	 *
-	 * @param endpoint - The endpoint to be concatenated with the base URL.
+	 * @param {string} endpoint - The endpoint to be concatenated with the base URL.
 	 * @returns {string} The concatenated URL.
 	 */
 	private concatenateUrl(endpoint: string): string {
@@ -73,9 +75,9 @@ export class BaseApi {
 	/**
 	 * Constructs the request parameters object.
 	 *
-	 * @param endpoint - The endpoint for the request.
-	 * @param data - The payload for the request.
-	 * @param _headers - Optional additional headers for the request.
+	 * @param {string} endpoint - The endpoint for the request.
+	 * @param {PayloadType} [data] - The payload for the request.
+	 * @param {Record<string, string>} [_headers] - Optional additional headers for the request.
 	 * @returns {RequestParameters} The constructed request parameters object.
 	 */
 	protected buildParameters(
@@ -99,16 +101,17 @@ export class BaseApi {
 	 * including both Playwright errors and HTTP status error responses.
 	 *
 	 * @param {HttpMethod} method - The HTTP method to use (GET, POST, PUT, DELETE, PATCH).
-	 * @param {RequestParameters} parameters - The parameters for the request, including endpoint, headers, data, and params.
+	 * @param {RequestParameters} parameters - The parameters for the request, including endpoint, headers, data, and query parameters.
 	 * @param {RequestOptions} options - Additional options for the request.
 	 * @returns {Promise<APIResponse>} A promise resolving to the API response.
+	 * @see {@link https://playwright.dev/docs/api/class-apirequestcontext#api-request-context-fetch Playwright Fetch Options}
 	 */
 	private async makeRequest(
 		method: HttpMethod,
 		parameters: RequestParameters,
 		options: RequestOptions = {},
 	): Promise<APIResponse> {
-		const { endpoint, headers, data, params } = parameters;
+		const { endpoint, headers, data, queryParams } = parameters;
 		const context = await this.context;
 		const url = this.concatenateUrl(endpoint);
 
@@ -116,7 +119,7 @@ export class BaseApi {
 		const requestOptions: RequestOptions = {
 			headers: { ...this.requestHeaders, ...headers },
 			data,
-			params,
+			params: queryParams,
 			...options,
 		};
 
@@ -136,9 +139,10 @@ export class BaseApi {
 	/**
 	 * Makes a GET request.
 	 *
-	 * @param {RequestParameters} parameters - The parameters for the GET request, including endpoint, headers, and params.
-	 * @param {RequestOptions} options - Additional options for the GET request.
+	 * @param {RequestParameters} parameters - The parameters for the GET request, including endpoint, headers, and query parameters.
+	 * @param {RequestOptions} [options] - Additional options for the GET request.
 	 * @returns {Promise<APIResponse>} The API response.
+	 * @see {@link https://playwright.dev/docs/api/class-apirequestcontext#api-request-context-fetch Playwright Fetch Options}
 	 */
 	public async get(
 		parameters: RequestParameters,
@@ -150,9 +154,10 @@ export class BaseApi {
 	/**
 	 * Makes a POST request.
 	 *
-	 * @param {RequestParameters} parameters - The parameters for the POST request, including endpoint, headers, data, and params.
-	 * @param {RequestOptions} options - Additional options for the POST request.
+	 * @param {RequestParameters} parameters - The parameters for the POST request, including endpoint, headers, data, and query parameters.
+	 * @param {RequestOptions} [options] - Additional options for the POST request.
 	 * @returns {Promise<APIResponse>} The API response.
+	 * @see {@link https://playwright.dev/docs/api/class-apirequestcontext#api-request-context-fetch Playwright Fetch Options}
 	 */
 	public async post(
 		parameters: RequestParameters,
@@ -164,9 +169,10 @@ export class BaseApi {
 	/**
 	 * Makes a PUT request.
 	 *
-	 * @param {RequestParameters} parameters - The parameters for the PUT request, including endpoint, headers, data, and params.
-	 * @param {RequestOptions} options - Additional options for the PUT request.
+	 * @param {RequestParameters} parameters - The parameters for the PUT request, including endpoint, headers, data, and query parameters.
+	 * @param {RequestOptions} [options] - Additional options for the PUT request.
 	 * @returns {Promise<APIResponse>} The API response.
+	 * @see {@link https://playwright.dev/docs/api/class-apirequestcontext#api-request-context-fetch Playwright Fetch Options}
 	 */
 	public async put(
 		parameters: RequestParameters,
@@ -178,9 +184,10 @@ export class BaseApi {
 	/**
 	 * Makes a DELETE request.
 	 *
-	 * @param {RequestParameters} parameters - The parameters for the DELETE request, including endpoint, headers, data, and params.
-	 * @param {RequestOptions} options - Additional options for the DELETE request.
+	 * @param {RequestParameters} parameters - The parameters for the DELETE request, including endpoint, headers, data, and query parameters.
+	 * @param {RequestOptions} [options] - Additional options for the DELETE request.
 	 * @returns {Promise<APIResponse>} The API response.
+	 * @see {@link https://playwright.dev/docs/api/class-apirequestcontext#api-request-context-fetch Playwright Fetch Options}
 	 */
 	public async delete(
 		parameters: RequestParameters,
@@ -192,9 +199,10 @@ export class BaseApi {
 	/**
 	 * Makes a PATCH request.
 	 *
-	 * @param {RequestParameters} parameters - The parameters for the PATCH request, including endpoint, headers, data, and params.
-	 * @param {RequestOptions} options - Additional options for the PATCH request.
+	 * @param {RequestParameters} parameters - The parameters for the PATCH request, including endpoint, headers, data, and query parameters.
+	 * @param {RequestOptions} [options] - Additional options for the PATCH request.
 	 * @returns {Promise<APIResponse>} The API response.
+	 * @see {@link https://playwright.dev/docs/api/class-apirequestcontext#api-request-context-fetch Playwright Fetch Options}
 	 */
 	public async patch(
 		parameters: RequestParameters,
