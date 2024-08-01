@@ -142,7 +142,7 @@ export class BaseApi {
 	 * @param {RequestParameters} parameters - The parameters for the GET request, including endpoint, headers, and query parameters.
 	 * @param {RequestOptions} [options] - Additional options for the GET request.
 	 * @returns {Promise<APIResponse>} The API response.
-	 * @see {@link https://playwright.dev/docs/api/class-apirequestcontext#api-request-context-fetch Playwright Fetch Options}
+	 * @see {@link https://playwright.dev/docs/api/class-apirequestcontext#api-request-context-get Playwright Get Options}
 	 */
 	public async get(
 		parameters: RequestParameters,
@@ -157,7 +157,7 @@ export class BaseApi {
 	 * @param {RequestParameters} parameters - The parameters for the POST request, including endpoint, headers, data, and query parameters.
 	 * @param {RequestOptions} [options] - Additional options for the POST request.
 	 * @returns {Promise<APIResponse>} The API response.
-	 * @see {@link https://playwright.dev/docs/api/class-apirequestcontext#api-request-context-fetch Playwright Fetch Options}
+	 * @see {@link https://playwright.dev/docs/api/class-apirequestcontext#api-request-context-post Playwright Post Options}
 	 */
 	public async post(
 		parameters: RequestParameters,
@@ -172,7 +172,7 @@ export class BaseApi {
 	 * @param {RequestParameters} parameters - The parameters for the PUT request, including endpoint, headers, data, and query parameters.
 	 * @param {RequestOptions} [options] - Additional options for the PUT request.
 	 * @returns {Promise<APIResponse>} The API response.
-	 * @see {@link https://playwright.dev/docs/api/class-apirequestcontext#api-request-context-fetch Playwright Fetch Options}
+	 * @see {@link https://playwright.dev/docs/api/class-apirequestcontext#api-request-context-put Playwright Put Options}
 	 */
 	public async put(
 		parameters: RequestParameters,
@@ -187,7 +187,7 @@ export class BaseApi {
 	 * @param {RequestParameters} parameters - The parameters for the DELETE request, including endpoint, headers, data, and query parameters.
 	 * @param {RequestOptions} [options] - Additional options for the DELETE request.
 	 * @returns {Promise<APIResponse>} The API response.
-	 * @see {@link https://playwright.dev/docs/api/class-apirequestcontext#api-request-context-fetch Playwright Fetch Options}
+	 * @see {@link https://playwright.dev/docs/api/class-apirequestcontext#api-request-context-delete Playwright Delete Options}
 	 */
 	public async delete(
 		parameters: RequestParameters,
@@ -202,7 +202,7 @@ export class BaseApi {
 	 * @param {RequestParameters} parameters - The parameters for the PATCH request, including endpoint, headers, data, and query parameters.
 	 * @param {RequestOptions} [options] - Additional options for the PATCH request.
 	 * @returns {Promise<APIResponse>} The API response.
-	 * @see {@link https://playwright.dev/docs/api/class-apirequestcontext#api-request-context-fetch Playwright Fetch Options}
+	 * @see {@link https://playwright.dev/docs/api/class-apirequestcontext#api-request-context-patch Playwright Patch Options}
 	 */
 	public async patch(
 		parameters: RequestParameters,
