@@ -1,5 +1,5 @@
 import * as Configuration from "../configuration";
-import { BaseApi } from "./base-api";
+import { BaseApi, RequestOptions } from "./base-api";
 import { prependXmlHeaderToFile } from "@core/utils/utils";
 import { Timeout } from "@enums/timeout";
 import { APIResponse } from "@playwright/test";
@@ -40,6 +40,7 @@ export class XrayApi extends BaseApi {
 	public async importXmlResult(
 		testExecutionKey: string,
 		projectKey: string = Configuration.jira.projectKey,
+		options?: RequestOptions,
 	): Promise<APIResponse> {
 		const data = await prependXmlHeaderToFile(Configuration.reportName);
 
@@ -47,7 +48,7 @@ export class XrayApi extends BaseApi {
 			"/api/v2/import/execution/junit",
 			data,
 			{
-				"Content-Type": "application/xml"
+				"Content-Type": "application/xml",
 			},
 		);
 
@@ -55,10 +56,12 @@ export class XrayApi extends BaseApi {
 			projectKey: projectKey,
 			testExecKey: testExecutionKey,
 		};
-		parameters.timeout = Timeout.EXTRA_LONG;
 
 		try {
-			return await this.post(parameters);
+			return await this.post(parameters, {
+				...options,
+				timeout: Timeout.MAX,
+			});
 		} catch (error: unknown) {
 			const msg = "Error importing xml result";
 			if (error instanceof Error) {

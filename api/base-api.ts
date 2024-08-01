@@ -6,6 +6,11 @@ import { handleError } from "@core/api/error-handler";
 import { PayloadType } from "@core/types/types";
 import { KnownError } from "@core/types/error-types";
 
+// Infer the type for the options parameter from Playwright's fetch method
+export type RequestOptions = NonNullable<
+	Parameters<APIRequestContext["fetch"]>[1]
+>;
+
 /**
  * This BaseApi class serves as a foundation for managing HTTP requests.
  */
@@ -19,10 +24,6 @@ export class BaseApi {
 	 *
 	 * @param baseUrl The base URL for all requests made by this instance.
 	 */
-
-	// The request module from Playwright does not have a newContext method directly on it.
-	// Instead, the newContext method is available on an instance of APIRequestContext, which is obtained by calling request.newContext()
-
 	constructor(baseUrl: string) {
 		this.baseUrl = baseUrl;
 		this.context = request.newContext({
@@ -98,23 +99,31 @@ export class BaseApi {
 	 * including both Playwright errors and HTTP status error responses.
 	 *
 	 * @param {HttpMethod} method - The HTTP method to use (GET, POST, PUT, DELETE, PATCH).
-	 * @param {RequestParameters} parameters - The parameters for the request, including endpoint, headers, data, params, and timeout.
+	 * @param {RequestParameters} parameters - The parameters for the request, including endpoint, headers, data, and params.
+	 * @param {RequestOptions} options - Additional options for the request.
 	 * @returns {Promise<APIResponse>} A promise resolving to the API response.
 	 */
 	private async makeRequest(
 		method: HttpMethod,
 		parameters: RequestParameters,
+		options: RequestOptions = {},
 	): Promise<APIResponse> {
-		const { endpoint, headers, data, params, timeout } = parameters;
+		const { endpoint, headers, data, params } = parameters;
 		const context = await this.context;
 		const url = this.concatenateUrl(endpoint);
 
+		/* eslint-disable-next-line object-shorthand */
+		const requestOptions: RequestOptions = {
+			headers: { ...this.requestHeaders, ...headers },
+			data,
+			params,
+			...options,
+		};
+
 		try {
-			const response = await context[method](url, {
-				headers: { ...this.requestHeaders, ...headers },
-				...(data && { data }),
-				...(params && { params }),
-				...(timeout && { timeout }),
+			const response = await context.fetch(url, {
+				method,
+				...requestOptions,
 			});
 
 			return response;
@@ -127,50 +136,70 @@ export class BaseApi {
 	/**
 	 * Makes a GET request.
 	 *
-	 * @param {RequestParameters} parameters - The parameters for the GET request, including endpoint, headers, params, and timeout.
+	 * @param {RequestParameters} parameters - The parameters for the GET request, including endpoint, headers, and params.
+	 * @param {RequestOptions} options - Additional options for the GET request.
 	 * @returns {Promise<APIResponse>} The API response.
 	 */
-	public async get(parameters: RequestParameters): Promise<APIResponse> {
-		return this.makeRequest(HttpMethod.GET, parameters);
+	public async get(
+		parameters: RequestParameters,
+		options?: RequestOptions,
+	): Promise<APIResponse> {
+		return this.makeRequest(HttpMethod.GET, parameters, options);
 	}
 
 	/**
 	 * Makes a POST request.
 	 *
-	 * @param {RequestParameters} parameters - The parameters for the POST request, including endpoint, headers, data, params, and timeout.
+	 * @param {RequestParameters} parameters - The parameters for the POST request, including endpoint, headers, data, and params.
+	 * @param {RequestOptions} options - Additional options for the POST request.
 	 * @returns {Promise<APIResponse>} The API response.
 	 */
-	public async post(parameters: RequestParameters): Promise<APIResponse> {
-		return this.makeRequest(HttpMethod.POST, parameters);
+	public async post(
+		parameters: RequestParameters,
+		options?: RequestOptions,
+	): Promise<APIResponse> {
+		return this.makeRequest(HttpMethod.POST, parameters, options);
 	}
 
 	/**
 	 * Makes a PUT request.
 	 *
-	 * @param {RequestParameters} parameters - The parameters for the PUT request, including endpoint, headers, data, params, and timeout.
+	 * @param {RequestParameters} parameters - The parameters for the PUT request, including endpoint, headers, data, and params.
+	 * @param {RequestOptions} options - Additional options for the PUT request.
 	 * @returns {Promise<APIResponse>} The API response.
 	 */
-	public async put(parameters: RequestParameters): Promise<APIResponse> {
-		return this.makeRequest(HttpMethod.PUT, parameters);
+	public async put(
+		parameters: RequestParameters,
+		options?: RequestOptions,
+	): Promise<APIResponse> {
+		return this.makeRequest(HttpMethod.PUT, parameters, options);
 	}
 
 	/**
 	 * Makes a DELETE request.
 	 *
-	 * @param {RequestParameters} parameters - The parameters for the DELETE request, including endpoint, headers, data, params, and timeout.
+	 * @param {RequestParameters} parameters - The parameters for the DELETE request, including endpoint, headers, data, and params.
+	 * @param {RequestOptions} options - Additional options for the DELETE request.
 	 * @returns {Promise<APIResponse>} The API response.
 	 */
-	public async delete(parameters: RequestParameters): Promise<APIResponse> {
-		return this.makeRequest(HttpMethod.DELETE, parameters);
+	public async delete(
+		parameters: RequestParameters,
+		options?: RequestOptions,
+	): Promise<APIResponse> {
+		return this.makeRequest(HttpMethod.DELETE, parameters, options);
 	}
 
 	/**
 	 * Makes a PATCH request.
 	 *
-	 * @param {RequestParameters} parameters - The parameters for the PATCH request, including endpoint, headers, data, params, and timeout.
+	 * @param {RequestParameters} parameters - The parameters for the PATCH request, including endpoint, headers, data, and params.
+	 * @param {RequestOptions} options - Additional options for the PATCH request.
 	 * @returns {Promise<APIResponse>} The API response.
 	 */
-	public async patch(parameters: RequestParameters): Promise<APIResponse> {
-		return this.makeRequest(HttpMethod.PATCH, parameters);
+	public async patch(
+		parameters: RequestParameters,
+		options?: RequestOptions,
+	): Promise<APIResponse> {
+		return this.makeRequest(HttpMethod.PATCH, parameters, options);
 	}
 }
