@@ -160,7 +160,7 @@ To maintain code quality and consistency, we use a linter to check our codebase.
 ### Running the Linter
 
 1. Navigate to the project root directory:
-   `cd /path/to/your/project`
+   `/path/to/your/project`
 
 2. Run the linter:
    `yarn lint`
