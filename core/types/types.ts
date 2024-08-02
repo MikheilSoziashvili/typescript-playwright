@@ -1,3 +1,5 @@
+import { APIRequestContext } from "@playwright/test";
+
 export type TestUserConfigurationObject = {
 	username: string;
 	password: string;
@@ -44,3 +46,7 @@ export type BasePageNavigationParametersType = {
 	link?: string;
 	cookies?: { clearCookies: boolean };
 };
+
+export type RequestOptions = NonNullable<
+	Parameters<APIRequestContext["fetch"]>[1]
+>;

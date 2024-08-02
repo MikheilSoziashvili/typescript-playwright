@@ -3,15 +3,8 @@ import { APIRequestContext, APIResponse, request } from "@playwright/test";
 import { RequestParameters } from "../core/api/interfaces/request-parameters";
 import { logger } from "@logger/logger";
 import { handleError } from "@core/api/error-handler";
-import { PayloadType } from "@core/types/types";
+import { PayloadType, RequestOptions } from "@core/types/types";
 import { KnownError } from "@core/types/error-types";
-
-/**
- *Infer the type for the options parameter from Playwright's fetch method
- */
-export type RequestOptions = NonNullable<
-	Parameters<APIRequestContext["fetch"]>[1]
->;
 
 /**
  * This BaseApi class serves as a foundation for managing HTTP requests.
