@@ -153,6 +153,30 @@ Also there is additional Playwright reporting configuration which depends on **c
 -   **By tag**
     `yarn playwright test --grep @myTag`
 
+## Linting
+
+To maintain code quality and consistency, we use a linter to check our codebase. Please ensure you run the linter before committing your code.
+
+### Running the Linter
+
+1. Navigate to the project root directory:
+   `cd /path/to/your/project`
+
+2. Run the linter:
+   `yarn lint`
+
+### Linter Configuration
+
+The linter is configured to check for syntax errors, coding style issues, and potential bugs. The configuration can be found in the `.eslintrc` file in the root directory of the project.
+
+### Installing ESLint in VS Code
+
+For a better development experience, you can install the **[ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)** in Visual Studio Code. This allows you to see linting errors and warnings directly in your editor.
+
+### Code Formatting with Prettier
+
+Install **[Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)** extension to enable consistent formatting across the codebase. It ensures that all contributors follow the same style guide, which helps to avoid unnecessary differences in code formatting and makes the code more readable and maintainable. After the extension is installed, use the following **[guide](https://www.shecodes.io/athena/62871-how-to-set-prettier-as-default-formatter-in-your-editor)** to set prettier as a default formatter. Configuration of the Prettier formatter can be found in `.prettierrc` file in the root directory of the project.
+
 ## Writing Tests
 
 The tests should be designed to efficiently and consistently validate the functionality of the application under test by mimicking user interactions and checking for expected outcomes.
