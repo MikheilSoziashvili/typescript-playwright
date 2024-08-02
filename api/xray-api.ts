@@ -1,9 +1,10 @@
 import * as Configuration from "../configuration";
-import { BaseApi, RequestOptions } from "./base-api";
+import { BaseApi } from "./base-api";
 import { prependXmlHeaderToFile } from "@core/utils/utils";
 import { Timeout } from "@enums/timeout";
 import { APIResponse } from "@playwright/test";
 import { RequestParameters } from "../core/api/interfaces/request-parameters";
+import { RequestOptions } from "@core/types/types";
 
 export class XrayApi extends BaseApi {
 	private APIToken = "";
