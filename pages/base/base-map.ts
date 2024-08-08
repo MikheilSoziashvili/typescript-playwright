@@ -57,7 +57,7 @@ export class BaseMap {
 	}
 
 	async highlightElement(element: Locator): Promise<void> {
-		await element.hover({ trial: true, });
+		await element.hover({ trial: true });
 		await element.focus();
 	}
 }
