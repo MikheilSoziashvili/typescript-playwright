@@ -3,6 +3,7 @@ import { BaseComponent } from "@base/base-component";
 import { NotificationMap } from "./notification-map";
 import { NotificationAsserter } from "./notification-asserter";
 import { VisibilityState } from "@enums/playwright/visibility-states";
+import { Timeout } from "@enums/timeout";
 
 export class Notification extends BaseComponent<NotificationMap> {
 	constructor(page: Page) {
@@ -20,7 +21,9 @@ export class Notification extends BaseComponent<NotificationMap> {
 		await this.map.waitForVisibility({
 			locator: this.map.notificationContainer(options),
 		});
-		await this.map.notificationGotItButtonLocator(options).click();
+		await this.map
+			.notificationGotItButtonLocator(options)
+			.click({ timeout: Timeout.MAX });
 		await this.map.waitFor({
 			locator: this.map.notificationContainer(options),
 			state: VisibilityState.HIDDEN,

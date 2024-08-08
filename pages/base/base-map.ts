@@ -1,4 +1,5 @@
 import { VisibilityState } from "@enums/playwright/visibility-states";
+import { Timeout } from "@enums/timeout";
 import { Locator, Page, expect } from "@playwright/test";
 
 export class BaseMap {
@@ -11,8 +12,9 @@ export class BaseMap {
 	protected async waitUntilContainsText(
 		locator: Locator,
 		text: string | RegExp,
+		timeout?: number,
 	): Promise<Locator> {
-		await expect(locator).toContainText(text);
+		await expect(locator).toContainText(text, { timeout: timeout });
 		return locator;
 	}
 
@@ -34,12 +36,28 @@ export class BaseMap {
 	}
 
 	async waitForVisibility(parameters: {
-        locator: Locator;
-        timeout?: number;
-    }): Promise<void> {
-        await this.waitFor({
-            ...parameters,
-            state: VisibilityState.VISIBLE,
-        });
-    }
+		locator: Locator;
+		timeout?: number;
+	}): Promise<void> {
+		await this.waitFor({
+			...parameters,
+			state: VisibilityState.VISIBLE,
+		});
+	}
+
+	async waitForAttributeToHaveValue(
+		locator: Locator,
+		attribute: string,
+		expectedValue: string,
+		timeout: number = Timeout.LONG,
+	): Promise<void> {
+		await expect(locator).toHaveAttribute(attribute, expectedValue, {
+			timeout,
+		});
+	}
+
+	async highlightElement(element: Locator): Promise<void> {
+		await element.hover({ trial: true, });
+		await element.focus();
+	}
 }

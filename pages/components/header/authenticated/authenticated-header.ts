@@ -22,7 +22,7 @@ export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 
 	public async getAccountBalance(): Promise<number> {
 		return parseBalance(
-			await (await this.map.accountBalance()).innerText(),
+			await (await this.map.getLoadedAccountBalance()).innerText(),
 		);
 	}
 

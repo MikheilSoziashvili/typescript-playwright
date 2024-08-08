@@ -7,11 +7,13 @@ import { DATASETS_DIR } from "@constants/file-paths";
 
 const DICE_AUTOBET_CSV = "ENG-1415-dice-autobet.csv";
 
+test.fixme(true, "numberOfBets are not populated from dataset / diceStopAutobetButtonIsDisplayed() comment should be addressed")
 test.describe("Dice game autobet", () => {
 	test.use(storageStateUser1API);
 	for (const betData of parse_csv(DATASETS_DIR, DICE_AUTOBET_CSV) as {
 		betAmount: number;
 		rollOver: number;
+		// TODO: Fix numberOfBets to be populated from CV
 		numberOfBets: number;
 		stopOnProfit: number;
 		stopOnLoss: number;

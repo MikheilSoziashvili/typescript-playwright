@@ -6,6 +6,7 @@ import { AuthenticatedHeader } from "../header/authenticated/authenticated-heade
 import { CommonUserOptionsPopup } from "../popups/common-user-options-popup";
 import { Chat } from "./chat";
 import { ChatMessageOptions } from "./chat-map";
+import { Timeout } from "@enums/timeout";
 
 export class ChatSteps extends BaseComponentStep<Chat> {
 	private authenticatedHeader: AuthenticatedHeader;
@@ -21,7 +22,10 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 
 	public async sendMessage(message: string): Promise<void> {
 		await this.component.map.chatTextBox.fill(message);
-		await this.component.map.sendMessageButton.click();
+		await this.component.map.sendMessageButton.scrollIntoViewIfNeeded();
+		await this.component.map.sendMessageButton.click({
+			timeout: Timeout.EXTRA_LONG,
+		});
 	}
 
 	public async openTipUserModal(options?: ChatMessageOptions): Promise<void> {

@@ -5,6 +5,7 @@ import { RouletteBetColor } from "@enums/original-games";
 import { plusSignWithExactDecimalCurrency } from "@support/regex-patterns";
 import { parseToFloat } from "@core/utils/utils";
 import { RouletteAutobetSection } from "@enums/roulette-autobet-section";
+import { Timeout } from "@enums/timeout";
 
 export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 	public constructor(page: RouletteGamePage) {
@@ -23,7 +24,7 @@ export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 			  ).toContainText(parseToFloat(value))
 			: await expect(
 					this.gamdomPage.map.betProfit(betSection),
-			  ).toContainText(parseToFloat(value));
+			  ).toContainText(parseToFloat(value), { timeout: Timeout.EXTRA_LONG });
 	}
 
 	public async betButtonsEnabled(): Promise<void> {

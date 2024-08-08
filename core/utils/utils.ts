@@ -206,3 +206,10 @@ export function getCookieName(setCookie: string): string {
 export function getCookieValue(setCookie: string): string {
 	return setCookie.split("=")[1].split(";")[0];
 }
+
+export function throwError(error: unknown, message: string): never {
+	if (error instanceof Error) {
+		throw new Error(`${message}: ${error.message}`);
+	}
+	throw new Error(message);
+}

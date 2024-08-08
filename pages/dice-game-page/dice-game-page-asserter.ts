@@ -137,6 +137,8 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		}
 	}
 
+	// TODO: If you win the first game, stopAutbetButton will not appear at all and there will be failure here.
+	// This case should be handled!
 	public async diceStopAutobetButtonIsDisplayed(): Promise<void> {
 		await expect(this.gamdomPage.map.stopAutobetButton).toBeVisible();
 	}

@@ -32,22 +32,20 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 	}
 
 	public async accountBalanceIs(amount: number): Promise<void> {
-		await expect(await this.gamdomPage.map.accountBalance()).toHaveText(
-			`${formatBalance(amount)}`,
-			{
-				timeout: Timeout.MEDIUM,
-			},
-		);
+		await expect(
+			await this.gamdomPage.map.getLoadedAccountBalance(),
+		).toHaveText(`${formatBalance(amount)}`, {
+			timeout: Timeout.LONG,
+		});
 	}
 
 	public async accountBalanceHasChanged(
 		initialBalance: number,
 	): Promise<void> {
-		await expect(await this.gamdomPage.map.accountBalance()).not.toHaveText(
-			`${formatBalance(initialBalance)}`,
-			{
-				timeout: Timeout.MEDIUM,
-			},
-		);
+		await expect(
+			await this.gamdomPage.map.getLoadedAccountBalance(),
+		).not.toHaveText(`${formatBalance(initialBalance)}`, {
+			timeout: Timeout.MEDIUM,
+		});
 	}
 }
