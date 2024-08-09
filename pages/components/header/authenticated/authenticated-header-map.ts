@@ -40,7 +40,8 @@ export class AuthenticatedHeaderMap extends BaseMap {
 			Timeout.LONG,
 		);
 
-		await this.highlightElement(accountBalanceLocator);
+		await accountBalanceLocator.hover({ trial: true });
+		await accountBalanceLocator.focus();
 
 		try {
 			// workaround for $0 balance on page load bug

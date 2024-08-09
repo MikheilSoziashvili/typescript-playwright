@@ -17,8 +17,6 @@ test.describe("Crash tests", () => {
 		await crashGamePage.playUntilMultiplierIs(
 			betTestData.autoCashoutMultiplier,
 			async () => {
-				await crashGamePage.navigate();
-
 				const accountBalanceBeforeBet =
 					await crashGamePage.authenticatedHeader.getAccountBalance();
 
