@@ -1,5 +1,4 @@
 import { VisibilityState } from "@enums/playwright/visibility-states";
-import { Timeout } from "@enums/timeout";
 import { Locator, Page, expect } from "@playwright/test";
 
 export class BaseMap {
