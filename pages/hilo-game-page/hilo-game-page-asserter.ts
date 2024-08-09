@@ -28,13 +28,10 @@ export class HiloGamePageAsserter extends BaseAsserter<HiloGamePage> {
 	public async gameResultColorIs(
 		resultMessage: HiloGameResultColor,
 	): Promise<void> {
-		await expect(this.gamdomPage.map.gamRoundResultLocator).not.toBeEmpty({
-			timeout: Timeout.MEDIUM,
-		});
+		await expect(this.gamdomPage.map.gamRoundResultLocator).not.toBeEmpty();
 
 		await expect(this.gamdomPage.map.gamRoundResultLocator).toContainText(
 			resultMessage,
-			{ timeout: Timeout.MEDIUM },
 		);
 	}
 }

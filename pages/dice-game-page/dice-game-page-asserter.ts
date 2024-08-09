@@ -73,21 +73,16 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 	}
 
 	public async diceMessageIsNotEmpty(): Promise<void> {
-		await expect(this.gamdomPage.map.diceGameAreaMessage).not.toBeEmpty({
-			timeout: Timeout.MEDIUM,
-		});
+		await expect(this.gamdomPage.map.diceGameAreaMessage).not.toBeEmpty();
 	}
 
 	public async diceMessageIs(
 		resultMessage: DiceGameResultMessage,
 	): Promise<void> {
-		await expect(this.gamdomPage.map.diceGameAreaMessage).not.toBeEmpty({
-			timeout: Timeout.MEDIUM,
-		});
+		await expect(this.gamdomPage.map.diceGameAreaMessage).not.toBeEmpty();
 
 		await expect(this.gamdomPage.map.diceGameAreaMessage).toHaveText(
 			resultMessage,
-			{ timeout: Timeout.MEDIUM },
 		);
 	}
 

@@ -44,8 +44,6 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 	): Promise<void> {
 		await expect(
 			await this.gamdomPage.map.getLoadedAccountBalance(),
-		).not.toHaveText(`${formatBalance(initialBalance)}`, {
-			timeout: Timeout.MEDIUM,
-		});
+		).not.toHaveText(`${formatBalance(initialBalance)}`);
 	}
 }
