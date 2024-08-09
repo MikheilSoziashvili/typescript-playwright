@@ -49,7 +49,7 @@ export class BaseMap {
 		locator: Locator,
 		attribute: string,
 		expectedValue: string,
-		timeout: number = Timeout.LONG,
+		timeout?: number,
 	): Promise<void> {
 		await expect(locator).toHaveAttribute(attribute, expectedValue, {
 			timeout,

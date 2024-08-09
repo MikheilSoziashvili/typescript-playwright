@@ -3,6 +3,7 @@ import { BaseMap } from "@base/base-map";
 import { decimalNumber } from "@support/regex-patterns";
 import { OriginalGame } from "@enums/original-games";
 import { throwError } from "@core/utils/utils";
+import { Timeout } from "@enums/timeout";
 
 export class AuthenticatedHeaderMap extends BaseMap {
 	public constructor(page: Page) {
@@ -36,6 +37,7 @@ export class AuthenticatedHeaderMap extends BaseMap {
 			accountBalanceLocator,
 			"class",
 			"animation-finished",
+			Timeout.LONG,
 		);
 
 		await this.highlightElement(accountBalanceLocator);

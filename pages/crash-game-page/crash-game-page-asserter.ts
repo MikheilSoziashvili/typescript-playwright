@@ -1,6 +1,7 @@
 import { Locator, expect } from "@playwright/test";
 import { BaseAsserter } from "@base/base-asserter";
 import { CrashGamePage } from "./crash-game-page";
+import { Timeout } from "@enums/timeout";
 
 export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 	public constructor(page: CrashGamePage) {
@@ -16,6 +17,7 @@ export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 		for (const bet of bets as { username: string; betAmount: string }[]) {
 			await expect(this.gamdomPage.map.playersGridRowCells).toContainText(
 				[bet.username, bet.betAmount],
+				{ timeout: Timeout.LONG },
 			);
 		}
 	}
