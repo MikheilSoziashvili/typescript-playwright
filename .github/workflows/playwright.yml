@@ -47,6 +47,9 @@ on:
             MAILINATOR_API_KEY: 
                 required: true
                 description: "Mailinator authentication"
+    
+    schedule:
+        - cron: '0 2 * * *'            
 
 jobs:
     tests:
