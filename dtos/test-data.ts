@@ -76,20 +76,20 @@ export class DiceBetTestData {
 
 export class DiceAutobetTestData {
 	public betAmount: number;
-	public nbOfBets?: number;
+	public numberOfBets?: number;
 	public rollOver?: number;
 	public stopOnProfit?: number;
 	public stopOnLoss?: number;
 
 	constructor(options: {
 		betAmount: number;
-		nbOfBets?: number;
+		numberOfBets?: number;
 		rollOver?: number;
 		stopOnProfit?: number;
 		stopOnLoss?: number;
 	}) {
 		this.betAmount = options.betAmount;
-		this.nbOfBets = options.nbOfBets;
+		this.numberOfBets = options.numberOfBets;
 		this.rollOver = options.rollOver;
 		this.stopOnProfit = options.stopOnProfit;
 		this.stopOnLoss = options.stopOnLoss;

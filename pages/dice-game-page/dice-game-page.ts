@@ -52,14 +52,14 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 	public async fillInAutobetBetData(
 		parameters: DiceAutobetTestData,
 	): Promise<void> {
-		const { betAmount, rollOver, nbOfBets, stopOnProfit, stopOnLoss } =
+		const { betAmount, rollOver, numberOfBets, stopOnProfit, stopOnLoss } =
 			parameters;
 		await this.map.autobetYourBetInput.fill(betAmount.toString());
 		if (rollOver) {
 			await this.map.autobetRollOverInput.fill(rollOver.toString());
 		}
-		if (nbOfBets) {
-			await this.map.autobetNbOfBetsInput.fill(nbOfBets.toString());
+		if (numberOfBets) {
+			await this.map.autobetNbOfBetsInput.fill(numberOfBets.toString());
 		}
 		if (stopOnProfit) {
 			await this.map.autobetStopOnProfitInput.fill(

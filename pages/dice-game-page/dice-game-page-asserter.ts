@@ -109,9 +109,9 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		await expect(this.gamdomPage.map.autobetYourBetInput).toHaveValue(
 			parseToFloat(autobetData.betAmount),
 		);
-		if (autobetData.nbOfBets) {
+		if (autobetData.numberOfBets) {
 			await expect(this.gamdomPage.map.autobetNbOfBetsInput).toHaveValue(
-				autobetData.nbOfBets.toString(),
+				autobetData.numberOfBets.toString(),
 			);
 		}
 		if (autobetData.rollOver) {
@@ -132,9 +132,66 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		}
 	}
 
-	// TODO: If you win the first game, stopAutbetButton will not appear at all and there will be failure here.
-	// This case should be handled!
 	public async diceStopAutobetButtonIsDisplayed(): Promise<void> {
 		await expect(this.gamdomPage.map.stopAutobetButton).toBeVisible();
+	}
+
+	public async diceStartAutobetButtonIsDisplayed(): Promise<void> {
+		await expect(this.gamdomPage.map.startAutobetButton).toBeVisible();
+	}
+
+	public async balanceAfterAutoBetIsCorrect(
+		initialBalance: number,
+		diceBetData: DiceAutobetTestData,
+	): Promise<void> {
+		let expectedBalance = initialBalance;
+
+		for (let i = 0; i < (diceBetData.numberOfBets ?? 0); i++) {
+			const newBalance =
+				await this.gamdomPage.authenticatedHeader.getAccountBalance();
+			expectedBalance = newBalance;
+
+			if (
+				this.shouldStopOnProfit(
+					diceBetData,
+					expectedBalance - initialBalance,
+				)
+			) {
+				return;
+			}
+
+			if (
+				this.shouldStopOnLoss(
+					diceBetData,
+					initialBalance - expectedBalance,
+				)
+			) {
+				return;
+			}
+		}
+
+		const finalBalance =
+			await this.gamdomPage.authenticatedHeader.getAccountBalance();
+		expect(finalBalance).toBeCloseTo(expectedBalance, 2);
+	}
+
+	private shouldStopOnProfit(
+		diceBetData: DiceAutobetTestData,
+		profit: number,
+	): boolean {
+		return (
+			diceBetData.stopOnProfit !== undefined &&
+			profit >= diceBetData.stopOnProfit
+		);
+	}
+
+	private shouldStopOnLoss(
+		diceBetData: DiceAutobetTestData,
+		loss: number,
+	): boolean {
+		return (
+			diceBetData.stopOnLoss !== undefined &&
+			loss >= diceBetData.stopOnLoss
+		);
 	}
 }
