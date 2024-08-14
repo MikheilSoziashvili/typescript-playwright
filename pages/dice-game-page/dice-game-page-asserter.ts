@@ -133,11 +133,15 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 	}
 
 	public async diceStopAutobetButtonIsDisplayed(): Promise<void> {
-		await expect(this.gamdomPage.map.stopAutobetButton).toBeVisible();
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.stopAutobetButton,
+		]);
 	}
 
 	public async diceStartAutobetButtonIsDisplayed(): Promise<void> {
-		await expect(this.gamdomPage.map.startAutobetButton).toBeVisible();
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.startAutobetButton,
+		]);
 	}
 
 	public async balanceAfterAutoBetIsCorrect(
@@ -151,47 +155,24 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 				await this.gamdomPage.authenticatedHeader.getAccountBalance();
 			expectedBalance = newBalance;
 
-			if (
-				this.shouldStopOnProfit(
-					diceBetData,
-					expectedBalance - initialBalance,
-				)
-			) {
+			const profit = expectedBalance - initialBalance;
+			const loss = initialBalance - expectedBalance;
+
+			if (this.shouldStopOn(diceBetData.stopOnProfit, profit)) {
 				return;
 			}
 
-			if (
-				this.shouldStopOnLoss(
-					diceBetData,
-					initialBalance - expectedBalance,
-				)
-			) {
+			if (this.shouldStopOn(diceBetData.stopOnLoss, loss)) {
 				return;
 			}
 		}
 
 		const finalBalance =
 			await this.gamdomPage.authenticatedHeader.getAccountBalance();
-		expect(finalBalance).toBeCloseTo(expectedBalance, 2);
+		expect(finalBalance).toEqual(expectedBalance);
 	}
 
-	private shouldStopOnProfit(
-		diceBetData: DiceAutobetTestData,
-		profit: number,
-	): boolean {
-		return (
-			diceBetData.stopOnProfit !== undefined &&
-			profit >= diceBetData.stopOnProfit
-		);
-	}
-
-	private shouldStopOnLoss(
-		diceBetData: DiceAutobetTestData,
-		loss: number,
-	): boolean {
-		return (
-			diceBetData.stopOnLoss !== undefined &&
-			loss >= diceBetData.stopOnLoss
-		);
+	private shouldStopOn(limit: number | undefined, value: number): boolean {
+		return limit !== undefined && value >= limit;
 	}
 }
