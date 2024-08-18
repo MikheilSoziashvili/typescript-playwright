@@ -71,11 +71,6 @@ jobs:
             ENVIRONMENT_URL: ${{ inputs.environment == '' && vars.ENVIRONMENT_URL || inputs.environment }}
             SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
             TAG: ${{ inputs.tag == '' && 'smoke' || inputs.tag }}
-
-            # AWS env vars
-            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            AWS_DEFAULT_REGION: eu-west-2
         steps:
             - name: Validation For Environment URL
               run: |
@@ -106,8 +101,13 @@ jobs:
 
                 # Call the upload script with the required parameters
                 ./scripts/upload_to_s3_and_generate_presigned_url.sh playwright-report gamdom-prod-qa-reporting $S3_KEY_PREFIX
+              env:
+                AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
             - name: Create PR comment with presigned URL
               if: github.event_name == 'pull_request'
+              continue-on-error: true
               run: |
                 COMMENT=":world_map: Playwright report available [here]($PRESIGNED_URL)"
                 echo $COMMENT
