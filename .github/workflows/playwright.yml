@@ -114,8 +114,7 @@ jobs:
                 # Call the upload script with the required parameters
                 ./scripts/upload_to_s3_and_generate_presigned_url.sh playwright-report gamdom-prod-qa-reporting $S3_KEY_PREFIX
             - name: Create PR comment with presigned URL
-              if: github.event_name == 'pull_request'
-              continue-on-error: true
+              if: ${{ always() && github.event_name == 'pull_request' }}
               run: |
                 COMMENT=":world_map: Playwright report available [here]($PRESIGNED_URL)"
                 echo $COMMENT

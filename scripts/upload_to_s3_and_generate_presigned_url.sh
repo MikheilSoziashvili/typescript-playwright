@@ -24,7 +24,7 @@ fi
 
 # Generate a pre-signed URL for the index.html file
 INDEX_HTML_KEY="$S3_KEY_PREFIX/index.html"
-PRESIGNED_URL=$(aws s3 presign "s3://$BUCKET_NAME/$INDEX_HTML_KEY" --expires-in 60 --region $AWS_DEFAULT_REGION)
+PRESIGNED_URL=$(aws s3 presign "s3://$BUCKET_NAME/$INDEX_HTML_KEY" --expires-in 3600 --region $AWS_DEFAULT_REGION)
 
 # Check if the presigned URL was generated successfully
 if [ $? -ne 0 ]; then
