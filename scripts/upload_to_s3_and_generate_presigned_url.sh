@@ -12,12 +12,6 @@ DIRECTORY_PATH=$1
 BUCKET_NAME=$2
 S3_KEY_PREFIX=$3
 
-# Debugging environment variables
-echo "Env vars withing script"
-echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID"
-echo "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"
-echo "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION"
-
 # Upload the directory to the S3 bucket
 echo "Uploading $DIRECTORY_PATH to s3://$BUCKET_NAME/$S3_KEY_PREFIX/"
 aws s3 cp --recursive "$DIRECTORY_PATH" "s3://$BUCKET_NAME/$S3_KEY_PREFIX/"
