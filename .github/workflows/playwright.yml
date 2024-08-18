@@ -72,6 +72,10 @@ jobs:
             SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
             TAG: ${{ inputs.tag == '' && 'smoke' || inputs.tag }}
 
+            # AWS env vars
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            AWS_DEFAULT_REGION: eu-west-2
         steps:
             - name: Validation For Environment URL
               run: |
@@ -93,3 +97,20 @@ jobs:
                   name: playwright-report
                   path: playwright-report/
                   retention-days: 30
+            - name: Upload Playwright report to S3 and generate presigned URL
+              if: always()
+              run: |
+                # Create a unique directory name using the GitHub run ID and timestamp
+                TIMESTAMP=$(date +%Y%m%d%H%M%S)
+                S3_KEY_PREFIX="playwright-reports/${{ github.run_id }}-${TIMESTAMP}"
+
+                # Call the upload script with the required parameters
+                ./scripts/upload_to_s3_and_generate_presigned_url.sh playwright-report gamdom-prod-qa-reporting $S3_KEY_PREFIX
+            - name: Create PR comment with presigned URL
+              if: github.event_name == 'pull_request'
+              run: |
+                COMMENT=":world_map: Playwright report available [here]($PRESIGNED_URL)"
+                echo $COMMENT
+                gh pr comment ${{ github.event.pull_request.number }} --body "$COMMENT"
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
