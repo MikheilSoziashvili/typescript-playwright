@@ -53,6 +53,9 @@ on:
             AWS_SECRET_ACCESS_KEY:
                 required: true
                 description: AWS Secret Access key
+            AWS_DEFAULT_REGION:
+                required: true
+                description: AWS Default region
     
     schedule:
         - cron: '0 2 * * *'            
