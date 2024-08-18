@@ -12,6 +12,12 @@ DIRECTORY_PATH=$1
 BUCKET_NAME=$2
 S3_KEY_PREFIX=$3
 
+# Debugging environment variables
+echo "Env vars withing script"
+echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID"
+echo "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"
+echo "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION"
+
 # Upload the directory to the S3 bucket
 echo "Uploading $DIRECTORY_PATH to s3://$BUCKET_NAME/$S3_KEY_PREFIX/"
 aws s3 cp --recursive "$DIRECTORY_PATH" "s3://$BUCKET_NAME/$S3_KEY_PREFIX/"
@@ -24,7 +30,7 @@ fi
 
 # Generate a pre-signed URL for the index.html file
 INDEX_HTML_KEY="$S3_KEY_PREFIX/index.html"
-PRESIGNED_URL=$(aws s3 presign "s3://$BUCKET_NAME/$INDEX_HTML_KEY" --expires-in 60 --region eu-west-2)
+PRESIGNED_URL=$(aws s3 presign "s3://$BUCKET_NAME/$INDEX_HTML_KEY" --expires-in 60 --region $AWS_DEFAULT_REGION)
 
 # Check if the presigned URL was generated successfully
 if [ $? -ne 0 ]; then

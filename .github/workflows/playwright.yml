@@ -98,6 +98,11 @@ jobs:
                 # Create a unique directory name using the GitHub run ID and timestamp
                 TIMESTAMP=$(date +%Y%m%d%H%M%S)
                 S3_KEY_PREFIX="playwright-reports/${{ github.run_id }}-${TIMESTAMP}"
+ 
+                echo "Env vars before executing script"
+                echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID"
+                echo "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"
+                echo "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION"
 
                 # Call the upload script with the required parameters
                 ./scripts/upload_to_s3_and_generate_presigned_url.sh playwright-report gamdom-prod-qa-reporting $S3_KEY_PREFIX
