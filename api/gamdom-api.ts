@@ -5,6 +5,7 @@ import { LoginRequest } from "@dtos/requests/gamdom-api/login-request";
 import { RegisterRequest } from "@dtos/requests/gamdom-api/register-request";
 import { RegisterTestData } from "@dtos/test-data";
 import { SetFeatureStateRequest } from "@dtos/requests/gamdom-api/set-feature-state-request";
+import { Feature } from "@enums/feature";
 
 export class GamdomApi extends BaseApi {
 	constructor(base_url: string = Configuration.environment_url) {
@@ -48,7 +49,7 @@ export class GamdomApi extends BaseApi {
 	}
 
 	private async toggleFeature(
-		feature: string,
+        feature: Feature,
 		enable: boolean,
 		isBeta: boolean,
 		_headers?: Record<string, string>,
@@ -68,23 +69,21 @@ export class GamdomApi extends BaseApi {
 	}
 
 	public async setFeatureState(
-		feature: string,
+        feature: Feature,
 		states: { regular: boolean; beta: boolean },
 		_headers: Record<string, string> = {},
 	): Promise<[APIResponse, APIResponse]> {
-		const responseRegular = await this.toggleFeature(
-			feature,
-			states.regular,
-			false,
-			_headers,
-		);
-		const responseBeta = await this.toggleFeature(
-			feature,
-			states.beta,
-			true,
-			_headers,
+		const stateConfigs = [
+			{ enable: states.regular, isBeta: false },
+			{ enable: states.beta, isBeta: true },
+		];
+
+		const responses = await Promise.all(
+			stateConfigs.map(({ enable, isBeta }) =>
+				this.toggleFeature(feature, enable, isBeta, _headers),
+			),
 		);
 
-		return [responseRegular, responseBeta];
+		return responses as [APIResponse, APIResponse];
 	}
 }

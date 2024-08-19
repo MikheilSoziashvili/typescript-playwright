@@ -1,5 +1,7 @@
+import { Feature } from "@enums/feature";
+
 export type SetFeatureStateRequest = {
-	feature: string;
+	feature: Feature;
 	enable: boolean;
 	isBeta: boolean;
 };
