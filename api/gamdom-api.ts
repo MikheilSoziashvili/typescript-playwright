@@ -44,12 +44,16 @@ export class GamdomApi extends BaseApi {
 			totp_token: "",
 		};
 
-		const parameters = this.buildParameters("/login2", payload, _headers);
+		const parameters = this.buildParameters(
+			"/client-api/internalAuth/login",
+			payload,
+			_headers,
+		);
 		return this.post(parameters);
 	}
 
 	private async toggleFeature(
-        feature: Feature,
+		feature: Feature,
 		enable: boolean,
 		isBeta: boolean,
 		_headers?: Record<string, string>,
@@ -69,7 +73,7 @@ export class GamdomApi extends BaseApi {
 	}
 
 	public async setFeatureState(
-        feature: Feature,
+		feature: Feature,
 		states: { regular: boolean; beta: boolean },
 		_headers: Record<string, string> = {},
 	): Promise<[APIResponse, APIResponse]> {
