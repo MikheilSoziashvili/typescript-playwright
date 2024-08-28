@@ -1,7 +1,10 @@
 import { test } from "@fixtures/fixtures";
 import { ChatFooterPlaceholder } from "@enums/chat-footer-palceholders";
 import { ChatMessageOptions } from "@components/chat/chat-map";
-import { generateRandomString } from "@core/utils/utils";
+import {
+	generateRandomString,
+	setAuthenticationCookies,
+} from "@core/utils/utils";
 import { USER_1_CREDENTIALS, USER_2_CREDENTIALS } from "@constants/credentials";
 import { ToastTitle } from "@enums/toast-titles";
 import {
@@ -18,11 +21,12 @@ test.describe("Tip user tests", () => {
 	let user1AccountBalance: number;
 	const tipValue = 10;
 
-	test.beforeEach(async ({ gamdomApiActions, homePage, chat }) => {
-		await gamdomApiActions.authenticateWithExistingUser(
+	test.beforeEach(async ({ gamdomApi, homePage, chat, page }) => {
+		const cookie = await gamdomApi.authenticateWithExistingUser(
 			USER_1_CREDENTIALS.username,
 			USER_1_CREDENTIALS.password,
 		);
+		await setAuthenticationCookies(page, cookie);
 		await homePage.navigate();
 		await homePage.authenticatedHeader.expandChatIfNotVisible();
 
@@ -38,10 +42,11 @@ test.describe("Tip user tests", () => {
 
 	test("[ENG-290] 'Tip User' from the chat @smoke", async ({
 		homePage,
-		gamdomApiActions,
+		gamdomApi,
 		chat,
 		tipUserModal,
 		toast,
+		page,
 	}) => {
 		test.slow();
 		await homePage.navigate({ cookies: { clearCookies: true } });
@@ -50,10 +55,13 @@ test.describe("Tip user tests", () => {
 		await chat
 			.assertThat()
 			.isPlaceholderVisible(ChatFooterPlaceholder.LOGIN_TO_CHAT);
-		await gamdomApiActions.authenticateWithExistingUser(
+
+		const cookie = await gamdomApi.authenticateWithExistingUser(
 			USER_2_CREDENTIALS.username,
 			USER_2_CREDENTIALS.password,
 		);
+		await setAuthenticationCookies(page, cookie);
+
 		await homePage.navigate();
 		await chat.assertThat().isDisplayed();
 		await chat.assertThat().isMessageVisible(messageInfo_1);
@@ -92,10 +100,11 @@ test.describe("Tip user tests", () => {
 			.isPlaceholderVisible(ChatFooterPlaceholder.START_TYPING);
 
 		await homePage.navigate({ cookies: { clearCookies: true } });
-		await gamdomApiActions.authenticateWithExistingUser(
+		const cookieUser1 = await gamdomApi.authenticateWithExistingUser(
 			USER_1_CREDENTIALS.username,
 			USER_1_CREDENTIALS.password,
 		);
+		await setAuthenticationCookies(page, cookieUser1);
 		await homePage.navigate();
 		await homePage.authenticatedHeader
 			.assertThat()

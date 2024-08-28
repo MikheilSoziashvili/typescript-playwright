@@ -1,11 +1,11 @@
-import { BaseApi } from "./base-api";
+import { APIResponse, expect } from "@playwright/test";
 import * as Configuration from "../configuration";
-import { APIResponse } from "@playwright/test";
 import { LoginRequest } from "@dtos/requests/gamdom-api/login-request";
 import { RegisterRequest } from "@dtos/requests/gamdom-api/register-request";
 import { RegisterTestData } from "@dtos/test-data";
 import { SetFeatureStateRequest } from "@dtos/requests/gamdom-api/set-feature-state-request";
 import { Feature } from "@enums/feature";
+import { BaseApi } from "./base-api";
 
 export class GamdomApi extends BaseApi {
 	constructor(base_url: string = Configuration.environment_url) {
@@ -50,6 +50,40 @@ export class GamdomApi extends BaseApi {
 			_headers,
 		);
 		return this.post(parameters);
+	}
+
+	public async authenticateWithExistingUser(
+		username: string,
+		password: string,
+	): Promise<string> {
+		const loginResponse = await this.login(username, password);
+		const setCookie = loginResponse.headers()["set-cookie"];
+
+		expect(
+			setCookie,
+			"No cookies received from login response",
+		).toBeTruthy();
+
+		return setCookie;
+	}
+
+	public async authenticateWithNewUser(
+		userData: RegisterTestData,
+	): Promise<string> {
+		await this.registerUser(userData);
+		return this.authenticateWithExistingUser(
+			userData.username,
+			userData.password,
+		);
+	}
+
+	private async registerUser(
+		userData: RegisterTestData,
+	): Promise<APIResponse> {
+		const registerResponse = await this.register(userData);
+		expect(registerResponse.status(), "Register failed").toBe(200);
+
+		return registerResponse;
 	}
 
 	private async toggleFeature(

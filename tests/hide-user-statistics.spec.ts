@@ -1,6 +1,9 @@
 import { test } from "@fixtures/fixtures";
 import { ChatMessageOptions } from "@components/chat/chat-map";
-import { generateRandomString } from "@core/utils/utils";
+import {
+	generateRandomString,
+	setAuthenticationCookies,
+} from "@core/utils/utils";
 import { USER_1_CREDENTIALS, USER_2_CREDENTIALS } from "@constants/credentials";
 import { ChatFooterPlaceholder } from "@enums/chat-footer-palceholders";
 
@@ -12,11 +15,12 @@ const messageInfo: ChatMessageOptions = {
 
 test.describe("User statistics tests", () => {
 	test.beforeEach(
-		async ({ gamdomApiActions, homePage, chat, profilePage }) => {
-			await gamdomApiActions.authenticateWithExistingUser(
+		async ({ gamdomApi, homePage, chat, profilePage, page }) => {
+			const cookie = await gamdomApi.authenticateWithExistingUser(
 				USER_2_CREDENTIALS.username,
 				USER_2_CREDENTIALS.password,
 			);
+			await setAuthenticationCookies(page, cookie);
 			await profilePage.navigate();
 			await profilePage.steps().toggleUserStatisticsMode("on");
 			await homePage.navigate();
@@ -33,16 +37,18 @@ test.describe("User statistics tests", () => {
 	);
 
 	test("[ENG-300] Hide statistics from other users", async ({
-		gamdomApiActions,
+		gamdomApi,
 		homePage,
 		chat,
 		userProfileModal,
+		page,
 	}) => {
 		test.slow();
-		await gamdomApiActions.authenticateWithExistingUser(
+		const cookie = await gamdomApi.authenticateWithExistingUser(
 			USER_1_CREDENTIALS.username,
 			USER_1_CREDENTIALS.password,
 		);
+		await setAuthenticationCookies(page, cookie);
 		await homePage.navigate();
 		await homePage.authenticatedHeader.expandChatIfNotVisible();
 
@@ -56,12 +62,13 @@ test.describe("User statistics tests", () => {
 		await userProfileModal.assertThat().isPrivateUserModeDisplayed();
 	});
 
-	test.afterEach(async ({ gamdomApiActions, homePage, profilePage }) => {
+	test.afterEach(async ({ gamdomApi, homePage, profilePage, page }) => {
 		await homePage.navigate({ cookies: { clearCookies: true } });
-		await gamdomApiActions.authenticateWithExistingUser(
+		const cookie = await gamdomApi.authenticateWithExistingUser(
 			USER_2_CREDENTIALS.username,
 			USER_2_CREDENTIALS.password,
 		);
+		await setAuthenticationCookies(page, cookie);
 		await profilePage.navigate();
 		await profilePage.steps().toggleUserStatisticsMode("off");
 	});

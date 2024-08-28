@@ -1,5 +1,8 @@
 import { MAILINATOR_DOMAIN } from "@constants/domains";
-import { generateEmailAndInbox } from "@core/utils/utils";
+import {
+	generateEmailAndInbox,
+	setAuthenticationCookies,
+} from "@core/utils/utils";
 import { test } from "fixtures/fixtures";
 import { RegisterTestData } from "@dtos/test-data";
 
@@ -10,12 +13,13 @@ test.describe("Email Verification Tests", () => {
 		mailinatorApi,
 		page,
 		profilePage,
-		gamdomApiActions,
+		gamdomApi,
 	}) => {
 		const { email, inbox } = generateEmailAndInbox();
 		const userData = new RegisterTestData({ email });
 
-		await gamdomApiActions.authenticateWithNewUser(userData);
+		const cookie = await gamdomApi.authenticateWithNewUser(userData);
+		await setAuthenticationCookies(page, cookie);
 
 		await profilePage
 			.steps()
@@ -31,12 +35,13 @@ test.describe("Email Verification Tests", () => {
 		mailinatorApi,
 		page,
 		profilePage,
-		gamdomApiActions,
+		gamdomApi,
 	}) => {
 		const { email, inbox } = generateEmailAndInbox();
 		const userData = new RegisterTestData({ email });
 
-		await gamdomApiActions.authenticateWithNewUser(userData);
+		const cookie = await gamdomApi.authenticateWithNewUser(userData);
+		await setAuthenticationCookies(page, cookie);
 
 		await profilePage.navigate();
 		await profilePage.steps().completeVerificationFlow();
@@ -56,13 +61,14 @@ test.describe("Email Verification Tests", () => {
 		mailinatorApi,
 		page,
 		profilePage,
-		gamdomApiActions,
+		gamdomApi,
 	}) => {
 		const { email } = generateEmailAndInbox();
 		const newEmailData = generateEmailAndInbox();
 		const userData = new RegisterTestData({ email });
 
-		await gamdomApiActions.authenticateWithNewUser(userData);
+		const cookie = await gamdomApi.authenticateWithNewUser(userData);
+		await setAuthenticationCookies(page, cookie);
 
 		await profilePage.navigate();
 		await profilePage.steps().changeEmail(newEmailData.email);

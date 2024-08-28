@@ -13,6 +13,8 @@ import fs from "fs";
 import xml2js from "xml2js";
 import { MAILINATOR_DOMAIN } from "@constants/domains";
 import { Protocol } from "@enums/api/protocols";
+import { Page } from "playwright";
+import { environment_url } from "configuration";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -207,9 +209,32 @@ export function getCookieValue(setCookie: string): string {
 	return setCookie.split("=")[1].split(";")[0];
 }
 
+export function getCookieHeader(setCookie: string): string {
+	return setCookie.split(";")[0]
+}
+
 export function throwError(error: unknown, message: string): never {
 	if (error instanceof Error) {
 		throw new Error(`${message}: ${error.message}`);
 	}
 	throw new Error(message);
+}
+
+export async function setAuthenticationCookies(
+	page: Page,
+	setCookie: string,
+): Promise<void> {
+	const domain = environment_url.split("://")[1];
+	const cookie = [
+		{
+			name: getCookieName(setCookie),
+			value: getCookieValue(setCookie),
+			domain: domain,
+			path: "/",
+			httpOnly: true,
+			secure: false,
+		},
+	];
+
+	await page.context().addCookies(cookie);
 }

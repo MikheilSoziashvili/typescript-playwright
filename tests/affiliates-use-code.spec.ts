@@ -1,9 +1,13 @@
-import { generateRandomString } from "@core/utils/utils";
+import {
+	generateRandomString,
+	setAuthenticationCookies,
+} from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { NotificationTitle } from "@enums/notification-titles";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { test } from "@fixtures/fixtures";
+
 const AUTOMATION_AFFILIATES_CODE = generateRandomString({
 	prefix: "automation",
 });
@@ -17,14 +21,22 @@ test.describe("Use affiliate code", () => {
 		faqPage,
 		notifications,
 		toast,
-		gamdomApiActions,
+		gamdomApi,
+		page,
 	}) => {
-		await gamdomApiActions.authenticateWithNewUser(new RegisterTestData());
+		const cookie = await gamdomApi.authenticateWithNewUser(
+			new RegisterTestData(),
+		);
+		await setAuthenticationCookies(page, cookie);
 		await affiliatesPage.navigate();
 		await affiliatesPage.steps().addCode(AUTOMATION_AFFILIATES_CODE);
 
 		await homePage.navigate({ cookies: { clearCookies: true } });
-		await gamdomApiActions.authenticateWithNewUser(new RegisterTestData());
+
+		const newCookie = await gamdomApi.authenticateWithNewUser(
+			new RegisterTestData(),
+		);
+		await setAuthenticationCookies(page, newCookie);
 
 		await rewardsPage.navigate();
 		await rewardsPage.steps().claimCode(AUTOMATION_AFFILIATES_CODE);

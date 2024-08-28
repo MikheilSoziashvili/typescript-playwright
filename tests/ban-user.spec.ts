@@ -1,10 +1,12 @@
 import { SUPER_ADMIN_CREDENTIALS } from "@constants/credentials";
 import { RegisterTestData } from "@dtos/test-data";
 import { test } from "@fixtures/fixtures";
+import { setAuthenticationCookies } from "@core/utils/utils";
 
 test.describe("Ban user", () => {
 	const NEW_USER_REGISTER_DATA = new RegisterTestData();
 	const BAN_REASON = "automation test";
+
 	test.beforeEach(async ({ homePage, profilePage }) => {
 		await homePage.navigateAndCheckTitle();
 		await homePage.steps().registerNewUser(NEW_USER_REGISTER_DATA);
@@ -13,17 +15,19 @@ test.describe("Ban user", () => {
 	});
 
 	test.slow();
-	test("[ENG-288] Banning an user", async ({
+	test("[ENG-288] Banning a user", async ({
 		homePage,
 		userInfoAdminPage,
 		infoAdminPage,
 		bannedUserPage,
-		gamdomApiActions,
+		gamdomApi,
+		page,
 	}) => {
-		await gamdomApiActions.authenticateWithExistingUser(
+		const cookie = await gamdomApi.authenticateWithExistingUser(
 			SUPER_ADMIN_CREDENTIALS.username,
 			SUPER_ADMIN_CREDENTIALS.password,
 		);
+		await setAuthenticationCookies(page, cookie);
 
 		await userInfoAdminPage.navigate();
 		await userInfoAdminPage

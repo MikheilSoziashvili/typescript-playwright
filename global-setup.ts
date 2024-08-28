@@ -1,12 +1,35 @@
 import { expect } from "@playwright/test";
 import { JiraApi } from "@api/jira-api";
 import { createExecutionBody } from "@api/jira-api-payloads";
-import { writeToJSONFile } from "@core/utils/utils";
+import { getCookieHeader, writeToJSONFile } from "@core/utils/utils";
 import { logger } from "@logger/logger";
 import * as Configuration from "configuration";
 import { JsonData } from "@core/interfaces";
+import { GamdomApi } from "@api/gamdom-api";
+import { SUPER_ADMIN_CREDENTIALS } from "@constants/credentials";
+import { Feature } from "@enums/feature";
 
 async function globalSetup(): Promise<void> {
+	logger.info("Enabling HILO...");
+
+	const gamdomApi = new GamdomApi();
+
+	const cookie = getCookieHeader(await gamdomApi.authenticateWithExistingUser(
+		SUPER_ADMIN_CREDENTIALS.username,
+		SUPER_ADMIN_CREDENTIALS.password,
+	));
+
+	const featureResponse = await gamdomApi.setFeatureState(
+		Feature.HILO,
+		{ regular: true, beta: true },
+		{ Cookie: cookie },
+	);
+
+	expect(featureResponse[0].status()).toBe(200);
+	expect(featureResponse[1].status()).toBe(200);
+
+	logger.info("HILO has been successfully enabled.");
+
 	if (Configuration.createExecution) {
 		logger.info("Creating a Test Execution in JIRA...");
 		const jiraApi = new JiraApi();

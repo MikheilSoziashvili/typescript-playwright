@@ -1,4 +1,7 @@
-import { generateRandomString } from "@core/utils/utils";
+import {
+	generateRandomString,
+	setAuthenticationCookies,
+} from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { test } from "@fixtures/fixtures";
 
@@ -9,8 +12,12 @@ let affiliateLink = "";
 
 test.describe("Register with affiliate link", () => {
 	test.slow();
-	test.beforeEach(async ({ gamdomApiActions, affiliatesPage }) => {
-		await gamdomApiActions.authenticateWithNewUser(new RegisterTestData());
+
+	test.beforeEach(async ({ gamdomApi, affiliatesPage, page }) => {
+		const cookie = await gamdomApi.authenticateWithNewUser(
+			new RegisterTestData(),
+		);
+		await setAuthenticationCookies(page, cookie);
 		await affiliatesPage.navigate();
 		await affiliatesPage.steps().addCode(AUTOMATION_AFFILIATES_CODE);
 		affiliateLink = await affiliatesPage.getAffiliateLink();
