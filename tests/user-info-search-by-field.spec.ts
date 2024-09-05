@@ -1,5 +1,5 @@
 import { USER_1_CREDENTIALS, USER_2_CREDENTIALS } from "@constants/credentials";
-import { storageStateSuperadminAPI } from "@fixtures/auth-fixtures";
+import { storageStateUserAPI } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 
 const VALID_USERNAME = USER_1_CREDENTIALS.username;
@@ -7,7 +7,7 @@ const VALID_USERNAME_PREFIX = "user";
 const INVALID_USERNAME = "12$user";
 
 test.describe("User info - serch by field", () => {
-	test.use(storageStateSuperadminAPI);
+	test.use(storageStateUserAPI("superadmin", "password"));
 	test("[ENG-1386] User info - serch by field (wild card)", async ({
 		userInfoAdminPage,
 		infoAdminPage,

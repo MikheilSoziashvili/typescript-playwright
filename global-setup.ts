@@ -14,10 +14,12 @@ async function globalSetup(): Promise<void> {
 
 	const gamdomApi = new GamdomApi();
 
-	const cookie = getCookieHeader(await gamdomApi.authenticateWithExistingUser(
-		SUPER_ADMIN_CREDENTIALS.username,
-		SUPER_ADMIN_CREDENTIALS.password,
-	));
+	const cookie = getCookieHeader(
+		await gamdomApi.authenticateWithExistingUser(
+			SUPER_ADMIN_CREDENTIALS.username,
+			SUPER_ADMIN_CREDENTIALS.password,
+		),
+	);
 
 	const featureResponse = await gamdomApi.setFeatureState(
 		Feature.HILO,
@@ -25,8 +27,9 @@ async function globalSetup(): Promise<void> {
 		{ Cookie: cookie },
 	);
 
-	expect(featureResponse[0].status()).toBe(200);
-	expect(featureResponse[1].status()).toBe(200);
+	featureResponse.forEach((response) => {
+		expect(response.status()).toBe(200);
+	});
 
 	logger.info("HILO has been successfully enabled.");
 

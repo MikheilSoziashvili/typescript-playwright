@@ -7,6 +7,7 @@ import {
 } from "@constants/credentials";
 import {
 	GOOGLE_AUTH_STATE_FILE_PATH,
+	storageStateDir,
 	SUPER_ADMIN_AUTH_STATE_FILE_PATH,
 	USER_1_AUTH_STATE_FILE_PATH,
 } from "@constants/file-paths";
@@ -14,6 +15,8 @@ import {
 import * as fs from "fs";
 import { CredentialsType } from "./types/types";
 import { GamdomApi } from "@api/gamdom-api";
+import { RegisterTestData } from "@dtos/test-data";
+import { getFilePath } from "./utils/utils";
 
 const CREDENTIALS_AUTH_STATE_MAP = {
 	[GOOGLE_AUTH_CREDENTIALS.username]: GOOGLE_AUTH_STATE_FILE_PATH,
@@ -78,21 +81,51 @@ export async function getStorageStateUser(
 }
 
 export async function getStorageStateUserAPI(
-	user: CredentialsType,
+	username: string,
+	password: string,
 ): Promise<string> {
 	const gamdomApi = new GamdomApi();
-	const response = await gamdomApi.login(user.username, user.password);
 
+	const response = await gamdomApi.login(username, password);
 	expect(response.status(), "Login failed").toBe(200);
 	expect(
 		response.headers()["set-cookie"],
 		"No cookies received from login response",
 	).toBeTruthy();
 
+	let path = CREDENTIALS_AUTH_STATE_MAP[username];
+
+	if (!path) {
+		path = getFilePath(`${username}.json`, storageStateDir);
+		CREDENTIALS_AUTH_STATE_MAP[username] = path;
+	}
+
 	const context = await gamdomApi.getContext();
 	await context.storageState({
-		path: CREDENTIALS_AUTH_STATE_MAP[user.username],
+		path: path,
 	});
 
-	return CREDENTIALS_AUTH_STATE_MAP[user.username];
+	return path;
+}
+
+export async function getStorageStateNewUserAPI(
+	username?: string,
+	password?: string,
+	email?: string,
+): Promise<string> {
+	const gamdomApi = new GamdomApi();
+
+	const newUser = new RegisterTestData({ username, password, email });
+
+	await gamdomApi.authenticateWithNewUser(newUser);
+
+	const path = getFilePath(`${newUser.username}.json`, storageStateDir);
+	CREDENTIALS_AUTH_STATE_MAP[newUser.username] = path;
+
+	const context = await gamdomApi.getContext();
+	await context.storageState({
+		path: path,
+	});
+
+	return path;
 }

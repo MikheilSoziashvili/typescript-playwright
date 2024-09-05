@@ -6,7 +6,10 @@ import {
 } from "./credentials";
 import path from "path";
 
-const storageStateDir: string = getFilePath('.auth', path.resolve(__dirname, '../core'));
+export const storageStateDir: string = getFilePath(
+	".auth",
+	path.resolve(__dirname, "../core"),
+);
 
 export const DATASETS_DIR = "datasets";
 

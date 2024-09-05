@@ -6,6 +6,7 @@ import { RegisterTestData } from "@dtos/test-data";
 import { NotificationTitle } from "@enums/notification-titles";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
+import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 
 const AUTOMATION_AFFILIATES_CODE = generateRandomString({
@@ -13,6 +14,8 @@ const AUTOMATION_AFFILIATES_CODE = generateRandomString({
 });
 
 test.describe("Use affiliate code", () => {
+	test.use(storageStateNewUserAPI());
+
 	test.slow();
 	test("[ENG-297] Create an affiliate code and use it with a new account @smoke", async ({
 		homePage,
@@ -24,18 +27,13 @@ test.describe("Use affiliate code", () => {
 		gamdomApi,
 		page,
 	}) => {
-		const cookie = await gamdomApi.authenticateWithNewUser(
-			new RegisterTestData(),
-		);
-		await setAuthenticationCookies(page, cookie);
 		await affiliatesPage.navigate();
 		await affiliatesPage.steps().addCode(AUTOMATION_AFFILIATES_CODE);
 
 		await homePage.navigate({ cookies: { clearCookies: true } });
 
-		const newCookie = await gamdomApi.authenticateWithNewUser(
-			new RegisterTestData(),
-		);
+		const newUser = new RegisterTestData();
+		const newCookie = await gamdomApi.authenticateWithNewUser(newUser);
 		await setAuthenticationCookies(page, newCookie);
 
 		await rewardsPage.navigate();

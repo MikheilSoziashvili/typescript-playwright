@@ -1,12 +1,12 @@
 import { test } from "@fixtures/fixtures";
-import { storageStateSuperadminAPI } from "@fixtures/auth-fixtures";
+import { storageStateUserAPI } from "@fixtures/auth-fixtures";
 import { ToastTitle } from "@enums/toast-titles";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { CasinoGameName } from "@enums/casino-game";
 import { USER_1_ID } from "@constants/user-ids";
 
 test.describe("Grant free spins", () => {
-	test.use(storageStateSuperadminAPI);
+	test.use(storageStateUserAPI("superadmin", "password"));
 	test("[ENG-932] Granting free spins", async ({
 		vipManagerAdminPage,
 		toast,

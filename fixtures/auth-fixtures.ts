@@ -11,6 +11,7 @@ import {
 } from "@playwright/test";
 import {
 	getStorageStateGoogleAuth,
+	getStorageStateNewUserAPI,
 	getStorageStateUser,
 	getStorageStateUserAPI,
 } from "@core/auth-mngmt";
@@ -77,30 +78,40 @@ export const storageStateSuperadmin: Fixtures<
 	},
 };
 
-export const storageStateUser1API: Fixtures<
+export const storageStateUserAPI: (
+	username: string,
+	password: string,
+) => Fixtures<
 	{},
 	{},
 	PlaywrightTestArgs & PlaywrightTestOptions,
 	PlaywrightWorkerArgs & PlaywrightWorkerOptions
-> = {
+> = (username, password) => ({
 	storageState: async ({}, use) => {
 		const storageStatePath = await getStorageStateUserAPI(
-			USER_1_CREDENTIALS,
+			username,
+			password,
 		);
 		await use(storageStatePath);
 	},
-};
+});
 
-export const storageStateSuperadminAPI: Fixtures<
+export const storageStateNewUserAPI: (
+	username?: string,
+	password?: string,
+	email?: string,
+) => Fixtures<
 	{},
 	{},
 	PlaywrightTestArgs & PlaywrightTestOptions,
 	PlaywrightWorkerArgs & PlaywrightWorkerOptions
-> = {
+> = (username, password, email) => ({
 	storageState: async ({}, use) => {
-		const storageStatePath = await getStorageStateUserAPI(
-			SUPER_ADMIN_CREDENTIALS,
+		const storageStatePath = await getStorageStateNewUserAPI(
+			username,
+			password,
+			email,
 		);
 		await use(storageStatePath);
 	},
-};
+});

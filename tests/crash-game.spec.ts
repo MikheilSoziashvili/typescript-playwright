@@ -1,9 +1,9 @@
 import { test } from "@fixtures/fixtures";
 import { BetTestData } from "@dtos/test-data";
-import { storageStateUser1API } from "@fixtures/auth-fixtures";
+import { storageStateUserAPI } from "@fixtures/auth-fixtures";
 
 test.describe("Crash tests", () => {
-	test.use(storageStateUser1API);
+	test.use(storageStateUserAPI("qshko", "asd123fgh456"));
 	test.slow();
 	test("[ENG-265] Place a single bet on Crash and try to cashout @smoke @originals", async ({
 		crashGamePage,
