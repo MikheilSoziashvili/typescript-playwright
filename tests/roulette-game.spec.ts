@@ -3,9 +3,10 @@ import { test } from "@fixtures/fixtures";
 import { logger } from "@logger/logger";
 import { BetTestData } from "@dtos/test-data";
 import { storageStateUserAPI } from "@fixtures/auth-fixtures";
+import { USER_1_CREDENTIALS } from "@constants/credentials";
 
 test.describe("Roulette tests", () => {
-	test.use(storageStateUserAPI("user1", "password"));
+	test.use(storageStateUserAPI(USER_1_CREDENTIALS.username));
 	test("[ENG-264] Place a single bet on Roulette and try to win @smoke @originals", async ({
 		rouletteGamePage,
 	}) => {

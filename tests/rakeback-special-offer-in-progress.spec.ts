@@ -4,9 +4,10 @@ import { storageStateUserAPI } from "@fixtures/auth-fixtures";
 import { ToastTitle } from "@enums/toast-titles";
 import { RatebackHouseEdge } from "@enums/rateback-house-edge-options";
 import { buildClaimedAmountSubTitle } from "@core/helpers/asserter-helpers/text-asserters";
+import { USER_1_CREDENTIALS } from "@constants/credentials";
 
 test.describe("Rakeback reward with special offers tests", () => {
-	test.use(storageStateUserAPI("user1", "password"));
+	test.use(storageStateUserAPI(USER_1_CREDENTIALS.username));
 	test("[ENG-929] Rakeback instant reward when special offer is in progress", async ({
 		homePage,
 		diceGamePage,

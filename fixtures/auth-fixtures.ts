@@ -80,7 +80,7 @@ export const storageStateSuperadmin: Fixtures<
 
 export const storageStateUserAPI: (
 	username: string,
-	password: string,
+	password?: string,
 ) => Fixtures<
 	{},
 	{},

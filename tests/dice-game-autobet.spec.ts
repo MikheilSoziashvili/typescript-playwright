@@ -4,11 +4,12 @@ import { DiceAutobetTestData } from "@dtos/test-data";
 import { storageStateUserAPI } from "@fixtures/auth-fixtures";
 import { parse_csv } from "@core/utils/utils";
 import { DATASETS_DIR } from "@constants/file-paths";
+import { USER_1_CREDENTIALS } from "@constants/credentials";
 
 const DICE_AUTOBET_CSV = "ENG-1415-dice-autobet.csv";
 
 test.describe("Dice game autobet", () => {
-	test.use(storageStateUserAPI("user1", "password"));
+	test.use(storageStateUserAPI(USER_1_CREDENTIALS.username));
 
 	for (const betData of parse_csv(DATASETS_DIR, DICE_AUTOBET_CSV) as {
 		betAmount: number;

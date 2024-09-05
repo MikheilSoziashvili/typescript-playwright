@@ -10,7 +10,7 @@ import { storageStateUserAPI } from "@fixtures/auth-fixtures";
 import { SUPER_ADMIN_CREDENTIALS } from "@constants/credentials";
 
 test.describe("Hilo tests", () => {
-	test.use(storageStateUserAPI("superadmin", "password"));
+	test.use(storageStateUserAPI(SUPER_ADMIN_CREDENTIALS.username));
 	test.slow();
 	test("[ENG-298] Place a single bet on Hilo and try to win @smoke @originals", async ({
 		hiloGamePage,

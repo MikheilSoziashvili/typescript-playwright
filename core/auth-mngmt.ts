@@ -18,24 +18,25 @@ import { GamdomApi } from "@api/gamdom-api";
 import { RegisterTestData } from "@dtos/test-data";
 import { getFilePath } from "./utils/utils";
 
-const CREDENTIALS_AUTH_STATE_MAP = {
+const AUTH_STATE_PATH = {
 	[GOOGLE_AUTH_CREDENTIALS.username]: GOOGLE_AUTH_STATE_FILE_PATH,
 	[SUPER_ADMIN_CREDENTIALS.username]: SUPER_ADMIN_AUTH_STATE_FILE_PATH,
 	[USER_1_CREDENTIALS.username]: USER_1_AUTH_STATE_FILE_PATH,
 };
+
+const CREDENTIALS_MAP = new Map<string, string>([
+	[SUPER_ADMIN_CREDENTIALS.username, SUPER_ADMIN_CREDENTIALS.password],
+	[USER_1_CREDENTIALS.username, USER_1_CREDENTIALS.password],
+]);
 
 //Deprecated since CF auth introduced
 export async function getStorageStateGoogleAuth(
 	page: Page,
 	baseURL?: string,
 ): Promise<string | undefined> {
-	if (
-		fs.existsSync(
-			CREDENTIALS_AUTH_STATE_MAP[GOOGLE_AUTH_CREDENTIALS.username],
-		)
-	) {
+	if (fs.existsSync(AUTH_STATE_PATH[GOOGLE_AUTH_CREDENTIALS.username])) {
 		await page.close();
-		return CREDENTIALS_AUTH_STATE_MAP[GOOGLE_AUTH_CREDENTIALS.username];
+		return AUTH_STATE_PATH[GOOGLE_AUTH_CREDENTIALS.username];
 	}
 
 	const homePage: HomePage = new HomePage(page);
@@ -46,12 +47,12 @@ export async function getStorageStateGoogleAuth(
 		.titleHasText("Gamdom - Top Bitcoin & Crypto Casino!");
 
 	await page.context().storageState({
-		path: CREDENTIALS_AUTH_STATE_MAP[GOOGLE_AUTH_CREDENTIALS.username],
+		path: AUTH_STATE_PATH[GOOGLE_AUTH_CREDENTIALS.username],
 	});
 
 	await page.close();
 
-	return CREDENTIALS_AUTH_STATE_MAP[GOOGLE_AUTH_CREDENTIALS.username];
+	return AUTH_STATE_PATH[GOOGLE_AUTH_CREDENTIALS.username];
 }
 
 export async function getStorageStateUser(
@@ -59,9 +60,9 @@ export async function getStorageStateUser(
 	page: Page,
 	baseURL?: string,
 ): Promise<string> {
-	if (fs.existsSync(CREDENTIALS_AUTH_STATE_MAP[user.username])) {
+	if (fs.existsSync(AUTH_STATE_PATH[user.username])) {
 		await page.close();
-		return CREDENTIALS_AUTH_STATE_MAP[user.username];
+		return AUTH_STATE_PATH[user.username];
 	}
 
 	const homePage: HomePage = new HomePage(page);
@@ -71,20 +72,26 @@ export async function getStorageStateUser(
 	await homePage.loginModal.login(user.username, user.password);
 	await homePage.assertThat().userIsLoggedIn();
 
-	await page
-		.context()
-		.storageState({ path: CREDENTIALS_AUTH_STATE_MAP[user.username] });
+	await page.context().storageState({ path: AUTH_STATE_PATH[user.username] });
 
 	await page.close();
 
-	return CREDENTIALS_AUTH_STATE_MAP[user.username];
+	return AUTH_STATE_PATH[user.username];
 }
 
 export async function getStorageStateUserAPI(
 	username: string,
-	password: string,
+	password?: string,
 ): Promise<string> {
 	const gamdomApi = new GamdomApi();
+
+	if (!password) {
+		if (CREDENTIALS_MAP.has(username)) {
+			password = CREDENTIALS_MAP.get(username);
+		} else {
+			throw new Error(`No password provided for user ${username}`);
+		}
+	}
 
 	const response = await gamdomApi.login(username, password);
 	expect(response.status(), "Login failed").toBe(200);
@@ -93,11 +100,11 @@ export async function getStorageStateUserAPI(
 		"No cookies received from login response",
 	).toBeTruthy();
 
-	let path = CREDENTIALS_AUTH_STATE_MAP[username];
+	let path = AUTH_STATE_PATH[username];
 
 	if (!path) {
 		path = getFilePath(`${username}.json`, storageStateDir);
-		CREDENTIALS_AUTH_STATE_MAP[username] = path;
+		AUTH_STATE_PATH[username] = path;
 	}
 
 	const context = await gamdomApi.getContext();
@@ -120,7 +127,7 @@ export async function getStorageStateNewUserAPI(
 	await gamdomApi.authenticateWithNewUser(newUser);
 
 	const path = getFilePath(`${newUser.username}.json`, storageStateDir);
-	CREDENTIALS_AUTH_STATE_MAP[newUser.username] = path;
+	AUTH_STATE_PATH[newUser.username] = path;
 
 	const context = await gamdomApi.getContext();
 	await context.storageState({

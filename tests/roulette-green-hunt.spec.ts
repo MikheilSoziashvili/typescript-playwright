@@ -7,7 +7,7 @@ import { USER_1_CREDENTIALS } from "@constants/credentials";
 import { calculateGreenHuntAmountByPercentage } from "@formulas/roulette";
 
 test.describe("Green hunt", () => {
-	test.use(storageStateUserAPI("user1", "password"));
+	test.use(storageStateUserAPI(USER_1_CREDENTIALS.username));
 	test("[ENG-1090] Roulette - green hunt @originals", async ({ rouletteGamePage }) => {
 		const betTestData: BetTestData = new BetTestData(
 			USER_1_CREDENTIALS.username,

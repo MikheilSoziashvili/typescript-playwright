@@ -34,7 +34,7 @@ export class GamdomApi extends BaseApi {
 
 	public async login(
 		username: string,
-		password: string,
+		password?: string,
 		_headers?: Record<string, string>,
 	): Promise<APIResponse> {
 		const payload: LoginRequest = {

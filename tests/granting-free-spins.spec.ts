@@ -4,9 +4,10 @@ import { ToastTitle } from "@enums/toast-titles";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { CasinoGameName } from "@enums/casino-game";
 import { USER_1_ID } from "@constants/user-ids";
+import { SUPER_ADMIN_CREDENTIALS } from "@constants/credentials";
 
 test.describe("Grant free spins", () => {
-	test.use(storageStateUserAPI("superadmin", "password"));
+	test.use(storageStateUserAPI(SUPER_ADMIN_CREDENTIALS.username));
 	test("[ENG-932] Granting free spins", async ({
 		vipManagerAdminPage,
 		toast,
