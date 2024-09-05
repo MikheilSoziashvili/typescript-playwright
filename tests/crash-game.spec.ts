@@ -3,7 +3,7 @@ import { BetTestData } from "@dtos/test-data";
 import { storageStateUserAPI } from "@fixtures/auth-fixtures";
 
 test.describe("Crash tests", () => {
-	test.use(storageStateUserAPI("qshko", "asd123fgh456"));
+	test.use(storageStateUserAPI("user1", "password"));
 	test.slow();
 	test("[ENG-265] Place a single bet on Crash and try to cashout @smoke @originals", async ({
 		crashGamePage,
