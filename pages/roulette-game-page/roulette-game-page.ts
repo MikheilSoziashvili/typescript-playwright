@@ -35,10 +35,30 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 		return new RouletteGamePageAsserter(this);
 	}
 
-	public async waitBettingWindowAvailable(timeout = 30): Promise<void> {
-		await expect(this.map.spinningCountdownCounter).toBeAttached({
-			timeout: timeout * 1000,
-		});
+	public async waitBettingWindowAvailable(): Promise<void> {
+		const timeLeft = await this.getTimeLeftForBetting();
+
+		if (timeLeft < 2) {
+			logger.info(
+				`Time left for betting is ${timeLeft} seconds. Waiting for the next round...`,
+			);
+
+			await this.map.spinningCountdownCounter.waitFor({
+				state: "hidden",
+				timeout: 30000,
+			});
+
+			await this.map.spinningCountdownCounter.waitFor({
+				state: "visible",
+				timeout: 30000,
+			});
+
+			logger.info("Betting window is now available.");
+		} else {
+			logger.info(
+				`Sufficient time left (${timeLeft} seconds) to place the bet.`,
+			);
+		}
 	}
 
 	public async waitRoundResultNumber(timeout = 30): Promise<void> {
@@ -157,5 +177,24 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 				: GreenHuntTypeOption.MONEY;
 
 		await this.map.greenHuntTypeOption(option).click();
+	}
+
+	public async getTimeLeftForBetting(): Promise<number> {
+		const isSpinning = await this.map.gameResultStateLocator.isVisible();
+
+		if (isSpinning) {
+			await this.map.gameResultStateLocator.waitFor({
+				state: "hidden",
+				timeout: 30000,
+			});
+
+			await this.map.spinningCountdownCounter.waitFor({
+				state: "visible",
+				timeout: 30000,
+			});
+		}
+
+		const timeText = await this.map.spinningCountdownCounter.innerText();
+		return parseInt(timeText);
 	}
 }
