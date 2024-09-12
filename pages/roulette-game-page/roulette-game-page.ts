@@ -8,7 +8,10 @@ import { BasePage } from "@base/base-page";
 import { RouletteGamePageSteps } from "./roulette-game-page-steps";
 import { logger } from "@logger/logger";
 import { GreenHuntTypeOption } from "@enums/roulette-autobet-section";
+import { VisibilityState } from "@enums/playwright/visibility-states";
+
 import { BasePageNavigationParametersType } from "@core/types/types";
+import { Timeout } from "@enums/timeout";
 
 export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 	public constructor(page: Page) {
@@ -35,6 +38,8 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 		return new RouletteGamePageAsserter(this);
 	}
 
+	// Wait for the next betting window if the current round is finishing,
+	// as we don't know the game's state when the test starts.
 	public async waitBettingWindowAvailable(): Promise<void> {
 		const timeLeft = await this.getTimeLeftForBetting();
 
@@ -43,14 +48,16 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 				`Time left for betting is ${timeLeft} seconds. Waiting for the next round...`,
 			);
 
-			await this.map.spinningCountdownCounter.waitFor({
-				state: "hidden",
-				timeout: 30000,
+			await this.map.waitFor({
+				locator: this.map.gameResultStateLocator,
+				state: VisibilityState.HIDDEN,
+				timeout: Timeout.LONG,
 			});
 
-			await this.map.spinningCountdownCounter.waitFor({
-				state: "visible",
-				timeout: 30000,
+			await this.map.waitFor({
+				locator: this.map.gameResultStateLocator,
+				state: VisibilityState.VISIBLE,
+				timeout: Timeout.LONG,
 			});
 
 			logger.info("Betting window is now available.");
@@ -179,18 +186,22 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 		await this.map.greenHuntTypeOption(option).click();
 	}
 
+	// Get the time left for betting, ensuring the game has finished spinning,
+	// by waiting for hidden and visible states since the roulette's state at test start is unknown.
 	public async getTimeLeftForBetting(): Promise<number> {
 		const isSpinning = await this.map.gameResultStateLocator.isVisible();
 
 		if (isSpinning) {
-			await this.map.gameResultStateLocator.waitFor({
-				state: "hidden",
-				timeout: 30000,
+			await this.map.waitFor({
+				locator: this.map.gameResultStateLocator,
+				state: VisibilityState.HIDDEN,
+				timeout: Timeout.LONG,
 			});
 
-			await this.map.spinningCountdownCounter.waitFor({
-				state: "visible",
-				timeout: 30000,
+			await this.map.waitFor({
+				locator: this.map.spinningCountdownCounter,
+				state: VisibilityState.VISIBLE,
+				timeout: Timeout.LONG,
 			});
 		}
 
