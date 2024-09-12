@@ -44,6 +44,16 @@ export class BaseMap {
 		});
 	}
 
+	async waitForInvisibility(parameters: {
+		locator: Locator;
+		timeout?: number;
+	}): Promise<void> {
+		await this.waitFor({
+			...parameters,
+			state: VisibilityState.HIDDEN,
+		});
+	}
+
 	async waitForAttributeToHaveValue(
 		locator: Locator,
 		attribute: string,

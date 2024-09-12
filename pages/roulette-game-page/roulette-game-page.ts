@@ -8,8 +8,6 @@ import { BasePage } from "@base/base-page";
 import { RouletteGamePageSteps } from "./roulette-game-page-steps";
 import { logger } from "@logger/logger";
 import { GreenHuntTypeOption } from "@enums/roulette-autobet-section";
-import { VisibilityState } from "@enums/playwright/visibility-states";
-
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { Timeout } from "@enums/timeout";
 
@@ -48,15 +46,13 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 				`Time left for betting is ${timeLeft} seconds. Waiting for the next round...`,
 			);
 
-			await this.map.waitFor({
-				locator: this.map.gameResultStateLocator,
-				state: VisibilityState.HIDDEN,
+			await this.map.waitForInvisibility({
+				locator: this.map.spinningCountdownCounter,
 				timeout: Timeout.LONG,
 			});
 
-			await this.map.waitFor({
-				locator: this.map.gameResultStateLocator,
-				state: VisibilityState.VISIBLE,
+			await this.map.waitForVisibility({
+				locator: this.map.spinningCountdownCounter,
 				timeout: Timeout.LONG,
 			});
 
@@ -192,15 +188,13 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 		const isSpinning = await this.map.gameResultStateLocator.isVisible();
 
 		if (isSpinning) {
-			await this.map.waitFor({
+			await this.map.waitForInvisibility({
 				locator: this.map.gameResultStateLocator,
-				state: VisibilityState.HIDDEN,
 				timeout: Timeout.LONG,
 			});
 
-			await this.map.waitFor({
+			await this.map.waitForVisibility({
 				locator: this.map.spinningCountdownCounter,
-				state: VisibilityState.VISIBLE,
 				timeout: Timeout.LONG,
 			});
 		}
