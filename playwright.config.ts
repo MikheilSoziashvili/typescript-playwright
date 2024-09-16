@@ -24,14 +24,7 @@ function getReporter(): ReporterDescription[] {
 
 	if (Configuration.slackReporter) {
 		//Enable Slack Reporter
-		reporters.push(
-			slackReporterConfig(Configuration.slack, [
-				{
-					key: "ENVIRONMENT_URL",
-					value: Configuration.environment_url,
-				},
-			]),
-		);
+		reporters.push(slackReporterConfig(Configuration.slack));
 	}
 
 	return reporters;

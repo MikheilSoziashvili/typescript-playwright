@@ -15,6 +15,7 @@ import {
 	SlackReporterEmoji,
 } from "./slack-reporter-constants";
 import { logger } from "@logger/logger";
+import * as Configuration from "configuration";
 
 let slackClient: WebClient;
 
@@ -26,7 +27,7 @@ function initSlackWebApi(
 
 export function slackReporterConfig(
 	slackConfig: Record<string, string | string[]>,
-	metaData: { key: string; value: string }[],
+	metaData?: { key: string; value: string }[],
 ): ReporterDescription {
 	slackClient = initSlackWebApi(slackConfig);
 	return [
@@ -95,7 +96,7 @@ export async function generateCustomLayout(
 		});
 	}
 
-	const meta: { type: string; text: { type: string; text: string } }[] = [];
+	const meta: (Block | KnownBlock)[] = [];
 
 	if (summaryResults.meta) {
 		for (const metaRecord of summaryResults.meta) {
@@ -110,28 +111,67 @@ export async function generateCustomLayout(
 		}
 	}
 
+	const environmentUrlSection = {
+		type: "section",
+		text: {
+			type: "mrkdwn",
+			text: `*ENVIRONMENT_URL* : <${Configuration.environment_url}>`,
+		},
+	};
+
 	await zipReport();
 
 	const htmlReport = await uploadFile(
 		join(process.cwd(), REPORT_ZIP_FILE_NAME),
 	);
 
-	meta.push({
+	const htmlResultsMessage = {
 		type: "section",
 		text: {
 			type: "mrkdwn",
-			text: `\n*HTML Results*: \t<${htmlReport?.files[0]?.files[0]?.permalink}|📊>`,
+			text: `\n*HTML Results*: <${htmlReport?.files[0]?.files[0]?.permalink}|📊>`,
 		},
-	});
+	};
 
-	return [
-		header,
-		summary,
-		{ type: "divider" },
-		...testDetails,
-		{ type: "divider" },
-		...meta,
-	];
+	const divider = { type: "divider" };
+	const noTestMessage = {
+		type: "section",
+		text: {
+			type: "mrkdwn",
+			text: "*No tests were executed!*",
+		},
+	};
+	const testDetailsOmittedMessage = {
+		type: "section",
+		text: {
+			type: "mrkdwn",
+			text: "Test details are not displayed due to message size limitations.\nPlease, refer to the attached report for full details.",
+		},
+	};
+
+	// Slack block limitation (50 blocks per message)
+	const baseBlocks = [header, summary, divider, ...meta];
+	const maxBlocks = 50;
+	const totalBlockCount = baseBlocks.length + testDetails.length;
+
+	if (totalBlockCount > maxBlocks) {
+		// If total blocks exceed 50, exclude testDetails
+		return [
+			...baseBlocks,
+			testDetailsOmittedMessage,
+			environmentUrlSection,
+			htmlResultsMessage,
+		];
+	} else {
+		// Include testDetails if within block limit
+		return [
+			...baseBlocks,
+			...(testDetails.length === 0 ? [noTestMessage] : testDetails),
+			divider,
+			environmentUrlSection,
+			htmlResultsMessage,
+		];
+	}
 }
 
 async function uploadFile(
