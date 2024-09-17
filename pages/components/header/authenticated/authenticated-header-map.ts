@@ -2,7 +2,7 @@ import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
 import { decimalNumber } from "@support/regex-patterns";
 import { OriginalGame } from "@enums/original-games";
-import { hardWait, throwError } from "@core/utils/utils";
+import { throwError } from "@core/utils/utils";
 import { Timeout } from "@enums/timeout";
 
 export class AuthenticatedHeaderMap extends BaseMap {
@@ -42,9 +42,6 @@ export class AuthenticatedHeaderMap extends BaseMap {
 
 		await accountBalanceLocator.hover({ trial: true });
 		await accountBalanceLocator.focus();
-
-		// workaround for balance update
-		await hardWait(500);
 
 		try {
 			// workaround for $0 balance on page load bug

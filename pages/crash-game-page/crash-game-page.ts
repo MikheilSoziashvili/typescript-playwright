@@ -4,7 +4,6 @@ import { CrashGamePageMap } from "./crash-game-page-map";
 import { CrashGamePageAsserter } from "./crash-game-page-asserter";
 import { CrashGamePageSteps } from "./crash-game-page-steps";
 import { logger } from "@logger/logger";
-import { parseMultiplier } from "@core/utils/utils";
 import { CRASH_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
 
@@ -33,31 +32,53 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 		return new CrashGamePageSteps(this);
 	}
 
+	public trackTotalBets(betAmount: number, currentTotal: number): number {
+		return currentTotal + betAmount;
+	}
+
+	public calculateWinnings(betAmount: number, multiplier: number): number {
+		return betAmount * multiplier;
+	}
+
+	public calculateExpectedBalance(
+		initialBalance: number,
+		totalBets: number,
+		winnings: number,
+	): number {
+		return initialBalance - totalBets + winnings;
+	}
+
 	public async playUntilMultiplierIs(
 		multiplier: number,
+		betAmount: number,
 		...actions: (() => Promise<void>)[]
 	): Promise<void> {
+		let isBetWon = false;
 		let crashedMultiplier = 0.0;
-		do {
-			if (crashedMultiplier == 0.0) {
-				logger.info("New Crash game will be opened");
-			} else if (
-				crashedMultiplier > 0.0 &&
-				crashedMultiplier < multiplier
-			) {
-				logger.warn(
-					"Multiplier crashed below expected. Will retry bet...",
-				);
-			}
+
+		while (!isBetWon) {
+			logger.info("Starting a new round and placing a bet...");
 
 			for (const action of actions) {
 				await action();
 			}
 
-			crashedMultiplier = parseMultiplier(
-				await this.getCrashedMultiplier(),
-			);
-		} while (crashedMultiplier < multiplier);
+			const crashedMultiplierString = await this.getCrashedMultiplier();
+			crashedMultiplier = parseFloat(crashedMultiplierString);
+
+			logger.info(`Crashed Multiplier: ${crashedMultiplier}`);
+
+			if (crashedMultiplier >= multiplier) {
+				logger.info(
+					`Bet won! Multiplier reached: ${crashedMultiplier}. Exiting game...`,
+				);
+				isBetWon = true;
+			} else {
+				logger.warn(
+					`Bet lost. Multiplier crashed at: ${crashedMultiplier}. Retrying...`,
+				);
+			}
+		}
 	}
 
 	public async waitBettingWindowAvailable(timeout = 90): Promise<void> {
