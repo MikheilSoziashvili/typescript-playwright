@@ -9,12 +9,12 @@ import { SUPER_ADMIN_CREDENTIALS } from "@constants/credentials";
 test.describe("Grant free spins", () => {
 	test.use(storageStateUserAPI(SUPER_ADMIN_CREDENTIALS.username));
 	test("[ENG-932] Granting free spins", async ({
-		vipManagerAdminPage,
+		freeSpinsAdminPage,
 		toast,
 	}) => {
-		await vipManagerAdminPage.navigate();
+		await freeSpinsAdminPage.navigate();
 
-		await vipManagerAdminPage.steps().getFreeSpins({
+		await freeSpinsAdminPage.steps().getFreeSpins({
 			userId: USER_1_ID,
 			gameName: CasinoGameName.BARREL_BONANZA,
 			betAmount: 100,

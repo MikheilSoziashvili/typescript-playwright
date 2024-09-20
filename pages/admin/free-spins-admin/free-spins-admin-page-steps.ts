@@ -1,8 +1,8 @@
 import { BasePageStep } from "@pages/base/base-page-step";
-import { VipManagerAdminPage } from "./vip-manager-admin-page";
+import { FreeSpinsAdminPage } from "./free-spins-admin-page";
 
-export class VipManagerAdminPageSteps extends BasePageStep<VipManagerAdminPage> {
-	public constructor(gamdomPage: VipManagerAdminPage) {
+export class FreeSpinsAdminPageSteps extends BasePageStep<FreeSpinsAdminPage> {
+	public constructor(gamdomPage: FreeSpinsAdminPage) {
 		super(gamdomPage);
 	}
 

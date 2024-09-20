@@ -1,12 +1,12 @@
 import { test as base } from "@playwright/test";
 import { UserInfoAdminPage } from "@pages/admin/user-info-admin/user-info-admin-page";
 import { InfoAdminPage } from "@pages/admin/info-admin/info-admin-page";
-import { VipManagerAdminPage } from "@pages/admin/vip-manager-admin/vip-manager-admin-page";
+import { FreeSpinsAdminPage } from "@pages/admin/free-spins-admin/free-spins-admin-page";
 
 export type AdminPages = {
 	userInfoAdminPage: UserInfoAdminPage;
 	infoAdminPage: InfoAdminPage;
-	vipManagerAdminPage: VipManagerAdminPage;
+	freeSpinsAdminPage: FreeSpinsAdminPage;
 };
 
 export const adminPagesFixtures = base.extend<AdminPages>({
@@ -16,7 +16,7 @@ export const adminPagesFixtures = base.extend<AdminPages>({
 	infoAdminPage: async ({ page }, use) => {
 		await use(new InfoAdminPage(page));
 	},
-	vipManagerAdminPage: async ({ page }, use) => {
-		await use(new VipManagerAdminPage(page));
+	freeSpinsAdminPage: async ({ page }, use) => {
+		await use(new FreeSpinsAdminPage(page));
 	},
 });

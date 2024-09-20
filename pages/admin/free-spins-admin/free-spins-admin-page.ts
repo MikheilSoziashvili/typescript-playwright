@@ -1,14 +1,14 @@
 import { Page } from "@playwright/test";
 import { BasePage } from "@base/base-page";
-import { VIP_MANAGER_ADMIN_PAGE_ENDPOINT } from "@constants/page-endpoints";
-import { VipManagerAdminPageMap } from "./vip-manager-admin-page-map";
-import { VipManagerAdminPageAsserter } from "./vip-manager-admin-page-asserter";
-import { VipManagerAdminPageSteps } from "./vip-manager-admin-page-steps";
+import { FREE_SPINS_ADMIN_PAGE_ENDPOINT } from "@constants/page-endpoints";
+import { FreeSpinsAdminPageMap } from "./free-spins-admin-page-map";
+import { FreeSpinsAdminPageAsserter } from "./free-spins-admin-page-asserter";
+import { FreeSpinsAdminPageSteps } from "./free-spins-admin-page-steps";
 import { BasePageNavigationParametersType } from "@core/types/types";
 
-export class VipManagerAdminPage extends BasePage<VipManagerAdminPageMap> {
+export class FreeSpinsAdminPage extends BasePage<FreeSpinsAdminPageMap> {
 	public constructor(page: Page) {
-		super(page, new VipManagerAdminPageMap(page));
+		super(page, new FreeSpinsAdminPageMap(page));
 	}
 
 	public override async navigate(
@@ -16,19 +16,22 @@ export class VipManagerAdminPage extends BasePage<VipManagerAdminPageMap> {
 	): Promise<void> {
 		await super.navigate({
 			...parameters,
-			endpoint: { path: VIP_MANAGER_ADMIN_PAGE_ENDPOINT },
+			endpoint: { path: FREE_SPINS_ADMIN_PAGE_ENDPOINT },
 		});
 	}
 
-	public override assertThat(): VipManagerAdminPageAsserter {
-		return new VipManagerAdminPageAsserter(this);
+	public override assertThat(): FreeSpinsAdminPageAsserter {
+		return new FreeSpinsAdminPageAsserter(this);
 	}
 
-	public steps(): VipManagerAdminPageSteps {
-		return new VipManagerAdminPageSteps(this);
+	public steps(): FreeSpinsAdminPageSteps {
+		return new FreeSpinsAdminPageSteps(this);
 	}
 
 	public async selectGameToGiveFreeSpins(gameTitle: string): Promise<void> {
+		await this.map.waitForVisibility({
+			locator: this.map.findGameToGiveFreeSpinsCardGameTextInput,
+		});
 		await this.map.findGameToGiveFreeSpinsCardGameTextInput.fill(gameTitle);
 		await this.map.findGameToGiveFreeSpinsCardGameField.click();
 		await this.map.waitForVisibility({ locator: this.map.gamesList });

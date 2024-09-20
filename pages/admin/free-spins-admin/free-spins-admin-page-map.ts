@@ -1,21 +1,22 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
-import { VipManagerActionCardTitle } from "@enums/admin/vip-manager-action-card-title";
+import { FreeSpinsActionCardTitle } from "@enums/admin/free-spins-action-card-title";
 
-export class VipManagerAdminPageMap extends BaseMap {
+export class FreeSpinsAdminPageMap extends BaseMap {
 	public constructor(page: Page) {
 		super(page);
 	}
 
-	public getVipManagerActionCard(title: string): Locator {
+	public getFreeSpinsActionCard(locator: string, title: string): Locator {
 		return this.page
-			.locator("div.aff_col")
-			.filter({ has: this.page.locator(`h4.title:text-is("${title}")`) });
+			.locator(locator)
+			.filter({ has: this.page.locator(`h4:text-is("${title}")`) });
 	}
 
 	public get findGameToGiveFreeSpinsCard(): Locator {
-		return this.getVipManagerActionCard(
-			VipManagerActionCardTitle.FIND_GAME_TO_GIVE_FREE_SPINS,
+		return this.getFreeSpinsActionCard(
+			"div.sc-iBdnpw.inNXnA.MuiBox-root",
+			FreeSpinsActionCardTitle.FIND_GAME_TO_GIVE_FREE_SPINS,
 		);
 	}
 
@@ -57,8 +58,9 @@ export class VipManagerAdminPageMap extends BaseMap {
 	}
 
 	public get possibleSpinsCard(): Locator {
-		return this.getVipManagerActionCard(
-			VipManagerActionCardTitle.POSSIBLE_SPINS,
+		return this.getFreeSpinsActionCard(
+			"div.aff_col.aff_col--autoh.text_center.relative-cont",
+			FreeSpinsActionCardTitle.POSSIBLE_SPINS,
 		);
 	}
 
