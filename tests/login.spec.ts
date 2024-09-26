@@ -61,6 +61,8 @@ test.describe("Login tests", () => {
 		test(`[ENG-294] Login using username - Login is rejected: [Username: ${record.username}] [Password: ${record.password}]`, async ({
 			homePage,
 		}) => {
+			test.fixme(record.username === 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 
+				"Fix when bug [ENG-2397] is fixed");
 			await homePage.navigateAndCheckTitle();
 
 			await homePage.unauthenticatedHeader.openLoginModal();

@@ -19,9 +19,9 @@ const geoblockedCredentialsMap = new Map<string, ProxyCredentialsType>([
 	[GeoblockedCountry.BELARUS, BL_PROXY_CREDENTIALS],
 ]);
 
-// TODO: Check why proxy not working for BELARUS. Check when change providers if it works and delete this comment
 for (const country of countries) {
 	test.describe("Geoblocked countries tests", () => {
+		test.fixme(country === GeoblockedCountry.BELARUS, "Check why proxy not working for BELARUS. Check when change providers if it works and delete this comment");
 		test.use({
 			proxy: geoblockedCredentialsMap.get(country),
 			baseURL: PRODUCTION_BASE_URL,
