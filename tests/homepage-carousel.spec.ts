@@ -33,11 +33,11 @@ test.describe("Homepage banner carousel", () => {
 		await rewardsPage.assertThat().pageElementsAreVisible();
 	});
 
-	// FIXME: E-sports page banner is not enabled on staging-for-e2e-tests environment
-	test.fixme(`[ENG-1158] - Homepage banner carousel - esports page`, async ({
+	test(`[ENG-1158] - Homepage banner carousel - esports page`, async ({
 		homePage,
 		esportsPage,
 	}) => {
+		test.fixme(true, "Slots battle page banner is not enabled on staging-for-e2e-tests environment");
 		await homePage.navigateAndCheckTitle();
 		await homePage.assertThat().isBannerCarouselDisplayed();
 		await homePage
@@ -49,11 +49,11 @@ test.describe("Homepage banner carousel", () => {
 		await esportsPage.assertThat().pageElementsAreVisible();
 	});
 
-	// FIXME: Slots battle page banner is not enabled on staging-for-e2e-tests environment
-	test.fixme(`[ENG-1158] - Homepage banner carousel - slots battle page`, async ({
+	test(`[ENG-1158] - Homepage banner carousel - slots battle page`, async ({
 		homePage,
 		slotsBattlePage,
 	}) => {
+		test.fixme(true, "Slots battle page banner is not enabled on staging-for-e2e-tests environment");
 		await homePage.navigateAndCheckTitle();
 		await homePage.assertThat().isBannerCarouselDisplayed();
 		await homePage
