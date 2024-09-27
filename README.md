@@ -208,6 +208,15 @@ Integration with external services like **[Mailinator](https://www.mailinator.co
 **Mailinator** is used for handling temporary email addresses, allowing to easily manage and verify email-based workflows.
 **Proxy servers** are utilized to simulate different network conditions and IP addresses, ensuring our tests cover a wide range of real-world scenarios.
 
+#### CODEOWNERS - Default Pull Request reviewers
+
+This repository uses a CODEOWNERS file to automatically assign reviewers to pull requests based on the files changed.
+How It Works:
+	•	The CODEOWNERS file is located in the .github/ directory.
+	•	It maps file paths to specific GitHub users or teams who will be automatically assigned as reviewers.
+	•	This ensures that the appropriate people review changes in their areas of expertise.
+For more details, see **[GitHub’s CODEOWNERS documentation](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners)**.
+
 ### Steps to Write an Automated Test
 
 #### 1. Review Test Case
