@@ -7,6 +7,7 @@ import { CommonUserOptionsPopup } from "../popups/common-user-options-popup";
 import { Chat } from "./chat";
 import { ChatMessageOptions } from "./chat-map";
 import { Timeout } from "@enums/timeout";
+import { logger } from "@logger/logger";
 
 export class ChatSteps extends BaseComponentStep<Chat> {
 	private authenticatedHeader: AuthenticatedHeader;
@@ -21,11 +22,38 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 	}
 
 	public async sendMessage(message: string): Promise<void> {
-		await this.component.map.chatTextBox.fill(message);
-		await this.component.map.sendMessageButton.scrollIntoViewIfNeeded();
-		await this.component.map.sendMessageButton.click({
-			timeout: Timeout.EXTRA_LONG,
-		});
+		let retryCount = 0;
+		const maxRetries = 3;
+
+		while (retryCount < maxRetries) {
+			try {
+				await this.component.map.waitForAttributeToHaveValue(
+					this.component.map.chatTextBox,
+					"contenteditable",
+					"true",
+				);
+				await this.component.map.chatTextBox.fill(message);
+				await this.component.map.sendMessageButton.click();
+				break;
+			} catch (error) {
+				const e = error as Error;
+
+				if (e.name === "TimeoutError") {
+					logger.info(
+						`Retrying sendMessage. Attempt ${retryCount + 1}`,
+					);
+					retryCount++;
+
+					if (retryCount >= maxRetries) {
+						throw e;
+					}
+
+					await this.authenticatedHeader.map.chatButton.click();
+				} else {
+					throw e; // Rethrow non-TimeoutError exceptions in order not to miss another potential issues
+				}
+			}
+		}
 	}
 
 	public async openTipUserModal(options?: ChatMessageOptions): Promise<void> {

@@ -72,7 +72,7 @@ export class ChatMap extends BaseMap {
 	}
 
 	public get chatTextBox(): Locator {
-		return this.chatFooter.locator("div[role=textbox]");
+		return this.chatFooter.locator('div > div[class*="chat_inputbox"]');
 	}
 
 	public get chatTextBoxPlaceholder(): Locator {
