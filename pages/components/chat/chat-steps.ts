@@ -6,7 +6,6 @@ import { AuthenticatedHeader } from "../header/authenticated/authenticated-heade
 import { CommonUserOptionsPopup } from "../popups/common-user-options-popup";
 import { Chat } from "./chat";
 import { ChatMessageOptions } from "./chat-map";
-import { Timeout } from "@enums/timeout";
 import { logger } from "@logger/logger";
 
 export class ChatSteps extends BaseComponentStep<Chat> {
