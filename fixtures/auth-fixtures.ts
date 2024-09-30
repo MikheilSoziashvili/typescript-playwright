@@ -20,6 +20,11 @@ import {
 	USER_1_CREDENTIALS,
 } from "@constants/credentials";
 import { GamdomPages } from "./gamdom-pages";
+import { GamdomApi } from "@api/gamdom-api";
+import { getCookieHeader } from "@core/utils/utils";
+import { RegisterTestData } from "@dtos/test-data";
+import { StorageStateNewUserOptions } from "@core/api/interfaces/storage-state-new-user-options";
+import { Currency } from "@enums/currencies";
 
 function authPage(browser: Browser): Promise<Page> {
 	return browser.newPage({
@@ -97,21 +102,45 @@ export const storageStateUserAPI: (
 });
 
 export const storageStateNewUserAPI: (
-	username?: string,
-	password?: string,
-	email?: string,
+	options?: StorageStateNewUserOptions,
 ) => Fixtures<
 	{},
 	{},
 	PlaywrightTestArgs & PlaywrightTestOptions,
 	PlaywrightWorkerArgs & PlaywrightWorkerOptions
-> = (username, password, email) => ({
+> = ({
+	username,
+	password,
+	email,
+	amount = 450000,
+	unit = "COINS",
+	displayCurrency = Currency.USD,
+} = {}) => ({
 	storageState: async ({}, use) => {
+		const gamdomApi = new GamdomApi();
+		const newUser = new RegisterTestData({ username, password, email });
+
 		const storageStatePath = await getStorageStateNewUserAPI(
-			username,
-			password,
-			email,
+			newUser.username,
+			newUser.password,
+			newUser.email,
 		);
+
+		const newUserId = (
+			await gamdomApi.getBasicInfo(newUser.username, newUser.password)
+		).user.id;
+
+		const user1Cookie = getCookieHeader(
+			await gamdomApi.authenticateWithExistingUser(
+				USER_1_CREDENTIALS.username,
+				USER_1_CREDENTIALS.password,
+			),
+		);
+
+		await gamdomApi.tipUser(newUserId, amount, unit, displayCurrency, {
+			Cookie: user1Cookie,
+		});
+
 		await use(storageStatePath);
 	},
 });

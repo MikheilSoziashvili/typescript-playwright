@@ -1,11 +1,10 @@
 import { DiceGameResultMessage } from "@enums/dice-result-messages";
 import { test } from "@fixtures/fixtures";
 import { DiceBetTestData } from "@dtos/test-data";
-import { storageStateUserAPI } from "@fixtures/auth-fixtures";
-import { USER_1_CREDENTIALS } from "@constants/credentials";
+import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
 
 test.describe("Dice tests", () => {
-	test.use(storageStateUserAPI(USER_1_CREDENTIALS.username));
+	test.use(storageStateNewUserAPI());
 	test("[ENG-299] Place a single bet on Dice and try to win @smoke @originals", async ({
 		diceGamePage,
 	}) => {

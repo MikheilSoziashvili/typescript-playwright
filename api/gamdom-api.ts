@@ -6,6 +6,9 @@ import { RegisterTestData } from "@dtos/test-data";
 import { SetFeatureStateRequest } from "@dtos/requests/gamdom-api/set-feature-state-request";
 import { Feature } from "@enums/feature";
 import { BaseApi } from "./base-api";
+import { TipUserRequest } from "@dtos/requests/gamdom-api/tip-user-request";
+import { BasicInfoResponse } from "@dtos/responses/gamdom-api/basic-info-response";
+import { getCookieHeader } from "@core/utils/utils";
 
 export class GamdomApi extends BaseApi {
 	constructor(base_url: string = Configuration.environment_url) {
@@ -123,5 +126,51 @@ export class GamdomApi extends BaseApi {
 		);
 
 		return responses as [APIResponse, APIResponse];
+	}
+
+	public async getBasicInfo(
+		username: string,
+		password: string,
+	): Promise<BasicInfoResponse> {
+		const cookie = getCookieHeader(
+			await this.authenticateWithExistingUser(username, password),
+		);
+
+		const parameters = this.buildParameters(
+			"/client-api/profile/basic-info",
+			undefined,
+			{ Cookie: cookie },
+		);
+
+		const response = await this.post(parameters);
+		return response.json() as Promise<BasicInfoResponse>;
+	}
+
+	public async tipUser(
+		userId: number,
+		amount: number,
+		unit: string,
+		displayCurrency: string,
+		_headers?: Record<string, string>,
+	): Promise<APIResponse> {
+		const payload: TipUserRequest = {
+			type: "rpc",
+			arg: {
+				toId: userId,
+				walletInfo: {
+					amount: amount,
+					unit: unit,
+					displayCurrency: displayCurrency,
+				},
+			},
+		};
+
+		const parameters = this.buildParameters(
+			"/stream/chat/rpc/tipUser",
+			payload,
+			_headers,
+		);
+
+		return this.post(parameters);
 	}
 }
