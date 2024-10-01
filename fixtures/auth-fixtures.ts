@@ -25,6 +25,7 @@ import { getCookieHeader } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { StorageStateNewUserOptions } from "@core/api/interfaces/storage-state-new-user-options";
 import { Currency } from "@enums/currencies";
+import { Unit } from "@enums/units";
 
 function authPage(browser: Browser): Promise<Page> {
 	return browser.newPage({
@@ -113,7 +114,7 @@ export const storageStateNewUserAPI: (
 	password,
 	email,
 	amount = 450000,
-	unit = "COINS",
+	unit = Unit.COINS,
 	displayCurrency = Currency.USD,
 } = {}) => ({
 	storageState: async ({}, use) => {

@@ -9,6 +9,7 @@ import { BaseApi } from "./base-api";
 import { TipUserRequest } from "@dtos/requests/gamdom-api/tip-user-request";
 import { BasicInfoResponse } from "@dtos/responses/gamdom-api/basic-info-response";
 import { getCookieHeader } from "@core/utils/utils";
+import { ApiEndpoints } from "@enums/api-endpoints";
 
 export class GamdomApi extends BaseApi {
 	constructor(base_url: string = Configuration.environment_url) {
@@ -31,7 +32,7 @@ export class GamdomApi extends BaseApi {
 			totp_token: "",
 		};
 
-		const parameters = this.buildParameters("/signup", payload, _headers);
+		const parameters = this.buildParameters(ApiEndpoints.REGISTER, payload, _headers);
 		return this.post(parameters);
 	}
 
@@ -48,7 +49,7 @@ export class GamdomApi extends BaseApi {
 		};
 
 		const parameters = this.buildParameters(
-			"/client-api/internalAuth/login",
+			ApiEndpoints.LOGIN,
 			payload,
 			_headers,
 		);
@@ -102,7 +103,7 @@ export class GamdomApi extends BaseApi {
 		};
 
 		const parameters = this.buildParameters(
-			"/client-api/admin/feature/setFeatureState",
+			ApiEndpoints.SETFEATURESTATE,
 			payload,
 			_headers,
 		);
@@ -137,7 +138,7 @@ export class GamdomApi extends BaseApi {
 		);
 
 		const parameters = this.buildParameters(
-			"/client-api/profile/basic-info",
+			ApiEndpoints.BASICINFO,
 			undefined,
 			{ Cookie: cookie },
 		);
@@ -166,7 +167,7 @@ export class GamdomApi extends BaseApi {
 		};
 
 		const parameters = this.buildParameters(
-			"/stream/chat/rpc/tipUser",
+			ApiEndpoints.TIPUSER,
 			payload,
 			_headers,
 		);
