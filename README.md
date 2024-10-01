@@ -298,6 +298,16 @@ test.describe("My test suite", () => {
 });
 ```
 
+## Create Pull Request
+
+This project uses a Pull Request (PR) template to ensure consistency and thoroughness when creating new PRs. The template helps standardize the way pull requests are structured, ensuring that important information such as descriptions, issue links, and checklists are included.
+When submitting a Pull Request, ensure that you:
+-	Fill out the description thoroughly, referencing any issues.
+-	Follow the project’s contribution guidelines.	
+-	Complete the checklist to ensure the code is fully tested and documented.
+
+This helps maintain the quality and consistency of the project, making it easier for reviewers to understand and evaluate your changes.
+
 ## Reporting
 
 Reporters in the test automation framework play a crucial role in capturing and presenting test results. They provide detailed insights into test execution, helping into understanding the outcomes and diagnose issues efficiently. The combination of built-in and custom reporters, including HTML, JIRA/X-Ray and Slack reporters gives an opportunity to capture test results in various formats, enhancing the visibility and accessibility of test data. These reporters are dynamically configured based on the **configuration.ts** options.
@@ -317,7 +327,7 @@ The configurable reporters are:
 
 ### General Practices
 
--   Have consistency in naming conventions and code structure. Follow the framework directory structure when placing files/modules
+-	Have consistency in naming conventions and code structure. Follow the framework directory structure when placing files/modules
 -   Add comments and documentation to codebase in cases there is complex logic, specific implementation purpose or noting any tricky or unclear at first glance code.
 -   Any additional comments and documentation that can help in clarifying and understanding the code are much encouraged.
 -   Sensitive information such as API keys and passwords must be consumed from environment variables. Avoid hardcoding and committing them in the repository.
