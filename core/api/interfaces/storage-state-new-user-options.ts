@@ -6,5 +6,5 @@ export interface StorageStateNewUserOptions {
 	email?: string;
 	amount?: number;
 	unit?: string;
-    displayCurrency?: Currency;  // Use the Currency enum for display currency
+    displayCurrency?: Currency;
 }

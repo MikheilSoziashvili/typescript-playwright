@@ -32,7 +32,11 @@ export class GamdomApi extends BaseApi {
 			totp_token: "",
 		};
 
-		const parameters = this.buildParameters(ApiEndpoints.REGISTER, payload, _headers);
+		const parameters = this.buildParameters(
+			ApiEndpoints.REGISTER,
+			payload,
+			_headers,
+		);
 		return this.post(parameters);
 	}
 

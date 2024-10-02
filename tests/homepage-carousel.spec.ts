@@ -1,12 +1,11 @@
 import { test } from "@fixtures/fixtures";
-import { storageStateUserAPI } from "@fixtures/auth-fixtures";
+import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
 import { HomePageBannerCarouselSlideTitle } from "@enums/homepage-banner-carousel-slide-title";
-import { USER_1_CREDENTIALS } from "@constants/credentials";
 
 // NOTE: For Usain Bolt, Black Jack and Drop and wins slides should be implemented when ENG-1525 is fixed
 
 test.describe("Homepage banner carousel", () => {
-	test.use(storageStateUserAPI(USER_1_CREDENTIALS.username));
+	test.use(storageStateNewUserAPI());
 	test(`[ENG-1158] - Homepage banner carousel - dice game page`, async ({
 		homePage,
 		diceGamePage,
@@ -37,7 +36,10 @@ test.describe("Homepage banner carousel", () => {
 		homePage,
 		esportsPage,
 	}) => {
-		test.fixme(true, "Slots battle page banner is not enabled on staging-for-e2e-tests environment");
+		test.fixme(
+			true,
+			"Slots battle page banner is not enabled on staging-for-e2e-tests environment",
+		);
 		await homePage.navigateAndCheckTitle();
 		await homePage.assertThat().isBannerCarouselDisplayed();
 		await homePage
@@ -53,7 +55,10 @@ test.describe("Homepage banner carousel", () => {
 		homePage,
 		slotsBattlePage,
 	}) => {
-		test.fixme(true, "Slots battle page banner is not enabled on staging-for-e2e-tests environment");
+		test.fixme(
+			true,
+			"Slots battle page banner is not enabled on staging-for-e2e-tests environment",
+		);
 		await homePage.navigateAndCheckTitle();
 		await homePage.assertThat().isBannerCarouselDisplayed();
 		await homePage

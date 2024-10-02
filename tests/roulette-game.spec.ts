@@ -1,18 +1,22 @@
 import { RouletteBetColor, RouletteNumberColor } from "@enums/original-games";
 import { test } from "@fixtures/fixtures";
 import { logger } from "@logger/logger";
-import { BetTestData } from "@dtos/test-data";
-import { storageStateUserAPI } from "@fixtures/auth-fixtures";
-import { USER_1_CREDENTIALS } from "@constants/credentials";
+import { BetTestData, RegisterTestData } from "@dtos/test-data";
+import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
 
+const userCredentials = new RegisterTestData();
 test.describe("Roulette tests", () => {
-	test.use(storageStateUserAPI(USER_1_CREDENTIALS.username));
+	test.use(storageStateNewUserAPI({ username: userCredentials.username }));
 	test("[ENG-264] Place a single bet on Roulette and try to win @smoke @originals", async ({
 		rouletteGamePage,
 	}) => {
 		test.slow(); // it takes some more time until a 'red' number is in
 
-		const betTestData: BetTestData = new BetTestData("user1", 1, 1);
+		const betTestData: BetTestData = new BetTestData(
+			userCredentials.username,
+			1,
+			1,
+		);
 		await rouletteGamePage.navigate();
 
 		let isWin: RouletteNumberColor = RouletteNumberColor.RED;

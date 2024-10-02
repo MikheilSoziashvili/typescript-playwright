@@ -3,21 +3,21 @@ import {
 	HiloGameStatusMessage,
 } from "@enums/hilo-result-messages";
 import { test } from "@fixtures/fixtures";
-import { HiloBetTestData } from "@dtos/test-data";
+import { HiloBetTestData, RegisterTestData } from "@dtos/test-data";
 import { HiloBetMultiplierByBetOption } from "@enums/original-games";
 import { HiloBetOption } from "@enums/hilo-bet-options";
-import { storageStateUserAPI } from "@fixtures/auth-fixtures";
-import { SUPER_ADMIN_CREDENTIALS } from "@constants/credentials";
+import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
 
+const userCredentials = new RegisterTestData();
 test.describe("Hilo tests", () => {
-	test.use(storageStateUserAPI(SUPER_ADMIN_CREDENTIALS.username));
+	test.use(storageStateNewUserAPI({ username: userCredentials.username }));
 	test.slow();
 	test("[ENG-298] Place a single bet on Hilo and try to win @smoke @originals", async ({
 		hiloGamePage,
 	}) => {
 		const testData: HiloBetTestData = new HiloBetTestData(
-			SUPER_ADMIN_CREDENTIALS.username,
-			100,
+			userCredentials.username,
+			10,
 			HiloBetOption.RED,
 			HiloBetMultiplierByBetOption.RED,
 		);

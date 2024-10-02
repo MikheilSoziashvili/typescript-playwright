@@ -1,16 +1,18 @@
 import { RouletteBetColor } from "@enums/original-games";
 import { test } from "@fixtures/fixtures";
-import { BetTestData } from "@dtos/test-data";
-import { storageStateUserAPI } from "@fixtures/auth-fixtures";
+import { BetTestData, RegisterTestData } from "@dtos/test-data";
+import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
 import { GreenHuntTypeOption } from "@enums/roulette-autobet-section";
-import { USER_1_CREDENTIALS } from "@constants/credentials";
 import { calculateGreenHuntAmountByPercentage } from "@formulas/roulette";
 
+const userCredentials = new RegisterTestData();
 test.describe("Green hunt", () => {
-	test.use(storageStateUserAPI(USER_1_CREDENTIALS.username));
-	test("[ENG-1090] Roulette - green hunt @originals", async ({ rouletteGamePage }) => {
+	test.use(storageStateNewUserAPI({ username: userCredentials.username }));
+	test("[ENG-1090] Roulette - green hunt @originals", async ({
+		rouletteGamePage,
+	}) => {
 		const betTestData: BetTestData = new BetTestData(
-			USER_1_CREDENTIALS.username,
+			userCredentials.username,
 			100,
 			1,
 		);
