@@ -23,7 +23,7 @@ import { GamdomPages } from "./gamdom-pages";
 import { GamdomApi } from "@api/gamdom-api";
 import { getCookieHeader } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
-import { StorageStateNewUserOptions } from "@core/api/interfaces/storage-state-new-user-options";
+import { NewUserOptions } from "@core/api/interfaces/storage-state-new-user-options";
 import { Currency } from "@enums/currencies";
 import { Unit } from "@enums/units";
 
@@ -103,7 +103,7 @@ export const storageStateUserAPI: (
 });
 
 export const storageStateNewUserAPI: (
-	options?: StorageStateNewUserOptions,
+	options?: NewUserOptions,
 ) => Fixtures<
 	{},
 	{},
