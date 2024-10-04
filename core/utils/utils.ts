@@ -11,13 +11,14 @@ import {
 } from "@core/types/types";
 import accounting from "accounting";
 import { DEFAULT_CURRENCY } from "@constants/defaults";
-import { pageUrl } from "@support/regex-patterns";
+import { pageUrl, sanitizeTitlePattern } from "@support/regex-patterns";
 import fs from "fs";
 import xml2js from "xml2js";
 import { MAILINATOR_DOMAIN } from "@constants/domains";
 import { Protocol } from "@enums/api/protocols";
 import { Page } from "playwright";
 import { environment_url } from "configuration";
+import { AUTH_PATH } from "@constants/file-paths";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -246,10 +247,10 @@ export const getUserDetailsByTestTitle = (
 	testInfoTitle: string,
 	workerIndex: number,
 ): CredentialsType => {
-	const sanitizedTitle = testInfoTitle.replace(/[^a-zA-Z0-9]/g, "_");
+	const sanitizedTitle = testInfoTitle.replace(sanitizeTitlePattern, "_");
 	const storageStatePath = path.join(
 		process.cwd(),
-		"core/.auth",
+		AUTH_PATH,
 		`${sanitizedTitle}_worker${workerIndex}.json`,
 	);
 
@@ -264,10 +265,10 @@ export const writeUserDetails = (
 	workerIndex: number,
 	userDetails: { username: string; password: string; email?: string },
 ): void => {
-	const sanitizedTitle = testInfoTitle.replace(/[^a-zA-Z0-9]/g, "_");
+	const sanitizedTitle = testInfoTitle.replace(sanitizeTitlePattern, "_");
 	const filePath = path.join(
 		process.cwd(),
-		"core/.auth",
+		AUTH_PATH,
 		`${sanitizedTitle}_worker${workerIndex}.json`,
 	);
 
