@@ -21,7 +21,7 @@ import {
 } from "@constants/credentials";
 import { GamdomPages } from "./gamdom-pages";
 import { GamdomApi } from "@api/gamdom-api";
-import { getCookieHeader } from "@core/utils/utils";
+import { getCookieHeader, writeUserDetails } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { NewUserOptions } from "@core/api/interfaces/storage-state-new-user-options";
 import { Currency } from "@enums/currencies";
@@ -117,7 +117,7 @@ export const storageStateNewUserAPI: (
 	unit = Unit.COINS,
 	displayCurrency = Currency.USD,
 } = {}) => ({
-	storageState: async ({}, use) => {
+	storageState: async ({}, use, testInfo) => {
 		const gamdomApi = new GamdomApi();
 		const newUser = new RegisterTestData({ username, password, email });
 
@@ -140,6 +140,12 @@ export const storageStateNewUserAPI: (
 
 		await gamdomApi.tipUser(newUserId, amount, unit, displayCurrency, {
 			Cookie: user1Cookie,
+		});
+
+		writeUserDetails(testInfo.title, testInfo.workerIndex, {
+			username: newUser.username,
+			password: newUser.password,
+			email: newUser.email,
 		});
 
 		await use(storageStatePath);

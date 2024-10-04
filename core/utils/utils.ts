@@ -5,7 +5,10 @@ import * as path from "path";
 import { parse } from "csv-parse/sync";
 import { readFileSync } from "fs";
 import { users } from "configuration";
-import { TestUserConfigurationObject } from "@core/types/types";
+import {
+	CredentialsType,
+	TestUserConfigurationObject,
+} from "@core/types/types";
 import accounting from "accounting";
 import { DEFAULT_CURRENCY } from "@constants/defaults";
 import { pageUrl } from "@support/regex-patterns";
@@ -210,7 +213,7 @@ export function getCookieValue(setCookie: string): string {
 }
 
 export function getCookieHeader(setCookie: string): string {
-	return setCookie.split(";")[0]
+	return setCookie.split(";")[0];
 }
 
 export function throwError(error: unknown, message: string): never {
@@ -238,3 +241,35 @@ export async function setAuthenticationCookies(
 
 	await page.context().addCookies(cookie);
 }
+
+export const getUserDetailsByTestTitle = (
+	testInfoTitle: string,
+	workerIndex: number,
+): CredentialsType => {
+	const sanitizedTitle = testInfoTitle.replace(/[^a-zA-Z0-9]/g, "_");
+	const storageStatePath = path.join(
+		process.cwd(),
+		"core/.auth",
+		`${sanitizedTitle}_worker${workerIndex}.json`,
+	);
+
+	const data = JSON.parse(
+		fs.readFileSync(storageStatePath, "utf-8"),
+	) as CredentialsType;
+	return data;
+};
+
+export const writeUserDetails = (
+	testInfoTitle: string,
+	workerIndex: number,
+	userDetails: { username: string; password: string; email?: string },
+): void => {
+	const sanitizedTitle = testInfoTitle.replace(/[^a-zA-Z0-9]/g, "_");
+	const filePath = path.join(
+		process.cwd(),
+		"core/.auth",
+		`${sanitizedTitle}_worker${workerIndex}.json`,
+	);
+
+	fs.writeFileSync(filePath, JSON.stringify(userDetails, null, 2), "utf-8");
+};

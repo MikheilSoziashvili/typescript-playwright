@@ -1,17 +1,21 @@
 import { test } from "@fixtures/fixtures";
-import { BetTestData, RegisterTestData } from "@dtos/test-data";
+import { BetTestData } from "@dtos/test-data";
 import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
+import { getUserDetailsByTestTitle } from "@core/utils/utils";
 
-const userCredentials = new RegisterTestData();
 test.describe("Crash tests", () => {
-	test.use(storageStateNewUserAPI({ username: userCredentials.username }));
+	test.use(storageStateNewUserAPI());
 	test.slow();
 
 	test("[ENG-265] Place a single bet on Crash and try to cashout @smoke @originals", async ({
 		crashGamePage,
-	}) => {
+	}, testInfo) => {
+		const newUserDetails = getUserDetailsByTestTitle(
+			testInfo.title,
+			testInfo.workerIndex,
+		);
 		const betTestData: BetTestData = new BetTestData(
-			userCredentials.username,
+			newUserDetails.username,
 			10,
 			Number("1.10"),
 		);
