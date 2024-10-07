@@ -38,6 +38,10 @@ export abstract class BasePage<T = BaseMap> {
 		await this.page.waitForLoadState();
 	}
 
+	public async closePage(): Promise<void> {
+		await this.page.close();
+	}
+
 	get authenticatedHeader(): AuthenticatedHeader {
 		return new AuthenticatedHeader(this.page);
 	}

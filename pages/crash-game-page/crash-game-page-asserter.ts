@@ -37,4 +37,24 @@ export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 			}
 		}
 	}
+
+	public async waitPlayerBetBoxesAbsent(timeout: number): Promise<void> {
+		const betBoxes: Locator[] = await this.gamdomPage.map.betBoxes;
+		for (const betBox of betBoxes) {
+			await expect(betBox).toBeAttached({
+				attached: false,
+				timeout: timeout,
+			});
+		}
+	}
+
+	public async isExpectedAndActualWinningMatch(
+		expectedWinnings: number,
+		actualWinnings: number,
+	): Promise<void> {
+		await this.checkStringElementsAreEqual(
+			[expectedWinnings.toString()],
+			[actualWinnings.toString()],
+		);
+	}
 }

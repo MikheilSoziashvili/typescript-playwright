@@ -27,10 +27,14 @@ export class InfoAdminPageAsserter extends BaseAsserter<InfoAdminPage> {
 	}
 
 	public async isUserBanned(): Promise<void> {
-		await expect(this.gamdomPage.map.bannedUserInfo).toBeVisible();
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.bannedUserInfo,
+		]);
 	}
 
 	public async isUnbanButtonDisplayed(): Promise<void> {
-		await expect(this.gamdomPage.map.unbanUserButton).toBeVisible();
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.unbanUserButton,
+		]);
 	}
 }

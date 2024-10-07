@@ -4,6 +4,7 @@ import {
 	GOOGLE_AUTH_CREDENTIALS,
 	SUPER_ADMIN_CREDENTIALS,
 	USER_1_CREDENTIALS,
+	USER_2_CREDENTIALS,
 } from "@constants/credentials";
 import {
 	GOOGLE_AUTH_STATE_FILE_PATH,
@@ -27,6 +28,7 @@ const AUTH_STATE_PATH = {
 const CREDENTIALS_MAP = new Map<string, string>([
 	[SUPER_ADMIN_CREDENTIALS.username, SUPER_ADMIN_CREDENTIALS.password],
 	[USER_1_CREDENTIALS.username, USER_1_CREDENTIALS.password],
+	[USER_2_CREDENTIALS.username, USER_2_CREDENTIALS.password],
 ]);
 
 //Deprecated since CF auth introduced

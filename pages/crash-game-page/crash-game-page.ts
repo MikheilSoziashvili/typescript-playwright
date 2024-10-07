@@ -6,6 +6,7 @@ import { CrashGamePageSteps } from "./crash-game-page-steps";
 import { logger } from "@logger/logger";
 import { CRASH_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
+import { Timeout } from "@enums/timeout";
 
 export class CrashGamePage extends BasePage<CrashGamePageMap> {
 	public constructor(page: Page) {
@@ -81,20 +82,28 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 		}
 	}
 
-	public async waitBettingWindowAvailable(timeout = 90): Promise<void> {
+	public async waitBettingWindowAvailable(
+		timeout = Timeout.EXTRA_MAX / 2,
+	): Promise<void> {
 		await expect(this.map.spinningCountdownCounter).toBeAttached({
-			timeout: timeout * 1000,
+			timeout: timeout,
 		});
 	}
 
-	public async waitCrash(timeout = 90): Promise<void> {
+	public async waitCrash(timeout = Timeout.EXTRA_MAX / 2): Promise<void> {
 		await expect(this.map.multiplierCounterCrashed).toBeAttached({
-			timeout: timeout * 1000,
+			timeout: timeout,
 		});
 	}
 
-	public async getCrashedMultiplier(waitCrashTimeout = 60): Promise<string> {
-		await this.waitCrash(waitCrashTimeout);
+	public async waitPreviousBetRoundFinish(
+		timeout = Timeout.EXTRA_MAX / 2,
+	): Promise<void> {
+		await this.assertThat().waitPlayerBetBoxesAbsent(timeout);
+	}
+
+	public async getCrashedMultiplier(): Promise<string> {
+		await this.waitCrash();
 		const crashedMultiplierText =
 			await this.map.multiplierCounterCrashed.innerText();
 
@@ -105,6 +114,7 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 		betAmount: number,
 		autoCashoutMultiplier: number,
 	): Promise<void> {
+		await this.waitPreviousBetRoundFinish();
 		await this.waitBettingWindowAvailable();
 		await this.map.betField.fill(`${betAmount}`);
 		await this.map.autoCashOutField.fill(`${autoCashoutMultiplier}`);

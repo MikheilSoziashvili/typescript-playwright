@@ -27,4 +27,14 @@ export class BaseAsserter<T extends BasePage | BaseModal | BaseComponent> {
 			await expect(element).not.toBeVisible({ timeout });
 		}
 	}
+
+	public async checkStringElementsAreEqual(
+		expectedTexts: string[],
+		actualTexts: string[],
+	): Promise<void> {
+		expect(expectedTexts.length).toBe(actualTexts.length);
+		expectedTexts.forEach((expectedText, index) => {
+			expect(expectedText.trim()).toBe(actualTexts[index].trim());
+		});
+	}
 }
