@@ -1,4 +1,4 @@
-import { expect } from "@playwright/test";
+import { chromium, expect } from "@playwright/test";
 import { JiraApi } from "@api/jira-api";
 import { createExecutionBody } from "@api/jira-api-payloads";
 import { getCookieHeader, writeToJSONFile } from "@core/utils/utils";
@@ -8,18 +8,15 @@ import { JsonData } from "@core/interfaces";
 import { GamdomApi } from "@api/gamdom-api";
 import { SUPER_ADMIN_CREDENTIALS } from "@constants/credentials";
 import { Feature } from "@enums/feature";
+import { SecurityAdminPage } from "@pages/admin/security-admin/security-admin-page";
+import { SECURITY_ADMIN_PAGE_ENDPOINT } from "@constants/page-endpoints";
+import { environment_url } from "configuration";
 
-async function globalSetup(): Promise<void> {
+async function enableHiloFeature(
+	gamdomApi: GamdomApi,
+	cookie: string,
+): Promise<void> {
 	logger.info("Enabling HILO...");
-
-	const gamdomApi = new GamdomApi();
-
-	const cookie = getCookieHeader(
-		await gamdomApi.authenticateWithExistingUser(
-			SUPER_ADMIN_CREDENTIALS.username,
-			SUPER_ADMIN_CREDENTIALS.password,
-		),
-	);
 
 	const featureResponse = await gamdomApi.setFeatureState(
 		Feature.HILO,
@@ -32,39 +29,72 @@ async function globalSetup(): Promise<void> {
 	});
 
 	logger.info("HILO has been successfully enabled.");
+}
+
+async function updateWithdrawLimits(cookie: string): Promise<void> {
+	const browser = await chromium.launch({ slowMo: 300 });
+	const context = await browser.newContext({
+		extraHTTPHeaders: {
+			Cookie: cookie,
+		},
+	});
+	const page = await context.newPage();
+
+	const securityAdminPage = new SecurityAdminPage(page);
+	await page.goto(`${environment_url}${SECURITY_ADMIN_PAGE_ENDPOINT}`);
+
+	await securityAdminPage.updateUserWithdrawLimits(5000000, 5000000);
+	logger.info(`User withdraw limits have been updated to 5 million USD.`);
+
+	await browser.close();
+}
+
+async function createJiraExecution(): Promise<void> {
+	logger.info("Creating a Test Execution in JIRA...");
+	const jiraApi = new JiraApi();
+	const response = await jiraApi.createExecution(createExecutionBody);
+
+	expect(response.status()).toBe(201);
+
+	const responseBody = (await response.json()) as JsonData;
+	const responseKey = responseBody["key"] as string;
+
+	if (!responseKey) {
+		logger.info(
+			`Response received from JIRA: ${JSON.stringify(responseBody)}`,
+		);
+		throw new Error("Test execution key is empty or invalid.");
+	}
+
+	logger.info(
+		`Test Execution with key ${
+			responseBody["key"] as string
+		} has been created!`,
+	);
+	const keystore = Configuration.keystore;
+	await writeToJSONFile({ issueKey: responseBody["key"] }, keystore);
+	await writeToJSONFile(
+		{
+			createExecution: Configuration.createExecution,
+		},
+		keystore,
+	);
+}
+
+async function globalSetup(): Promise<void> {
+	const gamdomApi = new GamdomApi();
+	const cookie = getCookieHeader(
+		await gamdomApi.authenticateWithExistingUser(
+			SUPER_ADMIN_CREDENTIALS.username,
+			SUPER_ADMIN_CREDENTIALS.password,
+		),
+	);
+
+	await enableHiloFeature(gamdomApi, cookie);
+	await updateWithdrawLimits(cookie);
 
 	if (Configuration.createExecution) {
-		logger.info("Creating a Test Execution in JIRA...");
-		const jiraApi = new JiraApi();
-		const response = await jiraApi.createExecution(createExecutionBody);
-
-		expect(response.status()).toBe(201);
-
-		const responseBody = (await response.json()) as JsonData;
-		const responseKey = responseBody["key"] as string;
-
-		if (!responseKey) {
-			logger.info(
-				`Response received from JIRA: ${JSON.stringify(responseBody)}`,
-			);
-			throw new Error("Test execution key is empty or invalid.");
-		}
-
-		logger.info(
-			`Test Execution with key ${
-				responseBody["key"] as string
-			} has been created!`,
-		);
-
-		const keystore = Configuration.keystore;
-
-		await writeToJSONFile({ issueKey: responseBody["key"] }, keystore);
-		await writeToJSONFile(
-			{
-				createExecution: Configuration.createExecution,
-			},
-			keystore,
-		);
+		await createJiraExecution();
 	}
 }
 

@@ -17,3 +17,4 @@ export const INFO_ADMIN_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/user`;
 export const BANNED_USER_PAGE_ENDPOINT = "/banned?reason";
 export const ESPORTS_PAGE_ENDPOINT = "/esports";
 export const SLOTS_BATTLE_PAGE_ENDPOINT = "/slots-battles";
+export const SECURITY_ADMIN_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/SecurityAdmin`;

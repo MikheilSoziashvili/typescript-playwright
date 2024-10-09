@@ -5,4 +5,5 @@ export enum ToastSubTitle {
 	HIDEN_STATISTICS_ENABLED = "Hidden statistics mode enabled!",
 	SENDING_OUT_FREESPINS = "Started sending out freespins, please don't click 'GIVE' button again until you see new notification.",
 	CASION_REWARD_GIVEN = "Casino reward given successfully!",
+	SETTINGS_UPDATED = "Settings updated",
 }
