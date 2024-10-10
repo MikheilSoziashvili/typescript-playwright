@@ -42,7 +42,11 @@ export type PayloadType =
 	| string;
 
 export type BasePageNavigationParametersType = {
-	endpoint?: { path: string; id?: string; param?: string };
+	endpoint?: {
+		paths: string[];
+		pathParams?: Record<string, string>;
+		queryParams?: Record<string, string | string[]>;
+	};
 	link?: string;
 	cookies?: { clearCookies: boolean };
 };

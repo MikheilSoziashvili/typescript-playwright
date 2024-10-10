@@ -1,8 +1,9 @@
-import { faker } from "@faker-js/faker";
+import { RegisterTestDataParams } from "@core/interfaces";
 import { HiloBetOption } from "@enums/hilo-bet-options";
 import { HiloBetMultiplierByBetOption } from "@enums/original-games";
-import { usernamePattern, passwordPattern } from "@support/regex-patterns";
-import { RegisterTestDataParams } from "@core/interfaces";
+import { BlogPostCategories } from "@enums/post-categories";
+import { faker } from "@faker-js/faker";
+import { passwordPattern, usernamePattern } from "@support/regex-patterns";
 
 export class RegisterTestData {
 	#username: string;
@@ -112,5 +113,36 @@ export class HiloBetTestData {
 		this.betAmount = betAmount;
 		this.betOption = betOption;
 		this.betMultiplierByBetOption = betMultiplierByBetOption;
+	}
+}
+
+export class BlogPostTestData {
+	public paragraph: string;
+	public title: string;
+	public subTitle: string;
+	public author: string;
+	public slug: string;
+	public categories: BlogPostCategories[];
+	public coverImage: string;
+	public thumbnailImage: string;
+
+	constructor(data: {
+		paragraph: string;
+		title: string;
+		subTitle: string;
+		author: string;
+		slug: string;
+		categories: BlogPostCategories[];
+		coverImage: string;
+		thumbnailImage: string;
+	}) {
+		this.paragraph = data.paragraph;
+		this.title = data.title;
+		this.subTitle = data.subTitle;
+		this.author = data.author;
+		this.slug = data.slug;
+		this.categories = data.categories;
+		this.coverImage = data.coverImage;
+		this.thumbnailImage = data.thumbnailImage;
 	}
 }

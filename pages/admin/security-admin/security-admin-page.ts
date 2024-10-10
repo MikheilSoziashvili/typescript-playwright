@@ -18,7 +18,7 @@ export class SecurityAdminPage extends BasePage<SecurityAdminPageMap> {
 	): Promise<void> {
 		await super.navigate({
 			...parameters,
-			endpoint: { path: SECURITY_ADMIN_PAGE_ENDPOINT },
+			endpoint: { paths: [SECURITY_ADMIN_PAGE_ENDPOINT] },
 		});
 	}
 
@@ -34,8 +34,7 @@ export class SecurityAdminPage extends BasePage<SecurityAdminPageMap> {
 		await this.map.blockUserInput.fill(blockLimit.toString());
 		await this.map.saveButton.click();
 
-
-        // Below assertion to be revised. Potential refactoring in steps constructor might be required.
+		// Below assertion to be revised. Potential refactoring in steps constructor might be required.
 		const toast = new Toast(this.page);
 		await toast.assertThat().titleIs(ToastTitle.SUCCESS, {
 			subTitle: ToastSubTitle.SETTINGS_UPDATED,

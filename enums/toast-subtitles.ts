@@ -6,4 +6,5 @@ export enum ToastSubTitle {
 	SENDING_OUT_FREESPINS = "Started sending out freespins, please don't click 'GIVE' button again until you see new notification.",
 	CASION_REWARD_GIVEN = "Casino reward given successfully!",
 	SETTINGS_UPDATED = "Settings updated",
+	SUCCESSFUL_UPLOAD = "Successful upload",
 }

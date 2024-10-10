@@ -9,6 +9,7 @@ import { GeoblockedPage } from "@pages/geoblocked/geoblocked-page";
 import { BannedUserPage } from "@pages/banned-user/banned-user-page";
 import { EsportsPage } from "@pages/esports-page/esports-page";
 import { SlotsBattlePage } from "@pages/slot-battle/slots-battle-page";
+import { BlogCategoryPage } from "@pages/blog/category/blog-category-page";
 
 export type GamdomPages = {
 	homePage: HomePage;
@@ -21,6 +22,7 @@ export type GamdomPages = {
 	bannedUserPage: BannedUserPage;
 	esportsPage: EsportsPage;
 	slotsBattlePage: SlotsBattlePage;
+	blogCategoryPage: BlogCategoryPage;
 };
 
 export const gamdomPagesFixtures = base.extend<GamdomPages>({
@@ -53,5 +55,8 @@ export const gamdomPagesFixtures = base.extend<GamdomPages>({
 	},
 	slotsBattlePage: async ({ page }, use) => {
 		await use(new SlotsBattlePage(page));
+	},
+	blogCategoryPage: async ({ page }, use) => {
+		await use(new BlogCategoryPage(page));
 	},
 });

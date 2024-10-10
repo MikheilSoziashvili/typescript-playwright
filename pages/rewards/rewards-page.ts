@@ -21,7 +21,7 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 	): Promise<void> {
 		await super.navigate({
 			...parameters,
-			endpoint: { path: REWARDS_PAGE_ENDPOINT },
+			endpoint: { paths: [REWARDS_PAGE_ENDPOINT] },
 		});
 	}
 

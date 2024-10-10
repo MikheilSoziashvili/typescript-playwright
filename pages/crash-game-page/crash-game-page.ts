@@ -18,7 +18,7 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 	): Promise<void> {
 		await super.navigate({
 			...parameters,
-			endpoint: { path: CRASH_GAME_PAGE_ENDPOINT },
+			endpoint: { paths: [CRASH_GAME_PAGE_ENDPOINT] },
 		});
 		await this.map.waitForVisibility({
 			locator: this.map.gameContainer,

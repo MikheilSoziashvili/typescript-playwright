@@ -14,7 +14,7 @@ export class EsportsPage extends BasePage<EsportsPageMap> {
 	): Promise<void> {
 		await super.navigate({
 			...parameters,
-			endpoint: { path: ESPORTS_PAGE_ENDPOINT },
+			endpoint: { paths: [ESPORTS_PAGE_ENDPOINT] },
 		});
 	}
 

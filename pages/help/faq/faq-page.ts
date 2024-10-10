@@ -16,7 +16,7 @@ export class FaqPage extends BasePage<FaqPageMap> {
 	): Promise<void> {
 		await super.navigate({
 			...parameters,
-			endpoint: { path: FAQ_PAGE_ENDPOINT },
+			endpoint: { paths: [FAQ_PAGE_ENDPOINT] },
 		});
 	}
 

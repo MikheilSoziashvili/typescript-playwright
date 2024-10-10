@@ -14,7 +14,7 @@ export class GoogleAuthPage extends BasePage<GooglePageMap> {
 	): Promise<void> {
 		await super.navigate({
 			...parameters,
-			endpoint: { path: "/" },
+			endpoint: { paths: ["/"] },
 		});
 	}
 

@@ -15,7 +15,7 @@ export class SlotsBattlePage extends BasePage<SlotsBattlePageMap> {
 	): Promise<void> {
 		await super.navigate({
 			...parameters,
-			endpoint: { path: SLOTS_BATTLE_PAGE_ENDPOINT },
+			endpoint: { paths: [SLOTS_BATTLE_PAGE_ENDPOINT] },
 		});
 	}
 

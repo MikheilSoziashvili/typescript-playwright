@@ -19,7 +19,7 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 	): Promise<void> {
 		await super.navigate({
 			...parameters,
-			endpoint: { path: HILO_GAME_PAGE_ENDPOINT },
+			endpoint: { paths: [HILO_GAME_PAGE_ENDPOINT] },
 		});
 		await this.map.waitForVisibility({
 			locator: this.map.gameArea,

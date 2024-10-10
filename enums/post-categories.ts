@@ -1,0 +1,8 @@
+export enum BlogPostCategories {
+	CRYPTO = "CRYPTO",
+	GUIDES = "GUIDES",
+	GAMDOM_NEWS = "GAMDOM_NEWS",
+	SPORTS = "SPORTS",
+	CASINO = "CASINO",
+	ESPORTS = "ESPORTS",
+}

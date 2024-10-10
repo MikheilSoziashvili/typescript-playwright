@@ -17,7 +17,7 @@ export class ProfilePage extends BasePage<ProfilePageMap> {
 	): Promise<void> {
 		await super.navigate({
 			...parameters,
-			endpoint: { path: PROFILE_PAGE_ENDPOINT },
+			endpoint: { paths: [PROFILE_PAGE_ENDPOINT] },
 		});
 	}
 

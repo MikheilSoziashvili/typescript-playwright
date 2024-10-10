@@ -21,7 +21,7 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 	): Promise<void> {
 		await super.navigate({
 			...parameters,
-			endpoint: { path: ROULETTE_GAME_PAGE_ENDPOINT },
+			endpoint: { paths: [ROULETTE_GAME_PAGE_ENDPOINT] },
 		});
 		await this.map.waitForVisibility({
 			locator: this.map.gameContainer,

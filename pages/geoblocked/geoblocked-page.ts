@@ -14,7 +14,7 @@ export class GeoblockedPage extends BasePage<GeoblockedPageMap> {
 	): Promise<void> {
 		await super.navigate({
 			...parameters,
-			endpoint: { path: GEOBLOCKED_PAGE_ENDPOINT },
+			endpoint: { paths: [GEOBLOCKED_PAGE_ENDPOINT] },
 		});
 	}
 

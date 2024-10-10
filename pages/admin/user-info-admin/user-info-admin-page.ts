@@ -16,7 +16,7 @@ export class UserInfoAdminPage extends BasePage<UserInfoAdminPageMap> {
 	): Promise<void> {
 		await super.navigate({
 			...parameters,
-			endpoint: { path: USER_INFO_ADMIN_PAGE_ENDPOINT },
+			endpoint: { paths: [USER_INFO_ADMIN_PAGE_ENDPOINT] },
 		});
 	}
 

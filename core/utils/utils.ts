@@ -19,6 +19,7 @@ import { Protocol } from "@enums/api/protocols";
 import { Page } from "playwright";
 import { environment_url } from "configuration";
 import { AUTH_PATH } from "@constants/file-paths";
+import { PNG, PNGOptions } from "pngjs";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -190,18 +191,66 @@ export function generateEmailAndInbox(): { email: string; inbox: string } {
 	return { email, inbox };
 }
 
+/**
+ * Constructs a URL endpoint by joining multiple paths, replacing path parameters, and appending query parameters.
+ *
+ * @param {Object} parameters - An object containing the paths, path parameters, and query parameters.
+ * @param {string[]} parameters.paths - An array of path segments to be joined together to form the base path.
+ * @param {Record<string, string>} [parameters.pathParams] - An optional object where keys correspond to placeholders in the paths (e.g., `:userId`), and values are used to replace these placeholders.
+ * @param {Record<string, string | string[]>} [parameters.queryParams] - An optional object containing query parameters to be appended to the endpoint. If a value is an array, multiple query parameters with the same key will be added.
+ *
+ * @returns {string} The constructed endpoint URL as a string, with paths joined, path parameters replaced, and query parameters appended.
+ *
+ * @example
+ * // Example 1: Simple path with query params
+ * const endpoint = buildEndpoint({
+ *   paths: ["/api", "/users"],
+ *   queryParams: { status: "active" }
+ * });
+ * // Output: "/api/users?status=active"
+ *
+ * @example
+ * // Example 2: Path with dynamic path parameters and query params
+ * const endpoint = buildEndpoint({
+ *   paths: ["/api", "/users", ":userId", "orders"],
+ *   pathParams: { userId: "123" },
+ *   queryParams: { status: "shipped" }
+ * });
+ * // Output: "/api/users/123/orders?status=shipped"
+ *
+ * @example
+ * // Example 3: Multiple query params with array values
+ * const endpoint = buildEndpoint({
+ *   paths: ["/api", "/users"],
+ *   queryParams: { filter: ["active", "premium"] }
+ * });
+ * // Output: "/api/users?filter=active&filter=premium"
+ */
 export function buildEndpoint(parameters: {
-	path: string;
-	id?: string;
-	param?: string;
+	paths: string[];
+	pathParams?: Record<string, string>;
+	queryParams?: Record<string, string | string[]>;
 }): string {
-	let endpoint = parameters.path;
-	if (parameters.id) {
-		endpoint = `${endpoint}/${parameters.id}`;
+	const fullPath = parameters.paths.join("/");
+	let path = fullPath;
+	if (parameters.pathParams) {
+		for (const [key, value] of Object.entries(parameters.pathParams)) {
+			path = path.replace(`:${key}`, value);
+		}
 	}
-	if (parameters.param) {
-		endpoint = `${endpoint}=${parameters.param}`;
+	let endpoint = path;
+	if (parameters.queryParams) {
+		const queryParams = new URLSearchParams();
+		for (const [key, value] of Object.entries(parameters.queryParams)) {
+			if (Array.isArray(value)) {
+				value.forEach((v) => queryParams.append(key, v));
+			} else {
+				queryParams.append(key, value);
+			}
+		}
+		endpoint += `?${queryParams.toString()}`;
 	}
+
 	return endpoint;
 }
 
@@ -274,3 +323,64 @@ export const writeUserDetails = (
 
 	fs.writeFileSync(filePath, JSON.stringify(userDetails, null, 2), "utf-8");
 };
+
+function ensureTestImagesDir(): string {
+	const dirPath = path.join("./", "testImages");
+	if (!fs.existsSync(dirPath)) {
+		fs.mkdirSync(dirPath);
+		logger.info(`Directory created: ${dirPath}`);
+	}
+	return dirPath;
+}
+
+export async function createDummyPngImage(): Promise<string> {
+	const dirPath = ensureTestImagesDir();
+	const fileName = `${generateRandomString({
+		prefix: "dummy-image-",
+		length: 5,
+	})}.png`;
+	const filePath = path.join(dirPath, fileName);
+	const pngOptions: PNGOptions = { width: 200, height: 200 };
+	const png = new PNG(pngOptions);
+
+	// Set default color to blue (RGBA: 0, 0, 255, 255)
+	const defaultColor = { r: 0, g: 0, b: 255, a: 255 };
+
+	// Fill the image with the specified default color
+	for (let y = 0; y < png.height; y++) {
+		for (let x = 0; x < png.width; x++) {
+			const idx = (png.width * y + x) << 2;
+			png.data[idx] = defaultColor.r;
+			png.data[idx + 1] = defaultColor.g;
+			png.data[idx + 2] = defaultColor.b;
+			png.data[idx + 3] = defaultColor.a;
+		}
+	}
+
+	return new Promise((resolve, reject) => {
+		png.pack()
+			.pipe(fs.createWriteStream(filePath))
+			.on("finish", () => {
+				logger.info(`Dummy PNG file created at: ${filePath}`);
+				resolve(filePath);
+			})
+			.on("error", (err) => {
+				logger.error("Error writing PNG file:", err);
+				reject(err);
+			});
+	});
+}
+
+export async function deleteFilesWithFilePaths(
+	filePaths: string[],
+): Promise<void> {
+	filePaths.forEach((filePath) => {
+		fs.unlink(filePath, (err) => {
+			if (err) {
+				logger.error(`Error deleting file ${filePath}:`, err);
+			} else {
+				logger.info(`File deleted: ${filePath}`);
+			}
+		});
+	});
+}

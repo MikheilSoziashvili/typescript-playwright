@@ -17,7 +17,7 @@ export class AffiliatesPage extends BasePage<AffiliatesPageMap> {
 	): Promise<void> {
 		await super.navigate({
 			...parameters,
-			endpoint: { path: AFFILIATES_PAGE_ENDPOINT },
+			endpoint: { paths: [AFFILIATES_PAGE_ENDPOINT] },
 		});
 	}
 

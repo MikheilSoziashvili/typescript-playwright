@@ -15,7 +15,7 @@ export class SteamAuthPage extends BasePage<SteamAuthPageMap> {
 	): Promise<void> {
 		await super.navigate({
 			...parameters,
-			endpoint: { path: STEAM_LOGIN_URL },
+			endpoint: { paths: [STEAM_LOGIN_URL] },
 		});
 	}
 

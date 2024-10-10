@@ -17,7 +17,7 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 	): Promise<void> {
 		await super.navigate({
 			...parameters,
-			endpoint: { path: DICE_GAME_PAGE_ENDPOINT },
+			endpoint: { paths: [DICE_GAME_PAGE_ENDPOINT] },
 		});
 	}
 

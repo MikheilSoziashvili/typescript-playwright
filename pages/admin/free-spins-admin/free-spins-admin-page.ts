@@ -16,7 +16,7 @@ export class FreeSpinsAdminPage extends BasePage<FreeSpinsAdminPageMap> {
 	): Promise<void> {
 		await super.navigate({
 			...parameters,
-			endpoint: { path: FREE_SPINS_ADMIN_PAGE_ENDPOINT },
+			endpoint: { paths: [FREE_SPINS_ADMIN_PAGE_ENDPOINT] },
 		});
 	}
 

@@ -15,7 +15,7 @@ export class BannedUserPage extends BasePage<BannedUserPageMap> {
 	): Promise<void> {
 		await super.navigate({
 			...parameters,
-			endpoint: { path: BANNED_USER_PAGE_ENDPOINT },
+			endpoint: { paths: [BANNED_USER_PAGE_ENDPOINT] },
 		});
 	}
 

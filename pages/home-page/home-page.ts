@@ -22,7 +22,7 @@ export class HomePage extends BasePage<HomePageMap> {
 	): Promise<void> {
 		await super.navigate({
 			...parameters,
-			endpoint: { path: HOME_PAGE_ENDPOINT },
+			endpoint: { paths: [HOME_PAGE_ENDPOINT] },
 		});
 	}
 
