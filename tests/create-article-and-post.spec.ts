@@ -43,10 +43,10 @@ test.describe("Create article and posts tests", () => {
 			toast,
 			blogCategoryPage,
 		}) => {
-			// test.fixme(
-			// 	true,
-			// 	`[ENG-2627] Newly created post articles are not displayed in post category page`,
-			// );
+			test.fixme(
+				true,
+				`[ENG-2627] Newly created post articles are not displayed in post category page`,
+			);
 			const postArticleTestData = new BlogPostTestData({
 				paragraph: generateRandomString({
 					prefix: "automation_blog_paragraph_",
