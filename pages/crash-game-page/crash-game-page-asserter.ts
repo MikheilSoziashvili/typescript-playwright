@@ -2,6 +2,7 @@ import { Locator, expect } from "@playwright/test";
 import { BaseAsserter } from "@base/base-asserter";
 import { CrashGamePage } from "./crash-game-page";
 import { Timeout } from "@enums/timeout";
+import { parseToFloat } from "@core/utils/utils";
 
 export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 	public constructor(page: CrashGamePage) {
@@ -55,6 +56,12 @@ export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 		await this.checkStringElementsAreEqual(
 			[expectedWinnings.toString()],
 			[actualWinnings.toString()],
+		);
+	}
+
+	public async potentialWinDisplayed(potentialWin: number): Promise<void> {
+		await expect(this.gamdomPage.map.potentialWinAmount).toContainText(
+			`$${parseToFloat(potentialWin)}`,
 		);
 	}
 }

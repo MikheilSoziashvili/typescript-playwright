@@ -31,4 +31,12 @@ export class CrashGamePageSteps extends BasePageStep<CrashGamePage> {
 			.assertThat()
 			.accountBalanceIs(accountBalanceBeforeBet - betTestData.betAmount);
 	}
+
+	public async toggleAutobetSetup(
+		betTestData: BetTestData,
+		stopBetAmount: number,
+	): Promise<void> {
+		await this.gamdomPage.toggleAutobet();
+		await this.gamdomPage.stopBetIfMoreThan(stopBetAmount);
+	}
 }

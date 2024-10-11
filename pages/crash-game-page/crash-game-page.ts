@@ -120,4 +120,16 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 		await this.map.autoCashOutField.fill(`${autoCashoutMultiplier}`);
 		await this.map.placeBetBtn.click();
 	}
+
+	public async toggleAutobet(): Promise<void> {
+		await this.map.autobetButton.click();
+	}
+
+	public async stopBetIfMoreThan(amount: number): Promise<void> {
+		await this.map.stopBetIfMoreThanField.fill(amount.toString());
+	}
+
+	public async stopAutobetting(): Promise<void> {
+		await this.map.placeBetBtn.click();
+	}
 }

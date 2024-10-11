@@ -70,7 +70,7 @@ test.describe("Crash tests", () => {
 	});
 
 	records.forEach((record) => {
-		test(`[ENG-1118] Crash - Auto Cashout with: [${record.your_bet}] value bets`, async ({
+		test(`[ENG-1118] Crash - Auto Cashout with: [${record.your_bet}] value bets @originals`, async ({
 			crashGamePage,
 		}, testInfo) => {
 			test.fixme(

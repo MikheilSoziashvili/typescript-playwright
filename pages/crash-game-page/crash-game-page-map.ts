@@ -92,4 +92,29 @@ export class CrashGamePageMap extends BaseMap {
 	public betBoxBetAmount(betBox: Locator): Locator {
 		return betBox.locator("input");
 	}
+
+	public get autobetButton(): Locator {
+		return this.betOptions.locator('input[type="checkbox"]');
+	}
+
+	public get stopBetIfMoreThanField(): Locator {
+		return this.betOptions.getByLabel("Stop if bet is more than");
+	}
+
+	public get potentialWinAmount(): Locator {
+		return this.betBoxesContainer.locator('span.currency-amount').nth(1);
+	}
+
+	public get potentialText(): Locator {
+		return this.betBoxesContainer.locator('h6:has-text("Paid Out")');
+	}
+
+	public get cashoutButton(): Locator {
+		return this.betBoxesContainer.locator('button:has-text("Cashout")');
+	}
+
+	public get successButton(): Locator {
+		return this.betBoxesContainer.locator('button:has-text("Success")');
+	}
+	
 }
