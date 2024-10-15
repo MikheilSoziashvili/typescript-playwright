@@ -64,4 +64,11 @@ export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 			`$${parseToFloat(potentialWin)}`,
 		);
 	}
+
+	public async startAutobetButtonIsEnabled(): Promise<void> {
+		await expect(this.gamdomPage.map.placeBetBtn).toBeEnabled();
+		await expect(this.gamdomPage.map.placeBetBtn).toHaveText(
+			"Start Autobet",
+		);
+	}
 }

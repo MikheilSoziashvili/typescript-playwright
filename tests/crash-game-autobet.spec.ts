@@ -56,4 +56,23 @@ test.describe("Crash autobet tests", () => {
 			.assertThat()
 			.accountBalanceIs(expectedBalance);
 	});
+
+	test("[ENG-2663] Crash - Start Autobet button is active", async ({
+		crashGamePage,
+	}, testInfo) => {
+		const newUserDetails = getUserDetailsByTestTitle(
+			testInfo.title,
+			testInfo.workerIndex,
+		);
+		const betTestData: BetTestData = new BetTestData(
+			newUserDetails.username,
+			10,
+			Number("1.5"),
+		);
+
+		await crashGamePage.navigate();
+		await crashGamePage
+			.steps()
+			.enableAutobetAndFillAmount(betTestData.betAmount);
+	});
 });

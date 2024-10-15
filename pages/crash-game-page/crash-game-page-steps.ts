@@ -39,4 +39,10 @@ export class CrashGamePageSteps extends BasePageStep<CrashGamePage> {
 		await this.gamdomPage.toggleAutobet();
 		await this.gamdomPage.stopBetIfMoreThan(stopBetAmount);
 	}
+
+	public async enableAutobetAndFillAmount(betAmount: number): Promise<void> {
+		await this.gamdomPage.toggleAutobet();
+		await this.gamdomPage.fillInBetAmount(betAmount);
+		await this.gamdomPage.assertThat().startAutobetButtonIsEnabled();
+	}
 }

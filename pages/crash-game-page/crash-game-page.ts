@@ -116,7 +116,7 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 	): Promise<void> {
 		await this.waitPreviousBetRoundFinish();
 		await this.waitBettingWindowAvailable();
-		await this.map.betField.fill(`${betAmount}`);
+		await this.fillInBetAmount(betAmount);
 		await this.map.autoCashOutField.fill(`${autoCashoutMultiplier}`);
 		await this.map.placeBetBtn.click();
 	}
@@ -131,5 +131,9 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 
 	public async stopAutobetting(): Promise<void> {
 		await this.map.placeBetBtn.click();
+	}
+
+	public async fillInBetAmount(betAmount: number): Promise<void> {
+		await this.map.betField.fill(betAmount.toString());
 	}
 }
