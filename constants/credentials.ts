@@ -24,3 +24,15 @@ export const USER_2_CREDENTIALS: CredentialsType = {
 	username: "user2",
 	password: "password",
 };
+
+// super admin NoBulkAdmin assigned
+export const SUPER_ADMIN_VIP_MANAGER_NO_BULK: CredentialsType = {
+	username: "superAdminVipManagerNoBulk",
+	password: "password",
+};
+
+// super admin BulkAdmin assigned
+export const SUPER_ADMIN_VIP_MANAGER_BULK: CredentialsType = {
+	username: "superAdminVipManagerWithBulk",
+	password: "password",
+};
