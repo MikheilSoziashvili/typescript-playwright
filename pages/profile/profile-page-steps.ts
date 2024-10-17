@@ -81,4 +81,15 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		await this.gamdomPage.continueModal.clickContinueButton();
 		await this.gamdomPage.assertThat().assertChangeEmailButtonVisible();
 	}
+
+	public async logoutUserSuccessfully(): Promise<void> {
+		await this.gamdomPage.navigate();
+		await this.gamdomPage.logout();
+		await this.gamdomPage.authenticatedHeader
+			.assertThat()
+			.loggedInUserElementsAreNotVisible();
+		await this.gamdomPage.unauthenticatedHeader
+			.assertThat()
+			.loggedOutUserElementsAreVisible();
+	}
 }

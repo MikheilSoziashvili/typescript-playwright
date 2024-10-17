@@ -9,6 +9,7 @@ export const ADMIN_PAGE_ENDPOINT = "/admin";
 export const REWARDS_PAGE_ENDPOINT = "/rewards";
 export const REWARDS_EXPLORE_PAGE_ENDPOINT = `${REWARDS_PAGE_ENDPOINT}/explore`;
 export const AFFILIATES_PAGE_ENDPOINT = "/affiliates";
+export const SETTINGS_PAGE_ENDPOINT = "/settings";
 export const HELP_PAGE_ENDPOINT = "/help";
 export const FAQ_PAGE_ENDPOINT = `${HELP_PAGE_ENDPOINT}/faq`;
 export const USER_INFO_ADMIN_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/UserInfoAdmin`;

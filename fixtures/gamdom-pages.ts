@@ -10,10 +10,12 @@ import { BannedUserPage } from "@pages/banned-user/banned-user-page";
 import { EsportsPage } from "@pages/esports-page/esports-page";
 import { SlotsBattlePage } from "@pages/slot-battle/slots-battle-page";
 import { BlogCategoryPage } from "@pages/blog/category/blog-category-page";
+import { SettingsPage } from "@pages/settings/settings-page";
 
 export type GamdomPages = {
 	homePage: HomePage;
 	affiliatesPage: AffiliatesPage;
+	settingsPage: SettingsPage;
 	rewardsPage: RewardsPage;
 	rewardsExplorePage: RewardsExplorePage;
 	profilePage: ProfilePage;
@@ -31,6 +33,9 @@ export const gamdomPagesFixtures = base.extend<GamdomPages>({
 	},
 	affiliatesPage: async ({ page }, use) => {
 		await use(new AffiliatesPage(page));
+	},
+	settingsPage: async ({ page }, use) => {
+		await use(new SettingsPage(page));
 	},
 	rewardsPage: async ({ page }, use) => {
 		await use(new RewardsPage(page));

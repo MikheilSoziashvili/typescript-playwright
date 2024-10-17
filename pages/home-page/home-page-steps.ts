@@ -29,6 +29,19 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 		}
 	}
 
+	public async loginUserWith2FaCodeSuccessfully(
+		username: string,
+		password: string,
+		twoFactorAuthenticationCode: string,
+	): Promise<void> {
+		await this.gamdomPage.unauthenticatedHeader.openLoginModal();
+		await this.gamdomPage.loginModal.login(username, password);
+		await this.gamdomPage.loginModal.enter2FaCode(
+			twoFactorAuthenticationCode,
+		);
+		await this.gamdomPage.assertThat().userIsLoggedIn();
+	}
+
 	public async registerNewUser(
 		params: RegisterTestDataParams = {},
 	): Promise<RegisterTestData> {

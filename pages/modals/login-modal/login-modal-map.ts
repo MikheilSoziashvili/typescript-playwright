@@ -39,4 +39,20 @@ export class LoginModalMap extends BaseMap {
 			.locator("div[class*=PopupSocialWrapper] button")
 			.first();
 	}
+
+	public get login2FaContainer(): Locator {
+		return this.page.locator(
+			"//*[text()='2FA Code']//ancestor::div[contains(@class,'MuiBox-root')]",
+		);
+	}
+
+	public get inputFields2FACode(): Locator {
+		return this.login2FaContainer.locator(`input[id*="2fa-"]`);
+	}
+
+	public get confirm2FAActivationCodeButton(): Locator {
+		return this.login2FaContainer.locator(
+			`//..//..//button[@type='button' and normalize-space()='Confirm']`,
+		);
+	}
 }

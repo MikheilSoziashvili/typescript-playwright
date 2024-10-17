@@ -11,7 +11,11 @@ import {
 } from "@core/types/types";
 import accounting from "accounting";
 import { DEFAULT_CURRENCY } from "@constants/defaults";
-import { pageUrl, sanitizeTitlePattern } from "@support/regex-patterns";
+import {
+	otpAuthSecretPattern,
+	pageUrl,
+	sanitizeTitlePattern,
+} from "@support/regex-patterns";
 import fs from "fs";
 import xml2js from "xml2js";
 import { MAILINATOR_DOMAIN } from "@constants/domains";
@@ -20,6 +24,9 @@ import { Page } from "playwright";
 import { environment_url } from "configuration";
 import { AUTH_PATH } from "@constants/file-paths";
 import { PNG, PNGOptions } from "pngjs";
+import sharp from "sharp";
+import jsQR from "jsqr";
+import { authenticator } from "otplib";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -324,6 +331,31 @@ export const writeUserDetails = (
 	fs.writeFileSync(filePath, JSON.stringify(userDetails, null, 2), "utf-8");
 };
 
+/**
+ * Generates a unique file path for a PNG image in the 'testImages' directory.
+ *
+ * The function ensures that the 'testImages' directory exists. If the directory does not exist,
+ * it creates one. It then generates a random PNG image file name with a 'dummy-image-' prefix
+ * and a random 5-character suffix, and returns the full path for where the image would be stored.
+ *
+ * @returns {string} The full file path for the generated PNG image.
+ *
+ * @example
+ * const imagePath = getPngImagePath();
+ * console.log(imagePath); // './testImages/dummy-image-abc12.png'
+ */
+export function createPngImagePath(): string {
+	const dirPath = ensureTestImagesDir();
+	const fileName = `${generateRandomString({
+		prefix: "e2e-test-image-",
+		length: 5,
+	})}.png`;
+	const filePath = path.join(dirPath, fileName);
+
+	logger.info(`Generated PNG image path: ${filePath}`);
+	return filePath;
+}
+
 function ensureTestImagesDir(): string {
 	const dirPath = path.join("./", "testImages");
 	if (!fs.existsSync(dirPath)) {
@@ -383,4 +415,87 @@ export async function deleteFilesWithFilePaths(
 			}
 		});
 	});
+}
+
+/**
+ * Generates a 2FA code using the provided TOTP secret and custom expiration time.
+ *
+ * @param {string} secret - The TOTP secret used to generate the code.
+ * @returns {Promise<string>} A promise that resolves to the generated 2FA code.
+ * @throws {Error} If there's an error generating the code.
+ */
+export async function generate2FACodeFromSecret(
+	secret: string,
+): Promise<string> {
+	try {
+		authenticator.resetOptions();
+		authenticator.options = {
+			step: 30, // 30-second time step (standard for TOTP)
+			window: 1, // Allow previous and current time steps
+		};
+
+		const code = authenticator.generate(secret); // Use authenticator from otplib
+		if (!code) {
+			throw new Error(
+				"Failed to generate 2FA code using otpAuth from otplib.",
+			);
+		}
+		logger.info(`Generated 2FA code: ${code}`);
+		return code;
+	} catch (error) {
+		const errorMessage =
+			error instanceof Error ? error.message : String(error);
+		throw new Error(
+			`Error while generating 2FA code with otpAuth: ${errorMessage}`,
+		);
+	}
+}
+
+/**
+ * Extracts the secret from a QR code contained in an image.
+ *
+ * This function reads an image file, processes it to identify a QR code,
+ * and extracts the 'secret' parameter from the otpauth URL format if found.
+ *
+ * @param {string} imagePath - The path to the image file containing the QR code.
+ * @returns {Promise<string>} The extracted secret.
+ * @throws {Error} If there is an error during the extraction process, such as:
+ * - No QR code found in the image.
+ * - No secret found in the QR code data.
+ * - Any other errors during processing the image.
+ */
+export async function extractSecretFromQRCode(
+	imagePath: string,
+): Promise<string> {
+	try {
+		const { data, info } = await sharp(imagePath)
+			.ensureAlpha()
+			.raw()
+			.toBuffer({ resolveWithObject: true });
+		const rgbaValues = new Uint8ClampedArray(data.buffer);
+
+		// Log the string version of the QR code data
+		const code = jsQR(rgbaValues, info.width, info.height);
+		if (!code) {
+			throw new Error("No QR code found in the image.");
+		}
+		logger.info(`QR Code Data: ${JSON.stringify(code.data)}`);
+
+		const match = code.data.match(otpAuthSecretPattern);
+
+		if (match && match[1]) {
+			logger.info(`Extracted Secret: ${JSON.stringify(match[1])}`);
+			return match[1];
+		} else {
+			throw new Error("No secret found in the QR code data.");
+		}
+	} catch (error) {
+		throw new Error(
+			`Error extracting secret from QR code: ${
+				error instanceof Error
+					? error.message
+					: "An unknown error occurred."
+			}`,
+		);
+	}
 }
