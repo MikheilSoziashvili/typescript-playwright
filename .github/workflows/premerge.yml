@@ -5,6 +5,10 @@ on:
     pull_request:
         branches: [main, master]
 
+concurrency:
+    group: premerge-${{ github.ref }}
+    cancel-in-progress: false
+
 jobs:
     premerge-checks:
         runs-on: ubuntu-latest

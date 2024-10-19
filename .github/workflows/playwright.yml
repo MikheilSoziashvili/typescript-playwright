@@ -61,6 +61,10 @@ on:
     schedule:
         - cron: "0 2 * * *"
 
+concurrency:
+    group: playwright-e2e-${{ github.ref }}
+    cancel-in-progress: false
+
 jobs:
     tests:
         timeout-minutes: 60

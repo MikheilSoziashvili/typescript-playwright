@@ -18,6 +18,10 @@ on:
                 type: string
                 required: false
 
+concurrency:
+    group: visual-tests-${{ github.ref }}
+    cancel-in-progress: false
+
 jobs:
     visual-tests-images:
         timeout-minutes: 60
