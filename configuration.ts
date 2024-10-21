@@ -37,6 +37,12 @@ export const steam: Record<string, string> = {
 	password: asString(process.env.STEAM_PASSWORD),
 };
 
+export const google: Record<string, string> = {
+	email: asString(process.env.GOOGLE_EMAIL),
+	password: asString(process.env.GOOGLE_PASSWORD),
+	authSecret: asString(process.env.GOOGLE_AUTH_SECRET),
+};
+
 export const users: TestUserConfigurationObject[] = [
 	{
 		username: "superadmin",

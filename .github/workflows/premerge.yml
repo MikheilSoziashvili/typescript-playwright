@@ -36,6 +36,9 @@ jobs:
             XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
             STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
             STEAM_PASSWORD: ${{ secrets.STEAM_PASSWORD }}
+            GOOGLE_EMAIL: ${{ secrets.GOOGLE_EMAIL }}
+            GOOGLE_PASSWORD: ${{ secrets.GOOGLE_PASSWORD }}
+            GOOGLE_AUTH_SECRET: ${{ secrets.GOOGLE_AUTH_SECRET }}
             MAILINATOR_API_KEY: ${{ secrets.MAILINATOR_API_KEY }}
             AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
             AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

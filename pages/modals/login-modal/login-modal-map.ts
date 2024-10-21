@@ -34,10 +34,22 @@ export class LoginModalMap extends BaseMap {
 		return this.page.locator("*[role='tooltip']");
 	}
 
+	public get signInOptionsContainer(): Locator {
+		return this.page.locator(
+			"//div[contains(@class,'SignInOptionsContainer')]",
+		);
+	}
+
 	public get steamButton(): Locator {
-		return this.page
-			.locator("div[class*=PopupSocialWrapper] button")
-			.first();
+		return this.signInOptionsContainer.locator(
+			"//i[contains(@class,'icon-steam')]//ancestor::button",
+		);
+	}
+
+	public get googleButton(): Locator {
+		return this.signInOptionsContainer.locator(
+			"//i[contains(@class,'icon-google')]//ancestor::button",
+		);
 	}
 
 	public get login2FaContainer(): Locator {

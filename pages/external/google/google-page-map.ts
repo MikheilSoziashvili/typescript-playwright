@@ -11,14 +11,22 @@ export class GooglePageMap extends BaseMap {
 	}
 
 	public get gMoveForwardBtn(): Locator {
-		return this.page.locator("#identifierNext > div > button > span");
+		return this.page.locator("[id='identifierNext']");
 	}
 
 	public get gPasswordField(): Locator {
 		return this.page.locator("input[name='Passwd']");
 	}
 
+	public get gTwoFactorCodeField(): Locator {
+		return this.page.locator("input[type='tel']");
+	}
+
 	public get gPasswordNextBtn(): Locator {
-		return this.page.locator("#passwordNext > div > button > span");
+		return this.page.locator("[id='passwordNext']");
+	}
+
+	public get gTwoFactoryNextBtn(): Locator {
+		return this.page.locator("[id='totpNext']");
 	}
 }

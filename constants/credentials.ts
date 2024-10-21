@@ -1,10 +1,11 @@
 import { CredentialsType } from "@core/types/types";
+import { asString } from "@core/utils/utils";
 
 // google auth
 export const GOOGLE_AUTH_CREDENTIALS: CredentialsType = {
-	username: "testautomation",
-	password: "automation@pass1",
-	email: "testautomation@teamgamdom.com",
+	username: asString(process.env.GOOGLE_USERNAME),
+	password: asString(process.env.GOOGLE_PASSWORD),
+	email: asString(process.env.GOOGLE_EMAIL),
 };
 
 // gamdom admins

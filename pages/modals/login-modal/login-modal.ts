@@ -47,6 +47,10 @@ export class LoginModal extends BaseModal<LoginModalMap> {
 		await this.map.steamButton.click();
 	}
 
+	public async clickGoogleButton(): Promise<void> {
+		await this.map.googleButton.click();
+	}
+
 	public async loginAsUser(usernm: string): Promise<void> {
 		const user: TestUserConfigurationObject | undefined = findUser({
 			username: usernm,

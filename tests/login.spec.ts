@@ -1,7 +1,7 @@
-import { users } from "configuration";
-import { test } from "@fixtures/fixtures";
-import { parse_csv, toJson } from "@core/utils/utils";
 import { DATASETS_DIR } from "@constants/file-paths";
+import { parse_csv, toJson } from "@core/utils/utils";
+import { test } from "@fixtures/fixtures";
+import { users } from "configuration";
 
 const LOGIN_NOT_POSSIBLE_CSV = "ENG-294-login-not-possible.csv";
 const LOGIN_REJECTED_CSV = "ENG-294-login-rejected.csv";
@@ -61,8 +61,11 @@ test.describe("Login tests", () => {
 		test(`[ENG-294] Login using username - Login is rejected: [Username: ${record.username}] [Password: ${record.password}]`, async ({
 			homePage,
 		}) => {
-			test.fixme(record.username === 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 
-				"Fix when bug [ENG-2397] is fixed");
+			test.fixme(
+				record.username ===
+					"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+				"Fix when bug [ENG-2397] is fixed",
+			);
 			await homePage.navigateAndCheckTitle();
 
 			await homePage.unauthenticatedHeader.openLoginModal();
@@ -127,6 +130,21 @@ test.describe("Login tests", () => {
 		await homePage.loginModal.clickSteamButton();
 		await steamAuthPage.loginToSteam();
 		await steamBlockedPage.continueAndSignIn();
+
+		await homePage.authenticatedHeader
+			.assertThat()
+			.loggedInUserElementsAreVisible();
+	});
+
+	test("[ENG-2722] Login with Google user through Google auth portal @smoke", async ({
+		homePage,
+		googleAuthPage,
+	}) => {
+		await homePage.navigateAndCheckTitle();
+
+		await homePage.unauthenticatedHeader.openLoginModal();
+		await homePage.loginModal.clickGoogleButton();
+		await googleAuthPage.loginToGoogle();
 
 		await homePage.authenticatedHeader
 			.assertThat()

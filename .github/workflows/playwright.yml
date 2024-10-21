@@ -45,6 +45,15 @@ on:
             STEAM_PASSWORD:
                 required: true
                 description: "Steam authentication password"
+            GOOGLE_EMAIL:
+                required: true
+                description: "Google authentication email"
+            GOOGLE_PASSWORD:
+                required: true
+                description: "Google authentication password"
+            GOOGLE_AUTH_SECRET:
+                required: true
+                description: "Google authentication QR code secret"
             MAILINATOR_API_KEY:
                 required: true
                 description: "Mailinator authentication"
@@ -80,6 +89,9 @@ jobs:
             XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
             STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
             STEAM_PASSWORD: ${{ secrets.STEAM_PASSWORD }}
+            GOOGLE_EMAIL: ${{ secrets.GOOGLE_EMAIL }}
+            GOOGLE_PASSWORD: ${{ secrets.GOOGLE_PASSWORD }}
+            GOOGLE_AUTH_SECRET: ${{ secrets.GOOGLE_AUTH_SECRET }}
             MAILINATOR_API_KEY: ${{ secrets.MAILINATOR_API_KEY }}
             AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
             AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
