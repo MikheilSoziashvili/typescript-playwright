@@ -49,6 +49,7 @@ export class SettingsPage extends BasePage<SettingsPageMap> {
 	public async generate2FACodeFromQRCodeImage(
 		screenshotPath: string,
 	): Promise<string> {
+		// otpauth://totp/Google%3Atestautomation%40teamgamdom.com?secret=2dzzfrx3cu5g5uzghhx3nikith6qydus&issuer=Google
 		const secret = await extractSecretFromQRCode(screenshotPath);
 		const code2FA = await generate2FACodeFromSecret(secret);
 

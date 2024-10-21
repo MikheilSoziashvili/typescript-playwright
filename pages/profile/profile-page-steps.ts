@@ -92,4 +92,12 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 			.assertThat()
 			.loggedOutUserElementsAreVisible();
 	}
+
+	public async cancelLogout(): Promise<void> {
+		await this.gamdomPage.map.logOutButton.click();
+		await this.gamdomPage.continueModal
+			.assertThat()
+			.continueAndCancelButtonsDisplayed();
+		await this.gamdomPage.continueModal.clickCancelButton();
+	}
 }

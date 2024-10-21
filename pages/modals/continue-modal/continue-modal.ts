@@ -15,4 +15,8 @@ export class ContinueModal extends BaseModal<ContinueModalMap> {
 	public async clickContinueButton(): Promise<void> {
 		await this.map.continueButton.click();
 	}
+
+	public async clickCancelButton(): Promise<void> {
+		await this.map.cancelButton.click();
+	}
 }

@@ -10,24 +10,34 @@ export class AuthenticatedHeaderMap extends BaseMap {
 		super(page);
 	}
 
+	public get authenticatedHeaderContainer(): Locator {
+		return this.page.locator("[class*='HeaderContainer']");
+	}
+
 	public get balanceDropdownArrow(): Locator {
-		return this.page.locator("i.bal-arrow.icon-angle-down");
+		return this.authenticatedHeaderContainer.locator(
+			"i.bal-arrow.icon-angle-down",
+		);
 	}
 
 	public get walletBtn(): Locator {
-		return this.page.locator("a[href='/wallet']");
+		return this.authenticatedHeaderContainer.locator("a[href='/wallet']");
 	}
 
 	public get userAvatarMenuButton(): Locator {
-		return this.page.locator("div[class*= UserAvatarWithMenu]");
+		return this.authenticatedHeaderContainer.locator(
+			"div[class*= UserAvatarWithMenu]",
+		);
 	}
 
 	public get userAvatar(): Locator {
-		return this.page.locator("div.MuiAvatar-rounded");
+		return this.authenticatedHeaderContainer.locator(
+			"div.MuiAvatar-rounded",
+		);
 	}
 
 	public get chatButton(): Locator {
-		return this.page.locator("button i.icon-Chat");
+		return this.authenticatedHeaderContainer.locator("button i.icon-Chat");
 	}
 
 	public async getLoadedAccountBalance(): Promise<Locator> {
