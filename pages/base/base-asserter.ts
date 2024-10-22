@@ -37,4 +37,10 @@ export class BaseAsserter<T extends BasePage | BaseModal | BaseComponent> {
 			expect(expectedText.trim()).toBe(actualTexts[index].trim());
 		});
 	}
+
+	public async verifyCurrentUrlIs(expectedUrl: string): Promise<void> {
+		await this.gamdomPage.page.waitForLoadState();
+		const currentUrl = this.gamdomPage.page.url();
+		expect(currentUrl).toBe(expectedUrl);
+	}
 }
