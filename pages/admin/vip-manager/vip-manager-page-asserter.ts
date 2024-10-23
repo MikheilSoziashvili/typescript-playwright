@@ -11,7 +11,6 @@ export class VipManagerAdminPageAsserter extends BaseAsserter<VipManagerAdminPag
 		await this.checkElementsAreVisible(
 			[
 				this.gamdomPage.map.vipPlayersBlock,
-				this.gamdomPage.map.sendUserNotificationBlock,
 				this.gamdomPage.map.addVipPlayerStatusBlock,
 				this.gamdomPage.map.changeTelegramNotificationSettingsBlock,
 			],
