@@ -29,4 +29,12 @@ export class GooglePageMap extends BaseMap {
 	public get gTwoFactoryNextBtn(): Locator {
 		return this.page.locator("[id='totpNext']");
 	}
+
+	public get wrongCodeMessage(): Locator {
+		return this.page.getByText(/Wrong code/);
+	}
+
+	public get verifyItsYouScreen(): Locator {
+		return this.page.getByText("Verify it’s you");
+	}
 }

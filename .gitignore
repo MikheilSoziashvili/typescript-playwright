@@ -143,3 +143,6 @@ playwright-report.zip
 
 # test data
 /testImages/
+
+# auth
+/core/.auth
