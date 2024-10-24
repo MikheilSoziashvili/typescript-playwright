@@ -4,6 +4,8 @@ import { decimalNumber } from "@support/regex-patterns";
 import { OriginalGame } from "@enums/original-games";
 import { throwError } from "@core/utils/utils";
 import { Timeout } from "@enums/timeout";
+import { Attributes } from "@enums/playwright/htmlAttributes";
+import { AttributesValues } from "@enums/playwright/htmlAttributesValues";
 
 export class AuthenticatedHeaderMap extends BaseMap {
 	public constructor(page: Page) {
@@ -45,8 +47,8 @@ export class AuthenticatedHeaderMap extends BaseMap {
 
 		await this.waitForAttributeToHaveValue(
 			accountBalanceLocator,
-			"class",
-			"animation-finished",
+			Attributes.CLASS,
+			AttributesValues.ANIMATION_FINISHED,
 			Timeout.LONG,
 		);
 

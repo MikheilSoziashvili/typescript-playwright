@@ -5,6 +5,8 @@ import { FaqPageAsserter } from "./faq-page-asserter";
 import { logger } from "@logger/logger";
 import { FAQ_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
+import { Attributes } from "@enums/playwright/htmlAttributes";
+import { BooleanValueString } from "@enums/playwright/booleanValues";
 
 export class FaqPage extends BasePage<FaqPageMap> {
 	public constructor(page: Page) {
@@ -30,9 +32,9 @@ export class FaqPage extends BasePage<FaqPageMap> {
 		});
 		const sectionAriaExpandedAttribute =
 			await this.map.expandAffiliateCodeReqisterButtonLocator.getAttribute(
-				"aria-expanded",
+				Attributes.ARIA_EXPANDED,
 			);
-		if (sectionAriaExpandedAttribute !== "true") {
+		if (sectionAriaExpandedAttribute !== BooleanValueString.TRUE) {
 			await this.map.expandAffiliateCodeReqisterButtonLocator.click();
 		} else {
 			logger.info(

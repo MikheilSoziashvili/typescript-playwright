@@ -6,6 +6,7 @@ import { AffiliatesPageSteps } from "./affiliates-page-steps";
 import { AFFILIATES_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { Timeout } from "@enums/timeout";
 import { BasePageNavigationParametersType } from "@core/types/types";
+import { Attributes } from "@enums/playwright/htmlAttributes";
 
 export class AffiliatesPage extends BasePage<AffiliatesPageMap> {
 	public constructor(page: Page) {
@@ -38,7 +39,7 @@ export class AffiliatesPage extends BasePage<AffiliatesPageMap> {
 
 	public async getAffiliateLink(): Promise<string> {
 		return (await this.map.copyCodeToClipboardField.getAttribute(
-			"value",
+			Attributes.VALUE,
 		)) as string;
 	}
 }

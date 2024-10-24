@@ -11,6 +11,7 @@ import { EsportsPage } from "@pages/esports-page/esports-page";
 import { SlotsBattlePage } from "@pages/slot-battle/slots-battle-page";
 import { BlogCategoryPage } from "@pages/blog/category/blog-category-page";
 import { SettingsPage } from "@pages/settings/settings-page";
+import { HelpPage } from "@pages/help/help-page";
 
 export type GamdomPages = {
 	homePage: HomePage;
@@ -25,6 +26,7 @@ export type GamdomPages = {
 	esportsPage: EsportsPage;
 	slotsBattlePage: SlotsBattlePage;
 	blogCategoryPage: BlogCategoryPage;
+	helpPage: HelpPage;
 };
 
 export const gamdomPagesFixtures = base.extend<GamdomPages>({
@@ -63,5 +65,8 @@ export const gamdomPagesFixtures = base.extend<GamdomPages>({
 	},
 	blogCategoryPage: async ({ page }, use) => {
 		await use(new BlogCategoryPage(page));
+	},
+	helpPage: async ({ page }, use) => {
+		await use(new HelpPage(page));
 	},
 });

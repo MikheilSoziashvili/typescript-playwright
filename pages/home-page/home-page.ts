@@ -11,6 +11,7 @@ import { Timeout } from "@enums/timeout";
 import { hardWait } from "@core/utils/utils";
 import { VisibilityState } from "@enums/playwright/visibility-states";
 import { BasePageNavigationParametersType } from "@core/types/types";
+import { Attributes } from "@enums/playwright/htmlAttributes";
 
 export class HomePage extends BasePage<HomePageMap> {
 	public constructor(page: Page) {
@@ -81,7 +82,7 @@ export class HomePage extends BasePage<HomePageMap> {
 			const slideLocator =
 				this.map.getBannerCarouselSlideByName(slideName);
 			const slideClassAttribute = await slideLocator.getAttribute(
-				"class",
+				Attributes.CLASS,
 			);
 			if (slideClassAttribute?.includes("swiper-slide-active")) {
 				isSlideActive = true;

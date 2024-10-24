@@ -7,6 +7,8 @@ import { CommonUserOptionsPopup } from "../popups/common-user-options-popup";
 import { Chat } from "./chat";
 import { ChatMessageOptions } from "./chat-map";
 import { logger } from "@logger/logger";
+import { Attributes } from "@enums/playwright/htmlAttributes";
+import { BooleanValueString } from "@enums/playwright/booleanValues";
 
 export class ChatSteps extends BaseComponentStep<Chat> {
 	private authenticatedHeader: AuthenticatedHeader;
@@ -28,8 +30,9 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 			try {
 				await this.component.map.waitForAttributeToHaveValue(
 					this.component.map.chatTextBox,
-					"contenteditable",
-					"true",
+					Attributes.CONTENTEDITABLE,
+					BooleanValueString.TRUE
+					,
 				);
 				await this.component.map.chatTextBox.fill(message);
 				await this.component.map.sendMessageButton.click();

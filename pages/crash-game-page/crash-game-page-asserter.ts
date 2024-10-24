@@ -3,6 +3,7 @@ import { BaseAsserter } from "@base/base-asserter";
 import { CrashGamePage } from "./crash-game-page";
 import { Timeout } from "@enums/timeout";
 import { parseToFloat } from "@core/utils/utils";
+import { Attributes } from "@enums/playwright/htmlAttributes";
 
 export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 	public constructor(page: CrashGamePage) {
@@ -34,7 +35,7 @@ export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 			for (const betBox of betBoxes) {
 				await expect(
 					this.gamdomPage.map.betBoxBetAmount(betBox),
-				).toHaveAttribute("value", bet.betAmount);
+				).toHaveAttribute(Attributes.VALUE, bet.betAmount);
 			}
 		}
 	}

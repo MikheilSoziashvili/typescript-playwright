@@ -1,0 +1,17 @@
+export enum Attributes {
+	ID = "id",
+	ARIA_LABEL = "aria-label",
+	DATA_TESTID = "data-testid",
+	VALUE = "value",
+	NAME = "name",
+	HREF = "href",
+	TYPE = "type",
+	PLACEHOLDER = "placeholder",
+	ROLE = "role",
+	SRC = "src",
+	CLASS = "class",
+	ALT = "alt",
+	ARIA_SELECTED = "aria-selected",
+	CONTENTEDITABLE = "contenteditable",
+	ARIA_EXPANDED = "aria-expanded",
+}

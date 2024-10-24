@@ -11,6 +11,16 @@ const FOOTER_LINKS_AND_ENDPOINTS_CSV =
 		expectedURL: string;
 	}[];
 
+const HELP_PAGE_FOOTER_LINKS_AND_REDIRECTS_CSV =
+		"ENG-1980-help-page-footer-links-and-redirects.csv",
+	helpPageRecords = parse_csv(
+		DATASETS_DIR,
+		HELP_PAGE_FOOTER_LINKS_AND_REDIRECTS_CSV,
+	) as {
+		infoPage: string;
+		tabSelection: string;
+	}[];
+
 test.describe("Footer redirects tests", () => {
 	test.use(storageStateNewUserAPI());
 
@@ -24,6 +34,23 @@ test.describe("Footer redirects tests", () => {
 			await footer
 				.assertThat()
 				.verifyCurrentUrlIs(`${environment_url}${record.expectedURL}`);
+		});
+	});
+
+	helpPageRecords.forEach((record) => {
+		test(`[ENG-1980] Footer - Verify correct page and tab selection is displayed after '${record.infoPage}' redirection from 'Info' and 'Support' sections footer links`, async ({
+			homePage,
+			footer,
+			helpPage,
+		}) => {
+			await homePage.navigate();
+			await footer.openFooterLinkByPlaceholder(record.infoPage);
+			await helpPage
+				.assertThat()
+				.isHelpPageTitleVisible(record.tabSelection);
+			await helpPage
+				.assertThat()
+				.isHelpPageTabSelected(record.tabSelection);
 		});
 	});
 });

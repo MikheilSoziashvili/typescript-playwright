@@ -3,6 +3,8 @@ import { BlogPostCategories } from "@enums/post-categories";
 import { Timeout } from "@enums/timeout";
 import { BasePageStep } from "@pages/base/base-page-step";
 import { WriterAdminPage } from "./writer-admin-page";
+import { Attributes } from "@enums/playwright/htmlAttributes";
+import { BooleanValueString } from "@enums/playwright/booleanValues";
 
 export class WriterAdminPageSteps extends BasePageStep<WriterAdminPage> {
 	public constructor(gamdomPage: WriterAdminPage) {
@@ -17,8 +19,8 @@ export class WriterAdminPageSteps extends BasePageStep<WriterAdminPage> {
 			await this.gamdomPage.selectPostCategory(category);
 			await this.gamdomPage.map.waitForAttributeToHaveValue(
 				this.gamdomPage.map.postCategoriesOption(category),
-				"aria-selected",
-				"true",
+				Attributes.ARIA_SELECTED,
+				BooleanValueString.TRUE,
 				Timeout.SHORT,
 			);
 		}

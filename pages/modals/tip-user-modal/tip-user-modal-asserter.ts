@@ -2,6 +2,7 @@ import { expect } from "@playwright/test";
 import { BaseAsserter } from "@base/base-asserter";
 import { TipUserModal } from "./tip-user-modal";
 import { parseToFloat } from "@core/utils/utils";
+import { Attributes } from "@enums/playwright/htmlAttributes";
 
 export class TipUserModalAsserter extends BaseAsserter<TipUserModal> {
 	public constructor(page: TipUserModal) {
@@ -14,7 +15,7 @@ export class TipUserModalAsserter extends BaseAsserter<TipUserModal> {
 
 	public async isValueVisible(value: number): Promise<void> {
 		await expect(this.gamdomPage.map.tipAmountField).toHaveAttribute(
-			"value",
+			Attributes.VALUE,
 			parseToFloat(value),
 		);
 	}
