@@ -1,6 +1,6 @@
 import { BasePage } from "@base/base-page";
 import { BasePageNavigationParametersType } from "@core/types/types";
-import { generate2FACodeFromSecret } from "@core/utils/utils";
+import { generate2FACodeFromSecret, waitForSeconds } from "@core/utils/utils";
 import { Page } from "@playwright/test";
 import * as Configuration from "configuration";
 import { GoogleAuthPageAsserter } from "./google-auth-asserter";
@@ -63,7 +63,7 @@ export class GoogleAuthPage extends BasePage<GooglePageMap> {
 			let newTwoFactorAuthenticationCode;
 
 			do {
-				await this.waitForSeconds(1);
+				await waitForSeconds(1);
 				newTwoFactorAuthenticationCode =
 					await generate2FACodeFromSecret(authSecret);
 			} while (newTwoFactorAuthenticationCode === previousCode);
@@ -141,7 +141,7 @@ export class GoogleAuthPage extends BasePage<GooglePageMap> {
 			logger.info(
 				"Generating a new code for the 'Verify it's you' screen.",
 			);
-			await this.waitForSeconds(1);
+			await waitForSeconds(1);
 			twoFactorAuthenticationCode = await generate2FACodeFromSecret(
 				authSecret,
 			);

@@ -13,4 +13,12 @@ export class FooterMap extends BaseMap {
 	public footerLinkByPlaceholder(placeholderText: string): Locator {
 		return this.footerContainer.locator(`//a[text()="${placeholderText}"]`);
 	}
+
+	public socialMediaFooterLinkByPlaceholder(
+		socialMediaText: string,
+	): Locator {
+		return this.footerContainer.locator(
+			`//img[@alt='${socialMediaText}']//parent::a[contains(@class,'IconButton')]`,
+		);
+	}
 }

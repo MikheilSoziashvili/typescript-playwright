@@ -2,6 +2,7 @@ import { Locator, expect } from "@playwright/test";
 import { BaseComponent } from "./base-component";
 import { BaseModal } from "./base-modal";
 import { BasePage } from "./base-page";
+import { waitForSeconds } from "@core/utils/utils";
 
 export class BaseAsserter<T extends BasePage | BaseModal | BaseComponent> {
 	readonly gamdomPage: T;
@@ -42,5 +43,16 @@ export class BaseAsserter<T extends BasePage | BaseModal | BaseComponent> {
 		await this.gamdomPage.page.waitForLoadState();
 		const currentUrl = this.gamdomPage.page.url();
 		expect(currentUrl).toBe(expectedUrl);
+	}
+
+	public async verifyNewTabUrl(expectedUrl: string): Promise<void> {
+		await waitForSeconds(3);
+		const pages = this.gamdomPage.page.context().pages();
+		expect(pages.length).toBeGreaterThan(1);
+		const newTab = pages[pages.length - 1];
+		await newTab.waitForLoadState("domcontentloaded");
+
+		const newTabUrl = newTab.url();
+		expect(newTabUrl).toBe(expectedUrl);
 	}
 }

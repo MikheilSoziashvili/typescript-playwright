@@ -22,4 +22,10 @@ export class Footer extends BaseComponent<FooterMap> {
 	): Promise<void> {
 		await this.map.footerLinkByPlaceholder(footerLink).click();
 	}
+
+	public async openSocialMediaFooterLinkByPlaceholder(
+		footerLink: string,
+	): Promise<void> {
+		await this.map.socialMediaFooterLinkByPlaceholder(footerLink).click();
+	}
 }

@@ -21,6 +21,16 @@ const HELP_PAGE_FOOTER_LINKS_AND_REDIRECTS_CSV =
 		tabSelection: string;
 	}[];
 
+const SOCIAL_MEDIA_FOOTER_LINKS_AND_REDIRECTS_CSV =
+		"ENG-1981-footer-social-media-link-redirects.csv",
+	socialMediaRecords = parse_csv(
+		DATASETS_DIR,
+		SOCIAL_MEDIA_FOOTER_LINKS_AND_REDIRECTS_CSV,
+	) as {
+		socialMedia: string;
+		socialMediaLink: string;
+	}[];
+
 test.describe("Footer redirects tests", () => {
 	test.use(storageStateNewUserAPI());
 
@@ -51,6 +61,22 @@ test.describe("Footer redirects tests", () => {
 			await helpPage
 				.assertThat()
 				.isHelpPageTabSelected(record.tabSelection);
+		});
+	});
+
+	socialMediaRecords.forEach((record) => {
+		test(`[ENG-1981] Footer - Verify Redirection from Footer to '${record.socialMedia}' Social Applications @wip`, async ({
+			homePage,
+			footer,
+		}) => {
+			await homePage.navigate();
+			await footer.openSocialMediaFooterLinkByPlaceholder(
+				record.socialMedia,
+			);
+			await footer.assertThat().verifyCurrentUrlIs(`${environment_url}/`);
+			await homePage
+				.assertThat()
+				.verifyNewTabUrl(`${record.socialMediaLink}`);
 		});
 	});
 });

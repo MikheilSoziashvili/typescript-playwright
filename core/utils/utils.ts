@@ -499,3 +499,21 @@ export async function extractSecretFromQRCode(
 		);
 	}
 }
+
+/**
+ * Pauses execution for a specified number of seconds.
+ *
+ * This utility returns a promise that resolves after a given time delay, effectively halting
+ * further code execution for the specified duration.
+ *
+ * @param {number} seconds - The amount of time to wait, in seconds.
+ * @returns {Promise<void>} A promise that resolves after the specified time delay.
+ *
+ * @example
+ * // Wait for 3 seconds before proceeding
+ * await waitForSeconds(3);
+ */
+export const waitForSeconds = (seconds: number): Promise<void> =>
+	new Promise((resolve) => {
+		setTimeout(resolve, seconds * 1000);
+	});

@@ -1,17 +1,17 @@
-import { Page } from "@playwright/test";
 import { BasePage } from "@base/base-page";
-import { HomePageMap } from "./home-page-map";
-import { LoginModal } from "@modals/login-modal/login-modal";
-import { HomePageAsserter } from "./home-page-asserter";
-import { RegisterModal } from "@modals/register-modal/register-modal";
-import { HomePageSteps } from "./home-page-steps";
 import { HOME_PAGE_ENDPOINT } from "@constants/page-endpoints";
-import { HomePageBannerCarouselSlideTitle } from "@enums/homepage-banner-carousel-slide-title";
-import { Timeout } from "@enums/timeout";
-import { hardWait } from "@core/utils/utils";
-import { VisibilityState } from "@enums/playwright/visibility-states";
 import { BasePageNavigationParametersType } from "@core/types/types";
+import { hardWait } from "@core/utils/utils";
+import { HomePageBannerCarouselSlideTitle } from "@enums/homepage-banner-carousel-slide-title";
 import { Attributes } from "@enums/playwright/htmlAttributes";
+import { VisibilityState } from "@enums/playwright/visibility-states";
+import { Timeout } from "@enums/timeout";
+import { LoginModal } from "@modals/login-modal/login-modal";
+import { RegisterModal } from "@modals/register-modal/register-modal";
+import { Page } from "@playwright/test";
+import { HomePageAsserter } from "./home-page-asserter";
+import { HomePageMap } from "./home-page-map";
+import { HomePageSteps } from "./home-page-steps";
 
 export class HomePage extends BasePage<HomePageMap> {
 	public constructor(page: Page) {
