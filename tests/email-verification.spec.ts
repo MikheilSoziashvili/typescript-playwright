@@ -6,7 +6,7 @@ import {
 import { test } from "fixtures/fixtures";
 import { RegisterTestData } from "@dtos/test-data";
 
-test.describe("Email Verification Tests", () => {
+test.describe.fixme("Email Verification Tests - skipped until [ENG-2865] is handled", () => {
 	test.use({ storageState: { cookies: [], origins: [] } });
 
 	test("[ENG-1133] E-mail verification - new account", async ({
