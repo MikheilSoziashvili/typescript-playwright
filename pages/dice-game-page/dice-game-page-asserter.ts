@@ -5,12 +5,14 @@ import { DiceGameResultMessage } from "@enums/dice-result-messages";
 import { Timeout } from "@enums/timeout";
 import { parseToFloat } from "@core/utils/utils";
 import { DiceAutobetTestData } from "@dtos/test-data";
+import { step } from "decorators/step";
 
 export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 	public constructor(page: DiceGamePage) {
 		super(page);
 	}
 
+	@step("Dice game message and roll dice button are visible")
 	async pageElementsAreVisible(): Promise<void> {
 		await this.checkElementsAreVisible(
 			[
@@ -21,6 +23,7 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		);
 	}
 
+	@step("Manual bet and profitOnWin values are correct")
 	public async manualBetAndProfitOnWinValuesAreCorrect(
 		betValue: number,
 		profitOnWin: number,
@@ -41,6 +44,7 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		}
 	}
 
+	@step()
 	public async manualBetValueAreCorrect(
 		rollover: string,
 		multiplier: string,
@@ -68,10 +72,12 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		}
 	}
 
+	@step()
 	public async diceSliderValueIsCorrect(diceValue: string): Promise<void> {
 		await expect(this.gamdomPage.map.diceSliderValue).toHaveText(diceValue);
 	}
 
+	@step()
 	public async diceMessageIsNotEmpty(): Promise<void> {
 		await expect(this.gamdomPage.map.diceGameAreaMessage).not.toBeEmpty();
 	}
@@ -86,6 +92,7 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		);
 	}
 
+	@step()
 	public async diceResultIsDisplayed(): Promise<void> {
 		const diceResultGameArea =
 			await this.gamdomPage.map.diceResultNumberGameArea
@@ -103,6 +110,7 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		}
 	}
 
+	@step()
 	public async autobetValuesAreCorrect(
 		autobetData: DiceAutobetTestData,
 	): Promise<void> {
@@ -132,18 +140,21 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		}
 	}
 
+	@step()
 	public async diceStopAutobetButtonIsDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.stopAutobetButton,
 		]);
 	}
 
+	@step()
 	public async diceStartAutobetButtonIsDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.startAutobetButton,
 		]);
 	}
 
+	@step()
 	public async balanceAfterAutoBetIsCorrect(
 		initialBalance: number,
 		diceBetData: DiceAutobetTestData,

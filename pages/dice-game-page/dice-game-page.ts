@@ -6,6 +6,7 @@ import { DiceGamePageSteps } from "./dice-game-page-steps";
 import { DICE_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { DiceAutobetTestData } from "@dtos/test-data";
 import { BasePageNavigationParametersType } from "@core/types/types";
+import { step } from "decorators/step";
 
 export class DiceGamePage extends BasePage<DiceGamePageMap> {
 	public constructor(page: Page) {
@@ -29,6 +30,7 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 		return new DiceGamePageSteps(this);
 	}
 
+	@step()
 	public async fillInManualBetData(
 		betAmount: number,
 		multiplier?: number,
@@ -38,10 +40,12 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 			(await this.map.manualMultiplierField.fill(`${multiplier}`));
 	}
 
+	@step()
 	public async rollDice(): Promise<void> {
 		await this.map.rollDiceBtn.click();
 	}
 
+	@step()
 	public async switchToAutobetSection(): Promise<void> {
 		await this.map.diceAutobetTabButton.click();
 		await this.map.waitForVisibility({
@@ -49,6 +53,7 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 		});
 	}
 
+	@step()
 	public async fillInAutobetBetData(
 		parameters: DiceAutobetTestData,
 	): Promise<void> {
