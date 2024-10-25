@@ -4,6 +4,7 @@ import { CrashGamePage } from "./crash-game-page";
 import { Timeout } from "@enums/timeout";
 import { parseToFloat } from "@core/utils/utils";
 import { Attributes } from "@enums/playwright/htmlAttributes";
+import { BetIncreaseCondition } from "@enums/crash-autobet-section";
 
 export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 	public constructor(page: CrashGamePage) {
@@ -71,5 +72,35 @@ export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 		await expect(this.gamdomPage.map.placeBetBtn).toHaveText(
 			"Start Autobet",
 		);
+	}
+
+	public async betAmountIsEqualTo(betAmount: number): Promise<void> {
+		const amount = this.gamdomPage.getCurrentBetAmount();
+		expect(betAmount).toEqual(amount);
+	}
+
+	public async verifyBetAmountUpdatedCorrectly(
+		previousBetAmount: number,
+		betWon: boolean,
+		increaseCondition: BetIncreaseCondition,
+		increaseByMultiplier: number,
+		baseBetAmount: number,
+	): Promise<number> {
+		const currentBetAmount = await this.gamdomPage.getCurrentBetAmount();
+
+		let expectedBetAmount: number;
+
+		if (
+			(increaseCondition === BetIncreaseCondition.WIN && betWon) ||
+			(increaseCondition === BetIncreaseCondition.LOSS && !betWon)
+		) {
+			expectedBetAmount = previousBetAmount * increaseByMultiplier;
+		} else {
+			expectedBetAmount = baseBetAmount;
+		}
+
+		expect(currentBetAmount).toEqual(expectedBetAmount);
+
+		return currentBetAmount;
 	}
 }

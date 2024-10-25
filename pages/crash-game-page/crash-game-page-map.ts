@@ -102,7 +102,7 @@ export class CrashGamePageMap extends BaseMap {
 	}
 
 	public get potentialWinAmount(): Locator {
-		return this.betBoxesContainer.locator('span.currency-amount').nth(1);
+		return this.betBoxesContainer.locator("span.currency-amount").nth(1);
 	}
 
 	public get potentialText(): Locator {
@@ -116,5 +116,28 @@ export class CrashGamePageMap extends BaseMap {
 	public get successButton(): Locator {
 		return this.betBoxesContainer.locator('button:has-text("Success")');
 	}
-	
+
+	public get onWinDropdown(): Locator {
+		return this.betOptions.locator('div[role="combobox"]').nth(0);
+	}
+
+	public get onLossDropdown(): Locator {
+		return this.betOptions.locator('div[role="combobox"]').nth(1);
+	}
+
+	public get onWinAndLossContainter(): Locator {
+		return this.page.locator('ul[role="listbox"]');
+	}
+
+	public onConditionOption(option: string): Locator {
+		return this.onWinAndLossContainter.locator("li", {
+			hasText: option,
+		});
+	}
+
+	public get increaseByInput(): Locator {
+		return this.betOptions.locator(
+			'div.MuiFormControl-root input[type="text"].MuiOutlinedInput-input',
+		);
+	}
 }

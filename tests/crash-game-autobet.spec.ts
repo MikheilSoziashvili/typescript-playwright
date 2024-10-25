@@ -1,7 +1,21 @@
 import { test } from "@fixtures/fixtures";
 import { BetTestData } from "@dtos/test-data";
 import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
-import { getUserDetailsByTestTitle } from "@core/utils/utils";
+import { getUserDetailsByTestTitle, parse_csv } from "@core/utils/utils";
+import { DATASETS_DIR } from "@constants/file-paths";
+import {
+	BetIncreaseCondition,
+	CrashAutobetSection,
+} from "@enums/crash-autobet-section";
+
+const CRASH_INCREASE_BY_CSV = "ENG-2541-crash-autobet-increase-by.csv",
+	records = parse_csv(DATASETS_DIR, CRASH_INCREASE_BY_CSV) as {
+		increase_by: string;
+		your_bet: string;
+		auto_cashout: string;
+		increase_multiplier: string;
+		stop_if_more_than: string;
+	}[];
 
 test.describe("Crash autobet tests", () => {
 	test.use(storageStateNewUserAPI());
@@ -57,7 +71,7 @@ test.describe("Crash autobet tests", () => {
 			.accountBalanceIs(expectedBalance);
 	});
 
-	test("[ENG-2663] Crash - Start Autobet button is active", async ({
+	test("[ENG-2663] Crash - Start Autobet button is active @originals", async ({
 		crashGamePage,
 	}, testInfo) => {
 		const newUserDetails = getUserDetailsByTestTitle(
@@ -74,5 +88,50 @@ test.describe("Crash autobet tests", () => {
 		await crashGamePage
 			.steps()
 			.enableAutobetAndFillAmount(betTestData.betAmount);
+	});
+
+	records.forEach((record) => {
+		test(`[ENG-2541] Crash - Autobet - Increase by [${record.increase_by}] @originals`, async ({
+			crashGamePage,
+		}, testInfo) => {
+			const newUserDetails = getUserDetailsByTestTitle(
+				testInfo.title,
+				testInfo.workerIndex,
+			);
+			const betTestData: BetTestData = new BetTestData(
+				newUserDetails.username,
+				Number(record.your_bet),
+				Number(record.auto_cashout),
+			);
+
+			await crashGamePage.navigate();
+			await crashGamePage
+				.steps()
+				.toggleAutobetSetup(
+					betTestData,
+					Number(record.stop_if_more_than),
+				);
+
+			await crashGamePage.selectWinOrLossCondition(
+				record.increase_by as
+					| BetIncreaseCondition.WIN
+					| BetIncreaseCondition.LOSS,
+				CrashAutobetSection.INCREASE_BY,
+			);
+			await crashGamePage
+				.steps()
+				.autobetUntilBetMoreThan(
+					betTestData,
+					Number(record.stop_if_more_than),
+					Number(record.increase_multiplier),
+					record.increase_by === BetIncreaseCondition.WIN
+						? BetIncreaseCondition.WIN
+						: BetIncreaseCondition.LOSS,
+					() =>
+						crashGamePage.fillIncreaseByInput(
+							Number(record.increase_multiplier),
+						),
+				);
+		});
 	});
 });

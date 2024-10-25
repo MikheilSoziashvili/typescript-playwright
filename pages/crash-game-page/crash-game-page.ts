@@ -7,6 +7,7 @@ import { logger } from "@logger/logger";
 import { CRASH_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { Timeout } from "@enums/timeout";
+import { BetIncreaseCondition } from "@enums/crash-autobet-section";
 
 export class CrashGamePage extends BasePage<CrashGamePageMap> {
 	public constructor(page: Page) {
@@ -82,6 +83,11 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 		}
 	}
 
+	public async getCurrentBetAmount(): Promise<number> {
+		const betAmountText = await this.map.betField.inputValue();
+		return parseFloat(betAmountText);
+	}
+
 	public async waitBettingWindowAvailable(
 		timeout = Timeout.EXTRA_MAX / 2,
 	): Promise<void> {
@@ -135,5 +141,30 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 
 	public async fillInBetAmount(betAmount: number): Promise<void> {
 		await this.map.betField.fill(betAmount.toString());
+	}
+
+	/**
+	 * Selects an option from the "On Win" or "On Loss" dropdown based on the provided condition and option text.
+	 *
+	 * @param {"win" | "loss"} condition - Specifies whether to select from the "On Win" or "On Loss" dropdown.
+	 * @param {string} option - The text of the option to select within the dropdown.
+	 * @returns {Promise<void>} A promise that resolves when the option has been selected.
+	 */
+	public async selectWinOrLossCondition(
+		condition: BetIncreaseCondition,
+		option: string,
+	): Promise<void> {
+		const dropdown =
+			condition === "win"
+				? this.map.onWinDropdown
+				: this.map.onLossDropdown;
+
+		await dropdown.click();
+
+		await this.map.onConditionOption(option).click();
+	}
+
+	public async fillIncreaseByInput(increaseByAmount: number): Promise<void> {
+		await this.map.increaseByInput.fill(increaseByAmount.toString());
 	}
 }

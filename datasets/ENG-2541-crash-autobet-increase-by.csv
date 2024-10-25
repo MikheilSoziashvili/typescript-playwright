@@ -1,0 +1,3 @@
+increase_by,your_bet,auto_cashout,increase_multiplier,stop_if_more_than
+win,10,1.5,2,20
+loss,10,2.5,2,20

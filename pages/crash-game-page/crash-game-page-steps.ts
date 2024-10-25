@@ -2,6 +2,8 @@ import { BasePageStep } from "@pages/base/base-page-step";
 import { parseToFloat } from "@core/utils/utils";
 import { BetTestData } from "@dtos/test-data";
 import { CrashGamePage } from "./crash-game-page";
+import { logger } from "@logger/logger";
+import { BetIncreaseCondition } from "@enums/crash-autobet-section";
 
 export class CrashGamePageSteps extends BasePageStep<CrashGamePage> {
 	public constructor(gamdomPage: CrashGamePage) {
@@ -44,5 +46,124 @@ export class CrashGamePageSteps extends BasePageStep<CrashGamePage> {
 		await this.gamdomPage.toggleAutobet();
 		await this.gamdomPage.fillInBetAmount(betAmount);
 		await this.gamdomPage.assertThat().startAutobetButtonIsEnabled();
+	}
+
+	private async executeActions(
+		actions: (() => Promise<void>)[],
+	): Promise<void> {
+		for (const action of actions) {
+			await action();
+		}
+	}
+
+	private async startAutobetSession(
+		betAmount: number,
+		autoCashoutMultiplier: number,
+	): Promise<void> {
+		await this.gamdomPage.placeBet(betAmount, autoCashoutMultiplier);
+	}
+
+	private shouldContinueAutobet(
+		currentBetAmount: number,
+		stopIfBetMoreThanAmount: number,
+	): boolean {
+		if (currentBetAmount > stopIfBetMoreThanAmount) {
+			logger.info(
+				`Bet amount has reached the stop limit of ${stopIfBetMoreThanAmount}. Exiting autobet...`,
+			);
+			return false;
+		}
+		return true;
+	}
+
+	private async processRoundResult(
+		autoCashoutMultiplier: number,
+	): Promise<{ betWon: boolean; crashedMultiplier: number }> {
+		await this.gamdomPage.waitCrash();
+
+		const crashedMultiplierString =
+			await this.gamdomPage.getCrashedMultiplier();
+		const crashedMultiplier = parseFloat(crashedMultiplierString);
+
+		const betWon = crashedMultiplier >= autoCashoutMultiplier;
+
+		if (betWon) {
+			logger.info(`Bet won! Multiplier reached: ${crashedMultiplier}.`);
+		} else {
+			logger.warn(
+				`Bet lost. Multiplier crashed at: ${crashedMultiplier}.`,
+			);
+		}
+
+		return { betWon, crashedMultiplier };
+	}
+
+	private async updateBetAmount(
+		previousBetAmount: number,
+		betWon: boolean,
+		increaseCondition: BetIncreaseCondition,
+		increaseByMultiplier: number,
+		baseBetAmount: number,
+	): Promise<number> {
+		await this.gamdomPage.waitBettingWindowAvailable();
+
+		const currentBetAmount = await this.gamdomPage
+			.assertThat()
+			.verifyBetAmountUpdatedCorrectly(
+				previousBetAmount,
+				betWon,
+				increaseCondition,
+				increaseByMultiplier,
+				baseBetAmount,
+			);
+
+		return currentBetAmount;
+	}
+
+	public async autobetUntilBetMoreThan(
+		betTestData: BetTestData,
+		stopIfBetMoreThanAmount: number,
+		increaseByMultiplier: number,
+		increaseCondition: BetIncreaseCondition,
+		...actions: (() => Promise<void>)[]
+	): Promise<void> {
+		const autoCashoutMultiplier = betTestData.autoCashoutMultiplier;
+
+		await this.executeActions(actions);
+
+		await this.startAutobetSession(
+			betTestData.betAmount,
+			autoCashoutMultiplier,
+		);
+
+		let currentBetAmount = betTestData.betAmount;
+		let previousBetAmount = currentBetAmount;
+
+		while (true) {
+			currentBetAmount = await this.gamdomPage.getCurrentBetAmount();
+
+			if (
+				!this.shouldContinueAutobet(
+					currentBetAmount,
+					stopIfBetMoreThanAmount,
+				)
+			) {
+				break;
+			}
+
+			const { betWon } = await this.processRoundResult(
+				autoCashoutMultiplier,
+			);
+
+			currentBetAmount = await this.updateBetAmount(
+				previousBetAmount,
+				betWon,
+				increaseCondition,
+				increaseByMultiplier,
+				betTestData.betAmount,
+			);
+
+			previousBetAmount = currentBetAmount;
+		}
 	}
 }
