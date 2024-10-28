@@ -199,7 +199,9 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 			});
 		}
 
-		const timeText = await this.map.spinningCountdownCounter.innerText();
+		const timeText = await this.map.spinningCountdownCounter.innerText({
+			timeout: Timeout.LONG,
+		});
 		return parseInt(timeText);
 	}
 }
