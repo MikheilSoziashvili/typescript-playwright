@@ -3,6 +3,7 @@ import { BaseComponent } from "../../base/base-component";
 import { FooterAsserter } from "./footer-asserter";
 import { FooterMap } from "./footer-map";
 import { FooterSteps } from "./footer-steps";
+import { step } from "decorators/step";
 
 export class Footer extends BaseComponent<FooterMap> {
 	constructor(page: Page) {
@@ -17,12 +18,14 @@ export class Footer extends BaseComponent<FooterMap> {
 		return new FooterSteps(this);
 	}
 
+	@step()
 	public async openFooterLinkByPlaceholder(
 		footerLink: string,
 	): Promise<void> {
 		await this.map.footerLinkByPlaceholder(footerLink).click();
 	}
 
+	@step()
 	public async openSocialMediaFooterLinkByPlaceholder(
 		footerLink: string,
 	): Promise<void> {

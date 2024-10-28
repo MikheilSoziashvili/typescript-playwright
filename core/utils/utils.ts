@@ -146,9 +146,6 @@ export function range(start: number, stop: number, step = 1): number[] {
 export function parseToFloat(num: number, fractionDigits = 2): string {
 	return parseFloat(`${num}`).toFixed(fractionDigits);
 }
-export async function hardWait(timeoutInMilliseconds: number): Promise<void> {
-	await new Promise((resolve) => setTimeout(resolve, timeoutInMilliseconds));
-}
 
 export function generateRandomString(options?: {
 	prefix?: string;

@@ -1,7 +1,6 @@
 import { BasePage } from "@base/base-page";
 import { HOME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
-import { hardWait } from "@core/utils/utils";
 import { HomePageBannerCarouselSlideTitle } from "@enums/homepage-banner-carousel-slide-title";
 import { Attributes } from "@enums/playwright/htmlAttributes";
 import { VisibilityState } from "@enums/playwright/visibility-states";
@@ -12,6 +11,7 @@ import { Page } from "@playwright/test";
 import { HomePageAsserter } from "./home-page-asserter";
 import { HomePageMap } from "./home-page-map";
 import { HomePageSteps } from "./home-page-steps";
+import { waitForSeconds } from "@core/utils/utils";
 
 export class HomePage extends BasePage<HomePageMap> {
 	public constructor(page: Page) {
@@ -87,8 +87,8 @@ export class HomePage extends BasePage<HomePageMap> {
 			if (slideClassAttribute?.includes("swiper-slide-active")) {
 				isSlideActive = true;
 			}
-			// wait between iteration, not need to use this function each millisecond
-			await hardWait(timeBetweenIterations);
+			// wait between iteration, not need to use this function each second
+			await waitForSeconds(timeBetweenIterations / 1000);
 			timeout = timeout - timeBetweenIterations;
 		}
 

@@ -65,7 +65,7 @@ test.describe("Footer redirects tests", () => {
 	});
 
 	socialMediaRecords.forEach((record) => {
-		test(`[ENG-1981] Footer - Verify Redirection from Footer to '${record.socialMedia}' Social Applications @wip`, async ({
+		test(`[ENG-1981] Footer - Verify Redirection from Footer to '${record.socialMedia}' Social Applications`, async ({
 			homePage,
 			footer,
 		}) => {
@@ -78,5 +78,15 @@ test.describe("Footer redirects tests", () => {
 				.assertThat()
 				.verifyNewTabUrl(`${record.socialMediaLink}`);
 		});
+	});
+
+	test(`[ENG-2826] Footer - Verify the Live Support modal is launched after redirection from Footer`, async ({
+		homePage,
+		footer,
+		liveSupportModal,
+	}) => {
+		await homePage.navigate();
+		await footer.openFooterLinkByPlaceholder("Live Support");
+		await liveSupportModal.assertThat().isDisplayed();
 	});
 });

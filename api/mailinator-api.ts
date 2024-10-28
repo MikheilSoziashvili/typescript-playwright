@@ -12,7 +12,7 @@ import {
 	MAILINATOR_MESSAGE_LINKS_URL,
 } from "@constants/mailinator-endpoints";
 import { Timeout } from "@enums/timeout";
-import { hardWait } from "@core/utils/utils";
+import { waitForSeconds } from "@core/utils/utils";
 
 export class MailinatorApi extends BaseApi {
 	constructor(
@@ -108,7 +108,7 @@ export class MailinatorApi extends BaseApi {
 			if (messages.length >= messageIndex) {
 				return messages[messageIndex - 1];
 			}
-			await hardWait(interval);
+			await waitForSeconds(interval / 1000);
 		}
 
 		throw new Error(
