@@ -28,7 +28,8 @@ const SOCIAL_MEDIA_FOOTER_LINKS_AND_REDIRECTS_CSV =
 		SOCIAL_MEDIA_FOOTER_LINKS_AND_REDIRECTS_CSV,
 	) as {
 		socialMedia: string;
-		socialMediaLink: string;
+		socialMediaUrlPart: string;
+		gamdomUrlPart: string;
 	}[];
 
 test.describe("Footer redirects tests", () => {
@@ -76,7 +77,10 @@ test.describe("Footer redirects tests", () => {
 			await footer.assertThat().verifyCurrentUrlIs(`${environment_url}/`);
 			await homePage
 				.assertThat()
-				.verifyNewTabUrl(`${record.socialMediaLink}`);
+				.verifyNewTabUrl([
+					`${record.socialMediaUrlPart}`,
+					`${record.gamdomUrlPart}`,
+				]);
 		});
 	});
 

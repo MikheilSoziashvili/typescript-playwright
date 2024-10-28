@@ -1,7 +1,7 @@
 import { BaseModal } from "@base/base-modal";
 import { Page } from "@playwright/test";
 import { LiveSupportModalAsserter } from "./live-support-intercom-modal-asserter";
-import { LiveSupportModalMap } from "./live-support-intercom-map";
+import { LiveSupportModalMap } from "./live-support-intercom-modal-map";
 
 export class LiveSupportModal extends BaseModal<LiveSupportModalMap> {
 	constructor(page: Page) {

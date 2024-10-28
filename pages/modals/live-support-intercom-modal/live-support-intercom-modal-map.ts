@@ -5,8 +5,6 @@ export class LiveSupportModalMap extends BaseMap {
 		super(page);
 	}
 	public get liveSupportIntercomIframe(): Locator {
-		return this.page.locator(
-			`iframe[name="intercom-messenger-frame"]`,
-		);
+		return this.page.locator(`iframe[name="intercom-messenger-frame"]`);
 	}
 }

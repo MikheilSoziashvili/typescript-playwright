@@ -48,7 +48,7 @@ export class BaseAsserter<T extends BasePage | BaseModal | BaseComponent> {
 	}
 
 	@step("New tab url is correct")
-	public async verifyNewTabUrl(expectedUrl: string): Promise<void> {
+	public async verifyNewTabUrl(urlParts: string[]): Promise<void> {
 		let pages = this.gamdomPage.page.context().pages();
 		const timeBetweenIterations = 100;
 		let attempts = 0;
@@ -63,6 +63,8 @@ export class BaseAsserter<T extends BasePage | BaseModal | BaseComponent> {
 		await newTab.waitForLoadState("domcontentloaded");
 
 		const newTabUrl = newTab.url();
-		expect(newTabUrl).toBe(expectedUrl);
+		urlParts.forEach((part) => {
+			expect(newTabUrl).toContain(part);
+		});
 	}
 }

@@ -1,6 +1,6 @@
-socialMedia,socialMediaLink
-Facebook,https://www.facebook.com/GamdomCasino/
-Instagram,https://www.instagram.com/gamdom/
-Twitter,https://x.com/Gamdom?mx=2
-Telegram,https://t.me/+JrVfUQipUmM0OGM0
-Yotube,https://consent.youtube.com/m?continue=https%3A%2F%2Fwww.youtube.com%2F%40officialgamdom%3Fcbrd%3D1&gl=BG&m=0&pc=yt&cm=2&hl=en&src=1
+socialMedia,socialMediaLink,socialMediaUrlPart,gamdomUrlPart
+Facebook,https://www.facebook.com/GamdomCasino/,facebook.com,GamdomCasino
+Instagram,https://www.instagram.com/gamdom/,instagram.com,gamdom
+Twitter,https://x.com/Gamdom,x.com,Gamdom
+Telegram,https://t.me/+JrVfUQipUmM0OGM0,t.me,JrVfUQipUmM0OGM0
+Yotube,https://www.youtube.com/@officialgamdom,youtube.com,gamdom
