@@ -32,6 +32,16 @@ const SOCIAL_MEDIA_FOOTER_LINKS_AND_REDIRECTS_CSV =
 		gamdomUrlPart: string;
 	}[];
 
+const OFFICIAL_SITE_FOOTER_LINKS_AND_REDIRECTS_CSV =
+		"ENG-1979-footer-official-site-link-redirects.csv",
+	officialSiteRecords = parse_csv(
+		DATASETS_DIR,
+		OFFICIAL_SITE_FOOTER_LINKS_AND_REDIRECTS_CSV,
+	) as {
+		footerLink: string;
+		expectedUrl: string;
+	}[];
+
 test.describe("Footer redirects tests", () => {
 	test.use(storageStateNewUserAPI());
 
@@ -92,5 +102,17 @@ test.describe("Footer redirects tests", () => {
 		await homePage.navigate();
 		await footer.openFooterLinkByPlaceholder("Live Support");
 		await liveSupportModal.assertThat().isDisplayed();
+	});
+
+	officialSiteRecords.forEach((record) => {
+		test(`[ENG-1979] Footer - Verify '${record.footerLink}' link redirection from Footer`, async ({
+			homePage,
+			footer,
+		}) => {
+			await homePage.navigate();
+			await footer.openFooterLinkByPlaceholder(record.footerLink);
+			await footer.assertThat().verifyCurrentUrlIs(`${environment_url}/`);
+			await homePage.assertThat().verifyNewTabUrl([record.expectedUrl]);
+		});
 	});
 });
