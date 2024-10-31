@@ -35,6 +35,9 @@ export class LoginModal extends BaseModal<LoginModalMap> {
 	public async enter2FaCode(
 		twoFactorAuthenticationCode: string,
 	): Promise<void> {
+		await this.assertThat().checkElementsAreVisible([
+			this.map.login2FaContainer,
+		]);
 		const inputCount = await this.map.inputFields2FACode.count();
 		expect(inputCount).toBe(twoFactorAuthenticationCode.length);
 		for (let i = 0; i < inputCount; i++) {
