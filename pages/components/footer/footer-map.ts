@@ -21,4 +21,12 @@ export class FooterMap extends BaseMap {
 			`//img[@alt='${socialMediaText}']//parent::a[contains(@class,'IconButton')]`,
 		);
 	}
+
+	public socialMediaFooterIconByPlaceholder(
+		socialMediaText: string,
+	): Locator {
+		return this.footerContainer.locator(
+			`//a[contains(@class,'IconButton')]//img[@alt='${socialMediaText}']`,
+		);
+	}
 }
