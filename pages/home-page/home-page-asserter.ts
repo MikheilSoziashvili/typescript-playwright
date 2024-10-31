@@ -1,7 +1,7 @@
 import { Timeout } from "@enums/timeout";
 import { BaseAsserter } from "@base/base-asserter";
 import { HomePage } from "./home-page";
-import { expect } from "@playwright/test";
+import { expect, TestInfo } from "@playwright/test";
 
 export class HomePageAsserter extends BaseAsserter<HomePage> {
 	public fromCsv: boolean;
@@ -60,7 +60,10 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		await expect(this.gamdomPage.map.topBannerLocator).toBeVisible();
 	}
 
-	public async topBannerVisualCorrect(): Promise<void> {
-		await expect(this.gamdomPage.map.topBannerLocator).toHaveScreenshot();
+	public async topBannerVisualCorrect(testInfo: TestInfo): Promise<void> {
+		await this.checkElementVisualCorrect(
+			testInfo,
+			this.gamdomPage.map.topBannerLocator,
+		);
 	}
 }
