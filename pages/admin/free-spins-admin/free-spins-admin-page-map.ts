@@ -43,7 +43,7 @@ export class FreeSpinsAdminPageMap extends BaseMap {
 
 	public get findGameToGiveFreeSpinsCardUserIdGetButton(): Locator {
 		return this.findGameToGiveFreeSpinsCard.locator(
-			'button.btn_green:text-is("GET")',
+			'button[class*="ButtonLegacy-styled__ButtonLegacyStyled"].dngtw.btn:has-text("GET")',
 		);
 	}
 

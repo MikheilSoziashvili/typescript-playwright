@@ -124,6 +124,7 @@ test.describe("Login tests", () => {
 		steamAuthPage,
 		steamBlockedPage,
 	}) => {
+		test.fixme(true, "Steam auth  issue [ENG-2994]");
 		await homePage.navigateAndCheckTitle();
 
 		await homePage.unauthenticatedHeader.openLoginModal();
