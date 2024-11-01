@@ -8,7 +8,7 @@ export class VipManagerAdminPageMap extends BaseMap {
 
 	public blocksByPlaceholder(placeholderText: string): Locator {
 		return this.page.locator(
-			`//h4[@class='title' and normalize-space()='${placeholderText}']//parent::div[contains(@class,'aff_col')]`,
+			`//h4[contains(@class,'title') and normalize-space()='${placeholderText}']//ancestor::div[contains(@class,'aff_col')]`,
 		);
 	}
 
