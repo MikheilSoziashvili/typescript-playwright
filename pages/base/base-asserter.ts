@@ -2,10 +2,9 @@ import { Locator, TestInfo, expect } from "@playwright/test";
 import { BaseComponent } from "./base-component";
 import { BaseModal } from "./base-modal";
 import { BasePage } from "./base-page";
-import { waitForSeconds } from "@core/utils/utils";
+import { waitUntil } from "@core/utils/utils";
 import { step } from "decorators/step";
 import { Timeout } from "@enums/timeout";
-
 export class BaseAsserter<T extends BasePage | BaseModal | BaseComponent> {
 	readonly gamdomPage: T;
 
@@ -101,16 +100,12 @@ export class BaseAsserter<T extends BasePage | BaseModal | BaseComponent> {
 
 	@step("New tab url is correct")
 	public async verifyNewTabUrl(urlParts: string[]): Promise<void> {
-		let pages = this.gamdomPage.page.context().pages();
-		const timeBetweenIterations = 100;
-		let attempts = 0;
-		// Retry for up to 10 seconds (100 attempts with a 100ms delay each)
-		while (pages.length <= 1 && attempts < timeBetweenIterations) {
-			await waitForSeconds(timeBetweenIterations / 1000);
-			pages = this.gamdomPage.page.context().pages();
-			attempts++;
-		}
-		expect(pages.length).toBeGreaterThan(1);
+		await waitUntil(
+			() => this.gamdomPage.page.context().pages().length > 1,
+			{ errorMessage: "Pages count is not expected" },
+		);
+
+		const pages = this.gamdomPage.page.context().pages();
 		const newTab = pages[pages.length - 1];
 		await newTab.waitForLoadState("domcontentloaded");
 

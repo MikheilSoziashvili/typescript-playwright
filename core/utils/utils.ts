@@ -1,6 +1,6 @@
 import { promises as fsPromises } from "fs";
 import { logger } from "@logger/logger";
-import { JsonData } from "@core/interfaces";
+import { JsonData, WaitUntilOptions } from "@core/interfaces";
 import * as path from "path";
 import { parse } from "csv-parse/sync";
 import { readFileSync } from "fs";
@@ -27,6 +27,7 @@ import { PNG, PNGOptions } from "pngjs";
 import sharp from "sharp";
 import jsQR from "jsqr";
 import { authenticator } from "otplib";
+import { Timeout } from "@enums/timeout";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -514,3 +515,57 @@ export const waitForSeconds = (seconds: number): Promise<void> =>
 	new Promise((resolve) => {
 		setTimeout(resolve, seconds * 1000);
 	});
+
+/**
+ * Repeatedly checks a condition until it is satisfied or a timeout occurs.
+ *
+ * This utility pauses execution and continuously evaluates the provided condition
+ * at specified intervals. If the condition is not met within the specified timeout duration,
+ * it throws an error with a provided message.
+ *
+ * @param {() => boolean | Promise<boolean>} condition - A function that returns a boolean or a promise resolving to a boolean. The condition is repeatedly checked until it returns `true`.
+ * @param {string} options.errorMessage - The error message to display if the condition is not met within the timeout period.
+ * @param {number} [options.intervalSeconds=2] - The time interval, in seconds, between successive condition checks. Defaults to 2 seconds.
+ * @param {number} [options.timeoutSeconds=Timeout.SHORT / 1000] - The maximum time to wait before throwing an error, in seconds. Defaults to `Timeout.SHORT / 1000`.
+ * @returns {Promise<void>} A promise that resolves if the condition is met within the timeout period, or rejects with an error message if the timeout is reached.
+ *
+ * @throws {Error} If the condition is not met within the specified timeout duration, an error is thrown with the provided error message.
+ *
+ * @example
+ * // Wait until a certain condition is true, checking every 2 seconds, with a timeout of 10 seconds
+ * await waitUntil(() => someValue === expectedValue, {
+ *   errorMessage: "Condition was not met within the expected time.",
+ *   intervalSeconds: 2,
+ *   timeoutSeconds: 10,
+ * });
+ */
+export async function waitUntil(
+	condition: () => boolean | Promise<boolean>,
+	{
+		errorMessage,
+		intervalSeconds = 2,
+		timeoutSeconds = Timeout.SHORT / 1000,
+	}: WaitUntilOptions,
+): Promise<void> {
+	const currentTimeInSeconds = () => Date.now() / 1000;
+	const [startTime, timeoutInSeconds] = [
+		currentTimeInSeconds(),
+		timeoutSeconds,
+	];
+
+	while (true) {
+		if (await condition()) {
+			return;
+		}
+
+		const elapsedTime = currentTimeInSeconds() - startTime;
+		if (elapsedTime >= timeoutInSeconds) {
+			throw new Error(
+				`${errorMessage} - (Timeout: ${timeoutInSeconds} seconds)`,
+			);
+		}
+
+		const remainingTime = timeoutInSeconds - elapsedTime;
+		await waitForSeconds(Math.min(intervalSeconds, remainingTime));
+	}
+}

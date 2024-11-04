@@ -7,3 +7,9 @@ export interface RegisterTestDataParams {
 	username?: string;
 	password?: string;
 }
+
+export interface WaitUntilOptions {
+	errorMessage: string;
+	intervalSeconds?: number;
+	timeoutSeconds?: number;
+}
