@@ -8,14 +8,12 @@ export class FreeSpinsAdminPageMap extends BaseMap {
 	}
 
 	public getFreeSpinsActionCard(locator: string, title: string): Locator {
-		return this.page
-			.locator(locator)
-			.filter({ has: this.page.locator(`h4:text-is("${title}")`) });
+		return this.page.locator(locator).locator(`//h4[text()='${title}']/..`);
 	}
 
 	public get findGameToGiveFreeSpinsCard(): Locator {
 		return this.getFreeSpinsActionCard(
-			"div.sc-iBdnpw.inNXnA.MuiBox-root",
+			"//h4[text()='Find a game to go give free spins']//parent::div[contains(@class,'MuiBox-root')]",
 			FreeSpinsActionCardTitle.FIND_GAME_TO_GIVE_FREE_SPINS,
 		);
 	}
