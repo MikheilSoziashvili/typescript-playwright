@@ -32,11 +32,11 @@ export class InfoAdminPageMap extends BaseMap {
 	}
 
 	public get bannedUserInfo(): Locator {
-		return this.page.locator('div.form-inline:text-is("User is banned. ")');
+		return this.page.getByTestId("adminInfoBanReason");
 	}
 
 	public get unbanUserButton(): Locator {
-		return this.bannedUserInfo.locator('button:text-is("Unban")');
+		return this.bannedUserInfo.getByTestId("adminInfoUnbanButton");
 	}
 
 	public get tipButton(): Locator {
