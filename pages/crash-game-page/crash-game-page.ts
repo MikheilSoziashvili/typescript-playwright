@@ -91,7 +91,7 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 	public async waitBettingWindowAvailable(
 		timeout = Timeout.EXTRA_MAX / 2,
 	): Promise<void> {
-		await expect(this.map.spinningCountdownCounter).toBeAttached({
+		await expect(this.map.spinningCountdownCounter).toBeVisible({
 			timeout: timeout,
 		});
 	}
