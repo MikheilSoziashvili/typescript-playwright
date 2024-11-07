@@ -29,4 +29,10 @@ export class FooterMap extends BaseMap {
 			`//a[contains(@class,'IconButton')]//img[@alt='${socialMediaText}']`,
 		);
 	}
+
+	public get socialMediaFooterIconsContainer(): Locator {
+		return this.footerContainer.locator(
+			`//a[contains(@class,'IconButton')]//ancestor::div[contains(@class,"MuiBox-root")]`,
+		);
+	}
 }

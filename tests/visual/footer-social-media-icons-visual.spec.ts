@@ -22,4 +22,14 @@ test.describe("Visual Tests - Footer - social media icon", () => {
 				);
 		});
 	});
+
+	test(`[ENG-2907] Verify social media icons order is correct @visual`, async ({
+		homePage,
+		footer,
+	}, testInfo) => {
+		await homePage.navigateAndCheckTitle();
+		await footer
+			.assertThat()
+			.footerSocialMediaIconsBlockVisualCorrect(testInfo);
+	});
 });
