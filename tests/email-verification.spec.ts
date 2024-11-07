@@ -6,7 +6,7 @@ import {
 import { test } from "fixtures/fixtures";
 import { RegisterTestData } from "@dtos/test-data";
 
-test.describe.fixme("Email Verification Tests - skipped until [ENG-2865] is handled", () => {
+test.describe("Email Verification Tests", () => {
 	test.use({ storageState: { cookies: [], origins: [] } });
 
 	test("[ENG-1133] E-mail verification - new account", async ({
@@ -15,6 +15,7 @@ test.describe.fixme("Email Verification Tests - skipped until [ENG-2865] is hand
 		profilePage,
 		gamdomApi,
 	}) => {
+		test.fixme(true, " Skipped until [ENG-2865] is handled");
 		// reduce code duplication from 19-23 to be in a beforeEach (eventually take them out in another describe)
 		const { email, inbox } = generateEmailAndInbox();
 		const userData = new RegisterTestData({ email });
@@ -38,6 +39,7 @@ test.describe.fixme("Email Verification Tests - skipped until [ENG-2865] is hand
 		profilePage,
 		gamdomApi,
 	}) => {
+		test.fixme(true, " Skipped until [ENG-2865] is handled");
 		const { email, inbox } = generateEmailAndInbox();
 		const userData = new RegisterTestData({ email });
 
@@ -64,6 +66,7 @@ test.describe.fixme("Email Verification Tests - skipped until [ENG-2865] is hand
 		profilePage,
 		gamdomApi,
 	}) => {
+		test.fixme(true, " Skipped until [ENG-2865] is handled");
 		const { email } = generateEmailAndInbox();
 		const newEmailData = generateEmailAndInbox();
 		const userData = new RegisterTestData({ email });
