@@ -130,4 +130,8 @@ export class DiceGamePageMap extends BaseMap {
 			'button span:text-is("Stop Autobet")',
 		);
 	}
+
+	public get betMenu(): Locator {
+		return this.page.locator('div[class*="GameBox"][class*="MuiBox-root"]');
+	}
 }
