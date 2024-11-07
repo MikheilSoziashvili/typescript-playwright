@@ -1,4 +1,4 @@
-import { expect } from "@playwright/test";
+import { expect, TestInfo } from "@playwright/test";
 import { BaseAsserter } from "@base/base-asserter";
 import { DiceGamePage } from "./dice-game-page";
 import { DiceGameResultMessage } from "@enums/dice-result-messages";
@@ -181,6 +181,21 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		const finalBalance =
 			await this.gamdomPage.authenticatedHeader.getAccountBalance();
 		expect(finalBalance).toEqual(expectedBalance);
+	}
+
+	@step()
+	public async diceManualBetMenuVisualIsCorrect(
+		testInfo: TestInfo,
+	): Promise<void> {
+		await this.checkElementVisualCorrect(
+			testInfo,
+			this.gamdomPage.map.betMenu,
+			{
+				toHaveScreenshotOptions: {
+					mask: [this.gamdomPage.map.diceAutobetTabButton],
+				},
+			},
+		);
 	}
 
 	private shouldStopOn(limit: number | undefined, value: number): boolean {

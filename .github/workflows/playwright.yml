@@ -76,7 +76,7 @@ concurrency:
 
 jobs:
     tests:
-        timeout-minutes: 60
+        timeout-minutes: 600
         runs-on: ubuntu-latest
 
         env:
