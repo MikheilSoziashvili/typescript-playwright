@@ -25,4 +25,13 @@ export class HelpPageAsserter extends BaseAsserter<HelpPage> {
 			BooleanValueString.TRUE,
 		);
 	}
+
+	@step()
+	public async isTextMissingInTermsOfServiceBlock(
+		expectedText: string,
+	): Promise<void> {
+		const actualTermsOfServiceContainerText =
+			await this.gamdomPage.map.helpPageContent.innerText();
+		expect(actualTermsOfServiceContainerText).not.toContain(expectedText);
+	}
 }
