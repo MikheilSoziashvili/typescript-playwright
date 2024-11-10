@@ -86,6 +86,20 @@ jobs:
                   git push origin ${{ github.event.pull_request.head.ref }}
               if: success()
 
+            - name: Trigger Premerge Pull Request Checks
+              uses: actions/github-script@v6
+              with:
+                script: |
+                  const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
+                  octokit.rest.actions.createWorkflowDispatch({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    workflow_id: "premerge.yml",
+                    ref: context.ref
+                  });
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
             - uses: actions/upload-artifact@v3
               if: always()
               with:
