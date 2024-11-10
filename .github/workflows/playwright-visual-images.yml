@@ -102,7 +102,7 @@ jobs:
                     owner: context.repo.owner,
                     repo: context.repo.repo,
                     workflow_id: "premerge.yml",
-                    ref: github.event.pull_request.head.ref
+                    ref: context.ref
                   });
               env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
