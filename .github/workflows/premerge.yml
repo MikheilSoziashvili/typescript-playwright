@@ -1,5 +1,9 @@
 name: Premerge checks
 on:
+    workflow_run:
+        workflows: ["Playwright Visual Tests - CI Images"]
+        types:
+            - completed
     push:
         branches: [main, master]
     pull_request_target:

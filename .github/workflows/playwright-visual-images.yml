@@ -86,26 +86,6 @@ jobs:
                   git commit -m "Update visual snapshots for CI"
                   git push origin ${{ github.event.pull_request.head.ref }}
               if: success()
-      
-            - name: Trigger PR Checks by Empty Commit
-              run: |
-                  git config user.name "github-actions[bot]"
-                  git config user.email "github-actions[bot]@users.noreply.github.com"
-                  git commit --allow-empty -m "Trigger PR Checks"
-                  git push origin ${{ github.event.pull_request.head.ref }}
-
-            - name: Trigger Premerge Pull Request Checks
-              uses: actions/github-script@v6
-              with:
-                script: |
-                  await github.rest.actions.createWorkflowDispatch({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    workflow_id: "premerge.yml",
-                    ref: context.ref
-                  });
-              env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
             - uses: actions/upload-artifact@v3
               if: always()
