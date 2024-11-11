@@ -26,6 +26,7 @@ concurrency:
 permissions:
     contents: write
     pull-requests: write
+    actions: write
 
 jobs:
     visual-tests-images:
@@ -85,7 +86,6 @@ jobs:
                   git commit -m "Update visual snapshots for CI"
                   git push origin ${{ github.event.pull_request.head.ref }}
               if: success()
-
             - uses: actions/upload-artifact@v3
               if: always()
               with:

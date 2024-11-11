@@ -14,6 +14,10 @@ export class HelpPageMap extends BaseMap {
 		return this.helpPageContainer.locator("h1");
 	}
 
+	public get helpPageContent(): Locator {
+		return this.helpPageContainer.locator("[class*='Wrapper']");
+	}
+
 	public tabNameByPlaceholder(placeholderText: string): Locator {
 		return this.helpPageContainer.locator(
 			`//div[@role="tablist"]//a[@role='tab' and text()='${placeholderText}']`,

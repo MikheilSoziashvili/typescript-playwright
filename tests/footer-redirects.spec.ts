@@ -42,6 +42,15 @@ const OFFICIAL_SITE_FOOTER_LINKS_AND_REDIRECTS_CSV =
 		expectedUrl: string;
 	}[];
 
+const TERMS_OF_SERVICE_TEXT_CSV = "ENG-2557-term-of-service-text.csv",
+	termsOfServiceRecords = parse_csv(
+		DATASETS_DIR,
+		TERMS_OF_SERVICE_TEXT_CSV,
+	) as {
+		page: string;
+		missingText: string;
+	}[];
+
 test.describe("Footer redirects tests", () => {
 	test.use(storageStateNewUserAPI());
 
@@ -113,6 +122,26 @@ test.describe("Footer redirects tests", () => {
 			await footer.openFooterLinkByPlaceholder(record.footerLink);
 			await footer.assertThat().verifyCurrentUrlIs(`${environment_url}/`);
 			await homePage.assertThat().verifyNewTabUrl([record.expectedUrl]);
+		});
+	});
+
+	termsOfServiceRecords.forEach((record) => {
+		test(`[ENG-2557] Footer - Verify 'Terms of Service' text removal`, async ({
+			homePage,
+			helpPage,
+			footer,
+		}) => {
+			await homePage.navigate();
+			await footer.openFooterLinkByPlaceholder("TOS");
+			await helpPage
+				.assertThat()
+				.isHelpPageTitleVisible("Terms Of Service");
+			await helpPage
+				.assertThat()
+				.isHelpPageTabSelected("Terms Of Service");
+			await helpPage
+				.assertThat()
+				.isTextMissingInTermsOfServiceBlock(record.missingText);
 		});
 	});
 });
