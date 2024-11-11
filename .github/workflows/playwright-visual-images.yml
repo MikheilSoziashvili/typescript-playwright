@@ -87,6 +87,14 @@ jobs:
                   git push origin ${{ github.event.pull_request.head.ref }}
               if: success()
 
+            - name: Trigger Premerge Checks Workflow
+              uses: ./.github/actions/trigger-premerge
+              with:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                workflow_id: "premerge.yml"  # replace with actual workflow filename
+                ref: ${{ github.event.pull_request.head.ref }}
+
+
             - uses: actions/upload-artifact@v3
               if: always()
               with:
