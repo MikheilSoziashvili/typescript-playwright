@@ -76,8 +76,8 @@ jobs:
 
             - name: Configure git for Pull Request update
               run: |
-                  git config --global user.name 'IvStGamdom'
-                  git config --global user.email 'ivaylo@teamgamdom.com'
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
 
             - name: Commit and push updated snapshots
               run: |
@@ -86,15 +86,6 @@ jobs:
                   git commit -m "Update visual snapshots for CI"
                   git push origin ${{ github.event.pull_request.head.ref }}
               if: success()
-
-            - name: Trigger Premerge Checks Workflow
-              uses: ./.github/actions/trigger-premerge
-              with:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                workflow_id: "premerge.yml"  # replace with actual workflow filename
-                ref: ${{ github.event.pull_request.head.ref }}
-
-
             - uses: actions/upload-artifact@v3
               if: always()
               with:
