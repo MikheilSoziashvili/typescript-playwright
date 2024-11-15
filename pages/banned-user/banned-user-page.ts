@@ -2,20 +2,31 @@ import { Page } from "@playwright/test";
 import { BasePage } from "@base/base-page";
 import { BannedUserPageMap } from "./banned-user-page-map";
 import { BannedUserPageAsserter } from "./banned-user-page-asserter";
-import { BANNED_USER_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
+import { step } from "decorators/step";
 
 export class BannedUserPage extends BasePage<BannedUserPageMap> {
 	public constructor(page: Page) {
 		super(page, new BannedUserPageMap(page));
 	}
 
-	public override async navigate(
+	public async navigateCustomBannedPage(
+		bannedPageEndpoint: string,
 		parameters?: BasePageNavigationParametersType,
 	): Promise<void> {
 		await super.navigate({
 			...parameters,
-			endpoint: { paths: [BANNED_USER_PAGE_ENDPOINT] },
+			endpoint: { paths: [bannedPageEndpoint] },
+		});
+	}
+
+	public async navigateToPage(
+		bannedPageEndpoint: string,
+		parameters?: BasePageNavigationParametersType,
+	): Promise<void> {
+		await super.navigate({
+			...parameters,
+			endpoint: { paths: [bannedPageEndpoint] },
 		});
 	}
 
@@ -23,9 +34,17 @@ export class BannedUserPage extends BasePage<BannedUserPageMap> {
 		return new BannedUserPageAsserter(this);
 	}
 
+	@step()
 	public async waitRedContainerToBeVisible(): Promise<void> {
 		await this.map.waitForVisibility({
 			locator: this.map.redContainer,
 		});
+	}
+
+	@step()
+	public async openSocialMediaFooterLinkByPlaceholder(
+		footerLink: string,
+	): Promise<void> {
+		await this.map.socialMediaFooterLinkByPlaceholder(footerLink).click();
 	}
 }

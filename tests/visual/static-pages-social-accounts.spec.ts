@@ -1,0 +1,79 @@
+import { DATASETS_DIR } from "@constants/file-paths";
+import { SocialMediaRecord } from "@core/types/types";
+import { parse_csv } from "@core/utils/utils";
+import { test } from "@fixtures/fixtures";
+import { BannedUserPage } from "@pages/banned-user/banned-user-page";
+import { GeoblockedPage } from "@pages/geoblocked/geoblocked-page";
+import { MaintenancePage } from "@pages/maintenance/maintenance-page";
+
+const SOCIAL_MEDIA_FILE_NAMES = {
+	banned: "ENG-2480-static-page-banned-social-accounts.csv",
+	maintenance: "ENG-2480-static-page-maintenance-social-accounts.csv",
+	geoblocked: "ENG-2480-static-page-geoblocked-social-accounts.csv",
+} as const;
+
+const socialMediaRecordsList: SocialMediaRecord[][] = Object.values(
+	SOCIAL_MEDIA_FILE_NAMES,
+).map((fileName) => parse_csv(DATASETS_DIR, fileName)) as SocialMediaRecord[][];
+
+const [
+	bannedPageSocialMedias,
+	maintenancePageSocialMedias,
+	geoblockedPageSocialMedias,
+] = socialMediaRecordsList;
+
+test.describe("Static pages - social accounts", () => {
+	Object.entries({
+		banned: bannedPageSocialMedias,
+		geoblocked: geoblockedPageSocialMedias,
+		maintenance: maintenancePageSocialMedias,
+	}).forEach(([pageType, socialMediaList]) => {
+		const typedPageType = pageType as keyof typeof SOCIAL_MEDIA_FILE_NAMES;
+		socialMediaList.forEach((socialMedia) => {
+			test(`[ENG-2480] Verify '${socialMedia.social_account}' social account in '${socialMedia.static_page}' static page @visual`, async ({
+				homePage,
+				bannedUserPage,
+				geoblockedPage,
+				maintenancePage,
+			}, testInfo) => {
+				test.fixme(
+					typedPageType === "maintenance",
+					"Remove when task ENG-3094 about missing maintenance pages in e2e stg env is done",
+				);
+				const pageObjects: Record<
+					keyof typeof SOCIAL_MEDIA_FILE_NAMES,
+					BannedUserPage | GeoblockedPage | MaintenancePage
+				> = {
+					banned: bannedUserPage,
+					geoblocked: geoblockedPage,
+					maintenance: maintenancePage,
+				};
+
+				const pageObject = pageObjects[typedPageType];
+
+				await pageObject.navigateToPage(socialMedia.static_page);
+				await pageObject
+					.assertThat()
+					.footerSocialMediaIconVisualCorrect(
+						testInfo,
+						socialMedia.locator,
+					);
+				await pageObject
+					.assertThat()
+					.isSocialMediaLinkCorrect(
+						socialMedia.locator,
+						socialMedia.external_url,
+					);
+				await pageObject.openSocialMediaFooterLinkByPlaceholder(
+					socialMedia.locator,
+				);
+				await homePage
+					.assertThat()
+					.verifyNewTabUrl([
+						`${socialMedia.socialMedia_UrlPart}`,
+						`${socialMedia.gamdom_UrlPart}`,
+					]);
+			});
+		});
+	});
+});

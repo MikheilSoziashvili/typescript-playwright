@@ -1,37 +1,37 @@
 import { BasePage } from "@base/base-page";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { Page } from "@playwright/test";
-import { GeoblockedPageAsserter } from "./geoblocked-page-asserter";
-import { GeoblockedPageMap } from "./geoblocked-page-map";
 import { step } from "decorators/step";
+import { MaintenancePageMap } from "./maintenance-page-map";
+import { MaintenancePageAsserter } from "./maintenance-page-asserter";
 
-export class GeoblockedPage extends BasePage<GeoblockedPageMap> {
+export class MaintenancePage extends BasePage<MaintenancePageMap> {
 	public constructor(page: Page) {
-		super(page, new GeoblockedPageMap(page));
+		super(page, new MaintenancePageMap(page));
 	}
 
-	public async navigateCustomGeoblockedPage(
-		geoblockedPageEndpoint: string,
+	public async navigateMaintenancePage(
+		maintenancePageEndpoint: string,
 		parameters?: BasePageNavigationParametersType,
 	): Promise<void> {
-		await super.navigate({
+		await this.navigate({
 			...parameters,
-			endpoint: { paths: [geoblockedPageEndpoint] },
+			endpoint: { paths: [maintenancePageEndpoint] },
 		});
 	}
 
 	public async navigateToPage(
-		geoblockedPageEndpoint: string,
+		maintenancePageEndpoint: string,
 		parameters?: BasePageNavigationParametersType,
 	): Promise<void> {
-		await super.navigate({
+		await this.navigate({
 			...parameters,
-			endpoint: { paths: [geoblockedPageEndpoint] },
+			endpoint: { paths: [maintenancePageEndpoint] },
 		});
 	}
 
-	public override assertThat(): GeoblockedPageAsserter {
-		return new GeoblockedPageAsserter(this);
+	public override assertThat(): MaintenancePageAsserter {
+		return new MaintenancePageAsserter(this);
 	}
 
 	@step()

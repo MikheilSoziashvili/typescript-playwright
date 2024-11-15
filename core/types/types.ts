@@ -54,3 +54,13 @@ export type BasePageNavigationParametersType = {
 export type RequestOptions = NonNullable<
 	Parameters<APIRequestContext["fetch"]>[1]
 >;
+
+export type SocialMediaRecord = {
+	static_page: string;
+	social_account: string;
+	external_url: string;
+	social_media: string;
+	gamdom_UrlPart: string;
+	socialMedia_UrlPart: string;
+	locator: string;
+};

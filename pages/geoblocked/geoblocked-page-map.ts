@@ -19,4 +19,20 @@ export class GeoblockedPageMap extends BaseMap {
 	public get errorSubTitleLocator(): Locator {
 		return this.errorContainer.locator("h4[class*=SubTitle]");
 	}
+
+	public get socialMediaFooterContainer(): Locator {
+		return this.page.locator('[class*="SociaButtonsContainer"]');
+	}
+
+	public socialMediaFooterIconByPlaceholder(socialMedia: string): Locator {
+		return this.socialMediaFooterContainer.locator(
+			`img[alt='${socialMedia}']`,
+		);
+	}
+
+	public socialMediaFooterLinkByPlaceholder(socialMedia: string): Locator {
+		return this.socialMediaFooterContainer.locator(
+			`//img[@alt="${socialMedia}"]//parent::a[contains(@class,"SocialButtons")]`,
+		);
+	}
 }

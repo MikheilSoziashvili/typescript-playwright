@@ -1,24 +1,49 @@
-import { expect } from "@playwright/test";
+import { expect, TestInfo } from "@playwright/test";
 import { BaseAsserter } from "@base/base-asserter";
 import { GeoblockedPage } from "./geoblocked-page";
 import { GeoblockedCountry } from "@enums/geoblocked-countries";
+import { step } from "decorators/step";
+import { Attributes } from "@enums/playwright/htmlAttributes";
 
 export class GeoblockedPageAsserter extends BaseAsserter<GeoblockedPage> {
 	public constructor(page: GeoblockedPage) {
 		super(page);
 	}
 
+	@step()
 	public async isGeoblockedErrorTitleDisplayed(): Promise<void> {
 		await expect(this.gamdomPage.map.errorTitleLocator).toHaveText(
 			"Gamdom is not available in your Country",
 		);
 	}
 
+	@step()
 	public async isBlockedCountryNameDisplayed(
 		countryName: GeoblockedCountry,
 	): Promise<void> {
 		await expect(this.gamdomPage.map.errorSubTitleLocator).toHaveText(
 			countryName,
+		);
+	}
+
+	@step()
+	public async isSocialMediaLinkCorrect(
+		socialMedia: string,
+		expectedURL: string,
+	): Promise<void> {
+		await expect(
+			this.gamdomPage.map.socialMediaFooterLinkByPlaceholder(socialMedia),
+		).toHaveAttribute(Attributes.HREF, expectedURL);
+	}
+
+	@step()
+	public async footerSocialMediaIconVisualCorrect(
+		testInfo: TestInfo,
+		socialMedia: string,
+	): Promise<void> {
+		await this.checkElementVisualCorrect(
+			testInfo,
+			this.gamdomPage.map.socialMediaFooterIconByPlaceholder(socialMedia),
 		);
 	}
 }

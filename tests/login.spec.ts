@@ -140,6 +140,10 @@ test.describe("Login tests", () => {
 		homePage,
 		googleAuthPage,
 	}) => {
+		test.fixme(
+			!!process.env.CI,
+			"ENG-3177 Additional captcha input field for text from picture is added for Google auth",
+		);
 		await homePage.navigateAndCheckTitle();
 
 		await homePage.unauthenticatedHeader.openLoginModal();
