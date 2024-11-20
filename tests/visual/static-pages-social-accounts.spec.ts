@@ -36,10 +36,6 @@ test.describe("Static pages - social accounts", () => {
 				geoblockedPage,
 				maintenancePage,
 			}, testInfo) => {
-				test.fixme(
-					typedPageType === "maintenance",
-					"Remove when task ENG-3094 about missing maintenance pages in e2e stg env is done",
-				);
 				const pageObjects: Record<
 					keyof typeof SOCIAL_MEDIA_FILE_NAMES,
 					BannedUserPage | GeoblockedPage | MaintenancePage
