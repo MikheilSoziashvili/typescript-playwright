@@ -45,4 +45,24 @@ export class VipManagerAdminPageMap extends BaseMap {
 			`//button[normalize-space()='Upload']`,
 		);
 	}
+
+	public get inputFileUpdateRemoveBatchVipPlayers(): Locator {
+		return this.batchUpdateVipPlayersStatusBlock.locator(
+			`//input[@type='file']`,
+		);
+	}
+
+	private getBatchVipPlayersStatusButton(buttonLabel: string): Locator {
+		return this.batchUpdateVipPlayersStatusBlock.locator(
+			`//button[normalize-space()='${buttonLabel}']`,
+		);
+	}
+
+	public get updateBatchVipPlayersStatusButton(): Locator {
+		return this.getBatchVipPlayersStatusButton("Update");
+	}
+
+	public get removeBatchVipPlayersStatusButton(): Locator {
+		return this.getBatchVipPlayersStatusButton("Remove");
+	}
 }

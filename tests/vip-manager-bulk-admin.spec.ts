@@ -2,6 +2,8 @@ import {
 	SUPER_ADMIN_VIP_MANAGER_BULK,
 	SUPER_ADMIN_VIP_MANAGER_NO_BULK,
 } from "@constants/credentials";
+import { ToastSubTitle } from "@enums/toast-subtitles";
+import { ToastTitle } from "@enums/toast-titles";
 import { storageStateUserAPI } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 
@@ -20,7 +22,7 @@ const testDataInput = [
 	},
 ];
 
-test.describe("VIP Manager admin bulk tests", () => {
+test.describe("VIP Manager admin tests", () => {
 	testDataInput.forEach(
 		({
 			userCredentials,
@@ -53,4 +55,66 @@ test.describe("VIP Manager admin bulk tests", () => {
 			});
 		},
 	);
+
+	test.describe(`Vip Manager - incorrect file format`, () => {
+		test.use(
+			storageStateUserAPI(
+				SUPER_ADMIN_VIP_MANAGER_BULK.username,
+				SUPER_ADMIN_VIP_MANAGER_BULK.password,
+			),
+		);
+
+		const fileFormats = ["txt", "pdf"];
+
+		const wrongFormatFiles = fileFormats.map((format) => ({
+			filePath: `./data-test-files/ENG-2366-vip-manager-${format}-wrong-file-format.${format}`,
+			fileFormatType: format,
+		}));
+
+		wrongFormatFiles.forEach(({ filePath, fileFormatType }) => {
+			test(`[ENG-2366] Vip Manager Bulk Admin - incorrect '${fileFormatType}' file format (different than .csv) can not be uploaded`, async ({
+				vipManagerAdminPage,
+				toast,
+			}) => {
+				await vipManagerAdminPage.navigate();
+				await vipManagerAdminPage
+					.assertThat()
+					.pageMainBlocksAreVisible();
+
+				await vipManagerAdminPage
+					.assertThat()
+					.checkBatchUpdateVipPlayersStatusElements(true);
+
+				await vipManagerAdminPage
+					.steps()
+					.toggleUpdateRemoveBatchVipPlayers(
+						vipManagerAdminPage.map
+							.updateBatchVipPlayersStatusButton,
+					);
+				await vipManagerAdminPage.updateRemoveBatchVipPlayersSendFile(
+					filePath,
+				);
+				await vipManagerAdminPage.uploadUpdateRemoveBatchVipPlayersFile();
+				await toast.assertThat().titleIs(ToastTitle.FAILED);
+				await toast
+					.assertThat()
+					.subTitleIs(ToastSubTitle.UPLOAD_CSV_FILE);
+
+				await vipManagerAdminPage
+					.steps()
+					.toggleUpdateRemoveBatchVipPlayers(
+						vipManagerAdminPage.map
+							.removeBatchVipPlayersStatusButton,
+					);
+				await vipManagerAdminPage.updateRemoveBatchVipPlayersSendFile(
+					filePath,
+				);
+				await vipManagerAdminPage.uploadUpdateRemoveBatchVipPlayersFile();
+				await toast.assertThat().titleIs(ToastTitle.FAILED);
+				await toast
+					.assertThat()
+					.subTitleIs(ToastSubTitle.UPLOAD_CSV_FILE);
+			});
+		});
+	});
 });

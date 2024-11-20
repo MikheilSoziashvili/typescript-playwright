@@ -7,4 +7,5 @@ export enum ToastSubTitle {
 	CASION_REWARD_GIVEN = "Casino reward given successfully!",
 	SETTINGS_UPDATED = "Settings updated",
 	SUCCESSFUL_UPLOAD = "Successful upload",
+	UPLOAD_CSV_FILE = "Please upload a CSV file!",
 }

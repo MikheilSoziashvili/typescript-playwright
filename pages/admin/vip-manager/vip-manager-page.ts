@@ -27,4 +27,16 @@ export class VipManagerAdminPage extends BasePage<VipManagerAdminPageMap> {
 	public steps(): VipManagerAdminPageSteps {
 		return new VipManagerAdminPageSteps(this);
 	}
+
+	public async updateRemoveBatchVipPlayersSendFile(
+		filePath: string,
+	): Promise<void> {
+		await this.map.inputFileUpdateRemoveBatchVipPlayers.setInputFiles(
+			filePath,
+		);
+	}
+
+	public async uploadUpdateRemoveBatchVipPlayersFile(): Promise<void> {
+		await this.map.uploadBatchUpdateVipPlayersStatusFileButton.click();
+	}
 }

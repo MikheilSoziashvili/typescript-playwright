@@ -74,6 +74,7 @@ Make sure you have the following installed:
 │   ├── types                                     # Type definitions
 │   ├── utils                                     # Utility functions
 ├── datasets                                      # Test datasets in CSV format
+├── data-test-files                               # Test data files in all formats
 ├── decorators                                    # TS decorators
 ├── dtos                                          # Data transfer objects
 ├── enums                                         # Enumeration objects

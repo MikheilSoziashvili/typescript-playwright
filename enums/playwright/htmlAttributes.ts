@@ -14,4 +14,5 @@ export enum Attributes {
 	ARIA_SELECTED = "aria-selected",
 	CONTENTEDITABLE = "contenteditable",
 	ARIA_EXPANDED = "aria-expanded",
+	ARIA_PRESSED = "aria-pressed"
 }
