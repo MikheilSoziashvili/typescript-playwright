@@ -3,12 +3,14 @@ import { VipManagerAdminPage } from "./vip-manager-page";
 import { Attributes } from "@enums/playwright/htmlAttributes";
 import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { Locator } from "@playwright/test";
+import { step } from "decorators/step";
 
 export class VipManagerAdminPageSteps extends BasePageStep<VipManagerAdminPage> {
 	public constructor(gamdomPage: VipManagerAdminPage) {
 		super(gamdomPage);
 	}
 
+	@step()
 	public async toggleUpdateRemoveBatchVipPlayers(
 		updateRemoveButton: Locator,
 	): Promise<void> {

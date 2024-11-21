@@ -117,4 +117,28 @@ test.describe("VIP Manager admin tests", () => {
 			});
 		});
 	});
+
+	testDataInput.forEach(({ userCredentials }) => {
+		test.describe(`Vip Manager - "Send notification" section`, () => {
+			test.use(
+				storageStateUserAPI(
+					userCredentials.username,
+					userCredentials.password,
+				),
+			);
+
+			test(`[ENG-2649] Vip Manager tab - verify that "Send notification" section is removed for '${userCredentials.username}' user`, async ({
+				vipManagerAdminPage,
+			}) => {
+				await vipManagerAdminPage.navigate();
+				await vipManagerAdminPage
+					.assertThat()
+					.pageMainBlocksAreVisible();
+
+				await vipManagerAdminPage
+					.assertThat()
+					.checkSendNotificationSectionPresence(false);
+			});
+		});
+	});
 });
