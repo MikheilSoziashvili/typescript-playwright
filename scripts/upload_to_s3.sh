@@ -24,16 +24,11 @@ fi
 
 # Generate a pre-signed URL for the index.html file
 INDEX_HTML_KEY="$S3_KEY_PREFIX/index.html"
-PRESIGNED_URL=$(aws s3 presign "s3://$BUCKET_NAME/$INDEX_HTML_KEY" --expires-in 172800 --region $AWS_DEFAULT_REGION)
+REPORT_URL="https://e2e-qa-report.teamgamdom.com/$INDEX_HTML_KEY"
 
-# Check if the presigned URL was generated successfully
-if [ $? -ne 0 ]; then
-    echo "Failed to generate presigned URL."
-    exit 1
-fi
 
 # Output the presigned URL
-echo "Presigned URL for index.html: $PRESIGNED_URL"
+echo "REPORT URL for index.html: $REPORT_URL"
 
 # Export the pre-signed URL as an environment variable by writing it to a file
-echo "PRESIGNED_URL=$PRESIGNED_URL" >> $GITHUB_ENV
+echo "REPORT_URL=$REPORT_URL" >> $GITHUB_ENV

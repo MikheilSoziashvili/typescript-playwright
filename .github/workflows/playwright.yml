@@ -143,7 +143,7 @@ jobs:
                   path: playwright-report/
                   retention-days: 30
 
-            - name: Upload Playwright report to S3 and generate presigned URL
+            - name: Upload Playwright report to S3 and generate report url
               if: always()
               run: |
                   # Create a unique directory name using the GitHub run ID and timestamp
@@ -151,12 +151,12 @@ jobs:
                   S3_KEY_PREFIX="playwright-reports/${{ github.run_id }}-${TIMESTAMP}"
 
                   # Call the upload script with the required parameters
-                  ./scripts/upload_to_s3_and_generate_presigned_url.sh playwright-report gamdom-prod-qa-reporting $S3_KEY_PREFIX
+                  ./scripts/upload_to_s3.sh playwright-report gamdom-prod-qa-reporting $S3_KEY_PREFIX
 
-            - name: Create PR comment with presigned URL
+            - name: Create PR comment with report url
               if: ${{ always() && github.event_name == 'pull_request' }}
               run: |
-                  COMMENT=":world_map: Playwright report available [here]($PRESIGNED_URL)"
+                  COMMENT=":world_map: Playwright report available [here]($REPORT_URL)"
                   echo $COMMENT
                   gh pr comment ${{ github.event.pull_request.number }} --body "$COMMENT"
               env:
