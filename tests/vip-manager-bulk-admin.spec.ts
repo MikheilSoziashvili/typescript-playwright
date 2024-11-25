@@ -2,7 +2,11 @@ import {
 	SUPER_ADMIN_VIP_MANAGER_BULK,
 	SUPER_ADMIN_VIP_MANAGER_NO_BULK,
 } from "@constants/credentials";
+import { DATA_TEST_FILES_DIR } from "@constants/file-paths";
+import { parse_csv } from "@core/utils/utils";
+import { BulkActions } from "@enums/bulk-actions";
 import { ToastSubTitle } from "@enums/toast-subtitles";
+import { ToastSubTitleDynamic } from "@enums/toast-subtitles-dynamic";
 import { ToastTitle } from "@enums/toast-titles";
 import { storageStateUserAPI } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
@@ -140,5 +144,66 @@ test.describe("VIP Manager admin tests", () => {
 					.checkSendNotificationSectionPresence(false);
 			});
 		});
+	});
+
+	test.describe(`Vip Manager - files with incorrect userIDs for bulk Update/Removal process`, () => {
+		test.use(
+			storageStateUserAPI(
+				SUPER_ADMIN_VIP_MANAGER_BULK.username,
+				SUPER_ADMIN_VIP_MANAGER_BULK.password,
+			),
+		);
+
+		const bulkActions = [BulkActions.UPLOAD, BulkActions.REMOVE];
+
+		const bulkActionFiles = bulkActions.map((bulkAction) => {
+			const filePath = `./data-test-files/ENG-2332-batch-vip-status-incorrect-userId-${bulkAction}.csv`;
+			const incorrectUserIdFromCsv = parse_csv(
+				DATA_TEST_FILES_DIR,
+				`ENG-2332-batch-vip-status-incorrect-userId-${bulkAction}.csv`,
+				{
+					columns: false,
+				},
+			) as string[];
+
+			const expectedErrorMessage =
+				bulkAction === BulkActions.UPLOAD
+					? ToastSubTitleDynamic.INVALID_USER_ID(
+							incorrectUserIdFromCsv[0][0],
+					  )
+					: ToastSubTitleDynamic.INVALID_USER_WITH_ID(
+							incorrectUserIdFromCsv[0][0],
+					  );
+
+			return { filePath, bulkAction, expectedErrorMessage };
+		});
+
+		bulkActionFiles.forEach(
+			({ filePath, bulkAction, expectedErrorMessage }) => {
+				test(`[ENG-2332] Vip Manager Bulk Admin - Verify error received when upload .csv file containing incorrect userID for bulk '${bulkAction}' process`, async ({
+					vipManagerAdminPage,
+					toast,
+				}) => {
+					await vipManagerAdminPage.navigate();
+					await vipManagerAdminPage
+						.assertThat()
+						.pageMainBlocksAreVisible();
+
+					await vipManagerAdminPage
+						.assertThat()
+						.checkBatchUpdateVipPlayersStatusElements(true);
+
+					await vipManagerAdminPage
+						.steps()
+						.toggleUploadRemoveBatchVipPlayersByOption(bulkAction);
+					await vipManagerAdminPage.updateRemoveBatchVipPlayersSendFile(
+						filePath,
+					);
+					await vipManagerAdminPage.uploadUpdateRemoveBatchVipPlayersFile();
+					await toast.assertThat().titleIs(ToastTitle.FAILED);
+					await toast.assertThat().subTitleIs(expectedErrorMessage);
+				});
+			},
+		);
 	});
 });

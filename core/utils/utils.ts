@@ -101,11 +101,36 @@ export function getFilePath(
 	return path.join(baseDir, filename);
 }
 
-export function parse_csv(...filePath: string[]): unknown {
-	const filePathRoot = path.resolve(__dirname, "../..", ...filePath);
-	const csvFile = readFileSync(filePathRoot);
+/**
+ * Parses a CSV file and returns its content.
+ *
+ * This function reads a CSV file from the specified path, optionally parsing it into columns.
+ * The last argument can be an options object to configure the CSV parsing.
+ * @param {...(string | { columns?: boolean })[]} args - The arguments to specify the file path and options.
+ *   - Strings: Parts of the file path relative to the project root.
+ *   - Object (optional): Configuration options for parsing:
+ *     - `columns` (boolean): Whether to parse the CSV content into columns. Defaults to `true`.
+ * @returns {unknown} The parsed CSV content.
+ * @example
+ * // Parse a CSV file with default options (columns: true)
+ * const data = parse_csv("data", "file.csv");
+ * @example
+ * // Parse a CSV file without columns
+ * const data = parse_csv("data", "file.csv", { columns: false });
+ */
+export function parse_csv(
+	...args: (string | { columns?: boolean })[]
+): unknown {
+	const options =
+		typeof args[args.length - 1] === "object"
+			? (args.pop() as { columns?: boolean })
+			: { columns: true };
+
+	const filePath = path.resolve(__dirname, "../..", ...(args as string[]));
+	const csvFile = readFileSync(filePath);
+
 	return parse(csvFile, {
-		columns: true,
+		columns: options.columns,
 		skip_empty_lines: true,
 	});
 }

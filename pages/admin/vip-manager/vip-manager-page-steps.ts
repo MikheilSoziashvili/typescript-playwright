@@ -4,6 +4,7 @@ import { Attributes } from "@enums/playwright/htmlAttributes";
 import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { Locator } from "@playwright/test";
 import { step } from "decorators/step";
+import { BulkActions } from "@enums/bulk-actions";
 
 export class VipManagerAdminPageSteps extends BasePageStep<VipManagerAdminPage> {
 	public constructor(gamdomPage: VipManagerAdminPage) {
@@ -25,5 +26,17 @@ export class VipManagerAdminPageSteps extends BasePageStep<VipManagerAdminPage> 
 				BooleanValueString.TRUE,
 			);
 		}
+	}
+
+	@step()
+	public async toggleUploadRemoveBatchVipPlayersByOption(
+		bulkActionOption: BulkActions,
+	): Promise<void> {
+		const uploadRemoveButton =
+			bulkActionOption === BulkActions.UPLOAD
+				? this.gamdomPage.map.updateBatchVipPlayersStatusButton
+				: this.gamdomPage.map.removeBatchVipPlayersStatusButton;
+
+		await this.toggleUpdateRemoveBatchVipPlayers(uploadRemoveButton);
 	}
 }

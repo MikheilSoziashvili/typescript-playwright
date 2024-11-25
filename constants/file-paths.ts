@@ -12,6 +12,7 @@ export const storageStateDir: string = getFilePath(
 );
 
 export const DATASETS_DIR = "datasets";
+export const DATA_TEST_FILES_DIR = "data-test-files";
 export const AUTH_PATH = "core/.auth";
 
 export const GOOGLE_AUTH_STATE_FILE_PATH: string = getFilePath(

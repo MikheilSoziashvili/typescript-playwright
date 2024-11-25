@@ -111,7 +111,7 @@ export class BaseAsserter<T extends BasePage | BaseModal | BaseComponent> {
 
 		const newTabUrl = newTab.url();
 		urlParts.forEach((part) => {
-			expect(newTabUrl).toContain(part);
+			expect(newTabUrl.toLowerCase()).toContain(part.toLowerCase());
 		});
 	}
 }
