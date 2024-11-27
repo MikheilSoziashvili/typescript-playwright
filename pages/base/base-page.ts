@@ -5,6 +5,7 @@ import { UnauthenticatedHeader } from "@components/header/unauthenticated/unauth
 import { buildEndpoint, conformLinkWithProtocol } from "@core/utils/utils";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { Protocol } from "@enums/api/protocols";
+import { WaitUntilState } from "@enums/wait-until-states";
 
 export abstract class BasePage<T = BaseMap> {
 	readonly page: Page;
@@ -54,7 +55,9 @@ export abstract class BasePage<T = BaseMap> {
 		throw new Error("Method not implemented");
 	}
 
-	public async refresh(): Promise<void> {
-		await this.page.reload();
+	public async refresh(
+		waitUntil: WaitUntilState = WaitUntilState.DOM_CONTENT_LOADED,
+	): Promise<void> {
+		await this.page.reload({ waitUntil });
 	}
 }

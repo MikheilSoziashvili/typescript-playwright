@@ -1,3 +1,4 @@
+import { VisibilityOptions } from "@enums/visibility-options";
 import { APIRequestContext } from "@playwright/test";
 
 export type TestUserConfigurationObject = {
@@ -38,7 +39,8 @@ export type ProxyCredentialsType = {
 };
 
 export type PayloadType =
-	| Record<string, string | number | boolean | object>
+	| Record<string, string | number | boolean | object | null>
+	| Record<string, string | number | boolean | object | null>[]
 	| string;
 
 export type BasePageNavigationParametersType = {
@@ -63,4 +65,13 @@ export type SocialMediaRecord = {
 	gamdom_UrlPart: string;
 	socialMedia_UrlPart: string;
 	locator: string;
+};
+export type VisibilityResult =
+	| VisibilityOptions.VISIBLE
+	| VisibilityOptions.INVISIBLE;
+
+export type ProviderDetails = {
+	providerName: string;
+	providerIdName: string;
+	importedFrom: string;
 };

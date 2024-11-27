@@ -18,6 +18,7 @@ export enum Feature {
 	PayopFailedToSuccessState = "payop_failed_to_success_state",
 	Hub88Integration = "hub88-integration",
 	SoftswissIntegration = "softswiss-integration",
+	PragmaticPlayIntegration = "pragmatic-play-integration",
 	HacksawIntegration = "hacksaw-integration",
 	OursIntegration = "ours-integration",
 	CSGO = "CSGO",

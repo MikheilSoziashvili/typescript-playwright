@@ -85,4 +85,22 @@ export class AuthenticatedHeaderMap extends BaseMap {
 			has: this.page.locator(`a[href='/${game}']`),
 		});
 	}
+
+	private headerNavigationButtons(button: string): Locator {
+		return this.page.locator(
+			`header a[class*="MenuLink"][href="/${button}"]`,
+		);
+	}
+
+	public get casinoNavigationButton(): Locator {
+		return this.headerNavigationButtons("casino");
+	}
+
+	public get supportNavigationButton(): Locator {
+		return this.headerNavigationButtons("help/support");
+	}
+
+	public get rewardsNavigationButton(): Locator {
+		return this.headerNavigationButtons("rewards");
+	}
 }

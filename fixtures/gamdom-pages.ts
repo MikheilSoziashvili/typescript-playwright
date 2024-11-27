@@ -13,6 +13,8 @@ import { BlogCategoryPage } from "@pages/blog/category/blog-category-page";
 import { SettingsPage } from "@pages/settings/settings-page";
 import { HelpPage } from "@pages/help/help-page";
 import { MaintenancePage } from "@pages/maintenance/maintenance-page";
+import { CasinoPage } from "@pages/casino/casino-game-page";
+import { ProvidersPage } from "@pages/providers/providers-page";
 
 export type GamdomPages = {
 	homePage: HomePage;
@@ -29,6 +31,8 @@ export type GamdomPages = {
 	slotsBattlePage: SlotsBattlePage;
 	blogCategoryPage: BlogCategoryPage;
 	helpPage: HelpPage;
+	casinoPage: CasinoPage;
+	providersPage: ProvidersPage;
 };
 
 export const gamdomPagesFixtures = base.extend<GamdomPages>({
@@ -73,5 +77,11 @@ export const gamdomPagesFixtures = base.extend<GamdomPages>({
 	},
 	helpPage: async ({ page }, use) => {
 		await use(new HelpPage(page));
+	},
+	casinoPage: async ({ page }, use) => {
+		await use(new CasinoPage(page));
+	},
+	providersPage: async ({ page }, use) => {
+		await use(new ProvidersPage(page));
 	},
 });

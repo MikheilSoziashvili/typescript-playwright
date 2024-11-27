@@ -116,4 +116,8 @@ export class HomePage extends BasePage<HomePageMap> {
 			state: VisibilityState.HIDDEN,
 		});
 	}
+
+	public async clickOnCasinoHeaderButton(): Promise<void> {
+		await this.authenticatedHeader.map.casinoNavigationButton.click();
+	}
 }
