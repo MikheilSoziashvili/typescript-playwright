@@ -78,6 +78,10 @@ jobs:
     tests:
         timeout-minutes: 600
         runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                shard: [1]
 
         env:
             CI: true
@@ -99,6 +103,7 @@ jobs:
             ENVIRONMENT_URL: ${{ inputs.environment == '' && vars.ENVIRONMENT_URL || inputs.environment }}
             SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
             TAG: ${{ inputs.tag == '' && 'smoke' || inputs.tag }}
+            SHARD_OPTION: --shard ${{ matrix.shard }}/${{ strategy.job-total }}
 
         steps:
             - name: Validation For Environment URL
@@ -120,7 +125,7 @@ jobs:
 
             - name: Run Playwright tests (Cron trigger)
               if: ${{ github.event_name == 'schedule' }}
-              run: yarn playwright test
+              run: yarn playwright test $SHARD_OPTION
 
             - name: Run Playwright tests (Manual trigger)
               if: ${{ github.event_name != 'schedule' }}
@@ -130,18 +135,38 @@ jobs:
 
                   if [ "$TAG" == "all" ]; then
                     echo "Running all tests ${CUSTOM_OPTIONS:+with custom options: $CUSTOM_OPTIONS}"
-                    yarn playwright test $CUSTOM_OPTIONS
+                    yarn playwright test $CUSTOM_OPTIONS $SHARD_OPTION
                   else
                     echo "Running tests with tag: "@$TAG" ${CUSTOM_OPTIONS:+and custom options: $CUSTOM_OPTIONS}"
-                    yarn playwright test --grep "@$TAG" $CUSTOM_OPTIONS
+                    yarn playwright test --grep "@$TAG" $CUSTOM_OPTIONS $SHARD_OPTION
                   fi
 
-            - uses: actions/upload-artifact@v3
+            - name: Upload blob report to GitHub Actions Artifacts
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: "all-blob-reports-${{ github.run_id }}-${{ matrix.shard }}"
+                  path: ./blob-report
+                  retention-days: 7
+
+            - uses: actions/upload-artifact@v4
               if: always()
               with:
                   name: playwright-report
-                  path: playwright-report/
+                  path: ./playwright-report
                   retention-days: 30
+
+            - name: Download blob reports from GitHub Actions Artifacts
+              if: always()
+              uses: actions/download-artifact@v4
+              with:
+                  path: ./blob-report
+                  pattern: all-blob-reports-*
+                  merge-multiple: true
+
+            - name: Merge all blob reports into HTML and json
+              if: always()
+              run: npx playwright merge-reports --reporter json,html ./blob-report > e2e-results.json
 
             - name: Upload Playwright report to S3 and generate report url
               if: always()
@@ -152,6 +177,24 @@ jobs:
 
                   # Call the upload script with the required parameters
                   ./scripts/upload_to_s3.sh playwright-report gamdom-prod-qa-reporting $S3_KEY_PREFIX
+
+            - name: Use REPORT_URL in another step
+              run: |
+                  echo "The report is available at: $REPORT_URL"
+              env:
+                  REPORT_URL: ${{ env.REPORT_URL }}
+
+            - name: Send report to Slack using CLI
+              if: always()
+              env:
+                  SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
+                  SLACK_CHANNEL: playwright-e2e-reporting
+                  REPORT_URL: ${{ env.REPORT_URL }}
+                  TEST_EXECUTION_ID: ${{ env.TEST_EXECUTION_ID }}
+                  BRANCH_NAME: ${{ github.event_name == 'schedule' && 'master' || github.head_ref || github.ref_name }}
+                  USER_NAME: ${{ github.event_name == 'schedule' && 'scheduled run' || github.actor }}
+                  PULL_REQUEST_URL: ${{ github.event_name == 'schedule' && 'No PR created' || github.event.pull_request.html_url || 'No PR created' }}
+              run: npx playwright-slack-report --config="${GITHUB_WORKSPACE}/core/reporters/slack-reporter-cli/slack-message-config-cli.json" --json-results="${GITHUB_WORKSPACE}/e2e-results.json"
 
             - name: Create PR comment with report url
               if: ${{ always() && github.event_name == 'pull_request' }}

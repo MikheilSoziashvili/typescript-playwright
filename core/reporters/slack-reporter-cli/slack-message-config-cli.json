@@ -1,0 +1,15 @@
+{
+  "sendResults": "always",
+  "slackLogLevel": "error",
+  "disableUnfurl": true,
+  "sendUsingBot": {
+    "channels": [
+      "playwright-e2e-reporting"
+    ]
+  },
+  "meta": [],
+  "customLayout": {
+    "source": "./core/reporters/slack-reporter-cli/slack-message-layout-cli.ts",
+    "functionName": "messageLayoutSlackCli"
+  }
+}

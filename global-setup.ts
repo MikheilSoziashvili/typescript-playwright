@@ -11,6 +11,7 @@ import { Feature } from "@enums/feature";
 import { SecurityAdminPage } from "@pages/admin/security-admin/security-admin-page";
 import { SECURITY_ADMIN_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { environment_url } from "configuration";
+import * as fs from "fs";
 
 async function enableHiloFeature(
 	gamdomApi: GamdomApi,
@@ -59,6 +60,9 @@ async function createJiraExecution(): Promise<void> {
 	const responseBody = (await response.json()) as JsonData;
 	const responseKey = responseBody["key"] as string;
 
+	process.env.TEST_EXECUTION_ID = responseKey;
+	logger.info(`TEST_EXECUTION_ID set to: ${process.env.TEST_EXECUTION_ID}`);
+
 	if (!responseKey) {
 		logger.info(
 			`Response received from JIRA: ${JSON.stringify(responseBody)}`,
@@ -79,6 +83,11 @@ async function createJiraExecution(): Promise<void> {
 		},
 		keystore,
 	);
+
+	const envFilePath = process.env.GITHUB_ENV;
+	if (envFilePath) {
+		fs.appendFileSync(envFilePath, `TEST_EXECUTION_ID=${responseKey}\n`);
+	}
 }
 
 async function globalSetup(): Promise<void> {

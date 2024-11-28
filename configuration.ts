@@ -7,7 +7,8 @@ export const environment_url = process.env.CI
 	: "https://staging-for-e2e-tests.teamgamdom.com";
 export const logLevel = "info";
 export const createExecution: boolean = process.env.CI ? true : false;
-export const slackReporter: boolean = process.env.CI ? true : false;
+// Disable here to keep the legacy slack reporter implementation
+export const slackReporter: boolean = process.env.CI ? false : false;
 export const reportName: string = getFilePath("results.xml", "./");
 export const keystore: string = getFilePath("keystore.json", "./");
 

@@ -10,6 +10,7 @@ import * as Configuration from "configuration";
 // When tests are aligned with CI/CD workflow, a more comprehensive report will be selected instead of HTML
 function getReporter(): ReporterDescription[] {
 	const reporters: ReporterDescription[] = [
+		["blob"],
 		["list"],
 		["html", { open: "never" }],
 	];

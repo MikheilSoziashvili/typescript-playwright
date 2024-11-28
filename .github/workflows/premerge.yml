@@ -1,4 +1,4 @@
-name: Premerge checks
+name: Playwright E2E Tests Pull Request Checks
 on:
     push:
         branches: [main, master]
