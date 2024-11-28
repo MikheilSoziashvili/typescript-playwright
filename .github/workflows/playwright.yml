@@ -54,6 +54,12 @@ on:
             GOOGLE_AUTH_SECRET:
                 required: true
                 description: "Google authentication QR code secret"
+            OXYLABS_USER:
+                required: true
+                description: "Proxy oxylabs authentication username"
+            OXYLABS_PASSWORD:
+                required: true
+                description: "Proxy oxylabs authentication password"
             MAILINATOR_API_KEY:
                 required: true
                 description: "Mailinator authentication"
@@ -96,6 +102,8 @@ jobs:
             GOOGLE_EMAIL: ${{ secrets.GOOGLE_EMAIL }}
             GOOGLE_PASSWORD: ${{ secrets.GOOGLE_PASSWORD }}
             GOOGLE_AUTH_SECRET: ${{ secrets.GOOGLE_AUTH_SECRET }}
+            OXYLABS_USER: ${{ secrets.OXYLABS_USER }}
+            OXYLABS_PASSWORD: ${{ secrets.OXYLABS_PASSWORD }}
             MAILINATOR_API_KEY: ${{ secrets.MAILINATOR_API_KEY }}
             AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
             AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

@@ -44,6 +44,11 @@ export const google: Record<string, string> = {
 	authSecret: asString(process.env.GOOGLE_AUTH_SECRET),
 };
 
+export const oxylabs: Record<string, string> = {
+	username: asString(process.env.OXYLABS_USER),
+	password: asString(process.env.OXYLABS_PASSWORD),
+};
+
 export const users: TestUserConfigurationObject[] = [
 	{
 		username: "superadmin",

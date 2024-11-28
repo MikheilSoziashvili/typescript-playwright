@@ -1,23 +1,23 @@
 import { ProxyCredentialsType } from "@core/types/types";
+import * as Configuration from "configuration";
 
-// US server
-export const US_PROXY_CREDENTIALS: ProxyCredentialsType = {
-	server: "us-pr.oxylabs.io:10001",
-	username: "gamdomautomation",
-	password: "Gamdomautomation1",
-};
+const createProxyCredentials = (
+	server: string,
+	username = Configuration.oxylabs.username,
+	password = Configuration.oxylabs.password,
+): ProxyCredentialsType => ({
+	server,
+	username,
+	password,
+});
 
-// NL server
-export const NL_PROXY_CREDENTIALS: ProxyCredentialsType = {
-	server: "nl-pr.oxylabs.io:20000",
-	username: "gamdomautomation",
-	password: "Gamdomautomation1",
-};
-
-// BL server
-// TODO: check why not working, maybe when change proxy provider will work
-export const BL_PROXY_CREDENTIALS: ProxyCredentialsType = {
-	server: "by-pr.oxylabs.io:15000",
-	username: "gamdomautomation",
-	password: "Gamdomautomation1",
-};
+// USA server
+export const US_PROXY_CREDENTIALS =
+	createProxyCredentials("dc.oxylabs.io:8001");
+// Netherlands server
+export const NL_PROXY_CREDENTIALS =
+	createProxyCredentials("dc.oxylabs.io:8004");
+// Belarus server - not working
+export const BL_PROXY_CREDENTIALS = createProxyCredentials(
+	"by-pr.oxylabs.io:15000",
+);
