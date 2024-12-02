@@ -1,4 +1,3 @@
-// constants/csvFiles.ts
 export enum CsvFilesName {
 	ADMIN_ENABLE_GAMES = "ENG-2745-admin-enable-a-game-provider-only-for-beta-users.csv",
 	CRASH_INCREASE_BY = "ENG-2541-crash-autobet-increase-by.csv",
