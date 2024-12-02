@@ -7,15 +7,18 @@ import {
 	BetIncreaseCondition,
 	CrashAutobetSection,
 } from "@enums/crash-autobet-section";
+import { CsvFilesName } from "@enums/csv-file-name";
 
-const CRASH_INCREASE_BY_CSV = "ENG-2541-crash-autobet-increase-by.csv",
-	records = parse_csv(DATASETS_DIR, CRASH_INCREASE_BY_CSV) as {
-		increase_by: string;
-		your_bet: string;
-		auto_cashout: string;
-		increase_multiplier: string;
-		stop_if_more_than: string;
-	}[];
+const crashIncreaseBy = parse_csv(
+	DATASETS_DIR,
+	CsvFilesName.CRASH_INCREASE_BY,
+) as {
+	increase_by: string;
+	your_bet: string;
+	auto_cashout: string;
+	increase_multiplier: string;
+	stop_if_more_than: string;
+}[];
 
 test.describe("Crash autobet tests", () => {
 	test.use(storageStateNewUserAPI());
@@ -90,7 +93,7 @@ test.describe("Crash autobet tests", () => {
 			.enableAutobetAndFillAmount(betTestData.betAmount);
 	});
 
-	records.forEach((record) => {
+	crashIncreaseBy.forEach((record) => {
 		test(`[ENG-2541] Crash - Autobet - Increase by [${record.increase_by}] @originals`, async ({
 			crashGamePage,
 		}, testInfo) => {

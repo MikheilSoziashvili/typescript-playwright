@@ -1,0 +1,20 @@
+// constants/csvFiles.ts
+export enum CsvFilesName {
+	ADMIN_ENABLE_GAMES = "ENG-2745-admin-enable-a-game-provider-only-for-beta-users.csv",
+	CRASH_INCREASE_BY = "ENG-2541-crash-autobet-increase-by.csv",
+	CRASH_AUTO_CASHOUT = "ENG-1118-crash-auto-cashout.csv",
+	CREATE_POST_ARTICLE = "ENG-1057-create-article-in-category.csv",
+	DICE_AUTOBET = "ENG-1415-dice-autobet.csv",
+	FOOTER_LINKS_AND_ENDPOINTS = "ENG-1977-footer-links-and-endpoints.csv",
+	HELP_PAGE_FOOTER_LINKS_AND_REDIRECTS = "ENG-1980-help-page-footer-links-and-redirects.csv",
+	SOCIAL_MEDIA_FOOTER_LINKS_AND_REDIRECTS = "ENG-1981-footer-social-media-link-redirects.csv",
+	OFFICIAL_SITE_FOOTER_LINKS_AND_REDIRECTS = "ENG-1979-footer-official-site-link-redirects.csv",
+	TERMS_OF_SERVICE_TEXT = "ENG-2557-term-of-service-text.csv",
+	LOGIN_NOT_POSSIBLE = "ENG-294-login-not-possible.csv",
+	LOGIN_REJECTED = "ENG-294-login-rejected.csv",
+	LOGIN_SUCCESSFUL = "ENG-1070-login-successful.csv",
+	SOCIAL_MEDIAS = "ENG-2310-footer-social-media-icons.csv",
+	BANNED_SOCIAL_ACCOUNTS = "ENG-2480-static-page-banned-social-accounts.csv",
+	MAINTENANCE_SOCIAL_ACCOUNTS = "ENG-2480-static-page-maintenance-social-accounts.csv",
+	GEOBLOCKED_SOCIAL_ACCOUNTS = "ENG-2480-static-page-geoblocked-social-accounts.csv",
+}

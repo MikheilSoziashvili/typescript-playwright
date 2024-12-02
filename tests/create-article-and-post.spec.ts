@@ -13,12 +13,15 @@ import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { storageStateUserAPI } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
+import { CsvFilesName } from "../enums/csv-file-name";
 
-const CREATE_POST_ARTICLE_CSV = "ENG-1057-create-article-in-category.csv",
-	postRecords = parse_csv(DATASETS_DIR, CREATE_POST_ARTICLE_CSV) as {
-		category: BlogPostCategories;
-		category_endpoint: string;
-	}[];
+const postRecords = parse_csv(
+	DATASETS_DIR,
+	CsvFilesName.CREATE_POST_ARTICLE,
+) as {
+	category: BlogPostCategories;
+	category_endpoint: string;
+}[];
 
 test.describe("Create article and posts tests", () => {
 	let dummyCoverImageFilePath: string;

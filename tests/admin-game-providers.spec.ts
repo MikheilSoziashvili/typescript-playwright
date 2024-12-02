@@ -13,17 +13,19 @@ import { RegisterTestData } from "@dtos/test-data";
 import { ProviderDetails, VisibilityResult } from "@core/types/types";
 import { GameProvider } from "@enums/game-providers";
 import { Provider } from "@core/api/interfaces/provider";
+import { CsvFilesName } from "@enums/csv-file-name";
 
-const ADMIN_ENABLE_GAMES_CSV =
-		"ENG-2745-admin-enable-a-game-provider-only-for-beta-users.csv",
-	records = parse_csv(DATASETS_DIR, ADMIN_ENABLE_GAMES_CSV) as {
-		case: number;
-		provider: string;
-		featuresConfiguration: string;
-		providersConfiguration: string;
-		regular_user_result: VisibilityResult;
-		beta_user_result: VisibilityResult;
-	}[];
+const adminEnableGames = parse_csv(
+	DATASETS_DIR,
+	CsvFilesName.ADMIN_ENABLE_GAMES,
+) as {
+	case: number;
+	provider: string;
+	featuresConfiguration: string;
+	providersConfiguration: string;
+	regular_user_result: VisibilityResult;
+	beta_user_result: VisibilityResult;
+}[];
 
 // Map provider names to their corresponding feature enums
 const providerToFeatureMap: Record<string, Feature> = {
@@ -127,7 +129,7 @@ test.describe("Admin Enable Game Provider tests", () => {
 	});
 
 	// Iterate over each test case record parsed from the CSV file
-	records.forEach((record) => {
+	adminEnableGames.forEach((record) => {
 		// Determine the feature and provider states based on the test case configuration
 		const featureStates = configToStates[record.featuresConfiguration];
 		const providerStates = configToStates[record.providersConfiguration];

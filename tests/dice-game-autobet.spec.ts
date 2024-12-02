@@ -4,13 +4,15 @@ import { DiceAutobetTestData } from "@dtos/test-data";
 import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
 import { parse_csv } from "@core/utils/utils";
 import { DATASETS_DIR } from "@constants/file-paths";
-
-const DICE_AUTOBET_CSV = "ENG-1415-dice-autobet.csv";
+import { CsvFilesName } from "../enums/csv-file-name";
 
 test.describe("Dice game autobet", () => {
 	test.use(storageStateNewUserAPI());
 
-	for (const betData of parse_csv(DATASETS_DIR, DICE_AUTOBET_CSV) as {
+	for (const betData of parse_csv(
+		DATASETS_DIR,
+		CsvFilesName.DICE_AUTOBET,
+	) as {
 		betAmount: number;
 		rollOver: number;
 		numberOfBets: number;

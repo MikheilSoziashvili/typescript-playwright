@@ -3,53 +3,48 @@ import { storageStateNewUserAPI } from "../fixtures/auth-fixtures";
 import { parse_csv } from "@core/utils/utils";
 import { DATASETS_DIR } from "@constants/file-paths";
 import { environment_url } from "configuration";
+import { CsvFilesName } from "@enums/csv-file-name";
 
-const FOOTER_LINKS_AND_ENDPOINTS_CSV =
-		"ENG-1977-footer-links-and-endpoints.csv",
-	footerRecords = parse_csv(DATASETS_DIR, FOOTER_LINKS_AND_ENDPOINTS_CSV) as {
-		linkName: string;
-		expectedURL: string;
-	}[];
+const footerRecords = parse_csv(
+	DATASETS_DIR,
+	CsvFilesName.FOOTER_LINKS_AND_ENDPOINTS,
+) as {
+	linkName: string;
+	expectedURL: string;
+}[];
 
-const HELP_PAGE_FOOTER_LINKS_AND_REDIRECTS_CSV =
-		"ENG-1980-help-page-footer-links-and-redirects.csv",
-	helpPageRecords = parse_csv(
-		DATASETS_DIR,
-		HELP_PAGE_FOOTER_LINKS_AND_REDIRECTS_CSV,
-	) as {
-		infoPage: string;
-		tabSelection: string;
-	}[];
+const helpPageRecords = parse_csv(
+	DATASETS_DIR,
+	CsvFilesName.HELP_PAGE_FOOTER_LINKS_AND_REDIRECTS,
+) as {
+	infoPage: string;
+	tabSelection: string;
+}[];
 
-const SOCIAL_MEDIA_FOOTER_LINKS_AND_REDIRECTS_CSV =
-		"ENG-1981-footer-social-media-link-redirects.csv",
-	socialMediaRecords = parse_csv(
-		DATASETS_DIR,
-		SOCIAL_MEDIA_FOOTER_LINKS_AND_REDIRECTS_CSV,
-	) as {
-		socialMedia: string;
-		socialMediaUrlPart: string;
-		gamdomUrlPart: string;
-	}[];
+const socialMediaRecords = parse_csv(
+	DATASETS_DIR,
+	CsvFilesName.SOCIAL_MEDIA_FOOTER_LINKS_AND_REDIRECTS,
+) as {
+	socialMedia: string;
+	socialMediaUrlPart: string;
+	gamdomUrlPart: string;
+}[];
 
-const OFFICIAL_SITE_FOOTER_LINKS_AND_REDIRECTS_CSV =
-		"ENG-1979-footer-official-site-link-redirects.csv",
-	officialSiteRecords = parse_csv(
-		DATASETS_DIR,
-		OFFICIAL_SITE_FOOTER_LINKS_AND_REDIRECTS_CSV,
-	) as {
-		footerLink: string;
-		expectedUrl: string;
-	}[];
+const officialSiteRecords = parse_csv(
+	DATASETS_DIR,
+	CsvFilesName.OFFICIAL_SITE_FOOTER_LINKS_AND_REDIRECTS,
+) as {
+	footerLink: string;
+	expectedUrl: string;
+}[];
 
-const TERMS_OF_SERVICE_TEXT_CSV = "ENG-2557-term-of-service-text.csv",
-	termsOfServiceRecords = parse_csv(
-		DATASETS_DIR,
-		TERMS_OF_SERVICE_TEXT_CSV,
-	) as {
-		page: string;
-		missingText: string;
-	}[];
+const termsOfServiceRecords = parse_csv(
+	DATASETS_DIR,
+	CsvFilesName.TERMS_OF_SERVICE_TEXT,
+) as {
+	page: string;
+	missingText: string;
+}[];
 
 test.describe("Footer redirects tests", () => {
 	test.use(storageStateNewUserAPI());

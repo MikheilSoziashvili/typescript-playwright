@@ -1,15 +1,16 @@
 import { DATASETS_DIR } from "@constants/file-paths";
 import { SocialMediaRecord } from "@core/types/types";
 import { parse_csv } from "@core/utils/utils";
+import { CsvFilesName } from "@enums/csv-file-name";
 import { test } from "@fixtures/fixtures";
 import { BannedUserPage } from "@pages/banned-user/banned-user-page";
 import { GeoblockedPage } from "@pages/geoblocked/geoblocked-page";
 import { MaintenancePage } from "@pages/maintenance/maintenance-page";
 
 const SOCIAL_MEDIA_FILE_NAMES = {
-	banned: "ENG-2480-static-page-banned-social-accounts.csv",
-	maintenance: "ENG-2480-static-page-maintenance-social-accounts.csv",
-	geoblocked: "ENG-2480-static-page-geoblocked-social-accounts.csv",
+	banned: CsvFilesName.BANNED_SOCIAL_ACCOUNTS,
+	maintenance: CsvFilesName.MAINTENANCE_SOCIAL_ACCOUNTS,
+	geoblocked: CsvFilesName.GEOBLOCKED_SOCIAL_ACCOUNTS,
 } as const;
 
 const socialMediaRecordsList: SocialMediaRecord[][] = Object.values(

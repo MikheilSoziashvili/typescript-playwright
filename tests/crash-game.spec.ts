@@ -3,13 +3,16 @@ import { BetTestData } from "@dtos/test-data";
 import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
 import { getUserDetailsByTestTitle, parse_csv } from "@core/utils/utils";
 import { DATASETS_DIR } from "@constants/file-paths";
+import { CsvFilesName } from "../enums/csv-file-name";
 
-const CRASH_AUTO_CASHOUT_CSV = "ENG-1118-crash-auto-cashout.csv",
-	records = parse_csv(DATASETS_DIR, CRASH_AUTO_CASHOUT_CSV) as {
-		your_bet: string;
-		auto_cashout: string;
-		expected_results: string;
-	}[];
+const crashAutoCashout = parse_csv(
+	DATASETS_DIR,
+	CsvFilesName.CRASH_AUTO_CASHOUT,
+) as {
+	your_bet: string;
+	auto_cashout: string;
+	expected_results: string;
+}[];
 
 test.describe("Crash tests", () => {
 	test.use(storageStateNewUserAPI({ amount: 4500000 }));
@@ -69,7 +72,7 @@ test.describe("Crash tests", () => {
 			.accountBalanceIs(expectedBalance);
 	});
 
-	records.forEach((record) => {
+	crashAutoCashout.forEach((record) => {
 		test(`[ENG-1118] Crash - Auto Cashout with: [${record.your_bet}] value bets @originals`, async ({
 			crashGamePage,
 		}, testInfo) => {
