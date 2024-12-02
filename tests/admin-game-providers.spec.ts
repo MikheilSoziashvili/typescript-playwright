@@ -68,6 +68,21 @@ test.describe("Admin Enable Game Provider tests", () => {
 		initialProvidersState = await gamdomApi.getProviders({
 			Cookie: superAdminCookie,
 		});
+
+		// Temporary fix until we have control over imported Casino Providers upon redeploy so none have duplicated names
+		const hacksawHub = initialProvidersState.find(
+			(provider) => provider.producer_id === "Hacksaw Gaming",
+		) as Provider;
+
+		await gamdomApi.setProviderState(
+			hacksawHub.id,
+			"Hacksaw Gaming hub",
+			hacksawHub.disabled,
+			hacksawHub.beta_users_only,
+			hacksawHub.provider_id,
+			hacksawHub.imported_from,
+			{ Cookie: superAdminCookie },
+		);
 	});
 
 	/**
