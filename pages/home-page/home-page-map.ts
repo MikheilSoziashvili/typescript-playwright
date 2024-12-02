@@ -86,8 +86,8 @@ export class HomePageMap extends BaseMap {
 
 	public providerOptionInProvidersBelt(providerName: string): Locator {
 		const formattedProvider = providerName.replace(whiteSpacePattern, "-");
-		return this.providersBelt.locator(
-			`a[href="/providers/${formattedProvider}"]`,
+		return this.page.locator(
+			`//a[@href="/providers/${formattedProvider}"]/parent::div[contains(@class, "swiper")]`,
 		);
 	}
 }
