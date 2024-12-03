@@ -14,6 +14,10 @@ function getReporter(): ReporterDescription[] {
 		["html", { open: "never" }],
 	];
 
+	if (process.env.CI) {
+        reporters.unshift(["blob"]);
+    }
+
 	if (Configuration.createExecution) {
 		//Enable Jira Custom Reporter
 		reporters.push(
@@ -24,7 +28,7 @@ function getReporter(): ReporterDescription[] {
 
 	if (Configuration.slackReporter) {
 		//Enable Slack Reporter
-		reporters.push(["blob"], slackReporterConfig(Configuration.slack));
+		reporters.push(slackReporterConfig(Configuration.slack));
 	}
 
 	return reporters;
