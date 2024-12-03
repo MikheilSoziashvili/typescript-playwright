@@ -195,6 +195,12 @@ jobs:
             - name: Merge all blob reports into HTML and json
               if: always()
               run: npx playwright merge-reports --reporter json,html ./blob-report > e2e-results.json
+
+            - name: Merge all blob reports into HTML and JSON
+              if: always()
+              run: |
+                npx playwright merge-reports --reporter json,html ./blob-report --output-dir ./blob-report
+                echo "HTML report saved to ./blob-report/index.html and JSON to ./blob-report/e2e-results.json"
             
             - name: List all files in blob-report folder
               if: always()
@@ -228,7 +234,7 @@ jobs:
                   BRANCH_NAME: ${{ github.event_name == 'schedule' && 'master' || github.head_ref || github.ref_name }}
                   USER_NAME: ${{ github.event_name == 'schedule' && 'scheduled run' || github.actor }}
                   PULL_REQUEST_URL: ${{ github.event_name == 'schedule' && 'No PR created' || github.event.pull_request.html_url || 'No PR created' }}
-              run: npx playwright-slack-report --config="${GITHUB_WORKSPACE}/core/reporters/slack-reporter-cli/slack-message-config-cli.json" --json-results="${GITHUB_WORKSPACE}/e2e-results.json"
+              run: npx playwright-slack-report --config="${GITHUB_WORKSPACE}/core/reporters/slack-reporter-cli/slack-message-config-cli.json" --json-results="${GITHUB_WORKSPACE}/blob-report/e2e-results.json"
 
             - name: Create PR comment with report url
               if: ${{ always() && github.event_name == 'pull_request' }}
