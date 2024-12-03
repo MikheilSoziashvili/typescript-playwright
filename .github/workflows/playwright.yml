@@ -158,10 +158,10 @@ jobs:
 
                   if [ "$TAG" == "all" ]; then
                     echo "Running all tests ${CUSTOM_OPTIONS:+with custom options: $CUSTOM_OPTIONS}"
-                    yarn playwright test $CUSTOM_OPTIONS $SHARD_OPTION
+                    yarn playwright test $CUSTOM_OPTIONS $SHARD_OPTION --workers=10
                   else
                     echo "Running tests with tag: "@$TAG" ${CUSTOM_OPTIONS:+and custom options: $CUSTOM_OPTIONS}"
-                    yarn playwright test --grep "@$TAG" $CUSTOM_OPTIONS $SHARD_OPTION
+                    yarn playwright test --grep "@$TAG" $CUSTOM_OPTIONS $SHARD_OPTION --workers=10
                   fi
 
             - name: Upload blob report to GitHub Actions Artifacts
@@ -195,6 +195,12 @@ jobs:
             - name: Merge all blob reports into HTML and json
               if: always()
               run: npx playwright merge-reports --reporter json,html ./blob-report > e2e-results.json
+            
+            - name: List all files in blob-report folder
+              if: always()
+              run: |
+                  echo "Listing all files in ./blob-report folder:"
+                  ls -la ./blob-report
 
             - name: Upload Playwright report to S3 and generate report url
               if: always()
