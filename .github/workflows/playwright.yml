@@ -168,16 +168,21 @@ jobs:
               if: always()
               uses: actions/upload-artifact@v4
               with:
-                  name: "all-blob-reports-${{ github.run_id }}-${{ matrix.shard }}"
+                  name: "all-blob-reports-1-${{ github.run_id }}-${{ matrix.shard }}"
                   path: ./blob-report
                   retention-days: 7
 
-            - uses: actions/upload-artifact@v4
+            - name: Run Playwright tests second batch
+              if: ${{ github.event_name == 'schedule' }}
+              run: yarn playwright test --grep "@test-parallel"
+
+            - name: Upload blob report to GitHub Actions Artifacts 2
               if: always()
+              uses: actions/upload-artifact@v4
               with:
-                  name: playwright-report
-                  path: ./playwright-report
-                  retention-days: 30
+                  name: "all-blob-reports-2-${{ github.run_id }}-${{ matrix.shard }}"
+                  path: ./blob-report
+                  retention-days: 7
 
             - name: Download blob reports from GitHub Actions Artifacts
               if: always()
@@ -199,7 +204,7 @@ jobs:
                   S3_KEY_PREFIX="playwright-reports/${{ github.run_id }}-${TIMESTAMP}"
 
                   # Call the upload script with the required parameters
-                  ./scripts/upload_to_s3.sh playwright-report gamdom-prod-qa-reporting $S3_KEY_PREFIX
+                  ./scripts/upload_to_s3.sh blob-report gamdom-prod-qa-reporting $S3_KEY_PREFIX
 
             - name: Use REPORT_URL in another step
               run: |
