@@ -173,7 +173,7 @@ jobs:
                   retention-days: 7
 
             - name: Run Playwright tests second batch
-              if: ${{ github.event_name == 'schedule' }}
+              if: always()
               run: yarn playwright test --grep "@test-parallel"
 
             - name: Upload blob report to GitHub Actions Artifacts 2
