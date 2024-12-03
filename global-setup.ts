@@ -1,15 +1,15 @@
-import { chromium, expect } from "@playwright/test";
+import { GamdomApi } from "@api/gamdom-api";
 import { JiraApi } from "@api/jira-api";
 import { createExecutionBody } from "@api/jira-api-payloads";
-import { getCookieHeader, writeToJSONFile } from "@core/utils/utils";
-import { logger } from "@logger/logger";
-import * as Configuration from "configuration";
-import { JsonData } from "@core/interfaces";
-import { GamdomApi } from "@api/gamdom-api";
 import { SUPER_ADMIN_CREDENTIALS } from "@constants/credentials";
-import { Feature } from "@enums/feature";
-import { SecurityAdminPage } from "@pages/admin/security-admin/security-admin-page";
 import { SECURITY_ADMIN_PAGE_ENDPOINT } from "@constants/page-endpoints";
+import { JsonData } from "@core/interfaces";
+import { getCookieHeader, writeToJSONFile } from "@core/utils/utils";
+import { Feature } from "@enums/feature";
+import { logger } from "@logger/logger";
+import { SecurityAdminPage } from "@pages/admin/security-admin/security-admin-page";
+import { chromium, expect } from "@playwright/test";
+import * as Configuration from "configuration";
 import { environment_url } from "configuration";
 import * as fs from "fs";
 
@@ -102,8 +102,24 @@ async function globalSetup(): Promise<void> {
 	await enableHiloFeature(gamdomApi, cookie);
 	await updateWithdrawLimits(cookie);
 
-	if (Configuration.createExecution) {
+	if (
+		Configuration.createExecution &&
+		process.env.TEST_EXECUTION_ID == undefined
+	) {
 		await createJiraExecution();
+	} else {
+		logger.info(
+			`Use already existing Test Execution [${process.env.TEST_EXECUTION_ID}] in JIRA.`,
+		);
+		const issueKey = process.env.TEST_EXECUTION_ID as string;
+		const keystore = Configuration.keystore;
+		await writeToJSONFile({ issueKey: issueKey }, keystore);
+		await writeToJSONFile(
+			{
+				createExecution: Configuration.createExecution,
+			},
+			keystore,
+		);
 	}
 }
 
