@@ -21,6 +21,13 @@ on:
                 description: "Custom command-line options"
                 type: string
                 required: false
+            run_game_providers_tests:
+                description: "Run Game Providers tests"
+                type: choice
+                required: true
+                options:
+                    - Yes
+                    - No
 
     workflow_call:
         secrets:
@@ -112,6 +119,12 @@ jobs:
             SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
             TAG: ${{ inputs.tag == '' && 'smoke' || inputs.tag }}
             SHARD_OPTION: --shard ${{ matrix.shard }}/${{ strategy.job-total }}
+            GAME_PROVIDERS_TESTS_TAG: "@game-providers"
+            GREP_GAME_PROVIDERS_TESTS: --grep $GAME_PROVIDERS_TESTS_TAG
+            INVERT_GAME_PROVIDERS_TESTS: --grep-invert $GAME_PROVIDERS_TESTS_TAG
+            TAG: ${{ inputs.tag == '' && 'smoke' || inputs.tag }}
+            CUSTOM_OPTIONS: ${{ inputs.custom_options }}
+
 
         steps:
             - name: Validation For Environment URL
@@ -119,8 +132,10 @@ jobs:
                   echo "Validating that Environment URL is valid format (and does not end with slash)"
                   echo $ENVIRONMENT_URL | grep -E '^(http|https)://[a-zA-Z0-9./?=_-]*[^/]$'
 
+            - name: Checkout E2E tests repository
             - uses: actions/checkout@v4
 
+            - name: Setup Node modules
             - uses: actions/setup-node@v4
               with:
                   node-version: 20
@@ -153,15 +168,12 @@ jobs:
             - name: Run Playwright tests (Manual trigger)
               if: ${{ github.event_name != 'schedule' }}
               run: |
-                  TAG=${{ inputs.tag == '' && 'smoke' || inputs.tag }}
-                  CUSTOM_OPTIONS=${{ inputs.custom_options }}
-
                   if [ "$TAG" == "all" ]; then
                     echo "Running all tests ${CUSTOM_OPTIONS:+with custom options: $CUSTOM_OPTIONS}"
-                    yarn playwright test $CUSTOM_OPTIONS $SHARD_OPTION
+                    yarn playwright test $CUSTOM_OPTIONS $SHARD_OPTION $INVERT_GAME_PROVIDERS_TESTS
                   else
                     echo "Running tests with tag: "@$TAG" ${CUSTOM_OPTIONS:+and custom options: $CUSTOM_OPTIONS}"
-                    yarn playwright test --grep "@$TAG" $CUSTOM_OPTIONS $SHARD_OPTION
+                    yarn playwright test --grep "@$TAG" $CUSTOM_OPTIONS $SHARD_OPTION $INVERT_GAME_PROVIDERS_TESTS
                   fi
 
             - name: Upload blob report to GitHub Actions Artifacts
@@ -172,9 +184,11 @@ jobs:
                   path: ./blob-report
                   retention-days: 7
 
-            - name: Run Playwright tests second batch
-              if: always()
-              run: yarn playwright test --grep "@test-parallel"
+            - name: Run Playwright tests - Game Providers
+              if: ${{ github.event_name == 'schedule' || inputs.run_game_providers_tests == 'Yes' }}
+              run: |
+                echo "Running all tests related to Game Providers"
+                yarn playwright test $GREP_GAME_PROVIDERS_TESTS
 
             - name: Upload blob report to GitHub Actions Artifacts 2
               if: always()

@@ -6,7 +6,7 @@ import { HomePageBannerCarouselSlideTitle } from "@enums/homepage-banner-carouse
 
 test.describe("Homepage banner carousel", () => {
 	test.use(storageStateNewUserAPI());
-	test(`[ENG-1158] - Homepage banner carousel - dice game page @test-parallel`, async ({
+	test(`[ENG-1158] - Homepage banner carousel - dice game page`, async ({
 		homePage,
 		diceGamePage,
 	}) => {
