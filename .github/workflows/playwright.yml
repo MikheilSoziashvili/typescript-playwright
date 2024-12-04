@@ -133,10 +133,10 @@ jobs:
                   echo $ENVIRONMENT_URL | grep -E '^(http|https)://[a-zA-Z0-9./?=_-]*[^/]$'
 
             - name: Checkout E2E tests repository
-            - uses: actions/checkout@v4
+              uses: actions/checkout@v4
 
             - name: Setup Node modules
-            - uses: actions/setup-node@v4
+              uses: actions/setup-node@v4
               with:
                   node-version: 20
 
