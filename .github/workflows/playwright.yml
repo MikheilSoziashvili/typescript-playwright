@@ -90,7 +90,7 @@ concurrency:
 jobs:
     tests:
         timeout-minutes: 600
-        runs-on: ubuntu-latest
+        runs-on: self-hosted-dind
         strategy:
             fail-fast: false
             matrix:
@@ -136,6 +136,21 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: 20
+
+            - name: Install system dependencies
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y git curl unzip gh
+                  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+                  unzip awscliv2.zip
+                  sudo ./aws/install
+
+            - name: Install Node.js dependencies
+              run: |
+                  if ! command -v yarn &>/dev/null; then
+                    npm install -g yarn
+                  fi
+                  yarn install
 
             - name: Install dependencies
               run: yarn install --immutable --immutable-cache --check-cache
