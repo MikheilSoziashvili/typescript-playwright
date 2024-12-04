@@ -23,11 +23,13 @@ on:
                 required: false
             run_game_providers_tests:
                 description: "Run Game Providers tests"
-                type: choice
                 required: true
+                default: ""
+                type: choice
                 options:
                     - No
                     - Yes
+                    - ""
 
     workflow_call:
         secrets:
@@ -123,7 +125,6 @@ jobs:
             INVERT_GAME_PROVIDERS_TESTS: --grep-invert "@game-providers"
             CUSTOM_OPTIONS: ${{ inputs.custom_options }}
 
-
         steps:
             - name: Validation For Environment URL
               run: |
@@ -185,8 +186,8 @@ jobs:
             - name: Run Playwright tests - Game Providers
               if: ${{ github.event_name == 'schedule' || inputs.run_game_providers_tests == 'Yes' }}
               run: |
-                echo "Running all tests related to Game Providers"
-                yarn playwright test $GREP_GAME_PROVIDERS_TESTS
+                  echo "Running all tests related to Game Providers"
+                  yarn playwright test $GREP_GAME_PROVIDERS_TESTS
 
             - name: Upload blob report to GitHub Actions Artifacts 2
               if: always()
