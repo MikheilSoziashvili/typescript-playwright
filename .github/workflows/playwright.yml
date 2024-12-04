@@ -26,8 +26,8 @@ on:
                 type: choice
                 required: true
                 options:
-                    - Run Game Providers tests
-                    - Do Not Run Game Providers tests
+                    - No
+                    - Yes
 
     workflow_call:
         secrets:
@@ -182,7 +182,7 @@ jobs:
                   retention-days: 7
 
             - name: Run Playwright tests - Game Providers
-              if: ${{ github.event_name == 'schedule' || inputs.run_game_providers_tests == 'Run Game Providers tests' }}
+              if: ${{ github.event_name == 'schedule' || inputs.run_game_providers_tests == 'Yes' || inputs.run_game_providers_tests == 'true'}}
               run: |
                   echo "Running all tests related to Game Providers"
                   yarn playwright test $GREP_GAME_PROVIDERS_TESTS
