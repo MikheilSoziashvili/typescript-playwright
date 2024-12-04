@@ -29,7 +29,6 @@ on:
                 options:
                     - No
                     - Yes
-                    - ""
 
     workflow_call:
         secrets:
