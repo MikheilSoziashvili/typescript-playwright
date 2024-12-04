@@ -154,10 +154,10 @@ jobs:
               run: |
                   if [ "$TAG" == "all" ]; then
                     echo "Running all tests ${CUSTOM_OPTIONS:+with custom options: $CUSTOM_OPTIONS}"
-                    yarn playwright test $CUSTOM_OPTIONS $SHARD_OPTION $INVERT_GAME_PROVIDERS_TESTS
+                    yarn playwright test $CUSTOM_OPTIONS $INVERT_GAME_PROVIDERS_TESTS $SHARD_OPTION 
                   else
                     echo "Running tests with tag: "@$TAG" ${CUSTOM_OPTIONS:+and custom options: $CUSTOM_OPTIONS}"
-                    yarn playwright test --grep "@$TAG" $CUSTOM_OPTIONS $SHARD_OPTION $INVERT_GAME_PROVIDERS_TESTS
+                    yarn playwright test --grep "@$TAG" $CUSTOM_OPTIONS $INVERT_GAME_PROVIDERS_TESTS $SHARD_OPTION 
                   fi
 
             - name: Upload blob report to GitHub Actions Artifacts
