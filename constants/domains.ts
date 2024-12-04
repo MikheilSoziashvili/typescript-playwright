@@ -1,1 +1,1 @@
-export const MAILINATOR_DOMAIN = "gamdom.testinator.com";
+export const MAILINATOR_DOMAIN = "gmdteam.testinator.com";
