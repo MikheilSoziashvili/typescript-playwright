@@ -119,9 +119,8 @@ jobs:
             SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
             TAG: ${{ inputs.tag == '' && 'smoke' || inputs.tag }}
             SHARD_OPTION: --shard ${{ matrix.shard }}/${{ strategy.job-total }}
-            GAME_PROVIDERS_TESTS_TAG: "@game-providers"
-            GREP_GAME_PROVIDERS_TESTS: --grep '$GAME_PROVIDERS_TESTS_TAG'
-            INVERT_GAME_PROVIDERS_TESTS: --grep-invert '$GAME_PROVIDERS_TESTS_TAG'
+            GREP_GAME_PROVIDERS_TESTS: --grep "@game-providers"
+            INVERT_GAME_PROVIDERS_TESTS: --grep-invert "@game-providers"
             CUSTOM_OPTIONS: ${{ inputs.custom_options }}
 
 
@@ -169,10 +168,10 @@ jobs:
               run: |
                   if [ "$TAG" == "all" ]; then
                     echo "Running all tests ${CUSTOM_OPTIONS:+with custom options: $CUSTOM_OPTIONS}"
-                    yarn playwright test $CUSTOM_OPTIONS --grep-invert "@game-providers" $SHARD_OPTION 
+                    yarn playwright test $CUSTOM_OPTIONS $INVERT_GAME_PROVIDERS_TESTS $SHARD_OPTION 
                   else
                     echo "Running tests with tag: "@$TAG" ${CUSTOM_OPTIONS:+and custom options: $CUSTOM_OPTIONS}"
-                    yarn playwright test --grep "@$TAG" $CUSTOM_OPTIONS --grep-invert "@game-providers" $SHARD_OPTION 
+                    yarn playwright test --grep "@$TAG" $CUSTOM_OPTIONS $INVERT_GAME_PROVIDERS_TESTS $SHARD_OPTION 
                   fi
 
             - name: Upload blob report to GitHub Actions Artifacts
