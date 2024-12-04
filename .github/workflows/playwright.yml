@@ -167,7 +167,7 @@ jobs:
               run: |
                   if [ "$TAG" == "all" ]; then
                     echo "Running all tests ${CUSTOM_OPTIONS:+with custom options: $CUSTOM_OPTIONS}"
-                    yarn playwright test $CUSTOM_OPTIONS $INVERT_GAME_PROVIDERS_TESTS $SHARD_OPTION 
+                    yarn playwright test $CUSTOM_OPTIONS $INVERT_GAME_PROVIDERS_TESTS --workers=10 $SHARD_OPTION 
                   else
                     echo "Running tests with tag: "@$TAG" ${CUSTOM_OPTIONS:+and custom options: $CUSTOM_OPTIONS}"
                     yarn playwright test --grep "@$TAG" $CUSTOM_OPTIONS $INVERT_GAME_PROVIDERS_TESTS $SHARD_OPTION 
@@ -185,7 +185,7 @@ jobs:
               if: ${{ github.event_name == 'schedule' || inputs.run_game_providers_tests == 'Yes' || inputs.run_game_providers_tests == 'true'}}
               run: |
                   echo "Running all tests related to Game Providers"
-                  yarn playwright test $GREP_GAME_PROVIDERS_TESTS
+                  yarn playwright test $GREP_GAME_PROVIDERS_TESTS --workers=1
 
             - name: Upload blob report to GitHub Actions Artifacts 2
               if: always()

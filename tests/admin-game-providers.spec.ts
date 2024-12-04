@@ -51,7 +51,7 @@ const providerEnumMap: Record<string, ProviderDetails> = {
 
 let initialProvidersState: Provider[] = [];
 
-test.describe("Admin Enable Game Provider tests @game-providers", () => {
+test.describe.serial("Admin Enable Game Provider tests @game-providers", () => {
 	test.slow();
 
 	/**
