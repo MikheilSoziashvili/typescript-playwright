@@ -120,8 +120,8 @@ jobs:
             SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
             TAG: ${{ inputs.tag == '' && 'smoke' || inputs.tag }}
             SHARD_OPTION: --shard ${{ matrix.shard }}/${{ strategy.job-total }}
-            GREP_GAME_PROVIDERS_TESTS: --grep "@game-providers"
-            INVERT_GAME_PROVIDERS_TESTS: --grep-invert "@game-providers"
+            GREP_GAME_PROVIDERS_TESTS: --grep @game-providers
+            INVERT_GAME_PROVIDERS_TESTS: --grep-invert @game-providers
             CUSTOM_OPTIONS: ${{ inputs.custom_options }}
 
         steps:
