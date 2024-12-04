@@ -26,8 +26,8 @@ on:
                 type: choice
                 required: true
                 options:
-                    - Yes
                     - No
+                    - Yes
 
     workflow_call:
         secrets:
@@ -122,7 +122,6 @@ jobs:
             GAME_PROVIDERS_TESTS_TAG: "@game-providers"
             GREP_GAME_PROVIDERS_TESTS: --grep $GAME_PROVIDERS_TESTS_TAG
             INVERT_GAME_PROVIDERS_TESTS: --grep-invert $GAME_PROVIDERS_TESTS_TAG
-            TAG: ${{ inputs.tag == '' && 'smoke' || inputs.tag }}
             CUSTOM_OPTIONS: ${{ inputs.custom_options }}
 
 
