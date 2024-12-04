@@ -120,8 +120,8 @@ jobs:
             TAG: ${{ inputs.tag == '' && 'smoke' || inputs.tag }}
             SHARD_OPTION: --shard ${{ matrix.shard }}/${{ strategy.job-total }}
             GAME_PROVIDERS_TESTS_TAG: "@game-providers"
-            GREP_GAME_PROVIDERS_TESTS: --grep $GAME_PROVIDERS_TESTS_TAG
-            INVERT_GAME_PROVIDERS_TESTS: --grep-invert $GAME_PROVIDERS_TESTS_TAG
+            GREP_GAME_PROVIDERS_TESTS: --grep '$GAME_PROVIDERS_TESTS_TAG'
+            INVERT_GAME_PROVIDERS_TESTS: --grep-invert '$GAME_PROVIDERS_TESTS_TAG'
             CUSTOM_OPTIONS: ${{ inputs.custom_options }}
 
 
