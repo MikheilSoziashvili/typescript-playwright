@@ -166,7 +166,7 @@ jobs:
             - name: Run Playwright tests (Manual trigger)
               if: ${{ github.event_name != 'schedule' }}
               run: |
-                  TEST_COMMAND = $PLAYWRIGHT_TEST
+                  TEST_COMMAND=$PLAYWRIGHT_TEST
                   if [ "$TAG" == "all" ]; then
                     echo "Running all tests ${CUSTOM_OPTIONS:+with custom options: $CUSTOM_OPTIONS}"
                   else
