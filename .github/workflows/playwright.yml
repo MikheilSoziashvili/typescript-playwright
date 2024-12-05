@@ -26,8 +26,8 @@ on:
                 type: choice
                 required: true
                 options:
-                    - No
-                    - Yes
+                    - false
+                    - true
 
     workflow_call:
         secrets:
@@ -161,7 +161,7 @@ jobs:
 
             - name: Run Playwright tests (Cron trigger)
               if: ${{ github.event_name == 'schedule' }}
-              run: PLAYWRIGHT_TEST $SHARD_OPTION
+              run: $PLAYWRIGHT_TEST $SHARD_OPTION
 
             - name: Run Playwright tests (Manual trigger)
               if: ${{ github.event_name != 'schedule' }}
@@ -184,7 +184,7 @@ jobs:
                   retention-days: 7
 
             - name: Run Playwright tests - Game Providers
-              if: ${{ github.event_name == 'schedule' || inputs.run_game_providers_tests == 'Yes'}}
+              if: ${{ github.event_name == 'schedule' || inputs.run_game_providers_tests == 'true'}}
               run: |
                   echo "Running all tests related to Game Providers"
                   $PLAYWRIGHT_TEST $GREP_GAME_PROVIDERS_TESTS
