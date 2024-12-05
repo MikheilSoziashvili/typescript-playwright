@@ -171,7 +171,7 @@ jobs:
                     echo "Running all tests ${CUSTOM_OPTIONS:+with custom options: $CUSTOM_OPTIONS}"
                   else
                     echo "Running tests with tag: "@$TAG" ${CUSTOM_OPTIONS:+and custom options: $CUSTOM_OPTIONS}"
-                    TEST_COMMAND=$PLAYWRIGHT_TEST --grep "@$TAG"
+                    TEST_COMMAND="$TEST_COMMAND --grep @${TAG}"
                   fi
                   $TEST_COMMAND $CUSTOM_OPTIONS $INVERT_GAME_PROVIDERS_TESTS $SHARD_OPTION
 
