@@ -44,7 +44,12 @@ async function updateWithdrawLimits(cookie: string): Promise<void> {
 	const securityAdminPage = new SecurityAdminPage(page);
 	await page.goto(`${environment_url}${SECURITY_ADMIN_PAGE_ENDPOINT}`);
 
-	await securityAdminPage.updateUserWithdrawLimits(5000000, 5000000);
+	const WITHDRAW_LIMIT = 5000000;
+
+	await securityAdminPage.updateUserWithdrawLimits(
+		WITHDRAW_LIMIT,
+		WITHDRAW_LIMIT,
+	);
 	logger.info(`User withdraw limits have been updated to 5 million USD.`);
 
 	await browser.close();
@@ -64,30 +69,35 @@ async function createJiraExecution(): Promise<void> {
 	logger.info(`TEST_EXECUTION_ID set to: ${process.env.TEST_EXECUTION_ID}`);
 
 	if (!responseKey) {
-		logger.info(
-			`Response received from JIRA: ${JSON.stringify(responseBody)}`,
+		logger.error(
+			`Invalid response received from JIRA: ${JSON.stringify(
+				responseBody,
+			)}`,
 		);
 		throw new Error("Test execution key is empty or invalid.");
 	}
+
+	await writeExecutionToKeystore(responseKey);
 
 	logger.info(
 		`Test Execution with key ${
 			responseBody["key"] as string
 		} has been created!`,
 	);
-	const keystore = Configuration.keystore;
-	await writeToJSONFile({ issueKey: responseBody["key"] }, keystore);
-	await writeToJSONFile(
-		{
-			createExecution: Configuration.createExecution,
-		},
-		keystore,
-	);
 
 	const envFilePath = process.env.GITHUB_ENV;
 	if (envFilePath) {
 		fs.appendFileSync(envFilePath, `TEST_EXECUTION_ID=${responseKey}\n`);
 	}
+}
+
+async function writeExecutionToKeystore(issueKey: string): Promise<void> {
+	const keystore = Configuration.keystore;
+	await writeToJSONFile({ issueKey }, keystore);
+	await writeToJSONFile(
+		{ createExecution: Configuration.createExecution },
+		keystore,
+	);
 }
 
 async function globalSetup(): Promise<void> {
@@ -102,24 +112,16 @@ async function globalSetup(): Promise<void> {
 	await enableHiloFeature(gamdomApi, cookie);
 	await updateWithdrawLimits(cookie);
 
-	if (
-		Configuration.createExecution &&
-		process.env.TEST_EXECUTION_ID == undefined
-	) {
-		await createJiraExecution();
-	} else {
-		logger.info(
-			`Use already existing Test Execution [${process.env.TEST_EXECUTION_ID}] in JIRA.`,
-		);
-		const issueKey = process.env.TEST_EXECUTION_ID as string;
-		const keystore = Configuration.keystore;
-		await writeToJSONFile({ issueKey: issueKey }, keystore);
-		await writeToJSONFile(
-			{
-				createExecution: Configuration.createExecution,
-			},
-			keystore,
-		);
+	if (Configuration.createExecution) {
+		const existingKey = process.env.TEST_EXECUTION_ID;
+		if (existingKey) {
+			logger.info(
+				`Using existing Test Execution [${existingKey}] in JIRA`,
+			);
+			await writeExecutionToKeystore(existingKey);
+		} else {
+			await createJiraExecution();
+		}
 	}
 }
 

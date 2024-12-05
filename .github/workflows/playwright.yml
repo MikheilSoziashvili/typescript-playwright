@@ -122,6 +122,7 @@ jobs:
             GREP_GAME_PROVIDERS_TESTS: --grep @game-providers
             INVERT_GAME_PROVIDERS_TESTS: --grep-invert @game-providers
             CUSTOM_OPTIONS: ${{ inputs.custom_options }}
+            PLAYWRIGHT_TEST: yarn playwright test
 
         steps:
             - name: Validation For Environment URL
@@ -160,18 +161,19 @@ jobs:
 
             - name: Run Playwright tests (Cron trigger)
               if: ${{ github.event_name == 'schedule' }}
-              run: yarn playwright test $SHARD_OPTION
+              run: PLAYWRIGHT_TEST $SHARD_OPTION
 
             - name: Run Playwright tests (Manual trigger)
               if: ${{ github.event_name != 'schedule' }}
               run: |
+                  TEST_COMMAND = $PLAYWRIGHT_TEST
                   if [ "$TAG" == "all" ]; then
                     echo "Running all tests ${CUSTOM_OPTIONS:+with custom options: $CUSTOM_OPTIONS}"
-                    yarn playwright test $CUSTOM_OPTIONS $INVERT_GAME_PROVIDERS_TESTS $SHARD_OPTION 
                   else
                     echo "Running tests with tag: "@$TAG" ${CUSTOM_OPTIONS:+and custom options: $CUSTOM_OPTIONS}"
-                    yarn playwright test --grep "@$TAG" $CUSTOM_OPTIONS $INVERT_GAME_PROVIDERS_TESTS $SHARD_OPTION 
+                    TEST_COMMAND=$PLAYWRIGHT_TEST --grep "@$TAG"
                   fi
+                  $TEST_COMMAND $CUSTOM_OPTIONS $INVERT_GAME_PROVIDERS_TESTS $SHARD_OPTION
 
             - name: Upload blob report to GitHub Actions Artifacts
               if: always()
@@ -182,10 +184,10 @@ jobs:
                   retention-days: 7
 
             - name: Run Playwright tests - Game Providers
-              if: ${{ github.event_name == 'schedule' || inputs.run_game_providers_tests == 'Yes' || inputs.run_game_providers_tests == 'true'}}
+              if: ${{ github.event_name == 'schedule' || inputs.run_game_providers_tests == 'Yes'}}
               run: |
                   echo "Running all tests related to Game Providers"
-                  yarn playwright test $GREP_GAME_PROVIDERS_TESTS
+                  $PLAYWRIGHT_TEST $GREP_GAME_PROVIDERS_TESTS
 
             - name: Upload blob report to GitHub Actions Artifacts 2
               if: always()
