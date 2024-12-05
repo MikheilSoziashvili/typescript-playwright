@@ -15,7 +15,6 @@ test.describe("Email Verification Tests", () => {
 		profilePage,
 		gamdomApi,
 	}) => {
-		test.fixme(true, "Skipped until [ENG-2865] is handled");
 		// reduce code duplication from 19-23 to be in a beforeEach (eventually take them out in another describe)
 		const { email, inbox } = generateEmailAndInbox();
 		const userData = new RegisterTestData({ email });
@@ -39,7 +38,6 @@ test.describe("Email Verification Tests", () => {
 		profilePage,
 		gamdomApi,
 	}) => {
-		test.fixme(true, "Skipped until [ENG-2865] is handled");
 		const { email, inbox } = generateEmailAndInbox();
 		const userData = new RegisterTestData({ email });
 
@@ -66,7 +64,6 @@ test.describe("Email Verification Tests", () => {
 		profilePage,
 		gamdomApi,
 	}) => {
-		test.fixme(true, "Skipped until [ENG-2865] is handled");
 		const { email } = generateEmailAndInbox();
 		const newEmailData = generateEmailAndInbox();
 		const userData = new RegisterTestData({ email });
