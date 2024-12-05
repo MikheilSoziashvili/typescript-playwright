@@ -25,6 +25,7 @@ on:
                 description: "Run Game Providers tests"
                 type: choice
                 required: true
+                default: false
                 options:
                     - false
                     - true
@@ -182,6 +183,14 @@ jobs:
                   name: "all-blob-reports-1-${{ github.run_id }}-${{ matrix.shard }}"
                   path: ./blob-report
                   retention-days: 7
+            
+            - name: Game Providers Tests Execution Info
+              run: |
+                  if [ "${{ github.event_name }}" == "schedule" ] || [ "${{ inputs.run_game_providers_tests }}" == "true" ]; then
+                    echo "Game Providers tests WILL be executed."
+                  else
+                    echo "Game Providers tests WILL NOT be executed."
+                  fi
 
             - name: Run Playwright tests - Game Providers
               if: ${{ github.event_name == 'schedule' || inputs.run_game_providers_tests == 'true'}}
