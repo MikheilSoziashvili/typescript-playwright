@@ -29,6 +29,17 @@ on:
                 options:
                     - false
                     - true
+            workers:
+                description: "Set number of parallel workers"
+                type: choice
+                required: true
+                default: 5
+                options:
+                    - 1
+                    - 2
+                    - 3
+                    - 4
+                    - 5
 
     workflow_call:
         secrets:
@@ -124,6 +135,7 @@ jobs:
             INVERT_GAME_PROVIDERS_TESTS: --grep-invert @game-providers
             CUSTOM_OPTIONS: ${{ inputs.custom_options }}
             PLAYWRIGHT_TEST: yarn playwright test
+            WORKERS: ${{ github.event_name == 'schedule' && '--workers=5' || '--workers=' + inputs.workers }}
 
         steps:
             - name: Validation For Environment URL
@@ -162,7 +174,7 @@ jobs:
 
             - name: Run Playwright tests (Cron trigger)
               if: ${{ github.event_name == 'schedule' }}
-              run: $PLAYWRIGHT_TEST $SHARD_OPTION
+              run: $PLAYWRIGHT_TEST $WORKERS $SHARD_OPTION
 
             - name: Run Playwright tests (Manual trigger)
               if: ${{ github.event_name != 'schedule' }}
@@ -174,7 +186,7 @@ jobs:
                     echo "Running tests with tag: "@$TAG" ${CUSTOM_OPTIONS:+and custom options: $CUSTOM_OPTIONS}"
                     TEST_COMMAND="$TEST_COMMAND --grep @${TAG}"
                   fi
-                  $TEST_COMMAND $CUSTOM_OPTIONS $INVERT_GAME_PROVIDERS_TESTS --workers=7 $SHARD_OPTION
+                  $TEST_COMMAND $CUSTOM_OPTIONS $INVERT_GAME_PROVIDERS_TESTS $WORKERS $SHARD_OPTION
 
             - name: Upload blob report to GitHub Actions Artifacts
               if: always()
@@ -183,7 +195,7 @@ jobs:
                   name: "all-blob-reports-1-${{ github.run_id }}-${{ matrix.shard }}"
                   path: ./blob-report
                   retention-days: 7
-            
+
             - name: Game Providers Tests Execution Info
               run: |
                   if [ "${{ github.event_name }}" == "schedule" ] || [ "${{ inputs.run_game_providers_tests }}" == "true" ]; then
