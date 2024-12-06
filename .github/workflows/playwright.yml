@@ -135,7 +135,7 @@ jobs:
             INVERT_GAME_PROVIDERS_TESTS: --grep-invert @game-providers
             CUSTOM_OPTIONS: ${{ inputs.custom_options }}
             PLAYWRIGHT_TEST: yarn playwright test
-            WORKERS: ${{ github.event_name == 'schedule' && '--workers=5' || '--workers=' + inputs.workers }}
+            WORKERS: ${{ github.event_name == 'schedule' && '--workers=5' || '--workers=${{ inputs.workers }}'' }}
 
         steps:
             - name: Validation For Environment URL
