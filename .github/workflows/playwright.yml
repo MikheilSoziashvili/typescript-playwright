@@ -33,7 +33,7 @@ on:
                 description: "Set number of parallel workers"
                 type: choice
                 required: true
-                default: 5
+                default: 3
                 options:
                     - 1
                     - 2
@@ -135,7 +135,8 @@ jobs:
             INVERT_GAME_PROVIDERS_TESTS: --grep-invert @game-providers
             CUSTOM_OPTIONS: ${{ inputs.custom_options }}
             PLAYWRIGHT_TEST: yarn playwright test
-            WORKERS: ${{ github.event_name == 'schedule' && '--workers=5' || format('--workers={0}', inputs.workers) }}
+            # Set default 3 default workers for scheduled runs and custom workers based on input.workers for more runs
+            WORKERS: ${{ github.event_name == 'schedule' && '--workers=3' || format('--workers={0}', inputs.workers) }}
 
         steps:
             - name: Validation For Environment URL
