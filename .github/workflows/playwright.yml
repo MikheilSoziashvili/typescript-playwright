@@ -93,7 +93,7 @@ on:
                 description: AWS Default region
 
     schedule:
-        - cron: "0 2 * * *"
+        - cron: "0 3 * * *"
 
 concurrency:
     group: playwright-e2e-${{ github.ref }}
