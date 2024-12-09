@@ -39,6 +39,8 @@ jobs:
                   NODE_OPTIONS: "--max_old_space_size=8192"
     tests-run:
         uses: ./.github/workflows/playwright.yml
+        with:
+            workers: 3
         secrets:
             JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
             JIRA_USERNAME: ${{ secrets.JIRA_USERNAME }}
