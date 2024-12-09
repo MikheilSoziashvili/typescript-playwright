@@ -136,7 +136,7 @@ jobs:
             CUSTOM_OPTIONS: ${{ inputs.custom_options }}
             PLAYWRIGHT_TEST: yarn playwright test
             # Set default 3 default workers for scheduled runs and custom workers based on input.workers for more runs
-            WORKERS: ${{ github.event_name == 'schedule' && '--workers=3' || format('--workers={0}', inputs.workers) }}
+            WORKERS: ${{ github.event_name == 'schedule' && '--workers=3' || format('--workers={0}', inputs.workers) || '3'}}
 
         steps:
             - name: Validation For Environment URL
