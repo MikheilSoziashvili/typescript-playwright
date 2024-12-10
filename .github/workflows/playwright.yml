@@ -29,6 +29,17 @@ on:
                 options:
                     - false
                     - true
+            workers:
+                description: "Set number of parallel workers"
+                type: choice
+                required: true
+                default: 3
+                options:
+                    - 1
+                    - 2
+                    - 3
+                    - 4
+                    - 5
 
     workflow_call:
         secrets:
@@ -124,6 +135,8 @@ jobs:
             INVERT_GAME_PROVIDERS_TESTS: --grep-invert @game-providers
             CUSTOM_OPTIONS: ${{ inputs.custom_options }}
             PLAYWRIGHT_TEST: yarn playwright test
+            # Set default 3 default workers for scheduled runs and custom workers based on input.workers for more runs
+            WORKERS: ${{ github.event_name == 'schedule' && '--workers=3' || format('--workers={0}', inputs.workers || '3')}}
 
         steps:
             - name: Validation For Environment URL
@@ -162,7 +175,7 @@ jobs:
 
             - name: Run Playwright tests (Cron trigger)
               if: ${{ github.event_name == 'schedule' }}
-              run: $PLAYWRIGHT_TEST $SHARD_OPTION
+              run: $PLAYWRIGHT_TEST $WORKERS $SHARD_OPTION
 
             - name: Run Playwright tests (Manual trigger)
               if: ${{ github.event_name != 'schedule' }}
@@ -174,7 +187,7 @@ jobs:
                     echo "Running tests with tag: "@$TAG" ${CUSTOM_OPTIONS:+and custom options: $CUSTOM_OPTIONS}"
                     TEST_COMMAND="$TEST_COMMAND --grep @${TAG}"
                   fi
-                  $TEST_COMMAND $CUSTOM_OPTIONS $INVERT_GAME_PROVIDERS_TESTS $SHARD_OPTION
+                  $TEST_COMMAND $CUSTOM_OPTIONS $INVERT_GAME_PROVIDERS_TESTS $WORKERS $SHARD_OPTION
 
             - name: Upload blob report to GitHub Actions Artifacts
               if: always()
@@ -184,19 +197,14 @@ jobs:
                   path: ./blob-report
                   retention-days: 7
 
-            - name: Game Providers Tests Execution Info
+            - name: Game Providers Tests
               run: |
                   if [ "${{ github.event_name }}" == "schedule" ] || [ "${{ inputs.run_game_providers_tests }}" == "true" ]; then
-                    echo "Game Providers tests WILL be executed."
+                    echo "Running all tests related to Game Providers"
+                    $PLAYWRIGHT_TEST $GREP_GAME_PROVIDERS_TESTS
                   else
                     echo "Game Providers tests WILL NOT be executed."
                   fi
-
-            - name: Run Playwright tests - Game Providers
-              if: ${{ github.event_name == 'schedule' || inputs.run_game_providers_tests == 'true'}}
-              run: |
-                  echo "Running all tests related to Game Providers"
-                  $PLAYWRIGHT_TEST $GREP_GAME_PROVIDERS_TESTS
 
             - name: Upload blob report to GitHub Actions Artifacts 2
               if: always()
