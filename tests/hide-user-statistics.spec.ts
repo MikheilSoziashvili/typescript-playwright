@@ -1,11 +1,12 @@
-import { test } from "@fixtures/fixtures";
 import { ChatMessageOptions } from "@components/chat/chat-map";
+import { USER_2_CREDENTIALS } from "@constants/credentials";
 import {
 	generateRandomString,
 	setAuthenticationCookies,
 } from "@core/utils/utils";
-import { USER_1_CREDENTIALS, USER_2_CREDENTIALS } from "@constants/credentials";
+import { RegisterTestData } from "@dtos/test-data";
 import { ChatFooterPlaceholder } from "@enums/chat-footer-palceholders";
+import { test } from "@fixtures/fixtures";
 
 const message = generateRandomString({ prefix: "automation_msg_" });
 const messageInfo: ChatMessageOptions = {
@@ -44,10 +45,8 @@ test.describe("User statistics tests", () => {
 		page,
 	}) => {
 		test.slow();
-		const cookie = await gamdomApi.authenticateWithExistingUser(
-			USER_1_CREDENTIALS.username,
-			USER_1_CREDENTIALS.password,
-		);
+		const newUser = new RegisterTestData();
+		const cookie = await gamdomApi.authenticateWithNewUser(newUser);
 		await setAuthenticationCookies(page, cookie);
 		await homePage.navigate();
 		await homePage.authenticatedHeader.expandChatIfNotVisible();

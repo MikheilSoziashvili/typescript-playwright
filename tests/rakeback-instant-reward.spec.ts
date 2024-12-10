@@ -1,20 +1,21 @@
-import { test } from "@fixtures/fixtures";
-import { DiceBetTestData } from "@dtos/test-data";
-import { storageStateUserAPI } from "@fixtures/auth-fixtures";
-import { ToastTitle } from "@enums/toast-titles";
-import { RatebackHouseEdge } from "@enums/rateback-house-edge-options";
 import { buildClaimedAmountSubTitle } from "@core/helpers/asserter-helpers/text-asserters";
-import { SUPER_ADMIN_CREDENTIALS } from "@constants/credentials";
+import { DiceBetTestData } from "@dtos/test-data";
+import { RatebackHouseEdge } from "@enums/rateback-house-edge-options";
+import { ToastTitle } from "@enums/toast-titles";
+import { test } from "@fixtures/fixtures";
 
 test.describe("Rakeback instant reward tests", () => {
-	test.use(storageStateUserAPI(SUPER_ADMIN_CREDENTIALS.username));
-	test("[ENG-266] Rakeback instant reward", async ({
+	test("Obsolete functionality and test - Rakeback instant reward", async ({
 		homePage,
 		diceGamePage,
 		rewardsPage,
 		rewardsExplorePage,
 		toast,
 	}) => {
+		test.fixme(
+			true,
+			"Rakeback instant reward is obsolete functionality. Replace with new test when the new feature is available on e2e-staging environment",
+		);
 		await rewardsPage.navigate();
 		await rewardsPage
 			.steps()
