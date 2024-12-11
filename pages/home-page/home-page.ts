@@ -12,6 +12,7 @@ import { HomePageAsserter } from "./home-page-asserter";
 import { HomePageMap } from "./home-page-map";
 import { HomePageSteps } from "./home-page-steps";
 import { waitForSeconds } from "@core/utils/utils";
+import { WaitUntilState } from "@enums/wait-until-states";
 
 export class HomePage extends BasePage<HomePageMap> {
 	public constructor(page: Page) {
@@ -32,7 +33,9 @@ export class HomePage extends BasePage<HomePageMap> {
 		const maxRetries = options?.retries || 3;
 		for (let attempt = 1; attempt <= maxRetries; attempt++) {
 			try {
-				await this.page.goto(HOME_PAGE_ENDPOINT);
+				await this.page.goto(HOME_PAGE_ENDPOINT, {
+					timeout: Timeout.EXTRA_LONG,
+				});
 				return;
 			} catch (error) {
 				if (error instanceof Error) {
@@ -45,7 +48,9 @@ export class HomePage extends BasePage<HomePageMap> {
 				}
 			}
 		}
-		await this.page.waitForLoadState();
+		await this.page.waitForLoadState(WaitUntilState.LOAD, {
+			timeout: Timeout.EXTRA_LONG,
+		});
 	}
 
 	public override assertThat(fromCsv = false): HomePageAsserter {

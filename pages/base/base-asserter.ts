@@ -5,6 +5,7 @@ import { BasePage } from "./base-page";
 import { waitUntil } from "@core/utils/utils";
 import { step } from "decorators/step";
 import { Timeout } from "@enums/timeout";
+import { WaitUntilState } from "@enums/wait-until-states";
 export class BaseAsserter<T extends BasePage | BaseModal | BaseComponent> {
 	readonly gamdomPage: T;
 
@@ -53,7 +54,9 @@ export class BaseAsserter<T extends BasePage | BaseModal | BaseComponent> {
 			options?.screenshotName ?? `Visual-Tests-${testTitle}.png`;
 
 		// eslint-disable-next-line playwright/no-networkidle
-		await this.gamdomPage.page.waitForLoadState("networkidle");
+		await this.gamdomPage.page.waitForLoadState(
+			WaitUntilState.NETWORK_IDLE,
+		);
 
 		const defaultOptions = {
 			timeout: Timeout.MEDIUM,
@@ -107,7 +110,7 @@ export class BaseAsserter<T extends BasePage | BaseModal | BaseComponent> {
 
 		const pages = this.gamdomPage.page.context().pages();
 		const newTab = pages[pages.length - 1];
-		await newTab.waitForLoadState("domcontentloaded");
+		await newTab.waitForLoadState(WaitUntilState.DOM_CONTENT_LOADED);
 
 		const newTabUrl = newTab.url();
 		urlParts.forEach((part) => {

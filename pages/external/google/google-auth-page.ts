@@ -6,6 +6,7 @@ import * as Configuration from "configuration";
 import { GoogleAuthPageAsserter } from "./google-auth-asserter";
 import { GooglePageMap } from "./google-page-map";
 import { logger } from "@logger/logger";
+import { WaitUntilState } from "@enums/wait-until-states";
 
 export class GoogleAuthPage extends BasePage<GooglePageMap> {
 	public constructor(page: Page) {
@@ -77,7 +78,7 @@ export class GoogleAuthPage extends BasePage<GooglePageMap> {
 				newTwoFactorAuthenticationCode,
 			);
 			await this.map.gTwoFactoryNextBtn.click();
-			await this.page.waitForLoadState("domcontentloaded");
+			await this.page.waitForLoadState(WaitUntilState.DOM_CONTENT_LOADED);
 
 			logger.info("Successfully entered the second code!");
 		}

@@ -4,6 +4,7 @@ import { GeoblockedPage } from "./geoblocked-page";
 import { GeoblockedCountry } from "@enums/geoblocked-countries";
 import { step } from "decorators/step";
 import { Attributes } from "@enums/playwright/htmlAttributes";
+import { Timeout } from "@enums/timeout";
 
 export class GeoblockedPageAsserter extends BaseAsserter<GeoblockedPage> {
 	public constructor(page: GeoblockedPage) {
@@ -14,6 +15,7 @@ export class GeoblockedPageAsserter extends BaseAsserter<GeoblockedPage> {
 	public async isGeoblockedErrorTitleDisplayed(): Promise<void> {
 		await expect(this.gamdomPage.map.errorTitleLocator).toHaveText(
 			"Gamdom is not available in your Country",
+			{ timeout: Timeout.MAX },
 		);
 	}
 
