@@ -79,4 +79,8 @@ export class WriterAdminPageMap extends BaseMap {
 			`//div[contains(@class,'AdminBlogPanel')]//button[text()='Confirm']`,
 		);
 	}
+
+	public get titleInformationHeader(): Locator {
+		return this.page.locator('h4.title:text-is("Title information")');
+	}
 }

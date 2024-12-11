@@ -1,0 +1,35 @@
+adminTab,adminTabLocator,adminTabEndpoint
+UserInfoAdmin,user-info-locator,/admin/UserInfoAdmin
+VipManagerAdmin,vip-manager-locator,/admin/VipManagerAdmin
+FreeSpinsAdmin,free-spins-locator,/admin/FreeSpinsAdmin
+MarketingAdmin,marketing-locator,/admin/MarketingAdmin
+FeaturesAdmin,features-locator,/admin/FeaturesAdmin
+TestingAdmin,testing-locator,/admin/TestingAdmin
+KOTHAdmin,koth-locator,/admin/KOTHAdmin
+BotsAdmin,bots-locator,/admin/BotsAdmin
+WriterAdmin,writer-locator,/admin/WriterAdmin
+CryptoAdmin,crypto-locator,/admin/CryptoAdmin
+JackpotAdmin,jackpot-locator,/admin/JackpotAdmin
+KYCAdmin,kyc-locator,/admin/KYCAdmin
+ActionsAdmin,actions-locator,/admin/ActionsAdmin
+PriceWatchAdmin,price-watch-locator,/admin/PriceWatchAdmin
+SystemAdmin,system-locator,/admin/SystemAdmin
+ReduceSystemAdmin,reduce-system-locator,/admin/ReduceSystemAdmin
+SecurityAdmin,security-locator,/admin/SecurityAdmin
+IPBlockAdmin,ip-block-locator,/admin/IPBlockAdmin
+PaymentsAdmin,payments-locator,/admin/PaymentsAdmin
+NewUsersAdmin,new-users-locator,/admin/NewUsersAdmin
+ModTipAdmin,mod-tip-locator,/admin/ModTipAdmin
+CommunityConnectAdmin,community-connect-locator,/admin/CommunityConnectAdmin
+"Casino Providers",casino-providers-locator,/admin/Casino%20Providers
+"Casino Games",casino-games-locator,"/admin/Casino%20Games"
+OurGamesAdmin,our-games-locator,/admin/OurGamesAdmin
+BattlesAdmin,battles-locator,/admin/BattlesAdmin
+CdnUploadAdmin,cdn-upload-locator,/admin/CdnUploadAdmin
+EventsManaging,events-managing-locator,/admin/EventsManaging
+DynamicDomainsAdmin,dynamic-domains-locator,/admin/DynamicDomainsAdmin
+EVRewardsSystemAdmin,ev-rewards-system-locator,/admin/EVRewardsSystemAdmin
+OpenTrades,open-trades-locator,/admin/OpenTrades/unsent
+PlainSqlAdmin,plain-sql-locator,/admin/PlainSqlAdmin
+StatsAdmin,stats-locator,/admin/StatsAdmin
+Affiliates,affiliates-locator,/admin/Affiliates/search

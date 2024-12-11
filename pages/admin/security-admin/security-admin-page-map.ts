@@ -6,6 +6,10 @@ export class SecurityAdminPageMap extends BaseMap {
 		super(page);
 	}
 
+	public get withdrawSettingsHeader(): Locator {
+		return this.page.locator('h3:text-is("Withdraw settings")');
+	}
+
 	public get saveButton(): Locator {
 		return this.page.locator('button:has-text("Save")');
 	}
