@@ -32,6 +32,25 @@ async function enableHiloFeature(
 	logger.info("HILO has been successfully enabled.");
 }
 
+async function enableEvBasedRewards(
+	gamdomApi: GamdomApi,
+	cookie: string,
+): Promise<void> {
+	logger.info("Enabling Rewards...");
+
+	const featureResponse = await gamdomApi.setFeatureState(
+		Feature.EV_BASED_REWARDS,
+		{ regular: true, beta: true },
+		{ Cookie: cookie },
+	);
+
+	featureResponse.forEach((response) => {
+		expect(response.status()).toBe(200);
+	});
+
+	logger.info("Rewards have been successfully enabled.");
+}
+
 async function updateWithdrawLimits(cookie: string): Promise<void> {
 	const browser = await chromium.launch({ slowMo: 300 });
 	const context = await browser.newContext({
@@ -110,6 +129,7 @@ async function globalSetup(): Promise<void> {
 	);
 
 	await enableHiloFeature(gamdomApi, cookie);
+	await enableEvBasedRewards(gamdomApi, cookie);
 	await updateWithdrawLimits(cookie);
 
 	if (Configuration.createExecution) {

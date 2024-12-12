@@ -29,9 +29,9 @@ const adminEnableGames = parse_csv(
 
 // Map provider names to their corresponding feature enums
 const providerToFeatureMap: Record<string, Feature> = {
-	Hub88: Feature.Hub88Integration,
-	Hacksaw: Feature.HacksawIntegration,
-	Pragmatic: Feature.PragmaticPlayIntegration,
+	Hub88: Feature.HUB88_INTEGRATION,
+	Hacksaw: Feature.HACKSAW_INTEGRATION,
+	Pragmatic: Feature.PRAGMATIC_PLAY_INTEGRATION,
 };
 
 // Map configuration strings to their state representations for regular and beta users
@@ -114,9 +114,9 @@ test.describe.serial("Admin Enable Game Provider tests @game-providers", () => {
 
 		// Set the specified features to enabled for both regular and beta users
 		const featuresToEnable: Feature[] = [
-			Feature.Hub88Integration,
-			Feature.HacksawIntegration,
-			Feature.PragmaticPlayIntegration,
+			Feature.HUB88_INTEGRATION,
+			Feature.HACKSAW_INTEGRATION,
+			Feature.PRAGMATIC_PLAY_INTEGRATION,
 		];
 
 		for (const feature of featuresToEnable) {
