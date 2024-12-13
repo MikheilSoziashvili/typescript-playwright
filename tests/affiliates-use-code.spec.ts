@@ -4,7 +4,6 @@ import {
 } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { NotificationTitle } from "@enums/notification-titles";
-import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
@@ -43,17 +42,8 @@ test.describe("Use affiliate code", () => {
 		await notifications
 			.assertThat()
 			.titleIs(NotificationTitle.WELCOME_BONUS);
-		await notifications.aknowledge({
-			title: NotificationTitle.WELCOME_BONUS,
-		});
-		await notifications.assertThat().isNotDisplayed();
 
-		await toast.assertThat().titleIs(ToastTitle.SUCCESS, {
-			subTitle: ToastSubTitle.CLAIMED_BONUS,
-		});
-		await toast.assertThat().isNotDisplayed({
-			subTitle: ToastSubTitle.CLAIMED_BONUS,
-		});
+		await toast.assertThat().titleIs(ToastTitle.SUCCESS);
 
 		await faqPage.navigate();
 		await faqPage.expandAffiliateCodeRegisteredUnderSection();

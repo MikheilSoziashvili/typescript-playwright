@@ -6,8 +6,22 @@ export class RewardsPageMap extends BaseMap {
 		super(page);
 	}
 
+	public get rewardsBlock(): Locator {
+		return this.page.locator(
+			`//p[text()='Rewards']//ancestor::div[@data-testid="rewardsContainer"]`,
+		);
+	}
+
+	public get royaltyUpBlock(): Locator {
+		return this.page.locator(
+			`//p[text()='Royalty Up']//ancestor::div[contains(@class,'SectionBody')]`,
+		);
+	}
+
 	public get specialOffersList(): Locator {
-		return this.page.getByTestId("rewardsSpecialOffersList");
+		return this.page.locator(
+			`//p[text()='Special Rewards']//ancestor::div[contains(@class,"SpecialRewards-styled__SectionBody")]//*[@class="swiper-wrapper"]`,
+		);
 	}
 
 	public get rewardsOffersList(): Locator {
@@ -15,12 +29,14 @@ export class RewardsPageMap extends BaseMap {
 	}
 
 	public get rewardsSpecialOfferCard(): Locator {
-		return this.specialOffersList.getByTestId("rewardsSpecialOfferCard");
+		return this.specialOffersList.locator(
+			`//*[contains(@class,"ItemWrapper")]`,
+		);
 	}
 
 	public get specialOfferActivateNowButton(): Locator {
-		return this.rewardsSpecialOfferCard.getByTestId(
-			"rewardsSpecialOfferActivateNowButton",
+		return this.rewardsSpecialOfferCard.locator(
+			`//button[normalize-space()="Activate"]`,
 		);
 	}
 

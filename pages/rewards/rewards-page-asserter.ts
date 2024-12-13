@@ -12,13 +12,18 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 
 	async pageElementsAreVisible(): Promise<void> {
 		await this.checkElementsAreVisible(
-			[this.gamdomPage.map.specialOffersList],
+			[
+				this.gamdomPage.map.rewardsBlock,
+				this.gamdomPage.map.royaltyUpBlock,
+			],
 			Timeout.MAX,
 		);
 	}
 
-	async isSpecialOfferClaimedBadgeVisible(): Promise<void> {
-		await expect(this.gamdomPage.map.specialOfferClaimedBadge).toBeVisible({
+	async isSpecialOfferActivateButtonDisabled(): Promise<void> {
+		await expect(
+			this.gamdomPage.map.specialOfferActivateNowButton,
+		).toBeDisabled({
 			timeout: Timeout.EXTRA_LONG, // To be removed when issues with e2e environment are resolved
 		});
 	}
