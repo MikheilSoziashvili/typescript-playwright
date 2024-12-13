@@ -33,7 +33,7 @@ export class ChatMap extends BaseMap {
 		} else if (options?.username && options.message) {
 			return messageLocator
 				.filter({
-					hasText: `${options.username}:`,
+					hasText: `${options.username}`,
 				})
 				.filter({
 					hasText: `${options.message}`,
@@ -52,7 +52,7 @@ export class ChatMap extends BaseMap {
 
 	public messageUserAvatar(options?: ChatMessageOptions): Locator {
 		return this.messageLocator(options).locator(
-			"span[class*= UserPofile]:has(img)",
+			"span[class*= UserPofile]",
 		);
 	}
 

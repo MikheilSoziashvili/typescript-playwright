@@ -31,9 +31,9 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 				await this.component.map.waitForAttributeToHaveValue(
 					this.component.map.chatTextBox,
 					Attributes.CONTENTEDITABLE,
-					BooleanValueString.TRUE
-					,
+					BooleanValueString.TRUE,
 				);
+				await this.component.map.chatTextBox.clear();
 				await this.component.map.chatTextBox.fill(message);
 				await this.component.map.sendMessageButton.click();
 				break;
@@ -59,7 +59,7 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 	}
 
 	public async openTipUserModal(options?: ChatMessageOptions): Promise<void> {
-		const messageUserLevel = this.component.map.messageUserLevel(options);
+		const messageUserLevel = this.component.map.messageUserAvatar(options);
 		await this.component.map.waitForVisibility({
 			locator: messageUserLevel,
 		});
@@ -82,7 +82,7 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 	public async openUserProfileModal(
 		options?: ChatMessageOptions,
 	): Promise<void> {
-		const messageUserLevel = this.component.map.messageUserLevel(options);
+		const messageUserLevel = this.component.map.messageUserAvatar(options);
 		await this.component.map.waitForVisibility({
 			locator: messageUserLevel,
 		});

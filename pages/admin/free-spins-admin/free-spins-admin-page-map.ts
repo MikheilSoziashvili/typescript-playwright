@@ -41,12 +41,12 @@ export class FreeSpinsAdminPageMap extends BaseMap {
 
 	public get findGameToGiveFreeSpinsCardUserIdGetButton(): Locator {
 		return this.findGameToGiveFreeSpinsCard.locator(
-			'button[class*="ButtonLegacy-styled__ButtonLegacyStyled"].dngtw.btn:has-text("GET")',
+			'//button[normalize-space()="GET"]',
 		);
 	}
 
 	public get gamesList(): Locator {
-		return this.page.locator("div.base-Popper-root ul[role=listbox]");
+		return this.page.locator("div.MuiPopper-root ul[role=listbox]");
 	}
 
 	public getGameLocatorByTitle(title: string): Locator {
