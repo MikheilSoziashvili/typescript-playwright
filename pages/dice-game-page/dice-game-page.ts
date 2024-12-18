@@ -46,6 +46,12 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 	}
 
 	@step()
+	public async placeBet(betAmount: number, multiplier = 1.1): Promise<void> {
+		await this.fillInManualBetData(betAmount, multiplier);
+		await this.rollDice();
+	}
+
+	@step()
 	public async switchToAutobetSection(): Promise<void> {
 		await this.map.diceAutobetTabButton.click();
 		await this.map.waitForVisibility({

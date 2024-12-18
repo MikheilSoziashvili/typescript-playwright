@@ -22,7 +22,7 @@ export class HiloGamePageSteps extends BasePageStep<HiloGamePage> {
 
 		while (!isWin) {
 			await this.gamdomPage.fillInBetAmount(testData.betAmount);
-			await this.gamdomPage.placeBet(testData.betOption);
+			await this.gamdomPage.clickBetOption(testData.betOption);
 			await this.gamdomPage
 				.assertThat()
 				.gameMessageIs(HiloGameStatusMessage.DRAWING);

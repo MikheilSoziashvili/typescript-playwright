@@ -24,7 +24,9 @@ export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 			  ).toContainText(parseToFloat(value))
 			: await expect(
 					this.gamdomPage.map.betProfit(betSection),
-			  ).toContainText(parseToFloat(value), { timeout: Timeout.EXTRA_LONG });
+			  ).toContainText(parseToFloat(value), {
+					timeout: Timeout.EXTRA_LONG,
+			  });
 	}
 
 	public async betButtonsEnabled(): Promise<void> {

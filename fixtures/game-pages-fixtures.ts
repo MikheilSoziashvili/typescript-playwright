@@ -3,8 +3,10 @@ import { CrashGamePage } from "@pages/crash-game-page/crash-game-page";
 import { DiceGamePage } from "@pages/dice-game-page/dice-game-page";
 import { RouletteGamePage } from "@pages/roulette-game-page/roulette-game-page";
 import { HiloGamePage } from "@pages/hilo-game-page/hilo-game-page";
+import { OriginalsPage } from "@pages/originals/originals-page";
 
 export type GamePages = {
+	originalsPage: OriginalsPage;
 	crashGamePage: CrashGamePage;
 	diceGamePage: DiceGamePage;
 	rouletteGamePage: RouletteGamePage;
@@ -23,5 +25,19 @@ export const gamePagesFixtures = base.extend<GamePages>({
 	},
 	rouletteGamePage: async ({ page }, use) => {
 		await use(new RouletteGamePage(page));
+	},
+	originalsPage: async (
+		{ page, diceGamePage, crashGamePage, hiloGamePage, rouletteGamePage },
+		use,
+	) => {
+		await use(
+			new OriginalsPage(
+				page,
+				diceGamePage,
+				crashGamePage,
+				hiloGamePage,
+				rouletteGamePage,
+			),
+		);
 	},
 });

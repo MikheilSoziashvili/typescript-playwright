@@ -1,4 +1,4 @@
-import { Page } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
 import { BasePage } from "@base/base-page";
 import { HiloGamePageMap } from "./hilo-game-page.map";
 import { HiloGamePageAsserter } from "./hilo-game-page-asserter";
@@ -8,6 +8,8 @@ import { HiloBetOption } from "@enums/hilo-bet-options";
 import { HiloGamePageSteps } from "./hilo-game-page-steps";
 import { VisibilityState } from "@enums/playwright/visibility-states";
 import { BasePageNavigationParametersType } from "@core/types/types";
+import { Timeout } from "@enums/timeout";
+import { step } from "decorators/step";
 
 export class HiloGamePage extends BasePage<HiloGamePageMap> {
 	public constructor(page: Page) {
@@ -34,11 +36,13 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 		return new HiloGamePageSteps(this);
 	}
 
+	@step()
 	public async fillInBetAmount(betAmount: number): Promise<void> {
 		await this.map.yourBetField.fill(`${betAmount}`);
 	}
 
-	public async placeBet(betOption: HiloBetOption): Promise<void> {
+	@step()
+	public async clickBetOption(betOption: HiloBetOption): Promise<void> {
 		switch (betOption) {
 			case HiloBetOption.RED:
 				await this.map.redButton.click();
@@ -51,6 +55,26 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 		}
 	}
 
+	@step()
+	public async waitBettingWindowAvailable(
+		timeout = Timeout.EXTRA_MAX / 2,
+	): Promise<void> {
+		await expect(this.map.spinningCountdownTimer).toBeVisible({
+			timeout: timeout,
+		});
+	}
+
+	@step()
+	public async placeBet(
+		betAmount: number,
+		betOption: HiloBetOption,
+	): Promise<void> {
+		await this.waitBettingWindowAvailable();
+		await this.fillInBetAmount(betAmount);
+		await this.clickBetOption(betOption);
+	}
+
+	@step()
 	public async waitRoundResult(): Promise<void> {
 		await this.map.waitFor({
 			locator: this.map.gamRoundResultLocator,
@@ -61,6 +85,7 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 		});
 	}
 
+	@step()
 	public async getRoundResult(): Promise<string> {
 		await this.waitRoundResult();
 

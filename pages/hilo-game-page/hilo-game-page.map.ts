@@ -35,6 +35,12 @@ export class HiloGamePageMap extends BaseMap {
 		return this.gameArea.getByTestId("hiloGamestate");
 	}
 
+	public get spinningCountdownTimer(): Locator {
+		return this.gameStateLocator
+			.locator("div", { hasText: "Spinning in" })
+			.nth(1);
+	}
+
 	public get gameStatusLocator(): Locator {
 		return this.gameStateLocator.locator("div[class*='Status-']");
 	}

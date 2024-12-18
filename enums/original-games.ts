@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-duplicate-enum-values */
 export enum OriginalGame {
-	Crash = "crash",
-	Dice = "dice",
-	Roulette = "roulette",
+	Crash = "Crash",
+	Dice = "Dice",
+	Roulette = "Roulette",
+	HiLo = "Hi-Lo",
 }
 
 export enum RouletteNumberColor {
