@@ -26,13 +26,19 @@ export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 	}
 
 	public async playerBetBoxesDisplayed(
-		bets: {
-			betAmount: string;
-		}[],
+		bets: { betAmount: string }[],
 	): Promise<void> {
-		const betBoxes: Locator[] = await this.gamdomPage.map.betBoxes;
-		expect(betBoxes).toHaveLength(bets.length);
-		for (const bet of bets as { betAmount: string }[]) {
+		let betBoxes: Locator[] = [];
+
+		await expect(async () => {
+			betBoxes = await this.gamdomPage.map.betBoxes;
+			expect(betBoxes).toHaveLength(bets.length);
+		}).toPass({
+			timeout: Timeout.SHORT,
+			intervals: [300],
+		});
+
+		for (const bet of bets) {
 			for (const betBox of betBoxes) {
 				await expect(
 					this.gamdomPage.map.betBoxBetAmount(betBox),
