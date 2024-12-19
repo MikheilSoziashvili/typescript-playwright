@@ -1,13 +1,13 @@
-import { Page, expect } from "@playwright/test";
 import { BasePage } from "@base/base-page";
-import { CrashGamePageMap } from "./crash-game-page-map";
-import { CrashGamePageAsserter } from "./crash-game-page-asserter";
-import { CrashGamePageSteps } from "./crash-game-page-steps";
-import { logger } from "@logger/logger";
 import { CRASH_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
-import { Timeout } from "@enums/timeout";
 import { BetIncreaseCondition } from "@enums/crash-autobet-section";
+import { Timeout } from "@enums/timeout";
+import { logger } from "@logger/logger";
+import { Page, expect } from "@playwright/test";
+import { CrashGamePageAsserter } from "./crash-game-page-asserter";
+import { CrashGamePageMap } from "./crash-game-page-map";
+import { CrashGamePageSteps } from "./crash-game-page-steps";
 
 export class CrashGamePage extends BasePage<CrashGamePageMap> {
 	public constructor(page: Page) {

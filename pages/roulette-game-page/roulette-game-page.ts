@@ -135,7 +135,9 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 		betAmount: number,
 		betColor: RouletteBetColor,
 	): Promise<void> {
+		await this.waitBettingWindowAvailable();
 		await this.insertBet(betAmount);
+		await this.assertThat().betButtonsEnabled();
 		await this.betOnColor(betColor);
 	}
 

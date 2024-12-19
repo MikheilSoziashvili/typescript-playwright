@@ -1,15 +1,20 @@
-import { Page } from "@playwright/test";
 import { BasePage } from "@base/base-page";
-import { RewardsPageMap } from "./rewards-page-map";
-import { RewardsPageAsserter } from "./rewards-page-asserter";
-import { WelcomeBonusModal } from "@modals/promo-code-modal/welcome-bonus-modal";
-import { RewardsPageSteps } from "./rewards-page-steps";
 import { REWARDS_PAGE_ENDPOINT } from "@constants/page-endpoints";
-import { RatebackHouseEdge } from "@enums/rateback-house-edge-options";
+import { RewardsRoyaltyUpRanksValues } from "@constants/rewards-royalty-up-rank-values";
 import { SPECIAL_OFFER_RATEBACK } from "@constants/specialoffers";
-import { calculateRakeback } from "@formulas/rakeback";
-import { Timeout } from "@enums/timeout";
+import { buildClaimedAmountSubTitle } from "@core/helpers/asserter-helpers/text-asserters";
 import { BasePageNavigationParametersType } from "@core/types/types";
+import { RatebackHouseEdge } from "@enums/rateback-house-edge-options";
+import { RewardsRoyaltyUpRanks } from "@enums/rewards-royalty-up-ranks";
+import { Timeout } from "@enums/timeout";
+import { calculateRakeback } from "@formulas/rakeback";
+import { WelcomeBonusModal } from "@modals/promo-code-modal/welcome-bonus-modal";
+import { Toast } from "@pages/components/toast/toast";
+import { Page, expect } from "@playwright/test";
+import { step } from "decorators/step";
+import { RewardsPageAsserter } from "./rewards-page-asserter";
+import { RewardsPageMap } from "./rewards-page-map";
+import { RewardsPageSteps } from "./rewards-page-steps";
 
 export class RewardsPage extends BasePage<RewardsPageMap> {
 	public constructor(page: Page) {
@@ -76,5 +81,49 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 		}
 
 		return ratebackAmount;
+	}
+	@step()
+	async claimRoyaltyUpReward(
+		claimRewards: RewardsRoyaltyUpRanks[],
+	): Promise<void> {
+		for (let i = 0; i < claimRewards.length; i++) {
+			const reward = claimRewards[i];
+
+			const rewardKey = reward
+				.replace(" ", "_")
+				.toUpperCase() as keyof typeof RewardsRoyaltyUpRanksValues;
+
+			let expectedRewardValue = RewardsRoyaltyUpRanksValues[rewardKey];
+
+			// Add UNRANKED value only for the first reward in the loop
+			if (i === 0) {
+				expectedRewardValue += RewardsRoyaltyUpRanksValues.UNRANKED;
+			}
+
+			await this.navigateCarouselElementByIndex(
+				this.map.royaltyUpItemsIndex,
+				this.map.royaltyUpSliderPreviousButton,
+				this.map.royaltyUpSliderNextButton,
+				1,
+			);
+
+			const accountBalanceInitial =
+				await this.authenticatedHeader.getAccountBalance();
+
+			await this.map.royaltyUpItemClaimButton(reward).click();
+
+			const toast = new Toast(this.page);
+			await toast.assertThat().isDisplayed();
+			await toast
+				.assertThat()
+				.subTitleIs(buildClaimedAmountSubTitle(expectedRewardValue));
+			await expect(
+				this.map.royaltyUpItemClaimButton(reward),
+			).toBeDisabled();
+
+			await this.authenticatedHeader
+				.assertThat()
+				.accountBalanceIs(accountBalanceInitial + expectedRewardValue);
+		}
 	}
 }

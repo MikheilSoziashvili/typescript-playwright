@@ -1,11 +1,18 @@
-import { Page } from "@playwright/test";
-import { BaseMap } from "./base-map";
 import { AuthenticatedHeader } from "@components/header/authenticated/authenticated-header";
 import { UnauthenticatedHeader } from "@components/header/unauthenticated/unauthenticated-header";
-import { buildEndpoint, conformLinkWithProtocol } from "@core/utils/utils";
 import { BasePageNavigationParametersType } from "@core/types/types";
+import {
+	buildEndpoint,
+	conformLinkWithProtocol,
+	isElementVisible,
+	waitUntil,
+} from "@core/utils/utils";
 import { Protocol } from "@enums/api/protocols";
+import { Directions } from "@enums/directions";
+import { Timeout } from "@enums/timeout";
 import { WaitUntilState } from "@enums/wait-until-states";
+import { Locator, Page } from "@playwright/test";
+import { BaseMap } from "./base-map";
 
 export abstract class BasePage<T = BaseMap> {
 	readonly page: Page;
@@ -59,5 +66,57 @@ export abstract class BasePage<T = BaseMap> {
 		waitUntil: WaitUntilState = WaitUntilState.DOM_CONTENT_LOADED,
 	): Promise<void> {
 		await this.page.reload({ waitUntil });
+	}
+
+	async navigateCarouselElementByIndex(
+		carouselItem: Locator,
+		leftArrow: Locator,
+		rightArrow: Locator,
+		index: number,
+		timeoutMs = Timeout.MAX,
+	): Promise<void> {
+		const itemCount = await carouselItem.count();
+
+		if (index < 0 || index >= itemCount) {
+			throw new Error(
+				`Index out of bounds. Valid range: 0 to ${itemCount - 1}`,
+			);
+		}
+
+		await waitUntil(
+			async () => {
+				if (await isElementVisible(carouselItem.nth(index))) {
+					return true;
+				}
+
+				let currentIndex = -1;
+				for (let i = 0; i < itemCount; i++) {
+					if (await isElementVisible(carouselItem.nth(i))) {
+						currentIndex = i;
+						break;
+					}
+				}
+
+				if (currentIndex === -1) {
+					throw new Error("No visible item found in the carousel.");
+				}
+
+				const direction =
+					index > currentIndex ? Directions.RIGHT : Directions.LEFT;
+
+				if (direction === Directions.RIGHT) {
+					await rightArrow.click();
+				} else {
+					await leftArrow.click();
+				}
+
+				return false;
+			},
+			{
+				errorMessage: `Timeout exceeded (${timeoutMs}ms). Element at index ${index} was not visible.`,
+				timeoutSeconds: timeoutMs / 1000,
+				intervalSeconds: 0.1,
+			},
+		);
 	}
 }

@@ -39,7 +39,7 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		await this.gamdomPage.map.continueVerificationButton.click();
 	}
 
-	public async verifyEmailAndCheckProfile(
+	public async verifyEmail(
 		mailinatorApi: MailinatorApi,
 		domain: string,
 		inbox: string,
@@ -67,6 +67,26 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		const verificationLink = emailLinks.links[0];
 
 		await page.goto(verificationLink);
+	}
+
+	public async verifyEmailAndCheckProfile(
+		mailinatorApi: MailinatorApi,
+		domain: string,
+		inbox: string,
+		page: Page,
+		{ messageIndex = 1 }: { messageIndex?: number } = {},
+		timeout = Timeout.LONG,
+		interval = Timeout.EXTRA_SHORT,
+	): Promise<void> {
+		await this.verifyEmail(
+			mailinatorApi,
+			domain,
+			inbox,
+			page,
+			{ messageIndex },
+			timeout,
+			interval,
+		);
 
 		// Assert account is already verified
 		await this.gamdomPage.navigate();

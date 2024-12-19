@@ -10,7 +10,7 @@ test.describe("Roulette tests", () => {
 	test("[ENG-264] Place a single bet on Roulette and try to win @smoke @originals", async ({
 		rouletteGamePage,
 	}, testInfo) => {
-		test.slow(); // it takes some more time until a 'red' number is in
+		test.slow(); // it takes some more time until a 'black' number is in
 		const newUserDetails = getUserDetailsByTestTitle(
 			testInfo.title,
 			testInfo.workerIndex,
@@ -22,7 +22,7 @@ test.describe("Roulette tests", () => {
 		);
 		await rouletteGamePage.navigate();
 
-		let isWin: RouletteNumberColor = RouletteNumberColor.RED;
+		let isWin: RouletteNumberColor = RouletteNumberColor.BLACK;
 		let rouletteResultNumber: string;
 
 		let accountBalanceLeft: number;
@@ -35,29 +35,29 @@ test.describe("Roulette tests", () => {
 				.assertThat()
 				.potentialBenefitValueIs(
 					betTestData.betAmount,
-					RouletteBetColor.RED,
+					RouletteBetColor.BLACK,
 				);
 
-			await rouletteGamePage.betOnColor(RouletteBetColor.RED);
+			await rouletteGamePage.betOnColor(RouletteBetColor.BLACK);
 
 			await rouletteGamePage
 				.assertThat()
 				.potentialBenefitValueIs(
 					betTestData.betAmount,
-					RouletteBetColor.RED,
+					RouletteBetColor.BLACK,
 					false,
 				);
 			await rouletteGamePage
 				.assertThat()
 				.playerBetDisplayed(
-					RouletteBetColor.RED,
+					RouletteBetColor.BLACK,
 					betTestData.username,
 					betTestData.betAmount,
 				);
 
 			await rouletteGamePage
 				.assertThat()
-				.totalBetsAre(RouletteBetColor.RED, 1, 1);
+				.totalBetsAre(RouletteBetColor.BLACK, 1, 1);
 
 			accountBalanceLeft =
 				await rouletteGamePage.authenticatedHeader.getAccountBalance();
@@ -67,15 +67,18 @@ test.describe("Roulette tests", () => {
 			isWin = await rouletteGamePage.getRoundResultColor();
 
 			logger.info(`Roulette result: ${RouletteNumberColor[isWin]}`);
-		} while (isWin !== RouletteNumberColor.RED);
+		} while (isWin !== RouletteNumberColor.BLACK);
 
 		await rouletteGamePage
 			.assertThat()
-			.profitAmountDisplayed(RouletteBetColor.RED, betTestData.betAmount);
+			.profitAmountDisplayed(
+				RouletteBetColor.BLACK,
+				betTestData.betAmount,
+			);
 
 		const expectedProfit = rouletteGamePage.calculateProfit(
 			betTestData.betAmount,
-			RouletteBetColor.RED,
+			RouletteBetColor.BLACK,
 		);
 		await rouletteGamePage.authenticatedHeader
 			.assertThat()

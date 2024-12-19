@@ -47,3 +47,11 @@ export function buildCreateAffiliateCodeSubTitle(
 ): string {
 	return `You have successfully created code ${affiliateCode}!`;
 }
+
+export function buildRewardsRoyaltyUpRankSubTitle(
+	royaltyUpRank: string,
+): string {
+	const subTitle = `Congratulations! You ranked up to ${royaltyUpRank} rank. Your royalty reward awaits you on the rewards page.`;
+
+	return subTitle;
+}

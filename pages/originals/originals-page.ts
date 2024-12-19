@@ -149,4 +149,38 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 			}
 		}
 	}
+
+	@step()
+	public async waitForGameRoundFinish(game: OriginalGames): Promise<void> {
+		const gamePage = this.gamesMap[game];
+
+		switch (game) {
+			case OriginalGame.Crash: {
+				await (gamePage as CrashGamePage).waitPreviousBetRoundFinish();
+				await (gamePage as CrashGamePage).waitBettingWindowAvailable();
+				break;
+			}
+			case OriginalGame.Dice: {
+				await (gamePage as DiceGamePage)
+					.assertThat()
+					.diceResultIsDisplayed();
+				break;
+			}
+			case OriginalGame.Roulette: {
+				await (
+					gamePage as RouletteGamePage
+				).waitBettingWindowAvailable();
+				await (gamePage as RouletteGamePage).waitRoundResultNumber();
+				break;
+			}
+			case OriginalGame.HiLo: {
+				await (gamePage as HiloGamePage).waitBettingWindowAvailable();
+				await (gamePage as HiloGamePage).waitRoundResult();
+				break;
+			}
+			default: {
+				throw new Error(`Unhandled game type: ${String(game)}`);
+			}
+		}
+	}
 }

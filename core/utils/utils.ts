@@ -20,7 +20,7 @@ import fs from "fs";
 import xml2js from "xml2js";
 import { MAILINATOR_DOMAIN } from "@constants/domains";
 import { Protocol } from "@enums/api/protocols";
-import { Page } from "playwright";
+import { Locator, Page } from "playwright";
 import { environment_url } from "configuration";
 import { AUTH_PATH } from "@constants/file-paths";
 import { PNG, PNGOptions } from "pngjs";
@@ -424,6 +424,11 @@ export async function createDummyPngImage(): Promise<string> {
 				reject(err);
 			});
 	});
+}
+
+export async function isElementVisible(locator: Locator): Promise<boolean> {
+	const box = await locator.boundingBox();
+	return box !== null && box.x > 300 && box.height > 0;
 }
 
 export async function deleteFilesWithFilePaths(
