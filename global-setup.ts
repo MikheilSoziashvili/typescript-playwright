@@ -63,7 +63,7 @@ async function updateWithdrawLimits(cookie: string): Promise<void> {
 	const securityAdminPage = new SecurityAdminPage(page);
 	await page.goto(`${environment_url}${SECURITY_ADMIN_PAGE_ENDPOINT}`);
 
-	const WITHDRAW_LIMIT = 5000000;
+	const WITHDRAW_LIMIT = 500000000;
 
 	await securityAdminPage.updateUserWithdrawLimits(
 		WITHDRAW_LIMIT,
