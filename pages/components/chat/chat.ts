@@ -4,6 +4,7 @@ import { ChatMap } from "./chat-map";
 import { ChatAsserter } from "./chat-asserter";
 import { ChatSteps } from "./chat-steps";
 import { VisibilityState } from "../../../enums/playwright/visibility-states";
+import { Timeout } from "@enums/timeout";
 
 export class Chat extends BaseComponent<ChatMap> {
 	constructor(page: Page) {
@@ -22,6 +23,7 @@ export class Chat extends BaseComponent<ChatMap> {
 		await this.map.waitFor({
 			locator: this.map.chatLocator,
 			state: VisibilityState.ATTACHED,
+			timeout: Timeout.MEDIUM,
 		});
 		await this.map.waitForVisibility({
 			locator: this.map.chatLocator,

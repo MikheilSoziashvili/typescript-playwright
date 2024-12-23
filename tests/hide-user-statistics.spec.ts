@@ -52,7 +52,6 @@ test.describe("User statistics tests", () => {
 		await homePage.authenticatedHeader.expandChatIfNotVisible();
 
 		await chat.assertThat().isDisplayed();
-		await homePage.refresh();
 		await chat
 			.assertThat()
 			.isPlaceholderVisible(ChatFooterPlaceholder.START_TYPING);
