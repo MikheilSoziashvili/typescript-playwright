@@ -52,13 +52,15 @@ export class RewardsPageMap extends BaseMap {
 	}
 
 	public get instantRakebackCard(): Locator {
-		return this.rewardsOffersList.getByTestId("rewardsCard-instant");
+		return this.rewardsOffersList.getByTestId(
+			"rewardsCard-instant_rakeback",
+		);
 	}
 
 	public get instantRakebackClaimRewardButton(): Locator {
-		return this.instantRakebackCard
-			.getByTestId("rewardsCardBottom-instant")
-			.locator('button:has(span:text-is("Claim reward"))');
+		return this.instantRakebackCard.locator(
+			'button:has(span:text-is("Claim Reward"))',
+		);
 	}
 
 	public get instantRakebackLockedButton(): Locator {
@@ -67,9 +69,9 @@ export class RewardsPageMap extends BaseMap {
 			.locator('button:has-text("Locked")');
 	}
 
-	public get instatRakebackAmount(): Locator {
+	public get instantRakebackAmount(): Locator {
 		return this.instantRakebackCard
-			.getByTestId("rewardsAmount-instant")
+			.getByTestId("rewardsAmount-instant_rakeback")
 			.locator("span.currency-amount");
 	}
 

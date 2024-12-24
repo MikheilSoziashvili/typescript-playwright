@@ -44,7 +44,7 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 			Dice: this.diceGamePage,
 			Crash: this.crashGamePage,
 			Roulette: this.rouletteGamePage,
-			"Hi-Lo": this.hiloGamePage,
+			HiLo: this.hiloGamePage,
 		};
 	}
 

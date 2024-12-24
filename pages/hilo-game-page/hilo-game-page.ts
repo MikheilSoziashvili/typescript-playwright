@@ -77,8 +77,9 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 	@step()
 	public async waitRoundResult(): Promise<void> {
 		await this.map.waitFor({
-			locator: this.map.gamRoundResultLocator,
-			state: VisibilityState.ATTACHED,
+			locator: this.map.spinningCountdownTimer,
+			state: VisibilityState.HIDDEN,
+			timeout: Timeout.MEDIUM,
 		});
 		await this.map.waitForVisibility({
 			locator: this.map.gamRoundResultLocator,

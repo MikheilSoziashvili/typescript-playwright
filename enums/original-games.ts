@@ -3,7 +3,7 @@ export enum OriginalGame {
 	Crash = "Crash",
 	Dice = "Dice",
 	Roulette = "Roulette",
-	HiLo = "Hi-Lo",
+	HiLo = "HiLo",
 }
 
 export enum RouletteNumberColor {

@@ -1,4 +1,3 @@
-import { ZERO_RAKEBACK_AMOUNT } from "@constants/specialoffers";
 import { BasePageStep } from "@pages/base/base-page-step";
 import { RewardsPage } from "./rewards-page";
 
@@ -7,50 +6,20 @@ export class RewardsPageSteps extends BasePageStep<RewardsPage> {
 		super(gamdomPage);
 	}
 
+	public async claimInstantRewardAndVerifyBalance(
+		expectedBalance: number,
+	): Promise<void> {
+		await this.gamdomPage.clickInstantRakebackClaimRewardButton();
+		await this.gamdomPage.authenticatedHeader
+			.assertThat()
+			.accountBalanceIs(expectedBalance);
+	}
+
 	public async claimCode(code: string): Promise<void> {
 		await this.gamdomPage.clickActivateNowButton();
 		await this.gamdomPage.welcomeBonusModal.claimCode(code);
 		await this.gamdomPage
 			.assertThat()
 			.isSpecialOfferActivateButtonDisabled();
-	}
-
-	public async claimInstantRakebackReward(options: {
-		expectedAmount?: number;
-		currency?: string;
-		claimAnyReward?: boolean;
-	}): Promise<void> {
-		await this.gamdomPage.map.waitForVisibility({
-			locator: this.gamdomPage.map.instantRakebackCard,
-		});
-		if (options.expectedAmount) {
-			await this.gamdomPage
-				.assertThat()
-				.isInstantRakebackAmountVisible(
-					options.expectedAmount,
-					options.currency,
-				);
-			await this.gamdomPage.clickInstantRakebackClaimRewardButton();
-		}
-
-		if (
-			options.claimAnyReward === true &&
-			!(await this.gamdomPage.map.instantRakebackLockedButton.isVisible())
-		) {
-			await this.gamdomPage.clickInstantRakebackClaimRewardButton();
-		}
-
-		await this.gamdomPage
-			.assertThat()
-			.isInstantRakebackLockedButtonVisibile();
-		await this.gamdomPage
-			.assertThat()
-			.isInstantRakebackLockedButtonDisabled();
-		await this.gamdomPage
-			.assertThat()
-			.isInstantRakebackAmountVisible(
-				ZERO_RAKEBACK_AMOUNT,
-				options.currency,
-			);
 	}
 }

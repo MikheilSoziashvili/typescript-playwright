@@ -7,6 +7,8 @@ import { Timeout } from "@enums/timeout";
 import { RewardsRoyaltyUpRanks } from "@enums/rewards-royalty-up-ranks";
 import { step } from "decorators/step";
 import { RewardsRoyaltyUpRanksValues } from "../../constants/rewards-royalty-up-rank-values";
+import { OriginalGame } from "@enums/original-games";
+import { calculateInstantReward } from "@formulas/instant-reward";
 
 export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 	public constructor(page: RewardsPage) {
@@ -67,9 +69,42 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 		currency?: string,
 	): Promise<void> {
 		const amountCurrency = currency ?? DEFAULT_CURRENCY;
-		await expect(this.gamdomPage.map.instatRakebackAmount).toHaveText(
+		await expect(this.gamdomPage.map.instantRakebackAmount).toHaveText(
 			`${amountCurrency}${parseToFloat(amount)}`,
 		);
+	}
+
+	@step()
+	async isInstantRewardVisible(): Promise<void> {
+		await this.checkElementsAreVisible(
+			[this.gamdomPage.map.instantRakebackCard],
+			Timeout.MEDIUM,
+		);
+	}
+
+	@step(
+		"Verify instant reward calculation based on house edge and bet amount",
+	)
+	public async verifyInstantRewardAmountIsCalculated(
+		game: OriginalGame,
+		betAmount: number,
+	): Promise<void> {
+		const reward = calculateInstantReward(game, betAmount);
+		const formattedReward = `$${reward.toFixed(2)}`;
+		await expect(this.gamdomPage.map.instantRakebackAmount).toHaveText(
+			formattedReward,
+		);
+	}
+
+	@step("Instant reward is claimable and calculated based on formula")
+	public async instantRewardVisibleAndCalculated(
+		game: OriginalGame,
+		betAmount: number,
+	): Promise<void> {
+		await this.gamdomPage.assertThat().isInstantRewardVisible();
+		await this.gamdomPage
+			.assertThat()
+			.verifyInstantRewardAmountIsCalculated(game, betAmount);
 	}
 
 	@step()

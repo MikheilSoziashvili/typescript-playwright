@@ -55,7 +55,7 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 	}
 
 	public async getRakebackAmount(): Promise<string> {
-		const amount = await this.map.instatRakebackAmount.textContent();
+		const amount = await this.map.instantRakebackAmount.textContent();
 		if (amount) {
 			return amount;
 		} else {
