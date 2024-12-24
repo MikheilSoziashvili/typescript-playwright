@@ -5,7 +5,7 @@ import {
 	generateRandomString,
 	setAuthenticationCookies,
 } from "@core/utils/utils";
-import { USER_1_CREDENTIALS, USER_2_CREDENTIALS } from "@constants/credentials";
+import { USER_2_CREDENTIALS, USER_3_CREDENTIALS } from "@constants/credentials";
 import { ToastTitle } from "@enums/toast-titles";
 import {
 	buildTipUserMessageInfo,
@@ -15,16 +15,16 @@ import {
 test.describe("Tip user tests", () => {
 	const message_1 = generateRandomString({ prefix: "automation_message_" });
 	const messageInfo_1: ChatMessageOptions = {
-		username: USER_1_CREDENTIALS.username,
+		username: USER_3_CREDENTIALS.username,
 		message: message_1,
 	};
-	let user1AccountBalance: number;
+	let user3AccountBalance: number;
 	const tipValue = 10;
 
 	test.beforeEach(async ({ gamdomApi, homePage, chat, page }) => {
 		const cookie = await gamdomApi.authenticateWithExistingUser(
-			USER_1_CREDENTIALS.username,
-			USER_1_CREDENTIALS.password,
+			USER_3_CREDENTIALS.username,
+			USER_3_CREDENTIALS.password,
 		);
 		await setAuthenticationCookies(page, cookie);
 		await homePage.navigate();
@@ -36,7 +36,7 @@ test.describe("Tip user tests", () => {
 			prefix: "automation_message_",
 		});
 		await chat.steps().sendMessage(message_2);
-		user1AccountBalance =
+		user3AccountBalance =
 			await homePage.authenticatedHeader.getAccountBalance();
 	});
 
@@ -88,7 +88,7 @@ test.describe("Tip user tests", () => {
 		await chat.assertThat().isInfoMessageVisible(
 			buildTipUserMessageInfo({
 				senderUsername: USER_2_CREDENTIALS.username,
-				receiverUsername: USER_1_CREDENTIALS.username,
+				receiverUsername: USER_3_CREDENTIALS.username,
 				tipAmount: tipValue,
 			}),
 		);
@@ -100,14 +100,14 @@ test.describe("Tip user tests", () => {
 			.isPlaceholderVisible(ChatFooterPlaceholder.START_TYPING);
 
 		await homePage.navigate({ cookies: { clearCookies: true } });
-		const cookieUser1 = await gamdomApi.authenticateWithExistingUser(
-			USER_1_CREDENTIALS.username,
-			USER_1_CREDENTIALS.password,
+		const cookieUser3 = await gamdomApi.authenticateWithExistingUser(
+			USER_3_CREDENTIALS.username,
+			USER_3_CREDENTIALS.password,
 		);
-		await setAuthenticationCookies(page, cookieUser1);
+		await setAuthenticationCookies(page, cookieUser3);
 		await homePage.navigate();
 		await homePage.authenticatedHeader
 			.assertThat()
-			.accountBalanceIs(user1AccountBalance + Number(tipValue));
+			.accountBalanceIs(user3AccountBalance + Number(tipValue));
 	});
 });

@@ -26,6 +26,12 @@ export const USER_2_CREDENTIALS: CredentialsType = {
 	password: "password",
 };
 
+export const USER_3_CREDENTIALS: CredentialsType = {
+	username: "user3",
+	password: "password",
+	email: "user3@example.com",
+};
+
 // super admin NoBulkAdmin assigned
 export const SUPER_ADMIN_VIP_MANAGER_NO_BULK: CredentialsType = {
 	username: "superAdminVipManagerNoBulk",
