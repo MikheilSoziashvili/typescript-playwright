@@ -49,7 +49,7 @@ test.describe("User statistics tests", () => {
 		const cookie = await gamdomApi.authenticateWithNewUser(newUser);
 		await setAuthenticationCookies(page, cookie);
 		await homePage.navigate();
-		await homePage.authenticatedHeader.expandChatIfNotVisible();
+		//await homePage.authenticatedHeader.expandChatIfNotVisible();
 
 		await chat.assertThat().isDisplayed();
 		await chat
