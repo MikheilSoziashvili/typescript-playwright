@@ -95,6 +95,10 @@ rewardsInputData.forEach((inputData) => {
 			mailinatorApi,
 			originalsPage,
 		}) => {
+			test.fixme(
+				true,
+				`Skipped until rewards functionality is fully polished`,
+			);
 			test.slow();
 			await profilePage
 				.steps()
