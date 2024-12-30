@@ -18,13 +18,13 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 	public async isPlaceholderVisible(
 		placeholder: ChatFooterPlaceholder,
 	): Promise<void> {
-		await expect(async () => {
-			const text = this.gamdomPage.map.chatTextBoxPlaceholder;
-			await expect(text).toHaveText(placeholder);
-		}).toPass({
+		await expect(this.gamdomPage.map.chatTextBoxPlaceholder).toBeVisible({
 			timeout: Timeout.MAX,
-			intervals: [300],
 		});
+		await expect(this.gamdomPage.map.chatTextBoxPlaceholder).toHaveText(
+			placeholder,
+			{ timeout: Timeout.MAX }, // To be removed when issues with e2e environment are resolved
+		);
 	}
 
 	// TODO: [ENG-2417] Investigate chat loading issue (tip user test) when trying to read a message
