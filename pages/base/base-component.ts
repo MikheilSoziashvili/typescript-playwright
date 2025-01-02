@@ -11,4 +11,8 @@ export abstract class BaseComponent<T = BaseMap> {
 	}
 
 	abstract assertThat(): void;
+
+	public async removeFocus(): Promise<void> {
+		await this.page.keyboard.press("Tab");
+	}
 }

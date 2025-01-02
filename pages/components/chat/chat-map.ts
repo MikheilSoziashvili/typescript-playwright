@@ -51,9 +51,7 @@ export class ChatMap extends BaseMap {
 	}
 
 	public messageUserAvatar(options?: ChatMessageOptions): Locator {
-		return this.messageLocator(options).locator(
-			"span[class*= UserPofile]",
-		);
+		return this.messageLocator(options).locator("span[class*= UserPofile]");
 	}
 
 	public infoMessageLocator(index?: number): Locator {

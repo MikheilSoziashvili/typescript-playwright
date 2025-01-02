@@ -29,14 +29,14 @@ export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 	public async expandChatIfNotVisible(): Promise<void> {
 		const chat = new Chat(this.page);
 
-		if (
-			await this.map.chatButton.isVisible({
+		try {
+			await this.map.waitForVisibility({
+				locator: this.map.chatButton,
 				timeout: Timeout.SHORT,
-			})
-		) {
+			});
 			await this.map.chatButton.click();
 			await chat.waitChatToBeDisplayed();
-		} else {
+		} catch {
 			logger.info("Chat already expanded");
 		}
 	}
