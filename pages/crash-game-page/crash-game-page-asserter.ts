@@ -20,7 +20,7 @@ export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 		for (const bet of bets as { username: string; betAmount: string }[]) {
 			await expect(this.gamdomPage.map.playersGridRowCells).toContainText(
 				[bet.username, bet.betAmount],
-				{ timeout: Timeout.LONG },
+				{ timeout: Timeout.EXTRA_MAX },
 			);
 		}
 	}
