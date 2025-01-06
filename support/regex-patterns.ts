@@ -21,3 +21,4 @@ export const otpAuthSecretPattern =
 export const lowerToUpperWithSpace = /([a-z])([A-Z])/g;
 export const capitalizeFirstLetter = /^./;
 export const whiteSpacePattern = /\s+/g;
+export const wwwPattern = /www\./;

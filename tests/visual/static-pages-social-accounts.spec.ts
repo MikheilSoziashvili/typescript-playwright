@@ -66,7 +66,7 @@ test.describe("Static pages - social accounts", () => {
 				);
 				await homePage
 					.assertThat()
-					.verifyNewTabUrl([
+					.verifyNewTabUrlParts([
 						`${socialMedia.socialMedia_UrlPart}`,
 						`${socialMedia.gamdom_UrlPart}`,
 					]);

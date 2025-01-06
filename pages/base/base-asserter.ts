@@ -6,6 +6,8 @@ import { waitUntil } from "@core/utils/utils";
 import { step } from "decorators/step";
 import { Timeout } from "@enums/timeout";
 import { WaitUntilState } from "@enums/wait-until-states";
+import * as Configuration from "configuration";
+import { wwwPattern } from "@support/regex-patterns";
 export class BaseAsserter<T extends BasePage | BaseModal | BaseComponent> {
 	readonly gamdomPage: T;
 
@@ -98,11 +100,35 @@ export class BaseAsserter<T extends BasePage | BaseModal | BaseComponent> {
 	public async verifyCurrentUrlIs(expectedUrl: string): Promise<void> {
 		await this.gamdomPage.page.waitForLoadState();
 		const currentUrl = this.gamdomPage.page.url();
-		expect(currentUrl).toBe(expectedUrl);
+
+		const normalizedExpectedUrl = expectedUrl.startsWith("http")
+			? expectedUrl
+			: `${Configuration.environment_url}${expectedUrl}`;
+
+		expect(currentUrl).toBe(normalizedExpectedUrl);
 	}
 
-	@step("New tab url is correct")
-	public async verifyNewTabUrl(urlParts: string[]): Promise<void> {
+	@step("Verify parts of the new tab URL")
+	public async verifyNewTabUrlParts(urlParts: string[]): Promise<void> {
+		const newTabUrl = await this.getNewTabUrl();
+
+		urlParts.forEach((part) => {
+			expect(newTabUrl).toContain(part.toLowerCase());
+		});
+	}
+
+	@step("Verify new tab URL is correct")
+	public async verifyNewTabUrl(expectedUrl: string): Promise<void> {
+		let newTabUrl = await this.getNewTabUrl();
+
+		if (wwwPattern.test(newTabUrl)) {
+			newTabUrl = newTabUrl.replace(wwwPattern, "");
+		}
+
+		expect(newTabUrl).toBe(expectedUrl.toLowerCase());
+	}
+
+	private async getNewTabUrl(): Promise<string> {
 		await waitUntil(
 			() => this.gamdomPage.page.context().pages().length > 1,
 			{ errorMessage: "Pages count is not expected" },
@@ -112,9 +138,6 @@ export class BaseAsserter<T extends BasePage | BaseModal | BaseComponent> {
 		const newTab = pages[pages.length - 1];
 		await newTab.waitForLoadState(WaitUntilState.DOM_CONTENT_LOADED);
 
-		const newTabUrl = newTab.url();
-		urlParts.forEach((part) => {
-			expect(newTabUrl.toLowerCase()).toContain(part.toLowerCase());
-		});
+		return newTab.url().toLowerCase();
 	}
 }
