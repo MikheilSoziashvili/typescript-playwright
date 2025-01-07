@@ -94,7 +94,7 @@ test.describe("Crash autobet tests", () => {
 	});
 
 	crashIncreaseBy.forEach((record) => {
-		test(`[ENG-2541] Crash - Autobet - Increase by [${record.increase_by}] @originals @wip`, async ({
+		test(`[ENG-2541] Crash - Autobet - Increase by [${record.increase_by}] @originals`, async ({
 			crashGamePage,
 		}, testInfo) => {
 			const newUserDetails = getUserDetailsByTestTitle(
