@@ -47,17 +47,18 @@ test.describe("Roulette tests", () => {
 					RouletteBetColor.BLACK,
 					false,
 				);
-			await rouletteGamePage
-				.assertThat()
-				.playerBetDisplayed(
-					RouletteBetColor.BLACK,
-					betTestData.username,
-					betTestData.betAmount,
-				);
+
+			await rouletteGamePage.assertThat().playersBetsDisplayed([
+				{
+					betColor: RouletteBetColor.BLACK,
+					username: betTestData.username,
+					betAmount: betTestData.betAmount,
+				},
+			]);
 
 			await rouletteGamePage
 				.assertThat()
-				.totalBetsAre(RouletteBetColor.BLACK, 1, 1);
+				.totalBetsMatchesNumberOfBetRows(RouletteBetColor.BLACK);
 
 			accountBalanceLeft =
 				await rouletteGamePage.authenticatedHeader.getAccountBalance();

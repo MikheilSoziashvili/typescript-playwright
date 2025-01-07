@@ -38,13 +38,13 @@ test.describe("Green hunt", () => {
 		await rouletteGamePage.insertBet(betTestData.betAmount);
 		await rouletteGamePage.assertThat().betButtonsEnabled();
 		await rouletteGamePage.betOnColor(RouletteBetColor.RED);
-		await rouletteGamePage
-			.assertThat()
-			.playerBetDisplayed(
-				RouletteBetColor.RED,
-				betTestData.username,
-				betTestData.betAmount,
-			);
+		await rouletteGamePage.assertThat().playersBetsDisplayed([
+			{
+				betColor: RouletteBetColor.RED,
+				username: betTestData.username,
+				betAmount: betTestData.betAmount,
+			},
+		]);
 		await rouletteGamePage
 			.assertThat()
 			.totalBetsAre(

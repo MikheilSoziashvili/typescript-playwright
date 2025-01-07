@@ -37,23 +37,68 @@ export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 		}
 	}
 
-	public async playerBetDisplayed(
-		betColor: RouletteBetColor,
-		username: string,
-		betAmount: number,
+	public async playersBetsDisplayed(
+		bets: {
+			betColor: RouletteBetColor;
+			username: string;
+			betAmount: number;
+		}[],
 	): Promise<void> {
-		const betSection = this.gamdomPage.map.betSectionsByColor[betColor];
+		for (const { betColor, username, betAmount } of bets) {
+			const betSection = this.gamdomPage.map.betSectionsByColor[betColor];
 
-		for (const betRow of await this.gamdomPage.map.playersGridRows(
-			betSection,
-		)) {
-			await expect(
-				this.gamdomPage.map.playersGridRowPlayerUsername(betRow),
-			).toHaveText(username);
-			await expect(
-				this.gamdomPage.map.playersGridRowBetAmount(betRow),
-			).toContainText(parseToFloat(betAmount));
+			const betRows = await this.gamdomPage.map.playersGridRows(
+				betSection,
+			);
+
+			for (const row of betRows) {
+				const [rowUsernameText, rowBetAmountText] = await Promise.all([
+					this.gamdomPage.map
+						.playersGridRowPlayerUsername(row)
+						.innerText(),
+					this.gamdomPage.map
+						.playersGridRowBetAmount(row)
+						.innerText(),
+				]);
+
+				if (
+					rowUsernameText.includes(username) &&
+					rowBetAmountText.includes(String(betAmount))
+				) {
+					await Promise.all([
+						expect(
+							this.gamdomPage.map.playersGridRowPlayerUsername(
+								row,
+							),
+						).toContainText(username),
+						expect(
+							this.gamdomPage.map.playersGridRowBetAmount(row),
+						).toContainText(String(betAmount)),
+					]);
+
+					break;
+				}
+			}
 		}
+	}
+
+	public async totalBetsMatchesNumberOfBetRows(
+		betColor: RouletteBetColor,
+	): Promise<void> {
+		await this.rouletteIsSpinning();
+
+		const [rowCount, totalBetsCount] = await Promise.all([
+			this.gamdomPage.getNumberOfBetRows(betColor),
+			this.gamdomPage.getTotalBetsCount(betColor),
+		]);
+		expect(rowCount).toEqual(totalBetsCount);
+	}
+
+	public async rouletteIsSpinning(): Promise<void> {
+		await this.checkElementsAreNotVisible(
+			[this.gamdomPage.map.spinningStateLocator],
+			Timeout.MAX,
+		);
 	}
 
 	public async totalBetsAre(

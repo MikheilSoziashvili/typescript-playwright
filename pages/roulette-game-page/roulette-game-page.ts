@@ -75,6 +75,23 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 		return this.map.roundResultNumber.innerText();
 	}
 
+	public async getNumberOfBetRows(
+		betColor: RouletteBetColor,
+	): Promise<number> {
+		const betRows = this.map.betRowsByColor(betColor);
+		return betRows.count();
+	}
+
+	public async getTotalBetsCount(
+		betColor: RouletteBetColor,
+	): Promise<number> {
+		const betSection = this.map.betSectionsByColor[betColor];
+		const countText = await this.map
+			.betTotalBetsCount(betSection)
+			.innerText();
+		return parseInt(countText, 10);
+	}
+
 	public async getRoundResultColor(
 		waitTimeout = 30,
 	): Promise<RouletteNumberColor> {

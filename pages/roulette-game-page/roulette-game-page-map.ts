@@ -145,6 +145,12 @@ export class RouletteGamePageMap extends BaseMap {
 		);
 	}
 
+	public betRowsByColor(betColor: RouletteBetColor): Locator {
+		return this.page
+			.getByTestId(`roulettePlayersGrid-${betColor}`)
+			.locator('div[class*="BetListItem-styled__BetListItemWapper"]');
+	}
+
 	public autobetContainer(): Locator {
 		return this.gameContainer.locator("div[class*='AutoBetContainer']");
 	}
