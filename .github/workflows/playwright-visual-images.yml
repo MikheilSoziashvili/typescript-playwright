@@ -100,9 +100,10 @@ jobs:
                   git commit -m "Update visual snapshots for CI"
                   git push origin ${{ github.event.pull_request.head.ref }}
               if: success()
+
             - uses: actions/upload-artifact@v3
               if: always()
               with:
                   name: playwright-report
                   path: playwright-report/
-                  retention-days: 30
+                  retention-days: 1

@@ -195,7 +195,7 @@ jobs:
               with:
                   name: "all-blob-reports-1-${{ github.run_id }}-${{ matrix.shard }}"
                   path: ./blob-report
-                  retention-days: 7
+                  retention-days: 1
 
             - name: Game Providers Tests
               if: always()
@@ -213,7 +213,7 @@ jobs:
               with:
                   name: "all-blob-reports-2-${{ github.run_id }}-${{ matrix.shard }}"
                   path: ./blob-report
-                  retention-days: 7
+                  retention-days: 1
 
             - name: Download blob reports from GitHub Actions Artifacts
               if: always()
