@@ -23,19 +23,25 @@ export class HomePageMap extends BaseMap {
 	}
 
 	public get bannerCarousel(): Locator {
-		return this.page.locator("div.swiper.swiper-backface-hidden");
+		return this.page.locator(
+			`div[class*="swiper-initialized swiper-horizontal sc-"]`,
+		);
 	}
 
 	public get bannerCarouselActiveSlide(): Locator {
-		return this.bannerCarousel.locator("div.swiper-slide-active");
+		return this.bannerCarousel.locator(
+			`div[class*="swiper-slide swiper-slide-active"]`,
+		);
 	}
 
 	public getBannerCarouselSlideByName(
 		slideName: HomePageBannerCarouselSlideTitle,
 	): Locator {
-		return this.bannerCarousel.locator(
-			`div.swiper-slide:has(img[alt="${slideName}"])`,
-		);
+		return this.bannerCarousel
+			.locator(`div[class*="swiper-slide"]`)
+			.filter({
+				has: this.page.locator(`img[alt="${slideName}"]`),
+			});
 	}
 
 	public getSlideNavigateButton(
