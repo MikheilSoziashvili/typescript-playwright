@@ -1,13 +1,14 @@
+import { waitUntil } from "@core/utils/utils";
+import { DocumentReadyState } from "@enums/playwright/document-ready-states";
+import { Timeout } from "@enums/timeout";
+import { WaitUntilState } from "@enums/wait-until-states";
 import { Locator, TestInfo, expect } from "@playwright/test";
+import { wwwPattern } from "@support/regex-patterns";
+import * as Configuration from "configuration";
+import { step } from "decorators/step";
 import { BaseComponent } from "./base-component";
 import { BaseModal } from "./base-modal";
 import { BasePage } from "./base-page";
-import { waitUntil } from "@core/utils/utils";
-import { step } from "decorators/step";
-import { Timeout } from "@enums/timeout";
-import { WaitUntilState } from "@enums/wait-until-states";
-import * as Configuration from "configuration";
-import { wwwPattern } from "@support/regex-patterns";
 export class BaseAsserter<T extends BasePage | BaseModal | BaseComponent> {
 	readonly gamdomPage: T;
 
@@ -136,7 +137,30 @@ export class BaseAsserter<T extends BasePage | BaseModal | BaseComponent> {
 
 		const pages = this.gamdomPage.page.context().pages();
 		const newTab = pages[pages.length - 1];
-		await newTab.waitForLoadState(WaitUntilState.DOM_CONTENT_LOADED);
+
+		await waitUntil(
+			async () => {
+				try {
+					const readyState = await newTab.evaluate(
+						() => document.readyState,
+					);
+					return readyState === DocumentReadyState.COMPLETE;
+				} catch (error) {
+					if (
+						error instanceof Error &&
+						error.message.includes("destroyed")
+					) {
+						return false;
+					}
+					throw error;
+				}
+			},
+			{
+				errorMessage: "New tab did not load within the timeout period.",
+				intervalSeconds: 0.1,
+				timeoutSeconds: Timeout.LONG,
+			},
+		);
 
 		return newTab.url().toLowerCase();
 	}
