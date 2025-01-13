@@ -110,6 +110,10 @@ export class HomePage extends BasePage<HomePageMap> {
 		await this.map.getSlideNavigateButton(slideName).click();
 	}
 
+	public async clickWalletButton(): Promise<void> {
+		await this.map.walletButon.click();
+	}
+
 	public async clickCarouselActiveSlide(): Promise<void> {
 		await this.map.bannerCarouselActiveSlide.click();
 	}
@@ -124,5 +128,10 @@ export class HomePage extends BasePage<HomePageMap> {
 
 	public async clickOnCasinoHeaderButton(): Promise<void> {
 		await this.authenticatedHeader.map.casinoNavigationButton.click();
+	}
+
+	public async navigateToWallet(): Promise<void> {
+		await this.navigate();
+		await this.clickWalletButton();
 	}
 }

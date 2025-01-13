@@ -27,4 +27,5 @@ export enum Feature {
 	RUST = "RUST",
 	HILO = "HILO",
 	EV_BASED_REWARDS = "EV_BASED_REWARDS",
+	VAULT = "VAULT",
 }

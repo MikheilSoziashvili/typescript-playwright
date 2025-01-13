@@ -1,6 +1,7 @@
 import { LiveSupportModal } from "@pages/modals/live-support-intercom-modal/live-support-intercom-modal";
 import { TipUserModal } from "@pages/modals/tip-user-modal/tip-user-modal";
 import { UserProfileModal } from "@pages/modals/user-profile-modal/user-profile-modal";
+import { WalletModal } from "@pages/modals/wallet/wallet-modal";
 
 import { test as base } from "@playwright/test";
 
@@ -8,6 +9,7 @@ export type Modals = {
 	tipUserModal: TipUserModal;
 	userProfileModal: UserProfileModal;
 	liveSupportModal: LiveSupportModal;
+	walletModal: WalletModal;
 };
 
 export const modalsFixtures = base.extend<Modals>({
@@ -19,5 +21,8 @@ export const modalsFixtures = base.extend<Modals>({
 	},
 	liveSupportModal: async ({ page }, use) => {
 		await use(new LiveSupportModal(page));
+	},
+	walletModal: async ({ page }, use) => {
+		await use(new WalletModal(page));
 	},
 });

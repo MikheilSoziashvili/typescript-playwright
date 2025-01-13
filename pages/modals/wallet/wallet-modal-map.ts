@@ -1,0 +1,82 @@
+import { BaseMap } from "@pages/base/base-map";
+import { Locator, Page } from "playwright";
+
+export class WalletModalMap extends BaseMap {
+	public constructor(page: Page) {
+		super(page);
+	}
+
+	public get vaultDepositToastMessage(): Locator {
+		return this.page
+			.getByTestId("toastSubTitle")
+			.getByText("transferred from your Wallet to your Vault");
+	}
+
+	public get vaultWithdrawToastMessage(): Locator {
+		return this.page
+			.getByTestId("toastSubTitle")
+			.getByText("transferred from your Vault to your Wallet");
+	}
+
+	public get withdrawTabButton(): Locator {
+		return this.page.locator("button", { hasText: "Withdraw" });
+	}
+
+	public get vaultTabButton(): Locator {
+		return this.page.locator("button", { hasText: "Vault" });
+	}
+
+	public get vaultButtonInWithdrawTab(): Locator {
+		return this.page.locator("p", { hasText: "Vault" });
+	}
+
+	public get vaultTabHeading(): Locator {
+		return this.page.locator("h5", { hasText: "Vault" });
+	}
+
+	public get leftPanel(): Locator {
+		return this.page.locator('div[class*="LeftPanel"]');
+	}
+
+	public get vaultWithdrawTab(): Locator {
+		return this.leftPanel.locator("button", { hasText: /^Withdraw$/ });
+	}
+
+	public get vaultDepositTab(): Locator {
+		return this.leftPanel.locator("button", { hasText: "Deposit" });
+	}
+
+	public get walletDropdown(): Locator {
+		return this.page.locator(
+			"//h6[contains(@class,'Vault-styled')]/ancestor::div[@role='combobox']",
+		);
+	}
+
+	public walletDropdownOption(optionText: string): Locator {
+		return this.page.locator(`li[class*="Vault-styled__MenuOptions"] h6`, {
+			hasText: optionText,
+		});
+	}
+
+	public get vaultWalletAmount(): Locator {
+		return this.leftPanel.locator("h6 > span");
+	}
+
+	public get vaultInputField(): Locator {
+		return this.leftPanel.locator(
+			'input[class*="MuiInputBase-input MuiInput-input"]',
+		);
+	}
+
+	public get depositButton(): Locator {
+		return this.page.locator("button", {
+			hasText: "Deposit to Users Vault",
+		});
+	}
+
+	public get withdrawButton(): Locator {
+		return this.page.locator("button", {
+			hasText: "Withdraw from Users Vault",
+		});
+	}
+}
