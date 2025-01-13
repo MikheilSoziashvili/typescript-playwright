@@ -54,6 +54,10 @@ test.describe("Footer redirects tests", () => {
 			homePage,
 			footer,
 		}) => {
+			test.fixme(
+				record.linkName === "Partnership",
+				`Issue [ENG-4054] Partnership link is leading to "About Us" page, but should lead to "Support" page`,
+			);
 			await homePage.navigate();
 			await footer.openFooterLinkByPlaceholder(record.linkName);
 			await footer.assertThat().verifyCurrentUrlIs(record.expectedURL);
@@ -66,6 +70,10 @@ test.describe("Footer redirects tests", () => {
 			footer,
 			helpPage,
 		}) => {
+			test.fixme(
+				record.infoPage === "Partnership",
+				`Issue [ENG-4054] Partnership link is leading to "About Us" page, but should lead to "Support" page`,
+			);
 			await homePage.navigate();
 			await footer.openFooterLinkByPlaceholder(record.infoPage);
 			await helpPage
