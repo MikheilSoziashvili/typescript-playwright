@@ -1,0 +1,47 @@
+import { BasePage } from "@base/base-page";
+import { VERIFICATION_PAGE_ENDPOINT } from "@constants/page-endpoints";
+import { BasePageNavigationParametersType } from "@core/types/types";
+import { Page } from "@playwright/test";
+import { VerificationPageAsserter } from "./verification-page-asserter";
+import { VerificationPageMap } from "./verification-page-map";
+import { VerificationPageSteps } from "./verification-page-steps";
+import { getItemsAttribute } from "@core/utils/utils";
+import { Attributes } from "@enums/playwright/htmlAttributes";
+import { step } from "decorators/step";
+
+export class VerificationPage extends BasePage<VerificationPageMap> {
+	public constructor(page: Page) {
+		super(page, new VerificationPageMap(page));
+	}
+
+	public override async navigate(
+		parameters?: BasePageNavigationParametersType,
+	): Promise<void> {
+		await super.navigate({
+			...parameters,
+			endpoint: { paths: [VERIFICATION_PAGE_ENDPOINT] },
+		});
+	}
+
+	public override assertThat(): VerificationPageAsserter {
+		return new VerificationPageAsserter(this);
+	}
+
+	public steps(): VerificationPageSteps {
+		return new VerificationPageSteps(this);
+	}
+
+	@step()
+	public async openCountryDropdown(): Promise<void> {
+		await this.map.countryDropdown.click();
+	}
+
+	@step()
+	public async getCountryDropdownValues(): Promise<string[]> {
+		const countryDropdownValues = await getItemsAttribute(
+			this.map.countryDropdownValueItems,
+			Attributes.DATA_VALUE,
+		);
+		return countryDropdownValues;
+	}
+}

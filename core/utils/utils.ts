@@ -599,3 +599,27 @@ export async function waitUntil(
 		await waitForSeconds(Math.min(intervalSeconds, remainingTime));
 	}
 }
+
+/**
+ * Retrieves the values of a specific attribute for all elements matching a locator.
+ *
+ * @param locator - The locator for the elements.
+ * @param attribute - The attribute whose values should be retrieved.
+ * @returns An array of attribute values as strings.
+ */
+export async function getItemsAttribute(
+	locator: Locator,
+	attribute: string,
+): Promise<string[]> {
+	const count = await locator.count();
+	const attrValues: string[] = [];
+
+	for (let i = 0; i < count; i++) {
+		const value = await locator.nth(i).getAttribute(attribute);
+		if (value !== null) {
+			attrValues.push(value);
+		}
+	}
+
+	return attrValues;
+}

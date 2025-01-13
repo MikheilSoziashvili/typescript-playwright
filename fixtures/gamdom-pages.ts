@@ -15,6 +15,7 @@ import { HelpPage } from "@pages/help/help-page";
 import { MaintenancePage } from "@pages/maintenance/maintenance-page";
 import { CasinoPage } from "@pages/casino/casino-game-page";
 import { ProvidersPage } from "@pages/providers/providers-page";
+import { VerificationPage } from "@pages/verification/verification-page";
 
 export type GamdomPages = {
 	homePage: HomePage;
@@ -23,6 +24,7 @@ export type GamdomPages = {
 	rewardsPage: RewardsPage;
 	rewardsExplorePage: RewardsExplorePage;
 	profilePage: ProfilePage;
+	verificationPage: VerificationPage;
 	faqPage: FaqPage;
 	geoblockedPage: GeoblockedPage;
 	bannedUserPage: BannedUserPage;
@@ -53,6 +55,9 @@ export const gamdomPagesFixtures = base.extend<GamdomPages>({
 	},
 	profilePage: async ({ page }, use) => {
 		await use(new ProfilePage(page));
+	},
+	verificationPage: async ({ page }, use) => {
+		await use(new VerificationPage(page));
 	},
 	faqPage: async ({ page }, use) => {
 		await use(new FaqPage(page));

@@ -4,6 +4,7 @@ export const DICE_GAME_PAGE_ENDPOINT = "/dice";
 export const HILO_GAME_PAGE_ENDPOINT = "/hilo";
 export const ROULETTE_GAME_PAGE_ENDPOINT = "/roulette";
 export const PROFILE_PAGE_ENDPOINT = "/profile";
+export const VERIFICATION_PAGE_ENDPOINT = "/aml/level/1";
 export const GEOBLOCKED_PAGE_ENDPOINT = "/geoblocked";
 export const ADMIN_PAGE_ENDPOINT = "/admin";
 export const REWARDS_PAGE_ENDPOINT = "/rewards";

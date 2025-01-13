@@ -18,4 +18,5 @@ export enum CsvFilesName {
 	GEOBLOCKED_SOCIAL_ACCOUNTS = "ENG-2480-static-page-geoblocked-social-accounts.csv",
 	ADMIN_TABS = "ENG-3349-Verify-admin-tabs.csv",
 	INSTANT_REWARDS = "ENG-3679-Check-that-instant-reward-can-be-claimed.csv",
+	REMOVED_RESTRICTED_COUNTRIES = "ENG-2625-profile-verification-removed-aml1RestrictedCountries.csv",
 }
