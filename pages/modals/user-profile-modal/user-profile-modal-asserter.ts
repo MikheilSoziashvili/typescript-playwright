@@ -13,7 +13,7 @@ export class UserProfileModalAsserter extends BaseAsserter<UserProfileModal> {
 
 	public async isPrivateUserModeDisplayed(): Promise<void> {
 		await expect(
-			this.gamdomPage.map.privateStatisticsLocator,
+			this.gamdomPage.map.userProfilePrivateStatisticsContainer,
 		).toBeVisible();
 		await expect(this.gamdomPage.map.tipUserButton).toBeVisible();
 		await expect(this.gamdomPage.map.ignoreButton).toBeVisible();

@@ -7,32 +7,46 @@ export class UserProfileModalMap extends BaseMap {
 	}
 
 	public get modalLocator(): Locator {
-		return this.page.locator(
-			"div.MuiPaper-elevation:has(div[class*=LevelAvatar])",
+		return this.page
+			.locator("div.MuiPaper-elevation")
+			.locator("div", { has: this.userProfileModalContainer });
+	}
+
+	public get userProfileModalContainer(): Locator {
+		return this.page.getByTestId("profileModalContainer");
+	}
+
+	public get userProfileContainer(): Locator {
+		return this.userProfileModalContainer.getByTestId(
+			"profileModalUserProfile",
+		);
+	}
+
+	public get userProfilePrivateStatisticsContainer(): Locator {
+		return this.userProfileModalContainer.getByTestId(
+			"profileModalPrivateStatisticsContainer",
 		);
 	}
 
 	public get userAvatar(): Locator {
-		return this.page.locator("div[class*=LevelAvatar]");
+		return this.userProfileContainer.locator("div[class*='UserPofile']");
 	}
 
 	public get userProfileTitle(): Locator {
-		return this.page.locator("p[class*=profileTitle][breakpointlevel]");
-	}
-
-	public get privateStatisticsLocator(): Locator {
-		return this.modalLocator.locator(
-			'div img[alt=private] + h5:text-is("This user has Private Statistics")',
+		return this.userProfileContainer.locator(
+			"p[class*=-profileTitle][breakpointlevel]",
 		);
 	}
 
 	public get tipUserButton(): Locator {
-		return this.modalLocator.locator(
-			'button:has(span:text-is("Tip user"))',
+		return this.userProfileModalContainer.getByTestId(
+			"profileModalTipUserButton",
 		);
 	}
 
 	public get ignoreButton(): Locator {
-		return this.modalLocator.locator('button:has(span:text-is("Ignore"))');
+		return this.userProfileModalContainer.getByTestId(
+			"profileModalIgnoreButton",
+		);
 	}
 }
