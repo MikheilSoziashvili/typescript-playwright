@@ -26,4 +26,16 @@ export class CasinoPageMap extends BaseMap {
 			'div[class*="RandomPickSettingsModal-styled__ModalBody"] div[role="combobox"]',
 		);
 	}
+
+	public get casinoGamesScrollbarContainer(): Locator {
+		return this.page.locator(`div[role="tablist"]`);
+	}
+
+	public casinoGamesScrollbarItemByPlaceholder(
+		scrollbarItem: string,
+	): Locator {
+		return this.casinoGamesScrollbarContainer.locator(`a[role='tab']`, {
+			hasText: `${scrollbarItem}`,
+		});
+	}
 }

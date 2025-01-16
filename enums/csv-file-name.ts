@@ -20,4 +20,5 @@ export enum CsvFilesName {
 	INSTANT_REWARDS = "ENG-3679-Check-that-instant-reward-can-be-claimed.csv",
 	REMOVED_RESTRICTED_COUNTRIES = "ENG-2625-profile-verification-removed-aml1RestrictedCountries.csv",
 	WALLET = "ENG-2860-2861-Vault-deposit-and-withdraw.csv",
+	HOME_PAGE_CASINO_SLIDER_NAVIGATION = "ENG-3832-casino-slider-visit-button-redirect.csv",
 }

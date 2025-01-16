@@ -14,18 +14,21 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		this.fromCsv = fromCsv;
 	}
 
+	@step()
 	public async titleHasText(title: string): Promise<void> {
 		await expect(this.gamdomPage.page).toHaveTitle(title, {
 			timeout: Timeout.MAX,
 		});
 	}
 
+	@step()
 	public async userIsLoggedIn(): Promise<void> {
 		await this.gamdomPage.authenticatedHeader
 			.assertThat()
 			.loggedInUserElementsAreVisible();
 	}
 
+	@step()
 	public async userIsLoggedOut(): Promise<void> {
 		await this.gamdomPage.authenticatedHeader
 			.assertThat()
@@ -35,6 +38,7 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 			.loggedOutUserElementsAreVisible();
 	}
 
+	@step()
 	public async toastMessageContainsText(text: string): Promise<void> {
 		if (!text && this.fromCsv) {
 			return undefined; // if the value comes from csv and is empty - do nothing
@@ -42,6 +46,7 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		await expect(this.gamdomPage.map.toastMessage).toContainText(text);
 	}
 
+	@step()
 	public async userIsRegistered(username: string): Promise<void> {
 		await this.gamdomPage.authenticatedHeader
 			.assertThat()
@@ -56,14 +61,26 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		expect(receivedUsername?.trim()).toBe(`${username}!`);
 	}
 
+	@step()
 	public async isBannerCarouselDisplayed(): Promise<void> {
 		await expect(this.gamdomPage.map.bannerCarousel).toBeVisible();
 	}
 
+	@step()
 	public async isTopBannerDisplayed(): Promise<void> {
 		await expect(this.gamdomPage.map.topBannerLocator).toBeVisible();
 	}
 
+	@step()
+	public async isCasinoGameSliderDisplayed(
+		casinoGameSlider: string,
+	): Promise<void> {
+		await expect(
+			this.gamdomPage.map.casinoGamesSliderByName(casinoGameSlider),
+		).toBeVisible();
+	}
+
+	@step()
 	public async topBannerVisualCorrect(testInfo: TestInfo): Promise<void> {
 		await this.checkElementVisualCorrect(
 			testInfo,
@@ -71,6 +88,7 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		);
 	}
 
+	@step()
 	public async verifyProviderState(
 		provider: string,
 		expectedResult: VisibilityResult,

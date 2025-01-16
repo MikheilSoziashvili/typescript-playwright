@@ -13,6 +13,7 @@ import { HomePageMap } from "./home-page-map";
 import { HomePageSteps } from "./home-page-steps";
 import { waitForSeconds } from "@core/utils/utils";
 import { WaitUntilState } from "@enums/wait-until-states";
+import { step } from "decorators/step";
 
 export class HomePage extends BasePage<HomePageMap> {
 	public constructor(page: Page) {
@@ -76,6 +77,7 @@ export class HomePage extends BasePage<HomePageMap> {
 		return new RegisterModal(this.page);
 	}
 
+	@step()
 	public async waitCarouselSlideToBeActive(
 		slideName: HomePageBannerCarouselSlideTitle,
 		timeout = Timeout.LONG,
@@ -104,6 +106,7 @@ export class HomePage extends BasePage<HomePageMap> {
 		}
 	}
 
+	@step()
 	public async clickCarouselSlide(
 		slideName: HomePageBannerCarouselSlideTitle,
 	): Promise<void> {
@@ -118,6 +121,7 @@ export class HomePage extends BasePage<HomePageMap> {
 		await this.map.bannerCarouselActiveSlide.click();
 	}
 
+	@step()
 	public async closeTopBanner(): Promise<void> {
 		await this.map.topBannerCloseButton.click();
 		await this.map.waitFor({
@@ -126,8 +130,16 @@ export class HomePage extends BasePage<HomePageMap> {
 		});
 	}
 
+	@step()
 	public async clickOnCasinoHeaderButton(): Promise<void> {
 		await this.authenticatedHeader.map.casinoNavigationButton.click();
+	}
+
+	@step()
+	public async clickOnCasinoGamesSliderVisitButton(
+		buttonName: string,
+	): Promise<void> {
+		await this.map.casinoGamesSliderVisitButtonByName(buttonName).click();
 	}
 
 	public async navigateToWallet(): Promise<void> {

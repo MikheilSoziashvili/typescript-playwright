@@ -102,4 +102,22 @@ export class HomePageMap extends BaseMap {
 			`//a[@href="/providers/${formattedProvider}"]/parent::div[contains(@class, "swiper")]`,
 		);
 	}
+
+	public get casinoGamesSliderContainer(): Locator {
+		return this.page.locator(
+			`div[class*='CasinoGamesSlider-styled__Section-sc-']`,
+		);
+	}
+
+	public casinoGamesSliderByName(games: string): Locator {
+		return this.casinoGamesSliderContainer.locator(`p`, {
+			hasText: `${games}`,
+		});
+	}
+
+	public casinoGamesSliderVisitButtonByName(buttonName: string): Locator {
+		return this.casinoGamesSliderContainer.locator(`button`, {
+			hasText: `${buttonName}`,
+		});
+	}
 }

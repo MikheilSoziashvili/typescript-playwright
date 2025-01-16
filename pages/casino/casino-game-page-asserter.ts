@@ -5,6 +5,8 @@ import { GameProvider } from "@enums/game-providers";
 import { VisibilityResult } from "@core/types/types";
 import { VisibilityOptions } from "@enums/visibility-options";
 import { step } from "decorators/step";
+import { Attributes } from "@enums/playwright/htmlAttributes";
+import { BooleanValueString } from "@enums/playwright/booleanValues";
 
 export class CasinoPageAsserter extends BaseAsserter<CasinoPage> {
 	public constructor(page: CasinoPage) {
@@ -31,5 +33,16 @@ export class CasinoPageAsserter extends BaseAsserter<CasinoPage> {
 	): Promise<void> {
 		const shouldBeVisible = expectedResult === VisibilityOptions.VISIBLE;
 		await this.verifyDropdownOptionVisibility(provider, shouldBeVisible);
+	}
+
+	@step()
+	public async isCasinoGamesScrollbarTabSelected(
+		tabName: string,
+	): Promise<void> {
+		await this.gamdomPage.map.waitForAttributeToHaveValue(
+			this.gamdomPage.map.casinoGamesScrollbarItemByPlaceholder(tabName),
+			Attributes.ARIA_SELECTED,
+			BooleanValueString.TRUE,
+		);
 	}
 }
