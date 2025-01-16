@@ -89,15 +89,120 @@ export class BaseApi {
 	}
 
 	/**
+	 * Masks sensitive headers to prevent logging sensitive information.
+	 *
+	 * @param {Record<string, string>} headers - The headers to mask.
+	 * @returns {Record<string, string>} The masked headers.
+	 */
+	private maskSensitiveHeaders(
+		headers: Record<string, string>,
+	): Record<string, string> {
+		const headersCopy = { ...headers };
+		const SENSITIVE_HEADERS = ["Authorization", "Cookie"];
+		const MASK = "****";
+
+		for (const [key] of Object.entries(headersCopy)) {
+			if (SENSITIVE_HEADERS.includes(key)) {
+				headersCopy[key] = MASK;
+			}
+		}
+
+		return headersCopy;
+	}
+
+	/**
+	 * Logs details of a failed HTTP response.
+	 *
+	 * @param {HttpMethod} method - The HTTP method used.
+	 * @param {string} url - The request URL.
+	 * @param {number} statusCode - The HTTP status code received.
+	 * @param {APIResponse} response - The API response object.
+	 * @param {RequestOptions} requestOptions - The options used for the request.
+	 */
+	private async logFailedResponse(
+		method: HttpMethod,
+		url: string,
+		statusCode: number,
+		response: APIResponse,
+		requestOptions: RequestOptions,
+	): Promise<void> {
+		logger.error(
+			`[Response] ${method.toUpperCase()} ${url} => ${statusCode}`,
+		);
+
+		try {
+			const responseBody: unknown = await response.json();
+			logger.error(
+				`[Response Body] ${JSON.stringify(responseBody, null, 2)}`,
+			);
+		} catch {
+			const responseText = await response.text();
+			logger.error(`[Response Body] ${responseText || "<Empty>"}`);
+		}
+
+		logger.error(
+			`[Request Details] Method: ${method.toUpperCase()}, URL: ${url}`,
+		);
+		const maskedHeaders = this.maskSensitiveHeaders(
+			requestOptions.headers ?? {},
+		);
+		logger.error(`[Request Headers] ${JSON.stringify(maskedHeaders)}`);
+
+		if (requestOptions.data) {
+			logger.error(
+				`[Request Data] ${JSON.stringify(
+					requestOptions.data,
+					null,
+					2,
+				)}`,
+			);
+		}
+	}
+
+	/**
+	 * Logs details when a request fails due to an exception.
+	 *
+	 * @param {HttpMethod} method - The HTTP method used.
+	 * @param {string} url - The request URL.
+	 * @param {unknown} error - The error encountered.
+	 * @param {RequestOptions} requestOptions - The options used for the request.
+	 */
+	private logRequestFailure(
+		method: HttpMethod,
+		url: string,
+		error: unknown,
+		requestOptions: RequestOptions,
+	): void {
+		const errorMessage = String(error);
+
+		logger.error(
+			`[Request Failure] Method: ${method.toUpperCase()}, URL: ${url}, Error: ${errorMessage}`,
+		);
+
+		const maskedHeaders = this.maskSensitiveHeaders(
+			requestOptions.headers ?? {},
+		);
+		logger.error(`[Request Headers] ${JSON.stringify(maskedHeaders)}`);
+
+		if (requestOptions.data) {
+			logger.error(
+				`[Request Data] ${JSON.stringify(
+					requestOptions.data,
+					null,
+					2,
+				)}`,
+			);
+		}
+	}
+
+	/**
 	 * Makes an HTTP request using the Playwright library, configured with the specified method,
-	 * URL, body data, and query parameters. It also handles errors directly,
-	 * including both Playwright errors and HTTP status error responses.
+	 * URL, body data, and query parameters. It logs request and response details only upon failures.
 	 *
 	 * @param {HttpMethod} method - The HTTP method to use (GET, POST, PUT, DELETE, PATCH).
 	 * @param {RequestParameters} parameters - The parameters for the request, including endpoint, headers, data, and query parameters.
 	 * @param {RequestOptions} options - Additional options for the request.
 	 * @returns {Promise<APIResponse>} A promise resolving to the API response.
-	 * @see {@link https://playwright.dev/docs/api/class-apirequestcontext#api-request-context-fetch Playwright Fetch Options}
 	 */
 	private async makeRequest(
 		method: HttpMethod,
@@ -122,8 +227,22 @@ export class BaseApi {
 				...requestOptions,
 			});
 
+			const statusCode = response.status();
+			const successStatusCodes = [200, 201, 204];
+
+			if (!successStatusCodes.includes(statusCode)) {
+				await this.logFailedResponse(
+					method,
+					url,
+					statusCode,
+					response,
+					requestOptions,
+				);
+			}
+
 			return response;
 		} catch (error) {
+			this.logRequestFailure(method, url, error, requestOptions);
 			handleError(error as KnownError);
 			throw error;
 		}
