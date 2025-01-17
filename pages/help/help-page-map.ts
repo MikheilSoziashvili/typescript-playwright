@@ -15,7 +15,9 @@ export class HelpPageMap extends BaseMap {
 	}
 
 	public get helpPageContent(): Locator {
-		return this.helpPageContainer.locator("[class*='Wrapper']");
+		return this.helpPageContainer.locator(
+			"div[class*='MuiBox-root'] div[class*='ContainerAnimate-sc-']",
+		);
 	}
 
 	public tabNameByPlaceholder(placeholderText: string): Locator {
