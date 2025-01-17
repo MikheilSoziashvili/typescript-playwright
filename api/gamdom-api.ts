@@ -22,6 +22,7 @@ export class GamdomApi extends BaseApi {
 		super(base_url);
 		this.setHeaders({
 			"Content-Type": "application/json",
+			Authorization: `Bearer ${process.env.OAUTH2_JWT}`
 		});
 	}
 

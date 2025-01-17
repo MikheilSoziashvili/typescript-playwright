@@ -13,6 +13,9 @@ export class SteamBlockedPage extends BasePage<SteamBlockedPageMap> {
 
 	public async continueAndSignIn(): Promise<void> {
 		await this.map.continueAnywayButton.click();
+		await this.setExtraHTTPHeaders({
+			Authorization: `Bearer ${process.env.OAUTH2_JWT}`,
+		});
 		await this.map.signInButton.click();
 	}
 }

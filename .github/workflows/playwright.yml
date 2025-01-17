@@ -91,6 +91,9 @@ on:
             AWS_DEFAULT_REGION:
                 required: true
                 description: AWS Default region
+            OAUTH2_JWT:
+                required: true
+                description: "OAuth2 JWT"
 
     schedule:
         - cron: "0 3 * * *"
@@ -129,6 +132,7 @@ jobs:
             AWS_DEFAULT_REGION: eu-west-2
             ENVIRONMENT_URL: ${{ inputs.environment == '' && vars.ENVIRONMENT_URL || inputs.environment }}
             SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
+            OAUTH2_JWT: ${{ secrets.OAUTH2_JWT }}
             TAG: ${{ inputs.tag == '' && 'smoke' || inputs.tag }}
             SHARD_OPTION: --shard ${{ matrix.shard }}/${{ strategy.job-total }}
             GREP_GAME_PROVIDERS_TESTS: --grep @game-providers

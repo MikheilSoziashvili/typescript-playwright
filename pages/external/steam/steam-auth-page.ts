@@ -27,6 +27,7 @@ export class SteamAuthPage extends BasePage<SteamAuthPageMap> {
 		username: string = Configuration.steam.username,
 		password: string = Configuration.steam.password,
 	): Promise<void> {
+		await this.setExtraHTTPHeaders();
 		await this.map.usernameTextInput.pressSequentially(username);
 		await this.map.passwordTextInput.pressSequentially(password);
 		await this.map.signInButton.click();

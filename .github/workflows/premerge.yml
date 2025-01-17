@@ -56,4 +56,5 @@ jobs:
             AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             AWS_DEFAULT_REGION: eu-west-2
             SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
+            OAUTH2_JWT: ${{ secrets.OAUTH2_JWT }}
         needs: premerge-checks

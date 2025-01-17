@@ -71,6 +71,7 @@ async function updateWithdrawLimits(cookie: string): Promise<void> {
 	const context = await browser.newContext({
 		extraHTTPHeaders: {
 			Cookie: cookie,
+			Authorization: `Bearer ${process.env.OAUTH2_JWT}`,
 		},
 	});
 	const page = await context.newPage();

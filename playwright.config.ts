@@ -15,8 +15,8 @@ function getReporter(): ReporterDescription[] {
 	];
 
 	if (process.env.CI) {
-        reporters.unshift(["blob"]);
-    }
+		reporters.unshift(["blob"]);
+	}
 
 	if (Configuration.createExecution) {
 		//Enable Jira Custom Reporter
@@ -68,6 +68,10 @@ export default defineConfig({
 		// 	username: "trebleclef",
 		// 	password: "|kF$+K7?U_p$",
 		// },
+
+		extraHTTPHeaders: {
+			Authorization: `Bearer ${process.env.OAUTH2_JWT}`,
+		},
 
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
 		trace: "on-first-retry",

@@ -29,6 +29,12 @@ export abstract class BasePage<T = BaseMap> {
 		await this.page.context().clearCookies();
 	}
 
+	public async setExtraHTTPHeaders(
+		headers: Record<string, string> = {},
+	): Promise<void> {
+		await this.page.context().setExtraHTTPHeaders(headers);
+	}
+
 	public async navigate(
 		parameters: BasePageNavigationParametersType,
 	): Promise<void> {
