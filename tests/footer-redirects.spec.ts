@@ -110,6 +110,7 @@ test.describe("Footer redirects tests", () => {
 		liveSupportModal,
 	}) => {
 		await homePage.navigate();
+		await homePage.setExtraHTTPHeaders();
 		await footer.openFooterLinkByPlaceholder("Live Support");
 		await liveSupportModal.assertThat().isDisplayed();
 	});

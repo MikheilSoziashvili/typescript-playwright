@@ -28,6 +28,7 @@ import sharp from "sharp";
 import jsQR from "jsqr";
 import { authenticator } from "otplib";
 import { Timeout } from "@enums/timeout";
+import { DocumentReadyState } from "@enums/playwright/document-ready-states";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -598,6 +599,48 @@ export async function waitUntil(
 		const remainingTime = timeoutInSeconds - elapsedTime;
 		await waitForSeconds(Math.min(intervalSeconds, remainingTime));
 	}
+}
+
+/**
+ * Waits for the page to reach a specific document ready state within a specified timeout period.
+ *
+ * @param pageEvaluator - A function that evaluates and returns the current document ready state of the page.
+ * @param targetReadyState - The desired `DocumentReadyState` to wait for (e.g., "complete", "interactive").
+ * @param errorMessage - A custom error message to display if the timeout is exceeded before reaching the target state.
+ * @param timeout - The maximum time (in seconds) to wait for the page to reach the target ready state.
+ * @param interval - (Optional) The interval (in seconds) at which to check the page's ready state. Defaults to 0.1 seconds.
+ * @returns A promise that resolves once the page reaches the target ready state or rejects if the timeout is exceeded.
+ *
+ * @throws Will throw an error if the ready state cannot be determined or if the specified timeout is exceeded.
+ */
+export async function waitForPageReadyState(
+	pageEvaluator: () => Promise<string>,
+	targetReadyState: DocumentReadyState,
+	errorMessage: string,
+	timeout: number,
+	interval = 0.1,
+): Promise<void> {
+	await waitUntil(
+		async () => {
+			try {
+				const readyState = await pageEvaluator();
+				return readyState === targetReadyState;
+			} catch (error) {
+				if (
+					error instanceof Error &&
+					error.message.includes("destroyed")
+				) {
+					return false;
+				}
+				throw error;
+			}
+		},
+		{
+			errorMessage: errorMessage,
+			intervalSeconds: interval,
+			timeoutSeconds: timeout,
+		},
+	);
 }
 
 /**

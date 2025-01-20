@@ -51,6 +51,7 @@ jobs:
             MAILINATOR_API_KEY: ${{ secrets.MAILINATOR_API_KEY }}
             ENVIRONMENT_URL: ${{ inputs.environment == '' && vars.ENVIRONMENT_URL || inputs.environment }}
             SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
+            OAUTH2_JWT: ${{ secrets.OAUTH2_JWT }}
             TAG: ${{ inputs.tag == '' && 'visual' || inputs.tag }}
 
         steps:

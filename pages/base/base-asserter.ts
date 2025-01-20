@@ -1,7 +1,6 @@
-import { waitUntil } from "@core/utils/utils";
+import { waitForPageReadyState, waitUntil } from "@core/utils/utils";
 import { DocumentReadyState } from "@enums/playwright/document-ready-states";
 import { Timeout } from "@enums/timeout";
-import { WaitUntilState } from "@enums/wait-until-states";
 import { Locator, TestInfo, expect } from "@playwright/test";
 import { wwwPattern } from "@support/regex-patterns";
 import * as Configuration from "configuration";
@@ -56,9 +55,11 @@ export class BaseAsserter<T extends BasePage | BaseModal | BaseComponent> {
 		const screenshotName =
 			options?.screenshotName ?? `Visual-Tests-${testTitle}.png`;
 
-		// eslint-disable-next-line playwright/no-networkidle
-		await this.gamdomPage.page.waitForLoadState(
-			WaitUntilState.NETWORK_IDLE,
+		await waitForPageReadyState(
+			() => this.gamdomPage.page.evaluate(() => document.readyState),
+			DocumentReadyState.COMPLETE,
+			"Page did not load within the timeout period.",
+			Timeout.LONG,
 		);
 
 		const defaultOptions = {
@@ -138,28 +139,11 @@ export class BaseAsserter<T extends BasePage | BaseModal | BaseComponent> {
 		const pages = this.gamdomPage.page.context().pages();
 		const newTab = pages[pages.length - 1];
 
-		await waitUntil(
-			async () => {
-				try {
-					const readyState = await newTab.evaluate(
-						() => document.readyState,
-					);
-					return readyState === DocumentReadyState.COMPLETE;
-				} catch (error) {
-					if (
-						error instanceof Error &&
-						error.message.includes("destroyed")
-					) {
-						return false;
-					}
-					throw error;
-				}
-			},
-			{
-				errorMessage: "New tab did not load within the timeout period.",
-				intervalSeconds: 0.1,
-				timeoutSeconds: Timeout.LONG,
-			},
+		await waitForPageReadyState(
+			() => this.gamdomPage.page.evaluate(() => document.readyState),
+			DocumentReadyState.COMPLETE,
+			"New tab did not load within the timeout period.",
+			Timeout.LONG,
 		);
 
 		return newTab.url().toLowerCase();
