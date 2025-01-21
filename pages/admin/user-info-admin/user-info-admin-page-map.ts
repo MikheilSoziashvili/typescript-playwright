@@ -41,4 +41,30 @@ export class UserInfoAdminPageMap extends BaseMap {
 	public get showUserInfoButton(): Locator {
 		return this.viewUserInfoBox.locator('button:text-is("Show user info")');
 	}
+
+	public get adminUserInfoContainer(): Locator {
+		return this.page.getByTestId("adminUserInfoContainer");
+	}
+
+	public get searchByIPContainer(): Locator {
+		return this.adminUserInfoContainer.getByTestId(
+			"adminUserInfoIpAddressContainer",
+		);
+	}
+
+	public get searchByIPInput(): Locator {
+		return this.searchByIPContainer.locator("input");
+	}
+
+	public get searchIPAddressButton(): Locator {
+		return this.adminUserInfoContainer.getByTestId(
+			"adminUserInfoSearchIpAddressButton",
+		);
+	}
+
+	public get searchByIPLabel(): Locator {
+		return this.searchByIPContainer.locator("label", {
+			hasText: "IP Address",
+		});
+	}
 }

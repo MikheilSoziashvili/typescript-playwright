@@ -99,13 +99,20 @@ export class BaseAsserter<T extends BasePage | BaseModal | BaseComponent> {
 	}
 
 	@step()
-	public async verifyCurrentUrlIs(expectedUrl: string): Promise<void> {
+	public async verifyCurrentUrlIs(
+		expectedUrl: string,
+		decodingUrl = false,
+	): Promise<void> {
 		await this.gamdomPage.page.waitForLoadState();
-		const currentUrl = this.gamdomPage.page.url();
+		let currentUrl = this.gamdomPage.page.url();
 
 		const normalizedExpectedUrl = expectedUrl.startsWith("http")
 			? expectedUrl
 			: `${Configuration.environment_url}${expectedUrl}`;
+
+		decodingUrl
+			? (currentUrl = decodeURIComponent(currentUrl))
+			: currentUrl;
 
 		expect(currentUrl).toBe(normalizedExpectedUrl);
 	}

@@ -10,9 +10,9 @@ const VALID_USERNAME = USER_1_CREDENTIALS.username;
 const VALID_USERNAME_PREFIX = "user";
 const INVALID_USERNAME = "12$user";
 
-test.describe("User info - serch by field", () => {
+test.describe("User info - search by field", () => {
 	test.use(storageStateUserAPI(SUPER_ADMIN_CREDENTIALS.username));
-	test("[ENG-1386] User info - serch by field (wild card)", async ({
+	test("[ENG-1386] User info - search by field (wild card)", async ({
 		userInfoAdminPage,
 		infoAdminPage,
 	}) => {

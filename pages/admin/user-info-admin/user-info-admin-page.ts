@@ -32,6 +32,10 @@ export class UserInfoAdminPage extends BasePage<UserInfoAdminPageMap> {
 		await this.map.searchByUsernameContainer.click();
 	}
 
+	public async clickSearchByIPField(): Promise<void> {
+		await this.map.searchByIPInput.click();
+	}
+
 	public async insertUsernameInSearchByUsernameInput(
 		username: string,
 	): Promise<void> {
@@ -42,5 +46,14 @@ export class UserInfoAdminPage extends BasePage<UserInfoAdminPageMap> {
 		username: string,
 	): Promise<void> {
 		await this.map.searchByUsernameMenuOption(username).click();
+	}
+
+	public async insertIPInSearchByIPInput(ipAddress: string): Promise<void> {
+		await this.map.searchByIPInput.fill(ipAddress);
+	}
+
+	public async searchForIP(ipAddress: string): Promise<void> {
+		await this.insertIPInSearchByIPInput(ipAddress);
+		await this.map.searchIPAddressButton.click();
 	}
 }
