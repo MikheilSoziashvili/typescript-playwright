@@ -78,7 +78,7 @@ test.describe("Dice game autobet", () => {
 					record.input,
 					50,
 				);
-			await diceGamePage.assertThat().lastBetValueIs(15.0);
+			await diceGamePage.steps().openHistoryAndAssertLastBet(15);
 		});
 	});
 });

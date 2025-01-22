@@ -118,4 +118,9 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 	public async openLastBetDetails(): Promise<void> {
 		await this.map.diceLastResultNumber.click();
 	}
+
+	@step()
+	public async openDiceHistory(): Promise<void> {
+		await this.map.diceRollHistoryButton.click();
+	}
 }

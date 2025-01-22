@@ -67,12 +67,22 @@ export class DiceGamePageMap extends BaseMap {
 		return this.page.getByTestId("diceRollHistoryResults");
 	}
 
+	public get diceRollHistoryContainer(): Locator {
+		return this.page.getByTestId("diceRollHistoryContainer");
+	}
+
+	public get diceRollHistoryButton(): Locator {
+		return this.diceRollHistoryContainer.locator("img");
+	}
+
 	public get diceLastResultNumber(): Locator {
 		return this.diceResultsHistory.locator("div").first();
 	}
 
 	public get diceLastResultBetValue(): Locator {
-		return this.page.locator("span.currency-amount").first();
+		return this.diceHistoryResultsModal
+			.locator("span.currency-amount")
+			.first();
 	}
 
 	public get diceAutobetTabButton(): Locator {
@@ -81,6 +91,10 @@ export class DiceGamePageMap extends BaseMap {
 
 	public get autobetContainer(): Locator {
 		return this.page.locator("div[class*=styled__GameBoxBody]");
+	}
+
+	public get diceHistoryResultsModal(): Locator {
+		return this.page.locator('div[class*="Modal-styled_"]');
 	}
 
 	private getAutobetSectionLocator(

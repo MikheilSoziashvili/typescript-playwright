@@ -205,8 +205,6 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 
 	@step()
 	public async lastBetValueIs(expectedValue: number): Promise<void> {
-		await this.gamdomPage.openLastBetDetails();
-
 		const rawText =
 			(await this.gamdomPage.map.diceLastResultBetValue.textContent()) ??
 			"";

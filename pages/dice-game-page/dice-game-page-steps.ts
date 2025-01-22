@@ -132,8 +132,8 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 			},
 			{
 				errorMessage: "Dice never finished rolling within the timeout.",
-				intervalSeconds: 1,
-				timeoutSeconds: 5,
+				intervalSeconds: 2,
+				timeoutSeconds: 6,
 			},
 		);
 
@@ -147,5 +147,12 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 		const diceGameAreaMessage =
 			await this.gamdomPage.map.diceGameAreaMessage.textContent();
 		return diceGameAreaMessage === gameResultMessage;
+	}
+
+	public async openHistoryAndAssertLastBet(
+		expectedLastBet: number,
+	): Promise<void> {
+		await this.gamdomPage.openDiceHistory();
+		await this.gamdomPage.assertThat().lastBetValueIs(expectedLastBet);
 	}
 }
