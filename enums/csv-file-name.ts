@@ -21,5 +21,6 @@ export enum CsvFilesName {
 	REMOVED_RESTRICTED_COUNTRIES = "ENG-2625-profile-verification-removed-aml1RestrictedCountries.csv",
 	WALLET = "ENG-2860-2861-Vault-deposit-and-withdraw.csv",
 	HOME_PAGE_CASINO_SLIDER_NAVIGATION = "ENG-3832-casino-slider-visit-button-redirect.csv",
+	DICE_AUTOBET_INCREASE_BY = "ENG-2843-dice-autobet-increase-by.csv",
 	USER_INFO_SEARCH_BY_IP_ADDRESS = "ENG-1456-user-info-search-by-ip.csv",
 }

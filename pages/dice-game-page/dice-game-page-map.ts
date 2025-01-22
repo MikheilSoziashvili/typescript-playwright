@@ -71,6 +71,10 @@ export class DiceGamePageMap extends BaseMap {
 		return this.diceResultsHistory.locator("div").first();
 	}
 
+	public get diceLastResultBetValue(): Locator {
+		return this.page.locator("span.currency-amount").first();
+	}
+
 	public get diceAutobetTabButton(): Locator {
 		return this.page.getByTestId("diceAutoTabButton");
 	}
@@ -133,5 +137,20 @@ export class DiceGamePageMap extends BaseMap {
 
 	public get betMenu(): Locator {
 		return this.page.locator('div[class*="GameBox"][class*="MuiBox-root"]');
+	}
+
+	private getInputLocatorByLabel(labelText: string | RegExp): Locator {
+		return this.page
+			.locator("label", { hasText: labelText })
+			.locator("..")
+			.locator("input");
+	}
+
+	public get onWinIncreaseByInput(): Locator {
+		return this.getInputLocatorByLabel("On Win");
+	}
+
+	public get onLossIncreaseByInput(): Locator {
+		return this.getInputLocatorByLabel(/^On Loss$/);
 	}
 }

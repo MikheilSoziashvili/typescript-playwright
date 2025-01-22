@@ -6,6 +6,7 @@ import { Timeout } from "@enums/timeout";
 import { parseToFloat } from "@core/utils/utils";
 import { DiceAutobetTestData } from "@dtos/test-data";
 import { step } from "decorators/step";
+import { sanitizeAmount } from "@support/regex-patterns";
 
 export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 	public constructor(page: DiceGamePage) {
@@ -200,5 +201,18 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 
 	private shouldStopOn(limit: number | undefined, value: number): boolean {
 		return limit !== undefined && value >= limit;
+	}
+
+	@step()
+	public async lastBetValueIs(expectedValue: number): Promise<void> {
+		await this.gamdomPage.openLastBetDetails();
+
+		const rawText =
+			(await this.gamdomPage.map.diceLastResultBetValue.textContent()) ??
+			"";
+		const sanitizedText = rawText.replace(sanitizeAmount, "");
+		const actualValue = parseFloat(sanitizedText);
+
+		expect(actualValue).toBe(expectedValue);
 	}
 }

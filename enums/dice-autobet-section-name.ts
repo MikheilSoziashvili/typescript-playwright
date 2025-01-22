@@ -5,3 +5,9 @@ export enum DiceAutobetSectionName {
 	STOP_ON_PROFIT = "Stop on Profit",
 	STOP_ON_LOSS = "Stop on Loss",
 }
+
+export enum BetIncreaseCondition {
+	WIN = "win",
+	LOSS = "loss",
+	BOTH = "both",
+}

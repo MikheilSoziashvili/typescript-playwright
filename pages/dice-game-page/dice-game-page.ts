@@ -7,6 +7,7 @@ import { DICE_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { DiceAutobetTestData } from "@dtos/test-data";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { step } from "decorators/step";
+import { BetIncreaseCondition } from "@enums/dice-autobet-section-name";
 
 export class DiceGamePage extends BasePage<DiceGamePageMap> {
 	public constructor(page: Page) {
@@ -60,6 +61,27 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 	}
 
 	@step()
+	public async fillIncreaseByInput(
+		type: BetIncreaseCondition,
+		value: number,
+	): Promise<void> {
+		switch (type) {
+			case BetIncreaseCondition.BOTH:
+				await this.map.onWinIncreaseByInput.fill(`${value}`);
+				await this.map.onLossIncreaseByInput.fill(`${value}`);
+				break;
+
+			case BetIncreaseCondition.WIN:
+				await this.map.onWinIncreaseByInput.fill(`${value}`);
+				break;
+
+			case BetIncreaseCondition.LOSS:
+				await this.map.onLossIncreaseByInput.fill(`${value}`);
+				break;
+		}
+	}
+
+	@step()
 	public async fillInAutobetBetData(
 		parameters: DiceAutobetTestData,
 	): Promise<void> {
@@ -82,7 +104,18 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 		}
 	}
 
+	@step()
 	public async startAutobet(): Promise<void> {
 		await this.map.startAutobetButton.click();
+	}
+
+	@step()
+	public async stopAutobet(): Promise<void> {
+		await this.map.stopAutobetButton.click();
+	}
+
+	@step()
+	public async openLastBetDetails(): Promise<void> {
+		await this.map.diceLastResultNumber.click();
 	}
 }
