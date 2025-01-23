@@ -1,5 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
+import { HiloGameResultColor } from "@enums/hilo-result-messages";
 
 export class HiloGamePageMap extends BaseMap {
 	public constructor(page: Page) {
@@ -28,6 +29,16 @@ export class HiloGamePageMap extends BaseMap {
 
 	public get statsArea(): Locator {
 		return this.gameContainer.getByTestId("hiloStatsAreaColumn");
+	}
+
+	public get statisticsExtraInfoContainer(): Locator {
+		return this.statsArea.locator("div[class*='ExtraInfoContainer']");
+	}
+
+	public get cardsProbabilityContainer(): Locator {
+		return this.statisticsExtraInfoContainer.locator(
+			"div[class*='ProbabilitiesWrapper']",
+		);
 	}
 
 	// game area
@@ -80,5 +91,75 @@ export class HiloGamePageMap extends BaseMap {
 
 	public get blackButton(): Locator {
 		return this.colorButtonsContainer.getByText("Black");
+	}
+
+	public get recentHistoryContainer(): Locator {
+		return this.betControlsArea.getByTestId("hiloRecentHistory");
+	}
+
+	public get hiloHistoryButton(): Locator {
+		return this.recentHistoryContainer.locator(
+			"div[class*='IconContainer-sc']",
+		);
+	}
+
+	public get hiloHistoryModal(): Locator {
+		return this.page.locator(
+			"//div[contains(@class,'sc-') and text()='Hilo History']//ancestor::div[contains(@class,'ModalPaper-sc-') and contains(@class,'open')]",
+		);
+	}
+
+	public get historyCardsBlock(): Locator {
+		return this.hiloHistoryModal.locator("div[color]");
+	}
+
+	public historyCardByCardColor(cardColor: HiloGameResultColor): Locator {
+		return this.hiloHistoryModal.locator(`div[color='${cardColor}']`);
+	}
+
+	public get showMoreHistoryCardsButton(): Locator {
+		return this.hiloHistoryModal.locator(`button`, {
+			has: this.page.locator("span", { hasText: "Show more" }),
+		});
+	}
+
+	public get closeHistoryModalButton(): Locator {
+		return this.hiloHistoryModal.locator(`button`, {
+			has: this.page.locator("i[class*='icon-remove']"),
+		});
+	}
+
+	public get lastRoundsDropdown(): Locator {
+		return this.statisticsExtraInfoContainer.locator(
+			`[role="combobox"][aria-haspopup="listbox"]`,
+		);
+	}
+
+	public get lastRoundsDropdownValuesContainer(): Locator {
+		return this.page.locator(`ul[role='listbox'][class*='-list']`);
+	}
+
+	public get lastRoundsDropdownItems(): Locator {
+		return this.lastRoundsDropdownValuesContainer
+			.locator("li")
+			.getByRole("option");
+	}
+
+	public lastRoundsDropdownItemByPlaceholder(placeholder: string): Locator {
+		return this.lastRoundsDropdownValuesContainer.locator(
+			`li[data-value="${placeholder}"]`,
+		);
+	}
+
+	public get lastRoundsRedCardsHistoryPercentageValue(): Locator {
+		return this.cardsProbabilityContainer
+			.locator(`[class*='ProbabilityContainer']`)
+			.first();
+	}
+
+	public get lastRoundsBlackCardsHistoryPercentageValue(): Locator {
+		return this.cardsProbabilityContainer
+			.locator(`[class*='ProbabilityContainer']`)
+			.last();
 	}
 }

@@ -116,6 +116,18 @@ export class HiloBetTestData {
 	}
 }
 
+export class HiloCardsColorData {
+	public redCards: number;
+	public blackCards: number;
+	public jokerCards: number;
+
+	constructor(redCards: number, blackCards: number, jokerCards: number) {
+		this.redCards = redCards;
+		this.blackCards = blackCards;
+		this.jokerCards = jokerCards;
+	}
+}
+
 export class BlogPostTestData {
 	public paragraph: string;
 	public title: string;

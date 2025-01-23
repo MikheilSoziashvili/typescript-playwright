@@ -34,4 +34,11 @@ export class HiloGamePageAsserter extends BaseAsserter<HiloGamePage> {
 			resultMessage,
 		);
 	}
+
+	public async cardColorPercentageValuesEqual(
+		expectedPercentage: number,
+		actualPercentage: number,
+	): Promise<void> {
+		expect(expectedPercentage).toBe(actualPercentage);
+	}
 }

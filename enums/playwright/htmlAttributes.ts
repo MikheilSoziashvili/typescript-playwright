@@ -16,4 +16,5 @@ export enum Attributes {
 	ARIA_EXPANDED = "aria-expanded",
 	ARIA_PRESSED = "aria-pressed",
 	DATA_VALUE = "data-value",
+	COLOR = "color",
 }

@@ -22,4 +22,5 @@ export const lowerToUpperWithSpace = /([a-z])([A-Z])/g;
 export const capitalizeFirstLetter = /^./;
 export const whiteSpacePattern = /\s+/g;
 export const wwwPattern = /www\./;
-export const sanitizeAmount = /[^0-9.]/g
+export const sanitizeAmount = /[^0-9.]/g;
+export const digitsOnlyPattern = /\d+/;
