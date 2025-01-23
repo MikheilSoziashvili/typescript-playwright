@@ -8,7 +8,7 @@ import { Feature } from "@enums/feature";
 import { BaseApi } from "./base-api";
 import { TipUserRequest } from "@dtos/requests/gamdom-api/tip-user-request";
 import { BasicInfoResponse } from "@dtos/responses/gamdom-api/basic-info-response";
-import { getCookieHeader } from "@core/utils/utils";
+import { formatDate, getCookieHeader } from "@core/utils/utils";
 import { ApiEndpoints } from "@enums/api-endpoints";
 import { SetProviderStateRequest } from "@dtos/requests/gamdom-api/set-provider-state-request";
 import {
@@ -16,13 +16,14 @@ import {
 	EditUserInfoRequest,
 } from "@dtos/requests/gamdom-api/edit-user-info-request";
 import { GetProvidersResponse } from "@dtos/responses/gamdom-api/get-providers-response";
+import { CreateKothEventRequest } from "@dtos/requests/gamdom-api/create-koth-event-request";
 
 export class GamdomApi extends BaseApi {
 	constructor(base_url: string = Configuration.environment_url) {
 		super(base_url);
 		this.setHeaders({
 			"Content-Type": "application/json",
-			Authorization: `Bearer ${process.env.OAUTH2_JWT}`
+			Authorization: `Bearer ${process.env.OAUTH2_JWT}`,
 		});
 	}
 
@@ -296,6 +297,29 @@ export class GamdomApi extends BaseApi {
 			_headers,
 		);
 
+		return this.post(parameters);
+	}
+
+	public async createKothEvent(
+		event_name: string,
+		max_winners: number,
+		prize_coins: number,
+		_headers?: Record<string, string>,
+	): Promise<APIResponse> {
+		const payload: CreateKothEventRequest = {
+			start_date: formatDate(),
+			end_date: formatDate(1),
+			event_name: event_name,
+			event_type: "MANUAL",
+			max_winners: max_winners,
+			prize_coins: prize_coins,
+		};
+
+		const parameters = this.buildParameters(
+			ApiEndpoints.CREATEKOTH,
+			payload,
+			_headers,
+		);
 		return this.post(parameters);
 	}
 }

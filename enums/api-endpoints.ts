@@ -7,4 +7,5 @@ export enum ApiEndpoints {
 	SETPROVIDERSTATE = "/client-api/admin/providers/saveExtProvidersList",
 	GETPROVIDERS = "/client-api/admin/providers/getSlotsProviders",
 	EDITUSERINFO = "/client-api/admin/user/editUserInfo",
+	CREATEKOTH = "/client-api/admin/koth/createEvent"
 }

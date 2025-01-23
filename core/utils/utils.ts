@@ -666,3 +666,24 @@ export async function getItemsAttribute(
 
 	return attrValues;
 }
+
+/**
+ * Returns a formatted date string in YYYY-MM-DD format.
+ * Optionally adds a specified number of days to the current date.
+ *
+ * @param {number} [daysToAdd=0] - The number of days to add to the current date. Defaults to 0.
+ * @returns {string} The formatted date string in YYYY-MM-DD format.
+ *
+ * @example
+ * // Get today's date
+ * const today = formatDate();
+ *
+ * @example
+ * // Get tomorrow's date
+ * const tomorrow = formatDate(1);
+ */
+export function formatDate(daysToAdd = 0): string {
+	const date = new Date();
+	date.setDate(date.getDate() + daysToAdd);
+	return date.toISOString().slice(0, 10);
+}

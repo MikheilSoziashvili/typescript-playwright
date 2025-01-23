@@ -4,7 +4,11 @@ import { createExecutionBody } from "@api/jira-api-payloads";
 import { SUPER_ADMIN_CREDENTIALS } from "@constants/credentials";
 import { SECURITY_ADMIN_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { JsonData } from "@core/interfaces";
-import { getCookieHeader, writeToJSONFile } from "@core/utils/utils";
+import {
+	generateRandomString,
+	getCookieHeader,
+	writeToJSONFile,
+} from "@core/utils/utils";
 import { Feature } from "@enums/feature";
 import { logger } from "@logger/logger";
 import { SecurityAdminPage } from "@pages/admin/security-admin/security-admin-page";
@@ -64,6 +68,25 @@ async function enableEvBasedRewards(
 	});
 
 	logger.info("Rewards have been successfully enabled.");
+}
+
+async function createKothEvent(
+	gamdomApi: GamdomApi,
+	event_name: string,
+	max_winners: number,
+	prize_coins: number,
+	cookie: string,
+): Promise<void> {
+	const createKothEventResponse = await gamdomApi.createKothEvent(
+		event_name,
+		max_winners,
+		prize_coins,
+		{ Cookie: cookie },
+	);
+
+	if (createKothEventResponse.status() == 200) {
+		logger.info("New KOTH Even created");
+	}
 }
 
 async function updateWithdrawLimits(cookie: string): Promise<void> {
@@ -148,6 +171,13 @@ async function globalSetup(): Promise<void> {
 	await enableEvBasedRewards(gamdomApi, cookie);
 	await enableVaultFeature(gamdomApi, cookie);
 	await updateWithdrawLimits(cookie);
+	await createKothEvent(
+		gamdomApi,
+		generateRandomString({ prefix: "KOTH_automation_", length: 3 }),
+		1,
+		15000,
+		cookie,
+	);
 
 	if (Configuration.createExecution) {
 		const existingKey = process.env.TEST_EXECUTION_ID;
