@@ -1,6 +1,7 @@
 import { BasePageStep } from "@pages/base/base-page-step";
 import { WalletModal } from "./wallet-modal";
 import { step } from "decorators/step";
+import { parseToFloat } from "@core/utils/utils";
 
 export class WalletModalSteps extends BasePageStep<WalletModal> {
 	public constructor(page: WalletModal) {
@@ -8,7 +9,8 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 	}
 
 	private formatAmount(amount: number): string {
-		return `$${Number(amount).toLocaleString("en-US", {
+		const roundedAmount = parseToFloat(amount);
+		return `$${Number(roundedAmount).toLocaleString("en-US", {
 			minimumFractionDigits: 2,
 			maximumFractionDigits: 2,
 		})}`;

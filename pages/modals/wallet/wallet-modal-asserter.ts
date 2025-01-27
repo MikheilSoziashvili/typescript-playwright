@@ -3,6 +3,7 @@ import { WalletModal } from "./wallet-modal";
 import { Timeout } from "@enums/timeout";
 import { expect } from "playwright/test";
 import { step } from "decorators/step";
+import { parseToFloat } from "@core/utils/utils";
 
 export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 	public constructor(page: WalletModal) {
@@ -20,8 +21,10 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 	@step()
 	public async vaultWalletAmountIs(expectedAmount: number): Promise<void> {
 		const amountText = await this.gamdomPage.getVaultWalletAmount();
-		const actualAmount = parseFloat(amountText);
-		expect(actualAmount).toBe(expectedAmount);
+		const actualAmount = parseToFloat(parseFloat(amountText));
+		const roundedExpectedAmount = parseToFloat(expectedAmount);
+
+		expect(actualAmount).toBe(roundedExpectedAmount);
 	}
 
 	@step()
