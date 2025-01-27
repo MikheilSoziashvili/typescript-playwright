@@ -4,6 +4,7 @@ import { WalletModalAsserter } from "./wallet-modal-asserter";
 import { WalletModalMap } from "./wallet-modal-map";
 import { WalletModalSteps } from "./wallet-modal-steps";
 import { sanitizeAmount } from "@support/regex-patterns";
+import { Timeout } from "@enums/timeout";
 
 export class WalletModal extends BasePage<WalletModalMap> {
 	public constructor(page: Page) {
@@ -23,7 +24,7 @@ export class WalletModal extends BasePage<WalletModalMap> {
 	}
 
 	public async openVaultTab(): Promise<void> {
-		await this.map.vaultTabButton.click();
+		await this.map.vaultTabButton.click({ timeout: Timeout.LONG });
 	}
 
 	public async openWithdrawTabInVault(): Promise<void> {
@@ -55,5 +56,15 @@ export class WalletModal extends BasePage<WalletModalMap> {
 		const amountLocator = this.map.vaultWalletAmount;
 		const amountText = (await amountLocator.textContent()) ?? "";
 		return amountText.replace(sanitizeAmount, "");
+	}
+
+	public async withdrawInVault(
+		walletOption: string,
+		amount: number,
+	): Promise<void> {
+		await this.openWithdrawTabInVault();
+		await this.selectWalletOption(walletOption);
+		await this.fillVaultAmount(amount);
+		await this.clickWithdrawButton();
 	}
 }

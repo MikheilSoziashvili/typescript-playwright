@@ -14,16 +14,35 @@ import { WaitUntilState } from "@enums/wait-until-states";
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "./base-map";
 
-export abstract class BasePage<T = BaseMap> {
-	readonly page: Page;
-	readonly map: T;
+type Constructor<T> = new (page: Page) => T;
+
+export abstract class BasePage<T extends BaseMap> {
+	private _page: Page;
+	private _map: T;
 
 	constructor(page: Page, map: T) {
-		this.page = page;
-		this.map = map;
+		this._page = page;
+		this._map = map;
+	}
+
+	get page(): Page {
+		return this._page;
+	}
+
+	get map(): T {
+		return this._map;
 	}
 
 	abstract assertThat(): void;
+
+	/**
+	 * Updates the BasePage with a new Page instance.
+	 * @param newPage The new Page instance.
+	 */
+	public init(newPage: Page): void {
+		this._page = newPage;
+		this._map = new (this._map.constructor as Constructor<T>)(newPage);
+	}
 
 	public async clearCookies(): Promise<void> {
 		await this.page.context().clearCookies();

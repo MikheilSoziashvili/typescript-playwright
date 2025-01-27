@@ -1,5 +1,6 @@
 import { LiveSupportModal } from "@pages/modals/live-support-intercom-modal/live-support-intercom-modal";
 import { TipUserModal } from "@pages/modals/tip-user-modal/tip-user-modal";
+import { TwoFactorAuthModal } from "@pages/modals/two-factor-authentication-modal/two-factor-auth-modal";
 import { UserProfileModal } from "@pages/modals/user-profile-modal/user-profile-modal";
 import { WalletModal } from "@pages/modals/wallet/wallet-modal";
 
@@ -10,6 +11,7 @@ export type Modals = {
 	userProfileModal: UserProfileModal;
 	liveSupportModal: LiveSupportModal;
 	walletModal: WalletModal;
+	twoFactorAuthModal: TwoFactorAuthModal;
 };
 
 export const modalsFixtures = base.extend<Modals>({
@@ -24,5 +26,8 @@ export const modalsFixtures = base.extend<Modals>({
 	},
 	walletModal: async ({ page }, use) => {
 		await use(new WalletModal(page));
+	},
+	twoFactorAuthModal: async ({ page }, use) => {
+		await use(new TwoFactorAuthModal(page));
 	},
 });

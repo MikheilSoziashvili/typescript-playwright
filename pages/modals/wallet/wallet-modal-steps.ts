@@ -33,11 +33,17 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 	@step(
 		`Deposit from a given wallet and verify the amount is available in the vault`,
 	)
-	public async depositFromWalletAndVerify(wallet: string): Promise<void> {
+	public async depositFromWalletAndVerify(
+		wallet: string,
+		depositAmount?: number,
+	): Promise<void> {
 		await this.gamdomPage.openVaultTab();
 		await this.gamdomPage.selectWalletOption(wallet);
 
-		const amount = await this.getVaultAmountMinusOne();
+		const amount =
+			depositAmount !== undefined
+				? depositAmount
+				: await this.getVaultAmountMinusOne();
 
 		await this.gamdomPage.fillVaultAmount(amount);
 		await this.gamdomPage.clickDepositButton();

@@ -8,7 +8,11 @@ import { step } from "decorators/step";
 import { BaseComponent } from "./base-component";
 import { BaseModal } from "./base-modal";
 import { BasePage } from "./base-page";
-export class BaseAsserter<T extends BasePage | BaseModal | BaseComponent> {
+import { BaseMap } from "./base-map";
+
+export class BaseAsserter<
+	T extends BasePage<BaseMap> | BaseModal | BaseComponent,
+> {
 	readonly gamdomPage: T;
 
 	public constructor(gamdomPage: T) {

@@ -1,5 +1,7 @@
+import { WaitUntilState } from "@enums/wait-until-states";
 import { BasePageStep } from "@pages/base/base-page-step";
 import { SettingsPage } from "./settings-page";
+import { Timeout } from "@enums/timeout";
 
 export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 	public constructor(gamdomPage: SettingsPage) {
@@ -23,6 +25,20 @@ export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 			.checkElementsAreNotVisible([
 				this.gamdomPage.map.activation2FAPopup,
 			]);
+		await this.gamdomPage
+			.assertThat()
+			.checkElementsAreVisible([this.gamdomPage.map.disable2FAButton]);
+		// Ensure 2FA activation is complete by waiting for both page load
+		// and network idle states, confirming all related network requests have settled
+		await this.gamdomPage.page.waitForLoadState(WaitUntilState.LOAD, {
+			timeout: Timeout.LONG,
+		});
+		await this.gamdomPage.page.waitForLoadState(
+			WaitUntilState.NETWORK_IDLE,
+			{
+				timeout: Timeout.LONG,
+			},
+		);
 	}
 
 	public async disable2FaAuthentication(

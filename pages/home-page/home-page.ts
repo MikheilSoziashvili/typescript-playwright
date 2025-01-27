@@ -144,6 +144,7 @@ export class HomePage extends BasePage<HomePageMap> {
 
 	public async navigateToWallet(): Promise<void> {
 		await this.navigate();
+		await this.page.waitForLoadState();
 		await this.clickWalletButton();
 	}
 }

@@ -20,7 +20,7 @@ import fs from "fs";
 import xml2js from "xml2js";
 import { MAILINATOR_DOMAIN } from "@constants/domains";
 import { Protocol } from "@enums/api/protocols";
-import { Locator, Page } from "playwright";
+import { BrowserContext, Locator, Page } from "playwright";
 import { environment_url } from "configuration";
 import { AUTH_PATH } from "@constants/file-paths";
 import { PNG, PNGOptions } from "pngjs";
@@ -686,4 +686,31 @@ export function formatDate(daysToAdd = 0): string {
 	const date = new Date();
 	date.setDate(date.getDate() + daysToAdd);
 	return date.toISOString().slice(0, 10);
+}
+
+/**
+ * Initializes multiple page objects by associating them with a new page in the provided browser context.
+ *
+ * This function creates a new page within the given browser context and initializes each page object
+ * by invoking its `init` method with the newly created page as an argument.
+ *
+ * @async
+ * @param {BrowserContext} context - The browser context in which the new page will be created.
+ * @param {...{ init: (page: Page) => void }[]} pageObjects - An array of page objects, each containing an `init` method
+ * that accepts a `Page` instance to bind the object to the created page.
+ * @returns {Promise<Page>} A promise that resolves to the newly created page.
+ *
+ * @example
+ * // Example usage
+ * const page = await initializePageObjects(context, homePage, settingsPage, walletModal);
+ * await homePage.navigate();
+ * await settingsPage.enable2FA();
+ */
+export async function initializePageObjects(
+	context: BrowserContext,
+	...pageObjects: { init: (page: Page) => void }[]
+): Promise<Page> {
+	const page = await context.newPage();
+	pageObjects.forEach((obj) => obj.init(page));
+	return page;
 }
