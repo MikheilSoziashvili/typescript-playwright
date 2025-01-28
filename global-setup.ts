@@ -36,6 +36,21 @@ async function enableHiloFeature(
 	logger.info("HILO has been successfully enabled.");
 }
 
+async function enablePlinkoFeature(
+	gamdomApi: GamdomApi,
+	cookie: string,
+): Promise<void> {
+	const featureResponse = await gamdomApi.setFeatureState(
+		Feature.PLINKO,
+		{ regular: true, beta: true },
+		{ Cookie: cookie },
+	);
+
+	featureResponse.forEach((response) => {
+		expect(response.status()).toBe(200);
+	});
+}
+
 async function enableVaultFeature(
 	gamdomApi: GamdomApi,
 	cookie: string,
@@ -170,6 +185,7 @@ async function globalSetup(): Promise<void> {
 	await enableHiloFeature(gamdomApi, cookie);
 	await enableEvBasedRewards(gamdomApi, cookie);
 	await enableVaultFeature(gamdomApi, cookie);
+	await enablePlinkoFeature(gamdomApi, cookie);
 	await updateWithdrawLimits(cookie);
 	await createKothEvent(
 		gamdomApi,
