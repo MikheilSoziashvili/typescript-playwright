@@ -1,7 +1,8 @@
-import { WaitUntilState } from "@enums/wait-until-states";
-import { BasePageStep } from "@pages/base/base-page-step";
-import { SettingsPage } from "./settings-page";
 import { Timeout } from "@enums/timeout";
+import { BasePageStep } from "@pages/base/base-page-step";
+import { Toast } from "@pages/components/toast/toast";
+import { expect } from "@playwright/test";
+import { SettingsPage } from "./settings-page";
 
 export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 	public constructor(gamdomPage: SettingsPage) {
@@ -28,17 +29,12 @@ export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 		await this.gamdomPage
 			.assertThat()
 			.checkElementsAreVisible([this.gamdomPage.map.disable2FAButton]);
-		// Ensure 2FA activation is complete by waiting for both page load
-		// and network idle states, confirming all related network requests have settled
-		await this.gamdomPage.page.waitForLoadState(WaitUntilState.LOAD, {
+
+		const toast = new Toast(this.gamdomPage.page);
+		await expect(toast.map.toastSubTitleLocator()).toBeVisible();
+		await expect(toast.map.toastSubTitleLocator()).toBeHidden({
 			timeout: Timeout.LONG,
 		});
-		await this.gamdomPage.page.waitForLoadState(
-			WaitUntilState.NETWORK_IDLE,
-			{
-				timeout: Timeout.LONG,
-			},
-		);
 	}
 
 	public async disable2FaAuthentication(
