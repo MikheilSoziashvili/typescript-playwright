@@ -181,12 +181,11 @@ async function globalSetup(): Promise<void> {
 			SUPER_ADMIN_CREDENTIALS.password,
 		),
 	);
-
+	await updateWithdrawLimits(cookie);
 	await enableHiloFeature(gamdomApi, cookie);
 	await enableEvBasedRewards(gamdomApi, cookie);
 	await enableVaultFeature(gamdomApi, cookie);
 	await enablePlinkoFeature(gamdomApi, cookie);
-	await updateWithdrawLimits(cookie);
 	await createKothEvent(
 		gamdomApi,
 		generateRandomString({ prefix: "KOTH_automation_", length: 3 }),
