@@ -17,6 +17,7 @@ import {
 } from "@dtos/requests/gamdom-api/edit-user-info-request";
 import { GetProvidersResponse } from "@dtos/responses/gamdom-api/get-providers-response";
 import { CreateKothEventRequest } from "@dtos/requests/gamdom-api/create-koth-event-request";
+import { EnableRainRequest } from "@dtos/requests/enable-rain-request";
 
 export class GamdomApi extends BaseApi {
 	constructor(base_url: string = Configuration.environment_url) {
@@ -317,6 +318,40 @@ export class GamdomApi extends BaseApi {
 
 		const parameters = this.buildParameters(
 			ApiEndpoints.CREATEKOTH,
+			payload,
+			_headers,
+		);
+		return this.post(parameters);
+	}
+
+	public async enableRain(
+		active: boolean,
+		extraAmount: number,
+		frequencyMins: number,
+		maxAmount: number,
+		minAmount: number,
+		percentExtraAmount: number,
+		_headers?: Record<string, string>,
+	): Promise<APIResponse> {
+		const payload: EnableRainRequest = {
+			type: "rpc",
+			arg: {
+				announcementDate: formatDate(),
+				customData: {
+					active: active,
+					extraAmount: extraAmount,
+					frequencyMins: frequencyMins,
+					maxAmount: maxAmount,
+					minAmount: minAmount,
+					name: "Free Money",
+					percentExtraAmount: percentExtraAmount,
+				},
+				type: "custom",
+			},
+		};
+
+		const parameters = this.buildParameters(
+			ApiEndpoints.ENABLERAIN,
 			payload,
 			_headers,
 		);

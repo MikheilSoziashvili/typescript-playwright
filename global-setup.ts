@@ -99,9 +99,32 @@ async function createKothEvent(
 		{ Cookie: cookie },
 	);
 
-	if (createKothEventResponse.status() == 200) {
-		logger.info("New KOTH Even created");
-	}
+	expect(createKothEventResponse.status()).toBe(200);
+	logger.info("New KOTH Event created");
+}
+
+async function enableRain(
+	gamdomApi: GamdomApi,
+	active: boolean,
+	extraAmount: number,
+	frequencyMins: number,
+	maxAmount: number,
+	minAmount: number,
+	percentExtraAmount: number,
+	cookie: string,
+): Promise<void> {
+	const enableRainResponse = await gamdomApi.enableRain(
+		active,
+		extraAmount,
+		frequencyMins,
+		maxAmount,
+		minAmount,
+		percentExtraAmount,
+		{ Cookie: cookie },
+	);
+
+	expect(enableRainResponse.status()).toBe(200);
+	logger.info("New Rain was created");
 }
 
 async function updateWithdrawLimits(cookie: string): Promise<void> {
@@ -193,6 +216,7 @@ async function globalSetup(): Promise<void> {
 		15000,
 		cookie,
 	);
+	await enableRain(gamdomApi, false, 10000, 20, 1000, 2000, 5, cookie);
 
 	if (Configuration.createExecution) {
 		const existingKey = process.env.TEST_EXECUTION_ID;
