@@ -6,6 +6,7 @@ import { jira } from "../../../configuration";
 import fs from "fs";
 import { expect } from "playwright/test";
 import xml2js from "xml2js";
+import { HttpStatus } from "@enums/http-status";
 
 export default class ReportUploader {
 	private issueKey: string;
@@ -53,7 +54,7 @@ export default class ReportUploader {
 		await this.xrayApi.initialize();
 
 		const response = await this.xrayApi.importXmlResult(this.issueKey);
-		expect(response.status()).toBe(200);
+		expect(response.status()).toBe(HttpStatus.OK);
 
 		logger.info(
 			`Report is uploaded successfully in Test Execution ${this.issueKey}`,

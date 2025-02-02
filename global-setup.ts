@@ -10,6 +10,7 @@ import {
 	writeToJSONFile,
 } from "@core/utils/utils";
 import { Feature } from "@enums/feature";
+import { HttpStatus } from "@enums/http-status";
 import { logger } from "@logger/logger";
 import { SecurityAdminPage } from "@pages/admin/security-admin/security-admin-page";
 import { chromium, expect } from "@playwright/test";
@@ -30,7 +31,7 @@ async function enableHiloFeature(
 	);
 
 	featureResponse.forEach((response) => {
-		expect(response.status()).toBe(200);
+		expect(response.status()).toBe(HttpStatus.OK);
 	});
 
 	logger.info("HILO has been successfully enabled.");
@@ -47,7 +48,7 @@ async function enablePlinkoFeature(
 	);
 
 	featureResponse.forEach((response) => {
-		expect(response.status()).toBe(200);
+		expect(response.status()).toBe(HttpStatus.OK);
 	});
 }
 
@@ -62,7 +63,7 @@ async function enableVaultFeature(
 	);
 
 	featureResponse.forEach((response) => {
-		expect(response.status()).toBe(200);
+		expect(response.status()).toBe(HttpStatus.OK);
 	});
 }
 
@@ -79,7 +80,7 @@ async function enableEvBasedRewards(
 	);
 
 	featureResponse.forEach((response) => {
-		expect(response.status()).toBe(200);
+		expect(response.status()).toBe(HttpStatus.OK);
 	});
 
 	logger.info("Rewards have been successfully enabled.");
@@ -99,7 +100,7 @@ async function createKothEvent(
 		{ Cookie: cookie },
 	);
 
-	expect(createKothEventResponse.status()).toBe(200);
+	expect(createKothEventResponse.status()).toBe(HttpStatus.OK);
 	logger.info("New KOTH Event created");
 }
 
@@ -123,7 +124,7 @@ async function enableRain(
 		{ Cookie: cookie },
 	);
 
-	expect(enableRainResponse.status()).toBe(200);
+	expect(enableRainResponse.status()).toBe(HttpStatus.OK);
 	logger.info("New Rain was created");
 }
 
@@ -156,7 +157,7 @@ async function createJiraExecution(): Promise<void> {
 	const jiraApi = new JiraApi();
 	const response = await jiraApi.createExecution(createExecutionBody);
 
-	expect(response.status()).toBe(201);
+	expect(response.status()).toBe(HttpStatus.CREATED);
 
 	const responseBody = (await response.json()) as JsonData;
 	const responseKey = responseBody["key"] as string;

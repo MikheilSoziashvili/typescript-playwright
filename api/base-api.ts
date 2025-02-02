@@ -5,6 +5,7 @@ import { logger } from "@logger/logger";
 import { handleError } from "@core/api/error-handler";
 import { PayloadType, RequestOptions } from "@core/types/types";
 import { KnownError } from "@core/types/error-types";
+import { HttpStatus } from "@enums/http-status";
 
 /**
  * This BaseApi class serves as a foundation for managing HTTP requests.
@@ -228,7 +229,11 @@ export class BaseApi {
 			});
 
 			const statusCode = response.status();
-			const successStatusCodes = [200, 201, 204];
+			const successStatusCodes = [
+				HttpStatus.OK,
+				HttpStatus.CREATED,
+				HttpStatus.NO_CONTENT,
+			];
 
 			if (!successStatusCodes.includes(statusCode)) {
 				await this.logFailedResponse(

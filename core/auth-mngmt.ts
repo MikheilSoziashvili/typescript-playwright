@@ -18,6 +18,7 @@ import { CredentialsType } from "./types/types";
 import { GamdomApi } from "@api/gamdom-api";
 import { RegisterTestData } from "@dtos/test-data";
 import { getFilePath } from "./utils/utils";
+import { HttpStatus } from "@enums/http-status";
 
 const AUTH_STATE_PATH = {
 	[GOOGLE_AUTH_CREDENTIALS.username]: GOOGLE_AUTH_STATE_FILE_PATH,
@@ -96,7 +97,7 @@ export async function getStorageStateUserAPI(
 	}
 
 	const response = await gamdomApi.login(username, password);
-	expect(response.status(), "Login failed").toBe(200);
+	expect(response.status(), "Login failed").toBe(HttpStatus.OK);
 	expect(
 		response.headers()["set-cookie"],
 		"No cookies received from login response",

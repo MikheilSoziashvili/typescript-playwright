@@ -18,6 +18,7 @@ import {
 import { GetProvidersResponse } from "@dtos/responses/gamdom-api/get-providers-response";
 import { CreateKothEventRequest } from "@dtos/requests/gamdom-api/create-koth-event-request";
 import { EnableRainRequest } from "@dtos/requests/enable-rain-request";
+import { HttpStatus } from "@enums/http-status";
 
 export class GamdomApi extends BaseApi {
 	constructor(base_url: string = Configuration.environment_url) {
@@ -98,7 +99,9 @@ export class GamdomApi extends BaseApi {
 		userData: RegisterTestData,
 	): Promise<APIResponse> {
 		const registerResponse = await this.register(userData);
-		expect(registerResponse.status(), "Register failed").toBe(200);
+		expect(registerResponse.status(), "Register failed").toBe(
+			HttpStatus.OK,
+		);
 
 		return registerResponse;
 	}
