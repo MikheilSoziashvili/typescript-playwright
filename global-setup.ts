@@ -3,6 +3,7 @@ import { JiraApi } from "@api/jira-api";
 import { createExecutionBody } from "@api/jira-api-payloads";
 import { SUPER_ADMIN_CREDENTIALS } from "@constants/credentials";
 import { SECURITY_ADMIN_PAGE_ENDPOINT } from "@constants/page-endpoints";
+import { getStorageStateUserAPI } from "@core/auth-mngmt";
 import { JsonData } from "@core/interfaces";
 import {
 	generateRandomString,
@@ -128,11 +129,18 @@ async function enableRain(
 	logger.info("New Rain was created");
 }
 
-async function updateWithdrawLimits(cookie: string): Promise<void> {
-	const browser = await chromium.launch({ slowMo: 300 });
+async function updateWithdrawLimits(): Promise<void> {
+	const storageStatePath = await getStorageStateUserAPI(
+		SUPER_ADMIN_CREDENTIALS.username,
+	);
+
+	const browser = await chromium.launch({
+		slowMo: 400,
+	});
+
 	const context = await browser.newContext({
+		storageState: storageStatePath,
 		extraHTTPHeaders: {
-			Cookie: cookie,
 			Authorization: `Bearer ${process.env.OAUTH2_JWT}`,
 		},
 	});
@@ -205,7 +213,7 @@ async function globalSetup(): Promise<void> {
 			SUPER_ADMIN_CREDENTIALS.password,
 		),
 	);
-	await updateWithdrawLimits(cookie);
+	await updateWithdrawLimits();
 	await enableHiloFeature(gamdomApi, cookie);
 	await enableEvBasedRewards(gamdomApi, cookie);
 	await enableVaultFeature(gamdomApi, cookie);
