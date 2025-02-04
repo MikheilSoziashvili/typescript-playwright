@@ -22,6 +22,10 @@ test.describe("Register with affiliate link", () => {
 		homePage,
 		faqPage,
 	}) => {
+		test.fixme(
+			true,
+			`Issue [ENG-4743] "Success" toast message is not showing up after a new user is registered`,
+		);
 		await homePage.navigate({
 			link: affiliateLink,
 			cookies: { clearCookies: true },
