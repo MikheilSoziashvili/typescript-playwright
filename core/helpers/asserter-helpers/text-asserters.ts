@@ -42,6 +42,20 @@ export function buildTipUserMessageInfo(params: {
 	return message;
 }
 
+export function buildTipRainUserMessageInfo(params: {
+	username: string;
+	tipRainAmount: number;
+	currency?: string;
+}): string {
+	const amountWithCurrency = buildAmountWithCurrency(
+		params.tipRainAmount,
+		params.currency ?? DEFAULT_CURRENCY,
+	);
+	const message = `${params.username} has tipped ${amountWithCurrency} to the next free rain!`;
+
+	return message;
+}
+
 export function buildCreateAffiliateCodeSubTitle(
 	affiliateCode: string,
 ): string {
