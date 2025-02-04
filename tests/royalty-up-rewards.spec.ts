@@ -79,13 +79,23 @@ const rewardsInputData = [
 
 rewardsInputData.forEach((inputData) => {
 	test.describe("Rewards - Royalty Up tests", () => {
-		const { email, inbox } = generateEmailAndInbox();
-		test.use(
-			storageStateNewUserAPI({
-				amount: inputData.tipUserAmount,
-				email: email,
-			}),
+		test.fixme(
+			true,
+			`Skipped until rewards functionality is fully polished`,
 		);
+
+		let email: string;
+		let inbox: string;
+
+		test.beforeEach(() => {
+			({ email, inbox } = generateEmailAndInbox());
+			test.use(
+				storageStateNewUserAPI({
+					amount: inputData.tipUserAmount,
+					email: email,
+				}),
+			);
+		});
 
 		test(`[ENG-3712] Verify in-progress rank gain for '${inputData.game}' Originals game with '${inputData.betAmount}' bet, expected rank '${inputData.expectedInProgressRanks}', and claim all Royalty-Up rewards`, async ({
 			rewardsPage,
@@ -95,10 +105,6 @@ rewardsInputData.forEach((inputData) => {
 			mailinatorApi,
 			originalsPage,
 		}) => {
-			test.fixme(
-				true,
-				`Skipped until rewards functionality is fully polished`,
-			);
 			test.slow();
 			await profilePage
 				.steps()
