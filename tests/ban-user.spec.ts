@@ -7,10 +7,6 @@ test.describe("Ban user", () => {
 	const NEW_USER_REGISTER_DATA = new RegisterTestData();
 	const BAN_REASON = "automation test";
 
-	test.fixme(
-		true,
-		`Issue [ENG-4743] "Success" toast message is not showing up after a new user is registered`,
-	);
 	test.beforeEach(async ({ homePage, profilePage }) => {
 		await homePage.navigateAndCheckTitle();
 		await homePage.steps().registerNewUser(NEW_USER_REGISTER_DATA);
