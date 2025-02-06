@@ -1,5 +1,10 @@
-import { TestUserConfigurationObject } from "@core/types/types";
+import { DEFAULT_DB_PORT } from "@constants/defaults";
+import {
+	PoolConfigurationType,
+	TestUserConfigurationObject,
+} from "@core/types/types";
 import { asString, getFilePath } from "@core/utils/utils";
+import { Timeout } from "@enums/timeout";
 import "dotenv/config";
 
 export const environment_url = process.env.CI
@@ -47,6 +52,17 @@ export const google: Record<string, string> = {
 export const oxylabs: Record<string, string> = {
 	username: asString(process.env.OXYLABS_USER),
 	password: asString(process.env.OXYLABS_PASSWORD),
+};
+
+export const poolConfig: PoolConfigurationType = {
+	host: asString(process.env.DB_HOST),
+	user: asString(process.env.DB_USER),
+	password: asString(process.env.DB_PASSWORD),
+	database: asString(process.env.DB_NAME),
+	port: parseInt(process.env.DB_PORT || DEFAULT_DB_PORT),
+	max: 20,
+	idleTimeoutMillis: Timeout.LONG,
+	connectionTimeoutMillis: Timeout.MEDIUM,
 };
 
 export const users: TestUserConfigurationObject[] = [

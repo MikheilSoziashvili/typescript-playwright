@@ -1,4 +1,21 @@
 /* eslint-disable @typescript-eslint/ban-types */
+import { GamdomApi } from "@api/gamdom-api";
+import {
+	SUPER_ADMIN_CREDENTIALS,
+	USER_1_CREDENTIALS,
+} from "@constants/credentials";
+import { GAMDOM_EMAIL_DOMAIN } from "@constants/domains";
+import { NewUserOptions } from "@core/api/interfaces/storage-state-new-user-options";
+import {
+	getStorageStateGoogleAuth,
+	getStorageStateNewUserAPI,
+	getStorageStateUser,
+	getStorageStateUserAPI,
+} from "@core/auth-mngmt";
+import { getCookieHeader, writeUserDetails } from "@core/utils/utils";
+import { RegisterTestData } from "@dtos/test-data";
+import { Currency } from "@enums/currencies";
+import { Unit } from "@enums/units";
 import {
 	Browser,
 	Fixtures,
@@ -7,25 +24,15 @@ import {
 	PlaywrightTestOptions,
 	PlaywrightWorkerArgs,
 	PlaywrightWorkerOptions,
+	TestInfo,
 	devices,
 } from "@playwright/test";
-import {
-	getStorageStateGoogleAuth,
-	getStorageStateNewUserAPI,
-	getStorageStateUser,
-	getStorageStateUserAPI,
-} from "@core/auth-mngmt";
-import {
-	SUPER_ADMIN_CREDENTIALS,
-	USER_1_CREDENTIALS,
-} from "@constants/credentials";
+import { emailDomainPattern } from "@support/regex-patterns";
 import { GamdomPages } from "./gamdom-pages";
-import { GamdomApi } from "@api/gamdom-api";
-import { getCookieHeader, writeUserDetails } from "@core/utils/utils";
-import { RegisterTestData } from "@dtos/test-data";
-import { NewUserOptions } from "@core/api/interfaces/storage-state-new-user-options";
-import { Currency } from "@enums/currencies";
-import { Unit } from "@enums/units";
+import { GamdomDb } from "database/gamdom-db";
+
+const gamdomApi = new GamdomApi();
+const gamdomDb = new GamdomDb();
 
 function authPage(browser: Browser): Promise<Page> {
 	return browser.newPage({
@@ -118,36 +125,113 @@ export const storageStateNewUserAPI: (
 	displayCurrency = Currency.USD,
 } = {}) => ({
 	storageState: async ({}, use, testInfo) => {
-		const gamdomApi = new GamdomApi();
-		const newUser = new RegisterTestData({ username, password, email });
+		const { storageStatePath, newUser, newUserId, user1Cookie } =
+			await createNewUserWithStorageState(
+				username,
+				password,
+				email,
+				false,
+			);
 
-		const storageStatePath = await getStorageStateNewUserAPI(
-			newUser.username,
-			newUser.password,
-			newUser.email,
+		await tipNewUserAndLogDetails(
+			newUserId,
+			amount,
+			unit,
+			displayCurrency,
+			user1Cookie,
+			testInfo,
+			newUser,
 		);
-
-		const newUserId = (
-			await gamdomApi.getBasicInfo(newUser.username, newUser.password)
-		).user.id;
-
-		const user1Cookie = getCookieHeader(
-			await gamdomApi.authenticateWithExistingUser(
-				USER_1_CREDENTIALS.username,
-				USER_1_CREDENTIALS.password,
-			),
-		);
-
-		await gamdomApi.tipUser(newUserId, amount, unit, displayCurrency, {
-			Cookie: user1Cookie,
-		});
-
-		writeUserDetails(testInfo.title, testInfo.workerIndex, {
-			username: newUser.username,
-			password: newUser.password,
-			email: newUser.email,
-		});
 
 		await use(storageStatePath);
 	},
 });
+
+export const storageStateNewSuperAdminUserAPI: (
+	options?: NewUserOptions,
+) => Fixtures<
+	{},
+	{},
+	PlaywrightTestArgs & PlaywrightTestOptions,
+	PlaywrightWorkerArgs & PlaywrightWorkerOptions
+> = ({
+	username,
+	password,
+	email,
+	amount = 450000,
+	unit = Unit.COINS,
+	displayCurrency = Currency.USD,
+} = {}) => ({
+	storageState: async ({}, use, testInfo) => {
+		const { storageStatePath, newUser, newUserId, user1Cookie } =
+			await createNewUserWithStorageState(
+				username,
+				password,
+				email,
+				true,
+			);
+
+		await gamdomDb.makeUserSuperAdmin(newUserId);
+
+		await tipNewUserAndLogDetails(
+			newUserId,
+			amount,
+			unit,
+			displayCurrency,
+			user1Cookie,
+			testInfo,
+			newUser,
+		);
+
+		await use(storageStatePath);
+	},
+});
+
+async function createNewUserWithStorageState(
+	username?: string,
+	password?: string,
+	email?: string,
+	isEmailWithGamdomDomain?: boolean,
+) {
+	const newUser = new RegisterTestData({ username, password, email });
+	const storageStatePath = await getStorageStateNewUserAPI(
+		newUser.username,
+		newUser.password,
+		isEmailWithGamdomDomain
+			? newUser.email.replace(emailDomainPattern, GAMDOM_EMAIL_DOMAIN)
+			: newUser.email,
+	);
+
+	const newUserId = (
+		await gamdomApi.getBasicInfo(newUser.username, newUser.password)
+	).user.id;
+
+	const user1Cookie = getCookieHeader(
+		await gamdomApi.authenticateWithExistingUser(
+			USER_1_CREDENTIALS.username,
+			USER_1_CREDENTIALS.password,
+		),
+	);
+
+	return { storageStatePath, newUser, newUserId, user1Cookie, gamdomApi };
+}
+
+async function tipNewUserAndLogDetails(
+	newUserId: number,
+	amount: number,
+	unit: Unit,
+	displayCurrency: Currency,
+	user1Cookie: string,
+	testInfo: TestInfo,
+	userData: RegisterTestData,
+) {
+	await gamdomApi.tipUser(newUserId, amount, unit, displayCurrency, {
+		Cookie: user1Cookie,
+	});
+
+	writeUserDetails(testInfo.title, testInfo.workerIndex, {
+		username: userData.username,
+		password: userData.password,
+		email: userData.email,
+	});
+}

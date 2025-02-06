@@ -88,3 +88,14 @@ export type OriginalGamesPage =
 	| CrashGamePage
 	| HiloGamePage
 	| RouletteGamePage;
+
+export type PoolConfigurationType = {
+	host: string;
+	user: string;
+	password: string;
+	database: string;
+	port: number;
+	max: number;
+	idleTimeoutMillis: number;
+	connectionTimeoutMillis: number;
+};
