@@ -22,6 +22,11 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		return new AuthenticatedHeader(this.component.page);
 	}
 
+	public async verifyChatAndSendMessage(message: string): Promise<void> {
+		await this.component.assertThat().isDisplayed();
+		await this.sendMessage(message);
+	}
+
 	public async sendMessage(message: string): Promise<void> {
 		let retryCount = 0;
 		const maxRetries = 3;

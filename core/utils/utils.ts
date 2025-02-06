@@ -714,3 +714,20 @@ export async function initializePageObjects(
 	pageObjects.forEach((obj) => obj.init(page));
 	return page;
 }
+
+/**
+ * Generates a 2FA code from a QR code image.
+ *
+ * @param {string} screenshotPath - The file path of the QR code image.
+ * @returns {Promise<string>} A promise that resolves to the generated 2FA code.
+ *
+ * @throws {Error} If the QR code cannot be read or the secret is invalid.
+ */
+export async function generate2FACodeFromQRCodeImage(
+	screenshotPath: string,
+): Promise<string> {
+	const secret = await extractSecretFromQRCode(screenshotPath);
+	const code2FA = await generate2FACodeFromSecret(secret);
+
+	return code2FA;
+}

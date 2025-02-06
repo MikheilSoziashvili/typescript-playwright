@@ -1,10 +1,6 @@
 import { BasePage } from "@base/base-page";
 import { SETTINGS_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
-import {
-	extractSecretFromQRCode,
-	generate2FACodeFromSecret,
-} from "@core/utils/utils";
 import { expect, Page } from "@playwright/test";
 import { SettingsPageAsserter } from "./settings-page-asserter";
 import { SettingsPageMap } from "./settings-page-map";
@@ -44,15 +40,6 @@ export class SettingsPage extends BasePage<SettingsPageMap> {
 		screenshotPath: string,
 	): Promise<void> {
 		await this.map.imageQRCode.screenshot({ path: screenshotPath });
-	}
-
-	public async generate2FACodeFromQRCodeImage(
-		screenshotPath: string,
-	): Promise<string> {
-		const secret = await extractSecretFromQRCode(screenshotPath);
-		const code2FA = await generate2FACodeFromSecret(secret);
-
-		return code2FA;
 	}
 
 	public async fill2FACodeInputs(code2FA: string): Promise<void> {

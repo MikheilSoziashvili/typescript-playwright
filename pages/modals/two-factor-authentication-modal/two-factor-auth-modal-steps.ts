@@ -1,5 +1,6 @@
 import { BasePageStep } from "@pages/base/base-page-step";
 import { TwoFactorAuthModal } from "./two-factor-auth-modal";
+import { generate2FACodeFromQRCodeImage } from "@core/utils/utils";
 
 export class TwoFactorAuthModalSteps extends BasePageStep<TwoFactorAuthModal> {
 	public constructor(page: TwoFactorAuthModal) {
@@ -12,5 +13,14 @@ export class TwoFactorAuthModalSteps extends BasePageStep<TwoFactorAuthModal> {
 		await this.gamdomPage.assertThat().modal2FaDisplayed();
 		await this.gamdomPage.enter2FaCode(twoFactorAuthenticationCode);
 		await this.gamdomPage.assertThat().modal2FaNotDisplayed();
+	}
+
+	public async generateAndEnter2FaCodeSuccessfully(
+		qrCode2FAImagePath: string,
+	): Promise<void> {
+		const code2FA = await generate2FACodeFromQRCodeImage(
+			qrCode2FAImagePath,
+		);
+		await this.enter2FaCodeSuccessfully(code2FA);
 	}
 }

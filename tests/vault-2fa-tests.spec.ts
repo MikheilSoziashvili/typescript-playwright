@@ -2,6 +2,7 @@ import { NL_PROXY_CREDENTIALS } from "@constants/proxies";
 import {
 	createPngImagePath,
 	deleteFilesWithFilePaths,
+	generate2FACodeFromQRCodeImage,
 	initializePageObjects,
 } from "@core/utils/utils";
 import { Wallet } from "@enums/wallets";
@@ -49,7 +50,7 @@ test.describe(`Vault wallet - 2FA verifications`, () => {
 			.steps()
 			.depositFromWalletAndVerify(walletType, depositAmount);
 		await walletModal.withdrawInVault(walletType, withdrawAmount);
-		const code2FA = await settingsPage.generate2FACodeFromQRCodeImage(
+		const code2FA = await generate2FACodeFromQRCodeImage(
 			qrCode2FAImagePath,
 		);
 		await twoFactorAuthModal.steps().enter2FaCodeSuccessfully(code2FA);
@@ -67,7 +68,7 @@ test.describe(`Vault wallet - 2FA verifications`, () => {
 		await homePage.navigateToWallet();
 		await walletModal.openVaultTab();
 		await walletModal.withdrawInVault(walletType, withdrawAmount);
-		const newCode2FA = await settingsPage.generate2FACodeFromQRCodeImage(
+		const newCode2FA = await generate2FACodeFromQRCodeImage(
 			qrCode2FAImagePath,
 		);
 		await twoFactorAuthModal.steps().enter2FaCodeSuccessfully(newCode2FA);

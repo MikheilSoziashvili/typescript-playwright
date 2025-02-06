@@ -3,6 +3,7 @@ import { BasePageStep } from "@pages/base/base-page-step";
 import { Toast } from "@pages/components/toast/toast";
 import { expect } from "@playwright/test";
 import { SettingsPage } from "./settings-page";
+import { generate2FACodeFromQRCodeImage } from "@core/utils/utils";
 
 export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 	public constructor(gamdomPage: SettingsPage) {
@@ -17,9 +18,7 @@ export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 			.assertThat()
 			.checkElementsAreVisible([this.gamdomPage.map.activation2FAPopup]);
 		await this.gamdomPage.takeQRCodeImageScreenshot(screenshotPath);
-		const code2FA = await this.gamdomPage.generate2FACodeFromQRCodeImage(
-			screenshotPath,
-		);
+		const code2FA = await generate2FACodeFromQRCodeImage(screenshotPath);
 		await this.gamdomPage.fill2FACodeInputs(code2FA);
 		await this.gamdomPage
 			.assertThat()
@@ -46,9 +45,7 @@ export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 			.checkElementsAreVisible([
 				this.gamdomPage.map.verification2FAPopup,
 			]);
-		const code2FA = await this.gamdomPage.generate2FACodeFromQRCodeImage(
-			screenshotPath,
-		);
+		const code2FA = await generate2FACodeFromQRCodeImage(screenshotPath);
 		await this.gamdomPage.fill2FACodeInputs(code2FA);
 		await this.gamdomPage
 			.assertThat()
@@ -82,10 +79,9 @@ export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 			attempts++;
 			await this.gamdomPage.refresh();
 			await this.gamdomPage.open2FADisableModal();
-			const code2FA2 =
-				await this.gamdomPage.generate2FACodeFromQRCodeImage(
-					screenshotPath,
-				);
+			const code2FA2 = await generate2FACodeFromQRCodeImage(
+				screenshotPath,
+			);
 			await this.gamdomPage.fill2FACodeInputs(code2FA2);
 			await this.gamdomPage.map.continueDisable2FaButton.dblclick();
 			// eslint-disable-next-line playwright/no-wait-for-timeout

@@ -1,6 +1,7 @@
 import {
 	createPngImagePath,
 	deleteFilesWithFilePaths,
+	generate2FACodeFromQRCodeImage,
 	getUserDetailsByTestTitle,
 } from "@core/utils/utils";
 import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
@@ -30,7 +31,7 @@ test.describe("Two-Factor Authentication login verification", () => {
 		await settingsPage.navigate();
 		await settingsPage.steps().enable2FaAuthentication(qrCode2FAImagePath);
 		await profilePage.steps().logoutUserSuccessfully();
-		const code2FA = await settingsPage.generate2FACodeFromQRCodeImage(
+		const code2FA = await generate2FACodeFromQRCodeImage(
 			qrCode2FAImagePath,
 		);
 		await homePage

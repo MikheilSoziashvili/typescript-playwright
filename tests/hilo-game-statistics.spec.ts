@@ -24,7 +24,7 @@ test.describe("Hilo game - statistics tests", () => {
 		}) => {
 			test.fixme(
 				true,
-				"Issue with stats area stats percentage calculation",
+				"Issue [ENG-4718] The Stats calculation for Last x rounds is wrong",
 			);
 			await hiloGamePage.navigate();
 			await originalsPage.waitForGameRoundFinish(OriginalGame.HiLo);
