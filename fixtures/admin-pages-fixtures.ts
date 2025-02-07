@@ -36,6 +36,7 @@ import { EvRewardsSystemAdminPage } from "@pages/admin/ev-rewards-system-admin/e
 import { IpBlockAdminPage } from "@pages/admin/ip-block-admin/ip-block-admin-page";
 import { BaseAdminPage } from "@pages/admin/base-admin/base-admin-page";
 import { OurGamesAdminPage } from "@pages/admin/our-games-admin/our-games-admin-page";
+import { PromoCampaignsAdminPage } from "@pages/admin/promo-campaigns-admin/promo-campaigns-admin-page";
 
 export type AdminPages = {
 	baseAdminPage: BaseAdminPage;
@@ -66,6 +67,7 @@ export type AdminPages = {
 	casinoProvidersAdminPage: CasinoProvidersAdminPage;
 	casinoGamesAdminPage: CasinoGamesAdminPage;
 	giftCardsAdminPage: GiftCardsAdminPage;
+	promoCampaignsAdminPage: PromoCampaignsAdminPage;
 	battlesAdminPage: BattlesAdminPage;
 	cdnUploadAdminPage: CdnUploadAdminPage;
 	eventsManagingAdminPage: EventsManagingAdminPage;
@@ -161,6 +163,9 @@ export const adminPagesFixtures = base.extend<AdminPages>({
 	},
 	giftCardsAdminPage: async ({ page }, use) => {
 		await use(new GiftCardsAdminPage(page));
+	},
+	promoCampaignsAdminPage: async ({ page }, use) => {
+		await use(new PromoCampaignsAdminPage(page));
 	},
 	battlesAdminPage: async ({ page }, use) => {
 		await use(new BattlesAdminPage(page));

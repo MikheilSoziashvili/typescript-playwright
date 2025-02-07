@@ -8,7 +8,7 @@ import { RatebackHouseEdge } from "@enums/rateback-house-edge-options";
 import { RewardsRoyaltyUpRanks } from "@enums/rewards-royalty-up-ranks";
 import { Timeout } from "@enums/timeout";
 import { calculateRakeback } from "@formulas/rakeback";
-import { WelcomeBonusModal } from "@modals/promo-code-modal/welcome-bonus-modal";
+import { WelcomeBonusModal } from "@pages/modals/welcome-bonus-modal/welcome-bonus-modal";
 import { Toast } from "@pages/components/toast/toast";
 import { Page, expect } from "@playwright/test";
 import { step } from "decorators/step";

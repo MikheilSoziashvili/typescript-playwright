@@ -1,4 +1,5 @@
 import { LiveSupportModal } from "@pages/modals/live-support-intercom-modal/live-support-intercom-modal";
+import { PromoCodeModal } from "@pages/modals/promo-code-modal/promo-code-modal";
 import { TipRainModal } from "@pages/modals/tip-rain-modal/tip-rain-modal";
 import { TipUserModal } from "@pages/modals/tip-user-modal/tip-user-modal";
 import { TwoFactorAuthModal } from "@pages/modals/two-factor-authentication-modal/two-factor-auth-modal";
@@ -13,6 +14,7 @@ export type Modals = {
 	liveSupportModal: LiveSupportModal;
 	walletModal: WalletModal;
 	twoFactorAuthModal: TwoFactorAuthModal;
+	promoCodeModal: PromoCodeModal;
 	tipRainModal: TipRainModal;
 };
 
@@ -34,5 +36,8 @@ export const modalsFixtures = base.extend<Modals>({
 	},
 	tipRainModal: async ({ page }, use) => {
 		await use(new TipRainModal(page));
+	},
+	promoCodeModal: async ({ page }, use) => {
+		await use(new PromoCodeModal(page));
 	},
 });

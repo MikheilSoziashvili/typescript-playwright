@@ -1,0 +1,36 @@
+import { BasePage } from "@pages/base/base-page";
+import { Page } from "playwright";
+import { PromoCampaignsAdminAsserter } from "./promo-campaigns-admin-page-asserter";
+import { PromoCampaignsAdminMap } from "./promo-campaigns-admin-page-map";
+import { PromoCampaignsAdminSteps } from "./promo-campaigns-admin-page-steps";
+import { BasePageNavigationParametersType } from "@core/types/types";
+import { PROMO_CAMPAIGNS_PAGE_ENDPOINT } from "@constants/page-endpoints";
+import { step } from "decorators/step";
+
+export class PromoCampaignsAdminPage extends BasePage<PromoCampaignsAdminMap> {
+	public constructor(page: Page) {
+		super(page, new PromoCampaignsAdminMap(page));
+	}
+
+	public override async navigate(
+		parameters?: BasePageNavigationParametersType,
+	): Promise<void> {
+		await super.navigate({
+			...parameters,
+			endpoint: { paths: [PROMO_CAMPAIGNS_PAGE_ENDPOINT] },
+		});
+	}
+
+	public override assertThat(): PromoCampaignsAdminAsserter {
+		return new PromoCampaignsAdminAsserter(this);
+	}
+
+	public steps(): PromoCampaignsAdminSteps {
+		return new PromoCampaignsAdminSteps(this);
+	}
+
+	@step()
+	public async clickCreateCampaignButton(): Promise<void> {
+		await this.map.newPromoCodeButton.click();
+	}
+}
