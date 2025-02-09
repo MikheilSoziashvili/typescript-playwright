@@ -70,7 +70,7 @@ export class WalletModalMap extends BaseMap {
 
 	public get depositButton(): Locator {
 		return this.page.locator("button", {
-			hasText: "Deposit to Users Vault",
+			hasText: /^(?=.*Deposit)(?=.*Vault).*$/,
 		});
 	}
 
