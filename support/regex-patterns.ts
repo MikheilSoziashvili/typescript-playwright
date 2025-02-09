@@ -13,7 +13,6 @@ export const plusSignWithExactDecimalCurrency = (
 	return new RegExp(regExpString);
 };
 
-export const usernamePattern = /[^A-Za-z0-9]/g;
 export const sanitizeTitlePattern = /[^a-zA-Z0-9]/g;
 export const passwordPattern = /[A-Za-z0-9!@#$%^]+/;
 export const otpAuthSecretPattern =
