@@ -60,9 +60,9 @@ export const poolConfig: PoolConfigurationType = {
 	password: asString(process.env.DB_PASSWORD),
 	database: asString(process.env.DB_NAME),
 	port: parseInt(process.env.DB_PORT || DEFAULT_DB_PORT),
-	max: 20,
-	idleTimeoutMillis: Timeout.LONG,
-	connectionTimeoutMillis: Timeout.MEDIUM,
+	max: 15,
+	idleTimeoutMillis: Timeout.MAX,
+	connectionTimeoutMillis: Timeout.LONG,
 };
 
 export const users: TestUserConfigurationObject[] = [

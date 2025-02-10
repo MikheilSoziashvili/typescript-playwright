@@ -98,6 +98,21 @@ on:
             OAUTH2_JWT:
                 required: true
                 description: "OAuth2 JWT"
+            DB_HOST:
+                required: true
+                description: "Database host"
+            DB_USER:
+                required: true
+                description: "Database user"
+            DB_PASSWORD:
+                required: true
+                description: "Database password"
+            DB_NAME:
+                required: true
+                description: "Database name"
+            DB_PORT:
+                required: true
+                description: "Database port"
 
     schedule:
         - cron: "0 3 * * *"
@@ -137,6 +152,11 @@ jobs:
             ENVIRONMENT_URL: ${{ inputs.environment == '' && vars.ENVIRONMENT_URL || inputs.environment }}
             SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
             OAUTH2_JWT: ${{ secrets.OAUTH2_JWT }}
+            DB_HOST: ${{ secrets.DB_HOST }}
+            DB_USER: ${{ secrets.DB_USER }}
+            DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+            DB_NAME: ${{ secrets.DB_NAME }}
+            DB_PORT: ${{ secrets.DB_PORT }}
             TAG: ${{ inputs.tag == '' && 'smoke' || inputs.tag }}
             SHARD_OPTION: --shard ${{ matrix.shard }}/${{ strategy.job-total }}
             GREP_GAME_PROVIDERS_TESTS: --grep @game-providers
