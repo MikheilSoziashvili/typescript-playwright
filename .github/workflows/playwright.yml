@@ -40,6 +40,10 @@ on:
                     - 3
                     - 4
                     - 5
+            test_execution_id:
+                description: "Test Execution ID"
+                type: string
+                required: false
 
     workflow_call:
         secrets:
@@ -147,6 +151,21 @@ jobs:
               run: |
                   echo "Validating that Environment URL is valid format (and does not end with slash)"
                   echo $ENVIRONMENT_URL | grep -E '^(http|https)://[a-zA-Z0-9./?=_-]*[^/]$'
+
+            - name: Validate TEST_EXECUTION_ID format
+              if: ${{ inputs.test_execution_id != '' }}
+              run: |
+                  echo "Validating TEST_EXECUTION_ID format..."
+
+                  TEST_EXECUTION_ID="${{ inputs.test_execution_id }}"
+
+                  if ! echo "${TEST_EXECUTION_ID}" | grep -qE '^ENG-[0-9]+$'; then
+                      echo "ERROR: TEST_EXECUTION_ID must be in the format ENG-{number}, e.g., ENG-1477"
+                      exit 1
+                  fi
+
+                  echo "TEST_EXECUTION_ID is valid: ${TEST_EXECUTION_ID}"
+                  echo "TEST_EXECUTION_ID=$TEST_EXECUTION_ID" >> $GITHUB_ENV
 
             - name: Checkout E2E tests repository
               uses: actions/checkout@v4
