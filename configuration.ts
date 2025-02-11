@@ -4,6 +4,7 @@ import {
 	TestUserConfigurationObject,
 } from "@core/types/types";
 import { asString, getFilePath } from "@core/utils/utils";
+import { ConfiguraitonUrl } from "@enums/configuration-urls";
 import { Timeout } from "@enums/timeout";
 import "dotenv/config";
 
@@ -23,19 +24,24 @@ export const slack: Record<string, string | string[]> = {
 	channels: ["playwright-e2e-reporting"],
 };
 export const jira: Record<string, string> = {
-	baseUrl: "https://gamdom.atlassian.net",
+	baseUrl: ConfiguraitonUrl.JIRA,
 	projectKey: "ENG",
 	username: asString(process.env.JIRA_USERNAME),
 	token: asString(process.env.JIRA_TOKEN),
 };
 export const mailinator: Record<string, string> = {
-	baseUrl: "https://api.mailinator.com/api/v2",
+	baseUrl: ConfiguraitonUrl.MAILINATOR,
 	apiKey: asString(process.env.MAILINATOR_API_KEY),
 };
 export const xray: Record<string, string> = {
-	baseUrl: "https://xray.cloud.getxray.app",
+	baseUrl: ConfiguraitonUrl.XRAY,
 	clientId: asString(process.env.XRAY_CLIENT_ID),
 	clientSecret: asString(process.env.XRAY_CLIENT_SECRET),
+};
+
+export const coingecko: Record<string, string> = {
+	baseUrl: ConfiguraitonUrl.COINGECKO,
+	apiKey: asString(process.env.COINGECKO_API_KEY),
 };
 
 export const steam: Record<string, string> = {
