@@ -45,4 +45,28 @@ export class GamdomDb extends BaseDB {
 		);
 		return result;
 	}
+
+	public async updateUserTotalDepositedAmountByUserEmail(
+		userEmail: string,
+		amount = 300,
+	): Promise<QueryResultRow> {
+		const result = await this.update(
+			DbTables.Users,
+			{ [UsersColumns.TotalDeposited]: amount },
+			`${UsersColumns.Email} = '${userEmail}'`,
+		);
+		return result;
+	}
+
+	public async updateUserEmailVerification(
+		userId: number,
+		isVerified = true,
+	): Promise<QueryResultRow> {
+		const result = await this.update(
+			DbTables.Users,
+			{ [UsersColumns.EmailVerified]: isVerified },
+			`${UsersColumns.Id} = ${userId}`,
+		);
+		return result;
+	}
 }

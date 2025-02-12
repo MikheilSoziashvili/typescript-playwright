@@ -172,6 +172,7 @@ export const storageStateNewSuperAdminUserAPI: (
 			);
 
 		await gamdomDb.makeUserSuperAdmin(newUserId);
+		await gamdomDb.updateUserEmailVerification(newUserId);
 
 		await tipNewUserAndLogDetails(
 			newUserId,

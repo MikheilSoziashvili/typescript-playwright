@@ -40,7 +40,7 @@ export class InfoAdminPageMap extends BaseMap {
 	}
 
 	public get tipButton(): Locator {
-		return this.page.getByTestId("adminInfoTipButton");
+		return this.tipUserContainer.getByTestId("adminInfoTipButton");
 	}
 
 	public get sendNotificationButton(): Locator {
@@ -49,5 +49,13 @@ export class InfoAdminPageMap extends BaseMap {
 
 	public get adminInfoTable(): Locator {
 		return this.page.getByTestId("adminInfoTable");
+	}
+
+	public get tipUserContainer(): Locator {
+		return this.page.getByTestId("adminInfoTipContainer");
+	}
+
+	public get tipAmountInput(): Locator {
+		return this.tipUserContainer.getByPlaceholder("Tip amount");
 	}
 }

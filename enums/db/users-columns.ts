@@ -4,4 +4,6 @@ export enum UsersColumns {
 	Email = "email",
 	Tags = "tags",
 	UserClass = "userclass",
+	TotalDeposited = "total_deposited",
+	EmailVerified = "email_verified",
 }

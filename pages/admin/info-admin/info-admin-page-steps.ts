@@ -17,4 +17,11 @@ export class InfoAdminPageSteps extends BasePageStep<InfoAdminPage> {
 		await this.gamdomPage.assertThat().isUserBanned();
 		await this.gamdomPage.assertThat().isUnbanButtonDisplayed();
 	}
+
+	public async tipUser(tipAmount: number): Promise<void> {
+		await this.gamdomPage.assertThat().isTipUserContainerDisplayed();
+		await this.gamdomPage.map.tipAmountInput.clear();
+		await this.gamdomPage.map.tipAmountInput.fill(tipAmount.toString());
+		await this.gamdomPage.map.tipButton.click();
+	}
 }

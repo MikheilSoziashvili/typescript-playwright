@@ -95,7 +95,7 @@ export class GamdomApi extends BaseApi {
 		);
 	}
 
-	private async registerUser(
+	public async registerUser(
 		userData: RegisterTestData,
 	): Promise<APIResponse> {
 		const registerResponse = await this.register(userData);
