@@ -32,7 +32,7 @@ export class WalletModalMap extends BaseMap {
 	}
 
 	public get vaultTabHeading(): Locator {
-		return this.page.locator("h5", { hasText: "Vault" });
+		return this.leftPanel.locator("h5", { hasText: "Vault" });
 	}
 
 	public get leftPanel(): Locator {
