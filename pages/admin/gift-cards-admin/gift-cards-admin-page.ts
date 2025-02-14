@@ -1,3 +1,5 @@
+import { GIFT_CARDS_PAGE_ENDPOINT } from "@constants/page-endpoints";
+import { BasePageNavigationParametersType } from "@core/types/types";
 import { BasePage } from "@pages/base/base-page";
 import { Page } from "playwright";
 import { GiftCardsAdminAsserter } from "./gift-cards-admin-page-asserter";
@@ -15,5 +17,14 @@ export class GiftCardsAdminPage extends BasePage<GiftCardsAdminMap> {
 
 	public steps(): GiftCardsAdminSteps {
 		return new GiftCardsAdminSteps(this);
+	}
+
+	public override async navigate(
+		parameters?: BasePageNavigationParametersType,
+	): Promise<void> {
+		await super.navigate({
+			...parameters,
+			endpoint: { paths: [GIFT_CARDS_PAGE_ENDPOINT] },
+		});
 	}
 }

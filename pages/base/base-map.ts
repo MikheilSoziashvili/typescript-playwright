@@ -64,4 +64,17 @@ export class BaseMap {
 			timeout,
 		});
 	}
+
+	protected getDropdownOptionSelector(
+		value: string,
+		container?: Locator,
+	): Locator {
+		return (container || this.page).locator(`li[data-value="${value}"]`);
+	}
+
+	protected getComboboxWithText(text: string, container?: Locator): Locator {
+		return (container || this.page).locator('div[role="combobox"]', {
+			hasText: text,
+		});
+	}
 }

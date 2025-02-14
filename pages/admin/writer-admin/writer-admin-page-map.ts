@@ -63,7 +63,7 @@ export class WriterAdminPageMap extends BaseMap {
 	}
 
 	public postCategoriesOption(option: BlogPostCategories): Locator {
-		return this.postCategoriesList.locator(`li[data-value="${option}"]`);
+		return this.getDropdownOptionSelector(option, this.postCategoriesList);
 	}
 
 	public get blogContainerView(): Locator {

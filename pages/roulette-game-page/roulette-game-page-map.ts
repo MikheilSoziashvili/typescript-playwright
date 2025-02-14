@@ -203,7 +203,7 @@ export class RouletteGamePageMap extends BaseMap {
 	}
 
 	public greenHuntTypeOption(option: GreenHuntTypeOption): Locator {
-		return this.greenHuntTypeList().locator(`li[data-value="${option}"]`);
+		return this.getDropdownOptionSelector(option, this.greenHuntTypeList());
 	}
 
 	public startGreenHuntButton(): Locator {

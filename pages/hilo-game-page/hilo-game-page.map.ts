@@ -146,8 +146,9 @@ export class HiloGamePageMap extends BaseMap {
 	}
 
 	public lastRoundsDropdownItemByPlaceholder(placeholder: string): Locator {
-		return this.lastRoundsDropdownValuesContainer.locator(
-			`li[data-value="${placeholder}"]`,
+		return this.getDropdownOptionSelector(
+			placeholder,
+			this.lastRoundsDropdownValuesContainer,
 		);
 	}
 
