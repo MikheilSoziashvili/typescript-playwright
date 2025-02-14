@@ -100,10 +100,10 @@ export class DiceGamePageMap extends BaseMap {
 	private getAutobetSectionLocator(
 		sectionName: DiceAutobetSectionName,
 	): Locator {
-		return this.page.locator("div[class*=MuiFormControl-root]").filter({
-			has: this.page.locator(
-				`label[class*=MuiFormLabel-root]:text-is("${sectionName}")`,
-			),
+		return this.page.locator("div[class*=MuiFormControl-root]", {
+			has: this.page.locator("label[class*=MuiFormLabel-root]", {
+				hasText: sectionName,
+			}),
 		});
 	}
 
@@ -138,15 +138,15 @@ export class DiceGamePageMap extends BaseMap {
 	}
 
 	public get startAutobetButton(): Locator {
-		return this.autobetContainer.locator(
-			'button span:text-is("Start Autobet")',
-		);
+		return this.autobetContainer.locator("button span", {
+			hasText: "Start Autobet",
+		});
 	}
 
 	public get stopAutobetButton(): Locator {
-		return this.autobetContainer.locator(
-			'button span:text-is("Stop Autobet")',
-		);
+		return this.autobetContainer.locator("button span", {
+			hasText: "Stop Autobet",
+		});
 	}
 
 	public get betMenu(): Locator {
