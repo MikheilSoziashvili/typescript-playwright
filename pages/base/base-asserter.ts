@@ -11,7 +11,7 @@ import { BasePage } from "./base-page";
 import { BaseMap } from "./base-map";
 
 export class BaseAsserter<
-	T extends BasePage<BaseMap> | BaseModal | BaseComponent<BaseMap>,
+	T extends BasePage<BaseMap> | BaseModal<BaseMap> | BaseComponent<BaseMap>,
 > {
 	readonly gamdomPage: T;
 

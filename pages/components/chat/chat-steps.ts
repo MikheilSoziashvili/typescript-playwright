@@ -63,7 +63,10 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		}
 	}
 
-	public async openTipUserModal(options?: ChatMessageOptions): Promise<void> {
+	public async openTipUserModal(
+		options?: ChatMessageOptions,
+		isWithVerification = true,
+	): Promise<void> {
 		const messageUserLevel = this.component.map.messageUserAvatar(options);
 		await this.component.map.waitForVisibility({
 			locator: messageUserLevel,
@@ -80,8 +83,10 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 			CommonUserPopupOption.TIP_USER,
 		);
 
-		const tipUserModal = new TipUserModal(this.component.page);
-		await tipUserModal.assertThat().isDisplayed();
+		if (isWithVerification) {
+			const tipUserModal = new TipUserModal(this.component.page);
+			await tipUserModal.assertThat().isDisplayed();
+		}
 	}
 
 	public async openUserProfileModal(
@@ -104,5 +109,13 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		const userProfileModal = new UserProfileModal(this.component.page);
 		await userProfileModal.waitContentToLoad();
 		await userProfileModal.assertThat().isDisplayed();
+	}
+
+	public async verifyMessageAndOpenTipUserModal(
+		chatMessage: ChatMessageOptions,
+		isWithVerification = true,
+	): Promise<void> {
+		await this.component.assertThat().isMessageVisible(chatMessage);
+		await this.openTipUserModal(chatMessage, isWithVerification);
 	}
 }

@@ -1,21 +1,31 @@
+import { GAMDOM_EMAIL_DOMAIN } from "@constants/domains";
 import { RegisterTestDataParams } from "@core/interfaces";
 import { HiloBetOption } from "@enums/hilo-bet-options";
 import { HiloBetMultiplierByBetOption } from "@enums/original-games";
 import { BlogPostCategories } from "@enums/post-categories";
 import { faker } from "@faker-js/faker";
-import { passwordPattern } from "@support/regex-patterns";
+import { emailDomainPattern, passwordPattern } from "@support/regex-patterns";
 
 export class RegisterTestData {
 	#username: string;
 	#password: string;
 	#email: string;
 
-	constructor({ email, username, password }: RegisterTestDataParams = {}) {
+	constructor({
+		email,
+		username,
+		password,
+		useGamdomEmailDomain,
+	}: RegisterTestDataParams = {}) {
 		this.#username = username || faker.string.alphanumeric({ length: 7 });
 		this.#password =
 			password ||
 			faker.internet.password({ length: 15, pattern: passwordPattern });
 		this.#email = email || faker.internet.email();
+
+		this.#email = useGamdomEmailDomain
+			? this.#email.replace(emailDomainPattern, GAMDOM_EMAIL_DOMAIN)
+			: this.#email;
 	}
 
 	get username(): string {

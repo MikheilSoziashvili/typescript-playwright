@@ -6,6 +6,7 @@ export interface RegisterTestDataParams {
 	email?: string;
 	username?: string;
 	password?: string;
+	useGamdomEmailDomain?: boolean;
 }
 
 export interface WaitUntilOptions {

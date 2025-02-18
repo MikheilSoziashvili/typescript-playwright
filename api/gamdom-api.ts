@@ -1,32 +1,36 @@
-import { APIResponse, expect } from "@playwright/test";
-import * as Configuration from "../configuration";
-import { LoginRequest } from "@dtos/requests/gamdom-api/login-request";
-import { RegisterRequest } from "@dtos/requests/gamdom-api/register-request";
-import { RegisterTestData } from "@dtos/test-data";
-import { SetFeatureStateRequest } from "@dtos/requests/gamdom-api/set-feature-state-request";
-import { Feature } from "@enums/feature";
-import { BaseApi } from "./base-api";
-import { TipUserRequest } from "@dtos/requests/gamdom-api/tip-user-request";
-import { BasicInfoResponse } from "@dtos/responses/gamdom-api/basic-info-response";
 import { formatDate, getCookieHeader } from "@core/utils/utils";
-import { ApiEndpoints } from "@enums/api-endpoints";
-import { SetProviderStateRequest } from "@dtos/requests/gamdom-api/set-provider-state-request";
+import { EnableRainRequest } from "@dtos/requests/enable-rain-request";
+import { CreateKothEventRequest } from "@dtos/requests/gamdom-api/create-koth-event-request";
 import {
 	EditUserData,
 	EditUserInfoRequest,
 } from "@dtos/requests/gamdom-api/edit-user-info-request";
+import { LoginRequest } from "@dtos/requests/gamdom-api/login-request";
+import { RegisterRequest } from "@dtos/requests/gamdom-api/register-request";
+import { SetFeatureStateRequest } from "@dtos/requests/gamdom-api/set-feature-state-request";
+import { SetProviderStateRequest } from "@dtos/requests/gamdom-api/set-provider-state-request";
+import { TipUserRequest } from "@dtos/requests/gamdom-api/tip-user-request";
+import { BasicInfoResponse } from "@dtos/responses/gamdom-api/basic-info-response";
 import { GetProvidersResponse } from "@dtos/responses/gamdom-api/get-providers-response";
-import { CreateKothEventRequest } from "@dtos/requests/gamdom-api/create-koth-event-request";
-import { EnableRainRequest } from "@dtos/requests/enable-rain-request";
+import { RegisterTestData } from "@dtos/test-data";
+import { ApiEndpoints } from "@enums/api-endpoints";
+import { Feature } from "@enums/feature";
 import { HttpStatus } from "@enums/http-status";
+import { APIResponse, expect } from "@playwright/test";
+import { GamdomDb } from "database/gamdom-db";
+import * as Configuration from "../configuration";
+import { BaseApi } from "./base-api";
 
 export class GamdomApi extends BaseApi {
+	private gamdomDb: GamdomDb;
+
 	constructor(base_url: string = Configuration.environment_url) {
 		super(base_url);
 		this.setHeaders({
 			"Content-Type": "application/json",
 			Authorization: `Bearer ${process.env.OAUTH2_JWT}`,
 		});
+		this.gamdomDb = new GamdomDb();
 	}
 
 	public async register(
@@ -89,6 +93,38 @@ export class GamdomApi extends BaseApi {
 		userData: RegisterTestData,
 	): Promise<string> {
 		await this.registerUser(userData);
+		return this.authenticateWithExistingUser(
+			userData.username,
+			userData.password,
+		);
+	}
+
+	public async authenticateWithNewSuperAdminUser(
+		userData: RegisterTestData,
+	): Promise<string> {
+		await this.registerUser(userData);
+		const newUserId = (
+			await this.getBasicInfo(userData.username, userData.password)
+		).user.id;
+		await this.gamdomDb.makeUserSuperAdmin(newUserId);
+		await this.gamdomDb.updateUserEmailVerification(newUserId);
+		await this.gamdomDb.updateUserTotalDepositedAmountByUserId(newUserId);
+		await this.gamdomDb.insertUserWallet(newUserId);
+		return this.authenticateWithExistingUser(
+			userData.username,
+			userData.password,
+		);
+	}
+
+	public async authenticateWithNewVerifiedUser(
+		userData: RegisterTestData,
+	): Promise<string> {
+		await this.registerUser(userData);
+		const newUserId = (
+			await this.getBasicInfo(userData.username, userData.password)
+		).user.id;
+		await this.gamdomDb.updateUserEmailVerification(newUserId);
+		await this.gamdomDb.updateUserXP(newUserId);
 		return this.authenticateWithExistingUser(
 			userData.username,
 			userData.password,

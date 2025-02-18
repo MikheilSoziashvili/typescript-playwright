@@ -284,6 +284,40 @@ export function buildEndpoint(parameters: {
 
 	return endpoint;
 }
+export function createAuthCookie(setCookie: string): {
+	name: string;
+	value: string;
+	domain: string;
+	path: string;
+	httpOnly: boolean;
+	secure: boolean;
+}[] {
+	const domain = environment_url.split("://")[1];
+	return [
+		{
+			name: getCookieName(setCookie),
+			value: getCookieValue(setCookie),
+			domain: domain,
+			path: "/",
+			httpOnly: true,
+			secure: false,
+		},
+	];
+}
+
+export async function setAuthenticationCookies(
+	page: Page,
+	setCookie: string,
+): Promise<void> {
+	await page.context().addCookies(createAuthCookie(setCookie));
+}
+
+export async function setContextAuthenticationCookies(
+	context: BrowserContext,
+	setCookie: string,
+): Promise<void> {
+	await context.addCookies(createAuthCookie(setCookie));
+}
 
 export function getCookieName(setCookie: string): string {
 	return setCookie.split("=")[0];
@@ -302,25 +336,6 @@ export function throwError(error: unknown, message: string): never {
 		throw new Error(`${message}: ${error.message}`);
 	}
 	throw new Error(message);
-}
-
-export async function setAuthenticationCookies(
-	page: Page,
-	setCookie: string,
-): Promise<void> {
-	const domain = environment_url.split("://")[1];
-	const cookie = [
-		{
-			name: getCookieName(setCookie),
-			value: getCookieValue(setCookie),
-			domain: domain,
-			path: "/",
-			httpOnly: true,
-			secure: false,
-		},
-	];
-
-	await page.context().addCookies(cookie);
 }
 
 export const getUserDetailsByTestTitle = (

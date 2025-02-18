@@ -4,7 +4,7 @@ import { HomePage } from "./home-page";
 import { HomePageBannerCarouselSlideTitle } from "@enums/homepage-banner-carousel-slide-title";
 import { RegisterTestDataParams } from "@core/interfaces";
 import { Locator } from "playwright";
-import { waitUntil } from "@core/utils/utils";
+import { generate2FACodeFromQRCodeImage, waitUntil } from "@core/utils/utils";
 import { Timeout } from "@enums/timeout";
 import { VisibilityResult } from "@core/types/types";
 import { GameProvider } from "@enums/game-providers";
@@ -35,6 +35,22 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 		if (!options?.expectErrors) {
 			await this.gamdomPage.assertThat().userIsLoggedIn();
 		}
+	}
+
+	@step()
+	public async generateAndLoginUserWith2FaCodeSuccessfully(
+		username: string,
+		password: string,
+		qrCode2FAImagePath: string,
+	): Promise<void> {
+		const code2FA = await generate2FACodeFromQRCodeImage(
+			qrCode2FAImagePath,
+		);
+		await this.loginUserWith2FaCodeSuccessfully(
+			username,
+			password,
+			code2FA,
+		);
 	}
 
 	@step()

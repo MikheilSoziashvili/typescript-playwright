@@ -11,7 +11,7 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 		super(gamdomPage);
 	}
 
-	public async playUntilResultMesssageIs(
+	public async playUntilResultMessageIs(
 		gameResultMessage: DiceGameResultMessage,
 		diceBetData: DiceBetTestData,
 	): Promise<void> {

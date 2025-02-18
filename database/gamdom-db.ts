@@ -5,6 +5,8 @@ import { DbTables } from "@enums/db/db-tables";
 import { UsersColumns } from "@enums/db/users-columns";
 import { UserTags } from "@enums/db/user-tags";
 import { UserClasses } from "@enums/db/user-classes";
+import { Unit } from "@enums/units";
+import { WalletsColumns } from "@enums/db/wallets-columns";
 
 export class GamdomDb extends BaseDB {
 	constructor() {
@@ -58,6 +60,18 @@ export class GamdomDb extends BaseDB {
 		return result;
 	}
 
+	public async updateUserTotalDepositedAmountByUserId(
+		userId: number,
+		amount = 300,
+	): Promise<QueryResultRow> {
+		const result = await this.update(
+			DbTables.Users,
+			{ [UsersColumns.TotalDeposited]: amount },
+			`${UsersColumns.Id} = ${userId}`,
+		);
+		return result;
+	}
+
 	public async updateUserEmailVerification(
 		userId: number,
 		isVerified = true,
@@ -65,6 +79,31 @@ export class GamdomDb extends BaseDB {
 		const result = await this.update(
 			DbTables.Users,
 			{ [UsersColumns.EmailVerified]: isVerified },
+			`${UsersColumns.Id} = ${userId}`,
+		);
+		return result;
+	}
+
+	public async insertUserWallet(
+		userId: number,
+		unit = Unit.COINS,
+		balance = 10000000,
+	): Promise<QueryResultRow> {
+		const result = await this.insert(DbTables.Wallets, {
+			[WalletsColumns.UserId]: userId,
+			[WalletsColumns.Unit]: unit,
+			[WalletsColumns.Balance]: balance,
+		});
+		return result;
+	}
+
+	public async updateUserXP(
+		userId: number,
+		xp = 10001200,
+	): Promise<QueryResultRow> {
+		const result = await this.update(
+			DbTables.Users,
+			{ [UsersColumns.XP]: xp },
 			`${UsersColumns.Id} = ${userId}`,
 		);
 		return result;
