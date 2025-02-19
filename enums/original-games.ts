@@ -4,6 +4,7 @@ export enum OriginalGame {
 	Dice = "Dice",
 	Roulette = "Roulette",
 	HiLo = "HiLo",
+	Plinko = "Plinko",
 }
 
 export enum RouletteNumberColor {

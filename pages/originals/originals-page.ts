@@ -11,6 +11,7 @@ import { OriginalGamesPage, OriginalGames } from "@core/types/types";
 import { HiloBetOption } from "@enums/hilo-bet-options";
 import { OriginalGame, RouletteBetColor } from "@enums/original-games";
 import { step } from "decorators/step";
+import { PlinkoGamePage } from "@pages/plinko-game-page/plinko-game-page";
 
 /**
  * The OriginalsPage class acts as a unified interface for interacting with all the "Originals" games.
@@ -31,6 +32,7 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 	 * @param {CrashGamePage} crashGamePage - The Crash game page object.
 	 * @param {HiloGamePage} hiloGamePage - The Hi-Lo game page object.
 	 * @param {RouletteGamePage} rouletteGamePage - The Roulette game page object.
+	 * @param {PlinkoGamePage} plinkoGamePage - The Plinko game page object.
 	 */
 	public constructor(
 		page: Page,
@@ -38,6 +40,7 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 		private crashGamePage: CrashGamePage,
 		private hiloGamePage: HiloGamePage,
 		private rouletteGamePage: RouletteGamePage,
+		private plinkoGamePage: PlinkoGamePage,
 	) {
 		super(page, new OriginalsMap(page));
 		this.gamesMap = {
@@ -45,6 +48,7 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 			Crash: this.crashGamePage,
 			Roulette: this.rouletteGamePage,
 			HiLo: this.hiloGamePage,
+			Plinko: this.plinkoGamePage,
 		};
 	}
 

@@ -107,9 +107,9 @@ jobs:
                   git push origin ${{ github.event.pull_request.head.ref }}
               if: success()
 
-            - uses: actions/upload-artifact@v3
+            - uses: actions/upload-artifact@v4
               if: always()
               with:
-                  name: playwright-report
+                  name: playwright-report-${{ matrix.runs-on }}
                   path: playwright-report/
                   retention-days: 1

@@ -3,6 +3,7 @@ import { VisibilityOptions } from "@enums/visibility-options";
 import { CrashGamePage } from "@pages/crash-game-page/crash-game-page";
 import { DiceGamePage } from "@pages/dice-game-page/dice-game-page";
 import { HiloGamePage } from "@pages/hilo-game-page/hilo-game-page";
+import { PlinkoGamePage } from "@pages/plinko-game-page/plinko-game-page";
 import { RouletteGamePage } from "@pages/roulette-game-page/roulette-game-page";
 import { APIRequestContext } from "@playwright/test";
 
@@ -87,7 +88,8 @@ export type OriginalGamesPage =
 	| DiceGamePage
 	| CrashGamePage
 	| HiloGamePage
-	| RouletteGamePage;
+	| RouletteGamePage
+	| PlinkoGamePage;
 
 export type PoolConfigurationType = {
 	host: string;

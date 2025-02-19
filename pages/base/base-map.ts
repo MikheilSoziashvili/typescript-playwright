@@ -77,4 +77,8 @@ export class BaseMap {
 			hasText: text,
 		});
 	}
+
+	protected getInputField(inputField: string, container?: Locator): Locator {
+		return (container || this.page).locator(`input[name='${inputField}']`);
+	}
 }

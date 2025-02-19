@@ -4,6 +4,7 @@ import { DiceGamePage } from "@pages/dice-game-page/dice-game-page";
 import { RouletteGamePage } from "@pages/roulette-game-page/roulette-game-page";
 import { HiloGamePage } from "@pages/hilo-game-page/hilo-game-page";
 import { OriginalsPage } from "@pages/originals/originals-page";
+import { PlinkoGamePage } from "@pages/plinko-game-page/plinko-game-page";
 
 export type GamePages = {
 	originalsPage: OriginalsPage;
@@ -11,6 +12,7 @@ export type GamePages = {
 	diceGamePage: DiceGamePage;
 	rouletteGamePage: RouletteGamePage;
 	hiloGamePage: HiloGamePage;
+	plinkoGamePage: PlinkoGamePage;
 };
 
 export const gamePagesFixtures = base.extend<GamePages>({
@@ -26,8 +28,18 @@ export const gamePagesFixtures = base.extend<GamePages>({
 	rouletteGamePage: async ({ page }, use) => {
 		await use(new RouletteGamePage(page));
 	},
+	plinkoGamePage: async ({ page }, use) => {
+		await use(new PlinkoGamePage(page));
+	},
 	originalsPage: async (
-		{ page, diceGamePage, crashGamePage, hiloGamePage, rouletteGamePage },
+		{
+			page,
+			diceGamePage,
+			crashGamePage,
+			hiloGamePage,
+			rouletteGamePage,
+			plinkoGamePage,
+		},
 		use,
 	) => {
 		await use(
@@ -37,6 +49,7 @@ export const gamePagesFixtures = base.extend<GamePages>({
 				crashGamePage,
 				hiloGamePage,
 				rouletteGamePage,
+				plinkoGamePage,
 			),
 		);
 	},
