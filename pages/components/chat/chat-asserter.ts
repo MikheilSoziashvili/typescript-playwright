@@ -5,13 +5,14 @@ import { ChatFooterPlaceholder } from "@enums/chat-footer-palceholders";
 import { ChatMessageOptions } from "./chat-map";
 import { Timeout } from "@enums/timeout";
 import { logger } from "@logger/logger";
+import { step } from "decorators/step";
 
 export class ChatAsserter extends BaseAsserter<Chat> {
 	public constructor(chat: Chat) {
 		super(chat);
 	}
 
-	public async isDisplayed(): Promise<void> {
+	public async chatIsDisplayed(): Promise<void> {
 		await expect(this.gamdomPage.map.chatLocator).toBeVisible();
 	}
 
@@ -65,5 +66,24 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 		await expect(this.gamdomPage.map.infoMessageLocator(index)).toHaveText(
 			infoMessage,
 		);
+	}
+
+	@step()
+	public async isRainClaimVisible(): Promise<boolean> {
+		return this.isElementVisible([this.gamdomPage.map.claimRainButton]);
+	}
+
+	@step()
+	public async isRainBotMessageVisible(): Promise<boolean> {
+		return this.isElementVisible([
+			this.gamdomPage.map.rainBotMessageLocator,
+		]);
+	}
+
+	@step()
+	public async rainClaimedMessageIsDisplayed(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.rainClaimedMessageLocator,
+		]);
 	}
 }

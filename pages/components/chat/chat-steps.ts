@@ -9,6 +9,9 @@ import { ChatMessageOptions } from "./chat-map";
 import { logger } from "@logger/logger";
 import { Attributes } from "@enums/playwright/htmlAttributes";
 import { BooleanValueString } from "@enums/playwright/booleanValues";
+import { waitUntil } from "@core/utils/utils";
+import { step } from "decorators/step";
+import { TimeoutSeconds } from "@enums/timeout-seconds";
 
 export class ChatSteps extends BaseComponentStep<Chat> {
 	private authenticatedHeader: AuthenticatedHeader;
@@ -22,8 +25,14 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		return new AuthenticatedHeader(this.component.page);
 	}
 
+	@step()
+	public async openChatAndVerify(): Promise<void> {
+		await this.authenticatedHeader.expandChatIfNotVisible();
+		await this.component.assertThat().chatIsDisplayed();
+	}
+
 	public async verifyChatAndSendMessage(message: string): Promise<void> {
-		await this.component.assertThat().isDisplayed();
+		await this.component.assertThat().chatIsDisplayed();
 		await this.sendMessage(message);
 	}
 
@@ -117,5 +126,21 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 	): Promise<void> {
 		await this.component.assertThat().isMessageVisible(chatMessage);
 		await this.openTipUserModal(chatMessage, isWithVerification);
+	}
+
+	@step()
+	public async waitUponRainAndClaim(): Promise<void> {
+		await waitUntil(
+			async () => this.component.assertThat().isRainClaimVisible(),
+			{
+				errorMessage: "Rain claim button did not appear in time",
+				timeoutSeconds:
+					TimeoutSeconds.THIRTY + TimeoutSeconds.ONE_TWENTY,
+				intervalSeconds: 2,
+			},
+		);
+
+		await this.component.claimRain();
+		logger.info("Rain claimed.");
 	}
 }

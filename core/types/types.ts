@@ -1,11 +1,12 @@
 import { OriginalGame } from "@enums/original-games";
+import { RainStatus } from "@enums/rain-status";
 import { VisibilityOptions } from "@enums/visibility-options";
 import { CrashGamePage } from "@pages/crash-game-page/crash-game-page";
 import { DiceGamePage } from "@pages/dice-game-page/dice-game-page";
 import { HiloGamePage } from "@pages/hilo-game-page/hilo-game-page";
 import { PlinkoGamePage } from "@pages/plinko-game-page/plinko-game-page";
 import { RouletteGamePage } from "@pages/roulette-game-page/roulette-game-page";
-import { APIRequestContext } from "@playwright/test";
+import { APIRequestContext, APIResponse } from "@playwright/test";
 
 export type TestUserConfigurationObject = {
 	username: string;
@@ -100,4 +101,16 @@ export type PoolConfigurationType = {
 	max: number;
 	idleTimeoutMillis: number;
 	connectionTimeoutMillis: number;
+};
+
+export type RainResponse = APIResponse | RainStatus.ALREADY_ACTIVE;
+
+export type RainOptions = {
+	active: boolean;
+	extraAmount: number;
+	frequencyMins: number;
+	maxAmount: number;
+	minAmount: number;
+	percentExtraAmount: number;
+	headers?: Record<string, string>;
 };

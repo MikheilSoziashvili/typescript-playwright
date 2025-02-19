@@ -9,6 +9,7 @@ import { BaseComponent } from "./base-component";
 import { BaseModal } from "./base-modal";
 import { BasePage } from "./base-page";
 import { BaseMap } from "./base-map";
+import { VisibilityState } from "@enums/playwright/visibility-states";
 
 export class BaseAsserter<
 	T extends BasePage<BaseMap> | BaseModal<BaseMap> | BaseComponent<BaseMap>,
@@ -100,6 +101,23 @@ export class BaseAsserter<
 		expectedTexts.forEach((expectedText, index) => {
 			expect(expectedText.trim()).toBe(actualTexts[index].trim());
 		});
+	}
+
+	public async isElementVisible(
+		locators: Locator[],
+		timeout: number = Timeout.SHORT,
+	): Promise<boolean> {
+		try {
+			for (const locator of locators) {
+				await locator.waitFor({
+					state: VisibilityState.VISIBLE,
+					timeout: timeout,
+				});
+			}
+			return true;
+		} catch {
+			return false;
+		}
 	}
 
 	@step()

@@ -29,4 +29,14 @@ export class Chat extends BaseComponent<ChatMap> {
 			locator: this.map.chatLocator,
 		});
 	}
+
+	public async claimRain(): Promise<void> {
+		await this.map.claimRainButton.click();
+	}
+
+	public async getRainUserCount(): Promise<number> {
+		const userCountText =
+			await this.map.lastRainbotMessageUserCount.innerText();
+		return parseInt(userCountText.trim(), 10);
+	}
 }

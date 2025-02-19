@@ -16,10 +16,14 @@ import { RegisterTestData } from "@dtos/test-data";
 import { ApiEndpoints } from "@enums/api-endpoints";
 import { Feature } from "@enums/feature";
 import { HttpStatus } from "@enums/http-status";
+import { logger } from "@logger/logger";
+import { RainDTO } from "@dtos/responses/gamdom-api/get-open-rains-response";
 import { APIResponse, expect } from "@playwright/test";
 import { GamdomDb } from "database/gamdom-db";
 import * as Configuration from "../configuration";
 import { BaseApi } from "./base-api";
+import { RainOptions, RainResponse } from "@core/types/types";
+import { RainStatus } from "@enums/rain-status";
 
 export class GamdomApi extends BaseApi {
 	private gamdomDb: GamdomDb;
@@ -391,6 +395,66 @@ export class GamdomApi extends BaseApi {
 
 		const parameters = this.buildParameters(
 			ApiEndpoints.ENABLERAIN,
+			payload,
+			_headers,
+		);
+		return this.post(parameters);
+	}
+
+	private async getOpenRains(
+		_headers?: Record<string, string>,
+	): Promise<RainDTO[]> {
+		const parameters = this.buildParameters(
+			ApiEndpoints.GETOPENRAINS,
+			undefined,
+			_headers,
+		);
+
+		const response = await this.post(parameters);
+		return response.json() as Promise<RainDTO[]>;
+	}
+
+	public async ensureRainExists({
+		active,
+		extraAmount,
+		frequencyMins,
+		maxAmount,
+		minAmount,
+		percentExtraAmount,
+		headers,
+	}: RainOptions): Promise<RainResponse> {
+		const openRains = await this.getOpenRains(headers);
+
+		if (Array.isArray(openRains) && openRains.length > 0) {
+			logger.info("Rain is already active.");
+			return RainStatus.ALREADY_ACTIVE;
+		}
+
+		logger.info("No active rain found. Creating one...");
+
+		return this.enableRain(
+			active,
+			extraAmount,
+			frequencyMins,
+			maxAmount,
+			minAmount,
+			percentExtraAmount,
+			headers,
+		);
+	}
+
+	public async stopCustomRain(
+		_headers?: Record<string, string>,
+	): Promise<APIResponse> {
+		const payload = {
+			type: "rpc",
+			arg: {
+				type: "all",
+			},
+		};
+
+		const parameters = this.buildParameters(
+			ApiEndpoints.STOPCUSTOMRAIN,
 			payload,
 			_headers,
 		);

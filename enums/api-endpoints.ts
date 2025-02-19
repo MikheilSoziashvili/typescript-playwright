@@ -9,4 +9,6 @@ export enum ApiEndpoints {
 	EDITUSERINFO = "/client-api/admin/user/editUserInfo",
 	CREATEKOTH = "/client-api/admin/koth/createEvent",
 	ENABLERAIN = "/stream/chat/rpc/startCustomRain",
+	STOPCUSTOMRAIN = "/stream/chat/rpc/stopCustomRain",
+	GETOPENRAINS = "/client-api/admin/rain/getOpenRains",
 }

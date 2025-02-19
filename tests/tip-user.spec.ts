@@ -51,7 +51,7 @@ test.describe("Tip user tests", () => {
 		test.slow();
 		await homePage.navigate({ cookies: { clearCookies: true } });
 		await homePage.authenticatedHeader.expandChatIfNotVisible();
-		await chat.assertThat().isDisplayed();
+		await chat.assertThat().chatIsDisplayed();
 		await chat
 			.assertThat()
 			.isPlaceholderVisible(ChatFooterPlaceholder.LOGIN_TO_CHAT);
@@ -63,7 +63,7 @@ test.describe("Tip user tests", () => {
 		await setAuthenticationCookies(page, cookie);
 
 		await homePage.navigate();
-		await chat.assertThat().isDisplayed();
+		await chat.assertThat().chatIsDisplayed();
 		await chat.assertThat().isMessageVisible(messageInfo_1);
 
 		const user2AccountBalance =

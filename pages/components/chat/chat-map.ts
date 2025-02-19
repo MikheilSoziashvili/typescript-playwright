@@ -65,6 +65,28 @@ export class ChatMap extends BaseMap {
 		}
 	}
 
+	public get rainBotMessageLocator(): Locator {
+		return this.page.locator(
+			"li[class*= MessageRain-] span[class*=RainBotMessage]",
+		);
+	}
+
+	public get claimRainButton(): Locator {
+		return this.page.locator(
+			'div[class*="RainBox"] div[class*="ellipsis"]',
+		);
+	}
+
+	public get lastRainbotMessageUserCount(): Locator {
+		return this.page.locator('span[class*="RainBotMessage"]').last();
+	}
+
+	public get rainClaimedMessageLocator(): Locator {
+		return this.page.locator(
+			'div[class*="RainBox"] label[class*="RainMessage"]',
+		);
+	}
+
 	public get chatFooter(): Locator {
 		return this.chatLocator.getByTestId("chatFooter");
 	}

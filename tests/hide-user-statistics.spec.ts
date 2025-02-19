@@ -51,7 +51,7 @@ test.describe("User statistics tests", () => {
 		await homePage.navigate();
 		await homePage.authenticatedHeader.expandChatIfNotVisible();
 
-		await chat.assertThat().isDisplayed();
+		await chat.assertThat().chatIsDisplayed();
 		await chat.removeFocus();
 		await chat
 			.assertThat()

@@ -4,6 +4,7 @@ import { buildTipRainUserMessageInfo } from "@core/helpers/asserter-helpers/text
 import {
 	createPngImagePath,
 	deleteFilesWithFilePaths,
+	getCookieHeader,
 	initializePageObjects,
 } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
@@ -15,11 +16,30 @@ test.describe("Tip rain tests", () => {
 	const tipRainAmount = 10;
 	const userData = new RegisterTestData();
 
-	test.beforeEach(async ({ settingsPage }) => {
+	test.beforeEach(async ({ settingsPage, gamdomApi }) => {
+		const superAdminData = new RegisterTestData({
+			useGamdomEmailDomain: true,
+		});
+		const superAdminCookie = getCookieHeader(
+			await gamdomApi.authenticateWithNewSuperAdminUser(superAdminData),
+		);
+		await gamdomApi.ensureRainExists({
+			active: true,
+			extraAmount: 1000,
+			frequencyMins: 1,
+			maxAmount: 1000,
+			minAmount: 100,
+			percentExtraAmount: 5,
+			headers: {
+				Cookie: superAdminCookie,
+			},
+		});
+
 		qrCode2FAImagePath = createPngImagePath();
 		await settingsPage.navigate();
 		await settingsPage.steps().enable2FaAuthentication(qrCode2FAImagePath);
 	});
+
 	test.afterEach(async () => {
 		await deleteFilesWithFilePaths([qrCode2FAImagePath]);
 	});

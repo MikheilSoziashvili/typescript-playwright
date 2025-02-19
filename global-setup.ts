@@ -105,30 +105,6 @@ async function createKothEvent(
 	logger.info("New KOTH Event created");
 }
 
-async function enableRain(
-	gamdomApi: GamdomApi,
-	active: boolean,
-	extraAmount: number,
-	frequencyMins: number,
-	maxAmount: number,
-	minAmount: number,
-	percentExtraAmount: number,
-	cookie: string,
-): Promise<void> {
-	const enableRainResponse = await gamdomApi.enableRain(
-		active,
-		extraAmount,
-		frequencyMins,
-		maxAmount,
-		minAmount,
-		percentExtraAmount,
-		{ Cookie: cookie },
-	);
-
-	expect(enableRainResponse.status()).toBe(HttpStatus.OK);
-	logger.info("New Rain was created");
-}
-
 async function updateWithdrawLimits(): Promise<void> {
 	const storageStatePath = await getStorageStateUserAPI(
 		SUPER_ADMIN_CREDENTIALS.username,
@@ -225,7 +201,6 @@ async function globalSetup(): Promise<void> {
 		15000,
 		cookie,
 	);
-	await enableRain(gamdomApi, false, 10000, 20, 1000, 2000, 5, cookie);
 
 	if (Configuration.createExecution) {
 		const existingKey = process.env.TEST_EXECUTION_ID;
