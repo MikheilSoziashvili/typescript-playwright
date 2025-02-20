@@ -47,7 +47,9 @@ function messageLayoutSlackCli(summaryResults) {
 
 	summaryResults.meta?.push({
 		key: ":jira: Test Execution:",
-		value: `<https://gamdom.atlassian.net/browse/${process.env.TEST_EXECUTION_ID}|here>`,
+		value: process.env.TEST_EXECUTION_ID
+			? `<https://gamdom.atlassian.net/browse/${process.env.TEST_EXECUTION_ID}|here>`
+			: "N/A",
 	});
 
 	if (summaryResults.meta) {

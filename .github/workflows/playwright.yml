@@ -44,6 +44,11 @@ on:
                 description: "Test Execution ID"
                 type: string
                 required: false
+            create_test_execution:
+                description: "Create Test Execution"
+                type: boolean
+                required: false
+                default: false
 
     workflow_call:
         secrets:
@@ -165,6 +170,8 @@ jobs:
             PLAYWRIGHT_TEST: yarn playwright test
             # Set default 3 default workers for scheduled runs and custom workers based on input.workers for more runs
             WORKERS: ${{ github.event_name == 'schedule' && '--workers=3' || format('--workers={0}', inputs.workers || '3')}}
+            CREATE_TEST_EXECUTION: ${{ inputs.create_test_execution }}
+            GITHUB_EVENT_NAME: ${{ github.event_name }}
 
         steps:
             - name: Validation For Environment URL
@@ -173,10 +180,9 @@ jobs:
                   echo $ENVIRONMENT_URL | grep -E '^(http|https)://[a-zA-Z0-9./?=_-]*[^/]$'
 
             - name: Validate TEST_EXECUTION_ID format
-              if: ${{ inputs.test_execution_id != '' }}
+              if: ${{ inputs.create_test_execution && inputs.test_execution_id != '' }}
               run: |
                   echo "Validating TEST_EXECUTION_ID format..."
-
                   TEST_EXECUTION_ID="${{ inputs.test_execution_id }}"
 
                   if ! echo "${TEST_EXECUTION_ID}" | grep -qE '^ENG-[0-9]+$'; then

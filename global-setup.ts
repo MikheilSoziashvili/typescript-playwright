@@ -212,6 +212,8 @@ async function globalSetup(): Promise<void> {
 		} else {
 			await createJiraExecution();
 		}
+	} else {
+		logger.info("Skipping creation of Test Execution in JIRA");
 	}
 }
 

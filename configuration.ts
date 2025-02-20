@@ -8,11 +8,16 @@ import { ConfiguraitonUrl } from "@enums/configuration-urls";
 import { Timeout } from "@enums/timeout";
 import "dotenv/config";
 
+const isScheduledRun = process.env.GITHUB_EVENT_NAME === "schedule";
+const isCI = process.env.CI === "true";
+const shouldCreateExecution = process.env.CREATE_TEST_EXECUTION === "true";
+
 export const environment_url = process.env.CI
 	? asString(process.env.ENVIRONMENT_URL)
 	: "https://staging-for-e2e-tests.teamgamdom.com";
 export const logLevel = "info";
-export const createExecution: boolean = process.env.CI ? true : false;
+export const createExecution: boolean =
+	isScheduledRun || (isCI && shouldCreateExecution);
 // Disable here to keep the legacy slack reporter implementation
 export const slackReporter: boolean = process.env.CI ? false : false;
 export const reportName: string = getFilePath("results.xml", "./");
