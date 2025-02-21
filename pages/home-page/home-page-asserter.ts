@@ -91,6 +91,40 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 	}
 
 	@step()
+	public async kothInHeaderVisualCorrect(testInfo: TestInfo): Promise<void> {
+		await this.checkElementVisualCorrect(
+			testInfo,
+			this.gamdomPage.map.kothHeaderImageLocator,
+			{
+				toHaveScreenshotOptions: {
+					mask: [this.gamdomPage.map.firstKothHeaderCurrencyAmount],
+				},
+			},
+		);
+	}
+
+	@step()
+	public async verifyKothCurrencyIsCentered(): Promise<void> {
+		const currencyContainer =
+			this.gamdomPage.map.firstKothHeaderCurrencyAmount;
+
+		await expect(currencyContainer).toBeVisible({
+			timeout: Timeout.MEDIUM,
+		});
+
+		const initialX = await this.gamdomPage.getKothCurrencyXPosition();
+		const boundingBox = await currencyContainer.boundingBox();
+
+		if (!boundingBox) {
+			throw new Error(
+				"KOTH currency container is not available for position check!",
+			);
+		}
+
+		expect(boundingBox.x).toBeCloseTo(initialX, 2);
+	}
+
+	@step()
 	public async verifyProviderState(
 		provider: string,
 		expectedResult: VisibilityResult,

@@ -147,4 +147,18 @@ export class HomePage extends BasePage<HomePageMap> {
 		await this.page.waitForLoadState();
 		await this.clickWalletButton();
 	}
+
+	@step()
+	public async getKothCurrencyXPosition(): Promise<number> {
+		return this.getElementPosition(
+			this.map.firstKothHeaderCurrencyAmount,
+			"x",
+		);
+	}
+
+	@step()
+	public async changeCurrency(currency: string): Promise<void> {
+		await this.map.balanceDropdown.click();
+		await this.map.selectCurrencyOption(currency).click();
+	}
 }

@@ -22,7 +22,7 @@ test.describe("Rain tests", () => {
 			extraAmount: 1000,
 			frequencyMins: 1,
 			maxAmount: 1000,
-			minAmount: 100,
+			minAmount: 1000,
 			percentExtraAmount: 5,
 			headers: {
 				Cookie: superAdminCookie,

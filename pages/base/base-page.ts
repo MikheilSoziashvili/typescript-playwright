@@ -144,4 +144,31 @@ export abstract class BasePage<T extends BaseMap> {
 			},
 		);
 	}
+
+	/**
+	 * Retrieves the X or Y position of a given element.
+	 *
+	 * @param element - The Playwright `Locator` of the element.
+	 * @param axis - The coordinate axis to retrieve (`"x"` or `"y"`).
+	 * @returns The X or Y position of the element.
+	 * @throws An error if the element's position cannot be determined.
+	 */
+	public async getElementPosition(
+		element: Locator,
+		axis: "x" | "y",
+	): Promise<number> {
+		const positionCache: { value?: number } = {};
+
+		if (positionCache.value === undefined) {
+			const boundingBox = await element.boundingBox();
+			if (!boundingBox) {
+				throw new Error(
+					`Element position for axis '${axis}' could not be determined.`,
+				);
+			}
+			positionCache.value = boundingBox[axis];
+		}
+
+		return positionCache.value;
+	}
 }

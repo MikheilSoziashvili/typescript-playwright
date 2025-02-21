@@ -120,4 +120,26 @@ export class HomePageMap extends BaseMap {
 			hasText: `${buttonName}`,
 		});
 	}
+
+	public get kothHeaderImageLocator(): Locator {
+		return this.page.locator("header a[href^='/koth'] img");
+	}
+
+	public get firstKothHeaderCurrencyAmount(): Locator {
+		return this.page
+			.locator(
+				'div[class*="swiper-slide"] span[class*="currency-amount"]',
+			)
+			.first();
+	}
+
+	public get balanceDropdown(): Locator {
+		return this.page.locator("i[class*='bal-arrow']");
+	}
+
+	public selectCurrencyOption(currency: string): Locator {
+		return this.page.locator(
+			`input[type='radio'][aria-label='${currency}']`,
+		);
+	}
 }
