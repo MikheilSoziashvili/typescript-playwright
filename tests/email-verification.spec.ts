@@ -72,7 +72,7 @@ test.describe("Email Verification Tests", () => {
 		await setAuthenticationCookies(page, cookie);
 
 		await profilePage.navigate();
-		await profilePage.steps().changeEmail(newEmailData.email);
+		await profilePage.steps().changeEmailSuccessfully(newEmailData.email);
 
 		await profilePage
 			.steps()

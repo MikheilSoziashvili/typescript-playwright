@@ -7,4 +7,5 @@ export enum UsersColumns {
 	TotalDeposited = "total_deposited",
 	EmailVerified = "email_verified",
 	XP = "xp",
+	PHONE_NUMBER = "phone_number",
 }

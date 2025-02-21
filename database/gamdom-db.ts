@@ -7,6 +7,7 @@ import { UserTags } from "@enums/db/user-tags";
 import { UserClasses } from "@enums/db/user-classes";
 import { Unit } from "@enums/units";
 import { WalletsColumns } from "@enums/db/wallets-columns";
+import { getRandomPhone } from "@core/utils/utils";
 
 export class GamdomDb extends BaseDB {
 	constructor() {
@@ -55,7 +56,7 @@ export class GamdomDb extends BaseDB {
 		const result = await this.update(
 			DbTables.Users,
 			{ [UsersColumns.TotalDeposited]: amount },
-			`${UsersColumns.Email} = '${userEmail}'`,
+			`${UsersColumns.Email} = '${userEmail.toLowerCase()}'`,
 		);
 		return result;
 	}
@@ -105,6 +106,18 @@ export class GamdomDb extends BaseDB {
 			DbTables.Users,
 			{ [UsersColumns.XP]: xp },
 			`${UsersColumns.Id} = ${userId}`,
+		);
+		return result;
+	}
+
+	public async updateUserPhoneNumberByUserEmail(
+		userEmail: string,
+		phoneNumber = getRandomPhone(),
+	): Promise<QueryResultRow> {
+		const result = await this.update(
+			DbTables.Users,
+			{ [UsersColumns.PHONE_NUMBER]: phoneNumber },
+			`${UsersColumns.Email} = '${userEmail.toLowerCase()}'`,
 		);
 		return result;
 	}

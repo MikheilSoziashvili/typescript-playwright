@@ -25,15 +25,43 @@ export class ProfilePageMap extends BaseMap {
 		return this.page.locator('button:has-text("Continue")');
 	}
 
+	public get emailNumberContainer(): Locator {
+		return this.page.getByTestId("profileEmailContainer");
+	}
+
 	public get changeEmailButton(): Locator {
-		return this.page.locator('(//button[text()="Change"])[2]');
+		return this.emailNumberContainer.locator("button", {
+			hasText: "Change",
+		});
 	}
 
 	public get changeEmailInput(): Locator {
-		return this.page.locator('input[name="email"]');
+		return this.getInputField("email", this.emailNumberContainer);
 	}
 
 	public get saveEmailButton(): Locator {
-		return this.page.locator('(//button[text()="Save"])[1]');
+		return this.emailNumberContainer.locator("button", {
+			hasText: "Save",
+		});
+	}
+
+	public get phoneNumberContainer(): Locator {
+		return this.page.getByTestId("profilePhoneContainer");
+	}
+
+	public get changePhoneButton(): Locator {
+		return this.phoneNumberContainer.locator("button", {
+			hasText: "Change",
+		});
+	}
+
+	public get changePhoneInput(): Locator {
+		return this.getInputField("phone", this.phoneNumberContainer);
+	}
+
+	public get savePhoneButton(): Locator {
+		return this.phoneNumberContainer.locator("button", {
+			hasText: "Save",
+		});
 	}
 }

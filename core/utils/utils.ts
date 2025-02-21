@@ -187,6 +187,22 @@ export function generateRandomString(options?: {
 	return options?.prefix ? `${options.prefix}${randomString}` : randomString;
 }
 
+export const getRandomPhone = (countryCode = "+1", length = 9): string => {
+	const formattedCountryCode = countryCode.startsWith("+")
+		? countryCode
+		: `+${countryCode}`;
+
+	const characters = "0123456789";
+	const randomNumbers = Array.from({ length }, () =>
+		characters.charAt(Math.floor(Math.random() * characters.length)),
+	).join("");
+
+	return `${formattedCountryCode}${randomNumbers}`;
+};
+
+export const getRandomEmail = (): string =>
+	`gamdom-e2e-email${Date.now()}@gmail.com`;
+
 export function asString(str: string | undefined): string {
 	return str as string;
 }

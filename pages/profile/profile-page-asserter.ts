@@ -16,4 +16,10 @@ export class ProfilePageAsserter extends BaseAsserter<ProfilePage> {
 			this.gamdomPage.map.changeEmailButton,
 		]);
 	}
+
+	public async assertChangePhoneButtonVisible(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.changePhoneButton,
+		]);
+	}
 }
