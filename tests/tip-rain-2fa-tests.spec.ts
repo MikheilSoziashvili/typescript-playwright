@@ -11,6 +11,7 @@ import {
 import { RegisterTestData } from "@dtos/test-data";
 import { test } from "@fixtures/fixtures";
 import { storageStateNewUserAPI } from "../fixtures/auth-fixtures";
+import { NL_PROXY_CREDENTIALS } from "@constants/proxies";
 
 test.describe("Tip rain tests", () => {
 	let qrCode2FAImagePath: string;
@@ -96,7 +97,7 @@ test.describe("Tip rain tests", () => {
 		await initializePageObjectsWithCookies(
 			await (await browser.newContext()).cookies(),
 			initialPage,
-			await createBrowserContextWithProxy(browser),
+			await createBrowserContextWithProxy(browser, NL_PROXY_CREDENTIALS),
 			...Object.values(pages),
 		);
 

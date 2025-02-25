@@ -30,7 +30,6 @@ import jsQR from "jsqr";
 import { authenticator } from "otplib";
 import { Timeout } from "@enums/timeout";
 import { DocumentReadyState } from "@enums/playwright/document-ready-states";
-import { NL_PROXY_CREDENTIALS } from "@constants/proxies";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -797,7 +796,7 @@ export async function initializePageObjectsWithCookies(
  */
 export async function createBrowserContextWithProxy(
 	browser: Browser,
-	proxyCredentials: ProxyCredentialsType = NL_PROXY_CREDENTIALS,
+	proxyCredentials: ProxyCredentialsType,
 ): Promise<BrowserContext> {
 	return browser.newContext({
 		proxy: proxyCredentials,

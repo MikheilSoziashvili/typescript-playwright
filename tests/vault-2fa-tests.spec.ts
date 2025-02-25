@@ -1,3 +1,4 @@
+import { NL_PROXY_CREDENTIALS } from "@constants/proxies";
 import {
 	createBrowserContextWithProxy,
 	createPngImagePath,
@@ -62,7 +63,7 @@ test.describe(`Vault wallet - 2FA verifications`, () => {
 		await initializePageObjectsWithCookies(
 			await (await browser.newContext()).cookies(),
 			initialPage,
-			await createBrowserContextWithProxy(browser),
+			await createBrowserContextWithProxy(browser, NL_PROXY_CREDENTIALS),
 			...Object.values(pages),
 		);
 

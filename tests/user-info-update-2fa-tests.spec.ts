@@ -11,6 +11,7 @@ import { CsvFilesName } from "@enums/csv-file-name";
 import { ContactType } from "@enums/personal-info-types";
 import { test } from "@fixtures/fixtures";
 import { storageStateNewUserAPI } from "../fixtures/auth-fixtures";
+import { NL_PROXY_CREDENTIALS } from "@constants/proxies";
 
 const contactInfoInputs = parse_csv(
 	DATASETS_DIR,
@@ -65,7 +66,10 @@ test.describe("User info update tests", () => {
 			await initializePageObjectsWithCookies(
 				await (await browser.newContext()).cookies(),
 				initialPage,
-				await createBrowserContextWithProxy(browser),
+				await createBrowserContextWithProxy(
+					browser,
+					NL_PROXY_CREDENTIALS,
+				),
 				...Object.values(pages),
 			);
 

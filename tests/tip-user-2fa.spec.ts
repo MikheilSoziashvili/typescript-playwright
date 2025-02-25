@@ -1,4 +1,5 @@
 import { ChatMessageOptions } from "@components/chat/chat-map";
+import { NL_PROXY_CREDENTIALS } from "@constants/proxies";
 import { buildTipUserMessageInfo } from "@core/helpers/asserter-helpers/text-asserters";
 import {
 	createBrowserContextWithProxy,
@@ -104,7 +105,7 @@ test.describe("Tip user 2FA tests", () => {
 		await initializePageObjectsWithCookies(
 			await context.cookies(),
 			initialPage,
-			await createBrowserContextWithProxy(browser),
+			await createBrowserContextWithProxy(browser, NL_PROXY_CREDENTIALS),
 			...Object.values(pages),
 		);
 
