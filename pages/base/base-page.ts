@@ -13,6 +13,7 @@ import { Timeout } from "@enums/timeout";
 import { WaitUntilState } from "@enums/wait-until-states";
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "./base-map";
+import { BoundingBoxCoordinate } from "@enums/bounding-box-coordinates";
 
 type Constructor<T> = new (page: Page) => T;
 
@@ -146,28 +147,26 @@ export abstract class BasePage<T extends BaseMap> {
 	}
 
 	/**
-	 * Retrieves the X or Y position of a given element.
+	 * Retrieves and caches the specified bounding box coordinate (X or Y) of an element.
 	 *
-	 * @param element - The Playwright `Locator` of the element.
-	 * @param axis - The coordinate axis to retrieve (`"x"` or `"y"`).
-	 * @returns The X or Y position of the element.
-	 * @throws An error if the element's position cannot be determined.
+	 * @param element - The Playwright Locator of the element to get the position for.
+	 * @param axis - The coordinate axis (X or Y) to retrieve.
+	 * @returns The numeric position value of the specified axis.
+	 * @throws Error if the element's position cannot be determined.
 	 */
 	public async getElementPosition(
 		element: Locator,
-		axis: "x" | "y",
+		axis: BoundingBoxCoordinate,
 	): Promise<number> {
 		const positionCache: { value?: number } = {};
 
-		if (positionCache.value === undefined) {
-			const boundingBox = await element.boundingBox();
-			if (!boundingBox) {
+		positionCache.value ??=
+			(await element.boundingBox())?.[axis] ??
+			(() => {
 				throw new Error(
 					`Element position for axis '${axis}' could not be determined.`,
 				);
-			}
-			positionCache.value = boundingBox[axis];
-		}
+			})();
 
 		return positionCache.value;
 	}

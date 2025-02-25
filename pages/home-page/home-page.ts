@@ -14,6 +14,7 @@ import { HomePageSteps } from "./home-page-steps";
 import { waitForSeconds } from "@core/utils/utils";
 import { WaitUntilState } from "@enums/wait-until-states";
 import { step } from "decorators/step";
+import { BoundingBoxCoordinate } from "@enums/bounding-box-coordinates";
 
 export class HomePage extends BasePage<HomePageMap> {
 	public constructor(page: Page) {
@@ -152,7 +153,7 @@ export class HomePage extends BasePage<HomePageMap> {
 	public async getKothCurrencyXPosition(): Promise<number> {
 		return this.getElementPosition(
 			this.map.firstKothHeaderCurrencyAmount,
-			"x",
+			BoundingBoxCoordinate.X,
 		);
 	}
 

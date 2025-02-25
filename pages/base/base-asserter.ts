@@ -177,4 +177,31 @@ export class BaseAsserter<
 
 		return newTab.url().toLowerCase();
 	}
+
+	/**
+	 * Verifies that a given element remains centered by comparing its X position.
+	 *
+	 * @param element - The Playwright `Locator` representing the element to check.
+	 * @param initialXPosition - The expected X coordinate of the element (from the initial state).
+	 * @param elementName - A descriptive name for the element (used in error messages).
+	 * @throws An error if the element is not visible or if its X position deviates beyond the threshold.
+	 */
+	public async verifyElementIsCentered(
+		element: Locator,
+		initialXPosition: number,
+		elementName: string,
+	): Promise<void> {
+		await expect(element).toBeVisible({
+			timeout: Timeout.MEDIUM,
+		});
+
+		const boundingBox = await element.boundingBox();
+		if (!boundingBox) {
+			throw new Error(
+				`${elementName} container is not available for position check!`,
+			);
+		}
+
+		expect(boundingBox.x).toBeCloseTo(initialXPosition, 2);
+	}
 }

@@ -29,3 +29,4 @@ export const SECURITY_ADMIN_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/SecurityAdmi
 export const BLOG = "/blog";
 export const CASINO_PAGE_ENDPOINT = "/casino";
 export const POVIDERS_PAGE_ENDPOINT = "/providers";
+export const KOTH_ENDPOIT = "/koth";

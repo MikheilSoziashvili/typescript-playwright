@@ -107,21 +107,13 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 	public async verifyKothCurrencyIsCentered(): Promise<void> {
 		const currencyContainer =
 			this.gamdomPage.map.firstKothHeaderCurrencyAmount;
-
-		await expect(currencyContainer).toBeVisible({
-			timeout: Timeout.MEDIUM,
-		});
-
 		const initialX = await this.gamdomPage.getKothCurrencyXPosition();
-		const boundingBox = await currencyContainer.boundingBox();
 
-		if (!boundingBox) {
-			throw new Error(
-				"KOTH currency container is not available for position check!",
-			);
-		}
-
-		expect(boundingBox.x).toBeCloseTo(initialX, 2);
+		await this.verifyElementIsCentered(
+			currencyContainer,
+			initialX,
+			"KOTH Header Currency",
+		);
 	}
 
 	@step()
