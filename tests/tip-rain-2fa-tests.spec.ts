@@ -1,11 +1,12 @@
-import { NL_PROXY_CREDENTIALS } from "@constants/proxies";
 import { TIP_RAIN } from "@constants/tip-rain";
 import { buildTipRainUserMessageInfo } from "@core/helpers/asserter-helpers/text-asserters";
 import {
+	createBrowserContextWithProxy,
 	createPngImagePath,
 	deleteFilesWithFilePaths,
 	getCookieHeader,
 	initializePageObjects,
+	initializePageObjectsWithCookies,
 } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { test } from "@fixtures/fixtures";
@@ -36,8 +37,9 @@ test.describe("Tip rain tests", () => {
 		});
 
 		qrCode2FAImagePath = createPngImagePath();
-		await settingsPage.navigate();
-		await settingsPage.steps().enable2FaAuthentication(qrCode2FAImagePath);
+		await settingsPage
+			.steps()
+			.navigateAndEnable2FaAuthentication(qrCode2FAImagePath);
 	});
 
 	test.afterEach(async () => {
@@ -60,7 +62,6 @@ test.describe("Tip rain tests", () => {
 		settingsPage,
 		browser,
 	}) => {
-		let context = await browser.newContext({});
 		const pages = {
 			homePage,
 			tipRainModal,
@@ -69,7 +70,7 @@ test.describe("Tip rain tests", () => {
 			chat,
 		};
 		const initialPage = await initializePageObjects(
-			context,
+			await browser.newContext(),
 			...Object.values(pages),
 		);
 
@@ -92,13 +93,12 @@ test.describe("Tip rain tests", () => {
 		await chat.steps().verifyChatAndSendMessage(TIP_RAIN);
 		await twoFactorAuthModal.assertThat().modal2FaNotDisplayed();
 
-		const cookies = await context.cookies();
-		context = await browser.newContext({
-			proxy: NL_PROXY_CREDENTIALS,
-		});
-		await context.addCookies(cookies);
-		await initialPage.close();
-		await initializePageObjects(context, ...Object.values(pages));
+		await initializePageObjectsWithCookies(
+			await (await browser.newContext()).cookies(),
+			initialPage,
+			await createBrowserContextWithProxy(browser),
+			...Object.values(pages),
+		);
 
 		await homePage.navigate();
 		await homePage.authenticatedHeader.expandChatIfNotVisible();

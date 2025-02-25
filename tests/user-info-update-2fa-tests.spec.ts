@@ -1,9 +1,10 @@
 import { DATASETS_DIR } from "@constants/file-paths";
-import { NL_PROXY_CREDENTIALS } from "@constants/proxies";
 import {
+	createBrowserContextWithProxy,
 	createPngImagePath,
 	deleteFilesWithFilePaths,
 	initializePageObjects,
+	initializePageObjectsWithCookies,
 	parse_csv,
 } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
@@ -23,8 +24,9 @@ test.describe("User info update tests", () => {
 
 	test.beforeEach(async ({ settingsPage }) => {
 		qrCode2FAImagePath = createPngImagePath();
-		await settingsPage.navigate();
-		await settingsPage.steps().enable2FaAuthentication(qrCode2FAImagePath);
+		await settingsPage
+			.steps()
+			.navigateAndEnable2FaAuthentication(qrCode2FAImagePath);
 	});
 	test.afterEach(async () => {
 		await deleteFilesWithFilePaths([qrCode2FAImagePath]);
@@ -38,13 +40,12 @@ test.describe("User info update tests", () => {
 			twoFactorAuthModal,
 			browser,
 		}) => {
-			let context = await browser.newContext();
 			const pages = {
 				profilePage,
 				twoFactorAuthModal,
 			};
 			const initialPage = await initializePageObjects(
-				context,
+				await browser.newContext(),
 				...Object.values(pages),
 			);
 
@@ -61,13 +62,12 @@ test.describe("User info update tests", () => {
 				.steps()
 				.updateContactInfoWithUniqueValue(contactType.field, false);
 
-			const cookies = await context.cookies();
-			context = await browser.newContext({
-				proxy: NL_PROXY_CREDENTIALS,
-			});
-			await context.addCookies(cookies);
-			await initialPage.close();
-			await initializePageObjects(context, ...Object.values(pages));
+			await initializePageObjectsWithCookies(
+				await (await browser.newContext()).cookies(),
+				initialPage,
+				await createBrowserContextWithProxy(browser),
+				...Object.values(pages),
+			);
 
 			await profilePage.navigate();
 			await profilePage

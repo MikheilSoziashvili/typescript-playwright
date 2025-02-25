@@ -5,6 +5,7 @@ import { Page } from "playwright";
 import { GiftCardsAdminAsserter } from "./gift-cards-admin-page-asserter";
 import { GiftCardsAdminMap } from "./gift-cards-admin-page-map";
 import { GiftCardsAdminSteps } from "./gift-cards-admin-page-steps";
+import { TwoFactorAuthModal } from "@pages/modals/two-factor-authentication-modal/two-factor-auth-modal";
 
 export class GiftCardsAdminPage extends BasePage<GiftCardsAdminMap> {
 	public constructor(page: Page) {
@@ -17,6 +18,10 @@ export class GiftCardsAdminPage extends BasePage<GiftCardsAdminMap> {
 
 	public steps(): GiftCardsAdminSteps {
 		return new GiftCardsAdminSteps(this);
+	}
+
+	public get twoFactorAuthModal(): TwoFactorAuthModal {
+		return new TwoFactorAuthModal(this.page);
 	}
 
 	public override async navigate(

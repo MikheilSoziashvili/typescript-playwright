@@ -7,6 +7,7 @@ import { readFileSync } from "fs";
 import { users } from "configuration";
 import {
 	CredentialsType,
+	ProxyCredentialsType,
 	TestUserConfigurationObject,
 } from "@core/types/types";
 import accounting from "accounting";
@@ -20,7 +21,7 @@ import fs from "fs";
 import xml2js from "xml2js";
 import { MAILINATOR_DOMAIN } from "@constants/domains";
 import { Protocol } from "@enums/api/protocols";
-import { BrowserContext, Locator, Page } from "playwright";
+import { Browser, BrowserContext, Cookie, Locator, Page } from "playwright";
 import { environment_url } from "configuration";
 import { AUTH_PATH } from "@constants/file-paths";
 import { PNG, PNGOptions } from "pngjs";
@@ -29,6 +30,7 @@ import jsQR from "jsqr";
 import { authenticator } from "otplib";
 import { Timeout } from "@enums/timeout";
 import { DocumentReadyState } from "@enums/playwright/document-ready-states";
+import { NL_PROXY_CREDENTIALS } from "@constants/proxies";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -744,6 +746,62 @@ export async function initializePageObjects(
 	const page = await context.newPage();
 	pageObjects.forEach((obj) => obj.init(page));
 	return page;
+}
+
+/**
+ * Initializes multiple page objects with a new browser context that has predefined cookies.
+ *
+ * This function adds the provided cookies to the new browser context, closes the initial page,
+ * and then initializes the given page objects within the new context.
+ *
+ * @async
+ * @param {Cookie[]} cookies - An array of cookies to be added to the new browser context.
+ * @param {Page} initialPage - The initial page instance that will be closed after cookies are set.
+ * @param {BrowserContext} context - The browser context in which the new page and page objects will be initialized.
+ * @param {...{ init: (page: Page) => void }[]} pageObjects - An array of page objects, each containing an `init` method
+ * that accepts a `Page` instance to bind the object to the created page.
+ * @returns {Promise<Page>} A promise that resolves to the newly created page with initialized page objects.
+ *
+ * @example
+ * const newPage = await initializePageObjectsWithCookies(
+ *   cookies,
+ *   initialPage,
+ *   context,
+ *   homePage,
+ *   settingsPage
+ * );
+ */
+export async function initializePageObjectsWithCookies(
+	cookies: Cookie[],
+	initialPage: Page,
+	context: BrowserContext,
+	...pageObjects: { init: (page: Page) => void }[]
+): Promise<Page> {
+	await context.addCookies(cookies);
+	await initialPage.close();
+	return initializePageObjects(context, ...pageObjects);
+}
+
+/**
+ * Creates a new browser context with a specified proxy configuration.
+ *
+ * This function initializes a new browser context using the provided proxy credentials.
+ *
+ * @async
+ * @param {Browser} browser - The Playwright browser instance.
+ * @param {ProxyCredentialsType} proxyCredentials - The proxy credentials used to configure the browser context.
+ * @returns {Promise<BrowserContext>} A promise that resolves to the newly created browser context with the specified proxy settings.
+ *
+ * @example
+ * const context = await createBrowserContextWithProxy(browser, NL_PROXY_CREDENTIALS);
+ */
+export async function createBrowserContextWithProxy(
+	browser: Browser,
+	proxyCredentials: ProxyCredentialsType = NL_PROXY_CREDENTIALS,
+): Promise<BrowserContext> {
+	return browser.newContext({
+		proxy: proxyCredentials,
+	});
 }
 
 /**

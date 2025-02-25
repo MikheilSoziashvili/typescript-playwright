@@ -38,4 +38,17 @@ export class GiftCardsAdminSteps extends BasePageStep<GiftCardsAdminPage> {
 		await this.selectQuantityFromGiftCardGeneratorDropdownValues(quantity);
 		await this.gamdomPage.map.generateAndDownloadButton.click();
 	}
+
+	public async navigateAndGenerateGiftCardWith2FaFlow(
+		value: string,
+		quantity: string,
+		qrCode2FAImagePath: string,
+	): Promise<void> {
+		await this.gamdomPage.navigate();
+		await this.gamdomPage.assertThat().pageElementsAreVisible();
+		await this.generateGiftCardFromGenerator(value, quantity);
+		await this.gamdomPage.twoFactorAuthModal
+			.steps()
+			.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
+	}
 }

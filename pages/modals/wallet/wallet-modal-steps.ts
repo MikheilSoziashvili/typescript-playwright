@@ -80,4 +80,15 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 		await this.gamdomPage.selectWalletOption(wallet);
 		await this.gamdomPage.assertThat().vaultWalletAmountIs(amount + 1);
 	}
+
+	public async withdrawInVaultWith2FaFlow(
+		walletOption: string,
+		amount: number,
+		qrCode2FAImagePath: string,
+	): Promise<void> {
+		await this.gamdomPage.withdrawInVault(walletOption, amount);
+		await this.gamdomPage.twoFactorAuthModal
+			.steps()
+			.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
+	}
 }

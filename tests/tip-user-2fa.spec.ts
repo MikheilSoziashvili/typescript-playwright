@@ -1,11 +1,12 @@
 import { ChatMessageOptions } from "@components/chat/chat-map";
-import { NL_PROXY_CREDENTIALS } from "@constants/proxies";
 import { buildTipUserMessageInfo } from "@core/helpers/asserter-helpers/text-asserters";
 import {
+	createBrowserContextWithProxy,
 	createPngImagePath,
 	deleteFilesWithFilePaths,
 	generateRandomString,
 	initializePageObjects,
+	initializePageObjectsWithCookies,
 	setAuthenticationCookies,
 	setContextAuthenticationCookies,
 } from "@core/utils/utils";
@@ -60,7 +61,7 @@ test.describe("Tip user 2FA tests", () => {
 		settingsPage,
 		browser,
 	}) => {
-		let context = await browser.newContext();
+		const context = await browser.newContext();
 		const pages = {
 			homePage,
 			tipUserModal,
@@ -80,8 +81,9 @@ test.describe("Tip user 2FA tests", () => {
 		);
 		await setContextAuthenticationCookies(context, cookie);
 
-		await settingsPage.navigate();
-		await settingsPage.steps().enable2FaAuthentication(qrCode2FAImagePath);
+		await settingsPage
+			.steps()
+			.navigateAndEnable2FaAuthentication(qrCode2FAImagePath);
 		await homePage.authenticatedHeader.expandChatIfNotVisible();
 		await chat
 			.steps()
@@ -99,13 +101,12 @@ test.describe("Tip user 2FA tests", () => {
 		await tipUserModal.tipUser(tipValue);
 		await chat.assertThat().isInfoMessageVisible(tipUserInfoMessage);
 
-		const cookies = await context.cookies();
-		context = await browser.newContext({
-			proxy: NL_PROXY_CREDENTIALS,
-		});
-		await context.addCookies(cookies);
-		await initialPage.close();
-		await initializePageObjects(context, ...Object.values(pages));
+		await initializePageObjectsWithCookies(
+			await context.cookies(),
+			initialPage,
+			await createBrowserContextWithProxy(browser),
+			...Object.values(pages),
+		);
 
 		await homePage.navigate();
 		await homePage.authenticatedHeader.expandChatIfNotVisible();

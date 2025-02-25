@@ -10,6 +10,13 @@ export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 		super(gamdomPage);
 	}
 
+	public async navigateAndEnable2FaAuthentication(
+		screenshotPath: string,
+	): Promise<void> {
+		await this.gamdomPage.navigate();
+		await this.enable2FaAuthentication(screenshotPath);
+	}
+
 	public async enable2FaAuthentication(
 		screenshotPath: string,
 	): Promise<void> {

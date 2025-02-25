@@ -5,6 +5,7 @@ import { INFO_ADMIN_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { InfoAdminPageAsserter } from "./info-admin-page-asserter";
 import { InfoAdminPageSteps } from "./info-admin-page-steps";
 import { BasePageNavigationParametersType } from "@core/types/types";
+import { TwoFactorAuthModal } from "@pages/modals/two-factor-authentication-modal/two-factor-auth-modal";
 
 export class InfoAdminPage extends BasePage<InfoAdminPageMap> {
 	public constructor(page: Page) {
@@ -26,5 +27,9 @@ export class InfoAdminPage extends BasePage<InfoAdminPageMap> {
 
 	public steps(): InfoAdminPageSteps {
 		return new InfoAdminPageSteps(this);
+	}
+
+	public get twoFactorAuthModal(): TwoFactorAuthModal {
+		return new TwoFactorAuthModal(this.page);
 	}
 }

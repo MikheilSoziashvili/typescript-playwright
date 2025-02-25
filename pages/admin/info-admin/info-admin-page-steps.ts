@@ -24,4 +24,14 @@ export class InfoAdminPageSteps extends BasePageStep<InfoAdminPage> {
 		await this.gamdomPage.map.tipAmountInput.fill(tipAmount.toString());
 		await this.gamdomPage.map.tipButton.click();
 	}
+
+	public async tipUserWith2FaFlow(
+		tipAmount: number,
+		qrCode2FAImagePath: string,
+	): Promise<void> {
+		await this.tipUser(tipAmount);
+		await this.gamdomPage.twoFactorAuthModal
+			.steps()
+			.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
+	}
 }

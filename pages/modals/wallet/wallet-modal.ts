@@ -5,6 +5,7 @@ import { WalletModalMap } from "./wallet-modal-map";
 import { WalletModalSteps } from "./wallet-modal-steps";
 import { sanitizeAmount } from "@support/regex-patterns";
 import { Timeout } from "@enums/timeout";
+import { TwoFactorAuthModal } from "../two-factor-authentication-modal/two-factor-auth-modal";
 
 export class WalletModal extends BasePage<WalletModalMap> {
 	public constructor(page: Page) {
@@ -17,6 +18,10 @@ export class WalletModal extends BasePage<WalletModalMap> {
 
 	public steps(): WalletModalSteps {
 		return new WalletModalSteps(this);
+	}
+
+	public get twoFactorAuthModal(): TwoFactorAuthModal {
+		return new TwoFactorAuthModal(this.page);
 	}
 
 	public async openWithdrawTab(): Promise<void> {

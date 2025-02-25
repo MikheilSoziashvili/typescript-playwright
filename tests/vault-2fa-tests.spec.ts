@@ -1,9 +1,9 @@
-import { NL_PROXY_CREDENTIALS } from "@constants/proxies";
 import {
+	createBrowserContextWithProxy,
 	createPngImagePath,
 	deleteFilesWithFilePaths,
-	generate2FACodeFromQRCodeImage,
 	initializePageObjects,
+	initializePageObjectsWithCookies,
 } from "@core/utils/utils";
 import { Wallet } from "@enums/wallets";
 import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
@@ -14,8 +14,9 @@ test.describe(`Vault wallet - 2FA verifications`, () => {
 
 	test.beforeEach(async ({ settingsPage }) => {
 		qrCode2FAImagePath = createPngImagePath();
-		await settingsPage.navigate();
-		await settingsPage.steps().enable2FaAuthentication(qrCode2FAImagePath);
+		await settingsPage
+			.steps()
+			.navigateAndEnable2FaAuthentication(qrCode2FAImagePath);
 	});
 	test.afterEach(async () => {
 		await deleteFilesWithFilePaths([qrCode2FAImagePath]);
@@ -33,7 +34,6 @@ test.describe(`Vault wallet - 2FA verifications`, () => {
 		settingsPage,
 		twoFactorAuthModal,
 	}) => {
-		let context = await browser.newContext({});
 		const pages = {
 			homePage,
 			walletModal,
@@ -41,7 +41,7 @@ test.describe(`Vault wallet - 2FA verifications`, () => {
 			twoFactorAuthModal,
 		};
 		const initialPage = await initializePageObjects(
-			context,
+			await browser.newContext(),
 			...Object.values(pages),
 		);
 
@@ -49,28 +49,31 @@ test.describe(`Vault wallet - 2FA verifications`, () => {
 		await walletModal
 			.steps()
 			.depositFromWalletAndVerify(walletType, depositAmount);
-		await walletModal.withdrawInVault(walletType, withdrawAmount);
-		const code2FA = await generate2FACodeFromQRCodeImage(
-			qrCode2FAImagePath,
-		);
-		await twoFactorAuthModal.steps().enter2FaCodeSuccessfully(code2FA);
+		await walletModal
+			.steps()
+			.withdrawInVaultWith2FaFlow(
+				walletType,
+				withdrawAmount,
+				qrCode2FAImagePath,
+			);
 		await walletModal.withdrawInVault(walletType, withdrawAmount);
 		await twoFactorAuthModal.assertThat().modal2FaNotDisplayed();
 
-		const cookies = await context.cookies();
-		context = await browser.newContext({
-			proxy: NL_PROXY_CREDENTIALS,
-		});
-		await context.addCookies(cookies);
-		await initialPage.close();
-		await initializePageObjects(context, ...Object.values(pages));
+		await initializePageObjectsWithCookies(
+			await (await browser.newContext()).cookies(),
+			initialPage,
+			await createBrowserContextWithProxy(browser),
+			...Object.values(pages),
+		);
 
 		await homePage.navigateToWallet();
 		await walletModal.openVaultTab();
-		await walletModal.withdrawInVault(walletType, withdrawAmount);
-		const newCode2FA = await generate2FACodeFromQRCodeImage(
-			qrCode2FAImagePath,
-		);
-		await twoFactorAuthModal.steps().enter2FaCodeSuccessfully(newCode2FA);
+		await walletModal
+			.steps()
+			.withdrawInVaultWith2FaFlow(
+				walletType,
+				withdrawAmount,
+				qrCode2FAImagePath,
+			);
 	});
 });

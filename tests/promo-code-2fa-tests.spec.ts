@@ -1,8 +1,10 @@
 import { US_PROXY_CREDENTIALS } from "@constants/proxies";
 import {
+	createBrowserContextWithProxy,
 	createPngImagePath,
 	deleteFilesWithFilePaths,
 	initializePageObjects,
+	initializePageObjectsWithCookies,
 } from "@core/utils/utils";
 import { test } from "@fixtures/fixtures";
 import { storageStateNewSuperAdminUserAPI } from "../fixtures/auth-fixtures";
@@ -12,8 +14,9 @@ test.describe("Promo Code tests", () => {
 
 	test.beforeEach(async ({ settingsPage }) => {
 		qrCode2FAImagePath = createPngImagePath();
-		await settingsPage.navigate();
-		await settingsPage.steps().enable2FaAuthentication(qrCode2FAImagePath);
+		await settingsPage
+			.steps()
+			.navigateAndEnable2FaAuthentication(qrCode2FAImagePath);
 	});
 	test.afterEach(async () => {
 		await deleteFilesWithFilePaths([qrCode2FAImagePath]);
@@ -27,14 +30,13 @@ test.describe("Promo Code tests", () => {
 		promoCodeModal,
 		browser,
 	}) => {
-		let context = await browser.newContext();
 		const pages = {
 			promoCampaignsAdminPage,
 			twoFactorAuthModal,
 			promoCodeModal,
 		};
 		const initialPage = await initializePageObjects(
-			context,
+			await browser.newContext(),
 			...Object.values(pages),
 		);
 
@@ -47,13 +49,12 @@ test.describe("Promo Code tests", () => {
 		await promoCampaignsAdminPage.clickCreateCampaignButton();
 		await promoCodeModal.assertThat().isDisplayed();
 
-		const cookies = await context.cookies();
-		context = await browser.newContext({
-			proxy: US_PROXY_CREDENTIALS,
-		});
-		await context.addCookies(cookies);
-		await initialPage.close();
-		await initializePageObjects(context, ...Object.values(pages));
+		await initializePageObjectsWithCookies(
+			await (await browser.newContext()).cookies(),
+			initialPage,
+			await createBrowserContextWithProxy(browser, US_PROXY_CREDENTIALS),
+			...Object.values(pages),
+		);
 
 		await promoCampaignsAdminPage.navigate();
 		await promoCampaignsAdminPage.clickCreateCampaignButton();

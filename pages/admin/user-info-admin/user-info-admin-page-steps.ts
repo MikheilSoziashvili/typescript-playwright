@@ -34,4 +34,9 @@ export class UserInfoAdminPageSteps extends BasePageStep<UserInfoAdminPage> {
 		);
 		await this.gamdomPage.map.showUserInfoButton.click();
 	}
+
+	public async navigateAndShowUserDetails(username: string): Promise<void> {
+		await this.gamdomPage.navigate();
+		await this.showUserDetails(username);
+	}
 }
