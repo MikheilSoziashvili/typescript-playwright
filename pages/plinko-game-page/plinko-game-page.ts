@@ -5,6 +5,7 @@ import { Page } from "@playwright/test";
 import { PlinkoGamePageAsserter } from "./plinko-game-page-asserter";
 import { PlinkoGamePageMap } from "./plinko-game-page-map";
 import { PlinkoGamePageSteps } from "./plinko-game-page-steps";
+import { step } from "decorators/step";
 
 export class PlinkoGamePage extends BasePage<PlinkoGamePageMap> {
 	public constructor(page: Page) {
@@ -28,6 +29,7 @@ export class PlinkoGamePage extends BasePage<PlinkoGamePageMap> {
 		return new PlinkoGamePageAsserter(this);
 	}
 
+	@step()
 	public async openLoginModal(): Promise<void> {
 		await this.map.signInButton.click();
 	}

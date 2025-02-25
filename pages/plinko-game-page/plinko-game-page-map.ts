@@ -27,8 +27,4 @@ export class PlinkoGamePageMap extends BaseMap {
 			"div[class*='AuthPopup-styled__SliderContainer-sc-']",
 		);
 	}
-
-	public get startPlayingButton(): Locator {
-		return this.page.getByTestId("start-playing-login");
-	}
 }

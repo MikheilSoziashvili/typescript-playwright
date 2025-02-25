@@ -1,4 +1,5 @@
 import { LiveSupportModal } from "@pages/modals/live-support-intercom-modal/live-support-intercom-modal";
+import { LoginModal } from "@pages/modals/login-modal/login-modal";
 import { PromoCodeModal } from "@pages/modals/promo-code-modal/promo-code-modal";
 import { TipRainModal } from "@pages/modals/tip-rain-modal/tip-rain-modal";
 import { TipUserModal } from "@pages/modals/tip-user-modal/tip-user-modal";
@@ -16,6 +17,7 @@ export type Modals = {
 	twoFactorAuthModal: TwoFactorAuthModal;
 	promoCodeModal: PromoCodeModal;
 	tipRainModal: TipRainModal;
+	loginModal: LoginModal;
 };
 
 export const modalsFixtures = base.extend<Modals>({
@@ -39,5 +41,8 @@ export const modalsFixtures = base.extend<Modals>({
 	},
 	promoCodeModal: async ({ page }, use) => {
 		await use(new PromoCodeModal(page));
+	},
+	loginModal: async ({ page }, use) => {
+		await use(new LoginModal(page));
 	},
 });

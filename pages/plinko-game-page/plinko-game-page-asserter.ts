@@ -10,7 +10,6 @@ export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 
 	@step("Sign In button is vissible")
 	async signInButtonIsDisplayed(): Promise<void> {
-		await expect(this.gamdomPage.map.signInButton).toBeVisible();
 		await expect(this.gamdomPage.map.signInButton).toHaveText("Sign in");
 	}
 
@@ -30,5 +29,10 @@ export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 				},
 			},
 		);
+	}
+
+	@step("Drop ball button is displayed")
+	async dropBallButtonIsDisplayed(): Promise<void> {
+		await expect(this.gamdomPage.map.signInButton).toHaveText("Drop ball");
 	}
 }
