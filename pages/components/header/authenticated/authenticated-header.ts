@@ -1,11 +1,11 @@
-import { Page } from "@playwright/test";
-import { AuthenticatedHeaderMap } from "./authenticated-header-map";
 import { BaseComponent } from "@base/base-component";
-import { AuthenticatedHeaderAsserter } from "./authenticated-header-asserter";
 import { parseBalance } from "@core/utils/utils";
-import { logger } from "@logger/logger";
-import { Chat } from "../../chat/chat";
 import { Timeout } from "@enums/timeout";
+import { logger } from "@logger/logger";
+import { Page } from "@playwright/test";
+import { Chat } from "../../chat/chat";
+import { AuthenticatedHeaderAsserter } from "./authenticated-header-asserter";
+import { AuthenticatedHeaderMap } from "./authenticated-header-map";
 
 export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 	constructor(page: Page) {
@@ -24,6 +24,10 @@ export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 		return parseBalance(
 			await (await this.map.getLoadedAccountBalance()).innerText(),
 		);
+	}
+
+	public async hoverOnWalletDropdown(): Promise<void> {
+		await this.map.inGameAccountBalanceContainer.hover();
 	}
 
 	public async expandChatIfNotVisible(): Promise<void> {

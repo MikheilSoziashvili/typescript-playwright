@@ -22,7 +22,7 @@ export class HomePageMap extends BaseMap {
 		);
 	}
 
-	public get walletButon(): Locator {
+	public get walletButton(): Locator {
 		return this.page.locator("button", {
 			hasText: "Wallet",
 		});

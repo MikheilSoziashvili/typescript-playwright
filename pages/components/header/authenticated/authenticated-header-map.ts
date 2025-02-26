@@ -1,6 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
-import { decimalNumber } from "@support/regex-patterns";
+import { decimalNumber, currencyAmountPattern } from "@support/regex-patterns";
 import { OriginalGame } from "@enums/original-games";
 import { throwError } from "@core/utils/utils";
 import { Timeout } from "@enums/timeout";
@@ -70,6 +70,24 @@ export class AuthenticatedHeaderMap extends BaseMap {
 		return this.page.locator(
 			"div[class*='header'] > div:nth-child(2) > div:nth-child(2) div[style*='tabular']",
 		);
+	}
+
+	public get inGameAccountBalanceContainer(): Locator {
+		return this.page.locator(
+			"//div[contains(@class, 'header')]//i[contains(@class,'arrow')]//parent::div/div/div",
+		);
+	}
+
+	public get inGameAccountBalance(): Locator {
+		return this.inGameAccountBalanceContainer.locator("span", {
+			hasText: currencyAmountPattern(),
+		});
+	}
+
+	public get inGameBalancePlayingStatus(): Locator {
+		return this.inGameAccountBalanceContainer.locator("span", {
+			hasText: "Playing...",
+		});
 	}
 
 	public get originalGamesMenuLink(): Locator {

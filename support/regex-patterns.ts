@@ -1,3 +1,5 @@
+import { CurrencySymbol } from "@enums/currenciesSymbols";
+
 export const twoDigitDecimalWithX = /[0-9]{1,2}\.[0-9]{1,2}[x]/;
 export const twoDigitDecimalWithS = /[0-9]{1,2}\.[0-9]{1,2}[s]/;
 export const plusSignWithDecimalCurrency = /\+.+\d.+/;
@@ -26,3 +28,7 @@ export const digitsOnlyPattern = /\d+/;
 export const emailDomainPattern = /@.*$/;
 export const vaultButtonPattern = (action: string): RegExp =>
 	new RegExp(`^(?=.*${action})(?=.*Vault).*$`);
+export const currencyAmountPattern = (
+	currencySymbol = CurrencySymbol.USD,
+): RegExp =>
+	new RegExp(`^\\${currencySymbol}\\d{1,3}(?:,\\d{3})*(?:\\.\\d{2})?$`);

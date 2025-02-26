@@ -23,13 +23,14 @@ export class BaseAsserter<
 	/**
 	 * Verifies that a specified element's visual appearance matches the expected
 	 * screenshot. Captures a screenshot of the element and compares it with the
-	 * baseline image. Optionally, allows configuration of screenshot options and
-	 * a custom screenshot name.
+	 * baseline image. Optionally, allows configuration of screenshot options, a custom screenshot name,
+	 * and a locator-specific name in the screenshot.
 	 *
 	 * @param {TestInfo} testInfo - Contains test metadata, including the test title.
 	 * @param {Locator} locator - The Playwright Locator object targeting the element to capture.
 	 * @param {Object} [options] - Optional parameters for configuring screenshot behavior.
 	 * @param {string} [options.screenshotName] - Custom name for the screenshot file. Defaults to `Visual-Tests-<testTitle>.png`.
+	 * @param {string} [options.locatorName] - Optional custom name for the locator used in the screenshot file name.
 	 * @param {Object} [options.toHaveScreenshotOptions] - Options for the `.toHaveScreenshot` assertion, such as timeout and thresholds.
 	 * @returns {Promise<void>} - Resolves when the screenshot comparison is complete.
 	 *
@@ -41,6 +42,7 @@ export class BaseAsserter<
 	 * ```typescript
 	 * await checkElementVisualCorrect(testInfo, page.locator('#element'), {
 	 *   screenshotName: 'CustomScreenshot.png',
+	 *   locatorName: 'element-locator',
 	 *   toHaveScreenshotOptions: { threshold: 0.1 }
 	 * });
 	 * ```
@@ -51,14 +53,19 @@ export class BaseAsserter<
 		locator: Locator,
 		options?: {
 			screenshotName?: string;
+			locatorName?: string;
 			toHaveScreenshotOptions?: Parameters<
 				ReturnType<typeof expect<Locator>>["toHaveScreenshot"]
 			>[0];
 		},
 	): Promise<void> {
 		const testTitle = testInfo.title;
+		const locatorName = options?.locatorName
+			? `${options.locatorName}-`
+			: "";
 		const screenshotName =
-			options?.screenshotName ?? `Visual-Tests-${testTitle}.png`;
+			options?.screenshotName ??
+			`Visual-Tests-${testTitle}${locatorName}.png`;
 
 		await waitForPageReadyState(
 			() => this.gamdomPage.page.evaluate(() => document.readyState),
@@ -73,6 +80,20 @@ export class BaseAsserter<
 		};
 
 		await expect(locator).toHaveScreenshot(screenshotName, defaultOptions);
+	}
+
+	public async verifyVisualDisplay(
+		testInfo: TestInfo,
+		locator: Locator,
+		options: { waitedElement?: Locator; locatorName: string },
+	): Promise<void> {
+		if (options.waitedElement) {
+			await expect(options.waitedElement).toBeVisible();
+		}
+
+		await this.checkElementVisualCorrect(testInfo, locator, {
+			locatorName: options.locatorName,
+		});
 	}
 
 	public async checkElementsAreVisible(

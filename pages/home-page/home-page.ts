@@ -115,7 +115,11 @@ export class HomePage extends BasePage<HomePageMap> {
 	}
 
 	public async clickWalletButton(): Promise<void> {
-		await this.map.walletButon.click();
+		await this.map.walletButton.click();
+	}
+
+	public async hoverOnWalletButton(): Promise<void> {
+		await this.map.walletButton.hover();
 	}
 
 	public async clickCarouselActiveSlide(): Promise<void> {

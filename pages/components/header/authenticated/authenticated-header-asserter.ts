@@ -1,14 +1,16 @@
-import { expect } from "@playwright/test";
 import { BaseAsserter } from "@base/base-asserter";
-import { AuthenticatedHeader } from "./authenticated-header";
-import { Timeout } from "@enums/timeout";
 import { formatBalance } from "@core/utils/utils";
+import { Timeout } from "@enums/timeout";
+import { expect, TestInfo } from "@playwright/test";
+import { step } from "decorators/step";
+import { AuthenticatedHeader } from "./authenticated-header";
 
 export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeader> {
 	public constructor(authenticatedHeader: AuthenticatedHeader) {
 		super(authenticatedHeader);
 	}
 
+	@step()
 	async loggedInUserElementsAreVisible(): Promise<void> {
 		await this.checkElementsAreVisible(
 			[
@@ -20,6 +22,7 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 		);
 	}
 
+	@step()
 	async loggedInUserElementsAreNotVisible(): Promise<void> {
 		await this.checkElementsAreNotVisible(
 			[
@@ -31,6 +34,7 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 		);
 	}
 
+	@step()
 	public async accountBalanceIs(amount: number): Promise<void> {
 		await expect(
 			await this.gamdomPage.map.getLoadedAccountBalance(),
@@ -39,11 +43,42 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 		});
 	}
 
+	@step()
 	public async accountBalanceHasChanged(
 		initialBalance: number,
 	): Promise<void> {
 		await expect(
 			await this.gamdomPage.map.getLoadedAccountBalance(),
 		).not.toHaveText(`${formatBalance(initialBalance)}`);
+	}
+
+	@step()
+	public async walletAmountIsVisualDisplayed(
+		testInfo: TestInfo,
+	): Promise<void> {
+		await this.verifyVisualDisplay(
+			testInfo,
+			this.gamdomPage.map.inGameAccountBalance,
+			{
+				waitedElement:
+					this.gamdomPage.map.inGameAccountBalanceContainer,
+				locatorName: "inGameAccountBalance",
+			},
+		);
+	}
+
+	@step()
+	public async playingStringIsVisualDisplayed(
+		testInfo: TestInfo,
+	): Promise<void> {
+		await this.verifyVisualDisplay(
+			testInfo,
+			this.gamdomPage.map.inGameBalancePlayingStatus,
+			{
+				waitedElement:
+					this.gamdomPage.map.inGameAccountBalanceContainer,
+				locatorName: "inGameBalancePlayingStatus",
+			},
+		);
 	}
 }
