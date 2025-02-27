@@ -11,4 +11,5 @@ export enum ApiEndpoints {
 	ENABLERAIN = "/stream/chat/rpc/startCustomRain",
 	STOPCUSTOMRAIN = "/stream/chat/rpc/stopCustomRain",
 	GETOPENRAINS = "/client-api/admin/rain/getOpenRains",
+	GETLASTKOTHEVENTID = "/client-api/koth/getFirstKoth",
 }

@@ -1,15 +1,15 @@
 import { waitForPageReadyState, waitUntil } from "@core/utils/utils";
 import { DocumentReadyState } from "@enums/playwright/document-ready-states";
+import { VisibilityState } from "@enums/playwright/visibility-states";
 import { Timeout } from "@enums/timeout";
 import { Locator, TestInfo, expect } from "@playwright/test";
 import { wwwPattern } from "@support/regex-patterns";
 import * as Configuration from "configuration";
 import { step } from "decorators/step";
 import { BaseComponent } from "./base-component";
+import { BaseMap } from "./base-map";
 import { BaseModal } from "./base-modal";
 import { BasePage } from "./base-page";
-import { BaseMap } from "./base-map";
-import { VisibilityState } from "@enums/playwright/visibility-states";
 
 export class BaseAsserter<
 	T extends BasePage<BaseMap> | BaseModal<BaseMap> | BaseComponent<BaseMap>,
@@ -153,9 +153,7 @@ export class BaseAsserter<
 			? expectedUrl
 			: `${Configuration.environment_url}${expectedUrl}`;
 
-		decodingUrl
-			? (currentUrl = decodeURIComponent(currentUrl))
-			: currentUrl;
+		currentUrl = decodingUrl ? decodeURIComponent(currentUrl) : currentUrl;
 
 		expect(currentUrl).toBe(normalizedExpectedUrl);
 	}

@@ -460,4 +460,17 @@ export class GamdomApi extends BaseApi {
 		);
 		return this.post(parameters);
 	}
+
+	public async fetchLastKothEventId(
+		_headers?: Record<string, string>,
+	): Promise<number> {
+		const parameters = this.buildParameters(
+			ApiEndpoints.GETLASTKOTHEVENTID,
+			undefined,
+			_headers,
+		);
+
+		const response = await this.post(parameters);
+		return response.json() as Promise<number>;
+	}
 }

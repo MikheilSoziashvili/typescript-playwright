@@ -2,6 +2,7 @@ import { BaseAsserter } from "@pages/base/base-asserter";
 import { KothPage } from "./koth-page";
 import { step } from "decorators/step";
 import { TestInfo } from "playwright/test";
+import { GamdomApi } from "@api/gamdom-api";
 
 export class KothAsserter extends BaseAsserter<KothPage> {
 	public constructor(page: KothPage) {
@@ -46,5 +47,15 @@ export class KothAsserter extends BaseAsserter<KothPage> {
 			initialX,
 			"KOTH Banner Timer",
 		);
+	}
+
+	@step()
+	public async verifyKothUrlIs(
+		expectedUrl: string,
+		gamdomApi: GamdomApi,
+	): Promise<void> {
+		const latestKothID = await gamdomApi.fetchLastKothEventId();
+
+		await this.verifyCurrentUrlIs(`${expectedUrl}/${latestKothID}`);
 	}
 }

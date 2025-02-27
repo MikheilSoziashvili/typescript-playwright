@@ -3,7 +3,7 @@ import { Page } from "playwright";
 import { KothAsserter } from "./koth-page-asserter";
 import { KothMap } from "./koth-page-map";
 import { KothSteps } from "./koth-page-steps";
-import { KOTH_ENDPOIT } from "@constants/page-endpoints";
+import { KOTH_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { step } from "decorators/step";
 import { BoundingBoxCoordinate } from "@enums/bounding-box-coordinates";
@@ -18,7 +18,7 @@ export class KothPage extends BasePage<KothMap> {
 	): Promise<void> {
 		await super.navigate({
 			...parameters,
-			endpoint: { paths: [KOTH_ENDPOIT] },
+			endpoint: { paths: [KOTH_ENDPOINT] },
 		});
 	}
 

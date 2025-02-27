@@ -4,6 +4,7 @@ import { parse_csv } from "@core/utils/utils";
 import { DATASETS_DIR } from "@constants/file-paths";
 import { environment_url } from "configuration";
 import { CsvFilesName } from "@enums/csv-file-name";
+import { KOTH_ENDPOINT } from "@constants/page-endpoints";
 
 const footerRecords = parse_csv(
 	DATASETS_DIR,
@@ -56,8 +57,21 @@ test.describe("Footer redirects tests", () => {
 		}) => {
 			await homePage.navigate();
 			await footer.openFooterLinkByPlaceholder(record.linkName);
+
 			await footer.assertThat().verifyCurrentUrlIs(record.expectedURL);
 		});
+	});
+
+	test(`[ENG-1977] Footer - Verify 'King Of The Hill' redirection from "Footer" section redirects to its respective page`, async ({
+		homePage,
+		footer,
+		gamdomApi,
+		kothPage,
+	}) => {
+		await homePage.navigate();
+		await footer.openFooterLinkByPlaceholder("King Of The Hill");
+
+		await kothPage.assertThat().verifyKothUrlIs(KOTH_ENDPOINT, gamdomApi);
 	});
 
 	helpPageRecords.forEach((record) => {
