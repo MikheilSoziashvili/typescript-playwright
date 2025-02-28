@@ -43,7 +43,7 @@ test.describe("Tip user through admin panel tests", () => {
 		}),
 	);
 
-	test("[ENG-2653] Tip user through admin panel - Require new 2FA code when IP of user changes", async ({
+	test("[ENG-2563] Tip user through admin panel - Require new 2FA code when IP of user changes", async ({
 		homePage,
 		userInfoAdminPage,
 		infoAdminPage,
