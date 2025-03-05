@@ -7,7 +7,7 @@ export class UserInfoAdminPageMap extends BaseMap {
 	}
 
 	public get viewUserInfoBox(): Locator {
-		return this.page.locator('div.user_inf:has(h3:text-is("View user"))');
+		return this.page.getByTestId("adminUserInfoContainer");
 	}
 
 	public get searchByUsernameContainer(): Locator {
@@ -18,12 +18,6 @@ export class UserInfoAdminPageMap extends BaseMap {
 
 	public get searchByUsernameInput(): Locator {
 		return this.searchByUsernameContainer.locator("input");
-	}
-
-	public get searchByUsernameMenu(): Locator {
-		return this.searchByUsernameContainer.locator(
-			"div.Select-menu-outer div.Select-menu",
-		);
 	}
 
 	public get searchByUsernameMenuNoResults(): Locator {
@@ -39,7 +33,7 @@ export class UserInfoAdminPageMap extends BaseMap {
 	}
 
 	public get showUserInfoButton(): Locator {
-		return this.viewUserInfoBox.locator('button:text-is("Show user info")');
+		return this.viewUserInfoBox.getByTestId("adminUserInfoShowInfoButton");
 	}
 
 	public get adminUserInfoContainer(): Locator {

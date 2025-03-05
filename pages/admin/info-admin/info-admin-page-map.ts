@@ -6,7 +6,7 @@ export class InfoAdminPageMap extends BaseMap {
 		super(page);
 	}
 	public get userInfoTab(): Locator {
-		return this.page.locator("div.user-info-tabs");
+		return this.page.getByTestId("userInfoTabsContainer");
 	}
 
 	public get adminTitle(): Locator {
@@ -14,21 +14,19 @@ export class InfoAdminPageMap extends BaseMap {
 	}
 
 	public get banUserContainer(): Locator {
-		return this.page.locator("div.ban_ur");
+		return this.page.getByTestId("adminInfoBanContainer");
 	}
 
 	public get banUserInput(): Locator {
-		return this.banUserContainer.locator("input");
+		return this.banUserContainer.getByTestId("adminInfoBanReasonInput");
 	}
 
 	public get banUserButton(): Locator {
-		return this.banUserContainer.locator('button:has(span:text-is("Ban"))');
+		return this.banUserContainer.getByTestId("adminInfoBanButton");
 	}
 
 	public get softBanUserButton(): Locator {
-		return this.banUserContainer.locator(
-			'button:has(span:text-is("Soft Ban"))',
-		);
+		return this.banUserContainer.getByTestId("adminInfoSoftBanButton");
 	}
 
 	public get bannedUserInfo(): Locator {

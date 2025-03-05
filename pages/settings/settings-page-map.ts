@@ -7,7 +7,7 @@ export class SettingsPageMap extends BaseMap {
 	}
 
 	public get settingsContainer(): Locator {
-		return this.page.locator(`[class*='ProfileContainerAnimate']`);
+		return this.page.getByTestId("userSettingsPageContent");
 	}
 
 	public get imageQRCode(): Locator {

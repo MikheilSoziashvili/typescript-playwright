@@ -6,31 +6,35 @@ export class VipManagerAdminPageMap extends BaseMap {
 		super(page);
 	}
 
-	public blocksByPlaceholder(placeholderText: string): Locator {
-		return this.page.locator(
-			`//h4[contains(@class,'title') and normalize-space()='${placeholderText}']//ancestor::div[contains(@class,'aff_col')]`,
-		);
+	public get vipManagerPageContent(): Locator {
+		return this.page.getByTestId("vipManagerPageContent");
 	}
 
 	public get vipPlayersBlock(): Locator {
-		return this.blocksByPlaceholder("VIP Players");
+		return this.vipManagerPageContent.getByTestId("vipPlayersContainer");
 	}
 
 	public get sendUserNotificationBlock(): Locator {
-		return this.blocksByPlaceholder("Send user notification");
+		return this.vipManagerPageContent.getByTestId(
+			"sendNotificationsContainer",
+		);
 	}
 
 	public get addVipPlayerStatusBlock(): Locator {
-		return this.blocksByPlaceholder("Add VIP player status");
+		return this.vipManagerPageContent.getByTestId(
+			"addVipPlayersStatusContainer",
+		);
 	}
 
 	public get batchUpdateVipPlayersStatusBlock(): Locator {
-		return this.blocksByPlaceholder("BATCH UPDATE VIP PLAYERS STATUS");
+		return this.vipManagerPageContent.getByTestId(
+			"batchUpdateVipPlayersStatusContainer",
+		);
 	}
 
 	public get changeTelegramNotificationSettingsBlock(): Locator {
-		return this.blocksByPlaceholder(
-			"CHANGE TELEGRAM NOTIFICATION SETTINGS",
+		return this.vipManagerPageContent.getByTestId(
+			"changeTelegramNotificationsSettingsContainer",
 		);
 	}
 
@@ -41,28 +45,32 @@ export class VipManagerAdminPageMap extends BaseMap {
 	}
 
 	public get uploadBatchUpdateVipPlayersStatusFileButton(): Locator {
-		return this.batchUpdateVipPlayersStatusBlock.locator(
-			`//button[normalize-space()='Upload']`,
+		return this.batchUpdateVipPlayersStatusBlock.getByTestId(
+			"uploadButton",
 		);
 	}
 
 	public get inputFileUpdateRemoveBatchVipPlayers(): Locator {
-		return this.batchUpdateVipPlayersStatusBlock.locator(
-			`//input[@type='file']`,
+		return this.batchUpdateVipPlayersStatusBlock.locator(`input`);
+	}
+
+	public get batchVipPlayersStatusButtonsContainer(): Locator {
+		return this.batchUpdateVipPlayersStatusBlock.getByTestId(
+			"updateRemoveButtonsContainer",
 		);
 	}
 
 	private getBatchVipPlayersStatusButton(buttonLabel: string): Locator {
-		return this.batchUpdateVipPlayersStatusBlock.locator(
-			`//button[normalize-space()='${buttonLabel}']`,
+		return this.batchVipPlayersStatusButtonsContainer.locator(
+			`button[value='${buttonLabel}']`,
 		);
 	}
 
 	public get updateBatchVipPlayersStatusButton(): Locator {
-		return this.getBatchVipPlayersStatusButton("Update");
+		return this.getBatchVipPlayersStatusButton("update");
 	}
 
 	public get removeBatchVipPlayersStatusButton(): Locator {
-		return this.getBatchVipPlayersStatusButton("Remove");
+		return this.getBatchVipPlayersStatusButton("remove");
 	}
 }

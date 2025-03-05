@@ -6,23 +6,43 @@ export class SecurityAdminPageMap extends BaseMap {
 		super(page);
 	}
 
+	public get securityPageContainer(): Locator {
+		return this.page.getByTestId("securityPageContent");
+	}
+
+	public get withdrawSettingsContainer(): Locator {
+		return this.securityPageContainer.getByTestId(
+			"withdrawSettingContainer",
+		);
+	}
+
 	public get withdrawSettingsHeader(): Locator {
-		return this.page.locator('h3:text-is("Withdraw settings")');
+		return this.withdrawSettingsContainer.getByTestId("headerTitle");
+	}
+
+	public get saveButtonContainer(): Locator {
+		return this.withdrawSettingsContainer.getByTestId("saveFieldGroup");
 	}
 
 	public get saveButton(): Locator {
-		return this.page.locator('button:has-text("Save")');
+		return this.saveButtonContainer.getByTestId(
+			"saveWithdrawsSettingsButton",
+		);
+	}
+
+	public get blockUserContainer(): Locator {
+		return this.withdrawSettingsContainer.getByTestId("blockFieldGroup");
 	}
 
 	public get blockUserInput(): Locator {
-		return this.page.locator(
-			'div.field_group:has-text("Block user if withdraws (24h) are higher") input[type="number"]',
-		);
+		return this.blockUserContainer.getByTestId("blockFieldInput");
+	}
+
+	public get alertUserContainer(): Locator {
+		return this.withdrawSettingsContainer.getByTestId("alertFieldGroup");
 	}
 
 	public get alertUserInput(): Locator {
-		return this.page.locator(
-			'div.field_group:has-text("Alert if user\'s withdraws (24h) are higher") input[type="number"]',
-		);
+		return this.withdrawSettingsContainer.getByTestId("alertFieldInput");
 	}
 }
