@@ -6,31 +6,31 @@ export class GiftCardsAdminMap extends BaseMap {
 		super(page);
 	}
 
-	private getContainerByTitle(title: string): Locator {
-		return this.page.locator(
-			`//div[contains(@class, 'MuiBox-root')]//h3[text()='${title}']/parent::div[contains(@class, 'MuiBox-root')]`,
-		);
+	private giftCardPageContentContainer(): Locator {
+		return this.page.getByTestId("giftCardPageContent");
 	}
 
 	public get giftCardSettingsContainer(): Locator {
-		return this.getContainerByTitle("Gift Card Settings");
+		return this.giftCardPageContentContainer().getByTestId(
+			"giftCardSettingsContainer",
+		);
 	}
 
 	public get giftCardGeneratorContainer(): Locator {
-		return this.getContainerByTitle("Gift Card Generator");
+		return this.giftCardPageContentContainer().getByTestId(
+			"giftCardGeneratorContainer",
+		);
 	}
 
 	public get giftCardGeneratorValueDropdown(): Locator {
-		return this.getComboboxWithText(
-			"Select a value",
-			this.giftCardGeneratorContainer,
+		return this.giftCardGeneratorContainer.getByTestId(
+			"valueDropdownSelect",
 		);
 	}
 
 	public get giftCardGeneratorQuantityDropdown(): Locator {
-		return this.getComboboxWithText(
-			"Select a quantity",
-			this.giftCardGeneratorContainer,
+		return this.giftCardGeneratorContainer.getByTestId(
+			"quantityDropdownSelect",
 		);
 	}
 
@@ -47,8 +47,6 @@ export class GiftCardsAdminMap extends BaseMap {
 	}
 
 	public get generateAndDownloadButton(): Locator {
-		return this.page.locator("button[class*=AdminGiftCardGenerator]", {
-			has: this.page.locator("span", { hasText: "Generate & Download" }),
-		});
+		return this.giftCardGeneratorContainer.getByTestId("generateButton");
 	}
 }
