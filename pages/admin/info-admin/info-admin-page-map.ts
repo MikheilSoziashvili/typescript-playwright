@@ -1,12 +1,11 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
-
 export class InfoAdminPageMap extends BaseMap {
 	public constructor(page: Page) {
 		super(page);
 	}
 	public get userInfoTab(): Locator {
-		return this.page.getByTestId("userInfoTabsContainer");
+		return this.page.locator("div.user-info-tabs");
 	}
 
 	public get adminTitle(): Locator {
@@ -14,45 +13,41 @@ export class InfoAdminPageMap extends BaseMap {
 	}
 
 	public get banUserContainer(): Locator {
-		return this.page.getByTestId("adminInfoBanContainer");
+		return this.page.locator("div.ban_ur");
 	}
 
 	public get banUserInput(): Locator {
-		return this.banUserContainer.getByTestId("adminInfoBanReasonInput");
+		return this.banUserContainer.locator("input");
 	}
 
 	public get banUserButton(): Locator {
-		return this.banUserContainer.getByTestId("adminInfoBanButton");
+		return this.banUserContainer.locator('button:has(span:text-is("Ban"))');
 	}
 
 	public get softBanUserButton(): Locator {
-		return this.banUserContainer.getByTestId("adminInfoSoftBanButton");
+		return this.banUserContainer.locator(
+			'button:has(span:text-is("Soft Ban"))',
+		);
 	}
 
 	public get bannedUserInfo(): Locator {
 		return this.page.getByTestId("adminInfoBanReason");
 	}
-
 	public get unbanUserButton(): Locator {
 		return this.bannedUserInfo.getByTestId("adminInfoUnbanButton");
 	}
-
 	public get tipButton(): Locator {
 		return this.tipUserContainer.getByTestId("adminInfoTipButton");
 	}
-
 	public get sendNotificationButton(): Locator {
 		return this.page.getByTestId("adminInfoSendNotificationButton");
 	}
-
 	public get adminInfoTable(): Locator {
 		return this.page.getByTestId("adminInfoTable");
 	}
-
 	public get tipUserContainer(): Locator {
 		return this.page.getByTestId("adminInfoTipContainer");
 	}
-
 	public get tipAmountInput(): Locator {
 		return this.tipUserContainer.getByPlaceholder("Tip amount");
 	}

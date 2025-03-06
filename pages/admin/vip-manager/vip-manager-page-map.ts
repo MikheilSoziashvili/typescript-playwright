@@ -1,40 +1,35 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
-
 export class VipManagerAdminPageMap extends BaseMap {
 	public constructor(page: Page) {
 		super(page);
 	}
 
-	public get vipManagerPageContent(): Locator {
-		return this.page.getByTestId("vipManagerPageContent");
+	public blocksByPlaceholder(placeholderText: string): Locator {
+		return this.page.locator(
+			`//h4[contains(@class,'title') and normalize-space()='${placeholderText}']//ancestor::div[contains(@class,'aff_col')]`,
+		);
 	}
 
 	public get vipPlayersBlock(): Locator {
-		return this.vipManagerPageContent.getByTestId("vipPlayersContainer");
+		return this.blocksByPlaceholder("VIP Players");
 	}
 
 	public get sendUserNotificationBlock(): Locator {
-		return this.vipManagerPageContent.getByTestId(
-			"sendNotificationsContainer",
-		);
+		return this.blocksByPlaceholder("Send user notification");
 	}
 
 	public get addVipPlayerStatusBlock(): Locator {
-		return this.vipManagerPageContent.getByTestId(
-			"addVipPlayersStatusContainer",
-		);
+		return this.blocksByPlaceholder("Add VIP player status");
 	}
 
 	public get batchUpdateVipPlayersStatusBlock(): Locator {
-		return this.vipManagerPageContent.getByTestId(
-			"batchUpdateVipPlayersStatusContainer",
-		);
+		return this.blocksByPlaceholder("BATCH UPDATE VIP PLAYERS STATUS");
 	}
 
 	public get changeTelegramNotificationSettingsBlock(): Locator {
-		return this.vipManagerPageContent.getByTestId(
-			"changeTelegramNotificationsSettingsContainer",
+		return this.blocksByPlaceholder(
+			"CHANGE TELEGRAM NOTIFICATION SETTINGS",
 		);
 	}
 
@@ -45,32 +40,28 @@ export class VipManagerAdminPageMap extends BaseMap {
 	}
 
 	public get uploadBatchUpdateVipPlayersStatusFileButton(): Locator {
-		return this.batchUpdateVipPlayersStatusBlock.getByTestId(
-			"uploadButton",
+		return this.batchUpdateVipPlayersStatusBlock.locator(
+			`//button[normalize-space()='Upload']`,
 		);
 	}
 
 	public get inputFileUpdateRemoveBatchVipPlayers(): Locator {
-		return this.batchUpdateVipPlayersStatusBlock.locator(`input`);
-	}
-
-	public get batchVipPlayersStatusButtonsContainer(): Locator {
-		return this.batchUpdateVipPlayersStatusBlock.getByTestId(
-			"updateRemoveButtonsContainer",
+		return this.batchUpdateVipPlayersStatusBlock.locator(
+			`//input[@type='file']`,
 		);
 	}
 
 	private getBatchVipPlayersStatusButton(buttonLabel: string): Locator {
-		return this.batchVipPlayersStatusButtonsContainer.locator(
-			`button[value='${buttonLabel}']`,
+		return this.batchUpdateVipPlayersStatusBlock.locator(
+			`//button[normalize-space()='${buttonLabel}']`,
 		);
 	}
 
 	public get updateBatchVipPlayersStatusButton(): Locator {
-		return this.getBatchVipPlayersStatusButton("update");
+		return this.getBatchVipPlayersStatusButton("Update");
 	}
 
 	public get removeBatchVipPlayersStatusButton(): Locator {
-		return this.getBatchVipPlayersStatusButton("remove");
+		return this.getBatchVipPlayersStatusButton("Remove");
 	}
 }

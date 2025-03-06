@@ -1,48 +1,27 @@
 import { BaseMap } from "@pages/base/base-map";
 import { Locator, Page } from "playwright";
-
 export class SecurityAdminPageMap extends BaseMap {
 	public constructor(page: Page) {
 		super(page);
 	}
 
-	public get securityPageContainer(): Locator {
-		return this.page.getByTestId("securityPageContent");
-	}
-
-	public get withdrawSettingsContainer(): Locator {
-		return this.securityPageContainer.getByTestId(
-			"withdrawSettingContainer",
-		);
-	}
-
 	public get withdrawSettingsHeader(): Locator {
-		return this.withdrawSettingsContainer.getByTestId("headerTitle");
-	}
-
-	public get saveButtonContainer(): Locator {
-		return this.withdrawSettingsContainer.getByTestId("saveFieldGroup");
+		return this.page.locator('h3:text-is("Withdraw settings")');
 	}
 
 	public get saveButton(): Locator {
-		return this.saveButtonContainer.getByTestId(
-			"saveWithdrawsSettingsButton",
-		);
-	}
-
-	public get blockUserContainer(): Locator {
-		return this.withdrawSettingsContainer.getByTestId("blockFieldGroup");
+		return this.page.locator('button:has-text("Save")');
 	}
 
 	public get blockUserInput(): Locator {
-		return this.blockUserContainer.getByTestId("blockFieldInput");
-	}
-
-	public get alertUserContainer(): Locator {
-		return this.withdrawSettingsContainer.getByTestId("alertFieldGroup");
+		return this.page.locator(
+			'div.field_group:has-text("Block user if withdraws (24h) are higher") input[type="number"]',
+		);
 	}
 
 	public get alertUserInput(): Locator {
-		return this.withdrawSettingsContainer.getByTestId("alertFieldInput");
+		return this.page.locator(
+			'div.field_group:has-text("Alert if user\'s withdraws (24h) are higher") input[type="number"]',
+		);
 	}
 }
