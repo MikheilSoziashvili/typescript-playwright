@@ -6,6 +6,7 @@ import { PromoCampaignsAdminSteps } from "./promo-campaigns-admin-page-steps";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { PROMO_CAMPAIGNS_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { step } from "decorators/step";
+import { Timeout } from "@enums/timeout";
 
 export class PromoCampaignsAdminPage extends BasePage<PromoCampaignsAdminMap> {
 	public constructor(page: Page) {
@@ -31,6 +32,6 @@ export class PromoCampaignsAdminPage extends BasePage<PromoCampaignsAdminMap> {
 
 	@step()
 	public async clickCreateCampaignButton(): Promise<void> {
-		await this.map.newPromoCodeButton.click();
+		await this.map.newPromoCodeButton.click({ timeout: Timeout.MAX });
 	}
 }
