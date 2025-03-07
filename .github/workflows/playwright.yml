@@ -118,6 +118,18 @@ on:
             DB_PORT:
                 required: true
                 description: "Database port"
+            BITCOIN_RPC_HOST:
+                required: true
+                description: "Bitcoin node RPC host"
+            BITCOIN_RPC_PORT:
+                required: true
+                description: "Bitcoin node RPC port"
+            BITCOIN_RPC_USER:
+                required: true
+                description: "Bitcoin node RPC user"
+            BITCOIN_RPC_PASS:
+                required: true
+                description: "Bitcoin node RPC password"
 
     schedule:
         - cron: "0 3 * * *"
@@ -162,6 +174,10 @@ jobs:
             DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
             DB_NAME: ${{ secrets.DB_NAME }}
             DB_PORT: ${{ secrets.DB_PORT }}
+            BITCOIN_RPC_HOST: ${{ secrets.BITCOIN_RPC_HOST }}
+            BITCOIN_RPC_PORT: ${{ secrets.BITCOIN_RPC_PORT }}
+            BITCOIN_RPC_USER: ${{ secrets.BITCOIN_RPC_USER }}
+            BITCOIN_RPC_PASS: ${{ secrets.BITCOIN_RPC_PASS }}
             TAG: ${{ inputs.tag == '' && 'smoke' || inputs.tag }}
             SHARD_OPTION: --shard ${{ matrix.shard }}/${{ strategy.job-total }}
             GREP_GAME_PROVIDERS_TESTS: --grep @game-providers

@@ -1,3 +1,4 @@
+import { BitcoinFeeEstimateMode } from "@enums/bitcoin";
 import { OriginalGame } from "@enums/original-games";
 import { RainStatus } from "@enums/rain-status";
 import { VisibilityOptions } from "@enums/visibility-options";
@@ -114,3 +115,17 @@ export type RainOptions = {
 	percentExtraAmount: number;
 	headers?: Record<string, string>;
 };
+
+export type SendBTCOptions = {
+	comment?: string;
+	commentTo?: string;
+	subtractFee?: boolean;
+	replaceable?: boolean;
+	confTarget?: number;
+	estimateMode?: BitcoinFeeEstimateMode;
+	avoidReuse?: boolean;
+	feeRate?: number;
+	verbose?: boolean;
+};
+
+export type BitcoinRpcParams = (string | number | boolean | undefined)[];

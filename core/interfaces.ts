@@ -14,3 +14,13 @@ export interface WaitUntilOptions {
 	intervalSeconds?: number;
 	timeoutSeconds?: number;
 }
+
+export interface BitcoinRpcError {
+	code: number;
+	message: string;
+}
+
+export interface BitcoinRpcResponseBase {
+	error: null | BitcoinRpcError;
+	id: string;
+}

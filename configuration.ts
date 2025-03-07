@@ -76,6 +76,16 @@ export const poolConfig: PoolConfigurationType = {
 	connectionTimeoutMillis: Timeout.LONG,
 };
 
+export const BitcoinConfig = {
+	host: asString(process.env.BITCOIN_RPC_HOST),
+	port: asString(process.env.BITCOIN_RPC_PORT),
+	user: asString(process.env.BITCOIN_RPC_USER),
+	pass: asString(process.env.BITCOIN_RPC_PASS),
+	url: `http://${asString(process.env.BITCOIN_RPC_HOST)}:${asString(
+		process.env.BITCOIN_RPC_PORT,
+	)}`,
+};
+
 export const users: TestUserConfigurationObject[] = [
 	{
 		username: "superadmin",

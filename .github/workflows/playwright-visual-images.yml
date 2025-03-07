@@ -57,6 +57,10 @@ jobs:
             DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
             DB_NAME: ${{ secrets.DB_NAME }}
             DB_PORT: ${{ secrets.DB_PORT }}
+            BITCOIN_RPC_HOST: ${{ secrets.BITCOIN_RPC_HOST }}
+            BITCOIN_RPC_PORT: ${{ secrets.BITCOIN_RPC_PORT }}
+            BITCOIN_RPC_USER: ${{ secrets.BITCOIN_RPC_USER }}
+            BITCOIN_RPC_PASS: ${{ secrets.BITCOIN_RPC_PASS }}
             TAG: ${{ inputs.tag == '' && 'visual' || inputs.tag }}
 
         steps:
