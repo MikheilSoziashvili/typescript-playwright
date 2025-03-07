@@ -34,7 +34,7 @@ export class UserProfileModalMap extends BaseMap {
 
 	public get userProfileTitle(): Locator {
 		return this.userProfileContainer.locator(
-			"p[class*=-profileTitle][breakpointlevel]",
+			"p[class*=-profileTitle]",
 		);
 	}
 
