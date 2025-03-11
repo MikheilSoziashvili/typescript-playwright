@@ -37,8 +37,8 @@ export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 			.checkElementsAreVisible([this.gamdomPage.map.disable2FAButton]);
 
 		const toast = new Toast(this.gamdomPage.page);
-		await expect(toast.map.toastSubTitleLocator()).toBeVisible();
-		await expect(toast.map.toastSubTitleLocator()).toBeHidden({
+		await expect(toast.map.toastTitleLocator()).toBeVisible();
+		await expect(toast.map.toastTitleLocator()).toBeHidden({
 			timeout: Timeout.LONG,
 		});
 	}

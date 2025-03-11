@@ -28,9 +28,20 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 			timeout?: number;
 		},
 	): Promise<void> {
-		await expect(
-			this.gamdomPage.map.toastSubTitleLocator(options),
-		).toHaveText(subTitle, { timeout: options?.timeout });
+		if (options?.index) {
+			await expect(
+				this.gamdomPage.map.toastSubTitleLocator(options),
+			).toHaveText(subTitle, { timeout: options.timeout });
+		} else {
+			const toastLocators =
+				this.gamdomPage.map.toastSubTitleLocator(options);
+			const filteredToastLocators = toastLocators.filter({
+				hasText: subTitle,
+			});
+			await expect(filteredToastLocators).toHaveCount(1, {
+				timeout: options?.timeout,
+			});
+		}
 	}
 
 	public async isDisplayed(options?: {

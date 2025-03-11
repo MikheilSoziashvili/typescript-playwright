@@ -32,11 +32,14 @@ export class ToastMap extends BaseMap {
 		return this.toastContainer(options).getByTestId("toastTitle");
 	}
 
-	public toastSubTitleLocator(options?: {
-		index?: number;
-		subTitle?: string;
-	}): Locator {
-		return this.toastContainer(options).getByTestId("toastSubTitle");
+	public toastSubTitleLocator(options?: { index?: number }): Locator {
+		if (options?.index) {
+			return this.toastContainer(options).getByTestId("toastSubTitle");
+		} else {
+			return this.page
+				.getByTestId(`toastContainer`)
+				.getByTestId("toastSubTitle");
+		}
 	}
 
 	public toastHereButtonLocator(options?: {

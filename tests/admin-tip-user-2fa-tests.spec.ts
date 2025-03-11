@@ -74,7 +74,6 @@ test.describe("Tip user through admin panel tests", () => {
 				username: newUserData.username,
 				tipAmount: tipAmount,
 			}),
-			{ index: 3 },
 		);
 		await infoAdminPage.steps().tipUser(tipAmount);
 		await twoFactorAuthModal.assertThat().modal2FaNotDisplayed();
@@ -83,7 +82,6 @@ test.describe("Tip user through admin panel tests", () => {
 				username: newUserData.username,
 				tipAmount: tipAmount,
 			}),
-			{ index: 4 },
 		);
 
 		await initializePageObjectsWithCookies(
@@ -104,7 +102,6 @@ test.describe("Tip user through admin panel tests", () => {
 				username: newUserData.username,
 				tipAmount: tipAmount,
 			}),
-			{ index: 3 },
 		);
 	});
 });
