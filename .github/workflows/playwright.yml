@@ -1,6 +1,10 @@
 name: Playwright E2E Tests
 
 on:
+    repository_dispatch:
+        types: [auto-deploy-env]
+
+
     workflow_dispatch:
         inputs:
             environment:
@@ -166,10 +170,10 @@ jobs:
             AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
             AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             AWS_DEFAULT_REGION: eu-west-2
-            ENVIRONMENT_URL: ${{ inputs.environment == '' && vars.ENVIRONMENT_URL || inputs.environment }}
+            ENVIRONMENT_URL: ${{ github.event.client_payload.environment_url || (inputs.environment == '' && vars.ENVIRONMENT_URL || inputs.environment) }}
             SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
             OAUTH2_JWT: ${{ secrets.OAUTH2_JWT }}
-            DB_HOST: ${{ secrets.DB_HOST }}
+            DB_HOST: ${{ github.event.client_payload.db-host || secrets.DB_HOST }}
             DB_USER: ${{ secrets.DB_USER }}
             DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
             DB_NAME: ${{ secrets.DB_NAME }}
@@ -178,7 +182,7 @@ jobs:
             BITCOIN_RPC_PORT: ${{ secrets.BITCOIN_RPC_PORT }}
             BITCOIN_RPC_USER: ${{ secrets.BITCOIN_RPC_USER }}
             BITCOIN_RPC_PASS: ${{ secrets.BITCOIN_RPC_PASS }}
-            TAG: ${{ inputs.tag == '' && 'smoke' || inputs.tag }}
+            TAG: ${{ github.event.client_payload.tag || (inputs.tag == '' && 'smoke') || inputs.tag }}
             SHARD_OPTION: --shard ${{ matrix.shard }}/${{ strategy.job-total }}
             GREP_GAME_PROVIDERS_TESTS: --grep @game-providers
             INVERT_GAME_PROVIDERS_TESTS: --grep-invert @game-providers
