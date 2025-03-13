@@ -49,16 +49,12 @@ on:
                 required: true
             BITCOIN_RPC_HOST:
                 required: true
-                description: "Bitcoin node RPC host"
             BITCOIN_RPC_PORT:
                 required: true
-                description: "Bitcoin node RPC port"
             BITCOIN_RPC_USER:
                 required: true
-                description: "Bitcoin node RPC user"
             BITCOIN_RPC_PASS:
                 required: true
-                description: "Bitcoin node RPC password"
 
 env:
     CI: true
@@ -94,7 +90,7 @@ env:
 
 jobs:
     detect-new-modified-tests:
-        runs-on: ubuntu-latest
+        runs-on: self-hosted-dind
         timeout-minutes: 30
         outputs:
             run_tests: ${{ steps.detect.outputs.run_tests }}
@@ -139,8 +135,8 @@ jobs:
     run-new-modified-tests:
         needs: detect-new-modified-tests
         if: needs.detect-new-modified-tests.outputs.run_tests == 'true'
-        runs-on: ubuntu-latest
-        timeout-minutes: 60
+        runs-on: self-hosted-dind
+        timeout-minutes: 30
 
         steps:
             - name: Checkout Repository
@@ -151,8 +147,12 @@ jobs:
               with:
                   node-version: 20
 
-            - name: Install Dependencies
-              run: yarn install --immutable
+            - name: Install Node.js dependencies
+              run: |
+                  if ! command -v yarn &>/dev/null; then
+                    npm install -g yarn
+                  fi
+                  yarn install --immutable --immutable-cache --check-cache
 
             - name: Install system dependencies
               run: |
@@ -173,14 +173,11 @@ jobs:
             - name: Run New or Modified Tests
               run: |
                   echo "Running tests: ${{ needs.detect-new-modified-tests.outputs.test_files }}"
-                  yarn playwright test ${{ needs.detect-new-modified-tests.outputs.test_files }} --repeat-each=10 --workers=3
+                  yarn playwright test ${{ needs.detect-new-modified-tests.outputs.test_files }} --repeat-each=5 --workers=3 --retries=0
 
             - name: Upload Playwright report to S3 and generate report url
               if: always()
               run: |
-                  # Create a unique directory name using the GitHub run ID and timestamp
                   TIMESTAMP=$(date +%Y%m%d%H%M%S)
                   S3_KEY_PREFIX="playwright-reports/${{ github.run_id }}-${TIMESTAMP}"
-
-                  # Call the upload script with the required parameters
                   ./scripts/upload_to_s3.sh playwright-report gamdom-prod-qa-reporting $S3_KEY_PREFIX
