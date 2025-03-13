@@ -166,4 +166,9 @@ export class HomePage extends BasePage<HomePageMap> {
 		await this.map.balanceDropdown.click();
 		await this.map.selectCurrencyOption(currency).click();
 	}
+
+	@step()
+	public async clickKothImage(): Promise<void> {
+		await this.map.kothHeaderImageLocator.click();
+	}
 }

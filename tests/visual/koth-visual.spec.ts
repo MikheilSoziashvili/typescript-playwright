@@ -28,8 +28,9 @@ kothDataset.forEach((record) => {
 
 		test(`[ENG-5179] KOTH - visual in dedicated page with currency: ${record.currency} @visual`, async ({
 			kothPage,
+			homePage,
 		}, testInfo) => {
-			await kothPage.navigate();
+			await homePage.clickKothImage();
 			await kothPage.getKothBannerCurrencyXPosition();
 			await kothPage.assertThat().kothBannerVisualCorrect(testInfo);
 			await kothPage.assertThat().verifyKothBannerCurrencyIsCentered();

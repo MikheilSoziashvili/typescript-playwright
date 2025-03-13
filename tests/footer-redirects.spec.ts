@@ -1,10 +1,11 @@
 import { test } from "@fixtures/fixtures";
 import { storageStateNewUserAPI } from "../fixtures/auth-fixtures";
-import { parse_csv } from "@core/utils/utils";
+import { getCookieHeader, parse_csv } from "@core/utils/utils";
 import { DATASETS_DIR } from "@constants/file-paths";
 import { environment_url } from "configuration";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { KOTH_ENDPOINT } from "@constants/page-endpoints";
+import { RegisterTestData } from "@dtos/test-data";
 
 const footerRecords = parse_csv(
 	DATASETS_DIR,
@@ -47,6 +48,10 @@ const termsOfServiceRecords = parse_csv(
 	missingText: string;
 }[];
 
+const superAdminData = new RegisterTestData({
+	useGamdomEmailDomain: true,
+});
+
 test.describe("Footer redirects tests", () => {
 	test.use(storageStateNewUserAPI());
 
@@ -68,10 +73,15 @@ test.describe("Footer redirects tests", () => {
 		gamdomApi,
 		kothPage,
 	}) => {
+		const superAdminCookie = getCookieHeader(
+			await gamdomApi.authenticateWithNewSuperAdminUser(superAdminData),
+		);
 		await homePage.navigate();
 		await footer.openFooterLinkByPlaceholder("King Of The Hill");
 
-		await kothPage.assertThat().verifyKothUrlIs(KOTH_ENDPOINT, gamdomApi);
+		await kothPage
+			.assertThat()
+			.verifyKothUrlIs(KOTH_ENDPOINT, gamdomApi, superAdminCookie);
 	});
 
 	helpPageRecords.forEach((record) => {

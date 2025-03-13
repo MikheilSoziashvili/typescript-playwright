@@ -24,6 +24,7 @@ import * as Configuration from "../configuration";
 import { BaseApi } from "./base-api";
 import { RainOptions, RainResponse } from "@core/types/types";
 import { RainStatus } from "@enums/rain-status";
+import { KothEventDTO } from "@dtos/responses/gamdom-api/get-current-koth-events-basic-info-response";
 
 export class GamdomApi extends BaseApi {
 	private gamdomDb: GamdomDb;
@@ -159,7 +160,7 @@ export class GamdomApi extends BaseApi {
 		};
 
 		const parameters = this.buildParameters(
-			ApiEndpoints.SETFEATURESTATE,
+			ApiEndpoints.SET_FEATURE_STATE,
 			payload,
 			_headers,
 		);
@@ -207,7 +208,7 @@ export class GamdomApi extends BaseApi {
 		];
 
 		const parameters = this.buildParameters(
-			ApiEndpoints.SETPROVIDERSTATE,
+			ApiEndpoints.SET_PROVIDER_STATE,
 			payload,
 			_headers,
 		);
@@ -219,7 +220,7 @@ export class GamdomApi extends BaseApi {
 		_headers: Record<string, string> = {},
 	): Promise<GetProvidersResponse> {
 		const parameters = this.buildParameters(
-			ApiEndpoints.GETPROVIDERS,
+			ApiEndpoints.GET_PROVIDERS,
 			undefined,
 			_headers,
 		);
@@ -239,7 +240,7 @@ export class GamdomApi extends BaseApi {
 		);
 
 		const parameters = this.buildParameters(
-			ApiEndpoints.BASICINFO,
+			ApiEndpoints.BASIC_INFO,
 			undefined,
 			{ Cookie: cookie },
 		);
@@ -308,7 +309,7 @@ export class GamdomApi extends BaseApi {
 		};
 
 		const parameters = this.buildParameters(
-			ApiEndpoints.EDITUSERINFO,
+			ApiEndpoints.EDIT_USER_INFO,
 			payload,
 			_headers,
 		);
@@ -336,7 +337,7 @@ export class GamdomApi extends BaseApi {
 		};
 
 		const parameters = this.buildParameters(
-			ApiEndpoints.TIPUSER,
+			ApiEndpoints.TIP_USER,
 			payload,
 			_headers,
 		);
@@ -360,7 +361,7 @@ export class GamdomApi extends BaseApi {
 		};
 
 		const parameters = this.buildParameters(
-			ApiEndpoints.CREATEKOTH,
+			ApiEndpoints.CREATE_KOTH,
 			payload,
 			_headers,
 		);
@@ -394,7 +395,7 @@ export class GamdomApi extends BaseApi {
 		};
 
 		const parameters = this.buildParameters(
-			ApiEndpoints.ENABLERAIN,
+			ApiEndpoints.ENABLE_RAIN,
 			payload,
 			_headers,
 		);
@@ -405,7 +406,7 @@ export class GamdomApi extends BaseApi {
 		_headers?: Record<string, string>,
 	): Promise<RainDTO[]> {
 		const parameters = this.buildParameters(
-			ApiEndpoints.GETOPENRAINS,
+			ApiEndpoints.GET_OPEN_RAINS,
 			undefined,
 			_headers,
 		);
@@ -454,7 +455,7 @@ export class GamdomApi extends BaseApi {
 		};
 
 		const parameters = this.buildParameters(
-			ApiEndpoints.STOPCUSTOMRAIN,
+			ApiEndpoints.STOP_CUSTOM_RAIN,
 			payload,
 			_headers,
 		);
@@ -465,12 +466,37 @@ export class GamdomApi extends BaseApi {
 		_headers?: Record<string, string>,
 	): Promise<number> {
 		const parameters = this.buildParameters(
-			ApiEndpoints.GETLASTKOTHEVENTID,
+			ApiEndpoints.GET_LAST_KOTH_EVENT_ID,
 			undefined,
 			_headers,
 		);
 
 		const response = await this.post(parameters);
 		return response.json() as Promise<number>;
+	}
+
+	public async getCurrentKothEventsBasicInfo(
+		_headers?: Record<string, string>,
+	): Promise<KothEventDTO[]> {
+		const parameters = this.buildParameters(
+			ApiEndpoints.GET_CURRENT_KOTH_EVENTS_BASIC_INFO,
+			undefined,
+			_headers,
+		);
+
+		const response = await this.post(parameters);
+		return response.json() as Promise<KothEventDTO[]>;
+	}
+
+	public async getLastKothEventName(
+		headers: Record<string, string>,
+	): Promise<string> {
+		const events = await this.getCurrentKothEventsBasicInfo(headers);
+
+		if (!events.length) {
+			throw new Error("No KOTH events found");
+		}
+
+		return events[events.length - 1].event_name;
 	}
 }

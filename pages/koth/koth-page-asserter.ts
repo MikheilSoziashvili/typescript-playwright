@@ -53,9 +53,14 @@ export class KothAsserter extends BaseAsserter<KothPage> {
 	public async verifyKothUrlIs(
 		expectedUrl: string,
 		gamdomApi: GamdomApi,
+		cookie: string,
 	): Promise<void> {
-		const latestKothID = await gamdomApi.fetchLastKothEventId();
+		const lastKothEventName = await gamdomApi.getLastKothEventName({
+			Cookie: cookie,
+		});
+		const formattedExpectedUrl =
+			`${expectedUrl}/${lastKothEventName}`.toLowerCase();
 
-		await this.verifyCurrentUrlIs(`${expectedUrl}/${latestKothID}`);
+		await this.verifyCurrentUrlIs(formattedExpectedUrl);
 	}
 }
