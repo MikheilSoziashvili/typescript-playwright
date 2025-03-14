@@ -6,13 +6,7 @@ export class PlainSqlAdminMap extends BaseMap {
 		super(page);
 	}
 
-	public get plainSqlAdminPageContent(): Locator {
-		return this.page.getByTestId("admin-plain-sql-page");
-	}
-
 	public get queryButton(): Locator {
-		return this.plainSqlAdminPageContent.getByTestId(
-			"admin-plain-sql-query-button",
-		);
+		return this.page.locator('button:text-is("Query")');
 	}
 }
