@@ -6,7 +6,11 @@ export class OpenTradesAdminMap extends BaseMap {
 		super(page);
 	}
 
+	public get openTradesAdminPageContent(): Locator {
+		return this.page.getByTestId("tradewatchContainer");
+	}
+
 	public get unsentTradeHistoryHeader(): Locator {
-		return this.page.locator('h3:text-is("unsent trade history")');
+		return this.openTradesAdminPageContent.getByTestId("tradeHistoryTitle");
 	}
 }

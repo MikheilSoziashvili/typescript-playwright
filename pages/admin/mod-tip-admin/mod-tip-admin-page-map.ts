@@ -6,7 +6,17 @@ export class ModTipAdminMap extends BaseMap {
 		super(page);
 	}
 
+	public get modTipAdminPageContent(): Locator {
+		return this.page.getByTestId("adminModTipPageContent");
+	}
+
+	public get sendModTipNowContainer(): Locator {
+		return this.modTipAdminPageContent.getByTestId(
+			"sendModTipNowContainer",
+		);
+	}
+
 	public get sendModTipNowTitle(): Locator {
-		return this.page.locator('h4.title:text-is("Send Mod Tip Now")');
+		return this.sendModTipNowContainer.getByTestId("containerTitle");
 	}
 }

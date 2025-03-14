@@ -6,9 +6,19 @@ export class NewUsersAdminMap extends BaseMap {
 		super(page);
 	}
 
+	public get newUsersAdminPageContent(): Locator {
+		return this.page.getByTestId("adminNewUsersPageContent");
+	}
+
+	public get fetchNewUsersSettingsContainer(): Locator {
+		return this.newUsersAdminPageContent.getByTestId(
+			"fetchNewUsersSettingsContainer",
+		);
+	}
+
 	public get fetchNewUsersSettingsHeader(): Locator {
-		return this.page.locator(
-			'h3.title:text-is("Fetch new users settings")',
+		return this.fetchNewUsersSettingsContainer.getByTestId(
+			"fetchNewUsersSettingsTitle",
 		);
 	}
 }
