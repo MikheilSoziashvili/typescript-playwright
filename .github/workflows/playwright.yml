@@ -146,6 +146,10 @@ jobs:
     tests:
         timeout-minutes: 600
         runs-on: self-hosted-dind
+        permissions:
+          pull-requests: write
+          contents: read
+          issues: write
         strategy:
             fail-fast: false
             matrix:
@@ -312,8 +316,42 @@ jobs:
               env:
                   REPORT_URL: ${{ env.REPORT_URL }}
 
+            - name: Generate github apps token to access gamdom-core audodeploy env PR
+              uses: actions/create-github-app-token@v1
+              if: ${{ github.event_name == 'repository_dispatch' }}
+              id: app-token
+              with:
+                app-id: ${{ secrets.GH_APP_ID }}
+                private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+                owner: ${{ github.repository_owner }}
+          
+            - name: Find Comment gamdom-core autodeploy env
+              if: ${{ github.event_name == 'repository_dispatch' }}
+              uses: peter-evans/find-comment@v3
+              id: fc
+              with:
+                issue-number: "${{ github.event.client_payload.pr_number }}"
+                repository: "${{ github.event.client_payload.repository }}"
+                comment-author: "${{ github.actor }}"
+                body-includes: Playwright report
+                token: ${{ steps.app-token.outputs.token }}
+          
+            - name: Comment on PR gamdom-core autodeploy env
+              if: ${{ github.event_name == 'repository_dispatch' }}
+              uses: peter-evans/create-or-update-comment@v4
+              with:
+                comment-id: ${{ steps.fc.outputs.comment-id }}
+                repository: "${{ github.event.client_payload.repository }}"
+                issue-number: "${{ github.event.client_payload.pr_number }}"
+                body: |
+                  🐞🤖🕷️
+                  :world_map: Playwright report available [here]($REPORT_URL)
+                token: ${{ steps.app-token.outputs.token }}
+                edit-mode: "replace"
+                append-separator: "none"
+
             - name: Send report to Slack using CLI
-              if: always()
+              if: ${{ always() && github.event_name != 'repository_dispatch' }}
               env:
                   SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
                   SLACK_CHANNEL: playwright-e2e-reporting
