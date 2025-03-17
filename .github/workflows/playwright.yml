@@ -139,8 +139,8 @@ on:
         - cron: "0 3 * * *"
 
 concurrency:
-    group: playwright-e2e-${{ github.ref }}
-    cancel-in-progress: false
+    group: ${{ github.event_name == 'repository_dispatch' && format('auto-deploy-env-{0}', github.event.client_payload.pr_number) || format('playwright-e2e-{0}', github.ref) }}
+    cancel-in-progress: ${{ github.event_name == 'repository_dispatch' }}
 
 jobs:
     tests:
@@ -339,6 +339,7 @@ jobs:
             - name: Comment on PR gamdom-core autodeploy env
               if: ${{ github.event_name == 'repository_dispatch' }}
               uses: peter-evans/create-or-update-comment@v4
+              continue-on-error: true
               with:
                 comment-id: ${{ steps.fc.outputs.comment-id }}
                 repository: "${{ github.event.client_payload.repository }}"
