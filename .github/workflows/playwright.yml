@@ -347,7 +347,7 @@ jobs:
                 issue-number: "${{ github.event.client_payload.pr_number }}"
                 body: |
                   🐞🤖🕷️
-                  :world_map: Playwright report available [here]($REPORT_URL)
+                  :world_map: Playwright report available [here](${{ env.REPORT_URL }})
                 token: ${{ steps.app-token.outputs.token }}
                 edit-mode: "replace"
                 append-separator: "none"
