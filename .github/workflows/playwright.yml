@@ -318,7 +318,7 @@ jobs:
 
             - name: Generate github apps token to access gamdom-core audodeploy env PR
               uses: actions/create-github-app-token@v1
-              if: ${{ github.event_name == 'repository_dispatch' }}
+              if: ${{ always() && github.event_name == 'repository_dispatch' }}
               id: app-token
               with:
                 app-id: ${{ secrets.GH_APP_ID }}
@@ -326,8 +326,9 @@ jobs:
                 owner: ${{ github.repository_owner }}
           
             - name: Find Comment gamdom-core autodeploy env
-              if: ${{ github.event_name == 'repository_dispatch' }}
+              if: ${{ always() && github.event_name == 'repository_dispatch' }}
               uses: peter-evans/find-comment@v3
+              continue-on-error: true
               id: fc
               with:
                 issue-number: "${{ github.event.client_payload.pr_number }}"
@@ -337,7 +338,7 @@ jobs:
                 token: ${{ steps.app-token.outputs.token }}
           
             - name: Comment on PR gamdom-core autodeploy env
-              if: ${{ github.event_name == 'repository_dispatch' }}
+              if: ${{ always() && github.event_name == 'repository_dispatch' }}
               uses: peter-evans/create-or-update-comment@v4
               continue-on-error: true
               with:
