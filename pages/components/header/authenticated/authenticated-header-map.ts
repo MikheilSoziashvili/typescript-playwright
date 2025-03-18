@@ -79,7 +79,7 @@ export class AuthenticatedHeaderMap extends BaseMap {
 	}
 
 	public get inGameAccountBalance(): Locator {
-		return this.inGameAccountBalanceContainer.locator("span", {
+		return this.inGameAccountBalanceContainer.filter({
 			hasText: currencyAmountPattern(),
 		});
 	}
