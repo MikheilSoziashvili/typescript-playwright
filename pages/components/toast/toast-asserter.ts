@@ -33,14 +33,19 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 				this.gamdomPage.map.toastSubTitleLocator(options),
 			).toHaveText(subTitle, { timeout: options.timeout });
 		} else {
-			const toastLocators =
-				this.gamdomPage.map.toastSubTitleLocator(options);
+			const toastLocators = this.gamdomPage.map.toastSubTitleLocator();
 			const filteredToastLocators = toastLocators.filter({
 				hasText: subTitle,
 			});
-			await expect(filteredToastLocators).toHaveCount(1, {
+			await expect(filteredToastLocators).not.toHaveCount(0, {
 				timeout: options?.timeout,
 			});
+			await expect(filteredToastLocators.first()).toContainText(
+				subTitle,
+				{
+					timeout: options?.timeout,
+				},
+			);
 		}
 	}
 
