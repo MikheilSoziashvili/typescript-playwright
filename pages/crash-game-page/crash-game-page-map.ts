@@ -76,7 +76,6 @@ export class CrashGamePageMap extends BaseMap {
 	public get playersGridRowCells(): Locator {
 		return this.playersGridContainer
 			.getByLabel("grid")
-			.getByRole("rowgroup")
 			.getByRole("row")
 			.getByRole("gridcell");
 	}
