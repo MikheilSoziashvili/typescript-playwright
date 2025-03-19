@@ -1,6 +1,7 @@
 import { BaseAsserter } from "@base/base-asserter";
-import { UserInfoAdminPage } from "./user-info-admin-page";
+import { Timeout } from "@enums/timeout";
 import { step } from "decorators/step";
+import { UserInfoAdminPage } from "./user-info-admin-page";
 
 export class UserInfoAdminPageAsserter extends BaseAsserter<UserInfoAdminPage> {
 	public constructor(page: UserInfoAdminPage) {
@@ -35,9 +36,10 @@ export class UserInfoAdminPageAsserter extends BaseAsserter<UserInfoAdminPage> {
 	public async isSearchByUsernameResultDisplayed(
 		username: string,
 	): Promise<void> {
-		await this.checkElementsAreVisible([
-			this.gamdomPage.map.searchByUsernameMenuOption(username),
-		]);
+		await this.checkElementsAreVisible(
+			[this.gamdomPage.map.searchByUsernameMenuOption(username)],
+			Timeout.LONG,
+		);
 	}
 
 	@step(`Verify 'Show user info' button is displayed`)

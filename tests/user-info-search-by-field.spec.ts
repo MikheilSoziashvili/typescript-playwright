@@ -1,17 +1,29 @@
 import {
-	SUPER_ADMIN_CREDENTIALS,
-	USER_1_CREDENTIALS,
-	USER_2_CREDENTIALS,
-} from "@constants/credentials";
-import { storageStateUserAPI } from "@fixtures/auth-fixtures";
+	generateRandomString,
+	getRegisterDataRandomUsernameWithPrefix,
+} from "@core/utils/utils";
+import { RegisterTestData } from "@dtos/test-data";
 import { test } from "@fixtures/fixtures";
+import { storageStateNewSuperAdminUserAPI } from "../fixtures/auth-fixtures";
 
-const VALID_USERNAME = USER_1_CREDENTIALS.username;
-const VALID_USERNAME_PREFIX = "user";
+const VALID_USERNAME_PREFIX = `${generateRandomString({ length: 5 })}_`;
+const users = {
+	defaultUser: new RegisterTestData(),
+	firstUser: getRegisterDataRandomUsernameWithPrefix(VALID_USERNAME_PREFIX),
+	secondUser: getRegisterDataRandomUsernameWithPrefix(VALID_USERNAME_PREFIX),
+};
+const VALID_USERNAME = users.defaultUser.username;
 const INVALID_USERNAME = "12$user";
 
 test.describe("User info - search by field", () => {
-	test.use(storageStateUserAPI(SUPER_ADMIN_CREDENTIALS.username));
+	test.beforeAll(async ({ gamdomApi }) => {
+		await Promise.all(
+			Object.values(users).map((user) => gamdomApi.registerUser(user)),
+		);
+	});
+
+	test.use(storageStateNewSuperAdminUserAPI());
+
 	test("[ENG-1386] User info - search by field (wild card)", async ({
 		userInfoAdminPage,
 		infoAdminPage,
@@ -34,10 +46,10 @@ test.describe("User info - search by field", () => {
 		);
 		await userInfoAdminPage
 			.assertThat()
-			.isSearchByUsernameResultDisplayed(USER_1_CREDENTIALS.username);
+			.isSearchByUsernameResultDisplayed(users.firstUser.username);
 		await userInfoAdminPage
 			.assertThat()
-			.isSearchByUsernameResultDisplayed(USER_2_CREDENTIALS.username);
+			.isSearchByUsernameResultDisplayed(users.secondUser.username);
 
 		await userInfoAdminPage.steps().showUserDetails(VALID_USERNAME);
 		await infoAdminPage.assertThat().pageElementsAreVisible();

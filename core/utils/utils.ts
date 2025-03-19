@@ -30,6 +30,7 @@ import jsQR from "jsqr";
 import { authenticator } from "otplib";
 import { Timeout } from "@enums/timeout";
 import { DocumentReadyState } from "@enums/playwright/document-ready-states";
+import { RegisterTestData } from "@dtos/test-data";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -203,6 +204,14 @@ export const getRandomPhone = (countryCode = "+1", length = 9): string => {
 
 export const getRandomEmail = (): string =>
 	`gamdom-e2e-email${Date.now()}@gmail.com`;
+
+export function getRegisterDataRandomUsernameWithPrefix(
+	usernamePrefix: string,
+): RegisterTestData {
+	return new RegisterTestData({
+		username: generateRandomString({ prefix: usernamePrefix }),
+	});
+}
 
 export function asString(str: string | undefined): string {
 	return str as string;
