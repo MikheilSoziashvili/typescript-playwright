@@ -132,14 +132,4 @@ export class HomePageMap extends BaseMap {
 			)
 			.first();
 	}
-
-	public get balanceDropdown(): Locator {
-		return this.page.locator("i[class*='bal-arrow']");
-	}
-
-	public selectCurrencyOption(currency: string): Locator {
-		return this.page.locator(
-			`input[type='radio'][aria-label='${currency}']`,
-		);
-	}
 }

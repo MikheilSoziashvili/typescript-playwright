@@ -30,3 +30,5 @@ export const BLOG = "/blog";
 export const CASINO_PAGE_ENDPOINT = "/casino";
 export const POVIDERS_PAGE_ENDPOINT = "/providers";
 export const KOTH_ENDPOINT = "/koth";
+export const TRANSACTIONS_PAGE_ENDPOINT = "/transactions";
+export const CRYPTO_ADMIN_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/CryptoAdmin`;

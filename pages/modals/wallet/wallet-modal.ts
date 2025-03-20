@@ -6,6 +6,7 @@ import { WalletModalSteps } from "./wallet-modal-steps";
 import { sanitizeAmount } from "@support/regex-patterns";
 import { Timeout } from "@enums/timeout";
 import { TwoFactorAuthModal } from "../two-factor-authentication-modal/two-factor-auth-modal";
+import { step } from "decorators/step";
 
 export class WalletModal extends BasePage<WalletModalMap> {
 	public constructor(page: Page) {
@@ -71,5 +72,15 @@ export class WalletModal extends BasePage<WalletModalMap> {
 		await this.selectWalletOption(walletOption);
 		await this.fillVaultAmount(amount);
 		await this.clickWithdrawButton();
+	}
+
+	@step()
+	public async selectPaymentMethod(paymentMethod: string): Promise<void> {
+		await this.map.cryptoPaymentMethod(paymentMethod).click();
+	}
+
+	@step()
+	public async getDepositAddress(): Promise<string> {
+		return this.map.cryptoDepositAddress.inputValue();
 	}
 }

@@ -121,4 +121,20 @@ export class AuthenticatedHeaderMap extends BaseMap {
 	public get rewardsNavigationButton(): Locator {
 		return this.headerNavigationButtons("rewards");
 	}
+
+	public selectCurrencyOption(currency: string): Locator {
+		return this.page.locator(
+			`input[type='radio'][aria-label='${currency}']`,
+		);
+	}
+
+	public get balanceDropdown(): Locator {
+		return this.page.locator("i[class*='bal-arrow']");
+	}
+
+	public walletBalanceValue(cryptoCurrency: string): Locator {
+		return this.page
+			.locator("div", { hasText: new RegExp(`^${cryptoCurrency}$`) })
+			.locator("~ div span.animation-finished");
+	}
 }

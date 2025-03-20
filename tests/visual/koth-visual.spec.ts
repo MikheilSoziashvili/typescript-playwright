@@ -14,7 +14,7 @@ kothDataset.forEach((record) => {
 
 		test.beforeEach(async ({ homePage }) => {
 			await homePage.navigateAndCheckTitle();
-			await homePage.changeCurrency(record.currency);
+			await homePage.authenticatedHeader.changeCurrency(record.currency);
 		});
 		test.use(storageStateNewUserAPI());
 

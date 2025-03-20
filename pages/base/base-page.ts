@@ -1,6 +1,9 @@
 import { AuthenticatedHeader } from "@components/header/authenticated/authenticated-header";
 import { UnauthenticatedHeader } from "@components/header/unauthenticated/unauthenticated-header";
-import { BasePageNavigationParametersType } from "@core/types/types";
+import {
+	AcceptDialogOptions,
+	BasePageNavigationParametersType,
+} from "@core/types/types";
 import {
 	buildEndpoint,
 	conformLinkWithProtocol,
@@ -169,5 +172,21 @@ export abstract class BasePage<T extends BaseMap> {
 			})();
 
 		return positionCache.value;
+	}
+
+	public acceptDialog(options: AcceptDialogOptions = {}): void {
+		this.page.on("dialog", async (dialog) => {
+			const { expectedMessage, inputText } = options;
+
+			if (
+				expectedMessage !== undefined &&
+				dialog.message().includes(expectedMessage)
+			) {
+				await dialog.accept(inputText);
+				return;
+			}
+
+			await dialog.accept();
+		});
 	}
 }

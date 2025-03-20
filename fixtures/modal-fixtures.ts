@@ -3,6 +3,7 @@ import { LoginModal } from "@pages/modals/login-modal/login-modal";
 import { PromoCodeModal } from "@pages/modals/promo-code-modal/promo-code-modal";
 import { TipRainModal } from "@pages/modals/tip-rain-modal/tip-rain-modal";
 import { TipUserModal } from "@pages/modals/tip-user-modal/tip-user-modal";
+import { TransactionDetailsModal } from "@pages/modals/transaction-details-modal/transaction-details-modal";
 import { TwoFactorAuthModal } from "@pages/modals/two-factor-authentication-modal/two-factor-auth-modal";
 import { UserProfileModal } from "@pages/modals/user-profile-modal/user-profile-modal";
 import { WalletModal } from "@pages/modals/wallet/wallet-modal";
@@ -18,6 +19,7 @@ export type Modals = {
 	promoCodeModal: PromoCodeModal;
 	tipRainModal: TipRainModal;
 	loginModal: LoginModal;
+	transactionDetailsModal: TransactionDetailsModal;
 };
 
 export const modalsFixtures = base.extend<Modals>({
@@ -44,5 +46,8 @@ export const modalsFixtures = base.extend<Modals>({
 	},
 	loginModal: async ({ page }, use) => {
 		await use(new LoginModal(page));
+	},
+	transactionDetailsModal: async ({ page }, use) => {
+		await use(new TransactionDetailsModal(page));
 	},
 });

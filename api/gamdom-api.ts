@@ -25,6 +25,8 @@ import { BaseApi } from "./base-api";
 import { RainOptions, RainResponse } from "@core/types/types";
 import { RainStatus } from "@enums/rain-status";
 import { KothEventDTO } from "@dtos/responses/gamdom-api/get-current-koth-events-basic-info-response";
+import { GetCryptoAdminTransactionsResponse } from "@dtos/responses/gamdom-api/get-crypto-admin-transactions-response";
+import { GetCryptoAdminTransactionsRequest } from "@dtos/requests/gamdom-api/get-crypto-admin-transactions-request";
 
 export class GamdomApi extends BaseApi {
 	private gamdomDb: GamdomDb;
@@ -498,5 +500,24 @@ export class GamdomApi extends BaseApi {
 		}
 
 		return events[events.length - 1].event_name;
+	}
+
+	public async getCryptoAdminTransactions(
+		_headers?: Record<string, string>,
+		limit = 100,
+		oldestFirst = false,
+	): Promise<GetCryptoAdminTransactionsResponse[]> {
+		const payload: GetCryptoAdminTransactionsRequest = {
+			limit,
+			oldestFirst,
+		};
+		const parameters = this.buildParameters(
+			ApiEndpoints.GET_CRYPTO_ADMIN_TRANSACTIONS,
+			payload,
+			_headers,
+		);
+
+		const response = await this.post(parameters);
+		return response.json() as Promise<GetCryptoAdminTransactionsResponse[]>;
 	}
 }

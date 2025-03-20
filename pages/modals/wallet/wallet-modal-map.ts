@@ -80,4 +80,14 @@ export class WalletModalMap extends BaseMap {
 			hasText: vaultButtonPattern("Withdraw"),
 		});
 	}
+
+	public cryptoPaymentMethod(paymentMethod: string): Locator {
+		return this.page.getByTestId(`deposit-crypto-${paymentMethod}`);
+	}
+
+	public get cryptoDepositAddress(): Locator {
+		return this.page.locator(
+			'div[class*="CryptoDepositBody"][class*="Inputs"] input',
+		);
+	}
 }

@@ -147,6 +147,7 @@ export class HomePage extends BasePage<HomePageMap> {
 		await this.map.casinoGamesSliderVisitButtonByName(buttonName).click();
 	}
 
+	@step()
 	public async navigateToWallet(): Promise<void> {
 		await this.navigate();
 		await this.page.waitForLoadState();
@@ -159,12 +160,6 @@ export class HomePage extends BasePage<HomePageMap> {
 			this.map.firstKothHeaderCurrencyAmount,
 			BoundingBoxCoordinate.X,
 		);
-	}
-
-	@step()
-	public async changeCurrency(currency: string): Promise<void> {
-		await this.map.balanceDropdown.click();
-		await this.map.selectCurrencyOption(currency).click();
 	}
 
 	@step()

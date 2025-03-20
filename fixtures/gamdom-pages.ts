@@ -17,6 +17,7 @@ import { CasinoPage } from "@pages/casino/casino-game-page";
 import { ProvidersPage } from "@pages/providers/providers-page";
 import { VerificationPage } from "@pages/verification/verification-page";
 import { KothPage } from "@pages/koth/koth-page";
+import { TransactionsPage } from "@pages/transactions/transactions-page";
 
 export type GamdomPages = {
 	homePage: HomePage;
@@ -37,6 +38,7 @@ export type GamdomPages = {
 	casinoPage: CasinoPage;
 	providersPage: ProvidersPage;
 	kothPage: KothPage;
+	transactionsPage: TransactionsPage;
 };
 
 export const gamdomPagesFixtures = base.extend<GamdomPages>({
@@ -93,5 +95,8 @@ export const gamdomPagesFixtures = base.extend<GamdomPages>({
 	},
 	kothPage: async ({ page }, use) => {
 		await use(new KothPage(page));
+	},
+	transactionsPage: async ({ page }, use) => {
+		await use(new TransactionsPage(page));
 	},
 });

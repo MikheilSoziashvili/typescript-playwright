@@ -39,8 +39,8 @@ export class BitcoinApi extends BaseApi {
 
 		const requestParams = this.buildParameters("/", payload);
 		const response: APIResponse = await this.post(requestParams);
-		const data: T = (await response.json()) as T;
-		return data;
+		const responseData: unknown = await response.json();
+		return responseData as T;
 	}
 
 	/**

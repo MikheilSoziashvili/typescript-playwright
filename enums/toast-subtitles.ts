@@ -8,4 +8,5 @@ export enum ToastSubTitle {
 	SETTINGS_UPDATED = "Settings updated",
 	SUCCESSFUL_UPLOAD = "Successful upload",
 	UPLOAD_CSV_FILE = "Please upload a CSV file!",
+	REFRESHED_STATE = "Refreshed state",
 }

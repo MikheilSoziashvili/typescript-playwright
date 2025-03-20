@@ -82,4 +82,15 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 			},
 		);
 	}
+
+	@step()
+	public async walletBalanceIs(
+		wallet: string,
+		amount: number,
+	): Promise<void> {
+		const walletBalance = parseFloat(
+			await this.gamdomPage.getWalletBalance(wallet),
+		);
+		expect(walletBalance).toEqual(amount);
+	}
 }
