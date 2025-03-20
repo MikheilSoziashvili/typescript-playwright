@@ -56,6 +56,7 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 	public async walletAmountIsVisualDisplayed(
 		testInfo: TestInfo,
 	): Promise<void> {
+		await this.gamdomPage.map.getLoadedAccountBalance();
 		await this.verifyVisualDisplay(
 			testInfo,
 			this.gamdomPage.map.inGameAccountBalance,
