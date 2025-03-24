@@ -36,7 +36,7 @@ test.describe("Bitcoin tests", () => {
 	});
 
 	test.use(storageStateNewUserAPI());
-	test("BTC Deposit", async ({
+	test("[ENG-5450] BTC - deposit", async ({
 		bitcoinApi,
 		homePage,
 		walletModal,
