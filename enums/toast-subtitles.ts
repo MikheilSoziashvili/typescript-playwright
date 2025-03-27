@@ -9,4 +9,5 @@ export enum ToastSubTitle {
 	SUCCESSFUL_UPLOAD = "Successful upload",
 	UPLOAD_CSV_FILE = "Please upload a CSV file!",
 	REFRESHED_STATE = "Refreshed state",
+	AUTOBET_FINISHED = "Autobet finished!",
 }

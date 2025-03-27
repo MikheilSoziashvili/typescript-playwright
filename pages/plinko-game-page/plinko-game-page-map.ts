@@ -27,4 +27,70 @@ export class PlinkoGamePageMap extends BaseMap {
 			"div[class*='AuthPopup-styled__SliderContainer-sc-']",
 		);
 	}
+
+	public get plinkoGameWrapper(): Locator {
+		return this.page.locator("div[id='inhouse-view']");
+	}
+
+	public get leftBetPanelContainer(): Locator {
+		return this.plinkoGameWrapper.locator("[class*='Formstyled__Base']");
+	}
+
+	public get manualBetButton(): Locator {
+		return this.leftBetPanelContainer.locator("button[id*='manual']");
+	}
+
+	public get autoBetButton(): Locator {
+		return this.leftBetPanelContainer.locator("button[id*='auto']");
+	}
+
+	public get startAutobetButton(): Locator {
+		return this.leftBetPanelContainer.locator(
+			"button[class*='SubmitButton']",
+			{ hasText: "Start Autobet" },
+		);
+	}
+
+	public get stopAutobetButton(): Locator {
+		return this.leftBetPanelContainer.locator(
+			"button[class*='SubmitButton']",
+			{ hasText: "Stop Autobet" },
+		);
+	}
+
+	public get betCountsContainer(): Locator {
+		return this.leftBetPanelContainer.locator("label[class*='BetsCount-']");
+	}
+
+	public get numberOfBetsInput(): Locator {
+		return this.betCountsContainer.locator(
+			"input[class*='BetsCountInput']",
+		);
+	}
+
+	public get remainingBetsContainer(): Locator {
+		return this.leftBetPanelContainer.locator(
+			"div[class*='RemainingBets-']",
+		);
+	}
+
+	public get remainingBetsBalanceLabel(): Locator {
+		return this.remainingBetsContainer.locator("span[class*='Balance-']");
+	}
+
+	public get plinkoToastMessageContainer(): Locator {
+		return this.page.locator("[class*='ToastMessagestyled__TContainer']");
+	}
+
+	public get plinkoToastMessageTitle(): Locator {
+		return this.plinkoToastMessageContainer.locator(
+			"[class*='ToastMessagestyled__THeading']",
+		);
+	}
+
+	public get plinkoToastMessageSubTitle(): Locator {
+		return this.plinkoToastMessageContainer.locator(
+			"[class*='ToastMessagestyled__TMessage']",
+		);
+	}
 }

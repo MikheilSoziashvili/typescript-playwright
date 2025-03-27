@@ -6,6 +6,7 @@ import { PlinkoGamePageAsserter } from "./plinko-game-page-asserter";
 import { PlinkoGamePageMap } from "./plinko-game-page-map";
 import { PlinkoGamePageSteps } from "./plinko-game-page-steps";
 import { step } from "decorators/step";
+import { Attributes } from "@enums/playwright/htmlAttributes";
 
 export class PlinkoGamePage extends BasePage<PlinkoGamePageMap> {
 	public constructor(page: Page) {
@@ -32,5 +33,24 @@ export class PlinkoGamePage extends BasePage<PlinkoGamePageMap> {
 	@step()
 	public async openLoginModal(): Promise<void> {
 		await this.map.signInButton.click();
+	}
+
+	@step()
+	public async clickAutobet(): Promise<void> {
+		await this.map.autoBetButton.click();
+	}
+
+	@step()
+	public async getRemainingBetsCount(): Promise<string> {
+		const count = await this.map.remainingBetsBalanceLabel.innerText();
+		return count.toString();
+	}
+
+	@step()
+	public async getNumberOfBetsInput(): Promise<string> {
+		const numberOfBetsInput = await this.map.numberOfBetsInput.getAttribute(
+			Attributes.VALUE,
+		);
+		return numberOfBetsInput || "";
 	}
 }
