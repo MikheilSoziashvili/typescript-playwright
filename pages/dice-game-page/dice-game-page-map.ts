@@ -52,7 +52,7 @@ export class DiceGamePageMap extends BaseMap {
 	}
 
 	public get diceSliderValue(): Locator {
-		return this.page.locator("span[class*='MuiSlider-valueLabelLabel']");
+		return this.getSpanByClassContains("MuiSlider-valueLabelLabel");
 	}
 
 	public get diceGameAreaMessage(): Locator {

@@ -37,6 +37,13 @@ export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 	}
 
 	@step()
+	public async stopAutobetSuccessfully(): Promise<void> {
+		await this.gamdomPage.assertThat().stopAutobetButtonIsDisplayed();
+		await this.gamdomPage.map.stopAutobetButton.click();
+		await this.gamdomPage.assertThat().starAutobetButtonIsDisplayed();
+	}
+
+	@step()
 	private async fetchRemainingBetsValue(): Promise<number> {
 		const text =
 			await this.gamdomPage.map.remainingBetsBalanceLabel.textContent();

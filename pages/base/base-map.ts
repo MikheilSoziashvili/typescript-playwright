@@ -81,4 +81,13 @@ export class BaseMap {
 	protected getInputField(inputField: string, container?: Locator): Locator {
 		return (container || this.page).locator(`input[name='${inputField}']`);
 	}
+
+	protected getSpanByClassContains(
+		partialClassName: string,
+		container?: Locator,
+	): Locator {
+		return (container || this.page).locator(
+			`span[class*='${partialClassName}']`,
+		);
+	}
 }

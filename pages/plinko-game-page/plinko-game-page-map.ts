@@ -75,7 +75,10 @@ export class PlinkoGamePageMap extends BaseMap {
 	}
 
 	public get remainingBetsBalanceLabel(): Locator {
-		return this.remainingBetsContainer.locator("span[class*='Balance-']");
+		return this.getSpanByClassContains(
+			"Balance-",
+			this.remainingBetsContainer,
+		);
 	}
 
 	public get plinkoToastMessageContainer(): Locator {
@@ -91,6 +94,34 @@ export class PlinkoGamePageMap extends BaseMap {
 	public get plinkoToastMessageSubTitle(): Locator {
 		return this.plinkoToastMessageContainer.locator(
 			"[class*='ToastMessagestyled__TMessage']",
+		);
+	}
+
+	public betSliderContainerByPlaceholder(placeholder: string): Locator {
+		return this.leftBetPanelContainer.locator(
+			`//div[contains(@class,'Formstyled__Range-') and contains(normalize-space(),'${placeholder}')]`,
+		);
+	}
+
+	public get betRowsSliderContainer(): Locator {
+		return this.betSliderContainerByPlaceholder("Rows");
+	}
+
+	public get riskRowsSliderContainer(): Locator {
+		return this.betSliderContainerByPlaceholder("Risk");
+	}
+
+	public get betRowsSliderInput(): Locator {
+		return this.getSpanByClassContains(
+			"RangeInput-",
+			this.betRowsSliderContainer,
+		);
+	}
+
+	public get riskRowsSliderInput(): Locator {
+		return this.getSpanByClassContains(
+			"RangeInput-",
+			this.riskRowsSliderContainer,
 		);
 	}
 }

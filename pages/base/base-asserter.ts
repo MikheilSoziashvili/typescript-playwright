@@ -10,6 +10,8 @@ import { BaseComponent } from "./base-component";
 import { BaseMap } from "./base-map";
 import { BaseModal } from "./base-modal";
 import { BasePage } from "./base-page";
+import { BooleanValueString } from "@enums/playwright/booleanValues";
+import { Attributes } from "@enums/playwright/htmlAttributes";
 
 export class BaseAsserter<
 	T extends BasePage<BaseMap> | BaseModal<BaseMap> | BaseComponent<BaseMap>,
@@ -139,6 +141,18 @@ export class BaseAsserter<
 		} catch {
 			return false;
 		}
+	}
+
+	public async verifySliderState(
+		slider: Locator,
+		expected: BooleanValueString,
+		timeout?: number,
+	): Promise<void> {
+		await expect(slider).toHaveAttribute(
+			Attributes.ARIA_DISABLED,
+			expected,
+			{ timeout },
+		);
 	}
 
 	@step()

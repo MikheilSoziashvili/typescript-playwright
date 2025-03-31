@@ -1,4 +1,5 @@
 import { BaseAsserter } from "@base/base-asserter";
+import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { expect, TestInfo } from "@playwright/test";
@@ -97,5 +98,53 @@ export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.startAutobetButton,
 		]);
+	}
+
+	@step()
+	async verifyRowsSliderInactive(timeout?: number): Promise<void> {
+		await this.verifySliderState(
+			this.gamdomPage.map.betRowsSliderInput,
+			BooleanValueString.TRUE,
+			timeout,
+		);
+	}
+
+	@step()
+	async verifyRowsSliderActive(timeout?: number): Promise<void> {
+		await this.verifySliderState(
+			this.gamdomPage.map.betRowsSliderInput,
+			BooleanValueString.FALSE,
+			timeout,
+		);
+	}
+
+	@step()
+	async verifyRiskSliderInactive(timeout?: number): Promise<void> {
+		await this.verifySliderState(
+			this.gamdomPage.map.riskRowsSliderInput,
+			BooleanValueString.TRUE,
+			timeout,
+		);
+	}
+
+	@step()
+	async verifyRiskSliderActive(timeout?: number): Promise<void> {
+		await this.verifySliderState(
+			this.gamdomPage.map.riskRowsSliderInput,
+			BooleanValueString.FALSE,
+			timeout,
+		);
+	}
+
+	@step()
+	async verifyRowsAndRiskSlidersInactive(timeout?: number): Promise<void> {
+		await this.verifyRowsSliderInactive(timeout);
+		await this.verifyRiskSliderInactive(timeout);
+	}
+
+	@step()
+	async verifyRowsAndRiskSlidersActive(timeout?: number): Promise<void> {
+		await this.verifyRowsSliderActive(timeout);
+		await this.verifyRiskSliderActive(timeout);
 	}
 }

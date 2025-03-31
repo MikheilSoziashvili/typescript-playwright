@@ -14,7 +14,7 @@ export class CasinoPageMap extends BaseMap {
 	}
 
 	public get providersDropdown(): Locator {
-		return this.page.locator("span[class*='Dropdown-styled']");
+		return this.getSpanByClassContains("Dropdown-styled");
 	}
 
 	public get settingsButton(): Locator {

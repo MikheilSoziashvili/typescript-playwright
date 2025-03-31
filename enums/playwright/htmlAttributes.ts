@@ -18,4 +18,5 @@ export enum Attributes {
 	DATA_VALUE = "data-value",
 	COLOR = "color",
 	DATA_STATE = "data-state",
+	ARIA_DISABLED = "aria-disabled",
 }
