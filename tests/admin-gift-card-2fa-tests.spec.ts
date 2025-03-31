@@ -1,3 +1,4 @@
+import { PT_PROXY_CREDENTIALS } from "@constants/proxies";
 import {
 	createBrowserContextWithProxy,
 	createPngImagePath,
@@ -7,7 +8,6 @@ import {
 } from "@core/utils/utils";
 import { test } from "@fixtures/fixtures";
 import { storageStateNewSuperAdminUserAPI } from "../fixtures/auth-fixtures";
-import { NL_PROXY_CREDENTIALS } from "@constants/proxies";
 
 test.describe("Gift card generation tests", () => {
 	let qrCode2FAImagePath: string;
@@ -53,7 +53,7 @@ test.describe("Gift card generation tests", () => {
 		await initializePageObjectsWithCookies(
 			await (await browser.newContext()).cookies(),
 			initialPage,
-			await createBrowserContextWithProxy(browser, NL_PROXY_CREDENTIALS),
+			await createBrowserContextWithProxy(browser, PT_PROXY_CREDENTIALS),
 			...Object.values(pages),
 		);
 

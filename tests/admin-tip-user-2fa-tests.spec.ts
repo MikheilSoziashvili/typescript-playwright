@@ -1,4 +1,5 @@
 import { GAMDOM_EMAIL_DOMAIN } from "@constants/domains";
+import { PT_PROXY_CREDENTIALS } from "@constants/proxies";
 import { buildTipUserSubTitle } from "@core/helpers/asserter-helpers/text-asserters";
 import {
 	createBrowserContextWithProxy,
@@ -11,7 +12,6 @@ import { RegisterTestData } from "@dtos/test-data";
 import { test } from "@fixtures/fixtures";
 import { emailDomainPattern } from "@support/regex-patterns";
 import { storageStateNewSuperAdminUserAPI } from "../fixtures/auth-fixtures";
-import { NL_PROXY_CREDENTIALS } from "@constants/proxies";
 
 test.describe("Tip user through admin panel tests", () => {
 	let qrCode2FAImagePath: string;
@@ -87,7 +87,7 @@ test.describe("Tip user through admin panel tests", () => {
 		await initializePageObjectsWithCookies(
 			await (await browser.newContext()).cookies(),
 			initialPage,
-			await createBrowserContextWithProxy(browser, NL_PROXY_CREDENTIALS),
+			await createBrowserContextWithProxy(browser, PT_PROXY_CREDENTIALS),
 			...Object.values(pages),
 		);
 

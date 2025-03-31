@@ -1,4 +1,4 @@
-import { NL_PROXY_CREDENTIALS } from "@constants/proxies";
+import { UK_PROXY_CREDENTIALS } from "@constants/proxies";
 import { TIP_RAIN } from "@constants/tip-rain";
 import { buildTipRainUserMessageInfo } from "@core/helpers/asserter-helpers/text-asserters";
 import {
@@ -144,7 +144,7 @@ test.describe("Tip rain tests", () => {
 		await initializePageObjectsWithCookies(
 			await (await browser.newContext()).cookies(),
 			initialPage,
-			await createBrowserContextWithProxy(browser, NL_PROXY_CREDENTIALS),
+			await createBrowserContextWithProxy(browser, UK_PROXY_CREDENTIALS),
 			...Object.values(pages),
 		);
 

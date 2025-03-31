@@ -1,4 +1,5 @@
 import { DATASETS_DIR } from "@constants/file-paths";
+import { PT_PROXY_CREDENTIALS } from "@constants/proxies";
 import {
 	createBrowserContextWithProxy,
 	createPngImagePath,
@@ -11,7 +12,6 @@ import { CsvFilesName } from "@enums/csv-file-name";
 import { ContactType } from "@enums/personal-info-types";
 import { test } from "@fixtures/fixtures";
 import { storageStateNewUserAPI } from "../fixtures/auth-fixtures";
-import { NL_PROXY_CREDENTIALS } from "@constants/proxies";
 
 const contactInfoInputs = parse_csv(
 	DATASETS_DIR,
@@ -68,7 +68,7 @@ test.describe("User info update tests", () => {
 				initialPage,
 				await createBrowserContextWithProxy(
 					browser,
-					NL_PROXY_CREDENTIALS,
+					PT_PROXY_CREDENTIALS,
 				),
 				...Object.values(pages),
 			);
