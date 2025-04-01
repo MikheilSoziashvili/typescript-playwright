@@ -1,6 +1,7 @@
 export enum TransactionState {
 	CONFIRMING = "Confirming",
 	COMPLETE = "Complete",
+	CONFIRMED = "Confirmed",
 	SENT = "Sent",
 	QUEUED = "Queued",
 	REJECTED = "Rejected",

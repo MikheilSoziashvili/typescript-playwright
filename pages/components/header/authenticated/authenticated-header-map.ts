@@ -132,6 +132,12 @@ export class AuthenticatedHeaderMap extends BaseMap {
 		return this.page.locator("i[class*='bal-arrow']");
 	}
 
+	public walletOption(cryptoCurrency: string): Locator {
+		return this.page.locator("div[class*='navbarMain']", {
+			hasText: new RegExp(`^${cryptoCurrency}$`),
+		});
+	}
+
 	public walletBalanceValue(cryptoCurrency: string): Locator {
 		return this.page
 			.locator("div", { hasText: new RegExp(`^${cryptoCurrency}$`) })

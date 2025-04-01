@@ -58,6 +58,12 @@ export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 	}
 
 	@step()
+	public async changeWallet(wallet: string): Promise<void> {
+		await this.clickBalanceDropdown();
+		await this.map.walletOption(wallet).click();
+	}
+
+	@step()
 	public async getWalletBalance(cryptoCurrency: string): Promise<string> {
 		const text = await this.map
 			.walletBalanceValue(cryptoCurrency)

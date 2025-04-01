@@ -7,6 +7,7 @@ import { sanitizeAmount } from "@support/regex-patterns";
 import { Timeout } from "@enums/timeout";
 import { TwoFactorAuthModal } from "../two-factor-authentication-modal/two-factor-auth-modal";
 import { step } from "decorators/step";
+import { Cryptocurrency } from "@enums/cryptocurrencies";
 
 export class WalletModal extends BasePage<WalletModalMap> {
 	public constructor(page: Page) {
@@ -82,5 +83,25 @@ export class WalletModal extends BasePage<WalletModalMap> {
 	@step()
 	public async getDepositAddress(): Promise<string> {
 		return this.map.cryptoDepositAddress.inputValue();
+	}
+
+	@step()
+	public async fillBitcoinAddress(address: string): Promise<void> {
+		await this.map.bitcoinAddressInput.fill(address);
+	}
+
+	@step()
+	public async fillBitcoinWithdrawAmount(amount: number): Promise<void> {
+		await this.map.bitcoinWithdrawInput.fill(`${amount}`);
+	}
+
+	//TODO: Revise below method into a more generic one when new crypto withdraw tests are developed, since currently the behaviour is unknown.
+	@step()
+	public async withdrawBtc(address: string, amount: number): Promise<void> {
+		await this.openWithdrawTab();
+		await this.selectPaymentMethod(Cryptocurrency.Bitcoin);
+		await this.fillBitcoinAddress(address);
+		await this.fillBitcoinWithdrawAmount(amount);
+		await this.clickWithdrawButton();
 	}
 }

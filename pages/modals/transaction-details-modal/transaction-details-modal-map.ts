@@ -11,4 +11,8 @@ export class TransactionDetailsModalMap extends BaseMap {
 			.locator("label", { hasText: "Deposit Amount in BTC" })
 			.locator("~ div input");
 	}
+
+	public get blockchainTransactionLink(): Locator {
+		return this.page.locator('a:has-text("Blockchain Transaction")');
+	}
 }

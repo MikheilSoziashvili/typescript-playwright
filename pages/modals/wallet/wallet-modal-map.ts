@@ -76,9 +76,7 @@ export class WalletModalMap extends BaseMap {
 	}
 
 	public get withdrawButton(): Locator {
-		return this.page.locator("button", {
-			hasText: vaultButtonPattern("Withdraw"),
-		});
+		return this.page.getByTestId("LeftPanelMainButton");
 	}
 
 	public cryptoPaymentMethod(paymentMethod: string): Locator {
@@ -89,5 +87,15 @@ export class WalletModalMap extends BaseMap {
 		return this.page.locator(
 			'div[class*="CryptoDepositBody"][class*="Inputs"] input',
 		);
+	}
+
+	public get bitcoinAddressInput(): Locator {
+		return this.page.locator('input[placeholder="Your Bitcoin Address"]');
+	}
+
+	public get bitcoinWithdrawInput(): Locator {
+		return this.page
+			.locator('label:has-text("BTC to withdraw")')
+			.locator("~ div input");
 	}
 }

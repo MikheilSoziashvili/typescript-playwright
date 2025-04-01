@@ -123,4 +123,10 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 	public async openDiceHistory(): Promise<void> {
 		await this.map.diceRollHistoryButton.click();
 	}
+
+	@step()
+	public async rollDiceWithAmount(amount: number): Promise<void> {
+		await this.fillInManualBetData(amount);
+		await this.rollDice();
+	}
 }

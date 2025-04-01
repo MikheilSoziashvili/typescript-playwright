@@ -172,6 +172,10 @@ export function range(start: number, stop: number, step = 1): number[] {
 		.map((v) => start + v);
 }
 
+export function roundToDecimals(value: number, decimals = 5): number {
+	return parseFloat(value.toFixed(decimals));
+}
+
 export function parseToFloat(num: number, fractionDigits = 2): string {
 	return parseFloat(`${num}`).toFixed(fractionDigits);
 }

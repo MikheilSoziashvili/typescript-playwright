@@ -42,7 +42,7 @@ export class TransactionsPage extends BasePage<TransactionsMap> {
 	}
 
 	@step()
-	public async openTransactionDetails(): Promise<void> {
+	public async clickTransactionDetailsButton(): Promise<void> {
 		await this.map.transactionDetailsButton.click();
 	}
 
@@ -56,22 +56,24 @@ export class TransactionsPage extends BasePage<TransactionsMap> {
 	}
 
 	@step()
-	public async waitForTransactionStatusToComplete(): Promise<string> {
+	public async waitForTransactionStatus(
+		expectedStatus: TransactionState,
+	): Promise<TransactionState> {
 		let finalStatus = TransactionState.PENDING;
 
 		await waitUntil(
 			async () => {
 				finalStatus =
 					(await this.getTransactionStatus()) as TransactionState;
-				return finalStatus === TransactionState.COMPLETE;
+				return finalStatus === expectedStatus;
 			},
 			{
-				errorMessage:
-					"Transaction did not reach 'Complete' status in time",
+				errorMessage: `Transaction did not reach '${expectedStatus}' status in time`,
 				intervalSeconds: 5,
 				timeoutSeconds: 80,
 			},
 		);
+
 		return finalStatus;
 	}
 }

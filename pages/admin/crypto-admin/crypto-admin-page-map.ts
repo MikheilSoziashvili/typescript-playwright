@@ -7,7 +7,7 @@ export class CryptoAdminMap extends BaseMap {
 	}
 
 	public get sendQueuedWithdrawalsButton(): Locator {
-		return this.page.locator('button:text-is("Send queued withdrawals")');
+		return this.page.getByTestId("sendQueuedWithdrawalsButton");
 	}
 
 	public get refreshButton(): Locator {

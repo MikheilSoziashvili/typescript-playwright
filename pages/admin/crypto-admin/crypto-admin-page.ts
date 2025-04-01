@@ -40,7 +40,13 @@ export class CryptoAdminPage extends BasePage<CryptoAdminMap> {
 	}
 
 	@step()
-	public async clickWithdrawButton(nodeTitle: string): Promise<void> {
+	public async clickMinWithdrawButton(nodeTitle: string): Promise<void> {
 		await this.map.minWithdrawButton(nodeTitle).click();
+	}
+
+	@step()
+	public async sendQueuedWithdrawals(): Promise<void> {
+		await this.navigate();
+		await this.map.sendQueuedWithdrawalsButton.click();
 	}
 }

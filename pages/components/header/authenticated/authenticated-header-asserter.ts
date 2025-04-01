@@ -1,5 +1,5 @@
 import { BaseAsserter } from "@base/base-asserter";
-import { formatBalance } from "@core/utils/utils";
+import { formatBalance, roundToDecimals } from "@core/utils/utils";
 import { Timeout } from "@enums/timeout";
 import { expect, TestInfo } from "@playwright/test";
 import { step } from "decorators/step";
@@ -86,11 +86,11 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 	@step()
 	public async walletBalanceIs(
 		wallet: string,
-		amount: number,
+		expectedAmount: number,
 	): Promise<void> {
-		const walletBalance = parseFloat(
+		const balance = parseFloat(
 			await this.gamdomPage.getWalletBalance(wallet),
 		);
-		expect(walletBalance).toEqual(amount);
+		expect(roundToDecimals(balance)).toBe(roundToDecimals(expectedAmount));
 	}
 }
