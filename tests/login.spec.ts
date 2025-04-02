@@ -142,7 +142,7 @@ test.describe("Login tests", () => {
 			.loggedInUserElementsAreVisible();
 	});
 
-	test("[ENG-2722] Login with Google user through Google auth portal @smoke", async ({
+	test("[ENG-2722] Login with Google user through Google auth portal", async ({
 		homePage,
 		googleAuthPage,
 	}) => {
