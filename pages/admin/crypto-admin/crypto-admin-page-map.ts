@@ -27,4 +27,28 @@ export class CryptoAdminMap extends BaseMap {
 			.locator("td img")
 			.nth(2);
 	}
+
+	public get cryptoTableContainer(): Locator {
+		return this.page.getByTestId("denseTableContainer");
+	}
+
+	public cryptoRow(cryptoName: string): Locator {
+		return this.cryptoTableContainer.locator("tbody tr", {
+			has: this.page.getByRole("rowheader", { name: cryptoName }),
+		});
+	}
+
+	public depositToggle(cryptoName: string): Locator {
+		return this.cryptoRow(cryptoName)
+			.locator("td")
+			.nth(0)
+			.locator('input[type="checkbox"]');
+	}
+
+	public withdrawToggle(cryptoName: string): Locator {
+		return this.cryptoRow(cryptoName)
+			.locator("td")
+			.nth(1)
+			.locator('input[type="checkbox"]');
+	}
 }

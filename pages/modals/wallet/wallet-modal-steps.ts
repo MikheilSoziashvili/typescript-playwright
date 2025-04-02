@@ -46,7 +46,7 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 				: await this.getVaultAmountMinusOne();
 
 		await this.gamdomPage.fillVaultAmount(amount);
-		await this.gamdomPage.clickDepositButton();
+		await this.gamdomPage.clickVaultDepositButton();
 
 		const formattedAmount = this.formatAmount(amount);
 
@@ -69,7 +69,7 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 		const amount = await this.getVaultAmountMinusOne();
 
 		await this.gamdomPage.fillVaultAmount(amount);
-		await this.gamdomPage.clickWithdrawButton();
+		await this.gamdomPage.clickVaultWithdrawButton();
 
 		const formattedWithdraw = this.formatAmount(amount);
 

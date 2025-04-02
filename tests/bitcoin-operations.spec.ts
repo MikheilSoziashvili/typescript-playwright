@@ -23,14 +23,19 @@ test.describe("Bitcoin tests", () => {
 			await gamdomApi.authenticateWithNewSuperAdminUser(superAdminData);
 		await setAuthenticationCookies(page, superadminCookie);
 		await cryptoAdminPage.navigate();
-		await cryptoAdminPage.refreshCryptoData();
-		await toast.assertThat().titleIs(ToastTitle.SUCCESS, {
-			subTitle: ToastSubTitle.REFRESHED_STATE,
-		});
-
 		cryptoAdminPage.acceptDialog({
 			expectedMessage: "Enter new minimum",
 			inputText: "0.00001",
+		});
+		await cryptoAdminPage.toggleCryptoOperations({
+			cryptoName: Cryptocurrency.Bitcoin,
+			deposit: true,
+			withdraw: true,
+		});
+
+		await cryptoAdminPage.refreshCryptoData();
+		await toast.assertThat().titleIs(ToastTitle.SUCCESS, {
+			subTitle: ToastSubTitle.REFRESHED_STATE,
 		});
 
 		await cryptoAdminPage.clickMinDepositButton(CryptoNode.nodeBTC1);

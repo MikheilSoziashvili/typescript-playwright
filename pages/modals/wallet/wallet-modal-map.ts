@@ -1,5 +1,4 @@
 import { BaseMap } from "@pages/base/base-map";
-import { vaultButtonPattern } from "@support/regex-patterns";
 import { Locator, Page } from "playwright";
 
 export class WalletModalMap extends BaseMap {
@@ -69,13 +68,15 @@ export class WalletModalMap extends BaseMap {
 		);
 	}
 
-	public get depositButton(): Locator {
-		return this.page.locator("button", {
-			hasText: vaultButtonPattern("Deposit"),
-		});
+	public get vaultDepositButton(): Locator {
+		return this.page.getByTestId("depositToVaultButton");
 	}
 
-	public get withdrawButton(): Locator {
+	public get vaultWithdrawButton(): Locator {
+		return this.page.getByTestId("withdrawFromVaultButton");
+	}
+
+	public get cryptoWithdrawButton(): Locator {
 		return this.page.getByTestId("LeftPanelMainButton");
 	}
 

@@ -26,8 +26,6 @@ export const wwwPattern = /www\./;
 export const sanitizeAmount = /[^0-9.]/g;
 export const digitsOnlyPattern = /\d+/;
 export const emailDomainPattern = /@.*$/;
-export const vaultButtonPattern = (action: string): RegExp =>
-	new RegExp(`^(?=.*${action})(?=.*Vault).*$`);
 export const currencyAmountPattern = (
 	currencySymbol = CurrencySymbol.USD,
 ): RegExp =>

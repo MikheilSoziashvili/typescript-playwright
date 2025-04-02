@@ -51,12 +51,16 @@ export class WalletModal extends BasePage<WalletModalMap> {
 		await this.map.vaultInputField.fill(`${amount}`);
 	}
 
-	public async clickDepositButton(): Promise<void> {
-		await this.map.depositButton.click();
+	public async clickVaultDepositButton(): Promise<void> {
+		await this.map.vaultDepositButton.click();
 	}
 
-	public async clickWithdrawButton(): Promise<void> {
-		await this.map.withdrawButton.click();
+	public async clickVaultWithdrawButton(): Promise<void> {
+		await this.map.vaultWithdrawButton.click();
+	}
+
+	public async clickCryptoWithdrawButton(): Promise<void> {
+		await this.map.cryptoWithdrawButton.click();
 	}
 
 	public async getVaultWalletAmount(): Promise<string> {
@@ -72,7 +76,7 @@ export class WalletModal extends BasePage<WalletModalMap> {
 		await this.openWithdrawTabInVault();
 		await this.selectWalletOption(walletOption);
 		await this.fillVaultAmount(amount);
-		await this.clickWithdrawButton();
+		await this.clickVaultWithdrawButton();
 	}
 
 	@step()
@@ -102,6 +106,6 @@ export class WalletModal extends BasePage<WalletModalMap> {
 		await this.selectPaymentMethod(Cryptocurrency.Bitcoin);
 		await this.fillBitcoinAddress(address);
 		await this.fillBitcoinWithdrawAmount(amount);
-		await this.clickWithdrawButton();
+		await this.clickCryptoWithdrawButton();
 	}
 }

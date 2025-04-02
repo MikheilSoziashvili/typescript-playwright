@@ -4,7 +4,10 @@ import { CryptoAdminAsserter } from "./crypto-admin-page-asserter";
 import { CryptoAdminMap } from "./crypto-admin-page-map";
 import { CryptoAdminSteps } from "./crypto-admin-page-steps";
 import { CRYPTO_ADMIN_PAGE_ENDPOINT } from "@constants/page-endpoints";
-import { BasePageNavigationParametersType } from "@core/types/types";
+import {
+	BasePageNavigationParametersType,
+	CryptoOperationOptions,
+} from "@core/types/types";
 import { step } from "decorators/step";
 
 export class CryptoAdminPage extends BasePage<CryptoAdminMap> {
@@ -48,5 +51,31 @@ export class CryptoAdminPage extends BasePage<CryptoAdminMap> {
 	public async sendQueuedWithdrawals(): Promise<void> {
 		await this.navigate();
 		await this.map.sendQueuedWithdrawalsButton.click();
+	}
+
+	public async toggleCryptoOperations({
+		cryptoName,
+		deposit,
+		withdraw,
+	}: CryptoOperationOptions): Promise<void> {
+		const toggles = [
+			{
+				desiredState: deposit,
+				locator: this.map.depositToggle(cryptoName),
+			},
+			{
+				desiredState: withdraw,
+				locator: this.map.withdrawToggle(cryptoName),
+			},
+		];
+
+		for (const { desiredState, locator } of toggles) {
+			if (typeof desiredState === "boolean") {
+				const isChecked = await locator.isChecked();
+				if (isChecked !== desiredState) {
+					await locator.click();
+				}
+			}
+		}
 	}
 }
