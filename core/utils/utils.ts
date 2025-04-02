@@ -16,6 +16,7 @@ import {
 	otpAuthSecretPattern,
 	pageUrl,
 	sanitizeTitlePattern,
+	wwwPattern,
 } from "@support/regex-patterns";
 import fs from "fs";
 import xml2js from "xml2js";
@@ -240,6 +241,10 @@ export function conformLinkWithProtocol(
 		conformedLink = `${protocol}://${link}`;
 	}
 	return conformedLink;
+}
+
+export function normalizeUrl(url: string): string {
+	return url.replace(wwwPattern, "");
 }
 
 export function generateEmailAndInbox(): { email: string; inbox: string } {

@@ -18,6 +18,8 @@ import { ProvidersPage } from "@pages/providers/providers-page";
 import { VerificationPage } from "@pages/verification/verification-page";
 import { KothPage } from "@pages/koth/koth-page";
 import { TransactionsPage } from "@pages/transactions/transactions-page";
+import { BlogPage } from "@pages/blog/blog-page";
+import { BlogPostPage } from "@pages/blog/post/blog-post-page";
 
 export type GamdomPages = {
 	homePage: HomePage;
@@ -34,6 +36,8 @@ export type GamdomPages = {
 	esportsPage: EsportsPage;
 	slotsBattlePage: SlotsBattlePage;
 	blogCategoryPage: BlogCategoryPage;
+	blogPage: BlogPage;
+	blogPostPage: BlogPostPage;
 	helpPage: HelpPage;
 	casinoPage: CasinoPage;
 	providersPage: ProvidersPage;
@@ -98,5 +102,11 @@ export const gamdomPagesFixtures = base.extend<GamdomPages>({
 	},
 	transactionsPage: async ({ page }, use) => {
 		await use(new TransactionsPage(page));
+	},
+	blogPage: async ({ page }, use) => {
+		await use(new BlogPage(page));
+	},
+	blogPostPage: async ({ page }, use) => {
+		await use(new BlogPostPage(page));
 	},
 });

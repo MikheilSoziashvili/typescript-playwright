@@ -12,6 +12,8 @@ import { BaseModal } from "./base-modal";
 import { BasePage } from "./base-page";
 import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { Attributes } from "@enums/playwright/htmlAttributes";
+import { OgProperties } from "@enums/playwright/htmlOgProperties";
+import { OgPropertiesValues } from "@enums/playwright/htmlOgPropertiesValues";
 
 export class BaseAsserter<
 	T extends BasePage<BaseMap> | BaseModal<BaseMap> | BaseComponent<BaseMap>,
@@ -236,5 +238,48 @@ export class BaseAsserter<
 		}
 
 		expect(boundingBox.x).toBeCloseTo(initialXPosition, 2);
+	}
+
+	@step("Verify OG property value")
+	public async verifyMetaOgPropertyValue(
+		ogProperty: OgProperties,
+		value: OgPropertiesValues,
+	): Promise<void> {
+		await expect(
+			this.gamdomPage.map.getMetaOgPropertyByName(ogProperty),
+		).toHaveAttribute(Attributes.CONTENT, value);
+	}
+
+	@step("Verify list of OG properties and their values")
+	public async verifyOgPropertiesValues(
+		ogProperties: OgProperties[],
+		expectedValues: string[],
+	): Promise<void> {
+		expect(
+			ogProperties.length,
+			`The number of OG properties (${ogProperties.length}) does not match the number of expected values (${expectedValues.length}).`,
+		).toBe(expectedValues.length);
+
+		const mismatches: string[] = [];
+
+		for (let i = 0; i < ogProperties.length; i++) {
+			const ogProperty = ogProperties[i];
+			const expectedValue = expectedValues[i];
+
+			const locator =
+				this.gamdomPage.map.getMetaOgPropertyByName(ogProperty);
+			const actualValue = await locator.getAttribute(Attributes.CONTENT);
+
+			if (actualValue !== expectedValue) {
+				mismatches.push(
+					`Mismatch for OG property "${ogProperty}": Expected "${expectedValue}", but got "${actualValue}".`,
+				);
+			}
+		}
+
+		expect(
+			mismatches,
+			`The following mismatches were found:\n${mismatches.join("\n")}`,
+		).toHaveLength(0);
 	}
 }

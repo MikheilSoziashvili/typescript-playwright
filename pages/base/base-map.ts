@@ -1,3 +1,5 @@
+import { Attributes } from "@enums/playwright/htmlAttributes";
+import { OgProperties } from "@enums/playwright/htmlOgProperties";
 import { VisibilityState } from "@enums/playwright/visibility-states";
 import { Locator, Page, expect } from "@playwright/test";
 
@@ -89,5 +91,11 @@ export class BaseMap {
 		return (container || this.page).locator(
 			`span[class*='${partialClassName}']`,
 		);
+	}
+
+	public getMetaOgPropertyByName(ogProperty: OgProperties): Locator {
+		return this.page
+			.locator("head")
+			.locator(`meta[${Attributes.PROPERTY}='${ogProperty}']`);
 	}
 }
