@@ -64,4 +64,21 @@ export class LoginModal extends BaseModal<LoginModalMap> {
 			await this.map.loginBtn.click();
 		}
 	}
+
+	public async clickResetPasswordButton(): Promise<void> {
+		await this.map.forgotPasswordButton.click();
+	}
+
+	public async fillInEmail(email: string): Promise<void> {
+		await this.map.emailInput.fill(email);
+	}
+	public async clickSendNewPasswordButton(): Promise<void> {
+		await this.map.sendNewPasswordButton.click();
+	}
+
+	public async setNewPassword(password: string): Promise<void> {
+		await this.map.newPasswordInput.fill(password);
+		await this.map.newPasswordConfirmationInput.fill(password);
+		await this.map.setNewPasswordButton.click();
+	}
 }

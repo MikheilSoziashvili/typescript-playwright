@@ -7,14 +7,13 @@ import { getCookieHeader, setAuthenticationCookies } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { Wallet } from "@enums/wallets";
 import { CryptoNode } from "@enums/crypto-nodes";
-import { Timeout } from "@enums/timeout";
 import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
 import { TransactionState } from "@enums/transaction-states";
 import { testnetAddress } from "@constants/crypto";
+import { Timeout } from "@enums/timeout";
 
 test.describe("Bitcoin tests", () => {
 	test.slow();
-	test.describe.configure({ timeout: Timeout.SUPER_MAX + Timeout.EXTRA_MAX });
 	test.beforeEach(async ({ cryptoAdminPage, toast, page, gamdomApi }) => {
 		const superAdminData = new RegisterTestData({
 			useGamdomEmailDomain: true,
@@ -56,6 +55,7 @@ test.describe("Bitcoin tests", () => {
 			password: userData.password,
 		}),
 	);
+	test.setTimeout(Timeout.EXTRA_MAX + Timeout.SUPER_MAX);
 	test("[ENG-5450] BTC - deposit and withdraw", async ({
 		bitcoinApi,
 		homePage,

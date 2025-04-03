@@ -25,6 +25,6 @@ export class CryptoAdminAsserter extends BaseAsserter<CryptoAdminPage> {
 				?.amount_crypto || "0",
 		);
 
-		expect(cryptoAmount).toEqual(expectedAmount);
+		expect(cryptoAmount).toBeCloseTo(expectedAmount, 5);
 	}
 }

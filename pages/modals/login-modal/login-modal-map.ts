@@ -67,4 +67,32 @@ export class LoginModalMap extends BaseMap {
 			`//..//..//button[@type='button' and normalize-space()='Confirm']`,
 		);
 	}
+
+	public get forgotPasswordButton(): Locator {
+		return this.page.getByTestId("forgot-password-login");
+	}
+
+	public get sendNewPasswordButton(): Locator {
+		return this.page.getByTestId("sendButton");
+	}
+
+	public get emailInput(): Locator {
+		return this.page.locator('input[placeholder="Enter your email"]');
+	}
+
+	public get passwordResetConfirmationText(): Locator {
+		return this.page.getByTestId("descriptionMessageText");
+	}
+
+	public get setNewPasswordButton(): Locator {
+		return this.page.getByTestId("resetPasswordButton");
+	}
+
+	public get newPasswordConfirmationInput(): Locator {
+		return this.page.locator('input[name="newPasswordConfirmation"]');
+	}
+
+	public get newPasswordInput(): Locator {
+		return this.page.locator('input[name="newPassword"]');
+	}
 }

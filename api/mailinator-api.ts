@@ -100,13 +100,21 @@ export class MailinatorApi extends BaseApi {
 		timeout = Timeout.LONG,
 		interval = Timeout.EXTRA_SHORT,
 		messageIndex = 1,
+		subjectIncludes?: string,
 	): Promise<Message> {
 		const start = Date.now();
 
 		while (Date.now() - start < timeout) {
 			const messages = await this.getMessages(domain, inbox);
-			if (messages.length >= messageIndex) {
-				return messages[messageIndex - 1];
+			const filteredMessages = subjectIncludes
+				? messages.filter((msg) =>
+						msg.subject
+							.toLowerCase()
+							.includes(subjectIncludes.toLowerCase()),
+				  )
+				: messages;
+			if (filteredMessages.length >= messageIndex) {
+				return filteredMessages[messageIndex - 1];
 			}
 			await waitForSeconds(interval / 1000);
 		}

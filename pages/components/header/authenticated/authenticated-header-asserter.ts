@@ -1,5 +1,5 @@
 import { BaseAsserter } from "@base/base-asserter";
-import { formatBalance, roundToDecimals } from "@core/utils/utils";
+import { formatBalance } from "@core/utils/utils";
 import { Timeout } from "@enums/timeout";
 import { expect, TestInfo } from "@playwright/test";
 import { step } from "decorators/step";
@@ -91,6 +91,6 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 		const balance = parseFloat(
 			await this.gamdomPage.getWalletBalance(wallet),
 		);
-		expect(roundToDecimals(balance)).toBe(roundToDecimals(expectedAmount));
+		expect(balance).toBeCloseTo(expectedAmount, 5);
 	}
 }

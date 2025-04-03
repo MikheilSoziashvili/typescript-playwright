@@ -44,4 +44,10 @@ export class LoginModalAsserter extends BaseAsserter<LoginModal> {
 
 		await this.gamdomPage.map.passwordFieldErrorIcon.click(); // click remove icon to remove tooltip
 	}
+
+	public async assertPasswordResetEmailIsSent(): Promise<void> {
+		await expect(
+			this.gamdomPage.map.passwordResetConfirmationText,
+		).toBeVisible();
+	}
 }

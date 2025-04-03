@@ -3,12 +3,13 @@ import { RegisterTestData } from "@dtos/test-data";
 import { HomePage } from "./home-page";
 import { HomePageBannerCarouselSlideTitle } from "@enums/homepage-banner-carousel-slide-title";
 import { RegisterTestDataParams } from "@core/interfaces";
-import { Locator } from "playwright";
+import { Locator, Page } from "playwright";
 import { generate2FACodeFromQRCodeImage, waitUntil } from "@core/utils/utils";
 import { Timeout } from "@enums/timeout";
 import { VisibilityResult } from "@core/types/types";
 import { GameProvider } from "@enums/game-providers";
 import { step } from "decorators/step";
+import { MailinatorApi } from "@api/mailinator-api";
 
 export class HomePageSteps extends BasePageStep<HomePage> {
 	public constructor(gamdomPage: HomePage) {
@@ -170,5 +171,47 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 		await homePage
 			.assertThat()
 			.verifyProviderOptionStateInBelt(providerName, expectedResult);
+	}
+
+	public async resetPassword(email: string): Promise<void> {
+		await this.gamdomPage.loginModal.clickResetPasswordButton();
+		await this.gamdomPage.loginModal.fillInEmail(email);
+		await this.gamdomPage.loginModal.clickSendNewPasswordButton();
+		await this.gamdomPage.loginModal
+			.assertThat()
+			.assertPasswordResetEmailIsSent();
+	}
+
+	@step()
+	public async changePasswordFromEmail(
+		newPassword: string,
+		mailinatorApi: MailinatorApi,
+		domain: string,
+		inbox: string,
+		page: Page,
+		{ messageIndex = 1 }: { messageIndex?: number } = {},
+		subjectIncludes?: string,
+		timeout = Timeout.LONG,
+		interval = Timeout.EXTRA_SHORT,
+	): Promise<void> {
+		const message = await mailinatorApi.pollForMessages(
+			domain,
+			inbox,
+			timeout,
+			interval,
+			messageIndex,
+			subjectIncludes,
+		);
+		const resetPasswordEmailId = message.id;
+
+		const emailLinks = await mailinatorApi.getEmailLinks(
+			domain,
+			inbox,
+			resetPasswordEmailId,
+		);
+		const changePasswordLink = emailLinks.links[0];
+
+		await page.goto(changePasswordLink);
+		await this.gamdomPage.loginModal.setNewPassword(newPassword);
 	}
 }
