@@ -6,9 +6,19 @@ export class CasinoProvidersAdminMap extends BaseMap {
 		super(page);
 	}
 
-	public get searchByProviderNameInput(): Locator {
-		return this.page.locator(
-			'input.form-control[placeholder="Search by provider name"]',
+	public get adminCasinoProvidersPageContent(): Locator {
+		return this.page.getByTestId("adminCasinoProvidersPageContent");
+	}
+
+	public get adminCasinoProvidersPageHeaderContainer(): Locator {
+		return this.adminCasinoProvidersPageContent.getByTestId(
+			"adminCasinoProvidersPageHeader",
 		);
+	}
+
+	public get searchByProviderNameInput(): Locator {
+		return this.adminCasinoProvidersPageContent
+			.getByTestId("searchByProviderNameContainer")
+			.getByTestId("searchByProviderNameInput");
 	}
 }

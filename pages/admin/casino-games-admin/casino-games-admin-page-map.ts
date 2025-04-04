@@ -6,7 +6,19 @@ export class CasinoGamesAdminMap extends BaseMap {
 		super(page);
 	}
 
+	public get adminCasinoGamesPageContent(): Locator {
+		return this.page.getByTestId("adminCasinoGamesPageContent");
+	}
+
+	public get adminCasinoGamesPageHeaderContainer(): Locator {
+		return this.adminCasinoGamesPageContent.getByTestId(
+			"adminCasinoGamesPageHeader",
+		);
+	}
+
 	public get downloadGamesCsvButton(): Locator {
-		return this.page.locator('button:text-is("Download games CSV")');
+		return this.adminCasinoGamesPageContent
+			.getByTestId("downloadGamesContainer")
+			.getByTestId("downloadGamesButton");
 	}
 }

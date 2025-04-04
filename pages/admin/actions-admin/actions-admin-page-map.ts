@@ -6,9 +6,17 @@ export class ActionsAdminMap extends BaseMap {
 		super(page);
 	}
 
-	public get broadcastMessageTitle(): Locator {
-		return this.page.locator(
-			'h4.title:text-is("Broadcast a message to users")',
+	public get adminActionsPageContent(): Locator {
+		return this.page.getByTestId("adminActionsPageContainer");
+	}
+
+	public get broadcastContainer(): Locator {
+		return this.adminActionsPageContent.getByTestId(
+			"broadcastMessageToUsersContainer",
 		);
+	}
+
+	public get broadcastMessageTitle(): Locator {
+		return this.broadcastContainer.getByTestId("containerTitle");
 	}
 }

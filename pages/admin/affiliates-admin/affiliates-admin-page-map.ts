@@ -6,7 +6,17 @@ export class AffiliatesAdminMap extends BaseMap {
 		super(page);
 	}
 
+	public get affiliatesAdminSearchContainer(): Locator {
+		return this.page.getByTestId("adminAffiliatesSearchPageContent");
+	}
+
+	public get affiliatesAdminSearchFieldContainer(): Locator {
+		return this.affiliatesAdminSearchContainer.getByTestId(
+			"searchFieldContainer",
+		);
+	}
+
 	public get searchCodeLabel(): Locator {
-		return this.page.locator('label:text-is("Search code")');
+		return this.affiliatesAdminSearchFieldContainer.locator("label");
 	}
 }

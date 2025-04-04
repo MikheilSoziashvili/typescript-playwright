@@ -6,7 +6,11 @@ export class BotsAdminMap extends BaseMap {
 		super(page);
 	}
 
+	public get tradebotsAdminPageContent(): Locator {
+		return this.page.getByTestId("tradebotsAdminPageContent");
+	}
+
 	public get tradebotsHeader(): Locator {
-		return this.page.locator('h3.trans_head:has-text("Tradebots")');
+		return this.tradebotsAdminPageContent.getByTestId("headerContainer");
 	}
 }

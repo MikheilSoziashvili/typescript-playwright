@@ -6,7 +6,17 @@ export class CdnUploadAdminMap extends BaseMap {
 		super(page);
 	}
 
+	public get cdnUploaderContent(): Locator {
+		return this.page.getByTestId("cdnUploaderPageContent");
+	}
+
+	public get cdnUploaderHeaderContainer(): Locator {
+		return this.cdnUploaderContent.getByTestId("cdnUploaderContainer");
+	}
+
 	public get cdnUploaderHeader(): Locator {
-		return this.page.locator('h3:text-is("CDN Uploader")');
+		return this.cdnUploaderHeaderContainer.getByTestId(
+			"cdnUploaderHeaderTitle",
+		);
 	}
 }

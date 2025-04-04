@@ -6,7 +6,11 @@ export class BattlesAdminMap extends BaseMap {
 		super(page);
 	}
 
+	public get battlesAdminPageContent(): Locator {
+		return this.page.getByTestId("adminSlotBattlesPageContent");
+	}
+
 	public get viewDetailButton(): Locator {
-		return this.page.locator('button:text-is("View detail")');
+		return this.page.getByTestId("adminSlotBattlesViewDetailsButton");
 	}
 }
