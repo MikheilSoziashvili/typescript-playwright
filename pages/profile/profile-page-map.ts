@@ -10,7 +10,7 @@ export class ProfilePageMap extends BaseMap {
 	}
 
 	public get logOutButton(): Locator {
-		return this.leftMenu.locator("button:has(p:text-is('Log out'))");
+		return this.leftMenu.getByTestId("logoutButton");
 	}
 
 	public get hideStatisticsToggle(): Locator {
@@ -30,9 +30,7 @@ export class ProfilePageMap extends BaseMap {
 	}
 
 	public get changeEmailButton(): Locator {
-		return this.emailNumberContainer.locator("button", {
-			hasText: "Change",
-		});
+		return this.emailNumberContainer.getByTestId("changeButton");
 	}
 
 	public get changeEmailInput(): Locator {
@@ -40,9 +38,7 @@ export class ProfilePageMap extends BaseMap {
 	}
 
 	public get saveEmailButton(): Locator {
-		return this.emailNumberContainer.locator("button", {
-			hasText: "Save",
-		});
+		return this.emailNumberContainer.getByTestId("saveButton");
 	}
 
 	public get phoneNumberContainer(): Locator {
@@ -50,9 +46,7 @@ export class ProfilePageMap extends BaseMap {
 	}
 
 	public get changePhoneButton(): Locator {
-		return this.phoneNumberContainer.locator("button", {
-			hasText: "Change",
-		});
+		return this.phoneNumberContainer.getByTestId("changeButton");
 	}
 
 	public get changePhoneInput(): Locator {
@@ -60,8 +54,6 @@ export class ProfilePageMap extends BaseMap {
 	}
 
 	public get savePhoneButton(): Locator {
-		return this.phoneNumberContainer.locator("button", {
-			hasText: "Save",
-		});
+		return this.phoneNumberContainer.getByTestId("saveButton");
 	}
 }

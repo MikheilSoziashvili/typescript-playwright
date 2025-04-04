@@ -7,20 +7,19 @@ export class VerificationPageMap extends BaseMap {
 	}
 
 	public get countryDropdownContainer(): Locator {
-		return this.page.locator("div[class*='DropdownContainer']").filter({
-			has: this.page.locator("label", { hasText: "Country" }),
-		});
+		return this.page.getByTestId("countryDropdownContainer");
 	}
 
 	public get countryDropdown(): Locator {
 		return this.countryDropdownContainer
-			.locator(`div`)
-			.getByRole("combobox", { exact: true })
-			.and(this.page.locator(`[aria-haspopup='listbox']`));
+			.getByTestId("countryDropdownInput")
+			.getByRole("combobox");
 	}
 
 	public get countryDropdownValuesContainer(): Locator {
-		return this.page.locator(`ul[role='listbox'][class*='-list']`);
+		return this.page
+			.getByTestId("countryDropdownListContainer")
+			.getByRole("listbox");
 	}
 
 	public get countryDropdownValueItems(): Locator {
