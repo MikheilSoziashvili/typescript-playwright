@@ -18,44 +18,65 @@ export class WalletModalMap extends BaseMap {
 			.getByText("transferred from your Vault to your Wallet");
 	}
 
+	public get walletHeaderTabsContainer(): Locator {
+		return this.page
+			.getByTestId("walletModalHeaderContainer")
+			.getByTestId("walletModalTabsContainer");
+	}
+
 	public get withdrawTabButton(): Locator {
-		return this.page.locator("button", { hasText: "Withdraw" });
+		return this.walletHeaderTabsContainer.getByTestId("withdrawButton");
 	}
 
 	public get vaultTabButton(): Locator {
-		return this.page.locator("button", { hasText: "Vault" });
+		return this.walletHeaderTabsContainer.getByTestId("vaultButton");
 	}
 
 	public get vaultButtonInWithdrawTab(): Locator {
-		return this.page.locator("p", { hasText: "Vault" });
+		return this.page.getByTestId("vaultPaymentMethodContainer");
 	}
 
 	public get vaultTabHeading(): Locator {
-		return this.leftPanel.locator("h5", { hasText: "Vault" });
+		return this.leftPanel.getByTestId("headerContainer");
 	}
 
 	public get leftPanel(): Locator {
-		return this.page.locator('div[class*="LeftPanel"]');
+		return this.page.getByTestId("vaultLeftPanelContainer");
+	}
+
+	public get leftPanelVaultActionButtonsContainer(): Locator {
+		return this.leftPanel.getByTestId("walletVaultActionsContainer");
 	}
 
 	public get vaultWithdrawTab(): Locator {
-		return this.leftPanel.locator("button", { hasText: /^Withdraw$/ });
-	}
-
-	public get vaultDepositTab(): Locator {
-		return this.leftPanel.locator("button", { hasText: "Deposit" });
-	}
-
-	public get walletDropdown(): Locator {
-		return this.page.locator(
-			"//h6[contains(@class,'Vault-styled')]/ancestor::div[@role='combobox']",
+		return this.leftPanelVaultActionButtonsContainer.getByTestId(
+			"vaultWithdrawButton",
 		);
 	}
 
+	public get vaultDepositTab(): Locator {
+		return this.leftPanelVaultActionButtonsContainer.getByTestId(
+			"vaultDepositButton",
+		);
+	}
+
+	public get walletDepositWithdrawContainer(): Locator {
+		return this.leftPanel.getByTestId(
+			"vaultWithdrawDespositActionsContainer",
+		);
+	}
+
+	public get walletDropdown(): Locator {
+		return this.walletDepositWithdrawContainer.getByRole("combobox");
+	}
+
 	public walletDropdownOption(optionText: string): Locator {
-		return this.page.locator(`li[class*="Vault-styled__MenuOptions"] h6`, {
-			hasText: optionText,
-		});
+		return this.page.locator(
+			`h6[data-testid="walletDropdownSelectedValueContainer"]`,
+			{
+				hasText: optionText,
+			},
+		);
 	}
 
 	public get vaultWalletAmount(): Locator {
@@ -63,8 +84,20 @@ export class WalletModalMap extends BaseMap {
 	}
 
 	public get vaultInputField(): Locator {
-		return this.leftPanel.locator(
-			'input[class*="MuiInputBase-input MuiInput-input"]',
+		return this.walletDepositWithdrawContainer.locator(
+			'input[data-testid*="AmountInput"]',
+		);
+	}
+
+	public get depositButton(): Locator {
+		return this.walletDepositWithdrawContainer.getByTestId(
+			"depositToVaultButton",
+		);
+	}
+
+	public get withdrawButton(): Locator {
+		return this.walletDepositWithdrawContainer.getByTestId(
+			"withdrawFromVaultButton",
 		);
 	}
 
