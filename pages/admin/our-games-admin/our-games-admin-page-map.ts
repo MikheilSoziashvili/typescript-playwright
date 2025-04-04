@@ -7,6 +7,6 @@ export class OurGamesAdminMap extends BaseMap {
 	}
 
 	public get saveAndUploadConfigButton(): Locator {
-		return this.page.locator('button:has-text("Save and Upload Config")');
+		return this.page.getByTestId("saveAndUploadConfigButton");
 	}
 }

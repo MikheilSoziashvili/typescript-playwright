@@ -6,7 +6,15 @@ export class PaymentsAdminMap extends BaseMap {
 		super(page);
 	}
 
+	public get paymentAdminPageContent(): Locator {
+		return this.page.getByTestId("adminPaymentsPageContent");
+	}
+
+	public get buttonsContainer(): Locator {
+		return this.paymentAdminPageContent.getByTestId("buttonContainer");
+	}
+
 	public get settingsButton(): Locator {
-		return this.page.locator('button:text-is("Settings")');
+		return this.buttonsContainer.getByTestId("settingsButton");
 	}
 }

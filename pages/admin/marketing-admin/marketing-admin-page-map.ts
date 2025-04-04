@@ -6,7 +6,11 @@ export class MarketingAdminMap extends BaseMap {
 		super(page);
 	}
 
+	public get marketingAdminPageContent(): Locator {
+		return this.page.getByTestId("adminMarketingPanelPageContent");
+	}
+
 	public get marketingPanelTitle(): Locator {
-		return this.page.locator('h4.title:text-is("Marketing panel")');
+		return this.marketingAdminPageContent.getByTestId("pageHeaderTitle");
 	}
 }
