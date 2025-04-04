@@ -10,14 +10,18 @@ export class ContinueModalMap extends BaseMap {
 		return this.page.getByTestId("confirmation-modal-body");
 	}
 
+	public get modalFooterContainer(): Locator {
+		return this.page.getByTestId("confirmation-modal-footer");
+	}
+
 	public get continueButton(): Locator {
-		return this.modalLocator.getByTestId(
+		return this.modalFooterContainer.getByTestId(
 			"confirmation-modal-continue-button",
 		);
 	}
 
 	public get cancelButton(): Locator {
-		return this.modalLocator.getByTestId(
+		return this.modalFooterContainer.getByTestId(
 			"confirmation-modal-cancel-button",
 		);
 	}

@@ -11,7 +11,7 @@ export class TipUserModalMap extends BaseMap {
 	}
 
 	public get modalContainer(): Locator {
-		return this.page.getByTestId("tipUser-modal");
+		return this.page.getByTestId("tipUserDialogModalContainer");
 	}
 
 	public get titleContainer(): Locator {
@@ -35,6 +35,6 @@ export class TipUserModalMap extends BaseMap {
 	}
 
 	public get tipButton(): Locator {
-		return this.modalContainer.getByTestId("tipUser-button");
+		return this.modalContainer.getByTestId("tipUserDialogButton");
 	}
 }
