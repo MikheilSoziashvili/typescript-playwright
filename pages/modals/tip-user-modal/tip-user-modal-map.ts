@@ -7,25 +7,19 @@ export class TipUserModalMap extends BaseMap {
 	}
 
 	public get modalLocator(): Locator {
-		return this.page.locator(
-			'div[class*=MuiPaper-elevation]:has(div > div:text-is("Tip User"))',
-		);
+		return this.page.getByTestId("tipUserModalContent");
 	}
 
-	public get modalBody(): Locator {
-		return this.modalLocator.locator("div[role=dialog]");
-	}
-
-	public get modalContent(): Locator {
-		return this.modalBody.locator("div[class*=_ContentWrapper]");
+	public get modalContainer(): Locator {
+		return this.page.getByTestId("tipUser-modal");
 	}
 
 	public get titleContainer(): Locator {
-		return this.modalContent.locator("div[class*=TitleContainer]");
+		return this.modalLocator.getByTestId("tipUserContainerTitle");
 	}
 
 	public get inputContainer(): Locator {
-		return this.modalContent.locator("div[class*=InputContainer]");
+		return this.modalLocator.getByTestId("tipUserInputContainer");
 	}
 
 	public get tipAmountField(): Locator {
@@ -33,16 +27,14 @@ export class TipUserModalMap extends BaseMap {
 	}
 
 	public get clearAmountButton(): Locator {
-		return this.inputContainer.locator('button:text-is("Clear")');
+		return this.inputContainer.getByTestId("clearInputButton");
 	}
 
 	public get warningContainer(): Locator {
-		return this.modalContent.locator("div[class*=WarningContainer]");
+		return this.modalLocator.getByTestId("tipUserWarningContainer");
 	}
 
 	public get tipButton(): Locator {
-		return this.modalBody.locator(
-			'div[class*=_ButtonsWrapper] button:has(span:text-is("Tip"))',
-		);
+		return this.modalContainer.getByTestId("tipUser-button");
 	}
 }

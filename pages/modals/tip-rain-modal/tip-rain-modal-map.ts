@@ -7,9 +7,7 @@ export class TipRainModalMap extends BaseMap {
 	}
 
 	public get tipRainModal(): Locator {
-		return this.page.locator(
-			`//div[contains(@class,'TipRainDialog-styled__Container-sc-')]//ancestor::div[contains(@class,'MuiPaper-elevation')]`,
-		);
+		return this.page.getByTestId("tipRainDialog-modal");
 	}
 
 	public get amountInput(): Locator {
@@ -17,8 +15,6 @@ export class TipRainModalMap extends BaseMap {
 	}
 
 	public get tipButton(): Locator {
-		return this.tipRainModal.locator(`button`, {
-			has: this.page.locator(`span`, { hasText: "Tip" }),
-		});
+		return this.tipRainModal.getByTestId("tipRainDialog-button");
 	}
 }
