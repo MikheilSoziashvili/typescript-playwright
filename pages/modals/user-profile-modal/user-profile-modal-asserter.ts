@@ -8,7 +8,9 @@ export class UserProfileModalAsserter extends BaseAsserter<UserProfileModal> {
 	}
 
 	public async isDisplayed(): Promise<void> {
-		await expect(this.gamdomPage.map.modalLocator).toBeVisible();
+		await expect(
+			this.gamdomPage.map.userProfileModalContainer,
+		).toBeVisible();
 	}
 
 	public async isPrivateUserModeDisplayed(): Promise<void> {

@@ -6,12 +6,6 @@ export class UserProfileModalMap extends BaseMap {
 		super(page);
 	}
 
-	public get modalLocator(): Locator {
-		return this.page
-			.locator("div.MuiPaper-elevation")
-			.locator("div", { has: this.userProfileModalContainer });
-	}
-
 	public get userProfileModalContainer(): Locator {
 		return this.page.getByTestId("profileModalContainer");
 	}
@@ -29,13 +23,11 @@ export class UserProfileModalMap extends BaseMap {
 	}
 
 	public get userAvatar(): Locator {
-		return this.userProfileContainer.locator("div[class*='UserPofile']");
+		return this.userProfileContainer.getByTestId("avatarContainer");
 	}
 
 	public get userProfileTitle(): Locator {
-		return this.userProfileContainer.locator(
-			"p[class*=-profileTitle]",
-		);
+		return this.userProfileContainer.getByTestId("usernameTitle");
 	}
 
 	public get tipUserButton(): Locator {

@@ -6,12 +6,20 @@ export class LoginModalMap extends BaseMap {
 		super(page);
 	}
 
+	public get usernameContainer(): Locator {
+		return this.page.getByTestId("username-login");
+	}
+
+	public get passwordContainer(): Locator {
+		return this.page.getByTestId("passwordInputContainer");
+	}
+
 	public get usernameField(): Locator {
-		return this.page.locator('input[name="username"]');
+		return this.getInputField("username", this.usernameContainer);
 	}
 
 	public get passwordField(): Locator {
-		return this.page.locator('input[name="password"]');
+		return this.getInputField("password", this.passwordContainer);
 	}
 
 	public get loginBtn(): Locator {
@@ -19,15 +27,11 @@ export class LoginModalMap extends BaseMap {
 	}
 
 	public get usernameFieldErrorIcon(): Locator {
-		return this.page
-			.locator("div[class*='MuiTextField-root']:nth-child(1)")
-			.locator("i[class*='icon-remove']");
+		return this.usernameContainer.getByTestId("clearInputButton");
 	}
 
 	public get passwordFieldErrorIcon(): Locator {
-		return this.page
-			.locator("div[class*='MuiTextField-root']:nth-child(2)")
-			.locator("i[class*='icon-remove']");
+		return this.passwordContainer.getByTestId("clearInputButton");
 	}
 
 	public get fieldErrorTooltip(): Locator {
