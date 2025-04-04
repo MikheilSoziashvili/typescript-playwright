@@ -6,7 +6,19 @@ export class CommunityConnectAdminMap extends BaseMap {
 		super(page);
 	}
 
+	public get communityConnectAdminPageContent(): Locator {
+		return this.page.getByTestId("adminCommunityConnectPageContent");
+	}
+
+	public get changeFsCurrencyContainer(): Locator {
+		return this.communityConnectAdminPageContent.getByTestId(
+			"changeFsCurrencyContainer",
+		);
+	}
+
 	public get changeFsCurrencyTitle(): Locator {
-		return this.page.locator('h4.title:text-is("CHANGE FS CURRENCY")');
+		return this.changeFsCurrencyContainer.getByTestId(
+			"changeFsCurrencyTitle",
+		);
 	}
 }

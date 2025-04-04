@@ -6,7 +6,19 @@ export class FeaturesAdminMap extends BaseMap {
 		super(page);
 	}
 
+	public get featuresAdminPageContent(): Locator {
+		return this.page.getByTestId("adminFeaturesPageContent");
+	}
+
+	public get featuresSettingsTableContainer(): Locator {
+		return this.featuresAdminPageContent.getByTestId(
+			"adminFeaturesPageTableContainer",
+		);
+	}
+
 	public get featuresSettingsTitle(): Locator {
-		return this.page.locator('h4:text-is("Features Settings")');
+		return this.featuresSettingsTableContainer
+			.getByTestId("tableHeaderContainer")
+			.getByTestId("tableHeaderTitle");
 	}
 }

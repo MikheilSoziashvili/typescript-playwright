@@ -6,8 +6,14 @@ export class CryptoAdminMap extends BaseMap {
 		super(page);
 	}
 
+	public get cryptoAdminPageContent(): Locator {
+		return this.page.getByTestId('data-testid="adminCryptoPageContent"');
+	}
+
 	public get sendQueuedWithdrawalsButton(): Locator {
-		return this.page.getByTestId("sendQueuedWithdrawalsButton");
+		return this.cryptoAdminPageContent.getByTestId(
+			"sendQueuedWithdrawalsButton",
+		);
 	}
 
 	public get refreshButton(): Locator {

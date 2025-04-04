@@ -1,26 +1,18 @@
-import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
-import { FreeSpinsActionCardTitle } from "@enums/admin/free-spins-action-card-title";
+import { Locator, Page } from "@playwright/test";
 
 export class FreeSpinsAdminPageMap extends BaseMap {
 	public constructor(page: Page) {
 		super(page);
 	}
 
-	public getFreeSpinsActionCard(locator: string, title: string): Locator {
-		return this.page.locator(locator).locator(`//h4[text()='${title}']/..`);
-	}
-
 	public get findGameToGiveFreeSpinsCard(): Locator {
-		return this.getFreeSpinsActionCard(
-			"//h4[text()='Find a game to go give free spins']//parent::div[contains(@class,'MuiBox-root')]",
-			FreeSpinsActionCardTitle.FIND_GAME_TO_GIVE_FREE_SPINS,
-		);
+		return this.page.getByTestId("findGameToGiveFreeSpinsContainer");
 	}
 
 	public get findGameToGiveFreeSpinsCardGameField(): Locator {
 		return this.findGameToGiveFreeSpinsCard.locator(
-			"div.field_group div.MuiAutocomplete-inputRoot",
+			"div.MuiAutocomplete-inputRoot",
 		);
 	}
 
@@ -29,20 +21,11 @@ export class FreeSpinsAdminPageMap extends BaseMap {
 	}
 
 	public get findGameToGiveFreeSpinsCardUserIdTextInput(): Locator {
-		return this.findGameToGiveFreeSpinsCard
-			.locator("div.field_group")
-			.filter({
-				has: this.page.locator(
-					'span.placeholder_txt:text-is("USER ID")',
-				),
-			})
-			.locator("input");
+		return this.findGameToGiveFreeSpinsCard.getByTestId("userIdInputField");
 	}
 
 	public get findGameToGiveFreeSpinsCardUserIdGetButton(): Locator {
-		return this.findGameToGiveFreeSpinsCard.locator(
-			'//button[normalize-space()="GET"]',
-		);
+		return this.findGameToGiveFreeSpinsCard.getByTestId("getButton");
 	}
 
 	public get gamesList(): Locator {
@@ -56,29 +39,31 @@ export class FreeSpinsAdminPageMap extends BaseMap {
 	}
 
 	public get possibleSpinsCard(): Locator {
-		return this.getFreeSpinsActionCard(
-			"div.aff_col.aff_col--autoh.text_center.relative-cont",
-			FreeSpinsActionCardTitle.POSSIBLE_SPINS,
-		);
+		return this.page.getByTestId("possibleSpinsContainer");
 	}
 
 	public get possibleSpinsTable(): Locator {
-		return this.possibleSpinsCard.locator("table");
+		return this.possibleSpinsCard.getByTestId(
+			"possibleSpinsTableContainer",
+		);
 	}
 
 	public getPossibleSpinsTableRowByIndex(rowIndex: number): Locator {
-		return this.possibleSpinsTable.locator("tbody tr").nth(rowIndex);
+		return this.possibleSpinsTable
+			.getByTestId("possibleSpinsTableBody")
+			.getByTestId("possibleSpinsTableRow")
+			.nth(rowIndex);
 	}
 
 	public getPossibleSpinsTableBetCountTextInput(rowIndex: number): Locator {
-		return this.getPossibleSpinsTableRowByIndex(rowIndex).locator(
-			'td input[placeholder="Enter bet amount"]',
-		);
+		return this.getPossibleSpinsTableRowByIndex(rowIndex)
+			.getByTestId("betAmountCell")
+			.getByTestId("betAmountInput");
 	}
 
 	public getPossibleSpinsTableBetCountGiveButton(rowIndex: number): Locator {
-		return this.getPossibleSpinsTableRowByIndex(rowIndex).locator(
-			'td button:text-is("Give")',
-		);
+		return this.getPossibleSpinsTableRowByIndex(rowIndex)
+			.getByTestId("buttonCell")
+			.getByTestId("giveButton");
 	}
 }

@@ -6,7 +6,15 @@ export class EventsManagingAdminMap extends BaseMap {
 		super(page);
 	}
 
+	public get eventsManagingAdminPageContent(): Locator {
+		return this.page.getByTestId("adminEventsManagingPageContainer");
+	}
+
+	public get logoContainer(): Locator {
+		return this.eventsManagingAdminPageContent.getByTestId("logoContainer");
+	}
+
 	public get logoHeader(): Locator {
-		return this.page.locator('h5:text-is("logo")');
+		return this.logoContainer.getByTestId("logoImageHeaderTitle");
 	}
 }

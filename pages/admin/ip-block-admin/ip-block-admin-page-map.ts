@@ -7,6 +7,6 @@ export class IpBlockAdminMap extends BaseMap {
 	}
 
 	public get blockNewIpAddressButton(): Locator {
-		return this.page.locator('button:text-is("BLOCK NEW IP ADDRESS")');
+		return this.page.getByTestId("blockNewIpAddressButton");
 	}
 }

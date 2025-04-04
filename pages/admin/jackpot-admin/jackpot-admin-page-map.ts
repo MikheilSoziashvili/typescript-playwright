@@ -6,9 +6,11 @@ export class JackpotAdminMap extends BaseMap {
 		super(page);
 	}
 
+	public get jackpotAdminPageContent(): Locator {
+		return this.page.getByTestId("adminViewJackpotRoundsPageContent");
+	}
+
 	public get viewJackpotRoundsHeader(): Locator {
-		return this.page.locator(
-			'h3.trans_head.mt0:text-is("View jackpot rounds")',
-		);
+		return this.jackpotAdminPageContent.getByTestId("headerTitle");
 	}
 }

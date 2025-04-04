@@ -6,7 +6,15 @@ export class KothAdminMap extends BaseMap {
 		super(page);
 	}
 
+	public get kothAdminPageContent(): Locator {
+		return this.page.getByTestId("adminKothPageContent");
+	}
+
 	public get kothAdminPanelTitle(): Locator {
-		return this.page.locator('h1:text-is("Welcome to KOTH admin panel")');
+		return this.kothAdminPageContent.getByTestId("headerTitle");
+	}
+
+	public get kothAdminPanelSubtitle(): Locator {
+		return this.kothAdminPageContent.getByTestId("headerSubtitle");
 	}
 }

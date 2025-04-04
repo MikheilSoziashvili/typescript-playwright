@@ -6,7 +6,15 @@ export class DynamicDomainsAdminMap extends BaseMap {
 		super(page);
 	}
 
+	public get dynamicDomainsAdminPageContent(): Locator {
+		return this.page.getByTestId(
+			'data-testid="adminCurrentDomainsPageContent"',
+		);
+	}
+
 	public get currentDomainsHeader(): Locator {
-		return this.page.locator('h3:text-is("Current Domains")');
+		return this.dynamicDomainsAdminPageContent.getByTestId(
+			"adminCurrentDomainsHeader",
+		);
 	}
 }
