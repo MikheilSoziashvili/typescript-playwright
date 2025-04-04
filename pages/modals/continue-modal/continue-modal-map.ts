@@ -7,18 +7,18 @@ export class ContinueModalMap extends BaseMap {
 	}
 
 	public get modalLocator(): Locator {
-		return this.page.locator(
-			"div.MuiPaper-elevation:has(div > img[alt='Warning sign'] +p:text-is('Are you sure you want to continue?'))",
-		);
+		return this.page.getByTestId("confirmation-modal-body");
 	}
 
 	public get continueButton(): Locator {
-		return this.modalLocator.locator(
-			"button:has(span:text-is('Continue'))",
+		return this.modalLocator.getByTestId(
+			"confirmation-modal-continue-button",
 		);
 	}
 
 	public get cancelButton(): Locator {
-		return this.modalLocator.locator("button:has(span:text-is('Cancel'))");
+		return this.modalLocator.getByTestId(
+			"confirmation-modal-cancel-button",
+		);
 	}
 }

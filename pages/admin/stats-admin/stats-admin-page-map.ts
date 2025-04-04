@@ -6,9 +6,17 @@ export class StatsAdminMap extends BaseMap {
 		super(page);
 	}
 
+	public get statsAdminStatsTabsContainer(): Locator {
+		return this.page.getByTestId("admin-stats-tabs");
+	}
+
+	public get statsAdminStatsKothCurrentEventsContainer(): Locator {
+		return this.page.getByTestId("admin-stats-koth-current-events");
+	}
+
 	public get currentKingOfTheHillEventsHeader(): Locator {
-		return this.page.locator(
-			'h5:text-is("Current King of the Hill Events")',
+		return this.statsAdminStatsKothCurrentEventsContainer.getByTestId(
+			"admin-stats-koth-current-events-title",
 		);
 	}
 }

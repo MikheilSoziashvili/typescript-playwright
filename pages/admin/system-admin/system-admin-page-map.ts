@@ -6,7 +6,11 @@ export class SystemAdminMap extends BaseMap {
 		super(page);
 	}
 
+	public get systemAdminPageContent(): Locator {
+		return this.page.getByTestId("system-actions-page");
+	}
+
 	public get systemActionsHeader(): Locator {
-		return this.page.locator('h3:text-is("System Actions")');
+		return this.systemAdminPageContent.getByTestId("system-actions-title");
 	}
 }

@@ -6,7 +6,19 @@ export class TestingAdminMap extends BaseMap {
 		super(page);
 	}
 
+	public get testingAffilsContainer(): Locator {
+		return this.page.getByTestId("testing-affils-container");
+	}
+
+	public get testingAffilsForceCalculationsButtonsContainer(): Locator {
+		return this.page.getByTestId(
+			"testing-affils-force-calc-buttons-container",
+		);
+	}
+
 	public get mockDateButton(): Locator {
-		return this.page.locator('button:text-is("MOCK DATE")');
+		return this.testingAffilsContainer.getByTestId(
+			"testing-affils-mock-date-button",
+		);
 	}
 }

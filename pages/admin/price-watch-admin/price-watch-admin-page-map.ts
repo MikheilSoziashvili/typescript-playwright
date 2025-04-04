@@ -6,9 +6,13 @@ export class PriceWatchAdminMap extends BaseMap {
 		super(page);
 	}
 
+	public get priceWatchAdminNavigationContainer(): Locator {
+		return this.page.getByTestId("admin-price-watch-nav");
+	}
+
 	public get updatePricesFromSourcesLink(): Locator {
-		return this.page.locator(
-			'a.admin_nav_link[href="/admin/PriceWatchAdmin/update-prices"]:text-is("Update prices from sources")',
+		return this.priceWatchAdminNavigationContainer.getByTestId(
+			"admin-price-watch-update-prices-link",
 		);
 	}
 }

@@ -6,7 +6,19 @@ export class RainAdminMap extends BaseMap {
 		super(page);
 	}
 
+	public get rainAdminPageContent(): Locator {
+		return this.page.getByTestId("admin-reduce-system-page");
+	}
+
+	public get makeItRainContainer(): Locator {
+		return this.rainAdminPageContent.getByTestId(
+			"admin-reduce-system-make-it-rain",
+		);
+	}
+
 	public get makeItRainTitle(): Locator {
-		return this.page.locator('h4.title:text-is("Make it rain")');
+		return this.makeItRainContainer.getByTestId(
+			"admin-reduce-system-make-it-rain-title",
+		);
 	}
 }
