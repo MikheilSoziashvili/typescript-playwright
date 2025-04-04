@@ -7,34 +7,34 @@ export class BannedUserPageMap extends BaseMap {
 	}
 
 	private get restrictedContainer(): Locator {
-		return this.page.locator("div#restricted-container");
+		return this.page.getByTestId("restrictedContainer");
 	}
 
 	public get redContainer(): Locator {
-		return this.restrictedContainer.locator("div.container-red");
+		return this.restrictedContainer.getByTestId("containerRed");
 	}
 
 	public get restrictionTitle(): Locator {
-		return this.redContainer.locator("h1");
+		return this.redContainer.getByTestId("ban-message");
 	}
 
 	public get bannedReason(): Locator {
-		return this.redContainer.locator("h4");
+		return this.redContainer.getByTestId("ban-reason");
 	}
 
 	public get socialMediaFooterContainer(): Locator {
-		return this.page.locator('[class="socials"]');
+		return this.restrictedContainer.getByTestId("socials");
 	}
 
 	public socialMediaFooterLinkByPlaceholder(socialMedia: string): Locator {
-		return this.socialMediaFooterContainer.locator(
-			`[class="secondary-button"] a[href*='${socialMedia}']`,
+		return this.socialMediaFooterContainer.getByTestId(
+			`${socialMedia}-link`,
 		);
 	}
 
 	public socialMediaFooterIconByPlaceholder(socialMedia: string): Locator {
-		return this.socialMediaFooterContainer.locator(
-			`//a[contains(@href,'${socialMedia}')]//parent::div[@class="secondary-button"]`,
+		return this.socialMediaFooterContainer.getByTestId(
+			`${socialMedia}-button`,
 		);
 	}
 }

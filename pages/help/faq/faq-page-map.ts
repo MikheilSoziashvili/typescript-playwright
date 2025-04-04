@@ -12,7 +12,7 @@ export class FaqPageMap extends BaseMap {
 		);
 	}
 
-	public get expandAffiliateCodeReqisterButtonLocator(): Locator {
+	public get expandAffiliateCodeRegisterButtonLocator(): Locator {
 		return this.affiliateCodeRegisterContainer.locator(
 			"div.MuiAccordionSummary-root[role=button]",
 		);

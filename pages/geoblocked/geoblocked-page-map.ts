@@ -6,33 +6,37 @@ export class GeoblockedPageMap extends BaseMap {
 		super(page);
 	}
 
+	public get geoblockedPageContent(): Locator {
+		return this.page.getByTestId("geoblockPageContent");
+	}
+
 	public get errorContainer(): Locator {
-		return this.page.locator(
-			"div[class*=GeoblockDiv] div[class*=GeoBlocked-styled__RedContainer]",
-		);
+		return this.geoblockedPageContent.getByTestId("geoblockRedContainer");
 	}
 
 	public get errorTitleLocator(): Locator {
-		return this.errorContainer.locator("h1[class*=Title]");
+		return this.errorContainer.getByTestId("geoblockTitle");
 	}
 
 	public get errorSubTitleLocator(): Locator {
-		return this.errorContainer.locator("h4[class*=SubTitle]");
+		return this.errorContainer.getByTestId("geoblockSubTitle");
 	}
 
 	public get socialMediaFooterContainer(): Locator {
-		return this.page.locator('[class*="SociaButtonsContainer"]');
+		return this.geoblockedPageContent.getByTestId(
+			"geoblockSocialButtonsContainer",
+		);
 	}
 
 	public socialMediaFooterIconByPlaceholder(socialMedia: string): Locator {
-		return this.socialMediaFooterContainer.locator(
-			`img[alt='${socialMedia}']`,
+		return this.socialMediaFooterContainer.getByTestId(
+			`${socialMedia}-img`,
 		);
 	}
 
 	public socialMediaFooterLinkByPlaceholder(socialMedia: string): Locator {
-		return this.socialMediaFooterContainer.locator(
-			`//img[@alt="${socialMedia}"]//parent::a[contains(@class,"SocialButtons")]`,
+		return this.socialMediaFooterContainer.getByTestId(
+			`${socialMedia}-link`,
 		);
 	}
 }
