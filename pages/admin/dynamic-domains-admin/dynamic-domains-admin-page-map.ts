@@ -7,9 +7,7 @@ export class DynamicDomainsAdminMap extends BaseMap {
 	}
 
 	public get dynamicDomainsAdminPageContent(): Locator {
-		return this.page.getByTestId(
-			'data-testid="adminCurrentDomainsPageContent"',
-		);
+		return this.page.getByTestId("adminCurrentDomainsPageContent");
 	}
 
 	public get currentDomainsHeader(): Locator {

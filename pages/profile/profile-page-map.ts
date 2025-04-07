@@ -38,7 +38,9 @@ export class ProfilePageMap extends BaseMap {
 	}
 
 	public get saveEmailButton(): Locator {
-		return this.emailNumberContainer.getByTestId("saveButton");
+		return this.emailNumberContainer
+			.getByTestId("saveButton")
+			.filter({ hasText: "Save" });
 	}
 
 	public get phoneNumberContainer(): Locator {
