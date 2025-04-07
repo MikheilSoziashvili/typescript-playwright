@@ -41,15 +41,19 @@ export class WalletModalMap extends BaseMap {
 	}
 
 	public get vaultTabHeading(): Locator {
-		return this.leftPanel.getByTestId("headerContainer");
+		return this.vaultLeftPanel.getByTestId("headerContainer");
 	}
 
-	public get leftPanel(): Locator {
+	public get vaultLeftPanel(): Locator {
 		return this.page.getByTestId("vaultLeftPanelContainer");
 	}
 
+	public get walletLeftPanel(): Locator {
+		return this.page.getByTestId("LeftPanelContainer");
+	}
+
 	public get leftPanelVaultActionButtonsContainer(): Locator {
-		return this.leftPanel.getByTestId("walletVaultActionsContainer");
+		return this.vaultLeftPanel.getByTestId("walletVaultActionsContainer");
 	}
 
 	public get vaultWithdrawTab(): Locator {
@@ -65,32 +69,31 @@ export class WalletModalMap extends BaseMap {
 	}
 
 	public get walletDepositWithdrawContainer(): Locator {
-		return this.leftPanel.getByTestId(
+		return this.vaultLeftPanel.getByTestId(
 			"vaultWithdrawDespositActionsContainer",
 		);
 	}
 
 	public get walletDropdown(): Locator {
-		return this.walletDepositWithdrawContainer.getByRole("combobox");
+		return this.walletDepositWithdrawContainer.locator(
+			"[data-testid*='WalletDropdownOption']",
+		);
 	}
 
 	public walletDropdownOption(optionText: string): Locator {
-		return this.page.locator(
-			`h6[data-testid="walletDropdownSelectedValueContainer"]`,
-			{
+		return this.page
+			.getByRole("listbox")
+			.locator(`h6[data-testid="walletDropdownSelectedValueContainer"]`, {
 				hasText: optionText,
-			},
-		);
+			});
 	}
 
 	public get vaultWalletAmount(): Locator {
-		return this.leftPanel.locator("h6 > span");
+		return this.vaultLeftPanel.locator("h6 > span");
 	}
 
 	public get vaultInputField(): Locator {
-		return this.walletDepositWithdrawContainer.locator(
-			'input[data-testid*="AmountInput"]',
-		);
+		return this.walletDepositWithdrawContainer.getByTestId("Input");
 	}
 
 	public get depositButton(): Locator {
@@ -106,11 +109,11 @@ export class WalletModalMap extends BaseMap {
 	}
 
 	public get promoCodeInputField(): Locator {
-		return this.leftPanel.locator('input[placeholder="Enter Code"]');
+		return this.walletLeftPanel.locator('input[placeholder="Enter Code"]');
 	}
 
 	public get redeemPromoCodeButton(): Locator {
-		return this.leftPanel.locator("button", { hasText: "Redeem" });
+		return this.walletLeftPanel.locator("button", { hasText: "Redeem" });
 	}
 
 	public get vaultDepositButton(): Locator {
