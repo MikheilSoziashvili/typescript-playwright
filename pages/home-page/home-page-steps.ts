@@ -10,6 +10,7 @@ import { VisibilityResult } from "@core/types/types";
 import { GameProvider } from "@enums/game-providers";
 import { step } from "decorators/step";
 import { MailinatorApi } from "@api/mailinator-api";
+import { TimeoutSeconds } from "@enums/timeout-seconds";
 
 export class HomePageSteps extends BasePageStep<HomePage> {
 	public constructor(gamdomPage: HomePage) {
@@ -106,18 +107,21 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 
 		await waitUntil(
 			async () => {
-				if ((await providerLocator.count()) > 0) {
-					return true;
-				}
+				await this.gamdomPage.refresh();
+				await this.gamdomPage.map.casinoMenuLocator.hover();
+
+				if ((await providerLocator.count()) > 0) return true;
+
 				if (await nextButton.isEnabled()) {
 					await nextButton.click();
 					return false;
 				}
+
 				return false;
 			},
 			{
 				errorMessage: `Provider '${providerName}' not found in casino menu`,
-				timeoutSeconds: Timeout.MEDIUM,
+				timeoutSeconds: TimeoutSeconds.NINETY,
 			},
 		);
 
@@ -168,9 +172,28 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 		expectedResult: VisibilityResult,
 	): Promise<void> {
 		await homePage.navigateAndCheckTitle();
-		await homePage
-			.assertThat()
-			.verifyProviderOptionStateInBelt(providerName, expectedResult);
+
+		await waitUntil(
+			async () => {
+				await homePage.refresh();
+				try {
+					await homePage
+						.assertThat()
+						.verifyProviderOptionStateInBelt(
+							providerName,
+							expectedResult,
+						);
+					return true;
+				} catch {
+					return false;
+				}
+			},
+			{
+				errorMessage: `Provider ${providerName} was not ${expectedResult} in the belt on the home page in time`,
+				intervalSeconds: 2,
+				timeoutSeconds: TimeoutSeconds.NINETY,
+			},
+		);
 	}
 
 	public async resetPassword(email: string): Promise<void> {

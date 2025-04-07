@@ -3,7 +3,6 @@ import {
 	getCookieHeader,
 	parse_csv,
 	setAuthenticationCookies,
-	waitForSeconds,
 } from "@core/utils/utils";
 import { DATASETS_DIR } from "@constants/file-paths";
 import { SUPER_ADMIN_CREDENTIALS } from "@constants/credentials";
@@ -217,10 +216,6 @@ test.describe.serial("Admin Enable Game Provider tests @game-providers", () => {
 			// Set authentication cookies in the browser for the beta user
 			await setAuthenticationCookies(page, betaUserCookie);
 			await homePage.navigateAndCheckTitle();
-
-			// Wait for provider state changes to take effect
-			await waitForSeconds(30);
-			await homePage.refresh();
 
 			// Verify that the provider is visible or not as expected for the beta user
 			await homePage

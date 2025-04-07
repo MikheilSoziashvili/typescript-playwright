@@ -6,6 +6,8 @@ import { GameProvider } from "@enums/game-providers";
 import { VisibilityResult } from "@core/types/types";
 import { VisibilityOptions } from "@enums/visibility-options";
 import { step } from "decorators/step";
+import { waitUntil } from "@core/utils/utils";
+import { TimeoutSeconds } from "@enums/timeout-seconds";
 
 export class HomePageAsserter extends BaseAsserter<HomePage> {
 	public fromCsv: boolean;
@@ -121,11 +123,30 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		provider: string,
 		expectedResult: VisibilityResult,
 	): Promise<void> {
-		if (expectedResult === VisibilityOptions.VISIBLE) {
-			await this.gamdomPage.steps().verifyProviderVisibility(provider);
-		} else {
-			await this.gamdomPage.steps().verifyProviderInvisibility(provider);
-		}
+		await waitUntil(
+			async () => {
+				await this.gamdomPage.refresh();
+				try {
+					if (expectedResult === VisibilityOptions.VISIBLE) {
+						await this.gamdomPage
+							.steps()
+							.verifyProviderVisibility(provider);
+					} else {
+						await this.gamdomPage
+							.steps()
+							.verifyProviderInvisibility(provider);
+					}
+					return true;
+				} catch {
+					return false;
+				}
+			},
+			{
+				errorMessage: `Provider ${provider} did not reach expected visibility state: ${expectedResult}`,
+				intervalSeconds: 2,
+				timeoutSeconds: TimeoutSeconds.NINETY,
+			},
+		);
 	}
 
 	@step()
