@@ -32,6 +32,10 @@ export class WalletModalMap extends BaseMap {
 		return this.walletHeaderTabsContainer.getByTestId("vaultButton");
 	}
 
+	public get redeemTabButton(): Locator {
+		return this.page.getByTestId("redeemButton");
+	}
+
 	public get vaultButtonInWithdrawTab(): Locator {
 		return this.page.getByTestId("vaultPaymentMethodContainer");
 	}
@@ -99,6 +103,14 @@ export class WalletModalMap extends BaseMap {
 		return this.walletDepositWithdrawContainer.getByTestId(
 			"withdrawFromVaultButton",
 		);
+	}
+
+	public get promoCodeInputField(): Locator {
+		return this.leftPanel.locator('input[placeholder="Enter Code"]');
+	}
+
+	public get redeemPromoCodeButton(): Locator {
+		return this.leftPanel.locator("button", { hasText: "Redeem" });
 	}
 
 	public get vaultDepositButton(): Locator {

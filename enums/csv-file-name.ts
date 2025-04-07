@@ -26,4 +26,5 @@ export enum CsvFilesName {
 	DICE_AUTOBET_INCREASE_BY = "ENG-2843-dice-autobet-increase-by.csv",
 	UPDATE_CONTACT_INFO_2FA_REQUIRED = "ENG-2567-update-contact-info-2fa-required.csv",
 	KOTH_VISUAL = "ENG-4484-KOTH-changing-currency.csv",
+	PROMO_CAMPAIGN_DUPLICATED_CODES = "ENG-4935-promo-campaign-duplicated-codes.csv",
 }

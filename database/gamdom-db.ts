@@ -7,7 +7,8 @@ import { UserTags } from "@enums/db/user-tags";
 import { UserClasses } from "@enums/db/user-classes";
 import { Unit } from "@enums/units";
 import { WalletsColumns } from "@enums/db/wallets-columns";
-import { getRandomPhone } from "@core/utils/utils";
+import { formatDate, getRandomPhone } from "@core/utils/utils";
+import { CampaignsColumns } from "@enums/db/campaigns-columns";
 
 export class GamdomDb extends BaseDB {
 	constructor() {
@@ -118,6 +119,18 @@ export class GamdomDb extends BaseDB {
 			DbTables.Users,
 			{ [UsersColumns.PHONE_NUMBER]: phoneNumber },
 			`${UsersColumns.Email} = '${userEmail.toLowerCase()}'`,
+		);
+		return result;
+	}
+
+	public async updateCampaignExpirationDateByName(
+		campaignName: string,
+		newExpirationDate: string = formatDate(-1),
+	): Promise<QueryResultRow> {
+		const result = await this.update(
+			DbTables.Campaigns,
+			{ [CampaignsColumns.ExpirationDate]: newExpirationDate },
+			`${CampaignsColumns.Name} = '${campaignName}'`,
 		);
 		return result;
 	}

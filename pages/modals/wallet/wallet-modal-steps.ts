@@ -2,6 +2,9 @@ import { BasePageStep } from "@pages/base/base-page-step";
 import { WalletModal } from "./wallet-modal";
 import { step } from "decorators/step";
 import { parseToFloat } from "@core/utils/utils";
+import { Toast } from "@pages/components/toast/toast";
+import { ToastTitle } from "@enums/toast-titles";
+import { ToastSubTitle } from "@enums/toast-subtitles";
 
 export class WalletModalSteps extends BasePageStep<WalletModal> {
 	public constructor(page: WalletModal) {
@@ -90,5 +93,20 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 		await this.gamdomPage.twoFactorAuthModal
 			.steps()
 			.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
+	}
+
+	@step(`Redeem a promo code`)
+	public async redeemPromoCode(promoCode: string): Promise<void> {
+		await this.gamdomPage.openRedeemTab();
+		await this.gamdomPage.fillPromoCode(promoCode);
+		await this.gamdomPage.clickRedeemPromoCodeButton();
+	}
+
+	@step(`Redeem a promo code and verify the success message is displayed`)
+	public async redeemPromoCodeSuccessfully(promoCode: string): Promise<void> {
+		await this.redeemPromoCode(promoCode);
+		const toast = new Toast(this.gamdomPage.page);
+		await toast.assertThat().titleIs(ToastTitle.SUCCESS);
+		await toast.assertThat().subTitleIs(ToastSubTitle.PROMO_CODE_REDEEMED);
 	}
 }

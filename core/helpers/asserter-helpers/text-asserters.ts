@@ -69,3 +69,7 @@ export function buildRewardsRoyaltyUpRankSubTitle(
 
 	return subTitle;
 }
+
+export function buildCreatedCampaignSubTitle(campaignName: string): string {
+	return `Campaign ${campaignName} - created`;
+}

@@ -34,6 +34,10 @@ export class WalletModal extends BasePage<WalletModalMap> {
 		await this.map.vaultTabButton.click({ timeout: Timeout.LONG });
 	}
 
+	public async openRedeemTab(): Promise<void> {
+		await this.map.redeemTabButton.click({ timeout: Timeout.LONG });
+	}
+
 	public async openWithdrawTabInVault(): Promise<void> {
 		await this.map.vaultWithdrawTab.click();
 	}
@@ -49,6 +53,15 @@ export class WalletModal extends BasePage<WalletModalMap> {
 
 	public async fillVaultAmount(amount: number): Promise<void> {
 		await this.map.vaultInputField.fill(`${amount}`);
+	}
+
+	public async fillPromoCode(promoCode: string): Promise<void> {
+		await this.map.promoCodeInputField.clear();
+		await this.map.promoCodeInputField.fill(`${promoCode}`);
+	}
+
+	public async clickRedeemPromoCodeButton(): Promise<void> {
+		await this.map.redeemPromoCodeButton.click();
 	}
 
 	public async clickVaultDepositButton(): Promise<void> {
