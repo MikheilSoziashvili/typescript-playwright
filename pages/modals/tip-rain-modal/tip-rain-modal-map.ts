@@ -7,7 +7,7 @@ export class TipRainModalMap extends BaseMap {
 	}
 
 	public get tipRainModal(): Locator {
-		return this.page.getByTestId("tipRainDialog-modal");
+		return this.page.getByTestId("tipRainDialogModalContainer");
 	}
 
 	public get amountInput(): Locator {
@@ -15,6 +15,6 @@ export class TipRainModalMap extends BaseMap {
 	}
 
 	public get tipButton(): Locator {
-		return this.tipRainModal.getByTestId("tipRainDialog-button");
+		return this.tipRainModal.getByTestId("tipRainDialogButton");
 	}
 }
