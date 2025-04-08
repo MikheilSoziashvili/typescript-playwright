@@ -101,8 +101,6 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 	public async findProviderInCasinoHover(
 		providerName: string,
 	): Promise<Locator> {
-		const providerLocator =
-			this.gamdomPage.map.providerInCasinoMenu(providerName);
 		const nextButton = this.gamdomPage.map.nextPageButton;
 
 		await waitUntil(
@@ -110,22 +108,27 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 				await this.gamdomPage.refresh();
 				await this.gamdomPage.map.casinoMenuLocator.hover();
 
-				if ((await providerLocator.count()) > 0) return true;
+				let providerLocator =
+					this.gamdomPage.map.providerInCasinoMenu(providerName);
 
-				if (await nextButton.isEnabled()) {
+				while (
+					(await providerLocator.count()) === 0 &&
+					(await nextButton.isEnabled())
+				) {
 					await nextButton.click();
-					return false;
+					providerLocator =
+						this.gamdomPage.map.providerInCasinoMenu(providerName);
 				}
 
-				return false;
+				return (await providerLocator.count()) > 0;
 			},
 			{
-				errorMessage: `Provider '${providerName}' not found in casino menu`,
+				errorMessage: `Provider '${providerName}' not found in casino menu after full pagination + retries`,
 				timeoutSeconds: TimeoutSeconds.NINETY,
 			},
 		);
 
-		return providerLocator;
+		return this.gamdomPage.map.providerInCasinoMenu(providerName);
 	}
 
 	@step()
