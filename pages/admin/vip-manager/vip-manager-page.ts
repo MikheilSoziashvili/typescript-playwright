@@ -39,4 +39,16 @@ export class VipManagerAdminPage extends BasePage<VipManagerAdminPageMap> {
 	public async uploadUpdateRemoveBatchVipPlayersFile(): Promise<void> {
 		await this.map.uploadBatchUpdateVipPlayersStatusFileButton.click();
 	}
+
+	public async clickAddVipStatusButton(): Promise<void> {
+		await this.map.addVipStatusButton.click();
+	}
+
+	public async clickBatchUpdateButton(): Promise<void> {
+		await this.map.batchUpdateButton.click();
+	}
+
+	public async clickChangeTelegramSettingsButton(): Promise<void> {
+		await this.map.changeTelegramNotificationSettingsBlock.click();
+	}
 }

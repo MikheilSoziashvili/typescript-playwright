@@ -62,7 +62,7 @@ test.describe.parallel("Admin page tabs visibility tests", () => {
 				[AdminTabLocatorKey.UserInfo]:
 					userInfoAdminPage.map.viewUserInfoBox,
 				[AdminTabLocatorKey.VipManager]:
-					vipManagerAdminPage.map.vipPlayersBlock,
+					vipManagerAdminPage.map.vipManagerPageContent,
 				[AdminTabLocatorKey.FreeSpins]:
 					freeSpinsAdminPage.map.findGameToGiveFreeSpinsCard,
 				[AdminTabLocatorKey.Marketing]:

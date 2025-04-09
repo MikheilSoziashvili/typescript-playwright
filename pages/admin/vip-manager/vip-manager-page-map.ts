@@ -7,11 +7,35 @@ export class VipManagerAdminPageMap extends BaseMap {
 	}
 
 	public get vipManagerPageContent(): Locator {
-		return this.page.getByTestId("vipManagerPageContent");
+		return this.page.locator(`[class*="MuiContainer-root"]`);
+	}
+
+	public get vipManagerPageTitle(): Locator {
+		return this.page.locator(`h3[class*="MuiTypography-root"]`);
 	}
 
 	public get vipPlayersBlock(): Locator {
-		return this.vipManagerPageContent.getByTestId("vipPlayersContainer");
+		return this.vipManagerPageContent.locator(
+			`[class*=MuiPaper-elevation]`,
+		);
+	}
+
+	public get addVipStatusButton(): Locator {
+		return this.page.locator(
+			`//button[@type='button' and text()='Add VIP status']`,
+		);
+	}
+
+	public get batchUpdateButton(): Locator {
+		return this.page.locator(
+			`//button[@type='button' and text()='Batch update']`,
+		);
+	}
+
+	public get changeTelegramSettingsButton(): Locator {
+		return this.page.locator(
+			`//button[@type='button' and text()='Change Telegram settings']`,
+		);
 	}
 
 	public get sendUserNotificationBlock(): Locator {
@@ -21,20 +45,26 @@ export class VipManagerAdminPageMap extends BaseMap {
 	}
 
 	public get addVipPlayerStatusBlock(): Locator {
-		return this.vipManagerPageContent.getByTestId(
-			"addVipPlayersStatusContainer",
+		return this.page.locator(
+			"//h2[contains(@class,'MuiDialogTitle-root') and text()='Add VIP Status']//ancestor::div[contains(@class,'MuiDialog-paper')]",
 		);
 	}
 
 	public get batchUpdateVipPlayersStatusBlock(): Locator {
-		return this.vipManagerPageContent.getByTestId(
-			"batchUpdateVipPlayersStatusContainer",
+		return this.page.locator(
+			`//h2[contains(@class,'MuiDialogTitle-root') and text()='Batch Update VIP players status']//ancestor::div[contains(@class,'MuiDialog-paper')]`,
 		);
 	}
 
+	public get batchUpdateVipPlayersStatusAccessDeniedBlock(): Locator {
+		return this.batchUpdateVipPlayersStatusBlock.locator(`p`, {
+			hasText: "You don't have access to this feature",
+		});
+	}
+
 	public get changeTelegramNotificationSettingsBlock(): Locator {
-		return this.vipManagerPageContent.getByTestId(
-			"changeTelegramNotificationsSettingsContainer",
+		return this.page.locator(
+			`//h2[contains(@class,'MuiDialogTitle-root') and text()='Telegram Notifications Settings']//ancestor::div[contains(@class,'MuiDialog-paper')]`,
 		);
 	}
 
@@ -45,8 +75,8 @@ export class VipManagerAdminPageMap extends BaseMap {
 	}
 
 	public get uploadBatchUpdateVipPlayersStatusFileButton(): Locator {
-		return this.batchUpdateVipPlayersStatusBlock.getByTestId(
-			"uploadButton",
+		return this.batchUpdateVipPlayersStatusBlock.locator(
+			"//button[@type='button' and text()='Upload']",
 		);
 	}
 
@@ -55,8 +85,8 @@ export class VipManagerAdminPageMap extends BaseMap {
 	}
 
 	public get batchVipPlayersStatusButtonsContainer(): Locator {
-		return this.batchUpdateVipPlayersStatusBlock.getByTestId(
-			"updateRemoveButtonsContainer",
+		return this.batchUpdateVipPlayersStatusBlock.locator(
+			`//div[@role="group"]`,
 		);
 	}
 

@@ -2,6 +2,7 @@ import { BaseAsserter } from "@base/base-asserter";
 import { Timeout } from "@enums/timeout";
 import { VipManagerAdminPage } from "./vip-manager-page";
 import { step } from "decorators/step";
+import { expect } from "@playwright/test";
 
 export class VipManagerAdminPageAsserter extends BaseAsserter<VipManagerAdminPage> {
 	public constructor(page: VipManagerAdminPage) {
@@ -12,27 +13,35 @@ export class VipManagerAdminPageAsserter extends BaseAsserter<VipManagerAdminPag
 	async pageMainBlocksAreVisible(): Promise<void> {
 		await this.checkElementsAreVisible(
 			[
+				this.gamdomPage.map.vipManagerPageContent,
+				this.gamdomPage.map.vipManagerPageTitle,
 				this.gamdomPage.map.vipPlayersBlock,
-				this.gamdomPage.map.addVipPlayerStatusBlock,
-				this.gamdomPage.map.changeTelegramNotificationSettingsBlock,
 			],
 			Timeout.MAX,
 		);
 	}
 
-	@step()
-	public async checkBatchUpdateVipPlayersStatusElements(
-		isVisible: boolean,
+	@step("Verify 'Batch Update VIP Players Status' elements visibility")
+	public async verifyBatchUpdateVipPlayersStatusElements(
+		withAccess: boolean,
 	): Promise<void> {
-		const elements = [
+		const commonElements = [
 			this.gamdomPage.map.batchUpdateVipPlayersStatusBlock,
-			this.gamdomPage.map.inputBatchUpdateVipPlayersStatus,
-			this.gamdomPage.map.uploadBatchUpdateVipPlayersStatusFileButton,
 		];
 
-		isVisible
-			? await this.checkElementsAreVisible(elements)
-			: await this.checkElementsAreNotVisible(elements);
+		const accessElements = withAccess
+			? [
+					this.gamdomPage.map.inputBatchUpdateVipPlayersStatus,
+					this.gamdomPage.map
+						.uploadBatchUpdateVipPlayersStatusFileButton,
+			  ]
+			: [
+					this.gamdomPage.map
+						.batchUpdateVipPlayersStatusAccessDeniedBlock,
+			  ];
+
+		const elementsToCheck = [...commonElements, ...accessElements];
+		await this.checkElementsAreVisible(elementsToCheck);
 	}
 
 	@step()
@@ -46,5 +55,12 @@ export class VipManagerAdminPageAsserter extends BaseAsserter<VipManagerAdminPag
 			: await this.checkElementsAreNotVisible([
 					this.gamdomPage.map.sendUserNotificationBlock,
 			  ]);
+	}
+
+	@step()
+	public async verifyUploadFilesButtonIsDisabled(): Promise<void> {
+		await expect(
+			this.gamdomPage.map.uploadBatchUpdateVipPlayersStatusFileButton,
+		).toBeDisabled();
 	}
 }

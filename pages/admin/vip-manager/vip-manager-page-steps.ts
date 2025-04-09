@@ -39,4 +39,34 @@ export class VipManagerAdminPageSteps extends BasePageStep<VipManagerAdminPage> 
 
 		await this.toggleUpdateRemoveBatchVipPlayers(uploadRemoveButton);
 	}
+
+	@step()
+	public async openAddVipStatusModalSuccessfully(): Promise<void> {
+		await this.gamdomPage.clickAddVipStatusButton();
+		await this.gamdomPage
+			.assertThat()
+			.checkElementsAreVisible([
+				this.gamdomPage.map.addVipPlayerStatusBlock,
+			]);
+	}
+
+	@step()
+	public async openBatchUpdateVipPlayersStatusModalSuccessfully(): Promise<void> {
+		await this.gamdomPage.clickBatchUpdateButton();
+		await this.gamdomPage
+			.assertThat()
+			.checkElementsAreVisible([
+				this.gamdomPage.map.batchUpdateVipPlayersStatusBlock,
+			]);
+	}
+
+	@step()
+	public async openChangeTelegramNotificationSettingsModalSuccessfully(): Promise<void> {
+		await this.gamdomPage.clickChangeTelegramSettingsButton();
+		await this.gamdomPage
+			.assertThat()
+			.checkElementsAreVisible([
+				this.gamdomPage.map.changeTelegramNotificationSettingsBlock,
+			]);
+	}
 }
