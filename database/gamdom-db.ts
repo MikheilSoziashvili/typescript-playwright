@@ -9,6 +9,8 @@ import { Unit } from "@enums/units";
 import { WalletsColumns } from "@enums/db/wallets-columns";
 import { formatDate, getRandomPhone } from "@core/utils/utils";
 import { CampaignsColumns } from "@enums/db/campaigns-columns";
+import { WithdrawLimitsSettingsValues } from "@enums/db/withdraw-settings-values";
+import { SettingsColumns } from "@enums/db/settings-columns";
 
 export class GamdomDb extends BaseDB {
 	constructor() {
@@ -131,6 +133,40 @@ export class GamdomDb extends BaseDB {
 			DbTables.Campaigns,
 			{ [CampaignsColumns.ExpirationDate]: newExpirationDate },
 			`${CampaignsColumns.Name} = '${campaignName}'`,
+		);
+		return result;
+	}
+
+	public async insertWithdrawLimitInSetting(
+		key: WithdrawLimitsSettingsValues,
+		value: number,
+	): Promise<QueryResultRow> {
+		const result = await this.insert(DbTables.Settings, {
+			key: key,
+			value: JSON.stringify(value),
+		});
+		return result;
+	}
+
+	public async updateWithdrawLimitInSetting(
+		key: WithdrawLimitsSettingsValues,
+		value: number,
+	): Promise<QueryResultRow> {
+		const result = await this.update(
+			DbTables.Settings,
+			{ value: JSON.stringify(value) },
+			`${SettingsColumns.Key} = '${key}'`,
+		);
+		return result;
+	}
+
+	public async getWithdrawLimitFromSettingByKey(
+		key: WithdrawLimitsSettingsValues,
+	): Promise<QueryResultRow[]> {
+		const result = await this.query(
+			DbTables.Settings,
+			[`${SettingsColumns.Key}`, `${SettingsColumns.Value}`],
+			`${SettingsColumns.Key} = '${key}'`,
 		);
 		return result;
 	}

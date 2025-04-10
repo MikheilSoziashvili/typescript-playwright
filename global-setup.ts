@@ -2,21 +2,19 @@ import { GamdomApi } from "@api/gamdom-api";
 import { JiraApi } from "@api/jira-api";
 import { createExecutionBody } from "@api/jira-api-payloads";
 import { SUPER_ADMIN_CREDENTIALS } from "@constants/credentials";
-import { SECURITY_ADMIN_PAGE_ENDPOINT } from "@constants/page-endpoints";
-import { getStorageStateUserAPI } from "@core/auth-mngmt";
 import { JsonData } from "@core/interfaces";
 import {
 	generateRandomString,
 	getCookieHeader,
 	writeToJSONFile,
 } from "@core/utils/utils";
+import { WithdrawLimitsSettingsValues } from "@enums/db/withdraw-settings-values";
 import { Feature } from "@enums/feature";
 import { HttpStatus } from "@enums/http-status";
 import { logger } from "@logger/logger";
-import { SecurityAdminPage } from "@pages/admin/security-admin/security-admin-page";
-import { chromium, expect } from "@playwright/test";
+import { expect } from "@playwright/test";
 import * as Configuration from "configuration";
-import { environment_url } from "configuration";
+import { GamdomDb } from "database/gamdom-db";
 import * as fs from "fs";
 
 async function enableHiloFeature(
@@ -106,34 +104,36 @@ async function createKothEvent(
 }
 
 async function updateWithdrawLimits(): Promise<void> {
-	const storageStatePath = await getStorageStateUserAPI(
-		SUPER_ADMIN_CREDENTIALS.username,
-	);
+	const gamdomDb = new GamdomDb();
+	const defaultWithdrawLimit = 750000000000; // Default value for 500 million USD in coins
 
-	const browser = await chromium.launch({
-		slowMo: 400,
-	});
+	const withdrawLimits = [
+		WithdrawLimitsSettingsValues.Blocked_coins,
+		WithdrawLimitsSettingsValues.Alert_coins,
+	];
 
-	const context = await browser.newContext({
-		storageState: storageStatePath,
-		extraHTTPHeaders: {
-			Authorization: `Bearer ${process.env.OAUTH2_JWT}`,
-		},
-	});
-	const page = await context.newPage();
+	for (const withdrawLimit of withdrawLimits) {
+		const existingWithdrawLimit =
+			await gamdomDb.getWithdrawLimitFromSettingByKey(withdrawLimit);
 
-	const securityAdminPage = new SecurityAdminPage(page);
-	await page.goto(`${environment_url}${SECURITY_ADMIN_PAGE_ENDPOINT}`);
-
-	const WITHDRAW_LIMIT = 500000000;
-
-	await securityAdminPage.updateUserWithdrawLimits(
-		WITHDRAW_LIMIT,
-		WITHDRAW_LIMIT,
-	);
-	logger.info(`User withdraw limits have been updated to 5 million USD.`);
-
-	await browser.close();
+		if (existingWithdrawLimit.length > 0) {
+			await gamdomDb.updateWithdrawLimitInSetting(
+				withdrawLimit,
+				defaultWithdrawLimit,
+			);
+			logger.info(
+				`Updated withdraw limit for key "${withdrawLimit}" to default value: ${defaultWithdrawLimit}`,
+			);
+		} else {
+			await gamdomDb.insertWithdrawLimitInSetting(
+				withdrawLimit,
+				defaultWithdrawLimit,
+			);
+			logger.info(
+				`Inserted withdraw limit for key "${withdrawLimit}" with default value: ${defaultWithdrawLimit}`,
+			);
+		}
+	}
 }
 
 async function createJiraExecution(): Promise<void> {
