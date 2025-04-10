@@ -149,6 +149,9 @@ test.describe("Tip rain tests", () => {
 		);
 
 		await homePage.navigate();
+		await homePage.authenticatedHeader
+			.assertThat()
+			.loggedInUserElementsAreVisible();
 		await homePage.authenticatedHeader.expandChatIfNotVisible();
 		await chat.steps().verifyChatAndSendMessage(TIP_RAIN);
 		await twoFactorAuthModal
