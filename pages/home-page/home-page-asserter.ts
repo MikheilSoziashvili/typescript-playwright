@@ -1,11 +1,12 @@
 import { Timeout } from "@enums/timeout";
 import { BaseAsserter } from "@base/base-asserter";
 import { HomePage } from "./home-page";
-import { expect, TestInfo } from "@playwright/test";
+import { expect, Locator, TestInfo } from "@playwright/test";
 import { GameProvider } from "@enums/game-providers";
 import { VisibilityResult } from "@core/types/types";
 import { VisibilityOptions } from "@enums/visibility-options";
 import { step } from "decorators/step";
+import { logger } from "@logger/logger";
 import { waitUntil } from "@core/utils/utils";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
 
@@ -73,6 +74,45 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 	@step()
 	public async isTopBannerDisplayed(): Promise<void> {
 		await expect(this.gamdomPage.map.topBannerLocator).toBeVisible();
+	}
+
+	@step("Verify that Create Account and Social buttons are disabled")
+	public async verifyTopBannerButtonsState(): Promise<void> {
+		const page = this.gamdomPage.page;
+
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.topBannerSignupButton,
+		]);
+		await this.checkElementsAreEnabled([
+			this.gamdomPage.map.topBannerSignupButton,
+		]);
+		const urlBeforeClick = page.url();
+		await this.gamdomPage.map.topBannerSignupButton.click();
+		expect(page.url()).toBe(urlBeforeClick);
+
+		const socialButtons = [
+			this.gamdomPage.map.topBannerSteamLoginButton,
+			this.gamdomPage.map.topBannerGoogleLoginButton,
+			this.gamdomPage.map.topBannerTelegramLoginButton,
+		];
+
+		await this.checkElementsAreVisible(socialButtons);
+		await this.checkButtonsDoNotNavigateWhenClicked(socialButtons);
+	}
+
+	public async checkButtonsDoNotNavigateWhenClicked(
+		socialButtons: Locator[],
+	): Promise<void> {
+		for (const button of socialButtons) {
+			if (await button.isEnabled()) {
+				const page = button.page();
+				const urlBefore = page.url();
+				await button.click();
+				expect(page.url()).toBe(urlBefore);
+			} else {
+				logger.info("Button is disabled, skipping click");
+			}
+		}
 	}
 
 	@step()

@@ -7,6 +7,7 @@ import { TransactionDetailsModal } from "@pages/modals/transaction-details-modal
 import { TwoFactorAuthModal } from "@pages/modals/two-factor-authentication-modal/two-factor-auth-modal";
 import { UserProfileModal } from "@pages/modals/user-profile-modal/user-profile-modal";
 import { WalletModal } from "@pages/modals/wallet/wallet-modal";
+import { SoftblockModalPage } from "@pages/modals/softblock-modal/softblock-modal";
 
 import { test as base } from "@playwright/test";
 
@@ -20,6 +21,7 @@ export type Modals = {
 	tipRainModal: TipRainModal;
 	loginModal: LoginModal;
 	transactionDetailsModal: TransactionDetailsModal;
+	softblockModal: SoftblockModalPage;
 };
 
 export const modalsFixtures = base.extend<Modals>({
@@ -49,5 +51,8 @@ export const modalsFixtures = base.extend<Modals>({
 	},
 	transactionDetailsModal: async ({ page }, use) => {
 		await use(new TransactionDetailsModal(page));
+	},
+	softblockModal: async ({ page }, use) => {
+		await use(new SoftblockModalPage(page));
 	},
 });

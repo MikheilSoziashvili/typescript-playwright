@@ -118,6 +118,24 @@ export class BaseAsserter<
 		}
 	}
 
+	public async checkElementsAreEnabled(
+		elements: Locator[],
+		timeout?: number,
+	): Promise<void> {
+		for (const element of elements) {
+			await expect(element).toBeEnabled({ timeout });
+		}
+	}
+
+	public async checkElementsAreDisabled(
+		elements: Locator[],
+		timeout?: number,
+	): Promise<void> {
+		for (const element of elements) {
+			await expect(element).toBeDisabled({ timeout });
+		}
+	}
+
 	public async checkStringElementsAreEqual(
 		expectedTexts: string[],
 		actualTexts: string[],

@@ -66,6 +66,26 @@ export class HomePageMap extends BaseMap {
 		return this.topBannerLocator.locator("button:has(i.icon-remove)");
 	}
 
+	public get topBannerSignupButton(): Locator {
+		return this.topBannerLocator.getByTestId("signup-center");
+	}
+
+	private getTopBannerButton(index: number): Locator {
+		return this.topBannerLocator.locator("button").nth(index);
+	}
+
+	public get topBannerSteamLoginButton(): Locator {
+		return this.getTopBannerButton(0);
+	}
+
+	public get topBannerGoogleLoginButton(): Locator {
+		return this.getTopBannerButton(1);
+	}
+
+	public get topBannerTelegramLoginButton(): Locator {
+		return this.getTopBannerButton(2);
+	}
+
 	public get casinoMenuLocator(): Locator {
 		return this.page.locator(
 			'[class*="MuiTypography-navbarMainBold"]:has-text("Casino")',

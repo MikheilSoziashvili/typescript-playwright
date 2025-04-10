@@ -1,36 +1,58 @@
-import { test } from "@fixtures/fixtures";
+import { USER_1_CREDENTIALS } from "@constants/credentials";
+import { PRODUCTION_BASE_URL } from "@constants/page-urls";
 import {
-	BL_PROXY_CREDENTIALS,
+	AU_PROXY_CREDENTIALS,
+	DE_PROXY_CREDENTIALS,
+	DK_PROXY_CREDENTIALS,
+	ES_PROXY_CREDENTIALS,
 	NL_PROXY_CREDENTIALS,
+	PT_PROXY_CREDENTIALS,
+	UK_PROXY_CREDENTIALS,
 	US_PROXY_CREDENTIALS,
 } from "@constants/proxies";
-import { PRODUCTION_BASE_URL } from "@constants/page-urls";
-import { GeoblockedCountry } from "@enums/geoblocked-countries";
 import { ProxyCredentialsType } from "@core/types/types";
+import {
+	GeoblockedCountry,
+	SoftBlockedCountry,
+} from "@enums/geoblocked-countries";
+import { test } from "@fixtures/fixtures";
 import * as Configuration from "configuration";
 
 const baseUrls = [PRODUCTION_BASE_URL, Configuration.environment_url];
+const SOFTBLOCK_MODAL_TITLE =
+	"Sorry, but Gamdom is not available in your jurisdiction.";
 
 const countries = [
 	GeoblockedCountry.UNITED_STATED,
 	GeoblockedCountry.NETHERLANDS,
-	GeoblockedCountry.BELARUS,
 ];
 
 const geoblockedCredentialsMap = new Map<string, ProxyCredentialsType>([
 	[GeoblockedCountry.UNITED_STATED, US_PROXY_CREDENTIALS],
 	[GeoblockedCountry.NETHERLANDS, NL_PROXY_CREDENTIALS],
-	[GeoblockedCountry.BELARUS, BL_PROXY_CREDENTIALS],
+]);
+
+const softBlockedCountries = [
+	SoftBlockedCountry.DENMARK,
+	SoftBlockedCountry.PORTUGAL,
+	SoftBlockedCountry.UNITED_KINGDOM,
+	SoftBlockedCountry.GERMANY,
+	SoftBlockedCountry.SPAIN,
+	SoftBlockedCountry.AUSTRALIA,
+];
+
+const softBlockedCredentialsMap = new Map<string, ProxyCredentialsType>([
+	[SoftBlockedCountry.DENMARK, DK_PROXY_CREDENTIALS],
+	[SoftBlockedCountry.PORTUGAL, PT_PROXY_CREDENTIALS],
+	[SoftBlockedCountry.UNITED_KINGDOM, UK_PROXY_CREDENTIALS],
+	[SoftBlockedCountry.GERMANY, DE_PROXY_CREDENTIALS],
+	[SoftBlockedCountry.SPAIN, ES_PROXY_CREDENTIALS],
+	[SoftBlockedCountry.AUSTRALIA, AU_PROXY_CREDENTIALS],
 ]);
 
 for (const baseURL of baseUrls) {
 	for (const country of countries) {
 		test.describe(`Geoblocked country: ${country}`, () => {
-			test.fixme(
-				country === GeoblockedCountry.BELARUS,
-				"Check why proxy not working for BELARUS. Check when change providers if it works and delete this comment",
-			);
-
 			test.use({
 				proxy: geoblockedCredentialsMap.get(country),
 				baseURL: baseURL,
@@ -50,4 +72,50 @@ for (const baseURL of baseUrls) {
 			});
 		});
 	}
+}
+
+for (const country of softBlockedCountries) {
+	test.describe(`Soft blocked country: ${country}`, () => {
+		test.fixme(
+			country !== SoftBlockedCountry.DENMARK &&
+				country !== SoftBlockedCountry.SPAIN,
+			`Skip softblocked test for ${country} due to current proxy limitations:
+			- AU: too far, site not loading
+			- DE: proxy routes traffic through US
+			- PT, UK: proxies not working
+		Unskip once proxies are stable or replaced.`,
+		);
+		test.use({
+			proxy: softBlockedCredentialsMap.get(country),
+		});
+
+		test(`[ENG-2621] Check the country-based access restrictions : Soft blocked in ${country}`, async ({
+			homePage,
+			softblockModal,
+		}) => {
+			await homePage.navigate();
+
+			await softblockModal.assertThat().isDisplayed();
+
+			await softblockModal
+				.assertThat()
+				.hasCorrectTitle(SOFTBLOCK_MODAL_TITLE);
+
+			await softblockModal.steps().closeSoftblockModal();
+			await softblockModal.assertThat().isNotDisplayed();
+
+			await homePage.unauthenticatedHeader
+				.assertThat()
+				.isCreateAccountButtonDisabled();
+
+			await homePage.assertThat().verifyTopBannerButtonsState();
+
+			await homePage
+				.steps()
+				.loginUser(
+					USER_1_CREDENTIALS.username,
+					USER_1_CREDENTIALS.password,
+				);
+		});
+	});
 }
