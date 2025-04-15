@@ -16,6 +16,7 @@ export class VipManagerAdminPageAsserter extends BaseAsserter<VipManagerAdminPag
 				this.gamdomPage.map.vipManagerPageContent,
 				this.gamdomPage.map.vipManagerPageTitle,
 				this.gamdomPage.map.vipPlayersBlock,
+				this.gamdomPage.map.vipManagerActionButtonsContainer,
 			],
 			Timeout.MAX,
 		);
