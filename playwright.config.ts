@@ -1,5 +1,5 @@
 import { slackReporterConfig } from "@core/reporters/slack-reporter/slack-reporter";
-import { ReporterDescription, defineConfig, devices } from "@playwright/test";
+import { ReporterDescription, defineConfig } from "@playwright/test";
 import * as Configuration from "configuration";
 
 /** Read environment variables from file. https://github.com/motdotla/dotenv */
@@ -91,10 +91,15 @@ export default defineConfig({
 	projects: [
 		{
 			name: "chromium",
-			...devices["Desktop Chrome"],
+			use: { browserName: "chromium" },
 		},
-
-		// TODO: Test against mobile viewports.
-		// TODO: Test against branded browsers.
+		{
+			name: "firefox",
+			use: { browserName: "firefox" },
+		},
+		{
+			name: "webkit",
+			use: { browserName: "webkit" },
+		},
 	],
 });
