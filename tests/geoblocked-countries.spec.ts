@@ -74,16 +74,16 @@ for (const baseURL of baseUrls) {
 	}
 }
 
+/* Skipping softblocked countries due to current proxy limitations:
+- AU: too far, site not loading
+- DE: proxy routes traffic through US
+- PT, UK: proxies not working
+Unskip once proxies are stable or replaced.*/
 for (const country of softBlockedCountries) {
 	test.describe(`Soft blocked country: ${country}`, () => {
 		test.fixme(
 			country !== SoftBlockedCountry.DENMARK &&
 				country !== SoftBlockedCountry.SPAIN,
-			`Skip softblocked test for ${country} due to current proxy limitations:
-			- AU: too far, site not loading
-			- DE: proxy routes traffic through US
-			- PT, UK: proxies not working
-		Unskip once proxies are stable or replaced.`,
 		);
 		test.use({
 			proxy: softBlockedCredentialsMap.get(country),
