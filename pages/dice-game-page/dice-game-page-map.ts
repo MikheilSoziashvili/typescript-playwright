@@ -138,13 +138,13 @@ export class DiceGamePageMap extends BaseMap {
 	}
 
 	public get startAutobetButton(): Locator {
-		return this.autobetContainer.locator("button span", {
+		return this.autobetContainer.locator("button", {
 			hasText: "Start Autobet",
 		});
 	}
 
 	public get stopAutobetButton(): Locator {
-		return this.autobetContainer.locator("button span", {
+		return this.autobetContainer.locator("button", {
 			hasText: "Stop Autobet",
 		});
 	}
