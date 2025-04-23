@@ -1,10 +1,11 @@
-import { Page } from "@playwright/test";
 import { BasePage } from "@base/base-page";
 import { FREE_SPINS_ADMIN_PAGE_ENDPOINT } from "@constants/page-endpoints";
-import { FreeSpinsAdminPageMap } from "./free-spins-admin-page-map";
-import { FreeSpinsAdminPageAsserter } from "./free-spins-admin-page-asserter";
-import { FreeSpinsAdminPageSteps } from "./free-spins-admin-page-steps";
 import { BasePageNavigationParametersType } from "@core/types/types";
+import { Page } from "@playwright/test";
+import { FreeSpinsAdminPageAsserter } from "./free-spins-admin-page-asserter";
+import { FreeSpinsAdminPageMap } from "./free-spins-admin-page-map";
+import { FreeSpinsAdminPageSteps } from "./free-spins-admin-page-steps";
+import { Timeout } from "@enums/timeout";
 
 export class FreeSpinsAdminPage extends BasePage<FreeSpinsAdminPageMap> {
 	public constructor(page: Page) {
@@ -35,7 +36,15 @@ export class FreeSpinsAdminPage extends BasePage<FreeSpinsAdminPageMap> {
 		await this.map.findGameToGiveFreeSpinsCardGameTextInput.fill(gameTitle);
 		await this.map.findGameToGiveFreeSpinsCardGameField.click();
 		await this.map.waitForVisibility({ locator: this.map.gamesList });
-		await this.map.getGameLocatorByTitle(gameTitle).click();
+
+		const gameLocator = this.map.getGameLocatorByTitle(gameTitle);
+		await this.map.waitForVisibility({
+			locator: gameLocator,
+			timeout: Timeout.MEDIUM,
+		});
+		// Due to Webkit failures (unable to click on elements) explicit wait + force click is required
+		// eslint-disable-next-line playwright/no-force-option
+		await gameLocator.click({ force: true });
 	}
 
 	public async giveFreeSpins(parameters: {

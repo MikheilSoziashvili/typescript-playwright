@@ -115,7 +115,13 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 					(await providerLocator.count()) === 0 &&
 					(await nextButton.isEnabled())
 				) {
-					await nextButton.click();
+					await this.gamdomPage.map.waitForVisibility({
+						locator: nextButton,
+						timeout: Timeout.MEDIUM,
+					});
+					// Due to Webkit failures (unable to click on elements) explicit wait + force click is required
+					// eslint-disable-next-line playwright/no-force-option
+					await nextButton.click({ force: true });
 					providerLocator =
 						this.gamdomPage.map.providerInCasinoMenu(providerName);
 				}

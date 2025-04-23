@@ -47,6 +47,9 @@ export class SettingsPage extends BasePage<SettingsPageMap> {
 		expect(inputCount).toBe(code2FA.length);
 		for (let i = 0; i < inputCount; i++) {
 			const inputElement = this.map.fields2FACodeInputs.nth(i);
+			// Due to Webkit failures (unable to click on elements) force click is required
+			// eslint-disable-next-line playwright/no-force-option
+			await inputElement.click({ force: true });
 			await inputElement.fill(code2FA[i]);
 		}
 	}
