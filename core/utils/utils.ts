@@ -837,3 +837,28 @@ export async function generate2FACodeFromQRCodeImage(
 
 	return code2FA;
 }
+
+/**
+ * Intercepts all network requests matching the specified host pattern and removes
+ * a specific request header (e.g., "authorization") before allowing the request to continue.
+ *
+ * This is useful when certain third-party services (like Intercom) fail if specific headers
+ * are included due to CORS or security restrictions.
+ *
+ * @param page - The Playwright Page object where the route interception will be applied.
+ * @param hostPattern - A string pattern (e.g., "intercom.io") used to match request URLs.
+ * @param headerToExclude - The name of the header to remove (case-insensitive).
+ *
+ * @returns A Promise that resolves once the route has been configured.
+ */
+export async function excludeHeaderFromHost(
+	page: Page,
+	hostPattern: string,
+	headerToExclude: string,
+): Promise<void> {
+	await page.route(`**${hostPattern}**`, async (route) => {
+		const headers = { ...route.request().headers() };
+		delete headers[headerToExclude.toLowerCase()];
+		await route.continue({ headers });
+	});
+}

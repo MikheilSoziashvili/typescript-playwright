@@ -35,4 +35,8 @@ export class FooterMap extends BaseMap {
 			`//a[contains(@class,'IconButton')]//ancestor::div[contains(@class,"MuiBox-root")]`,
 		);
 	}
+
+	public get liveSupportButton(): Locator {
+		return this.page.getByTestId('footerLinkLiveSupport')
+	}
 }

@@ -4,6 +4,9 @@ import { FooterAsserter } from "./footer-asserter";
 import { FooterMap } from "./footer-map";
 import { FooterSteps } from "./footer-steps";
 import { step } from "decorators/step";
+import { excludeHeaderFromHost } from "@core/utils/utils";
+import { Host } from "@enums/hosts";
+import { Header } from "@enums/headers";
 
 export class Footer extends BaseComponent<FooterMap> {
 	constructor(page: Page) {
@@ -30,5 +33,15 @@ export class Footer extends BaseComponent<FooterMap> {
 		footerLink: string,
 	): Promise<void> {
 		await this.map.socialMediaFooterLinkByPlaceholder(footerLink).click();
+	}
+
+	@step()
+	public async openLiveSupport(): Promise<void> {
+		await excludeHeaderFromHost(
+			this.page,
+			Host.Intercom,
+			Header.Authorization,
+		);
+		await this.map.liveSupportButton.click();
 	}
 }
