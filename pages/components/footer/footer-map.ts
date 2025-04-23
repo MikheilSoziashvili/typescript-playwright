@@ -11,7 +11,9 @@ export class FooterMap extends BaseMap {
 	}
 
 	public footerLinkByPlaceholder(placeholderText: string): Locator {
-		return this.footerContainer.locator(`//a[text()="${placeholderText}"]`);
+		return this.footerContainer.locator("a", {
+			hasText: placeholderText,
+		});
 	}
 
 	public socialMediaFooterLinkByPlaceholder(
@@ -37,6 +39,6 @@ export class FooterMap extends BaseMap {
 	}
 
 	public get liveSupportButton(): Locator {
-		return this.page.getByTestId('footerLinkLiveSupport')
+		return this.page.getByTestId("footerLinkLiveSupport");
 	}
 }
