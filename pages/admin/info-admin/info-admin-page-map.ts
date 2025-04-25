@@ -10,7 +10,7 @@ export class InfoAdminPageMap extends BaseMap {
 	}
 
 	public get adminTitle(): Locator {
-		return this.page.getByTestId("adminInfo");
+		return this.page.getByTestId("user-username");
 	}
 
 	public get banUserContainer(): Locator {

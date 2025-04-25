@@ -24,9 +24,7 @@ export class InfoAdminPageAsserter extends BaseAsserter<InfoAdminPage> {
 
 	@step("Check username is displayed in title")
 	public async isUsernameDisplayedInTitle(username: string): Promise<void> {
-		await expect(this.gamdomPage.map.adminTitle).toHaveText(
-			`Admin user info: ${username}`,
-		);
+		await expect(this.gamdomPage.map.adminTitle).toHaveText(username);
 	}
 
 	@step("Check user is banned")
