@@ -90,7 +90,9 @@ export class GamdomApi extends BaseApi {
 
 		expect(
 			setCookie,
-			"No cookies received from login response",
+			`${
+				setCookie ? "Cookie received" : "No cookies received"
+			} from login response`,
 		).toBeTruthy();
 
 		return setCookie;
@@ -142,9 +144,14 @@ export class GamdomApi extends BaseApi {
 		userData: RegisterTestData,
 	): Promise<APIResponse> {
 		const registerResponse = await this.register(userData);
-		expect(registerResponse.status(), "Register failed").toBe(
-			HttpStatus.OK,
-		);
+		expect(
+			registerResponse.status(),
+			`${
+				registerResponse.status()
+					? "Register successful"
+					: "Register failed"
+			}`,
+		).toBe(HttpStatus.OK);
 
 		return registerResponse;
 	}
