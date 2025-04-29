@@ -1,3 +1,4 @@
+import { waitForSeconds } from "@core/utils/utils";
 import { Attributes } from "@enums/playwright/htmlAttributes";
 import { OgProperties } from "@enums/playwright/htmlOgProperties";
 import { VisibilityState } from "@enums/playwright/visibility-states";
@@ -54,6 +55,48 @@ export class BaseMap {
 			...parameters,
 			state: VisibilityState.HIDDEN,
 		});
+	}
+
+	async waitForStableXPosition(parameters: {
+		locator: Locator;
+		allowedMovement?: number;
+		attempts?: number;
+		delayMs?: number;
+		failOnTimeout?: boolean;
+	}): Promise<number> {
+		const {
+			locator,
+			allowedMovement = 1,
+			attempts = 5,
+			delayMs = 200,
+			failOnTimeout = false,
+		} = parameters;
+
+		let previousX: number | undefined;
+		let currentX: number | undefined;
+
+		for (let i = 0; i < attempts; i++) {
+			previousX = currentX;
+			currentX = (await locator.boundingBox())?.x;
+
+			if (previousX !== undefined && currentX !== undefined) {
+				const delta = Math.abs(previousX - currentX);
+
+				if (delta <= allowedMovement) {
+					return currentX;
+				}
+			}
+
+			await waitForSeconds(delayMs / 1000);
+		}
+
+		if (failOnTimeout) {
+			throw new Error(
+				`Element's X position did not stabilize within ${attempts} attempts.`,
+			);
+		}
+
+		return currentX ?? 0;
 	}
 
 	async waitForAttributeToHaveValue(

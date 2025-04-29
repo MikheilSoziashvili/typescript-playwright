@@ -32,6 +32,9 @@ export class KothPage extends BasePage<KothMap> {
 
 	@step()
 	public async getKothBannerCurrencyXPosition(): Promise<number> {
+		await this.map.waitForStableXPosition({
+			locator: this.map.kothBannerCurrencyAmount,
+		});
 		return this.getElementPosition(
 			this.map.kothBannerCurrencyAmount,
 			BoundingBoxCoordinate.X,
@@ -40,6 +43,9 @@ export class KothPage extends BasePage<KothMap> {
 
 	@step()
 	public async getKothBannerTimerXPosition(): Promise<number> {
+		await this.map.waitForStableXPosition({
+			locator: this.map.kothBannerTimerContainer,
+		});
 		return this.getElementPosition(
 			this.map.kothBannerTimerContainer,
 			BoundingBoxCoordinate.X,
