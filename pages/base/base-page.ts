@@ -52,6 +52,10 @@ export abstract class BasePage<T extends BaseMap> {
 		await this.page.context().clearCookies();
 	}
 
+	public async pressEnterKeyboard(): Promise<void> {
+		await this.page.keyboard.press("Enter");
+	}
+
 	public async setExtraHTTPHeaders(
 		headers: Record<string, string> = {},
 	): Promise<void> {

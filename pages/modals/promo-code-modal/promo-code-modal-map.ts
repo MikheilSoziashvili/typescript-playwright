@@ -7,27 +7,31 @@ export class PromoCodeModalMap extends BaseMap {
 	}
 
 	public get promoCodeModalContainer(): Locator {
-		return this.page.locator(
-			`//div[text()='New Promo Code']//ancestor::div[contains(@class,'MuiPaper-elevation')]`,
-		);
+		return this.page.getByTestId(`promo-campaign-modalContainer`);
 	}
 
 	public get promoCodeModalHeader(): Locator {
-		return this.promoCodeModalContainer.locator(`[class*='ModalHead-sc-']`);
+		return this.promoCodeModalContainer.getByTestId(
+			`promo-campaign-modalHeader`,
+		);
 	}
 
 	public get promoCodeModalBody(): Locator {
-		return this.promoCodeModalContainer.locator(`[class*='ModalBody-sc-']`);
+		return this.promoCodeModalContainer.getByTestId(
+			`promo-campaign-modalBody`,
+		);
 	}
 
 	public get promoCodeModalFooter(): Locator {
-		return this.promoCodeModalContainer.locator(`[class*='Footer-sc']`);
+		return this.promoCodeModalContainer.getByTestId(
+			`promo-campaign-modalFooter`,
+		);
 	}
 
 	public get promoCodeTypeDropdown(): Locator {
-		return this.promoCodeModalContainer.locator(`[role="combobox"]`, {
-			hasText: "Type:",
-		});
+		return this.promoCodeModalContainer
+			.getByTestId("promo-campaign-type-dropdown")
+			.getByTestId(`Input`);
 	}
 
 	public get promoCodeTypesDropdownContainer(): Locator {
@@ -35,54 +39,82 @@ export class PromoCodeModalMap extends BaseMap {
 	}
 
 	public get promoCodeCashType(): Locator {
-		return this.getDropdownOptionSelector(
-			"cash",
-			this.promoCodeTypesDropdownContainer,
+		return this.promoCodeTypesDropdownContainer.getByTestId(
+			"promo-type-option-cash",
 		);
 	}
 
 	public get promoCodeFreeSpinsType(): Locator {
-		return this.getDropdownOptionSelector(
-			"free_spins",
-			this.promoCodeTypesDropdownContainer,
-		);
-	}
-
-	public promoCodeInputFieldByPlaceholder(placeholder: string): Locator {
-		return this.promoCodeModalBody.locator(
-			`//label[text()='${placeholder}']//following-sibling::div//input`,
+		return this.promoCodeTypesDropdownContainer.getByTestId(
+			"promo-type-option-free_spins",
 		);
 	}
 
 	public get campaignNameInput(): Locator {
-		return this.promoCodeInputFieldByPlaceholder("Campaign name");
+		return this.promoCodeModalBody
+			.getByTestId("promo-campaign-name-input")
+			.locator(`input`);
 	}
 
 	public get campaignCodeInput(): Locator {
-		return this.promoCodeInputFieldByPlaceholder("Campaign code");
+		return this.promoCodeModalBody
+			.getByTestId("promo-campaign-code-input")
+			.locator(`input`);
 	}
 
 	public get cashAmountInput(): Locator {
-		return this.promoCodeInputFieldByPlaceholder("Cash amount in USD");
+		return this.promoCodeModalBody
+			.getByTestId("promo-campaign-cash-amount-input")
+			.locator(`input`);
 	}
 
 	public get maxRedemptionAmountInput(): Locator {
-		return this.promoCodeInputFieldByPlaceholder("Max. Redemption");
+		return this.promoCodeModalBody
+			.getByTestId("promo-campaign-max-redemption-input")
+			.locator(`input`);
 	}
 
 	public get expireInDaysInput(): Locator {
-		return this.promoCodeInputFieldByPlaceholder("Expire in days");
+		return this.promoCodeModalBody
+			.getByTestId("promo-campaign-expire-days-input")
+			.locator(`input`);
+	}
+
+	public get freeSpinsAmountInput(): Locator {
+		return this.promoCodeModalBody
+			.getByTestId("promo-campaign-spins-input")
+			.locator(`input`);
+	}
+
+	public get searchGamesInput(): Locator {
+		return this.promoCodeModalBody
+			.getByTestId("searchInputFieldContainer")
+			.locator(`input`);
+	}
+
+	public get gamesList(): Locator {
+		return this.page.locator("div.MuiPopper-root ul[role=listbox]");
+	}
+
+	public get findGameToGiveFreeSpinsCardGameField(): Locator {
+		return this.promoCodeModalBody
+			.getByTestId("searchInputFieldContainer")
+			.locator("div.MuiAutocomplete-inputRoot");
+	}
+
+	public getGameLocatorByTitle(title: string): Locator {
+		return this.gamesList.locator(
+			`ul li div[class*="OptionTitle"]:text-is("${title}")`,
+		);
 	}
 
 	public get createPromoCodeButton(): Locator {
-		return this.promoCodeModalFooter.locator(`button`, {
-			hasText: "Create Promo Code",
-		});
+		return this.promoCodeModalFooter.getByTestId(
+			`promo-campaign-save-button`,
+		);
 	}
 
 	public get closePromoCodeModalButton(): Locator {
-		return this.promoCodeModalContainer.locator(`button`, {
-			has: this.page.locator(`i[class*="icon-remove"]`),
-		});
+		return this.promoCodeModalHeader.getByTestId(`closeButton`);
 	}
 }

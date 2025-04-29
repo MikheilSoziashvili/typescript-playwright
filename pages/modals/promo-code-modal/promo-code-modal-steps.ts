@@ -1,8 +1,45 @@
 import { BasePageStep } from "@pages/base/base-page-step";
 import { PromoCodeModal } from "./promo-code-modal";
+import { CasinoGameName } from "@enums/casino-game";
 
 export class PromoCodeModalSteps extends BasePageStep<PromoCodeModal> {
 	public constructor(page: PromoCodeModal) {
 		super(page);
+	}
+
+	public async createDefaultFreeSpinsPromoCodeSuccessfully(
+		campaignName: string,
+		campaignCode: string,
+		gameName = CasinoGameName.MYSTIC_CHIEF,
+		freeSpinsAmount = 10,
+	): Promise<void> {
+		await this.gamdomPage.assertThat().isDisplayed();
+		await this.gamdomPage.map.promoCodeTypeDropdown.click();
+		await this.gamdomPage.map.promoCodeFreeSpinsType.click();
+		await this.gamdomPage.fillPromoCodeFields(campaignName, campaignCode);
+		await this.gamdomPage.selectGameToGiveFreeSpinsPromoCode(gameName);
+		await this.gamdomPage.map.freeSpinsAmountInput.fill(
+			freeSpinsAmount.toString(),
+		);
+		await this.gamdomPage.map.createPromoCodeButton.click();
+		await this.gamdomPage
+			.assertThat()
+			.verifyPromoCodeCreationToast(campaignName);
+		await this.gamdomPage.assertThat().isNotDisplayed();
+	}
+
+	public async createDefaultCashPromoCodeSuccessfully(
+		campaignName: string,
+		campaignCode: string,
+	): Promise<void> {
+		await this.gamdomPage.assertThat().isDisplayed();
+		await this.gamdomPage.map.promoCodeTypeDropdown.click();
+		await this.gamdomPage.map.promoCodeCashType.click();
+		await this.gamdomPage.fillPromoCodeFields(campaignName, campaignCode);
+		await this.gamdomPage.map.createPromoCodeButton.click();
+		await this.gamdomPage
+			.assertThat()
+			.verifyPromoCodeCreationToast(campaignName);
+		await this.gamdomPage.assertThat().isNotDisplayed();
 	}
 }

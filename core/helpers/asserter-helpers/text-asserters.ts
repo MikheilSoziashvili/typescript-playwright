@@ -73,3 +73,22 @@ export function buildRewardsRoyaltyUpRankSubTitle(
 export function buildCreatedCampaignSubTitle(campaignName: string): string {
 	return `Campaign ${campaignName} - created`;
 }
+
+export function buildCashPromoCodeTransactionsDetailsValue(
+	promoCampaignName: string,
+	amount = 100,
+): string {
+	return `Promo code activated, code: ${promoCampaignName}, reward type: cash, amount: $${amount}`;
+}
+
+export function buildFreeSpinsPromoCodeTransactionsDetailsValue(
+	promoCampaignName: string,
+	freeSpins = 10,
+	amount = 0.2,
+): string {
+	return `Promo code activated, code: ${promoCampaignName}, reward type: free_spins, ${freeSpins} FS x ${amount} for pp_direct_vswayswest`;
+}
+
+export function buildInformationalCashPromoCodeTransactionsDetailsValue(): string {
+	return `informational_promo_win_cash`;
+}

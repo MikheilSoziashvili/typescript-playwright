@@ -37,11 +37,13 @@ import { IpBlockAdminPage } from "@pages/admin/ip-block-admin/ip-block-admin-pag
 import { BaseAdminPage } from "@pages/admin/base-admin/base-admin-page";
 import { OurGamesAdminPage } from "@pages/admin/our-games-admin/our-games-admin-page";
 import { PromoCampaignsAdminPage } from "@pages/admin/promo-campaigns-admin/promo-campaigns-admin-page";
+import { TransactionsAdminPage } from "@pages/admin/transactions-admin/transactions-admin-page";
 
 export type AdminPages = {
 	baseAdminPage: BaseAdminPage;
 	userInfoAdminPage: UserInfoAdminPage;
 	infoAdminPage: InfoAdminPage;
+	transactionsAdminPage: TransactionsAdminPage;
 	freeSpinsAdminPage: FreeSpinsAdminPage;
 	securityAdminPage: SecurityAdminPage;
 	writerAdminPage: WriterAdminPage;
@@ -88,6 +90,9 @@ export const adminPagesFixtures = base.extend<AdminPages>({
 	},
 	infoAdminPage: async ({ page }, use) => {
 		await use(new InfoAdminPage(page));
+	},
+	transactionsAdminPage: async ({ page }, use) => {
+		await use(new TransactionsAdminPage(page));
 	},
 	freeSpinsAdminPage: async ({ page }, use) => {
 		await use(new FreeSpinsAdminPage(page));

@@ -46,10 +46,12 @@ test.describe("Promo Campaign with duplicate codes of finished campaigns tests",
 				.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
 			await promoCampaignsAdminPage.clickCreateCampaignButton();
 			await promoCodeModal.assertThat().isDisplayed();
-			await promoCodeModal.createDefaultCashPromoCodeSuccessfully(
-				campaignName,
-				campaignCode,
-			);
+			await promoCodeModal
+				.steps()
+				.createDefaultCashPromoCodeSuccessfully(
+					campaignName,
+					campaignCode,
+				);
 		},
 	);
 	test.afterEach(async () => {
@@ -72,10 +74,12 @@ test.describe("Promo Campaign with duplicate codes of finished campaigns tests",
 					promoCampaignStatus.status,
 				);
 			await promoCampaignsAdminPage.clickCreateCampaignButton();
-			await promoCodeModal.createDefaultCashPromoCodeSuccessfully(
-				campaignName + campaignName,
-				campaignCode,
-			);
+			await promoCodeModal
+				.steps()
+				.createDefaultCashPromoCodeSuccessfully(
+					campaignName + campaignName,
+					campaignCode,
+				);
 			await homePage.navigateToWallet();
 			await walletModal.steps().redeemPromoCodeSuccessfully(campaignCode);
 		});
@@ -104,10 +108,12 @@ test.describe("Promo Campaign with duplicate codes of finished campaigns tests",
 				campaignName,
 				PromoCampaignStatuses.FINISHED,
 			);
-		await promoCodeModal.createDefaultCashPromoCodeSuccessfully(
-			campaignName + campaignName,
-			campaignCode,
-		);
+		await promoCodeModal
+			.steps()
+			.createDefaultCashPromoCodeSuccessfully(
+				campaignName + campaignName,
+				campaignCode,
+			);
 		await homePage.navigateToWallet();
 		await walletModal.steps().redeemPromoCodeSuccessfully(campaignCode);
 	});
