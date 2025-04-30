@@ -1,7 +1,7 @@
 import { buildRewardsRoyaltyUpRankSubTitle } from "@core/helpers/asserter-helpers/text-asserters";
 import { ToastTitle } from "@enums/toast-titles";
 import { test } from "@fixtures/fixtures";
-import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { RewardsRoyaltyUpRanks } from "@enums/rewards-royalty-up-ranks";
 import { generateEmailAndInbox } from "@core/utils/utils";
 import { MAILINATOR_DOMAIN } from "@constants/domains";
@@ -90,7 +90,7 @@ rewardsInputData.forEach((inputData) => {
 		test.beforeEach(() => {
 			({ email, inbox } = generateEmailAndInbox());
 			test.use(
-				storageStateNewUserAPI({
+				storageStateNewUserDB({
 					amount: inputData.tipUserAmount,
 					email: email,
 				}),

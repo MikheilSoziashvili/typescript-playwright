@@ -2,6 +2,7 @@ import { BitcoinFeeEstimateMode } from "@enums/bitcoin";
 import { Cryptocurrency } from "@enums/cryptocurrencies";
 import { OriginalGame } from "@enums/original-games";
 import { RainStatus } from "@enums/rain-status";
+import { Unit } from "@enums/units";
 import { VisibilityOptions } from "@enums/visibility-options";
 import { CrashGamePage } from "@pages/crash-game-page/crash-game-page";
 import { DiceGamePage } from "@pages/dice-game-page/dice-game-page";
@@ -141,3 +142,5 @@ export type CryptoOperationOptions = {
 	deposit?: boolean;
 	withdraw?: boolean;
 };
+
+export type WalletUnit = `${Unit}`;

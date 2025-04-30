@@ -12,7 +12,7 @@ import {
 } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
-import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 
 test.beforeEach(async ({ gamdomApi }) => {
@@ -45,7 +45,7 @@ test.describe("Rain claim tests", () => {
 	test.slow();
 	const baseRainAmount = 0.67;
 
-	test.use(storageStateNewUserAPI());
+	test.use(storageStateNewUserDB());
 	test("[ENG-2863] Rain - try to claim the rain", async ({
 		homePage,
 		chat,
@@ -91,7 +91,7 @@ test.describe("Tip rain tests", () => {
 	const userData = new RegisterTestData();
 
 	test.use(
-		storageStateNewUserAPI({
+		storageStateNewUserDB({
 			username: userData.username,
 			password: userData.password,
 			email: userData.email,

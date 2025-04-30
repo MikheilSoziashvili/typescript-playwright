@@ -1,5 +1,5 @@
 import { test } from "@fixtures/fixtures";
-import { storageStateNewUserAPI } from "../fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "../fixtures/auth-fixtures";
 import { getCookieHeader, parse_csv } from "@core/utils/utils";
 import { DATASETS_DIR } from "@constants/file-paths";
 import { environment_url } from "configuration";
@@ -53,7 +53,7 @@ const superAdminData = new RegisterTestData({
 });
 
 test.describe("Footer redirects tests", () => {
-	test.use(storageStateNewUserAPI());
+	test.use(storageStateNewUserDB());
 
 	footerRecords.forEach((record) => {
 		test(`[ENG-1977] Footer - Verify '${record.linkName}' redirection from Footer section redirects to its respective page`, async ({

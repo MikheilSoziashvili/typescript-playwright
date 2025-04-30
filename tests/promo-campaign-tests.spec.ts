@@ -11,7 +11,7 @@ import { CsvFilesName } from "@enums/csv-file-name";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { test } from "@fixtures/fixtures";
-import { storageStateNewSuperAdminUserAPI } from "../fixtures/auth-fixtures";
+import { storageStateNewSuperAdminUserDB } from "../fixtures/auth-fixtures";
 
 const promoCampaignStatuses = parse_csv(
 	DATASETS_DIR,
@@ -58,7 +58,7 @@ test.describe("Promo Campaign with duplicate codes of finished campaigns tests",
 		await deleteFilesWithFilePaths([qrCode2FAImagePath]);
 	});
 
-	test.use(storageStateNewSuperAdminUserAPI());
+	test.use(storageStateNewSuperAdminUserDB({}));
 
 	promoCampaignStatuses.forEach((promoCampaignStatus) => {
 		test(`[ENG-4935] Promo Codes - Verify duplicate codes of ${promoCampaignStatus.status} campaigns still work`, async ({

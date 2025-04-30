@@ -32,6 +32,7 @@ import { authenticator } from "otplib";
 import { Timeout } from "@enums/timeout";
 import { DocumentReadyState } from "@enums/playwright/document-ready-states";
 import { RegisterTestData } from "@dtos/test-data";
+import { UserTags } from "@enums/db/user-tags";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -861,4 +862,32 @@ export async function excludeHeaderFromHost(
 		delete headers[headerToExclude.toLowerCase()];
 		await route.continue({ headers });
 	});
+}
+
+/**
+ * Return the Gamdom‑style scrypt hash for a plaintext password.
+ * Uses a dynamic import so it works in both CommonJS (Playwright) and ESM.
+ */
+export async function convertToScryptHash(pwd: string): Promise<string> {
+	// `scrypt‑kdf` is ESM only, so we load it dynamically and assert its shape.
+	const {
+		default: { kdf },
+	} = (await import("scrypt-kdf")) as unknown as {
+		default: {
+			kdf: (
+				p: string,
+				o: { logN: number; r: number; p: number },
+			) => Promise<Buffer>;
+		};
+	};
+
+	return (await kdf(pwd, { logN: 13, r: 8, p: 1 })).toString("base64");
+}
+
+export function formatUserTags(
+	tags?: UserTags[] | UserTags,
+): string | undefined {
+	if (!tags) return undefined;
+	if (Array.isArray(tags)) return tags.join(",");
+	return tags;
 }

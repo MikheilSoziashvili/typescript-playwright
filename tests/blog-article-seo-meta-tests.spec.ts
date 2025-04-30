@@ -2,12 +2,12 @@ import { PRODUCTION_BASE_URL } from "@constants/page-urls";
 import { normalizeUrl } from "@core/utils/utils";
 import { OgProperties } from "@enums/playwright/htmlOgProperties";
 import { OgPropertiesValues } from "@enums/playwright/htmlOgPropertiesValues";
-import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import * as Configuration from "configuration";
 
 test.describe("Blog article - SEO meta tests", () => {
-	test.use(storageStateNewUserAPI());
+	test.use(storageStateNewUserDB());
 
 	test(`[ENG-5680] Verify SEO meta information for Blog article`, async ({
 		blogPage,

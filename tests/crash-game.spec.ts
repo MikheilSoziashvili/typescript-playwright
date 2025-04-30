@@ -1,6 +1,6 @@
 import { test } from "@fixtures/fixtures";
 import { BetTestData } from "@dtos/test-data";
-import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { getUserDetailsByTestTitle, parse_csv } from "@core/utils/utils";
 import { DATASETS_DIR } from "@constants/file-paths";
 import { CsvFilesName } from "../enums/csv-file-name";
@@ -15,7 +15,7 @@ const crashAutoCashout = parse_csv(
 }[];
 
 test.describe("Crash tests", () => {
-	test.use(storageStateNewUserAPI({ amount: 4500000 }));
+	test.use(storageStateNewUserDB({ amount: 4500000 }));
 	test.slow();
 
 	test.beforeEach(async ({ homePage }) => {

@@ -9,6 +9,7 @@ import { NewUserOptions } from "@core/api/interfaces/storage-state-new-user-opti
 import {
 	getStorageStateGoogleAuth,
 	getStorageStateNewUserAPI,
+	getStorageStateNewUserDB,
 	getStorageStateUser,
 	getStorageStateUserAPI,
 } from "@core/auth-mngmt";
@@ -30,6 +31,8 @@ import {
 import { emailDomainPattern } from "@support/regex-patterns";
 import { GamdomPages } from "./gamdom-pages";
 import { GamdomDb } from "database/gamdom-db";
+import { UserTags } from "@enums/db/user-tags";
+import { UserClasses } from "@enums/db/user-classes";
 
 const gamdomApi = new GamdomApi();
 const gamdomDb = new GamdomDb();
@@ -236,3 +239,80 @@ async function tipNewUserAndLogDetails(
 		email: userData.email,
 	});
 }
+
+export async function createNewUserWithStorageStateDB(
+	options: NewUserOptions,
+): Promise<{
+	storageStatePath: string;
+	newUser: RegisterTestData;
+	gamdomApi: GamdomApi;
+}> {
+	const gamdomApi = new GamdomApi();
+	const useGamdomEmailDomain = options.isEmailWithGamdomDomain ?? false;
+
+	const newUser = new RegisterTestData({
+		username: options.username,
+		password: options.password,
+		email: options.email,
+		useGamdomEmailDomain: useGamdomEmailDomain,
+	});
+
+	const storageStatePath = await getStorageStateNewUserDB({
+		username: newUser.username,
+		email: newUser.email,
+		password: newUser.password,
+		amount: options.amount,
+		startingXp: options.startingXp,
+		emailVerified: options.emailVerified,
+		unit: options.unit,
+		tags: options.tags,
+		image: options.image,
+		hasLogMessage: options.hasLogMessage,
+		userClass: options.userClass,
+	});
+
+	return {
+		storageStatePath: storageStatePath,
+		newUser: newUser,
+		gamdomApi: gamdomApi,
+	};
+}
+
+export const storageStateNewUserDB: (
+	options?: NewUserOptions,
+) => Fixtures<
+	{},
+	{},
+	PlaywrightTestArgs & PlaywrightTestOptions,
+	PlaywrightWorkerArgs & PlaywrightWorkerOptions
+> = (options = {}) => ({
+	storageState: async ({}, use, testInfo) => {
+		const result = await createNewUserWithStorageStateDB(options);
+		const storageStatePath = result.storageStatePath;
+		const newUser = result.newUser;
+
+		writeUserDetails(testInfo.title, testInfo.workerIndex, {
+			username: newUser.username,
+			password: newUser.password,
+			email: newUser.email,
+		});
+
+		await use(storageStatePath);
+	},
+});
+
+export const storageStateNewSuperAdminUserDB: (
+	options?: NewUserOptions,
+) => Fixtures<
+	{},
+	{},
+	PlaywrightTestArgs & PlaywrightTestOptions,
+	PlaywrightWorkerArgs & PlaywrightWorkerOptions
+> = (options = {}) =>
+	storageStateNewUserDB({
+		...options,
+		emailVerified: true,
+		isEmailWithGamdomDomain: true,
+		tags: [UserTags.SuperAdmin],
+		userClass: UserClasses.Admin,
+	});

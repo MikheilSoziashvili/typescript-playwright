@@ -1,6 +1,6 @@
 import { test } from "@fixtures/fixtures";
 import { BetTestData } from "@dtos/test-data";
-import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { getUserDetailsByTestTitle, parse_csv } from "@core/utils/utils";
 import { DATASETS_DIR } from "@constants/file-paths";
 import {
@@ -21,7 +21,7 @@ const crashIncreaseBy = parse_csv(
 }[];
 
 test.describe("Crash autobet tests", () => {
-	test.use(storageStateNewUserAPI());
+	test.use(storageStateNewUserDB());
 	test.slow();
 	test("[ENG-1416] Crash - Autobet @originals", async ({
 		crashGamePage,

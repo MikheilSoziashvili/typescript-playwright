@@ -4,7 +4,7 @@ import {
 } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { test } from "@fixtures/fixtures";
-import { storageStateNewSuperAdminUserAPI } from "../fixtures/auth-fixtures";
+import { storageStateNewSuperAdminUserDB } from "../fixtures/auth-fixtures";
 
 const VALID_USERNAME_PREFIX = `${generateRandomString({ length: 5 })}_`;
 const users = {
@@ -22,7 +22,7 @@ test.describe("User info - search by field", () => {
 		);
 	});
 
-	test.use(storageStateNewSuperAdminUserAPI());
+	test.use(storageStateNewSuperAdminUserDB());
 
 	test("[ENG-1386] User info - search by field (wild card)", async ({
 		userInfoAdminPage,

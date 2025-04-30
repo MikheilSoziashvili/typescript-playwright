@@ -31,6 +31,7 @@
 		"pino-pretty": "^10.3.0",
 		"playwright-slack-report": "^1.1.72",
 		"pngjs": "^7.0.0",
+		"scrypt-kdf": "^3.0.0",
 		"sharp": "^0.33.5",
 		"winston": "^3.11.0",
 		"xml2js": "^0.6.2"

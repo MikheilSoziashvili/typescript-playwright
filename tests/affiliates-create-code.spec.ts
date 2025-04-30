@@ -1,7 +1,7 @@
 import { buildCreateAffiliateCodeSubTitle } from "@core/helpers/asserter-helpers/text-asserters";
 import { generateRandomString } from "@core/utils/utils";
 import { ToastTitle } from "@enums/toast-titles";
-import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 
 const AUTOMATION_AFFILIATES_CODE = generateRandomString({
@@ -9,7 +9,7 @@ const AUTOMATION_AFFILIATES_CODE = generateRandomString({
 });
 
 test.describe("Create affiliate code", () => {
-	test.use(storageStateNewUserAPI());
+	test.use(storageStateNewUserDB());
 	test("[ENG-1135] Create an affiliate code", async ({
 		affiliatesPage,
 		toast,

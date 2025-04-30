@@ -7,7 +7,7 @@ import {
 	initializePageObjectsWithCookies,
 } from "@core/utils/utils";
 import { test } from "@fixtures/fixtures";
-import { storageStateNewSuperAdminUserAPI } from "../fixtures/auth-fixtures";
+import { storageStateNewSuperAdminUserDB } from "../fixtures/auth-fixtures";
 
 test.describe("Gift card generation tests", () => {
 	let qrCode2FAImagePath: string;
@@ -24,7 +24,7 @@ test.describe("Gift card generation tests", () => {
 		await deleteFilesWithFilePaths([qrCode2FAImagePath]);
 	});
 
-	test.use(storageStateNewSuperAdminUserAPI());
+	test.use(storageStateNewSuperAdminUserDB());
 
 	test("[ENG-2568] Gift ard generation - Require new 2FA code when IP of user changes", async ({
 		giftCardsAdminPage,

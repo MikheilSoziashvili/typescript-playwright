@@ -1,5 +1,5 @@
 import { test } from "@fixtures/fixtures";
-import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { OriginalGame, RouletteBetColor } from "@enums/original-games";
 import { HiloBetOption } from "@enums/hilo-bet-options";
 
@@ -33,7 +33,7 @@ const instantRewardsInputData = [
 instantRewardsInputData.forEach((inputData) => {
 	test.describe("Instant reward tests", () => {
 		test.slow();
-		test.use(storageStateNewUserAPI({ amount: 200000000 }));
+		test.use(storageStateNewUserDB({ amount: 200000000 }));
 
 		test(`[ENG-3679] Rewards - Instant reward - ${inputData.game} - Bet: ${inputData.betAmount}`, async ({
 			originalsPage,

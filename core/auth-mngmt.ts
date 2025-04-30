@@ -19,6 +19,9 @@ import { GamdomApi } from "@api/gamdom-api";
 import { RegisterTestData } from "@dtos/test-data";
 import { getFilePath } from "./utils/utils";
 import { HttpStatus } from "@enums/http-status";
+import { GamdomDb } from "database/gamdom-db";
+import { NewUserOptions } from "./api/interfaces/storage-state-new-user-options";
+import { DEFAULT_IMAGE } from "@constants/defaults";
 
 const AUTH_STATE_PATH = {
 	[GOOGLE_AUTH_CREDENTIALS.username]: GOOGLE_AUTH_STATE_FILE_PATH,
@@ -138,4 +141,38 @@ export async function getStorageStateNewUserAPI(
 	});
 
 	return path;
+}
+
+export async function getStorageStateNewUserDB(
+	options: NewUserOptions,
+): Promise<string> {
+	if (!options.username || !options.email || !options.password) {
+		throw new Error("username, email and password are mandatory");
+	}
+
+	const db = new GamdomDb();
+	const api = new GamdomApi();
+
+	await db.createNewUser({
+		username: options.username,
+		email: options.email,
+		password: options.password,
+		image: options.image ?? DEFAULT_IMAGE,
+		amount: options.amount,
+		startingXp: options.startingXp,
+		emailVerified: options.emailVerified,
+		unit: options.unit,
+		hasLogMessage: options.hasLogMessage ?? false,
+		tags: options.tags,
+		userClass: options.userClass,
+	});
+
+	const context = await api.getContext();
+	await api.authenticateWithExistingUser(options.username, options.password);
+
+	const statePath = getFilePath(`${options.username}.json`, storageStateDir);
+	AUTH_STATE_PATH[options.username] = statePath;
+	await context.storageState({ path: statePath });
+
+	return statePath;
 }

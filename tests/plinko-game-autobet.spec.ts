@@ -1,9 +1,9 @@
 import { test } from "@fixtures/fixtures";
-import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { Timeout } from "@enums/timeout";
 
 test.describe("Plinko autobet tests", () => {
-	test.use(storageStateNewUserAPI());
+	test.use(storageStateNewUserDB());
 	test.slow();
 	const numberOfAutoBets = "50";
 

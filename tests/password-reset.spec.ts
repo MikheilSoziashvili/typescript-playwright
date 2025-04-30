@@ -4,7 +4,7 @@ import { RegisterTestData } from "@dtos/test-data";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { faker } from "@faker-js/faker";
-import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { passwordPattern } from "@support/regex-patterns";
 import { test } from "fixtures/fixtures";
 
@@ -17,7 +17,7 @@ test.describe("Password reset", () => {
 	});
 
 	test.use(
-		storageStateNewUserAPI({
+		storageStateNewUserDB({
 			username: userDetails.username,
 			password: userDetails.password,
 			email: emailDetails.email,

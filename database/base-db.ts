@@ -12,14 +12,17 @@ export class BaseDB {
 		sql: string,
 		params: unknown[] = [],
 		logContext: string,
+		hasLogMessage = true,
 	): Promise<T[]> {
 		const client = await this.pool.connect();
 		try {
-			logger.info(
-				`${logContext} - SQL: ${sql} | Params: ${JSON.stringify(
-					params,
-				)}`,
-			);
+			hasLogMessage
+				? logger.info(
+						`${logContext} - SQL: ${sql} | Params: ${JSON.stringify(
+							params,
+						)}`,
+				  )
+				: undefined;
 			const result = await client.query<T>(sql, params);
 			return result.rows;
 		} catch (error) {
@@ -44,17 +47,24 @@ export class BaseDB {
 		columns: string[] | "*",
 		condition?: string,
 		params: unknown[] = [],
+		hasLogMessage = true,
 	): Promise<QueryResultRow[]> {
 		const columnList = columns === "*" ? "*" : columns.join(", ");
 		const whereClause = condition ? `WHERE ${condition}` : "";
 		const sql = `SELECT ${columnList} FROM ${table} ${whereClause}`;
 
-		return this.executeQuery(sql, params, "Database Query execution");
+		return this.executeQuery(
+			sql,
+			params,
+			"Database Query execution",
+			hasLogMessage,
+		);
 	}
 
 	async insert(
 		table: string,
 		data: Record<string, unknown>,
+		hasLogMessage = true,
 	): Promise<QueryResultRow> {
 		const columns = Object.keys(data).join(", ");
 		const values = Object.values(data);
@@ -67,6 +77,7 @@ export class BaseDB {
 			sql,
 			values,
 			"Database 'Insert' operation",
+			hasLogMessage,
 		);
 		return result[0];
 	}
@@ -75,6 +86,7 @@ export class BaseDB {
 		table: string,
 		data: Record<string, unknown>,
 		condition: string,
+		hasLogMessage = true,
 	): Promise<QueryResultRow> {
 		const columns = Object.keys(data);
 		const values = Object.values(data);
@@ -87,13 +99,23 @@ export class BaseDB {
 			sql,
 			values,
 			"Database 'Update' operation",
+			hasLogMessage,
 		);
 		return result[0];
 	}
 
-	async delete(table: string, condition: string): Promise<void> {
+	async delete(
+		table: string,
+		condition: string,
+		hasLogMessage = true,
+	): Promise<void> {
 		const sql = `DELETE FROM ${table} WHERE ${condition}`;
-		await this.executeQuery(sql, [], "Database 'Delete' operation");
+		await this.executeQuery(
+			sql,
+			[],
+			"Database 'Delete' operation",
+			hasLogMessage,
+		);
 	}
 
 	async closePool(): Promise<void> {

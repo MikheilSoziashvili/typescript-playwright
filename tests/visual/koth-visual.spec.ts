@@ -1,5 +1,5 @@
 import { test } from "@fixtures/fixtures";
-import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { DATASETS_DIR } from "@constants/file-paths";
 import { parse_csv } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
@@ -16,7 +16,7 @@ kothDataset.forEach((record) => {
 			await homePage.navigateAndCheckTitle();
 			await homePage.authenticatedHeader.changeCurrency(record.currency);
 		});
-		test.use(storageStateNewUserAPI());
+		test.use(storageStateNewUserDB());
 
 		test(`[ENG-4483] KOTH - visual in header with currency: ${record.currency} @visual`, async ({
 			homePage,

@@ -2,11 +2,11 @@ import { RouletteBetColor, RouletteNumberColor } from "@enums/original-games";
 import { test } from "@fixtures/fixtures";
 import { logger } from "@logger/logger";
 import { BetTestData } from "@dtos/test-data";
-import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { getUserDetailsByTestTitle } from "@core/utils/utils";
 
 test.describe("Roulette tests", () => {
-	test.use(storageStateNewUserAPI());
+	test.use(storageStateNewUserDB());
 	test("[ENG-264] Place a single bet on Roulette and try to win @smoke @originals", async ({
 		rouletteGamePage,
 	}, testInfo) => {

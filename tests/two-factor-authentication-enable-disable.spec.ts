@@ -4,7 +4,7 @@ import {
 	generate2FACodeFromQRCodeImage,
 	getUserDetailsByTestTitle,
 } from "@core/utils/utils";
-import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 
 test.describe("Two-Factor Authentication login verification", () => {
@@ -17,7 +17,7 @@ test.describe("Two-Factor Authentication login verification", () => {
 		await deleteFilesWithFilePaths([qrCode2FAImagePath]);
 	});
 
-	test.use(storageStateNewUserAPI());
+	test.use(storageStateNewUserDB());
 
 	test(`[ENG-2539] - Enable and Disable Two-Factor Authentication`, async ({
 		homePage,

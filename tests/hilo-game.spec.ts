@@ -6,15 +6,15 @@ import { test } from "@fixtures/fixtures";
 import { HiloBetTestData } from "@dtos/test-data";
 import { HiloBetMultiplierByBetOption } from "@enums/original-games";
 import { HiloBetOption } from "@enums/hilo-bet-options";
-import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { getUserDetailsByTestTitle } from "@core/utils/utils";
 
 test.describe("Hilo tests", () => {
-	test.use(storageStateNewUserAPI());
+	test.use(storageStateNewUserDB());
 	test.slow();
 	test("[ENG-298] Place a single bet on Hilo and try to win @smoke @originals", async ({
 		hiloGamePage,
-	},testInfo) => {
+	}, testInfo) => {
 		const newUserDetails = getUserDetailsByTestTitle(
 			testInfo.title,
 			testInfo.workerIndex,

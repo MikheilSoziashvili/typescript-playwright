@@ -1,14 +1,14 @@
 import { DiceGameResultMessage } from "@enums/dice-result-messages";
 import { test } from "@fixtures/fixtures";
 import { DiceAutobetTestData } from "@dtos/test-data";
-import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { parse_csv } from "@core/utils/utils";
 import { DATASETS_DIR } from "@constants/file-paths";
 import { CsvFilesName } from "../enums/csv-file-name";
 import { BetIncreaseCondition } from "@enums/dice-autobet-section-name";
 
 test.describe("Dice game autobet", () => {
-	test.use(storageStateNewUserAPI());
+	test.use(storageStateNewUserDB());
 
 	for (const betData of parse_csv(
 		DATASETS_DIR,

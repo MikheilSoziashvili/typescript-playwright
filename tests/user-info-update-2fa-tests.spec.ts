@@ -11,7 +11,7 @@ import {
 import { CsvFilesName } from "@enums/csv-file-name";
 import { ContactType } from "@enums/personal-info-types";
 import { test } from "@fixtures/fixtures";
-import { storageStateNewUserAPI } from "../fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "../fixtures/auth-fixtures";
 
 const contactInfoInputs = parse_csv(
 	DATASETS_DIR,
@@ -33,7 +33,7 @@ test.describe("User info update tests", () => {
 		await deleteFilesWithFilePaths([qrCode2FAImagePath]);
 	});
 
-	test.use(storageStateNewUserAPI());
+	test.use(storageStateNewUserDB());
 
 	contactInfoInputs.forEach((contactType) => {
 		test(`[ENG-2567] Profile page - change ${contactType.field} - Require new 2FA code when IP of user changes`, async ({

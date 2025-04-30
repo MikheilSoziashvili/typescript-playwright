@@ -7,7 +7,7 @@ import {
 	initializePageObjectsWithCookies,
 } from "@core/utils/utils";
 import { Wallet } from "@enums/wallets";
-import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 
 test.describe(`Vault wallet - 2FA verifications`, () => {
@@ -23,7 +23,7 @@ test.describe(`Vault wallet - 2FA verifications`, () => {
 		await deleteFilesWithFilePaths([qrCode2FAImagePath]);
 	});
 
-	test.use(storageStateNewUserAPI({ amount: 45000000 }));
+	test.use(storageStateNewUserDB({ amount: 45000000 }));
 	const walletType = Wallet.USD;
 	const depositAmount = 3000;
 	const withdrawAmount = depositAmount / 3;

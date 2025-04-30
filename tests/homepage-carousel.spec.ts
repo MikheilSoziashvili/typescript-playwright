@@ -1,11 +1,11 @@
 import { test } from "@fixtures/fixtures";
-import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { HomePageBannerCarouselSlideTitle } from "@enums/homepage-banner-carousel-slide-title";
 
 // NOTE: For Usain Bolt, Black Jack and Drop and wins slides should be implemented when ENG-1525 is fixed
 
 test.describe("Homepage banner carousel", () => {
-	test.use(storageStateNewUserAPI());
+	test.use(storageStateNewUserDB());
 	test(`[ENG-1158] - Homepage banner carousel - dice game page`, async ({
 		homePage,
 		diceGamePage,

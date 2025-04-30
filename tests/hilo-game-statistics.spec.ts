@@ -3,7 +3,7 @@ import { parse_csv } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { HiloGameStatusMessage } from "@enums/hilo-result-messages";
 import { OriginalGame } from "@enums/original-games";
-import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 
 const lastRoundsInputs = parse_csv(
@@ -14,7 +14,7 @@ const lastRoundsInputs = parse_csv(
 }[];
 
 test.describe("Hilo game - statistics tests", () => {
-	test.use(storageStateNewUserAPI());
+	test.use(storageStateNewUserDB());
 	test.slow();
 
 	lastRoundsInputs.forEach((input) => {

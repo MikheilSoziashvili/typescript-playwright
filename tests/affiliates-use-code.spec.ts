@@ -5,7 +5,7 @@ import {
 import { RegisterTestData } from "@dtos/test-data";
 import { NotificationTitle } from "@enums/notification-titles";
 import { ToastTitle } from "@enums/toast-titles";
-import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 
 const AUTOMATION_AFFILIATES_CODE = generateRandomString({
@@ -13,7 +13,7 @@ const AUTOMATION_AFFILIATES_CODE = generateRandomString({
 });
 
 test.describe("Use affiliate code", () => {
-	test.use(storageStateNewUserAPI());
+	test.use(storageStateNewUserDB());
 
 	test.slow();
 	test("[ENG-297] Create an affiliate code and use it with a new account @smoke", async ({

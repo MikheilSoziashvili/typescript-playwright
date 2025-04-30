@@ -1,8 +1,8 @@
 import { test } from "@fixtures/fixtures";
-import { storageStateNewUserAPI } from "../fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "../fixtures/auth-fixtures";
 
 test.describe("Logout tests", () => {
-	test.use(storageStateNewUserAPI());
+	test.use(storageStateNewUserDB());
 	test("[ENG-1541] Profile - logout @smoke", async ({
 		profilePage,
 		homePage,

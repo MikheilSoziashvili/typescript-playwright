@@ -7,7 +7,7 @@ import {
 	initializePageObjectsWithCookies,
 } from "@core/utils/utils";
 import { test } from "@fixtures/fixtures";
-import { storageStateNewSuperAdminUserAPI } from "../fixtures/auth-fixtures";
+import { storageStateNewSuperAdminUserDB } from "../fixtures/auth-fixtures";
 
 test.describe("Promo Code tests", () => {
 	let qrCode2FAImagePath: string;
@@ -22,7 +22,7 @@ test.describe("Promo Code tests", () => {
 		await deleteFilesWithFilePaths([qrCode2FAImagePath]);
 	});
 
-	test.use(storageStateNewSuperAdminUserAPI());
+	test.use(storageStateNewSuperAdminUserDB());
 
 	test("[ENG-3966] Promo Code - Require new 2FA code when IP of user changes", async ({
 		promoCampaignsAdminPage,

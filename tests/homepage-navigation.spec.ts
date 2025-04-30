@@ -1,12 +1,12 @@
 import { test } from "@fixtures/fixtures";
-import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { parse_csv } from "@core/utils/utils";
 import { DATASETS_DIR } from "@constants/file-paths";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { environment_url } from "configuration";
 
 test.describe("Homepage navigation", () => {
-	test.use(storageStateNewUserAPI());
+	test.use(storageStateNewUserDB());
 
 	const casinoSliders = parse_csv(
 		DATASETS_DIR,

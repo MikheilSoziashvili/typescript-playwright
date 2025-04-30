@@ -25,6 +25,10 @@ on:
                 description: "Custom command-line options"
                 type: string
                 required: false
+            db_host:
+                description: "Custom DB host"
+                type: string
+                required: false
             run_game_providers_tests:
                 description: "Run Game Providers tests"
                 type: choice
@@ -177,7 +181,7 @@ jobs:
             ENVIRONMENT_URL: ${{ github.event.client_payload.environment_url || (inputs.environment == '' && vars.ENVIRONMENT_URL || inputs.environment) }}
             SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
             OAUTH2_JWT: ${{ secrets.OAUTH2_JWT }}
-            DB_HOST: ${{ github.event.client_payload.db-host || secrets.DB_HOST }}
+            DB_HOST: ${{ inputs.db_host || github.event.client_payload.db-host || secrets.DB_HOST }}
             DB_USER: ${{ secrets.DB_USER }}
             DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
             DB_NAME: ${{ secrets.DB_NAME }}

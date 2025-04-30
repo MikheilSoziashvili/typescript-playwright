@@ -7,7 +7,7 @@ import { getCookieHeader, setAuthenticationCookies } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { Wallet } from "@enums/wallets";
 import { CryptoNode } from "@enums/crypto-nodes";
-import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { TransactionState } from "@enums/transaction-states";
 import { testnetAddress } from "@constants/crypto";
 import { Timeout } from "@enums/timeout";
@@ -50,7 +50,7 @@ test.describe("Bitcoin tests", () => {
 	const userData = new RegisterTestData();
 
 	test.use(
-		storageStateNewUserAPI({
+		storageStateNewUserDB({
 			username: userData.username,
 			password: userData.password,
 		}),

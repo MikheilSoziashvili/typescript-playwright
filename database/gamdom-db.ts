@@ -7,10 +7,18 @@ import { UserTags } from "@enums/db/user-tags";
 import { UserClasses } from "@enums/db/user-classes";
 import { Unit } from "@enums/units";
 import { WalletsColumns } from "@enums/db/wallets-columns";
-import { formatDate, getRandomPhone } from "@core/utils/utils";
+import {
+	convertToScryptHash,
+	formatDate,
+	formatUserTags,
+	getRandomPhone,
+} from "@core/utils/utils";
 import { CampaignsColumns } from "@enums/db/campaigns-columns";
 import { WithdrawLimitsSettingsValues } from "@enums/db/withdraw-settings-values";
 import { SettingsColumns } from "@enums/db/settings-columns";
+import { WalletUnit } from "@core/types/types";
+import { NewUserOptions } from "@core/api/interfaces/storage-state-new-user-options";
+import { DEFAULT_IMAGE } from "@constants/defaults";
 
 export class GamdomDb extends BaseDB {
 	constructor() {
@@ -30,12 +38,14 @@ export class GamdomDb extends BaseDB {
 
 	public async getUserInfoByUsername(
 		username: string,
+		hasLogMessage = true,
 	): Promise<QueryResultRow[]> {
 		const userInfo = await this.query(
 			DbTables.Users,
 			"*",
 			`${UsersColumns.Username} = $1`,
 			[username],
+			hasLogMessage,
 		);
 		return userInfo;
 	}
@@ -90,25 +100,32 @@ export class GamdomDb extends BaseDB {
 
 	public async insertUserWallet(
 		userId: number,
-		unit = Unit.COINS,
+		unit: WalletUnit = Unit.COINS,
 		balance = 10000000,
+		hasLogMessage = true,
 	): Promise<QueryResultRow> {
-		const result = await this.insert(DbTables.Wallets, {
-			[WalletsColumns.UserId]: userId,
-			[WalletsColumns.Unit]: unit,
-			[WalletsColumns.Balance]: balance,
-		});
+		const result = await this.insert(
+			DbTables.Wallets,
+			{
+				[WalletsColumns.UserId]: userId,
+				[WalletsColumns.Unit]: unit,
+				[WalletsColumns.Balance]: balance,
+			},
+			hasLogMessage,
+		);
 		return result;
 	}
 
 	public async updateUserXP(
 		userId: number,
 		xp = 10001200,
+		hasLogMessage = true,
 	): Promise<QueryResultRow> {
 		const result = await this.update(
 			DbTables.Users,
 			{ [UsersColumns.XP]: xp },
 			`${UsersColumns.Id} = ${userId}`,
+			hasLogMessage,
 		);
 		return result;
 	}
@@ -169,5 +186,49 @@ export class GamdomDb extends BaseDB {
 			`${SettingsColumns.Key} = '${key}'`,
 		);
 		return result;
+	}
+
+	public async createNewUser({
+		username,
+		email,
+		password,
+		image = DEFAULT_IMAGE,
+		amount = 10000000,
+		startingXp = 10001200,
+		emailVerified = false,
+		unit = Unit.COINS,
+		hasLogMessage = true,
+		tags,
+		userClass,
+	}: NewUserOptions): Promise<number> {
+		if (!username || !email || !password) {
+			throw new Error(
+				"Missing required fields: username, email, or password",
+			);
+		}
+
+		const passwordHash = await convertToScryptHash(password);
+
+		await this.insert(
+			DbTables.Users,
+			{
+				[UsersColumns.Username]: username,
+				[UsersColumns.Email]: email.toLowerCase(),
+				[UsersColumns.Image]: image,
+				[UsersColumns.PasswordHash]: passwordHash,
+				[UsersColumns.EmailVerified]: emailVerified,
+				[UsersColumns.Tags]: formatUserTags(tags),
+				[UsersColumns.UserClass]: userClass ?? UserClasses.User,
+			},
+			hasLogMessage,
+		);
+
+		const userInfo = await this.getUserInfoByUsername(username, false);
+		const userId = userInfo[0][UsersColumns.Id] as number;
+
+		await this.insertUserWallet(userId, unit, amount, false);
+		await this.updateUserXP(userId, startingXp, false);
+
+		return userId;
 	}
 }

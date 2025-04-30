@@ -11,7 +11,7 @@ import {
 import { RegisterTestData } from "@dtos/test-data";
 import { test } from "@fixtures/fixtures";
 import { emailDomainPattern } from "@support/regex-patterns";
-import { storageStateNewSuperAdminUserAPI } from "../fixtures/auth-fixtures";
+import { storageStateNewSuperAdminUserDB } from "../fixtures/auth-fixtures";
 
 test.describe("Tip user through admin panel tests", () => {
 	let qrCode2FAImagePath: string;
@@ -36,7 +36,7 @@ test.describe("Tip user through admin panel tests", () => {
 	});
 
 	test.use(
-		storageStateNewSuperAdminUserAPI({
+		storageStateNewSuperAdminUserDB({
 			username: userData.username,
 			password: userData.password,
 			email: userData.email,

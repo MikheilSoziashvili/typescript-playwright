@@ -1,6 +1,6 @@
 import { generateRandomString } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
-import { storageStateNewUserAPI } from "@fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 
 const AUTOMATION_AFFILIATES_CODE = generateRandomString({
@@ -9,7 +9,7 @@ const AUTOMATION_AFFILIATES_CODE = generateRandomString({
 let affiliateLink = "";
 
 test.describe("Register with affiliate link", () => {
-	test.use(storageStateNewUserAPI());
+	test.use(storageStateNewUserDB());
 	test.slow();
 
 	test.beforeEach(async ({ affiliatesPage }) => {
