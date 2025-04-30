@@ -175,18 +175,27 @@ export class BaseAsserter<
 		);
 	}
 
-	@step()
-	public async verifyCurrentUrlIs(
+	@step("Wait for and verify current URL is as expected")
+	public async waitForAndVerifyCurrentUrlIs(
 		expectedUrl: string,
 		decodingUrl = false,
+		timeout = Timeout.MEDIUM,
 	): Promise<void> {
-		await this.gamdomPage.page.waitForLoadState();
-		let currentUrl = this.gamdomPage.page.url();
-
 		const normalizedExpectedUrl = expectedUrl.startsWith("http")
 			? expectedUrl
 			: `${Configuration.environment_url}${expectedUrl}`;
 
+		await this.gamdomPage.page.waitForURL(
+			(url) => {
+				const decodedUrl = decodingUrl
+					? decodeURIComponent(url.toString())
+					: url.toString();
+				return decodedUrl === normalizedExpectedUrl;
+			},
+			{ timeout },
+		);
+
+		let currentUrl = this.gamdomPage.page.url();
 		currentUrl = decodingUrl ? decodeURIComponent(currentUrl) : currentUrl;
 
 		expect(currentUrl).toBe(normalizedExpectedUrl);

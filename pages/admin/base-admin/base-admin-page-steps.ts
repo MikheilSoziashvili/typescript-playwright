@@ -18,6 +18,8 @@ export class BaseAdminSteps extends BasePageStep<BaseAdminPage> {
 		await baseAdminPage.clickOnAdminTab(tab);
 		await baseAdminPage
 			.assertThat()
-			.verifyCurrentUrlIs(Configuration.environment_url + endpoint);
+			.waitForAndVerifyCurrentUrlIs(
+				Configuration.environment_url + endpoint,
+			);
 	}
 }

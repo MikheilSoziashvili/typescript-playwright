@@ -32,7 +32,7 @@ test.describe("Homepage navigation", () => {
 			);
 			await casinoPage
 				.assertThat()
-				.verifyCurrentUrlIs(
+				.waitForAndVerifyCurrentUrlIs(
 					`${environment_url}${casinoSlider.urlEndpoint}`,
 				);
 			await casinoPage

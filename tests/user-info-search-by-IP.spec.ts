@@ -22,13 +22,11 @@ ipAddressInputs.forEach((input) => {
 			baseAdminPage,
 		}) => {
 			await userInfoAdminPage.navigate();
-			await userInfoAdminPage
-				.assertThat()
-				.searchByIPElementsDisplayed();
+			await userInfoAdminPage.assertThat().searchByIPElementsDisplayed();
 			await userInfoAdminPage.searchForIP(`${input.value}`);
 			await baseAdminPage
 				.assertThat()
-				.verifyCurrentUrlIs(
+				.waitForAndVerifyCurrentUrlIs(
 					`${environment_url}${ADMIN_IP_USERS_PAGE_ENDPOINT}/${input.value}`,
 					true,
 				);

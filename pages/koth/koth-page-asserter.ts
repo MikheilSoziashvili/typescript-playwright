@@ -61,6 +61,6 @@ export class KothAsserter extends BaseAsserter<KothPage> {
 		const formattedExpectedUrl =
 			`${expectedUrl}/${lastKothEventName}`.toLowerCase();
 
-		await this.verifyCurrentUrlIs(formattedExpectedUrl);
+		await this.waitForAndVerifyCurrentUrlIs(formattedExpectedUrl);
 	}
 }

@@ -63,7 +63,9 @@ test.describe("Footer redirects tests", () => {
 			await homePage.navigate();
 			await footer.openFooterLinkByPlaceholder(record.linkName);
 
-			await footer.assertThat().verifyCurrentUrlIs(record.expectedURL);
+			await footer
+				.assertThat()
+				.waitForAndVerifyCurrentUrlIs(record.expectedURL);
 		});
 	});
 
@@ -110,7 +112,9 @@ test.describe("Footer redirects tests", () => {
 			await footer.openSocialMediaFooterLinkByPlaceholder(
 				record.socialMedia,
 			);
-			await footer.assertThat().verifyCurrentUrlIs(`${environment_url}/`);
+			await footer
+				.assertThat()
+				.waitForAndVerifyCurrentUrlIs(`${environment_url}/`);
 			await homePage
 				.assertThat()
 				.verifyNewTabUrlParts([
@@ -137,7 +141,9 @@ test.describe("Footer redirects tests", () => {
 		}) => {
 			await homePage.navigate();
 			await footer.openFooterLinkByPlaceholder(record.footerLink);
-			await footer.assertThat().verifyCurrentUrlIs(`${environment_url}/`);
+			await footer
+				.assertThat()
+				.waitForAndVerifyCurrentUrlIs(`${environment_url}/`);
 			await homePage.assertThat().verifyNewTabUrl(record.expectedUrl);
 		});
 	});
