@@ -1,5 +1,6 @@
 export enum GeoblockedCountry {
 	UNITED_STATED = "United States",
+	BELGIUM = "Belgium",
 	NETHERLANDS = "Netherlands",
 }
 

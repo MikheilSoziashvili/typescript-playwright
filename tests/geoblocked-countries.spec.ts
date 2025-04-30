@@ -9,6 +9,7 @@ import {
 	PT_PROXY_CREDENTIALS,
 	UK_PROXY_CREDENTIALS,
 	US_PROXY_CREDENTIALS,
+	BE_PROXY_CREDENTIALS,
 } from "@constants/proxies";
 import { ProxyCredentialsType } from "@core/types/types";
 import {
@@ -24,11 +25,13 @@ const SOFTBLOCK_MODAL_TITLE =
 
 const countries = [
 	GeoblockedCountry.UNITED_STATED,
+	GeoblockedCountry.BELGIUM,
 	GeoblockedCountry.NETHERLANDS,
 ];
 
 const geoblockedCredentialsMap = new Map<string, ProxyCredentialsType>([
 	[GeoblockedCountry.UNITED_STATED, US_PROXY_CREDENTIALS],
+	[GeoblockedCountry.BELGIUM, BE_PROXY_CREDENTIALS],
 	[GeoblockedCountry.NETHERLANDS, NL_PROXY_CREDENTIALS],
 ]);
 
@@ -58,7 +61,7 @@ for (const baseURL of baseUrls) {
 				baseURL: baseURL,
 			});
 
-			test(`[ENG-289] Check the geoblock page : Geoblocked in ${country} for URL ${baseURL}`, async ({
+			test(`[ENG-5596] Check the country-based access restrictions : Blocked in ${country} for URL ${baseURL}`, async ({
 				homePage,
 				geoblockedPage,
 			}) => {
