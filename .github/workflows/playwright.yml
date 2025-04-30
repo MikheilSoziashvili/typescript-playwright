@@ -4,7 +4,6 @@ on:
     repository_dispatch:
         types: [auto-deploy-env]
 
-
     workflow_dispatch:
         inputs:
             environment:
@@ -41,13 +40,19 @@ on:
                 description: "Set number of parallel workers"
                 type: choice
                 required: true
-                default: 3
+                default: 10
                 options:
-                    - 1
-                    - 2
-                    - 3
-                    - 4
                     - 5
+                    - 6
+                    - 7
+                    - 8
+                    - 9
+                    - 10
+                    - 11
+                    - 12
+                    - 13
+                    - 14
+                    - 15
             test_execution_id:
                 description: "Test Execution ID"
                 type: string
@@ -151,9 +156,9 @@ jobs:
         timeout-minutes: 600
         runs-on: self-hosted-dind
         permissions:
-          pull-requests: write
-          contents: read
-          issues: write
+            pull-requests: write
+            contents: read
+            issues: write
         strategy:
             fail-fast: false
             matrix:
@@ -325,36 +330,36 @@ jobs:
               if: ${{ always() && github.event_name == 'repository_dispatch' }}
               id: app-token
               with:
-                app-id: ${{ secrets.GH_APP_ID }}
-                private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-                owner: ${{ github.repository_owner }}
-          
+                  app-id: ${{ secrets.GH_APP_ID }}
+                  private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+                  owner: ${{ github.repository_owner }}
+
             - name: Find Comment gamdom-core autodeploy env
               if: ${{ always() && github.event_name == 'repository_dispatch' }}
               uses: peter-evans/find-comment@v3
               continue-on-error: true
               id: fc
               with:
-                issue-number: "${{ github.event.client_payload.pr_number }}"
-                repository: "${{ github.event.client_payload.repository }}"
-                comment-author: "${{ github.actor }}"
-                body-includes: Playwright report
-                token: ${{ steps.app-token.outputs.token }}
-          
+                  issue-number: "${{ github.event.client_payload.pr_number }}"
+                  repository: "${{ github.event.client_payload.repository }}"
+                  comment-author: "${{ github.actor }}"
+                  body-includes: Playwright report
+                  token: ${{ steps.app-token.outputs.token }}
+
             - name: Comment on PR gamdom-core autodeploy env
               if: ${{ always() && github.event_name == 'repository_dispatch' }}
               uses: peter-evans/create-or-update-comment@v4
               continue-on-error: true
               with:
-                comment-id: ${{ steps.fc.outputs.comment-id }}
-                repository: "${{ github.event.client_payload.repository }}"
-                issue-number: "${{ github.event.client_payload.pr_number }}"
-                body: |
-                  🐞🤖🕷️
-                  :world_map: Playwright report available [here](${{ env.REPORT_URL }})
-                token: ${{ steps.app-token.outputs.token }}
-                edit-mode: "replace"
-                append-separator: "none"
+                  comment-id: ${{ steps.fc.outputs.comment-id }}
+                  repository: "${{ github.event.client_payload.repository }}"
+                  issue-number: "${{ github.event.client_payload.pr_number }}"
+                  body: |
+                      🐞🤖🕷️
+                      :world_map: Playwright report available [here](${{ env.REPORT_URL }})
+                  token: ${{ steps.app-token.outputs.token }}
+                  edit-mode: "replace"
+                  append-separator: "none"
 
             - name: Send report to Slack using CLI
               if: ${{ always() && github.event_name != 'repository_dispatch' }}
