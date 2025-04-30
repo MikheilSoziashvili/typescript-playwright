@@ -4,7 +4,10 @@ import { HomePage } from "./home-page";
 import { HomePageBannerCarouselSlideTitle } from "@enums/homepage-banner-carousel-slide-title";
 import { RegisterTestDataParams } from "@core/interfaces";
 import { Locator, Page } from "playwright";
-import { generate2FACodeFromQRCodeImage, waitUntil } from "@core/utils/utils";
+import {
+	generate2FACodeFromQRCodeImage,
+	waitUntil,
+} from "@core/utils/utils";
 import { Timeout } from "@enums/timeout";
 import { VisibilityResult } from "@core/types/types";
 import { GameProvider } from "@enums/game-providers";
@@ -119,9 +122,7 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 						locator: nextButton,
 						timeout: Timeout.MEDIUM,
 					});
-					// Due to Webkit failures (unable to click on elements) explicit wait + force click is required
-					// eslint-disable-next-line playwright/no-force-option
-					await nextButton.click({ force: true });
+					await this.gamdomPage.performReliableClick(nextButton);
 					providerLocator =
 						this.gamdomPage.map.providerInCasinoMenu(providerName);
 				}

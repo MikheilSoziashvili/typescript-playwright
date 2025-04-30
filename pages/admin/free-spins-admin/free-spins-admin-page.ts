@@ -42,9 +42,7 @@ export class FreeSpinsAdminPage extends BasePage<FreeSpinsAdminPageMap> {
 			locator: gameLocator,
 			timeout: Timeout.MEDIUM,
 		});
-		// Due to Webkit failures (unable to click on elements) explicit wait + force click is required
-		// eslint-disable-next-line playwright/no-force-option
-		await gameLocator.click({ force: true });
+		await this.performReliableClick(gameLocator);
 	}
 
 	public async giveFreeSpins(parameters: {
