@@ -4,10 +4,7 @@ import { HomePage } from "./home-page";
 import { HomePageBannerCarouselSlideTitle } from "@enums/homepage-banner-carousel-slide-title";
 import { RegisterTestDataParams } from "@core/interfaces";
 import { Locator, Page } from "playwright";
-import {
-	generate2FACodeFromQRCodeImage,
-	waitUntil,
-} from "@core/utils/utils";
+import { generate2FACodeFromQRCodeImage, waitUntil } from "@core/utils/utils";
 import { Timeout } from "@enums/timeout";
 import { VisibilityResult } from "@core/types/types";
 import { GameProvider } from "@enums/game-providers";
@@ -122,7 +119,7 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 						locator: nextButton,
 						timeout: Timeout.MEDIUM,
 					});
-					await this.gamdomPage.performReliableClick(nextButton);
+					await nextButton.click();
 					providerLocator =
 						this.gamdomPage.map.providerInCasinoMenu(providerName);
 				}

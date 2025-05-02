@@ -42,7 +42,7 @@ export class FreeSpinsAdminPage extends BasePage<FreeSpinsAdminPageMap> {
 			locator: gameLocator,
 			timeout: Timeout.MEDIUM,
 		});
-		await this.performReliableClick(gameLocator);
+		await gameLocator.click();
 	}
 
 	public async giveFreeSpins(parameters: {

@@ -29,7 +29,7 @@ export class UserInfoAdminPage extends BasePage<UserInfoAdminPageMap> {
 	}
 
 	public async clickSearchByUsernameField(): Promise<void> {
-		await this.performReliableClick(this.map.searchByUsernameContainer);
+		await this.map.searchByUsernameContainer.click();
 	}
 
 	public async clickSearchByIPField(): Promise<void> {
@@ -46,7 +46,7 @@ export class UserInfoAdminPage extends BasePage<UserInfoAdminPageMap> {
 		username: string,
 	): Promise<void> {
 		const usernameOption = this.map.searchByUsernameMenuOption(username);
-		await this.performReliableClick(usernameOption);
+		await usernameOption.click();
 	}
 
 	public async insertIPInSearchByIPInput(ipAddress: string): Promise<void> {

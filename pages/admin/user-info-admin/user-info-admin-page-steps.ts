@@ -11,7 +11,7 @@ export class UserInfoAdminPageSteps extends BasePageStep<UserInfoAdminPage> {
 		expectToBeFound?: boolean;
 	}): Promise<void> {
 		const { username, expectToBeFound } = parameters;
-		await this.gamdomPage.performReliableClick(this.gamdomPage.map.searchByUsernameInput);
+		await this.gamdomPage.map.searchByUsernameInput.click();
 		await this.gamdomPage.map.searchByUsernameInput.fill(username);
 
 		if (expectToBeFound) {

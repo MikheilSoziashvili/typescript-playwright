@@ -47,7 +47,7 @@ export class SettingsPage extends BasePage<SettingsPageMap> {
 		expect(inputCount).toBe(code2FA.length);
 		for (let i = 0; i < inputCount; i++) {
 			const inputElement = this.map.fields2FACodeInputs.nth(i);
-			await this.performReliableClick(inputElement);
+			await inputElement.click();
 			await inputElement.fill(code2FA[i]);
 		}
 	}
