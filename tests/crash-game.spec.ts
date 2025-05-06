@@ -15,7 +15,7 @@ const crashAutoCashout = parse_csv(
 }[];
 
 test.describe("Crash tests", () => {
-	test.use(storageStateNewUserDB({ amount: 4500000 }));
+	test.use(storageStateNewUserDB({ amount: 15000000000 }));
 	test.slow();
 
 	test.beforeEach(async ({ homePage }) => {
@@ -76,11 +76,6 @@ test.describe("Crash tests", () => {
 		test(`[ENG-1118] Crash - Auto Cashout with: [${record.your_bet}] value bets @originals`, async ({
 			crashGamePage,
 		}, testInfo) => {
-			test.fixme(
-				record.your_bet === "500000",
-				`Issue [ENG-2490] Increase amount of money on pre-seeded user1`,
-			);
-
 			const newUserDetails = getUserDetailsByTestTitle(
 				testInfo.title,
 				testInfo.workerIndex,

@@ -33,6 +33,8 @@ import { Timeout } from "@enums/timeout";
 import { DocumentReadyState } from "@enums/playwright/document-ready-states";
 import { RegisterTestData } from "@dtos/test-data";
 import { UserTags } from "@enums/db/user-tags";
+import { Currency } from "@enums/currencies";
+import { Locale } from "@enums/locale";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -162,6 +164,34 @@ export function parseBalance(rawValue: string): number {
 
 export function formatBalance(value: number): string {
 	return accounting.formatMoney(value);
+}
+
+/**
+ * Formats a number into a localized currency string.
+ *
+ * This utility wraps `Intl.NumberFormat` to format amounts based on locale and currency.
+ *
+ * @param {number} amount - The numeric value to format.
+ * @param {string} [locale='en-US'] - The locale code (e.g., 'en-US', 'de-DE').
+ * @param {string} [currency='USD'] - The currency code (e.g., 'USD', 'EUR').
+ * @param {number} [minimumFractionDigits=2] - The minimum number of fraction digits to display.
+ * @returns {string} The formatted currency string.
+ *
+ * @example
+ * formatCurrency(5000); // "$5,000.00"
+ * formatCurrency(500000); // "$500,000.00"
+ */
+export function formatCurrency(
+	amount: number,
+	locale: Locale = Locale.EN_US,
+	currency: Currency = Currency.USD,
+	minimumFractionDigits = 2,
+): string {
+	return new Intl.NumberFormat(locale, {
+		style: "currency",
+		currency: currency,
+		minimumFractionDigits: minimumFractionDigits,
+	}).format(amount);
 }
 
 export function parseMultiplier(rawValue: string): number {

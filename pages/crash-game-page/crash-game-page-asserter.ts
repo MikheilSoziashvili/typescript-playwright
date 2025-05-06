@@ -2,9 +2,11 @@ import { Locator, expect } from "@playwright/test";
 import { BaseAsserter } from "@base/base-asserter";
 import { CrashGamePage } from "./crash-game-page";
 import { Timeout } from "@enums/timeout";
-import { parseToFloat } from "@core/utils/utils";
+import { formatCurrency, parseToFloat } from "@core/utils/utils";
 import { Attributes } from "@enums/playwright/htmlAttributes";
 import { BetIncreaseCondition } from "@enums/crash-autobet-section";
+import { Locale } from "@enums/locale";
+import { Currency } from "@enums/currencies";
 
 export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 	public constructor(page: CrashGamePage) {
@@ -18,8 +20,14 @@ export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 		}[],
 	): Promise<void> {
 		for (const bet of bets as { username: string; betAmount: string }[]) {
+			const formattedAmount = formatCurrency(
+				Number(bet.betAmount),
+				Locale.EN_US,
+				Currency.USD,
+			);
+
 			await expect(this.gamdomPage.map.playersGridRowCells).toContainText(
-				[bet.username, bet.betAmount],
+				[bet.username, formattedAmount],
 				{ timeout: Timeout.EXTRA_MAX },
 			);
 		}
