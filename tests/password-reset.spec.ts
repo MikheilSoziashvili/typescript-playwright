@@ -21,6 +21,7 @@ test.describe("Password reset", () => {
 			username: userDetails.username,
 			password: userDetails.password,
 			email: emailDetails.email,
+			emailVerified: true,
 		}),
 	);
 	test("[ENG-1119] Password reset", async ({
@@ -30,17 +31,8 @@ test.describe("Password reset", () => {
 		page,
 		toast,
 	}) => {
-		await profilePage
-			.steps()
-			.verifyEmail(
-				mailinatorApi,
-				MAILINATOR_DOMAIN,
-				emailDetails.inbox,
-				page,
-			);
 		await profilePage.steps().logoutUserSuccessfully();
 		await homePage.navigateAndCheckTitle();
-
 		await homePage.unauthenticatedHeader.openLoginModal();
 		await homePage.steps().resetPassword(emailDetails.email);
 		await homePage
