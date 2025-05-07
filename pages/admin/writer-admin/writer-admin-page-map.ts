@@ -8,13 +8,7 @@ export class WriterAdminPageMap extends BaseMap {
 	}
 
 	public get writerView(): Locator {
-		return this.page.locator("div.writer-panel");
-	}
-
-	public get blogInformationView(): Locator {
-		return this.writerView.locator(
-			`[class*='BlogInformation-styled__InputContainer']`,
-		);
+		return this.page.getByTestId("writerPageContainer");
 	}
 
 	public get paragraphInput(): Locator {
@@ -23,64 +17,55 @@ export class WriterAdminPageMap extends BaseMap {
 		);
 	}
 
-	public inputFieldByPlaceholder(placeholderText: string): Locator {
-		return this.blogInformationView.locator(
-			`//span[@class="placeholder_txt" and text()="${placeholderText}"]//ancestor::div[@class="field_group"]//input`,
-		);
-	}
-	public get blogTitleInput(): Locator {
-		return this.inputFieldByPlaceholder("Title");
-	}
-
-	public get blogSubTitleInput(): Locator {
-		return this.inputFieldByPlaceholder("Subtitle");
-	}
-
-	public get blogAuthorInput(): Locator {
-		return this.inputFieldByPlaceholder("Author");
-	}
-
-	public get blogCustomUrlInput(): Locator {
-		return this.inputFieldByPlaceholder("Custom URL");
-	}
-
-	public get uploadCoverInput(): Locator {
-		return this.blogInformationView.locator(`[id="upload-cover"]`);
-	}
-
-	public get uploadThumbnailInput(): Locator {
-		return this.blogInformationView.locator(`[id="upload-thumbnail"]`);
-	}
-
-	public get postCategoriesDropdown(): Locator {
-		return this.blogInformationView.locator(
-			`[class*=DropdownContainer] [role="combobox"][aria-haspopup="listbox"]`,
-		);
-	}
-
-	public get postCategoriesList(): Locator {
-		return this.page.locator("ul[role=listbox]");
-	}
-
-	public postCategoriesOption(option: BlogPostCategories): Locator {
-		return this.getDropdownOptionSelector(option, this.postCategoriesList);
-	}
-
-	public get blogContainerView(): Locator {
-		return this.page.locator(`[class*='BlogContainer']`);
-	}
-
-	public get savePostButton(): Locator {
-		return this.blogContainerView.locator(`[class*='SaveWrap'] button`);
-	}
-
-	public get confirmPostButton(): Locator {
-		return this.blogContainerView.locator(
-			`//div[contains(@class,'AdminBlogPanel')]//button[text()='Confirm']`,
-		);
+	public get blogInformationView(): Locator {
+		return this.writerView.getByTestId("blogInformationContainer");
 	}
 
 	public get titleInformationHeader(): Locator {
-		return this.page.locator('h4.title:text-is("Title information")');
+		return this.blogInformationView.getByTestId("blogContainerTitle");
+	}
+
+	public get blogTitleInput(): Locator {
+		return this.blogInformationView.getByTestId("blogTitle");
+	}
+
+	public get blogSubTitleInput(): Locator {
+		return this.blogInformationView.getByTestId("blogSubtitle");
+	}
+
+	public get blogAuthorInput(): Locator {
+		return this.blogInformationView.getByTestId("blogAuthor");
+	}
+
+	public get blogCustomUrlInput(): Locator {
+		return this.blogInformationView.getByTestId("blogCustomUrl");
+	}
+
+	public get uploadCoverInput(): Locator {
+		return this.blogInformationView.getByTestId("uploadCover");
+	}
+
+	public get uploadThumbnailInput(): Locator {
+		return this.blogInformationView.getByTestId("uploadThumbnail");
+	}
+
+	public get postCategoriesDropdown(): Locator {
+		return this.blogInformationView.getByTestId("dropdownBlogCategory");
+	}
+
+	public postCategoriesOption(option: BlogPostCategories): Locator {
+		return this.page.getByTestId("blogCategoriesMenu-" + option);
+	}
+
+	public get blogContainerView(): Locator {
+		return this.page.getByTestId("blogPostContainer");
+	}
+
+	public get savePostButton(): Locator {
+		return this.blogContainerView.getByTestId("savePostButton");
+	}
+
+	public get confirmPostButton(): Locator {
+		return this.blogContainerView.getByTestId("confirmPostButton");
 	}
 }

@@ -7,22 +7,22 @@ export class BlogCategoryPageMap extends BaseMap {
 	}
 
 	public get blogCategoryView(): Locator {
-		return this.page.locator("[class*=CategoryHeaderWrapper]");
+		return this.page.getByTestId("blogCategoryHeaderWrapper");
 	}
 
 	public get blogCategoryViewTitle(): Locator {
-		return this.blogCategoryView.locator("h1[class*='Title']");
+		return this.blogCategoryView.getByTestId("blogCategorytitle");
 	}
 
 	public get postContainer(): Locator {
-		return this.page.locator("[class*='Container-sc']");
+		return this.page.getByTestId("blogPostContainer");
 	}
 
 	public get postTitle(): Locator {
-		return this.postContainer.locator("h2[class*='root'][class*='h5']");
+		return this.postContainer.getByTestId("blogPostTitle");
 	}
 
 	public get postSubTitle(): Locator {
-		return this.postContainer.locator("[class*='subtitle']");
+		return this.postContainer.getByTestId("blogPostSubtitle");
 	}
 }
