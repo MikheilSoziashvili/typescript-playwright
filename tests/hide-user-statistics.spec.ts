@@ -1,5 +1,4 @@
 import { ChatMessageOptions } from "@components/chat/chat-map";
-import { USER_2_CREDENTIALS } from "@constants/credentials";
 import {
 	generateRandomString,
 	setAuthenticationCookies,
@@ -8,18 +7,26 @@ import { RegisterTestData } from "@dtos/test-data";
 import { ChatFooterPlaceholder } from "@enums/chat-footer-palceholders";
 import { test } from "@fixtures/fixtures";
 
+const userHiddenStats = new RegisterTestData();
 const message = generateRandomString({ prefix: "automation_msg_" });
 const messageInfo: ChatMessageOptions = {
-	username: USER_2_CREDENTIALS.username,
+	username: userHiddenStats.username,
 	message: message,
 };
 
 test.describe("User statistics tests", () => {
 	test.beforeEach(
-		async ({ gamdomApi, homePage, chat, profilePage, page }) => {
+		async ({ gamdomApi, homePage, chat, profilePage, page, gamdomDb }) => {
+			await gamdomDb.createNewUser({
+				username: userHiddenStats.username,
+				password: userHiddenStats.password,
+				email: userHiddenStats.email,
+				emailVerified: true,
+				hasLogMessage: false,
+			});
 			const cookie = await gamdomApi.authenticateWithExistingUser(
-				USER_2_CREDENTIALS.username,
-				USER_2_CREDENTIALS.password,
+				userHiddenStats.username,
+				userHiddenStats.password,
 			);
 			await setAuthenticationCookies(page, cookie);
 			await profilePage.navigate();
@@ -27,12 +34,6 @@ test.describe("User statistics tests", () => {
 			await homePage.navigate();
 			await homePage.authenticatedHeader.expandChatIfNotVisible();
 			await chat.steps().sendMessage(message);
-			// need to send second message as a workaround until bug DEV-1919 is fixed by dev team
-			await chat
-				.steps()
-				.sendMessage(
-					generateRandomString({ prefix: "automation_msg_2" }),
-				);
 			await homePage.navigate({ cookies: { clearCookies: true } });
 		},
 	);
@@ -60,16 +61,5 @@ test.describe("User statistics tests", () => {
 
 		await chat.steps().openUserProfileModal(messageInfo);
 		await userProfileModal.assertThat().isPrivateUserModeDisplayed();
-	});
-
-	test.afterEach(async ({ gamdomApi, homePage, profilePage, page }) => {
-		await homePage.navigate({ cookies: { clearCookies: true } });
-		const cookie = await gamdomApi.authenticateWithExistingUser(
-			USER_2_CREDENTIALS.username,
-			USER_2_CREDENTIALS.password,
-		);
-		await setAuthenticationCookies(page, cookie);
-		await profilePage.navigate();
-		await profilePage.steps().toggleUserStatisticsMode("off");
 	});
 });

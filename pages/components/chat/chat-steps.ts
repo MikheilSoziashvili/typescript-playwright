@@ -12,6 +12,7 @@ import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { waitUntil } from "@core/utils/utils";
 import { step } from "decorators/step";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
+import { Timeout } from "@enums/timeout";
 
 export class ChatSteps extends BaseComponentStep<Chat> {
 	private authenticatedHeader: AuthenticatedHeader;
@@ -31,11 +32,13 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		await this.component.assertThat().chatIsDisplayed();
 	}
 
+	@step()
 	public async verifyChatAndSendMessage(message: string): Promise<void> {
 		await this.component.assertThat().chatIsDisplayed();
 		await this.sendMessage(message);
 	}
 
+	@step()
 	public async sendMessage(message: string): Promise<void> {
 		let retryCount = 0;
 		const maxRetries = 3;
@@ -46,6 +49,7 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 					this.component.map.chatTextBox,
 					Attributes.CONTENTEDITABLE,
 					BooleanValueString.TRUE,
+					Timeout.LONG,
 				);
 				await this.component.map.chatTextBox.clear();
 				await this.component.map.chatTextBox.fill(message);
@@ -72,6 +76,7 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		}
 	}
 
+	@step()
 	public async openTipUserModal(
 		options?: ChatMessageOptions,
 		isWithVerification = true,
@@ -98,6 +103,7 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		}
 	}
 
+	@step()
 	public async openUserProfileModal(
 		options?: ChatMessageOptions,
 	): Promise<void> {

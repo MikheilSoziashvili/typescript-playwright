@@ -39,7 +39,7 @@ export class AuthenticatedHeaderMap extends BaseMap {
 	}
 
 	public get chatButton(): Locator {
-		return this.authenticatedHeaderContainer.locator("button i.icon-Chat");
+		return this.authenticatedHeaderContainer.getByTestId("iconChatButton");
 	}
 
 	public async getLoadedAccountBalance(): Promise<Locator> {
