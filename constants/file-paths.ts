@@ -12,7 +12,7 @@ export const storageStateDir: string = getFilePath(
 );
 
 export const DATASETS_DIR = "datasets";
-export const DATA_TEST_FILES_DIR = "data-test-files";
+export const TEST_FILES_DIR = "test-files";
 export const AUTH_PATH = "core/.auth";
 
 export const GOOGLE_AUTH_STATE_FILE_PATH: string = getFilePath(
@@ -26,4 +26,9 @@ export const SUPER_ADMIN_AUTH_STATE_FILE_PATH: string = getFilePath(
 export const USER_1_AUTH_STATE_FILE_PATH: string = getFilePath(
 	`${USER_1_CREDENTIALS.username}.json`,
 	storageStateDir,
+);
+
+export const BATCH_FREE_SPINS_FILE_PATH = path.resolve(
+	__dirname,
+	`../${TEST_FILES_DIR}/ENG-5008-batch-free-spins-upload.csv`,
 );

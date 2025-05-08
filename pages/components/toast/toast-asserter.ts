@@ -23,6 +23,21 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 		);
 	}
 
+	public async titlesAre(
+		titles: {
+			title: string;
+			subTitle?: string;
+			timeout?: number;
+			index?: number;
+		}[],
+	): Promise<void> {
+		for (const toast of titles) {
+			await expect(
+				this.gamdomPage.map.toastTitleLocator(toast),
+			).toHaveText(toast.title, { timeout: toast.timeout });
+		}
+	}
+
 	public async subTitleIs(
 		subTitle: string,
 		options: {

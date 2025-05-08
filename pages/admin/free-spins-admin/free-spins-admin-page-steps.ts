@@ -7,7 +7,7 @@ export class FreeSpinsAdminPageSteps extends BasePageStep<FreeSpinsAdminPage> {
 	}
 
 	public async getFreeSpins(parameters: {
-		userId: number;
+		userId?: number;
 		gameName: string;
 		freeSpinsRowIndex?: number;
 		betAmount: number;
@@ -15,9 +15,11 @@ export class FreeSpinsAdminPageSteps extends BasePageStep<FreeSpinsAdminPage> {
 		const { userId, gameName, freeSpinsRowIndex, betAmount } = parameters;
 
 		await this.gamdomPage.selectGameToGiveFreeSpins(gameName);
-		await this.gamdomPage.map.findGameToGiveFreeSpinsCardUserIdTextInput.fill(
-			userId.toString(),
-		);
+		if (userId !== undefined) {
+			await this.gamdomPage.map.findGameToGiveFreeSpinsCardUserIdTextInput.fill(
+				userId.toString(),
+			);
+		}
 		await this.gamdomPage.map.findGameToGiveFreeSpinsCardUserIdGetButton.click();
 		await this.gamdomPage.map.waitForVisibility({
 			locator: this.gamdomPage.map.possibleSpinsCard,
@@ -27,5 +29,12 @@ export class FreeSpinsAdminPageSteps extends BasePageStep<FreeSpinsAdminPage> {
 			tableRowIndex: freeSpinsRowIndex ?? 0,
 			betAmount: betAmount,
 		});
+	}
+
+	public async uploadBatchFreeSpinsFile(filePath: string): Promise<void> {
+		await this.gamdomPage.map.batchModeCheckbox.check();
+		await this.gamdomPage.map.inputFileBatchFreeSpins.setInputFiles(
+			filePath,
+		);
 	}
 }

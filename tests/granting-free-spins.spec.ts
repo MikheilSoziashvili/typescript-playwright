@@ -1,13 +1,13 @@
-import { test } from "@fixtures/fixtures";
-import { storageStateUserAPI } from "@fixtures/auth-fixtures";
-import { ToastTitle } from "@enums/toast-titles";
-import { ToastSubTitle } from "@enums/toast-subtitles";
-import { CasinoGameName } from "@enums/casino-game";
+import { BATCH_FREE_SPINS_FILE_PATH } from "@constants/file-paths";
 import { USER_1_ID } from "@constants/user-ids";
-import { SUPER_ADMIN_CREDENTIALS } from "@constants/credentials";
+import { CasinoGameName } from "@enums/casino-game";
+import { ToastSubTitle } from "@enums/toast-subtitles";
+import { ToastTitle } from "@enums/toast-titles";
+import { storageStateNewSuperAdminUserDB } from "@fixtures/auth-fixtures";
+import { test } from "@fixtures/fixtures";
 
 test.describe("Grant free spins", () => {
-	test.use(storageStateUserAPI(SUPER_ADMIN_CREDENTIALS.username));
+	test.use(storageStateNewSuperAdminUserDB({ amount: 15000000000 }));
 	test("[ENG-932] Granting free spins", async ({
 		freeSpinsAdminPage,
 		toast,
@@ -20,11 +20,42 @@ test.describe("Grant free spins", () => {
 			betAmount: 100,
 		});
 
-		await toast.assertThat().titleIs(ToastTitle.SUCCESS, {
-			subTitle: ToastSubTitle.SENDING_OUT_FREESPINS,
+		await toast.assertThat().titlesAre([
+			{
+				title: ToastTitle.SUCCESS,
+				subTitle: ToastSubTitle.SENDING_OUT_FREESPINS,
+			},
+			{
+				title: ToastTitle.SUCCESS,
+				subTitle: ToastSubTitle.CASINO_REWARD_GIVEN,
+			},
+		]);
+	});
+
+	test("[ENG-5008] Granting free spins in batch", async ({
+		freeSpinsAdminPage,
+		toast,
+	}) => {
+		await freeSpinsAdminPage.navigate();
+
+		await freeSpinsAdminPage
+			.steps()
+			.uploadBatchFreeSpinsFile(BATCH_FREE_SPINS_FILE_PATH);
+
+		await freeSpinsAdminPage.steps().getFreeSpins({
+			gameName: CasinoGameName.BARREL_BONANZA,
+			betAmount: 100,
 		});
-		await toast.assertThat().titleIs(ToastTitle.SUCCESS, {
-			subTitle: ToastSubTitle.CASION_REWARD_GIVEN,
-		});
+
+		await toast.assertThat().titlesAre([
+			{
+				title: ToastTitle.SUCCESS,
+				subTitle: ToastSubTitle.SENDING_OUT_FREESPINS,
+			},
+			{
+				title: ToastTitle.SUCCESS,
+				subTitle: ToastSubTitle.CASINO_REWARD_GIVEN,
+			},
+		]);
 	});
 });

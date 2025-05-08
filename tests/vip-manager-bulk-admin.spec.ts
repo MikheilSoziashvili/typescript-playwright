@@ -2,7 +2,7 @@ import {
 	SUPER_ADMIN_VIP_MANAGER_BULK,
 	SUPER_ADMIN_VIP_MANAGER_NO_BULK,
 } from "@constants/credentials";
-import { DATA_TEST_FILES_DIR } from "@constants/file-paths";
+import { TEST_FILES_DIR } from "@constants/file-paths";
 import { parse_csv } from "@core/utils/utils";
 import { BulkActions } from "@enums/bulk-actions";
 import { ToastSubTitleDynamic } from "@enums/toast-subtitles-dynamic";
@@ -73,7 +73,7 @@ test.describe("VIP Manager admin tests", () => {
 		const fileFormats = ["txt", "pdf"];
 
 		const wrongFormatFiles = fileFormats.map((format) => ({
-			filePath: `./data-test-files/ENG-2366-vip-manager-${format}-wrong-file-format.${format}`,
+			filePath: `./test-files/ENG-2366-vip-manager-${format}-wrong-file-format.${format}`,
 			fileFormatType: format,
 		}));
 
@@ -159,9 +159,9 @@ test.describe("VIP Manager admin tests", () => {
 		const bulkActions = [BulkActions.UPLOAD, BulkActions.REMOVE];
 
 		const bulkActionFiles = bulkActions.map((bulkAction) => {
-			const filePath = `./data-test-files/ENG-2332-batch-vip-status-incorrect-userId-${bulkAction}.csv`;
+			const filePath = `./test-files/ENG-2332-batch-vip-status-incorrect-userId-${bulkAction}.csv`;
 			const incorrectUserIdFromCsv = parse_csv(
-				DATA_TEST_FILES_DIR,
+				TEST_FILES_DIR,
 				`ENG-2332-batch-vip-status-incorrect-userId-${bulkAction}.csv`,
 				{
 					columns: false,

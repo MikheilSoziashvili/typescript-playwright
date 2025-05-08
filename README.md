@@ -74,7 +74,7 @@ Make sure you have the following installed:
 │   ├── types                                     # Type definitions
 │   ├── utils                                     # Utility functions
 ├── datasets                                      # Test datasets in CSV format
-├── data-test-files                               # Test data files in all formats
+├── test-files                                    # Test data files in all formats
 ├── decorators                                    # TS decorators
 ├── dtos                                          # Data transfer objects
 ├── enums                                         # Enumeration objects
@@ -214,9 +214,9 @@ Integration with external services like **[Mailinator](https://www.mailinator.co
 
 This repository uses a CODEOWNERS file to automatically assign reviewers to pull requests based on the files changed.
 How It Works:
-	•	The CODEOWNERS file is located in the .github/ directory.
-	•	It maps file paths to specific GitHub users or teams who will be automatically assigned as reviewers.
-	•	This ensures that the appropriate people review changes in their areas of expertise.
+• The CODEOWNERS file is located in the .github/ directory.
+• It maps file paths to specific GitHub users or teams who will be automatically assigned as reviewers.
+• This ensures that the appropriate people review changes in their areas of expertise.
 For more details, see **[GitHub’s CODEOWNERS documentation](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners)**.
 
 ### Steps to Write an Automated Test
@@ -304,9 +304,10 @@ test.describe("My test suite", () => {
 
 This project uses a Pull Request (PR) template to ensure consistency and thoroughness when creating new PRs. The template helps standardize the way pull requests are structured, ensuring that important information such as descriptions, issue links, and checklists are included.
 When submitting a Pull Request, ensure that you:
--	Fill out the description thoroughly, referencing any issues.
--	Follow the project’s contribution guidelines.	
--	Complete the checklist to ensure the code is fully tested and documented.
+
+-   Fill out the description thoroughly, referencing any issues.
+-   Follow the project’s contribution guidelines.
+-   Complete the checklist to ensure the code is fully tested and documented.
 
 This helps maintain the quality and consistency of the project, making it easier for reviewers to understand and evaluate your changes.
 
@@ -329,7 +330,7 @@ The configurable reporters are:
 
 ### General Practices
 
--	Have consistency in naming conventions and code structure. Follow the framework directory structure when placing files/modules
+-   Have consistency in naming conventions and code structure. Follow the framework directory structure when placing files/modules
 -   Add comments and documentation to codebase in cases there is complex logic, specific implementation purpose or noting any tricky or unclear at first glance code.
 -   Any additional comments and documentation that can help in clarifying and understanding the code are much encouraged.
 -   Sensitive information such as API keys and passwords must be consumed from environment variables. Avoid hardcoding and committing them in the repository.

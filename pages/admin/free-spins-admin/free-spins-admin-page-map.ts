@@ -66,4 +66,12 @@ export class FreeSpinsAdminPageMap extends BaseMap {
 			.getByTestId("buttonCell")
 			.getByTestId("giveButton");
 	}
+
+	public get batchModeCheckbox(): Locator {
+		return this.page.getByTestId("batchModeCheckbox");
+	}
+
+	public get inputFileBatchFreeSpins(): Locator {
+		return this.findGameToGiveFreeSpinsCard.locator(`input[type="file"]`);
+	}
 }
