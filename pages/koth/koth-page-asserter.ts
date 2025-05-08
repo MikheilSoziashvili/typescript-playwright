@@ -1,8 +1,10 @@
 import { GamdomApi } from "@api/gamdom-api";
 import { BaseAsserter } from "@pages/base/base-asserter";
 import { step } from "decorators/step";
-import { TestInfo } from "playwright/test";
+import { expect, TestInfo } from "playwright/test";
 import { KothPage } from "./koth-page";
+import { INITIAL_TIMER } from "@constants/timers";
+import { Timeout } from "@enums/timeout";
 
 export class KothAsserter extends BaseAsserter<KothPage> {
 	public constructor(page: KothPage) {
@@ -40,6 +42,20 @@ export class KothAsserter extends BaseAsserter<KothPage> {
 	@step()
 	public async verifyKothBannerTimerIsCentered(): Promise<void> {
 		const timerContainer = this.gamdomPage.map.kothBannerTimerContainer;
+
+		await expect
+			.poll(
+				async () => {
+					const timerText = await timerContainer.textContent();
+					return timerText;
+				},
+				{
+					message: `Waiting for KOTH timer to update from ${INITIAL_TIMER} to a new value`,
+					timeout: Timeout.MEDIUM,
+				},
+			)
+			.not.toBe(INITIAL_TIMER);
+
 		const initialX = await this.gamdomPage.getKothBannerTimerXPosition();
 
 		await this.verifyElementIsCentered(

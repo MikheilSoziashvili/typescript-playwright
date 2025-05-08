@@ -68,7 +68,7 @@ export class BaseMap {
 			locator,
 			allowedMovement = 1,
 			attempts = 5,
-			delayMs = 200,
+			delayMs = 300,
 			failOnTimeout = false,
 		} = parameters;
 
