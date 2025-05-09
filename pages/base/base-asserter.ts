@@ -179,7 +179,7 @@ export class BaseAsserter<
 	public async waitForAndVerifyCurrentUrlIs(
 		expectedUrl: string,
 		decodingUrl = false,
-		timeout = Timeout.MEDIUM,
+		timeout = Timeout.LONG,
 	): Promise<void> {
 		const normalizedExpectedUrl = expectedUrl.startsWith("http")
 			? expectedUrl

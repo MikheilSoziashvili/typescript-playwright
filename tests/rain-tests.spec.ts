@@ -41,54 +41,14 @@ test.beforeEach(async ({ gamdomApi }) => {
 	});
 });
 
-test.describe("Rain claim tests", () => {
-	test.slow();
-	const baseRainAmount = 0.67;
-
-	test.use(storageStateNewUserDB());
-	test("[ENG-2863] Rain - try to claim the rain", async ({
-		homePage,
-		chat,
-	}) => {
-		await homePage.navigate();
-		await chat.steps().openChatAndVerify();
-
-		const initialAccountBalance =
-			await homePage.authenticatedHeader.getAccountBalance();
-
-		await chat.steps().waitUponRainAndClaim();
-		await chat.assertThat().rainClaimedMessageIsDisplayed();
-
-		const initialRainBotMessageCount =
-			await chat.map.rainBotMessageLocator.count();
-
-		await waitUntil(
-			async () =>
-				(await chat.map.rainBotMessageLocator.count()) >
-				initialRainBotMessageCount,
-			{
-				errorMessage: "New rain bot message did not appear",
-				timeoutSeconds:
-					TimeoutSeconds.THIRTY + TimeoutSeconds.ONE_TWENTY,
-				intervalSeconds: 2,
-			},
-		);
-
-		const userCount = await chat.getRainUserCount();
-		const expectedUserRainClaim = baseRainAmount / userCount;
-		const expectedUserBalance =
-			initialAccountBalance + expectedUserRainClaim;
-
-		await homePage.authenticatedHeader
-			.assertThat()
-			.accountBalanceIs(expectedUserBalance);
-	});
-});
-
 test.describe("Tip rain tests", () => {
 	let qrCode2FAImagePath: string;
 	const tipRainAmount = 10;
 	const userData = new RegisterTestData();
+
+	test.afterAll(async () => {
+		await deleteFilesWithFilePaths([qrCode2FAImagePath]);
+	});
 
 	test.use(
 		storageStateNewUserDB({
@@ -97,6 +57,7 @@ test.describe("Tip rain tests", () => {
 			email: userData.email,
 		}),
 	);
+
 	test("[ENG-2564] Tip rain - Require new 2FA code when IP of user changes", async ({
 		homePage,
 		chat,
@@ -166,7 +127,49 @@ test.describe("Tip rain tests", () => {
 				tipRainAmount: tipRainAmount,
 			}),
 		);
+	});
 
-		await deleteFilesWithFilePaths([qrCode2FAImagePath]);
+	test.describe("Rain claim tests", () => {
+		test.slow();
+		const baseRainAmount = 0.67;
+
+		test.use(storageStateNewUserDB());
+		test("[ENG-2863] Rain - try to claim the rain", async ({
+			homePage,
+			chat,
+		}) => {
+			await homePage.navigate();
+			await chat.steps().openChatAndVerify();
+
+			const initialAccountBalance =
+				await homePage.authenticatedHeader.getAccountBalance();
+
+			await chat.steps().waitUponRainAndClaim();
+			await chat.assertThat().rainClaimedMessageIsDisplayed();
+
+			const initialRainBotMessageCount =
+				await chat.map.rainBotMessageLocator.count();
+
+			await waitUntil(
+				async () =>
+					(await chat.map.rainBotMessageLocator.count()) >
+					initialRainBotMessageCount,
+				{
+					errorMessage: "New rain bot message did not appear",
+					timeoutSeconds:
+						TimeoutSeconds.THIRTY + TimeoutSeconds.ONE_TWENTY,
+					intervalSeconds: 2,
+				},
+			);
+
+			const userCount = await chat.getRainUserCount();
+			const expectedUserRainClaim = baseRainAmount / userCount;
+			const expectedUserBalance =
+				initialAccountBalance + expectedUserRainClaim;
+
+			await homePage.authenticatedHeader
+				.assertThat()
+				.accountBalanceIs(expectedUserBalance);
+		});
 	});
 });
