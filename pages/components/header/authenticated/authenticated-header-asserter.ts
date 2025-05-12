@@ -93,4 +93,11 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 		);
 		expect(balance).toBeCloseTo(expectedAmount, 5);
 	}
+
+	@step()
+	public async verifyUserProfileDropdownMenuIsDisplayed(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.userAvatarDropdownMenuContainer,
+		]);
+	}
 }

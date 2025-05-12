@@ -6,6 +6,16 @@ export class VerificationPageMap extends BaseMap {
 		super(page);
 	}
 
+	public get verificationPageContainer(): Locator {
+		return this.page.getByTestId("page-container");
+	}
+
+	public get verificationPageTitle(): Locator {
+		return this.verificationPageContainer.locator("h1", {
+			hasText: "Verification",
+		});
+	}
+
 	public get countryDropdownContainer(): Locator {
 		return this.page.getByTestId("countryDropdownContainer");
 	}

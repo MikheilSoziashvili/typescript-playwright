@@ -7,6 +7,7 @@ import { Chat } from "../../chat/chat";
 import { AuthenticatedHeaderAsserter } from "./authenticated-header-asserter";
 import { AuthenticatedHeaderMap } from "./authenticated-header-map";
 import { step } from "decorators/step";
+import { UserMenuOption } from "@enums/user-menu-options";
 
 export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 	constructor(page: Page) {
@@ -19,6 +20,25 @@ export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 
 	public async clickUserProfileButton(): Promise<void> {
 		await this.map.userAvatarMenuButton.click();
+	}
+
+	public async hoverOnUserProfileButton(): Promise<void> {
+		await this.map.userAvatarMenuButton.hover();
+	}
+
+	@step()
+	public async clickUserProfileDropdownItem(
+		dropdownItem: UserMenuOption,
+	): Promise<void> {
+		await this.map.userAvatarDropdownItem(dropdownItem).click();
+	}
+
+	@step()
+	public async navigateToUserMenuOption(
+		userMenuOption: UserMenuOption,
+	): Promise<void> {
+		await this.hoverOnUserProfileButton();
+		await this.clickUserProfileDropdownItem(userMenuOption);
 	}
 
 	public async getAccountBalance(): Promise<number> {

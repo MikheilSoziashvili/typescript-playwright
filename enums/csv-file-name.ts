@@ -27,4 +27,5 @@ export enum CsvFilesName {
 	UPDATE_CONTACT_INFO_2FA_REQUIRED = "ENG-2567-update-contact-info-2fa-required.csv",
 	KOTH_VISUAL = "ENG-4484-KOTH-changing-currency.csv",
 	PROMO_CAMPAIGN_DUPLICATED_CODES = "ENG-4935-promo-campaign-duplicated-codes.csv",
+	KYC_USERS_LEVEL_VERIFICATION_PAGE = "ENG-5988-kyc-users-level-verification-page.csv",
 }

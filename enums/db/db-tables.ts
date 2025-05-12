@@ -3,4 +3,6 @@ export enum DbTables {
 	Wallets = "Public.Wallets",
 	Campaigns = "Promo_codes.Campaigns",
 	Settings = "Public.Settings",
+	AmlInfo = "aml.info",
+	AmlStatus = "aml.status",
 }

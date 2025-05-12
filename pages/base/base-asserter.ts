@@ -14,6 +14,7 @@ import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { Attributes } from "@enums/playwright/htmlAttributes";
 import { OgProperties } from "@enums/playwright/htmlOgProperties";
 import { OgPropertiesValues } from "@enums/playwright/htmlOgPropertiesValues";
+import { logger } from "@logger/logger";
 
 export class BaseAsserter<
 	T extends BasePage<BaseMap> | BaseModal<BaseMap> | BaseComponent<BaseMap>,
@@ -175,15 +176,25 @@ export class BaseAsserter<
 		);
 	}
 
+	/**
+	 * Normalizes a URL by adding the environment URL prefix if it's a relative path
+	 * @param url The URL to normalize
+	 * @returns The normalized URL with full domain
+	 * @private
+	 */
+	private normalizeUrl(url: string): string {
+		return url.startsWith("http")
+			? url
+			: `${Configuration.environment_url}${url}`;
+	}
+
 	@step("Wait for and verify current URL is as expected")
 	public async waitForAndVerifyCurrentUrlIs(
 		expectedUrl: string,
 		decodingUrl = false,
 		timeout = Timeout.LONG,
 	): Promise<void> {
-		const normalizedExpectedUrl = expectedUrl.startsWith("http")
-			? expectedUrl
-			: `${Configuration.environment_url}${expectedUrl}`;
+		const normalizedExpectedUrl = this.normalizeUrl(expectedUrl);
 
 		await this.gamdomPage.page.waitForURL(
 			(url) => {
@@ -308,5 +319,102 @@ export class BaseAsserter<
 			mismatches,
 			`The following mismatches were found:\n${mismatches.join("\n")}`,
 		).toHaveLength(0);
+	}
+
+	/**
+	 * Verifies that all provided URLs return successful HTTP responses.
+	 * Makes requests to each URL and checks for valid status codes.
+	 * Automatically prepends the environment URL to relative paths.
+	 *
+	 * @param urls - Array of URLs to verify
+	 * @param options - Optional configuration
+	 * @param options.timeout - Request timeout in milliseconds (default: Timeout.MEDIUM)
+	 * @param options.failOnError - Whether to fail the test if any link is broken (default: true)
+	 * @returns Object containing arrays of valid and broken URLs
+	 */
+	@step("Verify links are accessible")
+	public async verifyLinksAreAccessible(
+		urls: string[],
+		options: {
+			timeout?: number;
+			failOnError?: boolean;
+		} = {},
+	): Promise<{ validUrls: string[]; brokenUrls: string[] }> {
+		const { timeout = Timeout.MEDIUM, failOnError = true } = options;
+
+		const validUrls: string[] = [];
+		const brokenUrls: string[] = [];
+
+		logger.info(`Checking ${urls.length} URLs for broken links`);
+
+		for (const url of urls) {
+			const normalizedUrl = this.normalizeUrl(url);
+
+			try {
+				const response = await this.gamdomPage.page.request.get(
+					normalizedUrl,
+					{
+						timeout,
+					},
+				);
+
+				if (response.ok()) {
+					validUrls.push(normalizedUrl);
+				} else {
+					const statusCode = response.status();
+					const statusText = response.statusText();
+					const errorMessage = `URL ${normalizedUrl} returned status ${statusCode} (${statusText})`;
+
+					this.handleBrokenLink(
+						normalizedUrl,
+						errorMessage,
+						brokenUrls,
+						failOnError,
+						response.ok(),
+					);
+				}
+			} catch (error) {
+				const errorDetails =
+					error instanceof Error ? error.message : String(error);
+				const errorMessage = `Failed to access URL: ${normalizedUrl} - ${errorDetails}`;
+
+				this.handleBrokenLink(
+					normalizedUrl,
+					errorMessage,
+					brokenUrls,
+					failOnError,
+					false,
+				);
+			}
+		}
+
+		return { validUrls, brokenUrls };
+	}
+
+	/**
+	 * Handles a broken link by logging it, adding it to the broken URLs array, and making the appropriate assertion.
+	 *
+	 * @param url - The URL that failed
+	 * @param errorMessage - The error message to log and include in the assertion
+	 * @param brokenUrls - The array to add the broken URL to
+	 * @param failOnError - Whether to use a hard or soft assertion
+	 * @param condition - The condition to assert (usually false for broken links)
+	 * @private
+	 */
+	private handleBrokenLink(
+		url: string,
+		errorMessage: string,
+		brokenUrls: string[],
+		failOnError: boolean,
+		condition: boolean,
+	): void {
+		logger.info(`Broken link found: ${errorMessage}`);
+		brokenUrls.push(url);
+
+		if (failOnError) {
+			expect(condition, errorMessage).toBeTruthy();
+		} else {
+			expect.soft(condition, errorMessage).toBeTruthy();
+		}
 	}
 }

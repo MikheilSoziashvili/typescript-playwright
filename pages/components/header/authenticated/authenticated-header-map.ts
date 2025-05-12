@@ -6,6 +6,7 @@ import { throwError } from "@core/utils/utils";
 import { Timeout } from "@enums/timeout";
 import { Attributes } from "@enums/playwright/htmlAttributes";
 import { AttributesValues } from "@enums/playwright/htmlAttributesValues";
+import { UserMenuOption } from "@enums/user-menu-options";
 
 export class AuthenticatedHeaderMap extends BaseMap {
 	public constructor(page: Page) {
@@ -27,9 +28,21 @@ export class AuthenticatedHeaderMap extends BaseMap {
 	}
 
 	public get userAvatarMenuButton(): Locator {
-		return this.authenticatedHeaderContainer.locator(
-			"div[class*= UserAvatarWithMenu]",
+		return this.authenticatedHeaderContainer.getByTestId(
+			"userAvatarWithMenu",
 		);
+	}
+
+	public get userAvatarDropdownMenuContainer(): Locator {
+		return this.authenticatedHeaderContainer.locator(
+			`div[class*="UserAvatarWithMenu-styled__MenuContainer"]`,
+		);
+	}
+
+	public userAvatarDropdownItem(dropdownItem: UserMenuOption): Locator {
+		return this.userAvatarDropdownMenuContainer.locator(`a button`, {
+			hasText: `${dropdownItem}`,
+		});
 	}
 
 	public get userAvatar(): Locator {

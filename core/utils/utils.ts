@@ -241,6 +241,18 @@ export const getRandomPhone = (countryCode = "+1", length = 9): string => {
 export const getRandomEmail = (): string =>
 	`gamdom-e2e-email${Date.now()}@gmail.com`;
 
+export const getRandomNumber = (length: number): number => {
+	const characters = "123456789";
+	let number = "";
+	const charactersLength = characters.length;
+	for (let i = 0; i < length; i++) {
+		number += characters.charAt(
+			Math.floor(Math.random() * charactersLength),
+		);
+	}
+	return parseInt(number, 10);
+};
+
 export function getRegisterDataRandomUsernameWithPrefix(
 	usernamePrefix: string,
 ): RegisterTestData {

@@ -1,5 +1,6 @@
 import { DEFAULT_CURRENCY } from "@constants/defaults";
 import { buildAmountWithCurrency } from "@core/utils/utils";
+import { AmlVerificationLevel } from "@enums/db/aml-verification-level";
 
 export function buildClaimedAmountSubTitle(
 	amount: number,
@@ -91,4 +92,12 @@ export function buildFreeSpinsPromoCodeTransactionsDetailsValue(
 
 export function buildInformationalCashPromoCodeTransactionsDetailsValue(): string {
 	return `informational_promo_win_cash`;
+}
+
+export function generateAmlVerificationReasonText(levelNum: AmlVerificationLevel): string {
+	return `Reason for level ${levelNum} verification`;
+}
+
+export function generateAmlVerificationStatusReasonText(levelNum: AmlVerificationLevel, status: string): string {
+	return `Reason for level ${levelNum} - ${status}`;
 }

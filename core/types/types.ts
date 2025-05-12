@@ -144,3 +144,7 @@ export type CryptoOperationOptions = {
 };
 
 export type WalletUnit = `${Unit}`;
+
+export type NullableString = string | null;
+
+export type NullableDateString = Date | string | null;

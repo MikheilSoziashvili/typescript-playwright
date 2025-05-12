@@ -27,4 +27,9 @@ export class VerificationPageAsserter extends BaseAsserter<VerificationPage> {
 			`Unexpected common values found: ${commonValues.join(", ")}`,
 		).toHaveLength(0);
 	}
+
+	@step()
+	public async verificationPageTitleIsVisible(): Promise<void> {
+		await expect(this.gamdomPage.map.verificationPageTitle).toBeVisible();
+	}
 }
