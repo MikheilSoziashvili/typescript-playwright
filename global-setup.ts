@@ -2,6 +2,7 @@ import { GamdomApi } from "@api/gamdom-api";
 import { JiraApi } from "@api/jira-api";
 import { createExecutionBody } from "@api/jira-api-payloads";
 import { SUPER_ADMIN_CREDENTIALS } from "@constants/credentials";
+import { ALL_USER_TYPES_ENABLED } from "@constants/feature-configurations";
 import { JsonData } from "@core/interfaces";
 import {
 	generateRandomString,
@@ -25,7 +26,7 @@ async function enableHiloFeature(
 
 	const featureResponse = await gamdomApi.setFeatureState(
 		Feature.HILO,
-		{ regular: true, beta: true },
+		ALL_USER_TYPES_ENABLED,
 		{ Cookie: cookie },
 	);
 
@@ -42,7 +43,7 @@ async function enablePlinkoFeature(
 ): Promise<void> {
 	const featureResponse = await gamdomApi.setFeatureState(
 		Feature.PLINKO,
-		{ regular: true, beta: true },
+		ALL_USER_TYPES_ENABLED,
 		{ Cookie: cookie },
 	);
 
@@ -57,7 +58,7 @@ async function enableVaultFeature(
 ): Promise<void> {
 	const featureResponse = await gamdomApi.setFeatureState(
 		Feature.VAULT,
-		{ regular: true, beta: true },
+		ALL_USER_TYPES_ENABLED,
 		{ Cookie: cookie },
 	);
 
@@ -74,7 +75,7 @@ async function enableEvBasedRewards(
 
 	const featureResponse = await gamdomApi.setFeatureState(
 		Feature.EV_BASED_REWARDS,
-		{ regular: true, beta: true },
+		ALL_USER_TYPES_ENABLED,
 		{ Cookie: cookie },
 	);
 

@@ -27,6 +27,7 @@ import { RainStatus } from "@enums/rain-status";
 import { KothEventDTO } from "@dtos/responses/gamdom-api/get-current-koth-events-basic-info-response";
 import { GetCryptoAdminTransactionsResponse } from "@dtos/responses/gamdom-api/get-crypto-admin-transactions-response";
 import { GetCryptoAdminTransactionsRequest } from "@dtos/requests/gamdom-api/get-crypto-admin-transactions-request";
+import { UserType } from "@enums/user-types";
 
 export class GamdomApi extends BaseApi {
 	private gamdomDb: GamdomDb;
@@ -157,15 +158,15 @@ export class GamdomApi extends BaseApi {
 	}
 
 	private async toggleFeature(
-		feature: Feature,
 		enable: boolean,
-		isBeta: boolean,
-		_headers?: Record<string, string>,
+		feature: Feature,
+		userType: UserType,
+		_headers: Record<string, string> = {},
 	): Promise<APIResponse> {
 		const payload: SetFeatureStateRequest = {
-			feature: feature,
-			enable: enable,
-			isBeta: isBeta,
+			feature,
+			enable,
+			userType,
 		};
 
 		const parameters = this.buildParameters(
@@ -173,26 +174,36 @@ export class GamdomApi extends BaseApi {
 			payload,
 			_headers,
 		);
+
 		return this.post(parameters);
 	}
 
+	/**
+	 * Enable / disable a feature for any combination of user types.
+	 *
+	 * Example:
+	 *   await client.setFeatureState('PLINKO', {
+	 *     [UserType.BETA]: true,
+	 *     [UserType.QA_USER]: false,
+	 *   });
+	 */
 	public async setFeatureState(
 		feature: Feature,
-		states: { regular: boolean; beta: boolean },
+		states: Partial<Record<UserType, boolean>>,
 		_headers: Record<string, string> = {},
-	): Promise<[APIResponse, APIResponse]> {
-		const stateConfigs = [
-			{ enable: states.regular, isBeta: false },
-			{ enable: states.beta, isBeta: true },
-		];
-
-		const responses = await Promise.all(
-			stateConfigs.map(({ enable, isBeta }) =>
-				this.toggleFeature(feature, enable, isBeta, _headers),
-			),
+	): Promise<APIResponse[]> {
+		const stateConfigs = Object.entries(states).map(
+			([userType, enable]) => ({
+				userType: userType as UserType,
+				enable: Boolean(enable),
+			}),
 		);
 
-		return responses as [APIResponse, APIResponse];
+		return Promise.all(
+			stateConfigs.map(({ userType, enable }) =>
+				this.toggleFeature(enable, feature, userType, _headers),
+			),
+		);
 	}
 
 	public async setProviderState(

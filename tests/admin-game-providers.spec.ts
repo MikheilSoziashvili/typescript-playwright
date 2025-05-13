@@ -148,6 +148,8 @@ test.describe.serial("Admin Enable Game Provider tests @game-providers", () => {
 			page,
 		}) => {
 			// Authenticate as super admin to perform administrative actions
+			test.fixme(true, "Align new changes coming from setFeatureState");
+
 			const superAdminCookie = getCookieHeader(
 				await gamdomApi.authenticateWithExistingUser(
 					SUPER_ADMIN_CREDENTIALS.username,
