@@ -422,7 +422,7 @@ export class GamdomApi extends BaseApi {
 		return this.post(parameters);
 	}
 
-	private async getOpenRains(
+	public async getOpenRains(
 		_headers?: Record<string, string>,
 	): Promise<RainDTO[]> {
 		const parameters = this.buildParameters(
@@ -432,7 +432,7 @@ export class GamdomApi extends BaseApi {
 		);
 
 		const response = await this.post(parameters);
-		return response.json() as Promise<RainDTO[]>;
+		return (await response.json()) as RainDTO[];
 	}
 
 	public async ensureRainExists({
@@ -451,7 +451,7 @@ export class GamdomApi extends BaseApi {
 			return RainStatus.ALREADY_ACTIVE;
 		}
 
-		logger.info("No active rain found. Creating one...");
+		logger.info("Setting up a new rain configuration..");
 
 		return this.enableRain(
 			active,

@@ -8,12 +8,12 @@ export class TipRainModalAsserter extends BaseAsserter<TipRainModal> {
 	}
 
 	@step("Tip rain modal is displayed")
-	public async isDisplayed(): Promise<void> {
+	public async tipRainModalIsDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible([this.gamdomPage.map.tipRainModal]);
 	}
 
 	@step("Tip rain modal is not displayed")
-	public async isNotDisplayed(): Promise<void> {
+	public async tipRainModalIsNotDisplayed(): Promise<void> {
 		await this.checkElementsAreNotVisible([
 			this.gamdomPage.map.tipRainModal,
 		]);

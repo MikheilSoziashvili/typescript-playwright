@@ -35,6 +35,8 @@ import { RegisterTestData } from "@dtos/test-data";
 import { UserTags } from "@enums/db/user-tags";
 import { Currency } from "@enums/currencies";
 import { Locale } from "@enums/locale";
+import { GamdomApi } from "@api/gamdom-api";
+import { TimeoutSeconds } from "@enums/timeout-seconds";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -932,4 +934,27 @@ export function formatUserTags(
 	if (!tags) return undefined;
 	if (Array.isArray(tags)) return tags.join(",");
 	return tags;
+}
+
+export function convertCoinsToUsd(coins: number): number {
+	return coins / 1500;
+}
+
+export async function waitForOpenRain(
+	gamdomApi: GamdomApi,
+	cookie: string,
+): Promise<void> {
+	await waitUntil(
+		async () => {
+			const rains = await gamdomApi.getOpenRains({
+				Cookie: cookie,
+			});
+			return (Array.isArray(rains) ? rains : []).some((r) => r.open);
+		},
+		{
+			errorMessage: "No open rains found",
+			intervalSeconds: TimeoutSeconds.TEN,
+			timeoutSeconds: TimeoutSeconds.ONE_TWENTY,
+		},
+	);
 }

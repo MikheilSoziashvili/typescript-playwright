@@ -65,6 +65,21 @@ export class ChatMap extends BaseMap {
 		}
 	}
 
+	/**
+	 * Returns the N-th chat message that contains `text`.
+	 *
+	 * @param expectedText        A unique substring (e.g. "hello").
+	 * @param occurrence  0 = first match, 1 = second … ;  -1 (default) = latest.
+	 */
+	public infoMessageByText(expectedText: string, occurrence = -1): Locator {
+		const matches = this.chatMessagesList.locator(
+			"span[class*=client-message]",
+			{ hasText: expectedText },
+		);
+
+		return occurrence === -1 ? matches.last() : matches.nth(occurrence);
+	}
+
 	public get rainBotMessageLocator(): Locator {
 		return this.page.locator(
 			"li[class*= MessageRain-] span[class*=RainBotMessage]",

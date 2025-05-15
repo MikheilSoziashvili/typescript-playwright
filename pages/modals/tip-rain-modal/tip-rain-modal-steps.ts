@@ -1,20 +1,27 @@
 import { BasePageStep } from "@pages/base/base-page-step";
 import { TipRainModal } from "./tip-rain-modal";
+import { GamdomApi } from "@api/gamdom-api";
 
 export class TipRainModalSteps extends BasePageStep<TipRainModal> {
 	public constructor(page: TipRainModal) {
 		super(page);
 	}
 
-	public async tipRainSuccessfully(value: number): Promise<void> {
-		await this.gamdomPage.tipRainValue(value);
-		await this.gamdomPage.assertThat().isNotDisplayed();
+	public async tipRainSuccessfully(
+		gamdomApi: GamdomApi,
+		cookie: string,
+		value: number,
+	): Promise<void> {
+		await this.gamdomPage.tipRainValuePolled(gamdomApi, cookie, value);
+		await this.gamdomPage.assertThat().tipRainModalIsNotDisplayed();
 	}
 
 	public async verifyModalAndTipRainSuccessfully(
+		gamdomApi: GamdomApi,
+		cookie: string,
 		value: number,
 	): Promise<void> {
-		await this.gamdomPage.assertThat().isDisplayed();
-		await this.tipRainSuccessfully(value);
+		await this.gamdomPage.assertThat().tipRainModalIsDisplayed();
+		await this.tipRainSuccessfully(gamdomApi, cookie, value);
 	}
 }

@@ -68,6 +68,15 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 		);
 	}
 
+	public async isInfoMessageVisibleByText(
+		text: string,
+		occurrence = -1,
+	): Promise<void> {
+		await expect(
+			this.gamdomPage.map.infoMessageByText(text, occurrence),
+		).toContainText(text);
+	}
+
 	@step()
 	public async isRainClaimVisible(): Promise<boolean> {
 		return this.isElementVisible([this.gamdomPage.map.claimRainButton]);

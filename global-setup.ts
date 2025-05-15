@@ -9,6 +9,7 @@ import {
 	getCookieHeader,
 	writeToJSONFile,
 } from "@core/utils/utils";
+import { RegisterTestData } from "@dtos/test-data";
 import { WithdrawLimitsSettingsValues } from "@enums/db/withdraw-settings-values";
 import { Feature } from "@enums/feature";
 import { HttpStatus } from "@enums/http-status";
@@ -137,6 +138,35 @@ async function updateWithdrawLimits(): Promise<void> {
 	}
 }
 
+export const rainAmount = 15000;
+async function configureRain(): Promise<void> {
+	const gamdomApi = new GamdomApi();
+
+	const superAdminData = new RegisterTestData({
+		useGamdomEmailDomain: true,
+	});
+
+	const superAdminCookie = getCookieHeader(
+		await gamdomApi.authenticateWithNewSuperAdminUser(superAdminData),
+	);
+
+	await gamdomApi.stopCustomRain({
+		Cookie: superAdminCookie,
+	});
+
+	await gamdomApi.ensureRainExists({
+		active: true,
+		extraAmount: rainAmount,
+		frequencyMins: 1,
+		maxAmount: rainAmount,
+		minAmount: rainAmount,
+		percentExtraAmount: 5,
+		headers: {
+			Cookie: superAdminCookie,
+		},
+	});
+}
+
 async function createJiraExecution(): Promise<void> {
 	logger.info("Creating a Test Execution in JIRA...");
 	const jiraApi = new JiraApi();
@@ -191,6 +221,7 @@ async function globalSetup(): Promise<void> {
 		),
 	);
 	await updateWithdrawLimits();
+	await configureRain();
 	await enableHiloFeature(gamdomApi, cookie);
 	await enableEvBasedRewards(gamdomApi, cookie);
 	await enableVaultFeature(gamdomApi, cookie);

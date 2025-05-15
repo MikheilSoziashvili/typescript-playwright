@@ -2,6 +2,7 @@ import { UK_PROXY_CREDENTIALS } from "@constants/proxies";
 import { TIP_RAIN } from "@constants/tip-rain";
 import { buildTipRainUserMessageInfo } from "@core/helpers/asserter-helpers/text-asserters";
 import {
+	convertCoinsToUsd,
 	createBrowserContextWithProxy,
 	createPngImagePath,
 	deleteFilesWithFilePaths,
@@ -14,124 +15,18 @@ import { RegisterTestData } from "@dtos/test-data";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
+import { rainAmount } from "global-setup";
 
-test.beforeEach(async ({ gamdomApi }) => {
+test.describe("Rain tests", () => {
 	const superAdminData = new RegisterTestData({
 		useGamdomEmailDomain: true,
 	});
-
-	const superAdminCookie = getCookieHeader(
-		await gamdomApi.authenticateWithNewSuperAdminUser(superAdminData),
-	);
-
-	await gamdomApi.stopCustomRain({
-		Cookie: superAdminCookie,
-	});
-
-	await gamdomApi.ensureRainExists({
-		active: true,
-		extraAmount: 1000,
-		frequencyMins: 1,
-		maxAmount: 1000,
-		minAmount: 1000,
-		percentExtraAmount: 5,
-		headers: {
-			Cookie: superAdminCookie,
-		},
-	});
-});
-
-test.describe("Tip rain tests", () => {
 	let qrCode2FAImagePath: string;
 	const tipRainAmount = 10;
-	const userData = new RegisterTestData();
-
-	test.afterAll(async () => {
-		await deleteFilesWithFilePaths([qrCode2FAImagePath]);
-	});
-
-	test.use(
-		storageStateNewUserDB({
-			username: userData.username,
-			password: userData.password,
-			email: userData.email,
-		}),
-	);
-
-	test("[ENG-2564] Tip rain - Require new 2FA code when IP of user changes", async ({
-		homePage,
-		chat,
-		tipRainModal,
-		twoFactorAuthModal,
-		settingsPage,
-		browser,
-	}) => {
-		const pages = {
-			homePage,
-			tipRainModal,
-			twoFactorAuthModal,
-			settingsPage,
-			chat,
-		};
-		const initialPage = await initializePageObjects(
-			await browser.newContext(),
-			...Object.values(pages),
-		);
-
-		qrCode2FAImagePath = createPngImagePath();
-		await settingsPage
-			.steps()
-			.navigateAndEnable2FaAuthentication(qrCode2FAImagePath);
-
-		await homePage.navigate();
-		await homePage.authenticatedHeader.expandChatIfNotVisible();
-		await chat.steps().verifyChatAndSendMessage(TIP_RAIN);
-		await twoFactorAuthModal
-			.steps()
-			.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
-		await tipRainModal
-			.steps()
-			.verifyModalAndTipRainSuccessfully(tipRainAmount);
-		await chat.assertThat().isInfoMessageVisible(
-			buildTipRainUserMessageInfo({
-				username: userData.username,
-				tipRainAmount: tipRainAmount,
-			}),
-		);
-
-		await chat.steps().verifyChatAndSendMessage(TIP_RAIN);
-		await twoFactorAuthModal.assertThat().modal2FaNotDisplayed();
-
-		await initializePageObjectsWithCookies(
-			await (await browser.newContext()).cookies(),
-			initialPage,
-			await createBrowserContextWithProxy(browser, UK_PROXY_CREDENTIALS),
-			...Object.values(pages),
-		);
-
-		await homePage.navigate();
-		await homePage.authenticatedHeader
-			.assertThat()
-			.loggedInUserElementsAreVisible();
-		await homePage.authenticatedHeader.expandChatIfNotVisible();
-		await chat.steps().verifyChatAndSendMessage(TIP_RAIN);
-		await twoFactorAuthModal
-			.steps()
-			.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
-		await tipRainModal
-			.steps()
-			.verifyModalAndTipRainSuccessfully(tipRainAmount);
-		await chat.assertThat().isInfoMessageVisible(
-			buildTipRainUserMessageInfo({
-				username: userData.username,
-				tipRainAmount: tipRainAmount,
-			}),
-		);
-	});
+	const baseRainAmount = convertCoinsToUsd(rainAmount);
 
 	test.describe("Rain claim tests", () => {
 		test.slow();
-		const baseRainAmount = 0.67;
 
 		test.use(storageStateNewUserDB());
 		test("[ENG-2863] Rain - try to claim the rain", async ({
@@ -170,6 +65,106 @@ test.describe("Tip rain tests", () => {
 			await homePage.authenticatedHeader
 				.assertThat()
 				.accountBalanceIs(expectedUserBalance);
+		});
+	});
+
+	test.describe("Tip rain tests", () => {
+		const userData = new RegisterTestData();
+		test.use(
+			storageStateNewUserDB({
+				username: userData.username,
+				password: userData.password,
+				email: userData.email,
+			}),
+		);
+		test("[ENG-2564] Tip rain - Require new 2FA code when IP of user changes", async ({
+			homePage,
+			chat,
+			tipRainModal,
+			twoFactorAuthModal,
+			settingsPage,
+			gamdomApi,
+			browser,
+		}) => {
+			const pages = {
+				homePage,
+				tipRainModal,
+				twoFactorAuthModal,
+				settingsPage,
+				chat,
+			};
+
+			const superAdminCookie = getCookieHeader(
+				await gamdomApi.authenticateWithNewSuperAdminUser(
+					superAdminData,
+				),
+			);
+			const initialPage = await initializePageObjects(
+				await browser.newContext(),
+				...Object.values(pages),
+			);
+
+			qrCode2FAImagePath = createPngImagePath();
+			await settingsPage
+				.steps()
+				.navigateAndEnable2FaAuthentication(qrCode2FAImagePath);
+
+			await homePage.navigate();
+			await homePage.authenticatedHeader.expandChatIfNotVisible();
+			await chat.steps().verifyChatAndSendMessage(TIP_RAIN);
+			await twoFactorAuthModal
+				.steps()
+				.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
+			await tipRainModal
+				.steps()
+				.verifyModalAndTipRainSuccessfully(
+					gamdomApi,
+					superAdminCookie,
+					tipRainAmount,
+				);
+			await chat.assertThat().isInfoMessageVisibleByText(
+				buildTipRainUserMessageInfo({
+					username: userData.username,
+					tipRainAmount: tipRainAmount,
+				}),
+			);
+
+			await chat.steps().verifyChatAndSendMessage(TIP_RAIN);
+			await twoFactorAuthModal.assertThat().modal2FaNotDisplayed();
+
+			await initializePageObjectsWithCookies(
+				await (await browser.newContext()).cookies(),
+				initialPage,
+				await createBrowserContextWithProxy(
+					browser,
+					UK_PROXY_CREDENTIALS,
+				),
+				...Object.values(pages),
+			);
+
+			await homePage.navigate();
+			await homePage.authenticatedHeader
+				.assertThat()
+				.loggedInUserElementsAreVisible();
+			await homePage.authenticatedHeader.expandChatIfNotVisible();
+			await chat.steps().verifyChatAndSendMessage(TIP_RAIN);
+			await twoFactorAuthModal
+				.steps()
+				.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
+			await tipRainModal
+				.steps()
+				.verifyModalAndTipRainSuccessfully(
+					gamdomApi,
+					superAdminCookie,
+					tipRainAmount,
+				);
+			await chat.assertThat().isInfoMessageVisibleByText(
+				buildTipRainUserMessageInfo({
+					username: userData.username,
+					tipRainAmount: tipRainAmount,
+				}),
+			);
+			await deleteFilesWithFilePaths([qrCode2FAImagePath]);
 		});
 	});
 });
