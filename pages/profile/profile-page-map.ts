@@ -1,5 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
+import { UserMenuOption } from "@enums/user-menu-options";
 
 export class ProfilePageMap extends BaseMap {
 	public constructor(page: Page) {
@@ -57,5 +58,11 @@ export class ProfilePageMap extends BaseMap {
 
 	public get savePhoneButton(): Locator {
 		return this.phoneNumberContainer.getByTestId("saveButton");
+	}
+
+	public userProfileLeftMenuItem(dropdownItem: UserMenuOption): Locator {
+		return this.leftMenu.locator(`a`, {
+			hasText: `${dropdownItem}`,
+		});
 	}
 }

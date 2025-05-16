@@ -7,6 +7,7 @@ import { PROFILE_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { ProfilePageSteps } from "./profile-page-steps";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { TwoFactorAuthModal } from "@pages/modals/two-factor-authentication-modal/two-factor-auth-modal";
+import { UserMenuOption } from "@enums/user-menu-options";
 
 export class ProfilePage extends BasePage<ProfilePageMap> {
 	public constructor(page: Page) {
@@ -50,5 +51,11 @@ export class ProfilePage extends BasePage<ProfilePageMap> {
 
 	public async clickSavePhone(): Promise<void> {
 		await this.map.savePhoneButton.click();
+	}
+
+	public async navigateToUserMenuOption(
+		menuItem: UserMenuOption,
+	): Promise<void> {
+		await this.map.userProfileLeftMenuItem(menuItem).click();
 	}
 }
