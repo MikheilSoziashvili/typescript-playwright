@@ -43,6 +43,9 @@ export class ProfilePage extends BasePage<ProfilePageMap> {
 		await this.map.logOutButton.click();
 		await this.continueModal.assertThat().isDisplayed();
 		await this.continueModal.clickContinueButton();
+		await this.unauthenticatedHeader
+			.assertThat()
+			.loggedOutUserElementsAreVisible();
 	}
 
 	public async clickSaveEmail(): Promise<void> {
