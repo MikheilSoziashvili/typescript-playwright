@@ -13,6 +13,7 @@ import { ProviderDetails, VisibilityResult } from "@core/types/types";
 import { GameProvider } from "@enums/game-providers";
 import { Provider } from "@core/api/interfaces/provider";
 import { CsvFilesName } from "@enums/csv-file-name";
+import { UserType } from "@enums/user-types";
 
 const adminEnableGames = parse_csv(
 	DATASETS_DIR,
@@ -34,11 +35,16 @@ const providerToFeatureMap: Record<string, Feature> = {
 };
 
 // Map configuration strings to their state representations for regular and beta users
-const configToStates: Record<string, { regular: boolean; beta: boolean }> = {
-	both_enabled: { regular: true, beta: true },
-	regular_enabled: { regular: true, beta: false },
-	beta_enabled: { regular: false, beta: true },
-	both_disabled: { regular: false, beta: false },
+const defineUserConfig = (regular: boolean, beta: boolean) => ({
+	[UserType.REGULAR]: regular,
+	[UserType.BETA]: beta,
+});
+
+const configToStates: Record<string, Partial<Record<UserType, boolean>>> = {
+	both_enabled: defineUserConfig(true, true),
+	regular_enabled: defineUserConfig(true, false),
+	beta_enabled: defineUserConfig(false, true),
+	both_disabled: defineUserConfig(false, false),
 };
 
 // Map provider names to their enums and additional properties
@@ -121,7 +127,7 @@ test.describe.serial("Admin Enable Game Provider tests @game-providers", () => {
 		for (const feature of featuresToEnable) {
 			await gamdomApi.setFeatureState(
 				feature,
-				{ regular: true, beta: true },
+				{ [UserType.REGULAR]: true, [UserType.BETA]: true },
 				{ Cookie: superAdminCookie },
 			);
 		}
@@ -134,195 +140,208 @@ test.describe.serial("Admin Enable Game Provider tests @game-providers", () => {
 		const providerStates = configToStates[record.providersConfiguration];
 		const providerEnum = providerEnumMap[record.provider];
 		const providerToFeature = providerToFeatureMap[record.provider];
+		const regularEnabled = Boolean(providerStates[UserType.REGULAR]);
+		const betaEnabled = Boolean(providerStates[UserType.BETA]);
 
 		/**
 		 * Define a test for each record.
 		 * The test checks the visibility of game providers for regular and beta users
 		 * based on the configured states.
 		 */
-		test(`[ENG-2745] Admin - enable a game provider only for beta users, test number: [${record.case}] @originals`, async ({
-			gamdomApi,
-			homePage,
-			casinoPage,
-			providersPage,
-			page,
-		}) => {
-			// Authenticate as super admin to perform administrative actions
-			test.fixme(true, "Align new changes coming from setFeatureState");
+		test(
+			`[ENG-2745] Admin - enable a game provider only for beta users, test number: [${record.case}`,
+			{
+				annotation: {
+					type: "bug",
+					description: "https://gamdom.atlassian.net/browse/ENG-6552",
+				},
+			},
+			async ({
+				gamdomApi,
+				homePage,
+				casinoPage,
+				providersPage,
+				page,
+			}) => {
+				// Authenticate as super admin to perform administrative actions
+				const superAdminCookie = getCookieHeader(
+					await gamdomApi.authenticateWithExistingUser(
+						SUPER_ADMIN_CREDENTIALS.username,
+						SUPER_ADMIN_CREDENTIALS.password,
+					),
+				);
 
-			const superAdminCookie = getCookieHeader(
-				await gamdomApi.authenticateWithExistingUser(
-					SUPER_ADMIN_CREDENTIALS.username,
-					SUPER_ADMIN_CREDENTIALS.password,
-				),
-			);
+				// Set the feature state (enable/disable) for both regular and beta users
+				await gamdomApi.setFeatureState(
+					providerToFeature,
+					featureStates,
+					{
+						Cookie: superAdminCookie,
+					},
+				);
 
-			// Set the feature state (enable/disable) for both regular and beta users
-			await gamdomApi.setFeatureState(providerToFeature, featureStates, {
-				Cookie: superAdminCookie,
-			});
+				// Retrieve all providers to find the target provider
+				const providers = await gamdomApi.getProviders({
+					Cookie: superAdminCookie,
+				});
 
-			// Retrieve all providers to find the target provider
-			const providers = await gamdomApi.getProviders({
-				Cookie: superAdminCookie,
-			});
+				// Find the target provider using its name
+				const targetProvider = providers.find(
+					(provider) =>
+						provider.provider_name === providerEnum.providerName,
+				) as Provider;
 
-			// Find the target provider using its name
-			const targetProvider = providers.find(
-				(provider) =>
-					provider.provider_name === providerEnum.providerName,
-			) as Provider;
+				// Extract the provider ID for use in setting provider state
+				const providerId = targetProvider.id;
 
-			// Extract the provider ID for use in setting provider state
-			const providerId = targetProvider.id;
-
-			// Set the provider state (enable/disable, beta users only) based on the test configuration
-			await gamdomApi.setProviderState(
-				providerId,
-				providerEnum.providerName,
-				!providerStates.regular,
-				providerStates.beta,
-				providerEnum.providerIdName,
-				providerEnum.importedFrom,
-				{ Cookie: superAdminCookie },
-			);
-
-			// Create test data for a regular user and a beta user
-			const regularUserData = new RegisterTestData();
-			const betaUserData = new RegisterTestData();
-
-			// Register and authenticate the beta user
-			await gamdomApi.authenticateWithNewUser(betaUserData);
-			const betaUserId = (
-				await gamdomApi.getBasicInfo(
-					betaUserData.username,
-					betaUserData.password,
-				)
-			).user.id;
-
-			// Edit the beta user's info to assign the 'beta_user' tag
-			await gamdomApi.editUserInfo(
-				betaUserId,
-				"beta_user",
-				betaUserData.email,
-				{ Cookie: superAdminCookie },
-			);
-
-			// ----- Gamdom home page casino hover menu ----- //
-			// Authenticate with the beta user and verify provider visibility
-			const betaUserCookie = await gamdomApi.authenticateWithExistingUser(
-				betaUserData.username,
-				betaUserData.password,
-			);
-
-			// Set authentication cookies in the browser for the beta user
-			await setAuthenticationCookies(page, betaUserCookie);
-			await homePage.navigateAndCheckTitle();
-
-			// Verify that the provider is visible or not as expected for the beta user
-			await homePage
-				.assertThat()
-				.verifyProviderState(
+				// Set the provider state (enable/disable, beta users only) based on the test configuration
+				await gamdomApi.setProviderState(
+					providerId,
 					providerEnum.providerName,
-					record.beta_user_result,
+					!regularEnabled,
+					betaEnabled,
+					providerEnum.providerIdName,
+					providerEnum.importedFrom,
+					{ Cookie: superAdminCookie },
 				);
 
-			// Authenticate with the regular user and verify provider visibility
-			const regularUserCookie = await gamdomApi.authenticateWithNewUser(
-				regularUserData,
-			);
-			await setAuthenticationCookies(page, regularUserCookie);
-			await homePage.navigateAndCheckTitle();
+				// Create test data for a regular user and a beta user
+				const regularUserData = new RegisterTestData();
+				const betaUserData = new RegisterTestData();
 
-			// Verify that the provider is visible or not as expected for the regular user
-			await homePage
-				.assertThat()
-				.verifyProviderState(
-					providerEnum.providerName,
-					record.regular_user_result,
+				// Register and authenticate the beta user
+				await gamdomApi.authenticateWithNewUser(betaUserData);
+				const betaUserId = (
+					await gamdomApi.getBasicInfo(
+						betaUserData.username,
+						betaUserData.password,
+					)
+				).user.id;
+
+				// Edit the beta user's info to assign the 'beta_user' tag
+				await gamdomApi.editUserInfo(
+					betaUserId,
+					"beta_user",
+					betaUserData.email,
+					{ Cookie: superAdminCookie },
 				);
 
-			// ---- Casino page provider filter dropdown ---- //
-			// Navigate to the casino page as the regular user and verify provider visibility in the dropdown
-			await casinoPage.navigate();
-			await casinoPage
-				.steps()
-				.verifyProviderDisplayedInDropdown(
-					providerEnum.providerName as GameProvider,
-					record.regular_user_result,
-				);
+				// ----- Gamdom home page casino hover menu ----- //
+				// Authenticate with the beta user and verify provider visibility
+				const betaUserCookie =
+					await gamdomApi.authenticateWithExistingUser(
+						betaUserData.username,
+						betaUserData.password,
+					);
 
-			// Switch to the beta user and verify provider visibility in the dropdown
-			await setAuthenticationCookies(page, betaUserCookie);
+				// Set authentication cookies in the browser for the beta user
+				await setAuthenticationCookies(page, betaUserCookie);
+				await homePage.navigateAndCheckTitle();
 
-			await casinoPage.navigate();
-			await casinoPage
-				.steps()
-				.verifyProviderDisplayedInDropdown(
-					providerEnum.providerName as GameProvider,
-					record.beta_user_result,
-				);
+				// Verify that the provider is visible or not as expected for the beta user
+				await homePage
+					.assertThat()
+					.verifyProviderState(
+						providerEnum.providerName,
+						record.beta_user_result,
+					);
 
-			// ---- Casino page provider filter dropdown in "Pick Random" feature settings ---- //
-			// Verify provider visibility in the "Pick Random" settings modal for the beta user
-			await casinoPage.navigate();
-			await casinoPage
-				.steps()
-				.verifyProviderDisplayedInSettingsModalDropdown(
-					providerEnum.providerName as GameProvider,
-					record.beta_user_result,
-				);
+				// Authenticate with the regular user and verify provider visibility
+				const regularUserCookie =
+					await gamdomApi.authenticateWithNewUser(regularUserData);
+				await setAuthenticationCookies(page, regularUserCookie);
+				await homePage.navigateAndCheckTitle();
 
-			// Switch back to the regular user and verify provider visibility in the settings modal
-			await setAuthenticationCookies(page, regularUserCookie);
+				// Verify that the provider is visible or not as expected for the regular user
+				await homePage
+					.assertThat()
+					.verifyProviderState(
+						providerEnum.providerName,
+						record.regular_user_result,
+					);
 
-			await casinoPage.navigate();
-			await casinoPage
-				.steps()
-				.verifyProviderDisplayedInDropdown(
-					providerEnum.providerName as GameProvider,
-					record.regular_user_result,
-				);
+				// ---- Casino page provider filter dropdown ---- //
+				// Navigate to the casino page as the regular user and verify provider visibility in the dropdown
+				await casinoPage.navigate();
+				await casinoPage
+					.steps()
+					.verifyProviderDisplayedInDropdown(
+						providerEnum.providerName as GameProvider,
+						record.regular_user_result,
+					);
 
-			// ---- Providers page ---- //
-			// Navigate to the providers page as the regular user and verify provider option state
-			await providersPage
-				.steps()
-				.verifyProviderOptionState(
-					providersPage,
-					record.regular_user_result,
-					providerEnum.providerName as GameProvider,
-				);
+				// Switch to the beta user and verify provider visibility in the dropdown
+				await setAuthenticationCookies(page, betaUserCookie);
 
-			// Switch to the beta user and verify provider option state
-			await setAuthenticationCookies(page, betaUserCookie);
-			await providersPage
-				.steps()
-				.verifyProviderOptionState(
-					providersPage,
-					record.beta_user_result,
-					providerEnum.providerName as GameProvider,
-				);
+				await casinoPage.navigate();
+				await casinoPage
+					.steps()
+					.verifyProviderDisplayedInDropdown(
+						providerEnum.providerName as GameProvider,
+						record.beta_user_result,
+					);
 
-			// ---- Homepage provider belt ---- //
-			// Verify that the provider is visible or not as expected for the beta user
-			await homePage
-				.steps()
-				.verifyProviderOptionStateInBelt(
-					homePage,
-					providerEnum.providerName as GameProvider,
-					record.beta_user_result,
-				);
+				// ---- Casino page provider filter dropdown in "Pick Random" feature settings ---- //
+				// Verify provider visibility in the "Pick Random" settings modal for the beta user
+				await casinoPage.navigate();
+				await casinoPage
+					.steps()
+					.verifyProviderDisplayedInSettingsModalDropdown(
+						providerEnum.providerName as GameProvider,
+						record.beta_user_result,
+					);
 
-			// Verify that the provider is visible or not as expected for the regular user
-			await setAuthenticationCookies(page, regularUserCookie);
-			await homePage
-				.steps()
-				.verifyProviderOptionStateInBelt(
-					homePage,
-					providerEnum.providerName as GameProvider,
-					record.regular_user_result,
-				);
-		});
+				// Switch back to the regular user and verify provider visibility in the settings modal
+				await setAuthenticationCookies(page, regularUserCookie);
+
+				await casinoPage.navigate();
+				await casinoPage
+					.steps()
+					.verifyProviderDisplayedInDropdown(
+						providerEnum.providerName as GameProvider,
+						record.regular_user_result,
+					);
+
+				// ---- Providers page ---- //
+				// Navigate to the providers page as the regular user and verify provider option state
+				await providersPage
+					.steps()
+					.verifyProviderOptionState(
+						providersPage,
+						record.regular_user_result,
+						providerEnum.providerName as GameProvider,
+					);
+
+				// Switch to the beta user and verify provider option state
+				await setAuthenticationCookies(page, betaUserCookie);
+				await providersPage
+					.steps()
+					.verifyProviderOptionState(
+						providersPage,
+						record.beta_user_result,
+						providerEnum.providerName as GameProvider,
+					);
+
+				// ---- Homepage provider belt ---- //
+				// Verify that the provider is visible or not as expected for the beta user
+				await homePage
+					.steps()
+					.verifyProviderOptionStateInBelt(
+						homePage,
+						providerEnum.providerName as GameProvider,
+						record.beta_user_result,
+					);
+
+				// Verify that the provider is visible or not as expected for the regular user
+				await setAuthenticationCookies(page, regularUserCookie);
+				await homePage
+					.steps()
+					.verifyProviderOptionStateInBelt(
+						homePage,
+						providerEnum.providerName as GameProvider,
+						record.regular_user_result,
+					);
+			},
+		);
 	});
 });
