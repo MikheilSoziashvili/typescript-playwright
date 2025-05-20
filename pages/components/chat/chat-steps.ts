@@ -13,6 +13,7 @@ import { waitUntil } from "@core/utils/utils";
 import { step } from "decorators/step";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { Timeout } from "@enums/timeout";
+import { expect } from "@playwright/test";
 
 export class ChatSteps extends BaseComponentStep<Chat> {
 	private authenticatedHeader: AuthenticatedHeader;
@@ -53,7 +54,22 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 				);
 				await this.component.map.chatTextBox.clear();
 				await this.component.map.chatTextBox.fill(message);
-				await this.component.map.sendMessageButton.click();
+
+				await expect
+					.poll(
+						async () => {
+							await this.component.map.sendMessageButton.click();
+							const currentMessage =
+								await this.component.map.chatTextBox.innerText();
+							return currentMessage.trim() !== message.trim();
+						},
+						{
+							message:
+								"Message was not sent successfully after multiple click attempts",
+							timeout: Timeout.EXTRA_LONG,
+						},
+					)
+					.toBeTruthy();
 				break;
 			} catch (error) {
 				const e = error as Error;
