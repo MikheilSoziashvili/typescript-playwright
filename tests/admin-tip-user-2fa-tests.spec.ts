@@ -19,12 +19,12 @@ test.describe("Tip user through admin panel tests", () => {
 	const userData = new RegisterTestData();
 	const newUserData = new RegisterTestData();
 
-	test.beforeEach(async ({ settingsPage, gamdomApi, gamdomDb }) => {
+	test.beforeEach(async ({ settingsPage, gamdomDb }) => {
 		qrCode2FAImagePath = createPngImagePath();
 		await settingsPage
 			.steps()
 			.navigateAndEnable2FaAuthentication(qrCode2FAImagePath);
-		await gamdomApi.registerUser(newUserData);
+		await gamdomDb.createNewUser(newUserData);
 		await gamdomDb.updateUserTotalDepositedAmountByUserEmail(
 			userData.email
 				.replace(emailDomainPattern, GAMDOM_EMAIL_DOMAIN)

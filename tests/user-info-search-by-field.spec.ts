@@ -16,9 +16,9 @@ const VALID_USERNAME = users.defaultUser.username;
 const INVALID_USERNAME = "12$user";
 
 test.describe("User info - search by field", () => {
-	test.beforeAll(async ({ gamdomApi }) => {
+	test.beforeAll(async ({ gamdomDb }) => {
 		await Promise.all(
-			Object.values(users).map((user) => gamdomApi.registerUser(user)),
+			Object.values(users).map((user) => gamdomDb.createNewUser(user)),
 		);
 	});
 

@@ -22,7 +22,6 @@ test.describe("User statistics tests", () => {
 				password: userHiddenStats.password,
 				email: userHiddenStats.email,
 				emailVerified: true,
-				hasLogMessage: false,
 			});
 			const cookie = await gamdomApi.authenticateWithExistingUser(
 				userHiddenStats.username,
@@ -40,6 +39,7 @@ test.describe("User statistics tests", () => {
 
 	test("[ENG-300] Hide statistics from other users", async ({
 		gamdomApi,
+		gamdomDb,
 		homePage,
 		chat,
 		userProfileModal,
@@ -47,7 +47,11 @@ test.describe("User statistics tests", () => {
 	}) => {
 		test.slow();
 		const newUser = new RegisterTestData();
-		const cookie = await gamdomApi.authenticateWithNewUser(newUser);
+		await gamdomDb.createNewUser(newUser);
+		const cookie = await gamdomApi.authenticateWithExistingUser(
+			newUser.username,
+			newUser.password,
+		);
 		await setAuthenticationCookies(page, cookie);
 		await homePage.navigate();
 		await homePage.authenticatedHeader.expandChatIfNotVisible();

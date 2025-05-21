@@ -11,41 +11,56 @@ import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { TransactionState } from "@enums/transaction-states";
 import { testnetAddress } from "@constants/crypto";
 import { Timeout } from "@enums/timeout";
+import { UserTags } from "@enums/db/user-tags";
+import { UserClasses } from "@enums/db/user-classes";
 
 test.describe("Bitcoin tests", () => {
 	test.slow();
-	test.beforeEach(async ({ cryptoAdminPage, toast, page, gamdomApi }) => {
-		const superAdminData = new RegisterTestData({
-			useGamdomEmailDomain: true,
-		});
-		const superadminCookie =
-			await gamdomApi.authenticateWithNewSuperAdminUser(superAdminData);
-		await setAuthenticationCookies(page, superadminCookie);
-		await cryptoAdminPage.navigate();
-		cryptoAdminPage.acceptDialog({
-			expectedMessage: "Enter new minimum",
-			inputText: "0.00001",
-		});
-		await cryptoAdminPage.toggleCryptoOperations({
-			cryptoName: Cryptocurrency.Bitcoin,
-			deposit: true,
-			withdraw: true,
-		});
+	test.beforeEach(
+		async ({ cryptoAdminPage, toast, page, gamdomApi, gamdomDb }) => {
+			const superAdminData = new RegisterTestData({
+				useGamdomEmailDomain: true,
+			});
+			await gamdomDb.createNewUser({
+				username: superAdminData.username,
+				password: superAdminData.password,
+				email: superAdminData.email,
+				tags: UserTags.SuperAdmin,
+				userClass: UserClasses.Admin,
+				emailVerified: true,
+			});
+			const superadminCookie =
+				await gamdomApi.authenticateWithExistingUser(
+					superAdminData.username,
+					superAdminData.password,
+				);
+			await setAuthenticationCookies(page, superadminCookie);
+			await cryptoAdminPage.navigate();
+			cryptoAdminPage.acceptDialog({
+				expectedMessage: "Enter new minimum",
+				inputText: "0.00001",
+			});
+			await cryptoAdminPage.toggleCryptoOperations({
+				cryptoName: Cryptocurrency.Bitcoin,
+				deposit: true,
+				withdraw: true,
+			});
 
-		await cryptoAdminPage.refreshCryptoData();
-		await toast.assertThat().titleIs(ToastTitle.SUCCESS, {
-			subTitle: ToastSubTitle.REFRESHED_STATE,
-		});
+			await cryptoAdminPage.refreshCryptoData();
+			await toast.assertThat().titleIs(ToastTitle.SUCCESS, {
+				subTitle: ToastSubTitle.REFRESHED_STATE,
+			});
 
-		await cryptoAdminPage.clickMinDepositButton(CryptoNode.nodeBTC1);
-		await cryptoAdminPage.clickMinWithdrawButton(CryptoNode.nodeBTC1);
+			await cryptoAdminPage.clickMinDepositButton(CryptoNode.nodeBTC1);
+			await cryptoAdminPage.clickMinWithdrawButton(CryptoNode.nodeBTC1);
 
-		const userCookie = await gamdomApi.authenticateWithExistingUser(
-			userData.username,
-			userData.password,
-		);
-		await setAuthenticationCookies(page, userCookie);
-	});
+			const userCookie = await gamdomApi.authenticateWithExistingUser(
+				userData.username,
+				userData.password,
+			);
+			await setAuthenticationCookies(page, userCookie);
+		},
+	);
 
 	const userData = new RegisterTestData();
 
@@ -58,6 +73,7 @@ test.describe("Bitcoin tests", () => {
 	test.setTimeout(Timeout.EXTRA_MAX + Timeout.SUPER_MAX);
 	test("[ENG-5450] BTC - deposit and withdraw", async ({
 		bitcoinApi,
+		gamdomDb,
 		homePage,
 		walletModal,
 		transactionsPage,
@@ -75,8 +91,19 @@ test.describe("Bitcoin tests", () => {
 			userData.username,
 			userData.password,
 		);
+		await gamdomDb.createNewUser({
+			username: superAdminData.username,
+			password: superAdminData.password,
+			email: superAdminData.email,
+			tags: UserTags.SuperAdmin,
+			userClass: UserClasses.Admin,
+			emailVerified: true,
+		});
 		const adminCookie = getCookieHeader(
-			await gamdomApi.authenticateWithNewSuperAdminUser(superAdminData),
+			await gamdomApi.authenticateWithExistingUser(
+				superAdminData.username,
+				superAdminData.password,
+			),
 		);
 
 		await homePage.navigateToWallet();

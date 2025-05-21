@@ -12,6 +12,8 @@ import {
 	setContextAuthenticationCookies,
 } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
+import { UserClasses } from "@enums/db/user-classes";
+import { UserTags } from "@enums/db/user-tags";
 import { test } from "@fixtures/fixtures";
 
 test.describe("Tip user 2FA tests", () => {
@@ -32,11 +34,18 @@ test.describe("Tip user 2FA tests", () => {
 		tipAmount: tipValue,
 	});
 
-	test.beforeEach(async ({ gamdomApi, homePage, chat, page }) => {
+	test.beforeEach(async ({ gamdomApi, gamdomDb, homePage, chat, page }) => {
 		qrCode2FAImagePath = createPngImagePath();
 		await homePage.navigate({ cookies: { clearCookies: true } });
-		const cookie = await gamdomApi.authenticateWithNewVerifiedUser(
-			newUserData,
+		await gamdomDb.createNewUser({
+			username: newUserData.username,
+			password: newUserData.password,
+			email: newUserData.email,
+			emailVerified: true,
+		});
+		const cookie = await gamdomApi.authenticateWithExistingUser(
+			newUserData.username,
+			newUserData.password,
 		);
 		await setAuthenticationCookies(page, cookie);
 		await homePage.navigate();
@@ -60,6 +69,7 @@ test.describe("Tip user 2FA tests", () => {
 		toast,
 		twoFactorAuthModal,
 		settingsPage,
+		gamdomDb,
 		browser,
 	}) => {
 		const context = await browser.newContext();
@@ -77,8 +87,17 @@ test.describe("Tip user 2FA tests", () => {
 		);
 
 		await homePage.navigate({ cookies: { clearCookies: true } });
-		const cookie = await gamdomApi.authenticateWithNewSuperAdminUser(
-			superAdminUserData,
+		await gamdomDb.createNewUser({
+			username: superAdminUserData.username,
+			password: superAdminUserData.password,
+			email: superAdminUserData.email,
+			tags: UserTags.SuperAdmin,
+			userClass: UserClasses.Admin,
+			emailVerified: true,
+		});
+		const cookie = await gamdomApi.authenticateWithExistingUser(
+			superAdminUserData.username,
+			superAdminUserData.password,
 		);
 		await setContextAuthenticationCookies(context, cookie);
 

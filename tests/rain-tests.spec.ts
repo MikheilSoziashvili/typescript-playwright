@@ -12,6 +12,8 @@ import {
 	waitUntil,
 } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
+import { UserClasses } from "@enums/db/user-classes";
+import { UserTags } from "@enums/db/user-tags";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
@@ -85,6 +87,7 @@ test.describe("Rain tests", () => {
 			settingsPage,
 			gamdomApi,
 			browser,
+			gamdomDb,
 		}) => {
 			const pages = {
 				homePage,
@@ -94,9 +97,18 @@ test.describe("Rain tests", () => {
 				chat,
 			};
 
+			await gamdomDb.createNewUser({
+				username: superAdminData.username,
+				password: superAdminData.password,
+				email: superAdminData.email,
+				tags: UserTags.SuperAdmin,
+				userClass: UserClasses.Admin,
+				emailVerified: true,
+			});
 			const superAdminCookie = getCookieHeader(
-				await gamdomApi.authenticateWithNewSuperAdminUser(
-					superAdminData,
+				await gamdomApi.authenticateWithExistingUser(
+					superAdminData.username,
+					superAdminData.password,
 				),
 			);
 			const initialPage = await initializePageObjects(

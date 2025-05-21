@@ -530,7 +530,7 @@ export class GamdomDb extends BaseDB {
 		startingXp = 10001200,
 		emailVerified = false,
 		unit = Unit.COINS,
-		hasLogMessage = true,
+		hasLogMessage = false,
 		tags,
 		userClass,
 	}: NewUserOptions): Promise<number> {

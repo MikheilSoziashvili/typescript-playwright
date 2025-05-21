@@ -11,6 +11,8 @@ import {
 	setAuthenticationCookies,
 } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
+import { UserClasses } from "@enums/db/user-classes";
+import { UserTags } from "@enums/db/user-tags";
 import { LogType } from "@enums/log-types";
 import { test } from "@fixtures/fixtures";
 
@@ -40,13 +42,22 @@ test.describe("Promo code log filters tests", () => {
 		page,
 		userInfoAdminPage,
 		transactionsAdminPage,
+		gamdomDb,
 	}) => {
 		qrCode2FAImagePath = createPngImagePath();
 		await homePage.navigate({ cookies: { clearCookies: true } });
-		const superAdminCookie =
-			await gamdomApi.authenticateWithNewSuperAdminUser(
-				superAdminUserData,
-			);
+		await gamdomDb.createNewUser({
+			username: superAdminUserData.username,
+			password: superAdminUserData.password,
+			email: superAdminUserData.email,
+			tags: UserTags.SuperAdmin,
+			userClass: UserClasses.Admin,
+			emailVerified: true,
+		});
+		const superAdminCookie = await gamdomApi.authenticateWithExistingUser(
+			superAdminUserData.username,
+			superAdminUserData.password,
+		);
 		await setAuthenticationCookies(page, superAdminCookie);
 
 		await settingsPage
@@ -73,8 +84,11 @@ test.describe("Promo code log filters tests", () => {
 				freeSpinsCampaignCode,
 			);
 		await homePage.navigate({ cookies: { clearCookies: true } });
-		const newUserCookie = await gamdomApi.authenticateWithNewUser(
-			newUserData,
+
+		await gamdomDb.createNewUser(newUserData);
+		const newUserCookie = await gamdomApi.authenticateWithExistingUser(
+			newUserData.username,
+			newUserData.password,
 		);
 		await setAuthenticationCookies(page, newUserCookie);
 		await homePage.navigateToWallet();

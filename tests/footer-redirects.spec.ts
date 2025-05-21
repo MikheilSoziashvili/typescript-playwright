@@ -6,6 +6,8 @@ import { environment_url } from "configuration";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { KOTH_ENDPOINT } from "@constants/page-endpoints";
 import { RegisterTestData } from "@dtos/test-data";
+import { UserClasses } from "@enums/db/user-classes";
+import { UserTags } from "@enums/db/user-tags";
 
 const footerRecords = parse_csv(
 	DATASETS_DIR,
@@ -74,9 +76,21 @@ test.describe("Footer redirects tests", () => {
 		footer,
 		gamdomApi,
 		kothPage,
+		gamdomDb,
 	}) => {
+		await gamdomDb.createNewUser({
+			username: superAdminData.username,
+			password: superAdminData.password,
+			email: superAdminData.email,
+			tags: UserTags.SuperAdmin,
+			userClass: UserClasses.Admin,
+			emailVerified: true,
+		});
 		const superAdminCookie = getCookieHeader(
-			await gamdomApi.authenticateWithNewSuperAdminUser(superAdminData),
+			await gamdomApi.authenticateWithExistingUser(
+				superAdminData.username,
+				superAdminData.password,
+			),
 		);
 		await homePage.navigate();
 		await footer.openFooterLinkByPlaceholder("King Of The Hill");

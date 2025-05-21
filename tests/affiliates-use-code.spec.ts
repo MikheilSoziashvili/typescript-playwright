@@ -24,6 +24,7 @@ test.describe("Use affiliate code", () => {
 		notifications,
 		toast,
 		gamdomApi,
+		gamdomDb,
 		page,
 	}) => {
 		await affiliatesPage.navigate();
@@ -32,7 +33,12 @@ test.describe("Use affiliate code", () => {
 		await homePage.navigate({ cookies: { clearCookies: true } });
 
 		const newUser = new RegisterTestData();
-		const newCookie = await gamdomApi.authenticateWithNewUser(newUser);
+
+		await gamdomDb.createNewUser(newUser);
+		const newCookie = await gamdomApi.authenticateWithExistingUser(
+			newUser.username,
+			newUser.password,
+		);
 		await setAuthenticationCookies(page, newCookie);
 
 		await rewardsPage.navigate();

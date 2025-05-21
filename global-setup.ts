@@ -10,6 +10,8 @@ import {
 	writeToJSONFile,
 } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
+import { UserClasses } from "@enums/db/user-classes";
+import { UserTags } from "@enums/db/user-tags";
 import { WithdrawLimitsSettingsValues } from "@enums/db/withdraw-settings-values";
 import { Feature } from "@enums/feature";
 import { HttpStatus } from "@enums/http-status";
@@ -141,13 +143,25 @@ async function updateWithdrawLimits(): Promise<void> {
 export const rainAmount = 15000;
 async function configureRain(): Promise<void> {
 	const gamdomApi = new GamdomApi();
+	const gamdomDb = new GamdomDb();
 
 	const superAdminData = new RegisterTestData({
 		useGamdomEmailDomain: true,
 	});
 
+	await gamdomDb.createNewUser({
+		username: superAdminData.username,
+		password: superAdminData.password,
+		email: superAdminData.email,
+		tags: UserTags.SuperAdmin,
+		userClass: UserClasses.Admin,
+		emailVerified: true,
+	});
 	const superAdminCookie = getCookieHeader(
-		await gamdomApi.authenticateWithNewSuperAdminUser(superAdminData),
+		await gamdomApi.authenticateWithExistingUser(
+			superAdminData.username,
+			superAdminData.password,
+		),
 	);
 
 	await gamdomApi.stopCustomRain({
