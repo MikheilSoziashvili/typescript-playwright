@@ -202,7 +202,7 @@ jobs:
             CUSTOM_OPTIONS: ${{ github.event.client_payload.custom_options || inputs.custom_options }}
             PLAYWRIGHT_TEST: yarn playwright test
             # Set default 3 default workers for scheduled runs and custom workers based on input.workers for more runs
-            WORKERS: ${{ github.event_name == 'schedule' && '--workers=10' || format('--workers={0}', inputs.workers || '10')}}
+            WORKERS: ${{ github.event_name == 'schedule' && '--workers=5' || format('--workers={0}', inputs.workers || '5')}}
             CREATE_TEST_EXECUTION: ${{ inputs.create_test_execution }}
             GITHUB_EVENT_NAME: ${{ github.event_name }}
 
