@@ -1,8 +1,16 @@
-import { test } from "@fixtures/fixtures";
-import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { Timeout } from "@enums/timeout";
+import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
+import { test } from "@fixtures/fixtures";
 
 test.describe("Plinko autobet tests", () => {
+	test.beforeAll(async ({}, testInfo) => {
+		if (testInfo.project.name === "firefox") {
+			testInfo.annotations.push({
+				type: "performance",
+				description: "https://gamdom.atlassian.net/browse/ENG-6628",
+			});
+		}
+	});
 	test.use(storageStateNewUserDB());
 	test.slow();
 	const numberOfAutoBets = "50";
