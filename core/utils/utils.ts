@@ -4,6 +4,7 @@ import { MAILINATOR_DOMAIN } from "@constants/domains";
 import { AUTH_PATH } from "@constants/file-paths";
 import { JsonData, WaitUntilOptions } from "@core/interfaces";
 import {
+	CalculateMinesMultiplierArgs,
 	CredentialsType,
 	ProxyCredentialsType,
 	TestUserConfigurationObject,
@@ -35,6 +36,8 @@ import { Browser, BrowserContext, Cookie, Locator, Page } from "playwright";
 import { PNG, PNGOptions } from "pngjs";
 import sharp from "sharp";
 import xml2js from "xml2js";
+import { CurrencySymbol } from "@enums/currenciesSymbols";
+import { NumberSeparators } from "@enums/number-separators";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -166,8 +169,19 @@ export function parseBalance(rawValue: string): number {
 	return accounting.unformat(rawValue);
 }
 
-export function formatBalance(value: number): string {
-	return accounting.formatMoney(value);
+export function formatBalance(
+	value: number,
+	symbol: CurrencySymbol.USD,
+	precision = 2,
+	thousand: NumberSeparators.THOUSAND,
+	decimal: NumberSeparators.DECIMAL,
+): string {
+	return accounting.formatMoney(value, {
+		symbol,
+		precision,
+		thousand,
+		decimal,
+	});
 }
 
 /**
@@ -214,6 +228,11 @@ export function roundToDecimals(value: number, decimals = 5): number {
 
 export function parseToFloat(num: number, fractionDigits = 2): string {
 	return parseFloat(`${num}`).toFixed(fractionDigits);
+}
+
+export function truncateToDecimals(value: number, decimals = 1): number {
+	const factor = Math.pow(10, decimals);
+	return Math.floor(value * factor) / factor;
 }
 
 export function generateRandomString(options?: {
@@ -959,4 +978,49 @@ export async function waitForOpenRain(
 			timeoutSeconds: TimeoutSeconds.ONE_TWENTY,
 		},
 	);
+}
+/**
+ * Calculates the expected multiplier for a Mines game round.
+ *
+ * This function simulates the expected multiplier by iterating over each step
+ * and applying the formula for the probability of hitting a gem at each stage.
+ *
+ * Multiplier logic:
+ *   - Probability of hitting a gem on each click = remaining gems / remaining fields
+ *   - Multiplier for each succesful click = (total remaining fields) / (remaining gems)
+ *   - Formula is adjusted with a house edge at the end
+ *
+ * @param {CalculateMinesMultiplierArgs} args - Configuration object.
+ * @param {number} args.stepNumber - Number of successful tile picks.
+ * @param {number} args.mines - Total number of mines in the field.
+ * @param {number} args.houseEdge - House edge to apply (e.g., 0.01 = 1%).
+ * @param {number} [args.fieldSize=25] - Total number of tiles (default: 25).
+ * @returns {number} The final multiplier rounded to 4 decimal places.
+ */
+export function calculateMinesMultiplier(
+	args: CalculateMinesMultiplierArgs,
+): number {
+	const {
+		stepNumber,
+		mines,
+		houseEdge,
+		fieldSize = 25,
+		precision = 2,
+	} = args;
+
+	const gems = fieldSize - mines;
+
+	if (stepNumber > gems || stepNumber < 1) {
+		throw new Error("Invalid step number");
+	}
+
+	let multiplier = 1;
+
+	for (let i = 0; i < stepNumber; i++) {
+		multiplier *= (fieldSize - i) / (gems - i);
+	}
+
+	multiplier *= 1 - houseEdge;
+
+	return Number(multiplier.toFixed(precision));
 }

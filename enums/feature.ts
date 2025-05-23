@@ -29,4 +29,5 @@ export enum Feature {
 	EV_BASED_REWARDS = "EV_BASED_REWARDS",
 	VAULT = "VAULT",
 	PLINKO = "PLINKO",
+	MINES = "MINES",
 }

@@ -4,10 +4,22 @@ import { Timeout } from "@enums/timeout";
 import { expect, TestInfo } from "@playwright/test";
 import { step } from "decorators/step";
 import { AuthenticatedHeader } from "./authenticated-header";
+import { CurrencySymbol } from "@enums/currenciesSymbols";
+import { NumberSeparators } from "@enums/number-separators";
 
 export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeader> {
 	public constructor(authenticatedHeader: AuthenticatedHeader) {
 		super(authenticatedHeader);
+	}
+
+	private formatUSD(value: number): string {
+		return formatBalance(
+			value,
+			CurrencySymbol.USD,
+			2,
+			NumberSeparators.THOUSAND,
+			NumberSeparators.DECIMAL,
+		);
 	}
 
 	@step()
@@ -38,7 +50,7 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 	public async accountBalanceIs(amount: number): Promise<void> {
 		await expect(
 			await this.gamdomPage.map.getLoadedAccountBalance(),
-		).toHaveText(`${formatBalance(amount)}`, {
+		).toHaveText(this.formatUSD(amount), {
 			timeout: Timeout.LONG,
 		});
 	}
@@ -49,7 +61,7 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 	): Promise<void> {
 		await expect(
 			await this.gamdomPage.map.getLoadedAccountBalance(),
-		).not.toHaveText(`${formatBalance(initialBalance)}`);
+		).not.toHaveText(this.formatUSD(initialBalance));
 	}
 
 	@step()

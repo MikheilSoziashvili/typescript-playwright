@@ -55,6 +55,21 @@ async function enablePlinkoFeature(
 	});
 }
 
+async function enableMinesFeature(
+	gamdomApi: GamdomApi,
+	cookie: string,
+): Promise<void> {
+	const featureResponse = await gamdomApi.setFeatureState(
+		Feature.MINES,
+		ALL_USER_TYPES_ENABLED,
+		{ Cookie: cookie },
+	);
+
+	featureResponse.forEach((response) => {
+		expect(response.status()).toBe(HttpStatus.OK);
+	});
+}
+
 async function enableVaultFeature(
 	gamdomApi: GamdomApi,
 	cookie: string,
@@ -240,6 +255,7 @@ async function globalSetup(): Promise<void> {
 	await enableEvBasedRewards(gamdomApi, cookie);
 	await enableVaultFeature(gamdomApi, cookie);
 	await enablePlinkoFeature(gamdomApi, cookie);
+	await enableMinesFeature(gamdomApi, cookie);
 	await createKothEvent(
 		gamdomApi,
 		generateRandomString({ prefix: "KOTH_automation_", length: 3 }),

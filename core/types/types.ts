@@ -1,5 +1,6 @@
 import { BitcoinFeeEstimateMode } from "@enums/bitcoin";
 import { Cryptocurrency } from "@enums/cryptocurrencies";
+import { HouseEdgeValue } from "@enums/house-edge-values";
 import { OriginalGame } from "@enums/original-games";
 import { RainStatus } from "@enums/rain-status";
 import { Unit } from "@enums/units";
@@ -7,6 +8,7 @@ import { VisibilityOptions } from "@enums/visibility-options";
 import { CrashGamePage } from "@pages/crash-game-page/crash-game-page";
 import { DiceGamePage } from "@pages/dice-game-page/dice-game-page";
 import { HiloGamePage } from "@pages/hilo-game-page/hilo-game-page";
+import { MinesGamePage } from "@pages/mines-game-page/mines-game-page";
 import { PlinkoGamePage } from "@pages/plinko-game-page/plinko-game-page";
 import { RouletteGamePage } from "@pages/roulette-game-page/roulette-game-page";
 import { APIRequestContext, APIResponse } from "@playwright/test";
@@ -93,7 +95,8 @@ export type OriginalGamesPage =
 	| CrashGamePage
 	| HiloGamePage
 	| RouletteGamePage
-	| PlinkoGamePage;
+	| PlinkoGamePage
+	| MinesGamePage;
 
 export type PoolConfigurationType = {
 	host: string;
@@ -148,3 +151,11 @@ export type WalletUnit = `${Unit}`;
 export type NullableString = string | null;
 
 export type NullableDateString = Date | string | null;
+
+export type CalculateMinesMultiplierArgs = {
+	stepNumber: number;
+	mines: number;
+	houseEdge: HouseEdgeValue.Mines;
+	fieldSize?: number;
+	precision?: number;
+};

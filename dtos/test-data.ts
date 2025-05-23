@@ -65,6 +65,22 @@ export class BetTestData {
 	}
 }
 
+export class MinesBetTestData {
+	public betAmount: number;
+	public minesNumber: number;
+	public cashoutMultiplier: number;
+
+	constructor(options: {
+		betAmount?: number;
+		minesNumber: number;
+		cashoutMultiplier: number;
+	}) {
+		this.betAmount = options.betAmount ?? 0.01;
+		this.minesNumber = options.minesNumber;
+		this.cashoutMultiplier = options.cashoutMultiplier;
+	}
+}
+
 export class DiceBetTestData {
 	public betAmount: number;
 	public multiplier?: number;

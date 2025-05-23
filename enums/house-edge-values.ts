@@ -5,4 +5,5 @@ export enum HouseEdgeValue {
 	Roulette = Crash,
 	SLOTS_LOW = Dice,
 	SLOTS_HIGH = Crash,
+	Mines = Dice,
 }

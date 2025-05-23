@@ -1,4 +1,5 @@
 import { BATCH_FREE_SPINS_FILE_PATH } from "@constants/file-paths";
+import { SUPER_HIGH_USER_AMOUNT } from "@constants/user-amounts";
 import { USER_1_ID } from "@constants/user-ids";
 import { CasinoGameName } from "@enums/casino-game";
 import { ToastSubTitle } from "@enums/toast-subtitles";
@@ -7,7 +8,9 @@ import { storageStateNewSuperAdminUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 
 test.describe("Grant free spins", () => {
-	test.use(storageStateNewSuperAdminUserDB({ amount: 15000000000 }));
+	test.use(
+		storageStateNewSuperAdminUserDB({ amount: SUPER_HIGH_USER_AMOUNT }),
+	);
 	test("[ENG-932] Granting free spins", async ({
 		freeSpinsAdminPage,
 		toast,

@@ -12,6 +12,7 @@ import { HiloBetOption } from "@enums/hilo-bet-options";
 import { OriginalGame, RouletteBetColor } from "@enums/original-games";
 import { step } from "decorators/step";
 import { PlinkoGamePage } from "@pages/plinko-game-page/plinko-game-page";
+import { MinesGamePage } from "@pages/mines-game-page/mines-game-page";
 
 /**
  * The OriginalsPage class acts as a unified interface for interacting with all the "Originals" games.
@@ -33,6 +34,7 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 	 * @param {HiloGamePage} hiloGamePage - The Hi-Lo game page object.
 	 * @param {RouletteGamePage} rouletteGamePage - The Roulette game page object.
 	 * @param {PlinkoGamePage} plinkoGamePage - The Plinko game page object.
+	 * @param {MinesGamePage} minesGamePage - The Mines game page object.
 	 */
 	public constructor(
 		page: Page,
@@ -41,6 +43,7 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 		private hiloGamePage: HiloGamePage,
 		private rouletteGamePage: RouletteGamePage,
 		private plinkoGamePage: PlinkoGamePage,
+		private minesGamePage: MinesGamePage,
 	) {
 		super(page, new OriginalsMap(page));
 		this.gamesMap = {
@@ -49,6 +52,7 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 			Roulette: this.rouletteGamePage,
 			HiLo: this.hiloGamePage,
 			Plinko: this.plinkoGamePage,
+			Mines: this.minesGamePage,
 		};
 	}
 

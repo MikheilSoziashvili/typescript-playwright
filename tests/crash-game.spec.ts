@@ -4,6 +4,7 @@ import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { getUserDetailsByTestTitle, parse_csv } from "@core/utils/utils";
 import { DATASETS_DIR } from "@constants/file-paths";
 import { CsvFilesName } from "../enums/csv-file-name";
+import { SUPER_HIGH_USER_AMOUNT } from "@constants/user-amounts";
 
 const crashAutoCashout = parse_csv(
 	DATASETS_DIR,
@@ -15,7 +16,7 @@ const crashAutoCashout = parse_csv(
 }[];
 
 test.describe("Crash tests", () => {
-	test.use(storageStateNewUserDB({ amount: 15000000000 }));
+	test.use(storageStateNewUserDB({ amount: SUPER_HIGH_USER_AMOUNT }));
 	test.slow();
 
 	test.beforeEach(async ({ homePage }) => {

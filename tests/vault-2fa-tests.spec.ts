@@ -1,4 +1,5 @@
 import { UK_PROXY_CREDENTIALS } from "@constants/proxies";
+import { MEDIUM_USER_AMOUNT } from "@constants/user-amounts";
 import {
 	createBrowserContextWithProxy,
 	createPngImagePath,
@@ -23,7 +24,7 @@ test.describe(`Vault wallet - 2FA verifications`, () => {
 		await deleteFilesWithFilePaths([qrCode2FAImagePath]);
 	});
 
-	test.use(storageStateNewUserDB({ amount: 45000000 }));
+	test.use(storageStateNewUserDB({ amount: MEDIUM_USER_AMOUNT }));
 	const walletType = Wallet.USD;
 	const depositAmount = 3000;
 	const withdrawAmount = depositAmount / 3;

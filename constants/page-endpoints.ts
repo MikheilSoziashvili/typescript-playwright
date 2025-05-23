@@ -32,3 +32,4 @@ export const POVIDERS_PAGE_ENDPOINT = "/providers";
 export const KOTH_ENDPOINT = "/koth";
 export const TRANSACTIONS_PAGE_ENDPOINT = "/transactions";
 export const CRYPTO_ADMIN_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/CryptoAdmin`;
+export const MINES_GAME_PAGE_ENDPOINT = "/mines";
