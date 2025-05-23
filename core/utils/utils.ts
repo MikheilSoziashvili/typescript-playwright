@@ -1,3 +1,4 @@
+import * as path from "path";
 import { GamdomApi } from "@api/gamdom-api";
 import { DEFAULT_CURRENCY } from "@constants/defaults";
 import { MAILINATOR_DOMAIN } from "@constants/domains";
@@ -31,7 +32,6 @@ import { parse } from "csv-parse/sync";
 import fs, { promises as fsPromises, readFileSync } from "fs";
 import jsQR from "jsqr";
 import { authenticator } from "otplib";
-import * as path from "path";
 import { Browser, BrowserContext, Cookie, Locator, Page } from "playwright";
 import { PNG, PNGOptions } from "pngjs";
 import sharp from "sharp";
