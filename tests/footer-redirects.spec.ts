@@ -1,13 +1,13 @@
-import { test } from "@fixtures/fixtures";
-import { storageStateNewUserDB } from "../fixtures/auth-fixtures";
-import { getCookieHeader, parse_csv } from "@core/utils/utils";
 import { DATASETS_DIR } from "@constants/file-paths";
-import { environment_url } from "configuration";
-import { CsvFilesName } from "@enums/csv-file-name";
 import { KOTH_ENDPOINT } from "@constants/page-endpoints";
+import { getCookieHeader, parse_csv } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
+import { CsvFilesName } from "@enums/csv-file-name";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
+import { test } from "@fixtures/fixtures";
+import { environment_url } from "configuration";
+import { storageStateNewUserDB } from "../fixtures/auth-fixtures";
 
 const footerRecords = parse_csv(
 	DATASETS_DIR,

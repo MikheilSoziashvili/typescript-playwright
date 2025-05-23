@@ -1,19 +1,19 @@
-import { BaseComponentStep } from "@pages/base/base-component-step";
+import { waitUntil } from "@core/utils/utils";
 import { CommonUserPopupOption } from "@enums/common-user-popup-options";
+import { BooleanValueString } from "@enums/playwright/booleanValues";
+import { Attributes } from "@enums/playwright/htmlAttributes";
+import { Timeout } from "@enums/timeout";
+import { TimeoutSeconds } from "@enums/timeout-seconds";
+import { logger } from "@logger/logger";
 import { TipUserModal } from "@modals/tip-user-modal/tip-user-modal";
 import { UserProfileModal } from "@modals/user-profile-modal/user-profile-modal";
+import { BaseComponentStep } from "@pages/base/base-component-step";
+import { expect } from "@playwright/test";
+import { step } from "decorators/step";
 import { AuthenticatedHeader } from "../header/authenticated/authenticated-header";
 import { CommonUserOptionsPopup } from "../popups/common-user-options-popup";
 import { Chat } from "./chat";
 import { ChatMessageOptions } from "./chat-map";
-import { logger } from "@logger/logger";
-import { Attributes } from "@enums/playwright/htmlAttributes";
-import { BooleanValueString } from "@enums/playwright/booleanValues";
-import { waitUntil } from "@core/utils/utils";
-import { step } from "decorators/step";
-import { TimeoutSeconds } from "@enums/timeout-seconds";
-import { Timeout } from "@enums/timeout";
-import { expect } from "@playwright/test";
 
 export class ChatSteps extends BaseComponentStep<Chat> {
 	private authenticatedHeader: AuthenticatedHeader;
@@ -53,7 +53,11 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 					Timeout.LONG,
 				);
 				await this.component.map.chatTextBox.clear();
-				await this.component.map.chatTextBox.fill(message);
+				await this.component.map.chatTextBox.click();
+				await this.component.map.chatTextBox.pressSequentially(
+					message,
+					{ delay: 30 },
+				);
 
 				await expect
 					.poll(

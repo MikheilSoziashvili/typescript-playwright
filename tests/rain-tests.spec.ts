@@ -9,11 +9,14 @@ import {
 	getCookieHeader,
 	initializePageObjects,
 	initializePageObjectsWithCookies,
+	jiraIssueId,
 	waitUntil,
 } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
+import { AnnotationType } from "@enums/playwright/annotationsTypes";
+import { BrowserName } from "@enums/playwright/project-browser-names";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
@@ -31,43 +34,49 @@ test.describe("Rain tests", () => {
 		test.slow();
 
 		test.use(storageStateNewUserDB());
-		test("[ENG-2863] Rain - try to claim the rain", async ({
-			homePage,
-			chat,
-		}) => {
-			await homePage.navigate();
-			await chat.steps().openChatAndVerify();
-
-			const initialAccountBalance =
-				await homePage.authenticatedHeader.getAccountBalance();
-
-			await chat.steps().waitUponRainAndClaim();
-			await chat.assertThat().rainClaimedMessageIsDisplayed();
-
-			const initialRainBotMessageCount =
-				await chat.map.rainBotMessageLocator.count();
-
-			await waitUntil(
-				async () =>
-					(await chat.map.rainBotMessageLocator.count()) >
-					initialRainBotMessageCount,
-				{
-					errorMessage: "New rain bot message did not appear",
-					timeoutSeconds:
-						TimeoutSeconds.THIRTY + TimeoutSeconds.ONE_TWENTY,
-					intervalSeconds: 2,
+		test(
+			"[ENG-2863] Rain - try to claim the rain",
+			{
+				annotation: {
+					type: AnnotationType.BUG,
+					description: jiraIssueId(5094),
 				},
-			);
+			},
+			async ({ homePage, chat }) => {
+				await homePage.navigate();
+				await chat.steps().openChatAndVerify();
 
-			const userCount = await chat.getRainUserCount();
-			const expectedUserRainClaim = baseRainAmount / userCount;
-			const expectedUserBalance =
-				initialAccountBalance + expectedUserRainClaim;
+				const initialAccountBalance =
+					await homePage.authenticatedHeader.getAccountBalance();
 
-			await homePage.authenticatedHeader
-				.assertThat()
-				.accountBalanceIs(expectedUserBalance);
-		});
+				await chat.steps().waitUponRainAndClaim();
+				await chat.assertThat().rainClaimedMessageIsDisplayed();
+
+				const initialRainBotMessageCount =
+					await chat.map.rainBotMessageLocator.count();
+
+				await waitUntil(
+					async () =>
+						(await chat.map.rainBotMessageLocator.count()) >
+						initialRainBotMessageCount,
+					{
+						errorMessage: "New rain bot message did not appear",
+						timeoutSeconds:
+							TimeoutSeconds.THIRTY + TimeoutSeconds.ONE_TWENTY,
+						intervalSeconds: 2,
+					},
+				);
+
+				const userCount = await chat.getRainUserCount();
+				const expectedUserRainClaim = baseRainAmount / userCount;
+				const expectedUserBalance =
+					initialAccountBalance + expectedUserRainClaim;
+
+				await homePage.authenticatedHeader
+					.assertThat()
+					.accountBalanceIs(expectedUserBalance);
+			},
+		);
 	});
 
 	test.describe("Tip rain tests", () => {
@@ -79,6 +88,16 @@ test.describe("Rain tests", () => {
 				email: userData.email,
 			}),
 		);
+
+		test.beforeEach(async ({}, testInfo) => {
+			if (testInfo.project.name === BrowserName.FIREFOX) {
+				testInfo.annotations.push({
+					type: AnnotationType.BUG,
+					description: jiraIssueId(6469),
+				});
+			}
+		});
+
 		test("[ENG-2564] Tip rain - Require new 2FA code when IP of user changes", async ({
 			homePage,
 			chat,

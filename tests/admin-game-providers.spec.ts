@@ -1,20 +1,20 @@
-import { test } from "@fixtures/fixtures";
+import { DATASETS_DIR } from "@constants/file-paths";
+import { Providers } from "@constants/providers";
+import { Provider } from "@core/api/interfaces/provider";
+import { ProviderDetails, VisibilityResult } from "@core/types/types";
 import {
 	getCookieHeader,
 	parse_csv,
 	setAuthenticationCookies,
 } from "@core/utils/utils";
-import { DATASETS_DIR } from "@constants/file-paths";
-import { Feature } from "@enums/feature";
-import { Providers } from "@constants/providers";
 import { RegisterTestData } from "@dtos/test-data";
-import { ProviderDetails, VisibilityResult } from "@core/types/types";
-import { GameProvider } from "@enums/game-providers";
-import { Provider } from "@core/api/interfaces/provider";
 import { CsvFilesName } from "@enums/csv-file-name";
-import { UserType } from "@enums/user-types";
-import { UserTags } from "@enums/db/user-tags";
 import { UserClasses } from "@enums/db/user-classes";
+import { UserTags } from "@enums/db/user-tags";
+import { Feature } from "@enums/feature";
+import { GameProvider } from "@enums/game-providers";
+import { UserType } from "@enums/user-types";
+import { test } from "@fixtures/fixtures";
 
 const adminEnableGames = parse_csv(
 	DATASETS_DIR,

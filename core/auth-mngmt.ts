@@ -162,6 +162,7 @@ export async function getStorageStateNewUserDB(
 		startingXp: options.startingXp,
 		emailVerified: options.emailVerified,
 		unit: options.unit,
+		totalDeposited: options.totalDeposited,
 		hasLogMessage: options.hasLogMessage ?? false,
 		tags: options.tags,
 		userClass: options.userClass,

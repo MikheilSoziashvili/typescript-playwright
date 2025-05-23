@@ -1,14 +1,16 @@
 import { test } from "@fixtures/fixtures";
 import { CsvFilesName } from "@enums/csv-file-name";
-import { parse_csv } from "@core/utils/utils";
+import { jiraIssueId, parse_csv } from "@core/utils/utils";
 import { DATASETS_DIR } from "@constants/file-paths";
+import { AnnotationType } from "@enums/playwright/annotationsTypes";
+import { BrowserName } from "@enums/playwright/project-browser-names";
 
 test.describe("Plinko tests", () => {
-	test.beforeAll(async ({}, testInfo) => {
-		if (testInfo.project.name === "firefox") {
+	test.beforeEach(async ({}, testInfo) => {
+		if (testInfo.project.name === BrowserName.FIREFOX) {
 			testInfo.annotations.push({
-				type: "performance",
-				description: "https://gamdom.atlassian.net/browse/ENG-6628",
+				type: AnnotationType.PERFORMANCE,
+				description: jiraIssueId(6628),
 			});
 		}
 	});

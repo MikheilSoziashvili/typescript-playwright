@@ -17,4 +17,5 @@ export interface NewUserOptions {
 	image?: string;
 	hasLogMessage?: boolean;
 	userClass?: UserClasses;
+	totalDeposited?: number;
 }

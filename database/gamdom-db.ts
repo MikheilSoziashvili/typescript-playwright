@@ -530,6 +530,7 @@ export class GamdomDb extends BaseDB {
 		startingXp = 10001200,
 		emailVerified = false,
 		unit = Unit.COINS,
+		totalDeposited = 300,
 		hasLogMessage = false,
 		tags,
 		userClass,
@@ -552,6 +553,7 @@ export class GamdomDb extends BaseDB {
 				[UsersColumns.EmailVerified]: emailVerified,
 				[UsersColumns.Tags]: formatUserTags(tags),
 				[UsersColumns.UserClass]: userClass ?? UserClasses.User,
+				[UsersColumns.TotalDeposited]: totalDeposited,
 			},
 			hasLogMessage,
 		);

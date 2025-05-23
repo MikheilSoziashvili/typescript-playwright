@@ -1,42 +1,40 @@
-import { promises as fsPromises } from "fs";
-import { logger } from "@logger/logger";
+import { GamdomApi } from "@api/gamdom-api";
+import { DEFAULT_CURRENCY } from "@constants/defaults";
+import { MAILINATOR_DOMAIN } from "@constants/domains";
+import { AUTH_PATH } from "@constants/file-paths";
 import { JsonData, WaitUntilOptions } from "@core/interfaces";
-import * as path from "path";
-import { parse } from "csv-parse/sync";
-import { readFileSync } from "fs";
-import { users } from "configuration";
 import {
 	CredentialsType,
 	ProxyCredentialsType,
 	TestUserConfigurationObject,
 } from "@core/types/types";
-import accounting from "accounting";
-import { DEFAULT_CURRENCY } from "@constants/defaults";
+import { RegisterTestData } from "@dtos/test-data";
+import { Protocol } from "@enums/api/protocols";
+import { ConfiguraitonUrl } from "@enums/configuration-urls";
+import { Currency } from "@enums/currencies";
+import { UserTags } from "@enums/db/user-tags";
+import { Locale } from "@enums/locale";
+import { DocumentReadyState } from "@enums/playwright/document-ready-states";
+import { Timeout } from "@enums/timeout";
+import { TimeoutSeconds } from "@enums/timeout-seconds";
+import { logger } from "@logger/logger";
 import {
 	otpAuthSecretPattern,
 	pageUrl,
 	sanitizeTitlePattern,
 	wwwPattern,
 } from "@support/regex-patterns";
-import fs from "fs";
-import xml2js from "xml2js";
-import { MAILINATOR_DOMAIN } from "@constants/domains";
-import { Protocol } from "@enums/api/protocols";
-import { Browser, BrowserContext, Cookie, Locator, Page } from "playwright";
-import { environment_url } from "configuration";
-import { AUTH_PATH } from "@constants/file-paths";
-import { PNG, PNGOptions } from "pngjs";
-import sharp from "sharp";
+import accounting from "accounting";
+import { environment_url, users } from "configuration";
+import { parse } from "csv-parse/sync";
+import fs, { promises as fsPromises, readFileSync } from "fs";
 import jsQR from "jsqr";
 import { authenticator } from "otplib";
-import { Timeout } from "@enums/timeout";
-import { DocumentReadyState } from "@enums/playwright/document-ready-states";
-import { RegisterTestData } from "@dtos/test-data";
-import { UserTags } from "@enums/db/user-tags";
-import { Currency } from "@enums/currencies";
-import { Locale } from "@enums/locale";
-import { GamdomApi } from "@api/gamdom-api";
-import { TimeoutSeconds } from "@enums/timeout-seconds";
+import * as path from "path";
+import { Browser, BrowserContext, Cookie, Locator, Page } from "playwright";
+import { PNG, PNGOptions } from "pngjs";
+import sharp from "sharp";
+import xml2js from "xml2js";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -83,6 +81,10 @@ export async function parseXmlFile<T>(filePath: string): Promise<T> {
 	const result = (await parser.parseStringPromise(xmlContent)) as T;
 
 	return result;
+}
+
+export function jiraIssueId(id: number | string, key = "ENG"): string {
+	return `${ConfiguraitonUrl.JIRA}/browse/${key}-${id}`;
 }
 
 export async function clearDirectoryContent(

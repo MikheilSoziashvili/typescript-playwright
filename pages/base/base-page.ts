@@ -15,12 +15,12 @@ import { Protocol } from "@enums/api/protocols";
 import { Directions } from "@enums/directions";
 import { Timeout } from "@enums/timeout";
 import { WaitUntilState } from "@enums/wait-until-states";
-import { BrowserNames } from "@enums/playwright/project-browser-names";
-import { VisibilityState } from "@enums/playwright/visibility-states";
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "./base-map";
 import { BoundingBoxCoordinate } from "@enums/bounding-box-coordinates";
 import { logger } from "@logger/logger";
+import { BrowserName } from "@enums/playwright/project-browser-names";
+import { VisibilityState } from "@enums/playwright/visibility-states";
 
 type Constructor<T> = new (page: Page) => T;
 
@@ -247,7 +247,7 @@ export abstract class BasePage<T extends BaseMap> {
 				);
 			}
 
-			if (browserName === BrowserNames.WEBKIT) {
+			if (browserName === BrowserName.WEBKIT) {
 				const strategies: (() => Promise<boolean>)[] = [
 					() => this.waitForElementStability(locator),
 					() => this.simpleForceClick(locator),

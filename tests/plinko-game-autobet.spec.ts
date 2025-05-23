@@ -1,21 +1,21 @@
+import { BrowserName } from "@enums/playwright/project-browser-names";
 import { Timeout } from "@enums/timeout";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
+import { jiraIssueId } from "@core/utils/utils";
 
 test.describe("Plinko autobet tests", () => {
-	test.beforeAll(async ({}, testInfo) => {
-		if (testInfo.project.name === "firefox") {
-			testInfo.annotations.push({
-				type: "performance",
-				description: "https://gamdom.atlassian.net/browse/ENG-6628",
-			});
-		}
-	});
 	test.use(storageStateNewUserDB());
 	test.slow();
 	const numberOfAutoBets = "50";
 
-	test.beforeEach(async ({ plinkoGamePage }) => {
+	test.beforeEach(async ({ plinkoGamePage }, testInfo) => {
+		if (testInfo.project.name === BrowserName.FIREFOX) {
+			testInfo.annotations.push({
+				type: "performance",
+				description: jiraIssueId(6628),
+			});
+		}
 		await plinkoGamePage.navigate();
 		await plinkoGamePage.assertThat().dropBallButtonIsDisplayed();
 		await plinkoGamePage.steps().navigateToAutobetSuccessfully();

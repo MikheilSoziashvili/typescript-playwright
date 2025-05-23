@@ -1,11 +1,14 @@
+import { AnnotationType } from "@enums/playwright/annotationsTypes";
+import { BrowserName } from "@enums/playwright/project-browser-names";
 import { test } from "@fixtures/fixtures";
+import { jiraIssueId } from "@core/utils/utils";
 
 test.describe("Visual Tests - Plinko", () => {
-	test.beforeAll(async ({}, testInfo) => {
-		if (testInfo.project.name === "firefox") {
+	test.beforeEach(async ({}, testInfo) => {
+		if (testInfo.project.name === BrowserName.FIREFOX) {
 			testInfo.annotations.push({
-				type: "performance",
-				description: "https://gamdom.atlassian.net/browse/ENG-6628",
+				type: AnnotationType.PERFORMANCE,
+				description: jiraIssueId(6628),
 			});
 		}
 	});

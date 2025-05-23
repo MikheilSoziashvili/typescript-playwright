@@ -264,6 +264,7 @@ export async function createNewUserWithStorageStateDB(
 		amount: options.amount,
 		startingXp: options.startingXp,
 		emailVerified: options.emailVerified,
+		totalDeposited: options.totalDeposited,
 		unit: options.unit,
 		tags: options.tags,
 		image: options.image,
