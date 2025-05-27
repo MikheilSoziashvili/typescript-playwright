@@ -91,13 +91,18 @@ export function buildFreeSpinsPromoCodeTransactionsDetailsValue(
 }
 
 export function buildInformationalCashPromoCodeTransactionsDetailsValue(): string {
-	return `informational_promo_win_cash`;
+	return `Unknown Transaction Details (deleted data) - informational_promo_win_cash - promo_codes.campaigns:`;
 }
 
-export function generateAmlVerificationReasonText(levelNum: AmlVerificationLevel): string {
+export function generateAmlVerificationReasonText(
+	levelNum: AmlVerificationLevel,
+): string {
 	return `Reason for level ${levelNum} verification`;
 }
 
-export function generateAmlVerificationStatusReasonText(levelNum: AmlVerificationLevel, status: string): string {
+export function generateAmlVerificationStatusReasonText(
+	levelNum: AmlVerificationLevel,
+	status: string,
+): string {
 	return `Reason for level ${levelNum} - ${status}`;
 }
