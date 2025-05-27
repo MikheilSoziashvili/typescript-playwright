@@ -1,6 +1,10 @@
 import { MINES_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
-import { truncateToDecimals, waitUntil } from "@core/utils/utils";
+import {
+	roundToDecimals,
+	truncateToDecimals,
+	waitUntil,
+} from "@core/utils/utils";
 import { Timeout } from "@enums/timeout";
 import { logger } from "@logger/logger";
 import { BasePage } from "@pages/base/base-page";
@@ -60,7 +64,13 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 		totalBets: number,
 		winnings: number,
 	): number {
-		return truncateToDecimals(initialBalance - totalBets + winnings, 1);
+		const rawBalance = initialBalance - totalBets + winnings;
+		const roundedBalance = roundToDecimals(rawBalance, 2);
+		const finalBalance = truncateToDecimals(roundedBalance, 1);
+		logger.info(
+			`Raw balance: ${rawBalance}, Rounded balance: ${roundedBalance}, Final balance: ${finalBalance}`,
+		);
+		return finalBalance;
 	}
 
 	public calculateWinnings(betAmount: number, multiplier: number): number {
