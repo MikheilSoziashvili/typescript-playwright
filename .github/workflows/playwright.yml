@@ -154,7 +154,7 @@ concurrency:
 jobs:
     tests:
         timeout-minutes: 600
-        runs-on: self-hosted-dind
+        runs-on: self-hosted-dind-playwright
         permissions:
             pull-requests: write
             contents: read
