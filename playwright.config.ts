@@ -82,7 +82,7 @@ export default defineConfig({
 
 		video: {
 			mode: "retain-on-failure",
-			size: { width: 1280, height: 720 },
+			size: { width: 1920, height: 1080 },
 		},
 		screenshot: "only-on-failure",
 	},

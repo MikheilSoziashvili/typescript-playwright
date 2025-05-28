@@ -8,6 +8,7 @@ import { UserTags } from "@enums/db/user-tags";
 import { test } from "@fixtures/fixtures";
 import { environment_url } from "configuration";
 import { storageStateNewUserDB } from "../fixtures/auth-fixtures";
+import { Timeout } from "@enums/timeout";
 
 const footerRecords = parse_csv(
 	DATASETS_DIR,
@@ -63,8 +64,12 @@ test.describe("Footer redirects tests", () => {
 			footer,
 		}) => {
 			await homePage.navigate();
-			await footer.openFooterLinkByPlaceholder(record.linkName);
-
+			await Promise.all([
+				homePage.page.waitForURL(record.expectedURL, {
+					timeout: Timeout.MEDIUM,
+				}),
+				footer.openFooterLinkByPlaceholder(record.linkName),
+			]);
 			await footer
 				.assertThat()
 				.waitForAndVerifyCurrentUrlIs(record.expectedURL);

@@ -54,9 +54,7 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		await this.gamdomPage.authenticatedHeader
 			.assertThat()
 			.loggedInUserElementsAreVisible();
-		await expect
-			.soft(this.gamdomPage.map.registerSuccessMessage)
-			.toBeVisible();
+		await expect(this.gamdomPage.map.registerSuccessMessage).toBeVisible();
 
 		const receivedUsername =
 			await this.gamdomPage.map.welcomeBackMessage.textContent({
