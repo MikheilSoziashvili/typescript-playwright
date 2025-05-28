@@ -6,7 +6,9 @@ import {
 	deleteFilesWithFilePaths,
 	initializePageObjects,
 	initializePageObjectsWithCookies,
+	jiraIssueId,
 } from "@core/utils/utils";
+import { AnnotationType } from "@enums/playwright/annotationsTypes";
 import { Wallet } from "@enums/wallets";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
@@ -29,53 +31,65 @@ test.describe(`Vault wallet - 2FA verifications`, () => {
 	const depositAmount = 3000;
 	const withdrawAmount = depositAmount / 3;
 
-	test(`[ENG-2566] Vault wallet - Require new 2FA code when IP of user changes`, async ({
-		browser,
-		homePage,
-		walletModal,
-		settingsPage,
-		twoFactorAuthModal,
-	}) => {
-		const pages = {
+	test(
+		`[ENG-2566] Vault wallet - Require new 2FA code when IP of user changes`,
+		{
+			annotation: {
+				type: AnnotationType.BUG,
+				description: jiraIssueId(5109),
+			},
+		},
+		async ({
+			browser,
 			homePage,
 			walletModal,
 			settingsPage,
 			twoFactorAuthModal,
-		};
-		const initialPage = await initializePageObjects(
-			await browser.newContext(),
-			...Object.values(pages),
-		);
-
-		await homePage.navigateToWallet();
-		await walletModal
-			.steps()
-			.depositFromWalletAndVerify(walletType, depositAmount);
-		await walletModal
-			.steps()
-			.withdrawInVaultWith2FaFlow(
-				walletType,
-				withdrawAmount,
-				qrCode2FAImagePath,
+		}) => {
+			const pages = {
+				homePage,
+				walletModal,
+				settingsPage,
+				twoFactorAuthModal,
+			};
+			const initialPage = await initializePageObjects(
+				await browser.newContext(),
+				...Object.values(pages),
 			);
-		await walletModal.withdrawInVault(walletType, withdrawAmount);
-		await twoFactorAuthModal.assertThat().modal2FaNotDisplayed();
 
-		await initializePageObjectsWithCookies(
-			await (await browser.newContext()).cookies(),
-			initialPage,
-			await createBrowserContextWithProxy(browser, UK_PROXY_CREDENTIALS),
-			...Object.values(pages),
-		);
+			await homePage.navigateToWallet();
+			await walletModal
+				.steps()
+				.depositFromWalletAndVerify(walletType, depositAmount);
+			await walletModal
+				.steps()
+				.withdrawInVaultWith2FaFlow(
+					walletType,
+					withdrawAmount,
+					qrCode2FAImagePath,
+				);
+			await walletModal.withdrawInVault(walletType, withdrawAmount);
+			await twoFactorAuthModal.assertThat().modal2FaNotDisplayed();
 
-		await homePage.navigateToWallet();
-		await walletModal.openVaultTab();
-		await walletModal
-			.steps()
-			.withdrawInVaultWith2FaFlow(
-				walletType,
-				withdrawAmount,
-				qrCode2FAImagePath,
+			await initializePageObjectsWithCookies(
+				await (await browser.newContext()).cookies(),
+				initialPage,
+				await createBrowserContextWithProxy(
+					browser,
+					UK_PROXY_CREDENTIALS,
+				),
+				...Object.values(pages),
 			);
-	});
+
+			await homePage.navigateToWallet();
+			await walletModal.openVaultTab();
+			await walletModal
+				.steps()
+				.withdrawInVaultWith2FaFlow(
+					walletType,
+					withdrawAmount,
+					qrCode2FAImagePath,
+				);
+		},
+	);
 });
