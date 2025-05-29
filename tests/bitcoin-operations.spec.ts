@@ -3,7 +3,11 @@ import { waitBtcTransactionConfirmation } from "@core/helpers/asserter-helpers/c
 import { Cryptocurrency } from "@enums/cryptocurrencies";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
-import { getCookieHeader, setAuthenticationCookies } from "@core/utils/utils";
+import {
+	getCookieHeader,
+	setAuthenticationCookies,
+	waitUntil,
+} from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { Wallet } from "@enums/wallets";
 import { CryptoNode } from "@enums/crypto-nodes";
@@ -13,6 +17,7 @@ import { testnetAddress } from "@constants/crypto";
 import { Timeout } from "@enums/timeout";
 import { UserTags } from "@enums/db/user-tags";
 import { UserClasses } from "@enums/db/user-classes";
+import { TimeoutSeconds } from "@enums/timeout-seconds";
 
 test.describe("Bitcoin tests", () => {
 	test.slow();
@@ -47,9 +52,24 @@ test.describe("Bitcoin tests", () => {
 			});
 
 			await cryptoAdminPage.refreshCryptoData();
-			await toast.assertThat().titleIs(ToastTitle.SUCCESS, {
-				subTitle: ToastSubTitle.REFRESHED_STATE,
-			});
+
+			await waitUntil(
+				async () => {
+					try {
+						await toast.assertThat().titleIs(ToastTitle.SUCCESS, {
+							subTitle: ToastSubTitle.REFRESHED_STATE,
+						});
+						return true;
+					} catch {
+						return false;
+					}
+				},
+				{
+					errorMessage: "Crypto data table couldn't load in time",
+					intervalSeconds: TimeoutSeconds.TWO,
+					timeoutSeconds: TimeoutSeconds.ONE_TWENTY,
+				},
+			);
 
 			await cryptoAdminPage.clickMinDepositButton(CryptoNode.nodeBTC1);
 			await cryptoAdminPage.clickMinWithdrawButton(CryptoNode.nodeBTC1);
