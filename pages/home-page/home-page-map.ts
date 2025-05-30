@@ -59,7 +59,7 @@ export class HomePageMap extends BaseMap {
 	}
 
 	public get topBannerLocator(): Locator {
-		return this.page.locator("div[class*=TopBanner-styled__Container]");
+		return this.page.locator("div[class*=Components-styled__Container]");
 	}
 
 	public get topBannerCloseButton(): Locator {
