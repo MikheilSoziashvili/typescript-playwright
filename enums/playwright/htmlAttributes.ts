@@ -21,4 +21,5 @@ export enum Attributes {
 	ARIA_DISABLED = "aria-disabled",
 	PROPERTY = "property",
 	CONTENT = "content",
+	SPAN = "span",
 }

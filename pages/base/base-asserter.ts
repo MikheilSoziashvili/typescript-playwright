@@ -119,6 +119,22 @@ export class BaseAsserter<
 		}
 	}
 
+	protected async assertOnElements(
+		elements: Locator[],
+		assertion: (el: Locator) => Promise<void>,
+	): Promise<void> {
+		await Promise.all(elements.map((el) => assertion(el)));
+	}
+
+	public async checkElementsAreHidden(
+		elements: Locator[],
+		timeout?: number,
+	): Promise<void> {
+		await this.assertOnElements(elements, (el) =>
+			expect(el).toBeHidden({ timeout }),
+		);
+	}
+
 	public async checkElementsAreEnabled(
 		elements: Locator[],
 		timeout?: number,
@@ -416,5 +432,9 @@ export class BaseAsserter<
 		} else {
 			expect.soft(condition, errorMessage).toBeTruthy();
 		}
+	}
+
+	public async getTextDecoration(locator: Locator): Promise<string> {
+		return locator.evaluate((el) => getComputedStyle(el).textDecoration);
 	}
 }

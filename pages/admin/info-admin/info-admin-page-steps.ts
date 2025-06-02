@@ -1,5 +1,6 @@
 import { BasePageStep } from "@pages/base/base-page-step";
 import { InfoAdminPage } from "./info-admin-page";
+import { generateRandomString } from "@core/utils/utils";
 
 export class InfoAdminPageSteps extends BasePageStep<InfoAdminPage> {
 	public constructor(gamdomPage: InfoAdminPage) {
@@ -33,5 +34,31 @@ export class InfoAdminPageSteps extends BasePageStep<InfoAdminPage> {
 		await this.gamdomPage.twoFactorAuthModal
 			.steps()
 			.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
+	}
+
+	public async createNote(count = 1): Promise<string[]> {
+		const createdNotes: string[] = [];
+
+		for (let i = 0; i < count; i++) {
+			const randomNoteText = generateRandomString({ length: 10 });
+			await this.gamdomPage.map.noteInput.fill(randomNoteText);
+			await this.gamdomPage.map.saveNoteButton.click();
+			await this.gamdomPage.assertThat().noteIsCreated(randomNoteText);
+			createdNotes.push(randomNoteText);
+		}
+
+		return createdNotes;
+	}
+
+	public async pinNoteByText(noteText: string): Promise<void> {
+		const noteRow = this.gamdomPage.map.noteRowByText(noteText);
+		await this.gamdomPage.map.pinButtonInRow(noteRow).click();
+	}
+
+	public async setNoteInactiveByText(noteText: string): Promise<void> {
+		const inactiveNoteRow = this.gamdomPage.map.noteRowByText(noteText);
+		await this.gamdomPage.map
+			.setInactiveButtonInRow(inactiveNoteRow)
+			.click();
 	}
 }

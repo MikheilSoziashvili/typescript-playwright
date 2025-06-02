@@ -56,4 +56,44 @@ export class InfoAdminPageMap extends BaseMap {
 	public get tipAmountInput(): Locator {
 		return this.tipUserContainer.getByPlaceholder("Tip amount");
 	}
+
+	public get notesTable(): Locator {
+		return this.page.getByTestId("adminNotesTable");
+	}
+
+	public noteRowAt(index: number): Locator {
+		return this.notesTable.locator("tbody tr").nth(index);
+	}
+
+	public get firstNoteRow(): Locator {
+		return this.noteRowAt(1); // index 0 = input row, index 1 = first note
+	}
+
+	public noteTextCellInRow(row: Locator): Locator {
+		return row.locator('[data-testid^="adminNoteText-"]');
+	}
+
+	public getNoteCellByText(noteText: string): Locator {
+		return this.page.locator("tbody td", { hasText: noteText });
+	}
+
+	public get noteInput(): Locator {
+		return this.page.getByTestId("adminNoteInput").locator("input");
+	}
+
+	public get saveNoteButton(): Locator {
+		return this.page.getByTestId("adminNoteSaveButton");
+	}
+
+	public noteRowByText(noteText: string): Locator {
+		return this.page.locator("tr", { hasText: noteText });
+	}
+
+	public pinButtonInRow(row: Locator): Locator {
+		return row.locator('[data-testid^="adminNotePinButton"]');
+	}
+
+	public setInactiveButtonInRow(row: Locator): Locator {
+		return row.locator('[data-testid^="adminNoteSetInactiveButton"]');
+	}
 }
