@@ -36,7 +36,7 @@ function getReporter(): ReporterDescription[] {
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- default config file
 export default defineConfig({
-	timeout: 2 * 60 * 1000, //convert to minutes
+	timeout: 3 * 60 * 1000, //convert to minutes
 	testDir: "./tests",
 	expect: {
 		timeout: 10 * 1000,

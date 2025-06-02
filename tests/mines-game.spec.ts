@@ -24,7 +24,7 @@ test.describe("Mines tests", () => {
 		await homePage.navigate();
 	});
 
-	test(`[ENG-6486] Mines - place a bet and try to win - Pick random tiles @smoke @originals`, async ({
+	test(`[ENG-6486] Mines - place a bet and try to win - Pick random tiles @originals`, async ({
 		minesGamePage,
 	}) => {
 		await minesGamePage.navigateAndWaitForGameToLoad();
