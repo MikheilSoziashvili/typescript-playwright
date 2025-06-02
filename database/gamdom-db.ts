@@ -30,7 +30,7 @@ import { WalletsColumns } from "@enums/db/wallets-columns";
 import { WithdrawLimitsSettingsValues } from "@enums/db/withdraw-settings-values";
 import { Unit } from "@enums/units";
 import * as Configuration from "configuration";
-import { Pool, QueryResultRow } from "pg";
+import { Pool, PoolClient, QueryResultRow } from "pg";
 import { BaseDB } from "./base-db";
 
 export class GamdomDb extends BaseDB {
@@ -39,76 +39,91 @@ export class GamdomDb extends BaseDB {
 		this.pool = new Pool(Configuration.poolConfig);
 	}
 
-	public async getUserInfoById(userId: number): Promise<QueryResultRow[]> {
-		const userInfo = await this.query(
+	public async getUserInfoById(
+		userId: number,
+		client?: PoolClient,
+	): Promise<QueryResultRow[]> {
+		return this.query(
 			DbTables.Users,
 			"*",
 			`${UsersColumns.Id} = $1`,
 			[userId],
+			true,
+			client,
 		);
-		return userInfo;
 	}
 
 	public async getUserInfoByUsername(
 		username: string,
 		hasLogMessage = true,
+		client?: PoolClient,
 	): Promise<QueryResultRow[]> {
-		const userInfo = await this.query(
+		return this.query(
 			DbTables.Users,
 			"*",
 			`${UsersColumns.Username} = $1`,
 			[username],
 			hasLogMessage,
+			client,
 		);
-		return userInfo;
 	}
 
-	public async makeUserSuperAdmin(userId: number): Promise<QueryResultRow> {
-		const result = await this.update(
+	public async makeUserSuperAdmin(
+		userId: number,
+		client?: PoolClient,
+	): Promise<QueryResultRow> {
+		return this.update(
 			DbTables.Users,
 			{
 				[UsersColumns.Tags]: UserTags.SuperAdmin,
 				[UsersColumns.UserClass]: UserClasses.Admin,
 			},
 			`${UsersColumns.Id} = ${userId}`,
+			true,
+			client,
 		);
-		return result;
 	}
 
 	public async updateUserTotalDepositedAmountByUserEmail(
 		userEmail: string,
 		amount = 300,
+		client?: PoolClient,
 	): Promise<QueryResultRow> {
-		const result = await this.update(
+		return this.update(
 			DbTables.Users,
 			{ [UsersColumns.TotalDeposited]: amount },
 			`${UsersColumns.Email} = '${userEmail.toLowerCase()}'`,
+			true,
+			client,
 		);
-		return result;
 	}
 
 	public async updateUserTotalDepositedAmountByUserId(
 		userId: number,
 		amount = 300,
+		client?: PoolClient,
 	): Promise<QueryResultRow> {
-		const result = await this.update(
+		return this.update(
 			DbTables.Users,
 			{ [UsersColumns.TotalDeposited]: amount },
 			`${UsersColumns.Id} = ${userId}`,
+			true,
+			client,
 		);
-		return result;
 	}
 
 	public async updateUserEmailVerification(
 		userId: number,
 		isVerified = true,
+		client?: PoolClient,
 	): Promise<QueryResultRow> {
-		const result = await this.update(
+		return this.update(
 			DbTables.Users,
 			{ [UsersColumns.EmailVerified]: isVerified },
 			`${UsersColumns.Id} = ${userId}`,
+			true,
+			client,
 		);
-		return result;
 	}
 
 	public async insertUserWallet(
@@ -116,8 +131,9 @@ export class GamdomDb extends BaseDB {
 		unit: WalletUnit = Unit.COINS,
 		balance = 10000000,
 		hasLogMessage = true,
+		client?: PoolClient,
 	): Promise<QueryResultRow> {
-		const result = await this.insert(
+		return this.insert(
 			DbTables.Wallets,
 			{
 				[WalletsColumns.UserId]: userId,
@@ -125,80 +141,95 @@ export class GamdomDb extends BaseDB {
 				[WalletsColumns.Balance]: balance,
 			},
 			hasLogMessage,
+			client,
 		);
-		return result;
 	}
 
 	public async updateUserXP(
 		userId: number,
 		xp = 10001200,
 		hasLogMessage = true,
+		client?: PoolClient,
 	): Promise<QueryResultRow> {
-		const result = await this.update(
+		return this.update(
 			DbTables.Users,
 			{ [UsersColumns.XP]: xp },
 			`${UsersColumns.Id} = ${userId}`,
 			hasLogMessage,
+			client,
 		);
-		return result;
 	}
 
 	public async updateUserPhoneNumberByUserEmail(
 		userEmail: string,
 		phoneNumber = getRandomPhone(),
+		client?: PoolClient,
 	): Promise<QueryResultRow> {
-		const result = await this.update(
+		return this.update(
 			DbTables.Users,
 			{ [UsersColumns.PHONE_NUMBER]: phoneNumber },
 			`${UsersColumns.Email} = '${userEmail.toLowerCase()}'`,
+			true,
+			client,
 		);
-		return result;
 	}
 
 	public async updateCampaignExpirationDateByName(
 		campaignName: string,
 		newExpirationDate: string = formatDate(-1),
+		client?: PoolClient,
 	): Promise<QueryResultRow> {
-		const result = await this.update(
+		return this.update(
 			DbTables.Campaigns,
 			{ [CampaignsColumns.ExpirationDate]: newExpirationDate },
 			`${CampaignsColumns.Name} = '${campaignName}'`,
+			true,
+			client,
 		);
-		return result;
 	}
 
 	public async insertWithdrawLimitInSetting(
 		key: WithdrawLimitsSettingsValues,
 		value: number,
+		client?: PoolClient,
 	): Promise<QueryResultRow> {
-		const result = await this.insert(DbTables.Settings, {
-			key: key,
-			value: JSON.stringify(value),
-		});
-		return result;
+		return this.insert(
+			DbTables.Settings,
+			{
+				key: key,
+				value: JSON.stringify(value),
+			},
+			true,
+			client,
+		);
 	}
 
 	public async updateWithdrawLimitInSetting(
 		key: WithdrawLimitsSettingsValues,
 		value: number,
+		client?: PoolClient,
 	): Promise<QueryResultRow> {
-		const result = await this.update(
+		return this.update(
 			DbTables.Settings,
 			{ value: JSON.stringify(value) },
 			`${SettingsColumns.Key} = '${key}'`,
+			true,
+			client,
 		);
-		return result;
 	}
 
 	public async getWithdrawLimitFromSettingByKey(
 		key: WithdrawLimitsSettingsValues,
+		client?: PoolClient,
 	): Promise<QueryResultRow[]> {
-		const result = await this.query(
+		return this.query(
 			DbTables.Settings,
-			[`${SettingsColumns.Key}`, `${SettingsColumns.Value}`],
+			[SettingsColumns.Key, SettingsColumns.Value],
 			`${SettingsColumns.Key} = '${key}'`,
+			[],
+			true,
+			client,
 		);
-		return result;
 	}
 
 	public async insertAmlInfo(
@@ -218,6 +249,7 @@ export class GamdomDb extends BaseDB {
 		idType: string,
 		title: string,
 		hasLogMessage = false,
+		client?: PoolClient,
 	): Promise<QueryResultRow> {
 		const result = await this.insert(
 			DbTables.AmlInfo,
@@ -239,6 +271,7 @@ export class GamdomDb extends BaseDB {
 				[AmlInfoColumns.Title]: title,
 			},
 			hasLogMessage,
+			client,
 		);
 		return result;
 	}
@@ -246,6 +279,7 @@ export class GamdomDb extends BaseDB {
 	public async insertDefaultAmlInfo(
 		userId: number,
 		hasLogMessage = false,
+		client?: PoolClient,
 	): Promise<QueryResultRow> {
 		return this.insertAmlInfo(
 			generateRandomString({ length: 8 }),
@@ -264,12 +298,14 @@ export class GamdomDb extends BaseDB {
 			"ID",
 			"MR",
 			hasLogMessage,
+			client,
 		);
 	}
 
 	public async insertAmlInfoFromOptions(
 		options: AmlInfoOptions,
 		hasLogMessage = false,
+		client?: PoolClient,
 	): Promise<QueryResultRow> {
 		return this.insertAmlInfo(
 			options.firstName,
@@ -288,6 +324,7 @@ export class GamdomDb extends BaseDB {
 			options.idType,
 			options.title,
 			hasLogMessage,
+			client,
 		);
 	}
 
@@ -309,6 +346,7 @@ export class GamdomDb extends BaseDB {
 		sixDigitsCreationDate: NullableDateString = null,
 		modifiedDate: NullableDateString = null,
 		hasLogMessage = false,
+		client?: PoolClient,
 	): Promise<QueryResultRow> {
 		const baseData = {
 			[AmlStatusColumns.UserId]: userId,
@@ -333,12 +371,13 @@ export class GamdomDb extends BaseDB {
 			Object.entries(baseData).filter(([, value]) => value !== null),
 		);
 
-		return this.insert(DbTables.AmlStatus, data, hasLogMessage);
+		return this.insert(DbTables.AmlStatus, data, hasLogMessage, client);
 	}
 
 	public async insertAmlStatusFromOptions(
 		options: AmlStatusInsertOptions,
 		hasLogMessage = false,
+		client?: PoolClient,
 	): Promise<QueryResultRow> {
 		return this.insertAmlStatus(
 			options.userId,
@@ -358,6 +397,7 @@ export class GamdomDb extends BaseDB {
 			options.sixDigitsCreationDate || null,
 			options.modifiedDate || null,
 			hasLogMessage,
+			client,
 		);
 	}
 
@@ -400,6 +440,7 @@ export class GamdomDb extends BaseDB {
 		userId: number,
 		level: AmlVerificationLevel,
 		hasLogMessage = false,
+		client?: PoolClient,
 	): Promise<QueryResultRow> {
 		const now = new Date().toISOString();
 		const futureDate = new Date();
@@ -442,39 +483,45 @@ export class GamdomDb extends BaseDB {
 			);
 		}
 
-		return this.insertAmlStatusFromOptions(options);
+		return this.insertAmlStatusFromOptions(options, hasLogMessage, client);
 	}
 
 	public async insertDefaultLevel1AmlStatus(
 		userId: number,
 		hasLogMessage = false,
+		client?: PoolClient,
 	): Promise<QueryResultRow> {
 		return this.insertDefaultAmlStatusByLevel(
 			userId,
 			AmlVerificationLevel.Level1,
 			hasLogMessage,
+			client,
 		);
 	}
 
 	public async insertDefaultLevel2AmlStatus(
 		userId: number,
 		hasLogMessage = false,
+		client?: PoolClient,
 	): Promise<QueryResultRow> {
 		return this.insertDefaultAmlStatusByLevel(
 			userId,
 			AmlVerificationLevel.Level2,
 			hasLogMessage,
+			client,
 		);
 	}
 
 	public async insertDefaultLevel3AmlStatus(
 		userId: number,
 		hasLogMessage = false,
+		client?: PoolClient,
 	): Promise<QueryResultRow> {
 		return this.insertDefaultAmlStatusByLevel(
 			userId,
 			AmlVerificationLevel.Level3,
 			hasLogMessage,
+			client,
 		);
 	}
 
@@ -484,6 +531,7 @@ export class GamdomDb extends BaseDB {
 		level2Status: AmlVerificationStatus | null = null,
 		level3Status: AmlVerificationStatus | null = null,
 		hasLogMessage = false,
+		client?: PoolClient,
 	): Promise<QueryResultRow> {
 		const now = new Date().toISOString();
 		const futureDate = new Date();
@@ -518,7 +566,7 @@ export class GamdomDb extends BaseDB {
 			futureDateStr,
 		);
 
-		return this.insertAmlStatusFromOptions(options);
+		return this.insertAmlStatusFromOptions(options, hasLogMessage, client);
 	}
 
 	public async createNewUser({
@@ -543,27 +591,34 @@ export class GamdomDb extends BaseDB {
 
 		const passwordHash = await convertToScryptHash(password);
 
-		await this.insert(
-			DbTables.Users,
-			{
-				[UsersColumns.Username]: username,
-				[UsersColumns.Email]: email.toLowerCase(),
-				[UsersColumns.Image]: image,
-				[UsersColumns.PasswordHash]: passwordHash,
-				[UsersColumns.EmailVerified]: emailVerified,
-				[UsersColumns.Tags]: formatUserTags(tags),
-				[UsersColumns.UserClass]: userClass ?? UserClasses.User,
-				[UsersColumns.TotalDeposited]: totalDeposited,
-			},
-			hasLogMessage,
-		);
+		return this.withClient(async (client) => {
+			await this.insert(
+				DbTables.Users,
+				{
+					[UsersColumns.Username]: username,
+					[UsersColumns.Email]: email.toLowerCase(),
+					[UsersColumns.Image]: image,
+					[UsersColumns.PasswordHash]: passwordHash,
+					[UsersColumns.EmailVerified]: emailVerified,
+					[UsersColumns.Tags]: formatUserTags(tags),
+					[UsersColumns.UserClass]: userClass ?? UserClasses.User,
+					[UsersColumns.TotalDeposited]: totalDeposited,
+				},
+				hasLogMessage,
+				client,
+			);
 
-		const userInfo = await this.getUserInfoByUsername(username, false);
-		const userId = userInfo[0][UsersColumns.Id] as number;
+			const userInfo = await this.getUserInfoByUsername(
+				username,
+				false,
+				client,
+			);
+			const userId = userInfo[0][UsersColumns.Id] as number;
 
-		await this.insertUserWallet(userId, unit, amount, false);
-		await this.updateUserXP(userId, startingXp, false);
+			await this.insertUserWallet(userId, unit, amount, false, client);
+			await this.updateUserXP(userId, startingXp, false, client);
 
-		return userId;
+			return userId;
+		});
 	}
 }

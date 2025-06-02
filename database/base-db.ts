@@ -1,5 +1,5 @@
 import { logger } from "@logger/logger";
-import { Pool, QueryResultRow } from "pg";
+import { Pool, PoolClient, QueryResultRow } from "pg";
 
 export class BaseDB {
 	protected pool: Pool;
@@ -8,28 +8,40 @@ export class BaseDB {
 		this.pool = new Pool();
 	}
 
+	public async withClient<T>(
+		fn: (client: PoolClient) => Promise<T>,
+	): Promise<T> {
+		const client = await this.pool.connect();
+		try {
+			return await fn(client);
+		} finally {
+			client.release();
+		}
+	}
+
 	private async executeQuery<T extends QueryResultRow = QueryResultRow>(
 		sql: string,
 		params: unknown[] = [],
 		logContext: string,
 		hasLogMessage = true,
+		client?: PoolClient,
 	): Promise<T[]> {
-		const client = await this.pool.connect();
+		const dbClient = client ?? (await this.pool.connect());
 		try {
-			hasLogMessage
-				? logger.info(
-						`${logContext} - SQL: ${sql} | Params: ${JSON.stringify(
-							params,
-						)}`,
-				  )
-				: undefined;
-			const result = await client.query<T>(sql, params);
+			if (hasLogMessage) {
+				logger.info(
+					`${logContext} - SQL: ${sql} | Params: ${JSON.stringify(
+						params,
+					)}`,
+				);
+			}
+			const result = await dbClient.query<T>(sql, params);
 			return result.rows;
 		} catch (error) {
 			logger.error(`Error during ${logContext}: ${sql}`, error);
 			throw new Error(`Database error during ${logContext}`);
 		} finally {
-			client.release();
+			if (!client) dbClient.release();
 		}
 	}
 
@@ -48,6 +60,7 @@ export class BaseDB {
 		condition?: string,
 		params: unknown[] = [],
 		hasLogMessage = true,
+		client?: PoolClient,
 	): Promise<QueryResultRow[]> {
 		const columnList = columns === "*" ? "*" : columns.join(", ");
 		const whereClause = condition ? `WHERE ${condition}` : "";
@@ -58,6 +71,7 @@ export class BaseDB {
 			params,
 			"Database Query execution",
 			hasLogMessage,
+			client,
 		);
 	}
 
@@ -65,6 +79,7 @@ export class BaseDB {
 		table: string,
 		data: Record<string, unknown>,
 		hasLogMessage = true,
+		client?: PoolClient,
 	): Promise<QueryResultRow> {
 		const columns = Object.keys(data).join(", ");
 		const values = Object.values(data);
@@ -78,6 +93,7 @@ export class BaseDB {
 			values,
 			"Database 'Insert' operation",
 			hasLogMessage,
+			client,
 		);
 		return result[0];
 	}
@@ -87,6 +103,7 @@ export class BaseDB {
 		data: Record<string, unknown>,
 		condition: string,
 		hasLogMessage = true,
+		client?: PoolClient,
 	): Promise<QueryResultRow> {
 		const columns = Object.keys(data);
 		const values = Object.values(data);
@@ -100,6 +117,7 @@ export class BaseDB {
 			values,
 			"Database 'Update' operation",
 			hasLogMessage,
+			client,
 		);
 		return result[0];
 	}
@@ -108,6 +126,7 @@ export class BaseDB {
 		table: string,
 		condition: string,
 		hasLogMessage = true,
+		client?: PoolClient,
 	): Promise<void> {
 		const sql = `DELETE FROM ${table} WHERE ${condition}`;
 		await this.executeQuery(
@@ -115,6 +134,7 @@ export class BaseDB {
 			[],
 			"Database 'Delete' operation",
 			hasLogMessage,
+			client,
 		);
 	}
 

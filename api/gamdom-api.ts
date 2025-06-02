@@ -113,13 +113,32 @@ export class GamdomApi extends BaseApi {
 		userData: RegisterTestData,
 	): Promise<string> {
 		await this.registerUser(userData);
+
 		const newUserId = (
 			await this.getBasicInfo(userData.username, userData.password)
 		).user.id;
-		await this.gamdomDb.makeUserSuperAdmin(newUserId);
-		await this.gamdomDb.updateUserEmailVerification(newUserId);
-		await this.gamdomDb.updateUserTotalDepositedAmountByUserId(newUserId);
-		await this.gamdomDb.insertUserWallet(newUserId);
+
+		await this.gamdomDb.withClient(async (client) => {
+			await this.gamdomDb.makeUserSuperAdmin(newUserId, client);
+			await this.gamdomDb.updateUserEmailVerification(
+				newUserId,
+				true,
+				client,
+			);
+			await this.gamdomDb.updateUserTotalDepositedAmountByUserId(
+				newUserId,
+				300,
+				client,
+			);
+			await this.gamdomDb.insertUserWallet(
+				newUserId,
+				undefined,
+				undefined,
+				true,
+				client,
+			);
+		});
+
 		return this.authenticateWithExistingUser(
 			userData.username,
 			userData.password,
@@ -133,8 +152,19 @@ export class GamdomApi extends BaseApi {
 		const newUserId = (
 			await this.getBasicInfo(userData.username, userData.password)
 		).user.id;
-		await this.gamdomDb.updateUserEmailVerification(newUserId);
-		await this.gamdomDb.updateUserXP(newUserId);
+		await this.gamdomDb.withClient(async (client) => {
+			await this.gamdomDb.updateUserEmailVerification(
+				newUserId,
+				true,
+				client,
+			);
+			await this.gamdomDb.updateUserXP(
+				newUserId,
+				undefined,
+				true,
+				client,
+			);
+		});
 		return this.authenticateWithExistingUser(
 			userData.username,
 			userData.password,

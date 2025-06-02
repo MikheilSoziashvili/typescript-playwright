@@ -131,28 +131,33 @@ async function updateWithdrawLimits(): Promise<void> {
 		WithdrawLimitsSettingsValues.Alert_coins,
 	];
 
-	for (const withdrawLimit of withdrawLimits) {
-		const existingWithdrawLimit =
-			await gamdomDb.getWithdrawLimitFromSettingByKey(withdrawLimit);
-
-		if (existingWithdrawLimit.length > 0) {
-			await gamdomDb.updateWithdrawLimitInSetting(
+	await gamdomDb.withClient(async (client) => {
+		for (const withdrawLimit of withdrawLimits) {
+			const existing = await gamdomDb.getWithdrawLimitFromSettingByKey(
 				withdrawLimit,
-				defaultWithdrawLimit,
+				client,
 			);
-			logger.info(
-				`Updated withdraw limit for key "${withdrawLimit}" to default value: ${defaultWithdrawLimit}`,
-			);
-		} else {
-			await gamdomDb.insertWithdrawLimitInSetting(
-				withdrawLimit,
-				defaultWithdrawLimit,
-			);
-			logger.info(
-				`Inserted withdraw limit for key "${withdrawLimit}" with default value: ${defaultWithdrawLimit}`,
-			);
+			if (existing.length > 0) {
+				await gamdomDb.updateWithdrawLimitInSetting(
+					withdrawLimit,
+					defaultWithdrawLimit,
+					client,
+				);
+				logger.info(
+					`Updated withdraw limit for key "${withdrawLimit}" to: ${defaultWithdrawLimit}`,
+				);
+			} else {
+				await gamdomDb.insertWithdrawLimitInSetting(
+					withdrawLimit,
+					defaultWithdrawLimit,
+					client,
+				);
+				logger.info(
+					`Inserted withdraw limit for key "${withdrawLimit}" with value: ${defaultWithdrawLimit}`,
+				);
+			}
 		}
-	}
+	});
 }
 
 export const rainAmount = 15000;
