@@ -95,7 +95,15 @@ export default defineConfig({
 		},
 		{
 			name: "firefox",
-			use: { browserName: "firefox" },
+			use: {
+				launchOptions: {
+					firefoxUserPrefs: {
+						"webgl.force-enabled": true,
+						"webgl.disabled": false,
+						"dom.webgpu.enabled": true,
+					},
+				},
+			},
 		},
 	],
 });
