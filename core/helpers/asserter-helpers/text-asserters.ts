@@ -75,6 +75,24 @@ export function buildCreatedCampaignSubTitle(campaignName: string): string {
 	return `Campaign ${campaignName} - created`;
 }
 
+export function buildNewRedirectFromToSubTitle(
+	redirectFrom: string,
+	redirectTo: string,
+): string {
+	return `New redirect has been created from ${redirectFrom} to ${redirectTo}`;
+}
+
+export function buildEditedRedirectFromToSubTitle(
+	redirectFrom: string,
+	redirectTo: string,
+): string {
+	return `Redirect has been updated from ${redirectFrom} to ${redirectTo}`;
+}
+
+export function buildDeletedRedirectFromSubTitle(redirectFrom: string): string {
+	return `Redirect deleted successfully from: ${redirectFrom}.`;
+}
+
 export function buildCashPromoCodeTransactionsDetailsValue(
 	promoCampaignName: string,
 	amount = 100,

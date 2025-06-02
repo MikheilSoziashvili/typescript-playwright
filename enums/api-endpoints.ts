@@ -14,4 +14,6 @@ export enum ApiEndpoints {
 	GET_LAST_KOTH_EVENT_ID = "/client-api/koth/getFirstKoth",
 	GET_CURRENT_KOTH_EVENTS_BASIC_INFO = "/client-api/admin/koth/getCurrentEventBasicInfo",
 	GET_CRYPTO_ADMIN_TRANSACTIONS = "/client-api/admin/crypto/getTransactions",
+	GET_ALL_REDIRECTS = "/client-api/redirects/getAllRedirects",
+	CREATE_REDIRECT = "/client-api/admin/redirects/createRedirect",
 }

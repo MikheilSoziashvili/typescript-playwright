@@ -10,6 +10,7 @@ import { WalletModal } from "@pages/modals/wallet/wallet-modal";
 import { SoftblockModalPage } from "@pages/modals/softblock-modal/softblock-modal";
 
 import { test as base } from "@playwright/test";
+import { NewRedirectModal } from "@pages/modals/new-redirect-modal/new-redirect-modal";
 
 export type Modals = {
 	tipUserModal: TipUserModal;
@@ -22,6 +23,7 @@ export type Modals = {
 	loginModal: LoginModal;
 	transactionDetailsModal: TransactionDetailsModal;
 	softblockModal: SoftblockModalPage;
+	newRedirectModal: NewRedirectModal;
 };
 
 export const modalsFixtures = base.extend<Modals>({
@@ -54,5 +56,8 @@ export const modalsFixtures = base.extend<Modals>({
 	},
 	softblockModal: async ({ page }, use) => {
 		await use(new SoftblockModalPage(page));
+	},
+	newRedirectModal: async ({ page }, use) => {
+		await use(new NewRedirectModal(page));
 	},
 });

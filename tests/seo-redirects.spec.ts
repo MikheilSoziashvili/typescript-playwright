@@ -1,0 +1,132 @@
+import { test } from "@fixtures/fixtures";
+import { storageStateNewSuperAdminUserDB } from "../fixtures/auth-fixtures";
+import { generateRandomString, getCookieHeader } from "@core/utils/utils";
+import { RegisterTestData } from "@dtos/test-data";
+
+test.describe("SEO Redirects tests", () => {
+	test.describe("SEO Redirects - create, edit, delete and check history", () => {
+		test.use(storageStateNewSuperAdminUserDB());
+
+		const EMPTY_INITIAL_PATH = "";
+		let fromPath: string;
+		let toPath: string;
+		let fromPathEdited: string;
+		let toPathEdited: string;
+
+		test.beforeEach(async ({ seoRedirectsAdminPage, newRedirectModal }) => {
+			fromPath = generateRandomString({
+				prefix: "auto_",
+				length: 7,
+			});
+			toPath = generateRandomString({
+				prefix: "auto_",
+				length: 7,
+			});
+			fromPathEdited = generateRandomString({
+				prefix: "auto_edited_",
+				length: 7,
+			});
+			toPathEdited = generateRandomString({
+				prefix: "auto_edited_",
+				length: 7,
+			});
+			await seoRedirectsAdminPage.navigate();
+			await seoRedirectsAdminPage.clickNewRedirectButton();
+			await newRedirectModal.assertThat().newRedirectModalIsDisplayed();
+			await newRedirectModal.steps().createNewRedirect(fromPath, toPath);
+		});
+
+		test("[ENG-5620] Create a new redirect", async ({
+			seoRedirectsAdminPage,
+		}) => {
+			await seoRedirectsAdminPage
+				.assertThat()
+				.verifyRedirectIsVisible(fromPath);
+			await seoRedirectsAdminPage
+				.steps()
+				.openHistoryAndVerifyEdit(
+					EMPTY_INITIAL_PATH,
+					fromPath,
+					EMPTY_INITIAL_PATH,
+					toPath,
+				);
+		});
+
+		test("[ENG-5622] Edit an existing redirect", async ({
+			seoRedirectsAdminPage,
+			newRedirectModal,
+		}) => {
+			await seoRedirectsAdminPage.clickEditRedirect(fromPath);
+			await newRedirectModal
+				.steps()
+				.editRedirect(fromPathEdited, toPathEdited);
+			await seoRedirectsAdminPage
+				.assertThat()
+				.verifyRedirectIsVisible(fromPathEdited);
+			await seoRedirectsAdminPage
+				.steps()
+				.openHistoryAndVerifyEdit(
+					fromPath,
+					fromPathEdited,
+					toPath,
+					toPathEdited,
+				);
+		});
+
+		test("[ENG-5622] Delete a redirect", async ({
+			seoRedirectsAdminPage,
+		}) => {
+			await seoRedirectsAdminPage
+				.assertThat()
+				.verifyRedirectIsVisible(fromPath);
+			await seoRedirectsAdminPage
+				.steps()
+				.deleteRedirectAndAssertToast(fromPath);
+
+			await seoRedirectsAdminPage
+				.steps()
+				.openHistoryAndVerifyEdit(
+					fromPath,
+					EMPTY_INITIAL_PATH,
+					toPath,
+					EMPTY_INITIAL_PATH,
+				);
+		});
+	});
+
+	test.describe("SEO Redirects - functional", () => {
+		const superAdminData = new RegisterTestData({
+			useGamdomEmailDomain: true,
+		});
+		test.use(
+			storageStateNewSuperAdminUserDB({
+				username: superAdminData.username,
+				password: superAdminData.password,
+			}),
+		);
+
+		const fromPath = "/blog/esports-10";
+		const toPath = "/bg-BG/blog/esports-10";
+
+		test("[ENG-5620] Verify redirect functionality", async ({
+			blogPostPage,
+			gamdomApi,
+		}) => {
+			const superAdminCookie = getCookieHeader(
+				await gamdomApi.authenticateWithExistingUser(
+					superAdminData.username,
+					superAdminData.password,
+				),
+			);
+			await gamdomApi.ensureRedirectExists(
+				fromPath,
+				toPath,
+				superAdminCookie,
+			);
+			await blogPostPage.navigateToBlogPost(fromPath);
+			await blogPostPage
+				.assertThat()
+				.waitForAndVerifyCurrentUrlIs(`${toPath}`);
+		});
+	});
+});

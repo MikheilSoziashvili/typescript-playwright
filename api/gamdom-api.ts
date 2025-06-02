@@ -28,6 +28,8 @@ import { KothEventDTO } from "@dtos/responses/gamdom-api/get-current-koth-events
 import { GetCryptoAdminTransactionsResponse } from "@dtos/responses/gamdom-api/get-crypto-admin-transactions-response";
 import { GetCryptoAdminTransactionsRequest } from "@dtos/requests/gamdom-api/get-crypto-admin-transactions-request";
 import { UserType } from "@enums/user-types";
+import { GetAllRedirectsResponse } from "@dtos/responses/gamdom-api/get-all-redirects-response";
+import { CreateRedirectRequest } from "@dtos/requests/gamdom-api/create-redirect-request";
 
 export class GamdomApi extends BaseApi {
 	private gamdomDb: GamdomDb;
@@ -567,5 +569,59 @@ export class GamdomApi extends BaseApi {
 
 		const response = await this.post(parameters);
 		return response.json() as Promise<GetCryptoAdminTransactionsResponse[]>;
+	}
+
+	public async getAllRedirects(
+		_headers?: Record<string, string>,
+	): Promise<GetAllRedirectsResponse[]> {
+		const parameters = this.buildParameters(
+			ApiEndpoints.GET_ALL_REDIRECTS,
+			undefined,
+			_headers,
+		);
+
+		const response = await this.post(parameters);
+		return response.json() as Promise<GetAllRedirectsResponse[]>;
+	}
+
+	public async createRedirect(
+		fromPath: string,
+		toPath: string,
+		_headers?: Record<string, string>,
+	): Promise<APIResponse> {
+		const payload: CreateRedirectRequest = {
+			redirect: {
+				from_path: fromPath,
+				to_path: toPath,
+			},
+		};
+
+		const parameters = this.buildParameters(
+			ApiEndpoints.CREATE_REDIRECT,
+			payload,
+			_headers,
+		);
+
+		return this.post(parameters);
+	}
+
+	public async ensureRedirectExists(
+		fromPath: string,
+		toPath: string,
+		cookie: string,
+	): Promise<void> {
+		this.setHeaders({
+			Cookie: cookie,
+		});
+
+		const existing = await this.getAllRedirects();
+		const alreadyExists = existing.some((r) => r.from_path === fromPath);
+
+		if (!alreadyExists) {
+			logger.info(
+				`Redirect not found, creatig one from ${fromPath} to ${toPath}`,
+			);
+			await this.createRedirect(fromPath, toPath);
+		}
 	}
 }
