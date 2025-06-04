@@ -211,4 +211,55 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 		logger.info(`Game won after ${betAttempts} attempt(s)`);
 		return totalAmountSpent;
 	}
+
+	@step("Pick random tiles until a bomb is caught")
+	public async pickRandomTilesUntilBombIsCaught(
+		betAmount: number,
+	): Promise<{ totalBetsPlaced: number; hasWonAtLeastOnce: boolean }> {
+		let totalBetsPlaced = 0;
+		let hasWonAtLeastOnce = false;
+		let isBombCaught = false;
+
+		while (!isBombCaught) {
+			totalBetsPlaced += await this.placeInitialBet(betAmount);
+			const totalSafeTiles = await this.getTotalSafeTiles();
+			const result = await this.playUntilRoundEnds(totalSafeTiles);
+
+			isBombCaught = result.isBombCaught;
+			hasWonAtLeastOnce ||= result.hasWon;
+		}
+
+		logger.info(
+			`Finished loop. Total bets placed: ${totalBetsPlaced}, Has won: ${hasWonAtLeastOnce}`,
+		);
+
+		return { totalBetsPlaced, hasWonAtLeastOnce };
+	}
+
+	private async placeInitialBet(betAmount: number): Promise<number> {
+		const { updatedTotal } = await this.startFirstRound(betAmount);
+		return updatedTotal;
+	}
+
+	private async playUntilRoundEnds(
+		totalSafeTiles: number,
+	): Promise<{ isBombCaught: boolean; hasWon: boolean }> {
+		while (true) {
+			const { isGameWon, isBombVisible, currentSafeTilesCount } =
+				await this.clickTileAndEvaluateResult(totalSafeTiles);
+
+			if (isBombVisible) {
+				logger.warn("Bomb caught. Ending test loop.");
+				return { isBombCaught: true, hasWon: false };
+			}
+
+			if (
+				isGameWon ||
+				this.isGameWon(currentSafeTilesCount, totalSafeTiles)
+			) {
+				logger.info("Win detected.");
+				return { isBombCaught: false, hasWon: true };
+			}
+		}
+	}
 }

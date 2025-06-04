@@ -40,13 +40,36 @@ test.describe("Mines tests", () => {
 
 		await minesGamePage.assertThat().winImageIsDisplayed();
 
-		await minesGamePage
-			.assertThat()
-			.accountBalanceAfterWinIsCorrect(
-				accountBalanceBeforeBet,
+		await minesGamePage.assertThat().accountBalanceAfterGameFlowIsCorrect({
+			accountBalanceBeforeBet: accountBalanceBeforeBet,
+			betAmount: minesBetData.betAmount,
+			totalBetsPlaced: totalBetsPlaced,
+			cashoutMultiplier: minesBetData.cashoutMultiplier,
+			numberOfWins: 1,
+		});
+	});
+
+	test(`[ENG-6927] Mines - Play until catch a bomb @smoke @originals`, async ({
+		minesGamePage,
+	}) => {
+		await minesGamePage.navigateAndWaitForGameToLoad();
+
+		await minesGamePage.steps().placeBetAndConfigureMines(minesBetData);
+
+		const accountBalanceBeforeBet =
+			await minesGamePage.authenticatedHeader.getAccountBalance();
+
+		const { totalBetsPlaced, hasWonAtLeastOnce } =
+			await minesGamePage.pickRandomTilesUntilBombIsCaught(
 				minesBetData.betAmount,
-				totalBetsPlaced,
-				minesBetData.cashoutMultiplier,
 			);
+
+		await minesGamePage.assertThat().accountBalanceAfterGameFlowIsCorrect({
+			accountBalanceBeforeBet: accountBalanceBeforeBet,
+			betAmount: minesBetData.betAmount,
+			totalBetsPlaced: totalBetsPlaced,
+			cashoutMultiplier: minesBetData.cashoutMultiplier,
+			numberOfWins: hasWonAtLeastOnce ? 1 : 0,
+		});
 	});
 });

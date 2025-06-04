@@ -16,14 +16,21 @@ export class MinesGamePageAsserter extends BaseAsserter<MinesGamePage> {
 	}
 
 	@step("Account balance is correct after win")
-	public async accountBalanceAfterWinIsCorrect(
-		accountBalanceBeforeBet: number,
-		betAmount: number,
-		totalBetsPlaced: number,
-		cashoutMultiplier: number,
-	): Promise<void> {
+	public async accountBalanceAfterGameFlowIsCorrect({
+		accountBalanceBeforeBet,
+		betAmount,
+		totalBetsPlaced,
+		cashoutMultiplier,
+		numberOfWins,
+	}: {
+		accountBalanceBeforeBet: number;
+		betAmount: number;
+		totalBetsPlaced: number;
+		cashoutMultiplier: number;
+		numberOfWins: number;
+	}): Promise<void> {
 		const winnings = this.gamdomPage.calculateWinnings(
-			betAmount,
+			betAmount * numberOfWins,
 			cashoutMultiplier,
 		);
 
@@ -32,9 +39,7 @@ export class MinesGamePageAsserter extends BaseAsserter<MinesGamePage> {
 			totalBetsPlaced,
 			winnings,
 		);
-
 		logger.info(`Winnings calculated: ${winnings}`);
-
 		await this.assertBalanceMatches(expectedBalance);
 	}
 
