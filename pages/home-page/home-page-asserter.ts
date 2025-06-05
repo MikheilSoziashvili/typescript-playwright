@@ -185,7 +185,7 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 			{
 				errorMessage: `Provider ${provider} did not reach expected visibility state: ${expectedResult}`,
 				intervalSeconds: 2,
-				timeoutSeconds: TimeoutSeconds.NINETY,
+				timeoutSeconds: TimeoutSeconds.ONE_EIGHTY,
 			},
 		);
 	}

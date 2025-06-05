@@ -8,6 +8,7 @@ import { Timeout } from "@enums/timeout";
 import { TwoFactorAuthModal } from "../two-factor-authentication-modal/two-factor-auth-modal";
 import { step } from "decorators/step";
 import { Cryptocurrency } from "@enums/cryptocurrencies";
+import { expect } from "@playwright/test";
 
 export class WalletModal extends BasePage<WalletModalMap> {
 	public constructor(page: Page) {
@@ -99,6 +100,10 @@ export class WalletModal extends BasePage<WalletModalMap> {
 
 	@step()
 	public async getDepositAddress(): Promise<string> {
+		await expect
+			.poll(() => this.map.cryptoDepositAddress.inputValue())
+			.not.toContain("retrieving");
+
 		return this.map.cryptoDepositAddress.inputValue();
 	}
 

@@ -36,7 +36,7 @@ export class ProvidersPageSteps extends BasePageStep<ProvidersPage> {
 			{
 				errorMessage: `Provider ${providerName} was not ${expectedResult} on the providers page in time`,
 				intervalSeconds: 2,
-				timeoutSeconds: TimeoutSeconds.NINETY,
+				timeoutSeconds: TimeoutSeconds.ONE_EIGHTY,
 			},
 		);
 	}

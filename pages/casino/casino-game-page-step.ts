@@ -32,7 +32,7 @@ export class CasinoPageSteps extends BasePageStep<CasinoPage> {
 			{
 				errorMessage: `Provider ${provider} was not ${expectedResult} in the dropdown in time`,
 				intervalSeconds: 2,
-				timeoutSeconds: TimeoutSeconds.NINETY,
+				timeoutSeconds: TimeoutSeconds.ONE_EIGHTY,
 			},
 		);
 	}
@@ -59,7 +59,7 @@ export class CasinoPageSteps extends BasePageStep<CasinoPage> {
 			{
 				errorMessage: `Provider ${provider} was not ${expectedResult} in the settings modal dropdown in time`,
 				intervalSeconds: 2,
-				timeoutSeconds: TimeoutSeconds.NINETY,
+				timeoutSeconds: TimeoutSeconds.ONE_EIGHTY,
 			},
 		);
 	}

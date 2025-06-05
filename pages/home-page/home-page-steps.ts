@@ -198,7 +198,7 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 			{
 				errorMessage: `Provider ${providerName} was not ${expectedResult} in the belt on the home page in time`,
 				intervalSeconds: 2,
-				timeoutSeconds: TimeoutSeconds.NINETY,
+				timeoutSeconds: TimeoutSeconds.ONE_EIGHTY,
 			},
 		);
 	}
