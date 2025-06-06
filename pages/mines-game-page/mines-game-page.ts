@@ -91,7 +91,7 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 	private async startFirstRound(
 		betAmount: number,
 	): Promise<{ updatedTotal: number; updatedAttempts: number }> {
-		await this.performReliableClick(this.map.startPlayingButton);
+		await this.map.startPlayingButton.click();
 		const updatedTotal = betAmount;
 		const updatedAttempts = 1;
 		return { updatedTotal, updatedAttempts };
@@ -122,7 +122,7 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 		currentSafeTilesCount: number;
 	}> {
 		const safeBefore = await this.getSafeTilesCount();
-		await this.performReliableClick(this.map.pickRandomTileButton);
+		await this.map.pickRandomTileButton.click();
 
 		const safeAfter = await this.getSafeTilesCount();
 		if (this.isGameWon(safeAfter, totalSafeTiles)) {

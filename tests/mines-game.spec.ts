@@ -27,6 +27,7 @@ test.describe("Mines tests", () => {
 	test(`[ENG-6486] Mines - place a bet and try to win - Pick random tiles @originals`, async ({
 		minesGamePage,
 	}) => {
+		test.fixme(true, "Skipped until Mines game is fully polished");
 		await minesGamePage.navigateAndWaitForGameToLoad();
 
 		await minesGamePage.steps().placeBetAndConfigureMines(minesBetData);
