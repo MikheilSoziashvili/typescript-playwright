@@ -72,11 +72,10 @@ export class InfoAdminPageAsserter extends BaseAsserter<InfoAdminPage> {
 		const noteRow = this.gamdomPage.map.noteRowByText(noteText);
 		await this.expectNoteTextInRow(noteRow, noteText);
 
-		expect(
-			await this.getTextDecoration(
-				this.gamdomPage.map.noteTextCellInRow(noteRow),
-			),
-		).toContain("line-through");
+		await expect(this.gamdomPage.map.noteTextCellInRow(noteRow)).toHaveCSS(
+			"text-decoration",
+			/line-through/,
+		);
 
 		const pinButton = this.gamdomPage.map.pinButtonInRow(noteRow);
 		const inactiveButton =
