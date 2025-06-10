@@ -1,7 +1,7 @@
 import { SUPER_ADMIN_CREDENTIALS } from "@constants/credentials";
 import { RegisterTestData } from "@dtos/test-data";
 import { test } from "@fixtures/fixtures";
-import { setAuthenticationCookies } from "@core/utils/utils";
+import { getCurrentDate, setAuthenticationCookies } from "@core/utils/utils";
 
 test.describe("Ban user", () => {
 	const NEW_USER_REGISTER_DATA = new RegisterTestData();
@@ -47,6 +47,8 @@ test.describe("Ban user", () => {
 
 		await bannedUserPage.waitRedContainerToBeVisible();
 		await bannedUserPage.assertThat().isBannedTitleDisplayed();
-		await bannedUserPage.assertThat().isBannedReasonDisplayed(BAN_REASON);
+		await bannedUserPage
+			.assertThat()
+			.isBannedReasonDisplayed(`${BAN_REASON} - ${getCurrentDate()}`);
 	});
 });

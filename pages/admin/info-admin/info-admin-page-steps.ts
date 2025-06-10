@@ -1,6 +1,7 @@
 import { BasePageStep } from "@pages/base/base-page-step";
 import { InfoAdminPage } from "./info-admin-page";
 import { generateRandomString } from "@core/utils/utils";
+import { BanReasonOptions } from "@enums/admin/ban-reason-options";
 
 export class InfoAdminPageSteps extends BasePageStep<InfoAdminPage> {
 	public constructor(gamdomPage: InfoAdminPage) {
@@ -11,6 +12,11 @@ export class InfoAdminPageSteps extends BasePageStep<InfoAdminPage> {
 		await this.gamdomPage.map.waitForVisibility({
 			locator: this.gamdomPage.map.banUserContainer,
 		});
+		await this.gamdomPage.map.banReasonDropdown.click();
+
+		await this.gamdomPage.map
+			.getBanReasonOption(BanReasonOptions.CUSTOM)
+			.click();
 		if (options?.reason) {
 			await this.gamdomPage.map.banUserInput.fill(options.reason);
 		}

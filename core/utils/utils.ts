@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import * as path from "path";
 import { GamdomApi } from "@api/gamdom-api";
 import { DEFAULT_CURRENCY } from "@constants/defaults";
@@ -1023,4 +1024,15 @@ export function calculateMinesMultiplier(
 	multiplier *= 1 - houseEdge;
 
 	return Number(multiplier.toFixed(precision));
+}
+
+/**
+ * Returns the current date as a string in the specified format.
+ * Example output: "2025-06-10"
+ *
+ * @param dateFormat - The format string compatible with date-fns.
+ * @returns The formatted current date.
+ */
+export function getCurrentDate(dateFormat = "yyyy-MM-dd"): string {
+	return format(new Date(), dateFormat);
 }

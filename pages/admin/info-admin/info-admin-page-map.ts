@@ -1,5 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
+import { BanReasonOptions } from "@enums/admin/ban-reason-options";
 
 export class InfoAdminPageMap extends BaseMap {
 	public constructor(page: Page) {
@@ -15,6 +16,14 @@ export class InfoAdminPageMap extends BaseMap {
 
 	public get banUserContainer(): Locator {
 		return this.page.getByTestId("adminInfoBanContainer");
+	}
+
+	public get banReasonDropdown(): Locator {
+		return this.banUserContainer.getByTestId("Input");
+	}
+
+	public getBanReasonOption(reason: BanReasonOptions): Locator {
+		return this.page.locator(`[data-value="${reason}"]`);
 	}
 
 	public get banUserInput(): Locator {
