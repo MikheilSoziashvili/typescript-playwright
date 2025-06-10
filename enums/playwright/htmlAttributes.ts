@@ -21,5 +21,9 @@ export enum Attributes {
 	ARIA_DISABLED = "aria-disabled",
 	PROPERTY = "property",
 	CONTENT = "content",
+	ARIA_VALUENOW = "aria-valuenow",
+	ARIA_VALUEMIN = "aria-valuemin",
+	ARIA_VALUEMAX = "aria-valuemax",
+	ARIA_ORIENTATION = "aria-orientation",
 	SPAN = "span",
 }

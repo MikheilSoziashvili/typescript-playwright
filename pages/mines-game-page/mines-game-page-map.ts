@@ -14,6 +14,10 @@ export class MinesGamePageMap extends BaseMap {
 		return this.page.getByTestId("mines-manual-random");
 	}
 
+	public get manualCashoutButton(): Locator {
+		return this.page.getByTestId("mines-manual-cashout");
+	}
+
 	public get bombTile(): Locator {
 		return this.page.locator('[data-testid^="mines-mine-selected-"]');
 	}

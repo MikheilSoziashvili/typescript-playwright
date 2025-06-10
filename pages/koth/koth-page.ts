@@ -1,12 +1,12 @@
+import { KOTH_ENDPOINT } from "@constants/page-endpoints";
+import { BasePageNavigationParametersType } from "@core/types/types";
+import { BoundingBoxCoordinate } from "@enums/bounding-box-coordinates";
 import { BasePage } from "@pages/base/base-page";
+import { step } from "decorators/step";
 import { Page } from "playwright";
 import { KothAsserter } from "./koth-page-asserter";
 import { KothMap } from "./koth-page-map";
 import { KothSteps } from "./koth-page-steps";
-import { KOTH_ENDPOINT } from "@constants/page-endpoints";
-import { BasePageNavigationParametersType } from "@core/types/types";
-import { step } from "decorators/step";
-import { BoundingBoxCoordinate } from "@enums/bounding-box-coordinates";
 
 export class KothPage extends BasePage<KothMap> {
 	public constructor(page: Page) {
@@ -19,6 +19,16 @@ export class KothPage extends BasePage<KothMap> {
 		await super.navigate({
 			...parameters,
 			endpoint: { paths: [KOTH_ENDPOINT] },
+		});
+	}
+
+	public async navigateToKothEvent(
+		kothEventPageEndpoint: string,
+		parameters?: BasePageNavigationParametersType,
+	): Promise<void> {
+		await super.navigate({
+			...parameters,
+			endpoint: { paths: [kothEventPageEndpoint] },
 		});
 	}
 

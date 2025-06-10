@@ -13,6 +13,10 @@ import { OriginalGame, RouletteBetColor } from "@enums/original-games";
 import { step } from "decorators/step";
 import { PlinkoGamePage } from "@pages/plinko-game-page/plinko-game-page";
 import { MinesGamePage } from "@pages/mines-game-page/mines-game-page";
+import {
+	PlinkoRiskOption,
+	PlinkoRowsOption,
+} from "@enums/plinko/plinko-game-options";
 
 /**
  * The OriginalsPage class acts as a unified interface for interacting with all the "Originals" games.
@@ -95,23 +99,30 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 	 * - For "Dice": the multiplier (number)
 	 * - For "Roulette": the bet color (RouletteBetColor)
 	 * - For "Hi-Lo": the bet option (HiloBetOption)
+	 * - For "Plinko": an object with rowsValue and riskValue options
+	 * - For "Mines": the number of mines (number)
 	 *
 	 * If no suitable parameter is provided, a default value or option is used.
 	 *
 	 * @param {OriginalGames} game - The game to place a bet on.
 	 * @param {number} betAmount - The amount of the bet.
-	 * @param {number | RouletteBetColor | HiloBetOption} [multiplierOrColorOrOption] - An optional parameter that can represent multiplier, color, or betting option, depending on the game.
+	 * @param {number | RouletteBetColor | HiloBetOption | { rowsValue?: PlinkoRowsOption, riskValue?: PlinkoRiskOption } | number} [multiplierOrColorOrOption] - An optional parameter that can represent multiplier, color, betting option, Plinko options, or number of mines, depending on the game.
 	 * @returns {Promise<void>} A promise that resolves when the bet has been placed.
 	 */
 	@step()
 	public async placeBet(
 		game: OriginalGames,
 		betAmount: number,
-		multiplierOrColorOrOption?: number | RouletteBetColor | HiloBetOption,
+		multiplierOrColorOrOption?:
+			| number
+			| RouletteBetColor
+			| HiloBetOption
+			| { rowsValue?: PlinkoRowsOption; riskValue?: PlinkoRiskOption },
 	): Promise<void> {
 		const gamePage = this.gamesMap[game];
 		const isNumber = typeof multiplierOrColorOrOption === "number";
 		const isString = typeof multiplierOrColorOrOption === "string";
+		const isObject = typeof multiplierOrColorOrOption === "object";
 		const defaultMultiplier = 1.1;
 
 		switch (game) {
@@ -152,12 +163,52 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 				await (gamePage as HiloGamePage).placeBet(betAmount, betOption);
 				break;
 			}
+			case OriginalGame.Plinko: {
+				const plinkoOptions = isObject
+					? (multiplierOrColorOrOption as {
+							rowsValue?: PlinkoRowsOption;
+							riskValue?: PlinkoRiskOption;
+					  })
+					: {};
+				await (gamePage as PlinkoGamePage).startManualBet(
+					betAmount.toString(),
+					plinkoOptions,
+				);
+				break;
+			}
+			case OriginalGame.Mines: {
+				await (gamePage as MinesGamePage)
+					.assertThat()
+					.startPlayingButtonIsDisplayed();
+				await (gamePage as MinesGamePage)
+					.steps()
+					.placeManualBetWithRandomTile({
+						betAmount: betAmount,
+						minesNumber: isNumber ? multiplierOrColorOrOption : 1,
+						cashoutMultiplier: 0,
+					});
+				break;
+			}
 			default: {
 				throw new Error(`Unhandled game type: ${String(game)}`);
 			}
 		}
 	}
 
+	/**
+	 * Waits for the current game round to finish.
+	 *
+	 * For each game, this method performs the appropriate wait actions:
+	 * - For "Crash": Waits for the previous bet round to finish and for the betting window to become available
+	 * - For "Dice": Waits for the dice result to be displayed
+	 * - For "Roulette": Waits for the betting window to become available and for the round result number
+	 * - For "Hi-Lo": Waits for the betting window to become available and for the round result
+	 * - For "Plinko": Waits for the sliders to become active again, indicating the round is complete
+	 * - For "Mines": Waits for either a bomb to be revealed or all safe tiles to be revealed
+	 *
+	 * @param {OriginalGames} game - The game to wait for.
+	 * @returns {Promise<void>} A promise that resolves when the game round has finished.
+	 */
 	@step()
 	public async waitForGameRoundFinish(game: OriginalGames): Promise<void> {
 		const gamePage = this.gamesMap[game];
@@ -184,6 +235,24 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 			case OriginalGame.HiLo: {
 				await (gamePage as HiloGamePage).waitBettingWindowAvailable();
 				await (gamePage as HiloGamePage).waitRoundResult();
+				break;
+			}
+			case OriginalGame.Plinko: {
+				await (gamePage as PlinkoGamePage)
+					.steps()
+					.waitForSlidersToBeActive();
+				break;
+			}
+			case OriginalGame.Mines: {
+				await (gamePage as MinesGamePage)
+					.steps()
+					.performManualCashout();
+				await (gamePage as MinesGamePage)
+					.assertThat()
+					.startPlayingButtonIsDisplayed();
+				await (gamePage as MinesGamePage)
+					.assertThat()
+					.pickRandomTileButtonIsNotDisplayed();
 				break;
 			}
 			default: {

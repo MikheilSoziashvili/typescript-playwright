@@ -58,6 +58,22 @@ export class PlinkoGamePageMap extends BaseMap {
 		);
 	}
 
+	public get betAmountInput(): Locator {
+		return this.leftBetPanelContainer.getByTestId("originals-bet-amount");
+	}
+
+	public get dropBallButton(): Locator {
+		return this.page.locator("button[class*='Formstyled__SubmitButton']", {
+			hasText: "Drop ball",
+		});
+	}
+
+	public get userInGameBalance(): Locator {
+		return this.leftBetPanelContainer.locator(
+			"[class*=Label-] span[class*=Balance-]",
+		);
+	}
+
 	public get betCountsContainer(): Locator {
 		return this.leftBetPanelContainer.locator("label[class*='BetsCount-']");
 	}
@@ -97,18 +113,18 @@ export class PlinkoGamePageMap extends BaseMap {
 		);
 	}
 
-	public betSliderContainerByPlaceholder(placeholder: string): Locator {
-		return this.leftBetPanelContainer.locator(
-			`//div[contains(@class,'Formstyled__Range-') and contains(normalize-space(),'${placeholder}')]`,
+	public get betRowsSliderContainer(): Locator {
+		return this.getSliderContainerByPlaceholder(
+			"Rows",
+			this.leftBetPanelContainer,
 		);
 	}
 
-	public get betRowsSliderContainer(): Locator {
-		return this.betSliderContainerByPlaceholder("Rows");
-	}
-
 	public get riskRowsSliderContainer(): Locator {
-		return this.betSliderContainerByPlaceholder("Risk");
+		return this.getSliderContainerByPlaceholder(
+			"Risk",
+			this.leftBetPanelContainer,
+		);
 	}
 
 	public get betRowsSliderInput(): Locator {

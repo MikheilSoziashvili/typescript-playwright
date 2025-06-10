@@ -21,6 +21,15 @@ import { BoundingBoxCoordinate } from "@enums/bounding-box-coordinates";
 import { logger } from "@logger/logger";
 import { BrowserName } from "@enums/playwright/project-browser-names";
 import { VisibilityState } from "@enums/playwright/visibility-states";
+import { Attributes } from "@enums/playwright/htmlAttributes";
+import { step } from "decorators/step";
+import {
+	boundValue,
+	calculateCoordinate,
+	calculatePercentage,
+	getAdjustedTargetValue,
+	getDisplayValue,
+} from "@formulas/slider-calculations";
 
 type Constructor<T> = new (page: Page) => T;
 
@@ -476,5 +485,61 @@ export abstract class BasePage<T extends BaseMap> {
 			});
 		}
 		return false;
+	}
+
+	/**
+	 * Retrieves slider bounds (current, min, max values) from ARIA attributes.
+	 */
+	private async getSliderBounds(sliderThumb: Locator) {
+		const currentValue = parseInt(await sliderThumb.getAttribute(Attributes.ARIA_VALUENOW) || '0', 10);
+		const minValue = parseInt(await sliderThumb.getAttribute(Attributes.ARIA_VALUEMIN) || '0', 10);
+		const maxValue = parseInt(await sliderThumb.getAttribute(Attributes.ARIA_VALUEMAX) || '100', 10);
+		return { currentValue, minValue, maxValue };
+	}
+
+	/**
+	 * Retrieves the current value of a slider element.
+	 *
+	 * @param sliderContainer - The Playwright Locator for the slider container element.
+	 * @returns The current value of the slider as a number.
+	 */
+	@step()
+	public async getSliderValue(sliderContainer: Locator): Promise<number> {
+		const sliderThumb = this.map.getSliderThumb(sliderContainer);
+		const { currentValue, minValue, maxValue } = await this.getSliderBounds(sliderThumb);
+		return getDisplayValue(currentValue, minValue, maxValue);
+	}
+
+	/**
+	 * Adjusts a slider element to a specific value by simulating a drag operation.
+	 *
+	 * @param sliderContainer - The Playwright Locator for the slider container element.
+	 * @param targetValue - The desired value to set the slider to (in display units).
+	 * @throws {Error} When the slider bounding box cannot be determined.
+	 */
+	@step()
+	public async adjustSliderValue(sliderContainer: Locator, targetValue: number): Promise<void> {
+		const sliderThumb = this.map.getSliderThumb(sliderContainer);
+		const { currentValue, minValue, maxValue } = await this.getSliderBounds(sliderThumb);
+
+		const adjustedTargetValue = getAdjustedTargetValue(targetValue, minValue, maxValue);
+		const boundedTargetValue = boundValue(adjustedTargetValue, minValue, maxValue);
+		const percentage = calculatePercentage(boundedTargetValue, minValue, maxValue);
+
+		const sliderTrack = this.map.getSliderTrack(sliderContainer);
+		const sliderBox = await sliderTrack.boundingBox();
+		if (!sliderBox) {
+			throw new Error('Could not get slider bounding box');
+		}
+
+		const targetX = calculateCoordinate(sliderBox, percentage);
+		const currentPercentage = calculatePercentage(currentValue, minValue, maxValue);
+		const currentX = calculateCoordinate(sliderBox, currentPercentage);
+		const centerY = sliderBox.y + sliderBox.height / 2;
+
+		await this.page.mouse.move(currentX, centerY);
+		await this.page.mouse.down();
+		await this.page.mouse.move(targetX, centerY);
+		await this.page.mouse.up();
 	}
 }

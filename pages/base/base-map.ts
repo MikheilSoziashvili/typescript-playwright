@@ -141,4 +141,23 @@ export class BaseMap {
 			.locator("head")
 			.locator(`meta[${Attributes.PROPERTY}='${ogProperty}']`);
 	}
+
+	public getSliderThumb(container?: Locator): Locator {
+		return (container || this.page).locator(
+			`span[${Attributes.ROLE}="slider"][class*="RangeSliderstyled__Thumb"]`,
+		);
+	}
+
+	public getSliderTrack(container?: Locator): Locator {
+		return (container || this.page).locator('span[class*="RangeSliderstyled__Track"]');
+	}
+
+	public getSliderContainerByPlaceholder(
+		placeholder: string,
+		container?: Locator,
+	): Locator {
+		return (container || this.page).locator(
+			`//div[contains(@class,'Formstyled__Range') and contains(normalize-space(),'${placeholder}')]`,
+		);
+	}
 }

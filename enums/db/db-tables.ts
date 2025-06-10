@@ -5,4 +5,5 @@ export enum DbTables {
 	Settings = "Public.Settings",
 	AmlInfo = "aml.info",
 	AmlStatus = "aml.status",
+	KothEvents = "koth.events",
 }

@@ -1,11 +1,16 @@
-import { waitUntil } from "@core/utils/utils";
+import { parseBalance, waitUntil } from "@core/utils/utils";
 import { Attributes } from "@enums/playwright/htmlAttributes";
 import { AttributesValues } from "@enums/playwright/htmlAttributesValues";
+import {
+	PlinkoRiskOption,
+	PlinkoRowsOption,
+} from "@enums/plinko/plinko-game-options";
 import { BasePageStep } from "@pages/base/base-page-step";
-import { expect } from "@playwright/test";
+import { expect, Locator } from "@playwright/test";
 import { step } from "decorators/step";
 import { PlinkoGamePage } from "./plinko-game-page";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
+import { Timeout } from "@enums/timeout";
 
 export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 	public constructor(gamdomPage: PlinkoGamePage) {
@@ -110,5 +115,55 @@ export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 				timeoutSeconds: expectTimeToFinishAutobet,
 			},
 		);
+	}
+
+	@step()
+	public async startManualBet(
+		betAmount: string,
+		options?: {
+			rowsValue?: number | PlinkoRowsOption;
+			riskValue?: number | PlinkoRiskOption;
+		},
+	): Promise<void> {
+		const initialInGameBalance =
+			await this.gamdomPage.getUserInGameBalance();
+
+		await this.gamdomPage.startManualBet(betAmount, options);
+
+		await this.gamdomPage.assertThat().verifyRowsSliderInactive();
+		await this.gamdomPage.assertThat().verifyRiskSliderInactive();
+
+		const finalInGameBalance = await this.gamdomPage.getUserInGameBalance();
+		expect(finalInGameBalance).toBe(
+			initialInGameBalance - parseBalance(betAmount),
+		);
+	}
+
+	@step()
+	public async adjustSliderValues(options: {
+		rowsValue?: number | PlinkoRowsOption;
+		riskValue?: number | PlinkoRiskOption;
+	}): Promise<void> {
+		const sliderMap: Record<keyof typeof options, Locator> = {
+			rowsValue: this.gamdomPage.map.betRowsSliderContainer,
+			riskValue: this.gamdomPage.map.riskRowsSliderContainer,
+		};
+
+		for (const key of Object.keys(options) as (keyof typeof options)[]) {
+			const value = options[key];
+			if (value !== undefined) {
+				await this.gamdomPage.adjustSliderValue(sliderMap[key], value);
+			}
+		}
+	}
+
+	@step()
+	public async waitForSlidersToBeActive(): Promise<void> {
+		await this.gamdomPage
+			.assertThat()
+			.verifyRowsSliderActive(Timeout.EXTRA_LONG);
+		await this.gamdomPage
+			.assertThat()
+			.verifyRiskSliderActive(Timeout.EXTRA_LONG);
 	}
 }

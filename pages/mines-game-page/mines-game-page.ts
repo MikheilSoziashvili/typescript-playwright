@@ -44,7 +44,9 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 	}
 
 	public async insertBet(betAmount: number): Promise<void> {
-		await this.map.betField.fill(`${betAmount}`);
+		await this.map.betField.click();
+		await this.map.betField.clear();
+		await this.map.betField.pressSequentially(`${betAmount}`);
 	}
 
 	public async chooseMinesNumber(minesNumber: number): Promise<void> {
@@ -88,7 +90,7 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 		return totalSafeTiles;
 	}
 
-	private async startFirstRound(
+	public async startFirstRound(
 		betAmount: number,
 	): Promise<{ updatedTotal: number; updatedAttempts: number }> {
 		await this.map.startPlayingButton.click();
@@ -210,6 +212,10 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 		}
 		logger.info(`Game won after ${betAttempts} attempt(s)`);
 		return totalAmountSpent;
+	}
+
+	public async performManualCashout(): Promise<void> {
+		await this.map.manualCashoutButton.click();
 	}
 
 	@step("Pick random tiles until a bomb is caught")

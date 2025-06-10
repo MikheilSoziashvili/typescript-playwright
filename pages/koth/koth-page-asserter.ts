@@ -1,10 +1,12 @@
 import { GamdomApi } from "@api/gamdom-api";
+import { INITIAL_TIMER } from "@constants/timers";
+import { formatCurrency, waitForSeconds, waitUntil } from "@core/utils/utils";
+import { Timeout } from "@enums/timeout";
 import { BaseAsserter } from "@pages/base/base-asserter";
 import { step } from "decorators/step";
 import { expect, TestInfo } from "playwright/test";
 import { KothPage } from "./koth-page";
-import { INITIAL_TIMER } from "@constants/timers";
-import { Timeout } from "@enums/timeout";
+import { TimeoutSeconds } from "@enums/timeout-seconds";
 
 export class KothAsserter extends BaseAsserter<KothPage> {
 	public constructor(page: KothPage) {
@@ -78,5 +80,79 @@ export class KothAsserter extends BaseAsserter<KothPage> {
 			`${expectedUrl}/${lastKothEventName}`.toLowerCase();
 
 		await this.waitForAndVerifyCurrentUrlIs(formattedExpectedUrl);
+	}
+
+	@step()
+	public async verifyKothEventPageIsDisplayed(
+		kothPageEndpoint: string,
+	): Promise<void> {
+		await this.waitForAndVerifyCurrentUrlIs(kothPageEndpoint);
+		await this.checkElementsAreVisible(
+			[
+				this.gamdomPage.map.kothGameContainer,
+				this.gamdomPage.map.kothProfileCardLeftContainer,
+				this.gamdomPage.map.kothUsersCardRightContainer,
+			],
+			Timeout.MAX,
+		);
+	}
+
+	@step()
+	public async verifyKothWaggerAmountProfileCard(
+		expectedAmount: number,
+	): Promise<void> {
+		const formattedAmount = formatCurrency(expectedAmount);
+
+		await waitUntil(
+			async () => {
+				await this.gamdomPage.refresh();
+				await waitForSeconds(2);
+				await expect(
+					this.gamdomPage.map.kothProfileCardWageredAmount,
+				).toBeVisible();
+				const actualAmount =
+					await this.gamdomPage.map.kothProfileCardWageredAmount.textContent();
+				return actualAmount === formattedAmount;
+			},
+			{
+				errorMessage: `KOTH wagered amount did not match expected value. Expected: ${formattedAmount}`,
+				intervalSeconds: TimeoutSeconds.THREE,
+				timeoutSeconds: TimeoutSeconds.ONE_TWENTY,
+			},
+		);
+	}
+
+	public async verifyUserKothWaggerAmountRightTable(
+		expectedAmount: number,
+		username: string,
+	): Promise<void> {
+		const formattedAmount = formatCurrency(expectedAmount);
+
+		await waitUntil(
+			async () => {
+				await this.gamdomPage.refresh();
+				await waitForSeconds(2);
+				await expect
+					.poll(async () => {
+						await this.gamdomPage.map.currentUserMarkKothUsersCardRightContainer.scrollIntoViewIfNeeded();
+						return this.gamdomPage.map.currentUserMarkKothUsersCardRightContainer.isVisible();
+					})
+					.toBe(true);
+
+				const userWageredAmountElement =
+					this.gamdomPage.map.getUserWageredAmountUsersCardsRightContainerByUsername(
+						username,
+					);
+				await expect(userWageredAmountElement).toBeVisible();
+				const actualAmount =
+					await userWageredAmountElement.textContent();
+				return actualAmount === formattedAmount;
+			},
+			{
+				errorMessage: `KOTH wagered amount for user '${username}' did not match expected value. Expected: ${formattedAmount}`,
+				intervalSeconds: TimeoutSeconds.THREE,
+				timeoutSeconds: TimeoutSeconds.NINETY,
+			},
+		);
 	}
 }

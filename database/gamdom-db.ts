@@ -32,6 +32,8 @@ import { Unit } from "@enums/units";
 import * as Configuration from "configuration";
 import { Pool, PoolClient, QueryResultRow } from "pg";
 import { BaseDB } from "./base-db";
+import { KothEventName, KothEventType } from "@enums/db/koth-event-types";
+import { KothEventColumns } from "@enums/db/koth-event-columns";
 
 export class GamdomDb extends BaseDB {
 	constructor() {
@@ -620,5 +622,101 @@ export class GamdomDb extends BaseDB {
 
 			return userId;
 		});
+	}
+
+	private async createKothEvent(
+		eventName: KothEventName,
+		hasLogMessage = true,
+		durationDays = 13, // Two weeks duration
+		maxWinners = 50,
+		prizeCoins = 3000000,
+	): Promise<QueryResultRow> {
+		const startDate = new Date();
+		startDate.setDate(startDate.getDate() - 1); // 1 day before current day
+
+		const endDate = new Date(startDate);
+		endDate.setDate(endDate.getDate() + durationDays);
+
+		return this.insertKothEvent(
+			eventName,
+			KothEventType.SCHEDULED,
+			maxWinners,
+			prizeCoins,
+			startDate.toISOString(),
+			endDate.toISOString(),
+			hasLogMessage,
+		);
+	}
+
+	public async insertMonthlyKothEvent(
+		hasLogMessage = true,
+	): Promise<QueryResultRow> {
+		return this.createKothEvent(KothEventName.MONTHLY, hasLogMessage);
+	}
+
+	public async insertWeeklyKothEvent(
+		hasLogMessage = true,
+	): Promise<QueryResultRow> {
+		return this.createKothEvent(KothEventName.WEEKLY, hasLogMessage);
+	}
+
+	public async insertDailyKothEvent(
+		hasLogMessage = true,
+	): Promise<QueryResultRow> {
+		return this.createKothEvent(KothEventName.DAILY, hasLogMessage);
+	}
+
+	public async insertKothEvent(
+		eventName: string,
+		eventType: KothEventType,
+		maxWinners: number,
+		prizeCoins: number,
+		startDate: string,
+		endDate: string,
+		hasLogMessage = true,
+	): Promise<QueryResultRow> {
+		const result = await this.insert(
+			DbTables.KothEvents,
+			{
+				[KothEventColumns.EventName]: eventName,
+				[KothEventColumns.EventType]: eventType,
+				[KothEventColumns.MaxWinners]: maxWinners,
+				[KothEventColumns.PrizeCoins]: prizeCoins,
+				[KothEventColumns.StartDate]: startDate,
+				[KothEventColumns.EndDate]: endDate,
+				[KothEventColumns.Ended]: false,
+			},
+			hasLogMessage,
+		);
+		return result;
+	}
+
+	public async kothEventExists(
+		eventName: KothEventName | string,
+		hasLogMessage = true,
+	): Promise<boolean> {
+		const result = await this.query(
+			DbTables.KothEvents,
+			["COUNT(*) as count"],
+			`${KothEventColumns.EventName} = $1 AND ${KothEventColumns.Ended} = false`,
+			[eventName],
+			hasLogMessage,
+		);
+
+		return parseInt(result[0].count as string, 10) > 0;
+	}
+
+	public async dailyKothEventExists(hasLogMessage = true): Promise<boolean> {
+		return this.kothEventExists(KothEventName.DAILY, hasLogMessage);
+	}
+
+	public async weeklyKothEventExists(hasLogMessage = true): Promise<boolean> {
+		return this.kothEventExists(KothEventName.WEEKLY, hasLogMessage);
+	}
+
+	public async monthlyKothEventExists(
+		hasLogMessage = true,
+	): Promise<boolean> {
+		return this.kothEventExists(KothEventName.MONTHLY, hasLogMessage);
 	}
 }

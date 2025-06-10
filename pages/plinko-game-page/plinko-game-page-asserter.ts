@@ -2,7 +2,7 @@ import { BaseAsserter } from "@base/base-asserter";
 import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
-import { expect, TestInfo } from "@playwright/test";
+import { expect, Locator, TestInfo } from "@playwright/test";
 import { step } from "decorators/step";
 import { PlinkoGamePage } from "./plinko-game-page";
 
@@ -146,5 +146,49 @@ export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 	async verifyRowsAndRiskSlidersActive(timeout?: number): Promise<void> {
 		await this.verifyRowsSliderActive(timeout);
 		await this.verifyRiskSliderActive(timeout);
+	}
+
+	@step()
+	async verifySliderValue(
+		sliderContainer: Locator,
+		expectedValue: number,
+		tolerance = 0,
+	): Promise<void> {
+		const actualValue = await this.gamdomPage.getSliderValue(
+			sliderContainer,
+		);
+
+		if (tolerance > 0) {
+			expect(actualValue).toBeGreaterThanOrEqual(
+				expectedValue - tolerance,
+			);
+			expect(actualValue).toBeLessThanOrEqual(expectedValue + tolerance);
+		} else {
+			expect(actualValue).toBe(expectedValue);
+		}
+	}
+
+	@step()
+	async verifyRowsSliderValue(
+		expectedValue: number,
+		tolerance = 0,
+	): Promise<void> {
+		await this.verifySliderValue(
+			this.gamdomPage.map.betRowsSliderContainer,
+			expectedValue,
+			tolerance,
+		);
+	}
+
+	@step()
+	async verifyRiskSliderValue(
+		expectedValue: number,
+		tolerance = 0,
+	): Promise<void> {
+		await this.verifySliderValue(
+			this.gamdomPage.map.riskRowsSliderContainer,
+			expectedValue,
+			tolerance,
+		);
 	}
 }

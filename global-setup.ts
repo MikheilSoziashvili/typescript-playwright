@@ -12,6 +12,7 @@ import {
 import { RegisterTestData } from "@dtos/test-data";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
+import { KothEventName } from "@enums/db/koth-event-types";
 import { WithdrawLimitsSettingsValues } from "@enums/db/withdraw-settings-values";
 import { Feature } from "@enums/feature";
 import { HttpStatus } from "@enums/http-status";
@@ -20,6 +21,7 @@ import { expect } from "@playwright/test";
 import * as Configuration from "configuration";
 import { GamdomDb } from "database/gamdom-db";
 import * as fs from "fs";
+import { KOTH_NAME_PREFIX } from "@constants/koth";
 
 async function enableHiloFeature(
 	gamdomApi: GamdomApi,
@@ -246,6 +248,69 @@ async function writeExecutionToKeystore(issueKey: string): Promise<void> {
 	);
 }
 
+async function ensureKothEventsExist(
+	gamdomApi: GamdomApi,
+	cookie: string,
+): Promise<void> {
+	logger.info("Ensuring KOTH scheduled events exist...");
+
+	const gamdomDb = new GamdomDb();
+	const scheduledKothEvents = [
+		{
+			type: KothEventName.DAILY,
+			existsMethod: gamdomDb.dailyKothEventExists.bind(gamdomDb),
+			createMethod: gamdomDb.insertDailyKothEvent.bind(gamdomDb),
+		},
+		{
+			type: KothEventName.WEEKLY,
+			existsMethod: gamdomDb.weeklyKothEventExists.bind(gamdomDb),
+			createMethod: gamdomDb.insertWeeklyKothEvent.bind(gamdomDb),
+		},
+		{
+			type: KothEventName.MONTHLY,
+			existsMethod: gamdomDb.monthlyKothEventExists.bind(gamdomDb),
+			createMethod: gamdomDb.insertMonthlyKothEvent.bind(gamdomDb),
+		},
+	];
+
+	for (const event of scheduledKothEvents) {
+		if (!(await event.existsMethod())) {
+			logger.info(`${event.type} KOTH event not found. Creating one...`);
+			await event.createMethod();
+			logger.info(`${event.type} KOTH event created successfully.`);
+		} else {
+			logger.info(`${event.type} KOTH event already exists.`);
+		}
+	}
+
+	const customKothEventName = KOTH_NAME_PREFIX;
+	const allAvailableKothEvents =
+		await gamdomApi.getCurrentKothEventsBasicInfo({
+			Cookie: cookie,
+		});
+
+	if (
+		!allAvailableKothEvents.some((event) =>
+			event.event_name.startsWith(customKothEventName),
+		)
+	) {
+		logger.info(
+			"No custom KOTH event found for automation. Creating one...",
+		);
+
+		// Create a custom KOTH event for automation
+		await createKothEvent(
+			gamdomApi,
+			generateRandomString({ prefix: customKothEventName, length: 3 }),
+			1,
+			15000,
+			cookie,
+		);
+	} else {
+		logger.info("Custom KOTH event for automation already exists.");
+	}
+}
+
 async function globalSetup(): Promise<void> {
 	const gamdomApi = new GamdomApi();
 	const cookie = getCookieHeader(
@@ -261,13 +326,7 @@ async function globalSetup(): Promise<void> {
 	await enableVaultFeature(gamdomApi, cookie);
 	await enablePlinkoFeature(gamdomApi, cookie);
 	await enableMinesFeature(gamdomApi, cookie);
-	await createKothEvent(
-		gamdomApi,
-		generateRandomString({ prefix: "KOTH_automation_", length: 3 }),
-		1,
-		15000,
-		cookie,
-	);
+	await ensureKothEventsExist(gamdomApi, cookie);
 
 	if (Configuration.createExecution) {
 		const existingKey = process.env.TEST_EXECUTION_ID;
