@@ -4,13 +4,22 @@ import {
 	generate2FACodeFromQRCodeImage,
 	getUserDetailsByTestTitle,
 } from "@core/utils/utils";
+import { AnnotationType } from "@enums/playwright/annotationsTypes";
+import { BrowserName } from "@enums/playwright/project-browser-names";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 
 test.describe("Two-Factor Authentication login verification", () => {
 	let qrCode2FAImagePath: string;
 
-	test.beforeEach(async () => {
+	test.beforeEach(async ({}, testInfo) => {
+		if (testInfo.project.name === BrowserName.FIREFOX) {
+			testInfo.annotations.push({
+				type: AnnotationType.BROWSER_SPECIFIC,
+				description:
+					"Known Firefox issue: click actions may not register reliably",
+			});
+		}
 		qrCode2FAImagePath = createPngImagePath();
 	});
 	test.afterEach(async () => {

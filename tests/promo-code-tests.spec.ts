@@ -14,9 +14,20 @@ import { RegisterTestData } from "@dtos/test-data";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
 import { LogType } from "@enums/log-types";
+import { AnnotationType } from "@enums/playwright/annotationsTypes";
+import { BrowserName } from "@enums/playwright/project-browser-names";
 import { test } from "@fixtures/fixtures";
 
 test.describe("Promo code log filters tests", () => {
+	test.beforeEach(async ({}, testInfo) => {
+		if (testInfo.project.name === BrowserName.FIREFOX) {
+			testInfo.annotations.push({
+				type: AnnotationType.BROWSER_SPECIFIC,
+				description:
+					"Known Firefox issue: click actions may not register reliably",
+			});
+		}
+	});
 	let qrCode2FAImagePath: string;
 	const superAdminUserData = new RegisterTestData({
 		useGamdomEmailDomain: true,
