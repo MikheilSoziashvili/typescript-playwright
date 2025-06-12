@@ -1,12 +1,82 @@
-import { expect } from "@playwright/test";
 import { BaseAsserter } from "@base/base-asserter";
-import { Toast } from "./toast";
-import { logger } from "@logger/logger";
 import { Timeout } from "@enums/timeout";
+import { logger } from "@logger/logger";
+import { expect, Locator } from "@playwright/test";
+import { Toast } from "./toast";
 
 export class ToastAsserter extends BaseAsserter<Toast> {
 	public constructor(page: Toast) {
 		super(page);
+	}
+
+	private async getTextFromLocators(locators: Locator): Promise<string[]> {
+		const count = await locators.count();
+		const texts: string[] = [];
+		for (let i = 0; i < count; i++) {
+			const text = (await locators.nth(i).innerText()).trim();
+			texts.push(text);
+		}
+		return texts;
+	}
+
+	private logToastStatus(
+		expectedText: string,
+		foundTexts: string[],
+		label: string,
+		status: "POLL" | "ASSERT FAILED",
+	): void {
+		const baseMessage = `Looking for exact ${label}: "${expectedText}"`;
+		const seenMessage = foundTexts
+			.map((t, i) => `  [${i}]: "${t}"`)
+			.join("\n");
+		const message =
+			status === "POLL"
+				? `[TOAST ${status}] ${baseMessage}\nCurrently visible:\n${seenMessage}`
+				: `[TOAST ${status}] ${baseMessage}\nLast visible:\n${seenMessage}`;
+		logger.info(message);
+	}
+
+	private async pollToastForExpectedText({
+		locators,
+		expectedText,
+		timeout,
+		logLabel,
+	}: {
+		locators: Locator;
+		expectedText: string;
+		timeout: number;
+		logLabel: string;
+	}): Promise<void> {
+		let lastSeenTexts: string[] = [];
+		try {
+			await expect
+				.poll(
+					async () => {
+						lastSeenTexts = await this.getTextFromLocators(
+							locators,
+						);
+						this.logToastStatus(
+							expectedText,
+							lastSeenTexts,
+							logLabel,
+							"POLL",
+						);
+						return lastSeenTexts.includes(expectedText);
+					},
+					{ timeout },
+				)
+				.toBeTruthy();
+		} catch (e) {
+			this.logToastStatus(
+				expectedText,
+				lastSeenTexts,
+				logLabel,
+				"ASSERT FAILED",
+			);
+			throw new Error(
+				`Toast with exact ${logLabel} "${expectedText}" not found.`,
+			);
+		}
 	}
 
 	public async titleIs(
@@ -32,9 +102,14 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 		}[],
 	): Promise<void> {
 		for (const toast of titles) {
-			await expect(
-				this.gamdomPage.map.toastTitleLocator(toast),
-			).toHaveText(toast.title, { timeout: toast.timeout });
+			const toastLocators = this.gamdomPage.map.toastTitleLocator(toast);
+
+			await this.pollToastForExpectedText({
+				locators: toastLocators,
+				expectedText: toast.title,
+				timeout: toast.timeout ?? Timeout.LONG,
+				logLabel: "title",
+			});
 		}
 	}
 
@@ -45,7 +120,7 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 			timeout?: number;
 		} = { timeout: Timeout.LONG },
 	): Promise<void> {
-		const timeout = options.timeout;
+		const timeout = options.timeout ?? Timeout.LONG;
 
 		if (options.index !== undefined) {
 			await expect(
@@ -55,43 +130,13 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 		}
 
 		const toastLocators = this.gamdomPage.map.toastSubTitleLocator();
-		let lastSeenTexts: string[] = [];
 
-		try {
-			await expect
-				.poll(
-					async () => {
-						const count = await toastLocators.count();
-						lastSeenTexts = [];
-
-						for (let i = 0; i < count; i++) {
-							const text = (
-								await toastLocators.nth(i).innerText()
-							).trim();
-							lastSeenTexts.push(text);
-						}
-
-						logger.info(
-							`[TOAST POLL] Looking for: "${subTitle}"\nCurrently found:\n${lastSeenTexts
-								.map((t, i) => `  [${i}]: "${t}"`)
-								.join("\n")}`,
-						);
-
-						return lastSeenTexts.includes(subTitle);
-					},
-					{ timeout },
-				)
-				.toBeTruthy();
-		} catch (e) {
-			logger.info(
-				`[TOAST ASSERT FAILED] Expected subtitle: "${subTitle}"\nLast seen toasts:\n${lastSeenTexts
-					.map((t, i) => `  [${i}]: "${t}"`)
-					.join("\n")}`,
-			);
-			throw new Error(
-				`Toast with exact subtitle "${subTitle}" not found.`,
-			);
-		}
+		await this.pollToastForExpectedText({
+			locators: toastLocators,
+			expectedText: subTitle,
+			timeout: timeout,
+			logLabel: "subtitle",
+		});
 	}
 
 	public async isDisplayed(options?: {
