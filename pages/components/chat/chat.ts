@@ -39,4 +39,9 @@ export class Chat extends BaseComponent<ChatMap> {
 			await this.map.lastRainbotMessageUserCount.innerText();
 		return parseInt(userCountText.trim(), 10);
 	}
+
+	public async selectChatroom(chatroomName: string): Promise<void> {
+		await this.map.chatroomsDropdownSelectedValue.click();
+		await this.map.chatroomDropdownOption(chatroomName).click();
+	}
 }

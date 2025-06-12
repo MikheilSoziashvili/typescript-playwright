@@ -169,4 +169,12 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		await this.component.claimRain();
 		logger.info("Rain claimed.");
 	}
+
+	@step()
+	public async selectChatroomSuccessfully(
+		chatroomName: string,
+	): Promise<void> {
+		await this.component.selectChatroom(chatroomName.toLocaleLowerCase());
+		await this.component.assertThat().chatroomIsSelected(chatroomName);
+	}
 }

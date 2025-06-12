@@ -95,4 +95,11 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 			this.gamdomPage.map.rainClaimedMessageLocator,
 		]);
 	}
+
+	@step()
+	public async chatroomIsSelected(chatroomName: string): Promise<void> {
+		await expect(
+			this.gamdomPage.map.chatroomsDropdownSelectedValue,
+		).toHaveText(chatroomName);
+	}
 }

@@ -117,4 +117,19 @@ export class ChatMap extends BaseMap {
 	public get sendMessageButton(): Locator {
 		return this.chatFooter.locator("button[aria-label=send-message]");
 	}
+
+	public get chatroomsDropdownContainer(): Locator {
+		return this.page.getByTestId(`ListContainer`);
+	}
+
+	public chatroomDropdownOption(value: string): Locator {
+		return this.getDropdownOptionSelector(
+			value,
+			this.chatroomsDropdownContainer,
+		);
+	}
+
+	public get chatroomsDropdownSelectedValue(): Locator {
+		return this.chatHeader.getByTestId("Input");
+	}
 }
