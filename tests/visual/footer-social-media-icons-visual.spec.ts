@@ -14,6 +14,7 @@ test.describe("Visual Tests - Footer - social media icon", () => {
 			footer,
 		}, testInfo) => {
 			await homePage.navigateAndCheckTitle();
+			// Expected screenshots ratio is 40 x 40 pxs
 			await footer
 				.assertThat()
 				.footerSocialMediaIconVisualCorrect(
