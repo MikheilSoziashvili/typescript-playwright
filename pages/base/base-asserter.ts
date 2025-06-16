@@ -126,6 +126,21 @@ export class BaseAsserter<
 		await Promise.all(elements.map((el) => assertion(el)));
 	}
 
+	protected async assertOnValues<T>(
+		values: T[],
+		assertion: (value: T) => Promise<void>,
+	): Promise<void> {
+		await Promise.all(values.map((value) => assertion(value)));
+	}
+
+	public async checkElementsAreDefined(
+		valuesToCheck: { value: unknown; message: string }[],
+	): Promise<void> {
+		await this.assertOnValues(valuesToCheck, async ({ value, message }) => {
+			expect(value, message).toBeDefined();
+		});
+	}
+
 	public async checkElementsAreHidden(
 		elements: Locator[],
 		timeout?: number,

@@ -76,7 +76,11 @@ export class DiceGamePageMap extends BaseMap {
 	}
 
 	public get diceLastResultNumber(): Locator {
-		return this.diceResultsHistory.locator("div").first();
+		return this.diceAllLastResultsNumber.first();
+	}
+
+	public get diceAllLastResultsNumber(): Locator {
+		return this.diceResultsHistory.locator("div");
 	}
 
 	public get diceLastResultBetValue(): Locator {

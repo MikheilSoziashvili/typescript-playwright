@@ -3,8 +3,13 @@ import { DiceAutobetTestData, DiceBetTestData } from "@dtos/test-data";
 import { DiceGameResultMessage } from "@enums/dice-result-messages";
 import { logger } from "@logger/logger";
 import { DiceGamePage } from "./dice-game-page";
-import { parseToFloat, waitUntil } from "@core/utils/utils";
+import {
+	parseToFloat,
+	validateNumericValues,
+	waitUntil,
+} from "@core/utils/utils";
 import { BetIncreaseCondition } from "@enums/dice-autobet-section-name";
+import { step } from "decorators/step";
 
 export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 	public constructor(gamdomPage: DiceGamePage) {
@@ -98,9 +103,21 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 		type: BetIncreaseCondition,
 		increaseBy: number,
 	): Promise<void> {
-		while (!(await this.isWinningConditionMet(gameResultMessage))) {
-			await this.prepareAutobetRound(diceBetData, type, increaseBy);
-			await this.waitForAutobetRoundToFinish();
+		let shouldContinue = true;
+
+		while (shouldContinue) {
+			const winConditionNotMet = !(await this.isWinningConditionMet(
+				gameResultMessage,
+			));
+			const diceConditionNotMet =
+				!(await this.checkLastBetsAgainstRollOver(diceBetData, type));
+
+			shouldContinue = winConditionNotMet || diceConditionNotMet;
+
+			if (shouldContinue) {
+				await this.prepareAutobetRound(diceBetData, type, increaseBy);
+				await this.waitForAutobetRoundToFinish();
+			}
 		}
 	}
 
@@ -154,5 +171,57 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 	): Promise<void> {
 		await this.gamdomPage.openDiceHistory();
 		await this.gamdomPage.assertThat().lastBetValueIs(expectedLastBet);
+	}
+
+	@step()
+	public async checkLastBetsAgainstRollOver(
+		autobetData: DiceAutobetTestData,
+		type: BetIncreaseCondition,
+	): Promise<boolean> {
+		const { rollOver, numberOfBets } = autobetData;
+
+		await this.gamdomPage.assertThat().checkElementsAreDefined([
+			{
+				value: rollOver,
+				message: "rollOver must be defined in DiceAutobetTestData",
+			},
+			{
+				value: numberOfBets,
+				message: "numberOfBets must be defined in DiceAutobetTestData",
+			},
+		]);
+
+		const validRollOver = rollOver as number;
+		const validNumberOfBets = numberOfBets as number;
+
+		const allResults =
+			await this.gamdomPage.map.diceAllLastResultsNumber.allTextContents();
+		const lastResults = allResults.slice(0, validNumberOfBets);
+
+		if (lastResults.length < validNumberOfBets) {
+			return false;
+		}
+
+		const resultNumbers = validateNumericValues(
+			lastResults,
+			"Invalid dice result number",
+		);
+
+		for (const resultNumber of resultNumbers) {
+			switch (type) {
+				case BetIncreaseCondition.WIN:
+					if (resultNumber < validRollOver) {
+						return false;
+					}
+					break;
+				case BetIncreaseCondition.LOSS:
+					if (resultNumber > validRollOver) {
+						return false;
+					}
+					break;
+			}
+		}
+
+		return true;
 	}
 }

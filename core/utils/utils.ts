@@ -39,6 +39,7 @@ import sharp from "sharp";
 import xml2js from "xml2js";
 import { CurrencySymbol } from "@enums/currenciesSymbols";
 import { NumberSeparators } from "@enums/number-separators";
+import { expect } from "@playwright/test";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -1035,4 +1036,56 @@ export function calculateMinesMultiplier(
  */
 export function getCurrentDate(dateFormat = "yyyy-MM-dd"): string {
 	return format(new Date(), dateFormat);
+}
+
+/**
+ * Parses string values to numbers and identifies invalid values
+ * @param values Array of string values to parse
+ * @returns Object containing parsed results and invalid values with their indices
+ */
+export function parseAndValidateValues(values: string[]): {
+	results: number[];
+	invalidValues: { value: string; index: number }[];
+} {
+	const results: number[] = [];
+	const invalidValues: { value: string; index: number }[] = [];
+
+	for (let i = 0; i < values.length; i++) {
+		const value = values[i].trim();
+		const parsedValue = parseFloat(value);
+
+		if (isNaN(parsedValue)) {
+			invalidValues.push({ value: value, index: i });
+		} else {
+			results.push(parsedValue);
+		}
+	}
+
+	return { results, invalidValues };
+}
+
+/**
+ * Validates that all values in an array can be parsed as numbers
+ * @param values Array of string values to validate
+ * @param errorMessagePrefix Optional prefix for error messages
+ * @returns Array of parsed numbers
+ * @throws Error if any value cannot be parsed as a number
+ */
+export function validateNumericValues(
+	values: string[],
+	errorMessagePrefix = "Invalid number",
+): number[] {
+	const { results, invalidValues } = parseAndValidateValues(values);
+
+	if (invalidValues.length > 0) {
+		const invalidList = invalidValues
+			.map(({ value, index }) => `[${index}]: "${value}"`)
+			.join(", ");
+		expect(
+			invalidValues.length,
+			`${errorMessagePrefix}: ${invalidList}`,
+		).toBe(0);
+	}
+
+	return results;
 }
