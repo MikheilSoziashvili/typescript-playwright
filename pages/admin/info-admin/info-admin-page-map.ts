@@ -54,6 +54,39 @@ export class InfoAdminPageMap extends BaseMap {
 		return this.page.getByTestId("adminInfoSendNotificationButton");
 	}
 
+	public banButtonForLinkingPlatforms(platform: string): Locator {
+		return this.page.locator('button', {
+            hasText: `Ban this user from linking ${platform} account`,
+		});
+	}
+
+	public enableButtonForLinkingPlatforms(platform: string): Locator {
+		return this.page.locator('button', {
+            hasText: `Enable this user to add ${platform} account`,
+		});
+	}
+
+	public getPlatformRow(platform: string): Locator {
+		return this.page.locator('tr', {
+			has: this.page.locator('th', { hasText: platform }),
+	});
+}
+
+	public getBannedValueCellFromRow(row: Locator): Locator {
+		return row.locator('td');
+	}
+
+	public getPlatformLinkingBannedValue(platform: string, value?: string): Locator {
+		const row = this.getPlatformRow(platform);
+		const cell = this.getBannedValueCellFromRow(row);
+
+		if (value === undefined) {
+			return cell;
+		}
+
+		return cell.filter({ hasText: value });
+	}
+
 	public get adminInfoTable(): Locator {
 		return this.page.getByTestId("adminInfoTable");
 	}

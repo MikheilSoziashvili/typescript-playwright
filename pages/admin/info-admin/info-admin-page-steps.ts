@@ -2,6 +2,8 @@ import { BasePageStep } from "@pages/base/base-page-step";
 import { InfoAdminPage } from "./info-admin-page";
 import { generateRandomString } from "@core/utils/utils";
 import { BanReasonOptions } from "@enums/admin/ban-reason-options";
+import { BooleanValueString } from "@enums/playwright/booleanValues";
+import { step } from "decorators/step";
 
 export class InfoAdminPageSteps extends BasePageStep<InfoAdminPage> {
 	public constructor(gamdomPage: InfoAdminPage) {
@@ -40,6 +42,39 @@ export class InfoAdminPageSteps extends BasePageStep<InfoAdminPage> {
 		await this.gamdomPage.twoFactorAuthModal
 			.steps()
 			.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
+	}
+
+	@step("Ban user from linking 3rd party platform")
+	public async banUserFromLinkingPlatform(
+		platform: string,
+		tableValue: string,
+	): Promise<void> {
+		this.gamdomPage.acceptDialog();
+		await this.gamdomPage.map
+			.banButtonForLinkingPlatforms(platform)
+			.click();
+
+		await this.gamdomPage.assertThat().isEnableButtonForLinkingPlatformDisplayed(
+			platform
+		);
+		await this.gamdomPage.assertThat().isLinkingPlatformBanValueCorrect(
+			tableValue, BooleanValueString.TRUE);
+	}
+
+	@step("Enable user to link 3rd party platform")
+	public async enableUserToLinkPlatform(
+		platform: string,
+		tableValue: string,
+	): Promise<void> {		
+		await this.gamdomPage.map
+			.enableButtonForLinkingPlatforms(platform)
+			.click();
+
+		await this.gamdomPage.assertThat().isBanButtonForLinkingPlatformDisplayed(
+			platform
+		);
+		await this.gamdomPage.assertThat().isLinkingPlatformBanValueCorrect(
+			tableValue, BooleanValueString.FALSE);
 	}
 
 	public async createNote(count = 1): Promise<string[]> {

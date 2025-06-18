@@ -30,4 +30,5 @@ export enum CsvFilesName {
 	KYC_USERS_LEVEL_VERIFICATION_PAGE = "ENG-5988-kyc-users-level-verification-page.csv",
 	USER_PROFILE_ITEMS_LINKS_ACCESSIBILITY = "ENG-6451-6452-user-profile-items-links-accessibility.csv",
 	CHATROOM_SUCCESSFULLY_SELECTED = "ENG-2870-chatrooms-successfully-selected.csv",
+	LINKED_PLATFORMS = "ENG-1540-userInfo-info-community-connect-actions-ban-linking.csv",
 }

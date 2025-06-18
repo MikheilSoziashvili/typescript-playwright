@@ -42,6 +42,37 @@ export class InfoAdminPageAsserter extends BaseAsserter<InfoAdminPage> {
 		]);
 	}
 
+	@step("Check if ban user from linking platform button is displayed")
+	public async isBanButtonForLinkingPlatformDisplayed(
+		platform: string,
+	): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.banButtonForLinkingPlatforms(platform),
+		]);
+	}
+
+	@step("Check if Enable user to link platform button is displayed")
+	public async isEnableButtonForLinkingPlatformDisplayed(
+		platform: string,
+	): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.enableButtonForLinkingPlatforms(platform),
+		]);
+	}
+
+	@step("Check if the table value for linking platform ban is correct")
+	public async isLinkingPlatformBanValueCorrect(
+		platform: string,
+		expectedValue: string,
+	): Promise<void> {
+		const actualValue = await this.gamdomPage.map.getPlatformLinkingBannedValue(platform).textContent();
+		if (!actualValue?.trim) {
+			throw new Error(`Platform linking ban value for ${platform} is not found.`);
+		}
+		await this.checkStringElementsAreEqual(
+		[expectedValue], [actualValue.trim()])
+	}
+
 	@step("Check tip user container is displayed")
 	public async isTipUserContainerDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible([
