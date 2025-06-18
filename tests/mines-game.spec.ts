@@ -1,6 +1,7 @@
 import { VERY_LOW_USER_AMOUNT } from "@constants/user-amounts";
 import { calculateMinesMultiplier } from "@core/utils/utils";
 import { MinesBetTestData } from "@dtos/test-data";
+import { BrowserName } from "@enums/playwright/project-browser-names";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import { logger } from "@logger/logger";
@@ -24,53 +25,69 @@ test.describe("Mines tests", () => {
 		await homePage.navigate();
 	});
 
-	test(`[ENG-6486] Mines - place a bet and try to win - Pick random tiles @originals`, async ({
-		minesGamePage,
-	}) => {
-		test.fixme(true, "Skipped until Mines game is fully polished");
-		await minesGamePage.navigateAndWaitForGameToLoad();
+	test(
+		`[ENG-6486] Mines - place a bet and try to win - Pick random tiles`,
+		{
+			tag: ["@originals", "@mines"],
+		},
+		async ({ minesGamePage }, testInfo) => {
+			test.fixme(
+				testInfo.project.name === BrowserName.FIREFOX,
+				"https://gamdom.atlassian.net/browse/ENG-7162",
+			);
+			await minesGamePage.navigateAndWaitForGameToLoad();
 
-		await minesGamePage.steps().placeBetAndConfigureMines(minesBetData);
+			await minesGamePage.steps().placeBetAndConfigureMines(minesBetData);
 
-		const accountBalanceBeforeBet =
-			await minesGamePage.authenticatedHeader.getAccountBalance();
+			const accountBalanceBeforeBet =
+				await minesGamePage.authenticatedHeader.getAccountBalance();
 
-		const totalBetsPlaced = await minesGamePage.pickRandomTilesUntilWin(
-			minesBetData.betAmount,
-		);
-
-		await minesGamePage.assertThat().winImageIsDisplayed();
-
-		await minesGamePage.assertThat().accountBalanceAfterGameFlowIsCorrect({
-			accountBalanceBeforeBet: accountBalanceBeforeBet,
-			betAmount: minesBetData.betAmount,
-			totalBetsPlaced: totalBetsPlaced,
-			cashoutMultiplier: minesBetData.cashoutMultiplier,
-			numberOfWins: 1,
-		});
-	});
-
-	test(`[ENG-6927] Mines - Play until catch a bomb @smoke @originals`, async ({
-		minesGamePage,
-	}) => {
-		await minesGamePage.navigateAndWaitForGameToLoad();
-
-		await minesGamePage.steps().placeBetAndConfigureMines(minesBetData);
-
-		const accountBalanceBeforeBet =
-			await minesGamePage.authenticatedHeader.getAccountBalance();
-
-		const { totalBetsPlaced, hasWonAtLeastOnce } =
-			await minesGamePage.pickRandomTilesUntilBombIsCaught(
+			const totalBetsPlaced = await minesGamePage.pickRandomTilesUntilWin(
 				minesBetData.betAmount,
+				testInfo,
 			);
 
-		await minesGamePage.assertThat().accountBalanceAfterGameFlowIsCorrect({
-			accountBalanceBeforeBet: accountBalanceBeforeBet,
-			betAmount: minesBetData.betAmount,
-			totalBetsPlaced: totalBetsPlaced,
-			cashoutMultiplier: minesBetData.cashoutMultiplier,
-			numberOfWins: hasWonAtLeastOnce ? 1 : 0,
-		});
-	});
+			await minesGamePage.assertThat().winImageIsDisplayed();
+
+			await minesGamePage
+				.assertThat()
+				.accountBalanceAfterGameFlowIsCorrect({
+					accountBalanceBeforeBet: accountBalanceBeforeBet,
+					betAmount: minesBetData.betAmount,
+					totalBetsPlaced: totalBetsPlaced,
+					cashoutMultiplier: minesBetData.cashoutMultiplier,
+					numberOfWins: 1,
+				});
+		},
+	);
+
+	test(
+		`[ENG-6927] Mines - Play until catch a bomb`,
+		{
+			tag: ["@smoke", "@originals", "@mines"],
+		},
+		async ({ minesGamePage }) => {
+			await minesGamePage.navigateAndWaitForGameToLoad();
+
+			await minesGamePage.steps().placeBetAndConfigureMines(minesBetData);
+
+			const accountBalanceBeforeBet =
+				await minesGamePage.authenticatedHeader.getAccountBalance();
+
+			const { totalBetsPlaced, hasWonAtLeastOnce } =
+				await minesGamePage.pickRandomTilesUntilBombIsCaught(
+					minesBetData.betAmount,
+				);
+
+			await minesGamePage
+				.assertThat()
+				.accountBalanceAfterGameFlowIsCorrect({
+					accountBalanceBeforeBet: accountBalanceBeforeBet,
+					betAmount: minesBetData.betAmount,
+					totalBetsPlaced: totalBetsPlaced,
+					cashoutMultiplier: minesBetData.cashoutMultiplier,
+					numberOfWins: hasWonAtLeastOnce ? 1 : 0,
+				});
+		},
+	);
 });

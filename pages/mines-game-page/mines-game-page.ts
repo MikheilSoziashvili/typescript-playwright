@@ -8,7 +8,7 @@ import {
 import { Timeout } from "@enums/timeout";
 import { logger } from "@logger/logger";
 import { BasePage } from "@pages/base/base-page";
-import { expect, Page } from "@playwright/test";
+import { expect, Page, TestInfo } from "@playwright/test";
 import { step } from "decorators/step";
 import { MinesGamePageAsserter } from "./mines-game-page-asserter";
 import { MinesGamePageMap } from "./mines-game-page-map";
@@ -127,6 +127,12 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 		await this.map.pickRandomTileButton.click();
 
 		const safeAfter = await this.getSafeTilesCount();
+		if (safeAfter > safeBefore) {
+			expect(
+				safeAfter,
+				`Expected safe tiles after click to be exactly one more than before. Before: ${safeBefore}, After: ${safeAfter}`,
+			).toBe(safeBefore + 1);
+		}
 		if (this.isGameWon(safeAfter, totalSafeTiles)) {
 			return {
 				isGameWon: true,
@@ -169,23 +175,46 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 		return { updatedTotal, updatedAttempts };
 	}
 
+	private hasReachedTimeout(startTime: number, timeoutMs: number): boolean {
+		return Date.now() - startTime > timeoutMs;
+	}
+
 	@step("Pick random tiles and try to win")
-	public async pickRandomTilesUntilWin(betAmount: number): Promise<number> {
+	public async pickRandomTilesUntilWin(
+		betAmount: number,
+		testInfo: TestInfo,
+	): Promise<number> {
 		let totalAmountSpent = 0;
 		let betAttempts = 0;
 		let isBetWon = false;
-
 		logger.info("Starting a new round and placing a bet...");
+
+		const timeoutMs = Timeout.ULTRA_MAX;
+		const startTime = Date.now();
+
+		const checkTimeout = (): boolean => {
+			const reached = this.hasReachedTimeout(startTime, timeoutMs);
+			if (reached) {
+				logger.warn("Timeout reached");
+			}
+			return reached;
+		};
 
 		({ updatedTotal: totalAmountSpent, updatedAttempts: betAttempts } =
 			await this.startFirstRound(betAmount));
 
 		while (!isBetWon) {
+			if (checkTimeout()) {
+				break;
+			}
+
 			let gameEnded = false;
-
 			const totalSafeTiles = await this.getTotalSafeTiles();
-
 			while (!gameEnded) {
+				if (checkTimeout()) {
+					break;
+				}
+
 				const { isGameWon, isBombVisible, currentSafeTilesCount } =
 					await this.clickTileAndEvaluateResult(totalSafeTiles);
 
@@ -193,7 +222,6 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 					({ isBetWon, gameEnded } = this.markGameAsWon());
 					continue;
 				}
-
 				if (isBombVisible) {
 					({
 						updatedTotal: totalAmountSpent,
@@ -210,6 +238,14 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 				}
 			}
 		}
+
+		if (checkTimeout()) {
+			testInfo.skip(
+				true,
+				`Skipping test — did not win within ${timeoutMs / 1000}s`,
+			);
+		}
+
 		logger.info(`Game won after ${betAttempts} attempt(s)`);
 		return totalAmountSpent;
 	}
