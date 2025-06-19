@@ -20,6 +20,7 @@ import { KothPage } from "@pages/koth/koth-page";
 import { TransactionsPage } from "@pages/transactions/transactions-page";
 import { BlogPage } from "@pages/blog/blog-page";
 import { BlogPostPage } from "@pages/blog/post/blog-post-page";
+import { StatisticsPage } from "@pages/statistics/statistics-page";
 
 export type GamdomPages = {
 	homePage: HomePage;
@@ -29,6 +30,7 @@ export type GamdomPages = {
 	rewardsExplorePage: RewardsExplorePage;
 	profilePage: ProfilePage;
 	verificationPage: VerificationPage;
+	statisticsPage: StatisticsPage;
 	faqPage: FaqPage;
 	geoblockedPage: GeoblockedPage;
 	bannedUserPage: BannedUserPage;
@@ -108,5 +110,8 @@ export const gamdomPagesFixtures = base.extend<GamdomPages>({
 	},
 	blogPostPage: async ({ page }, use) => {
 		await use(new BlogPostPage(page));
+	},
+	statisticsPage: async ({ page }, use) => {
+		await use(new StatisticsPage(page));
 	},
 });

@@ -42,8 +42,8 @@ export class PlinkoGamePage extends BasePage<PlinkoGamePageMap> {
 	}
 
 	@step()
-	public async fillInBetAmount(betAmount: string): Promise<void> {
-		await this.map.betAmountInput.fill(betAmount);
+	public async fillInBetAmount(betAmount: string | number): Promise<void> {
+		await this.map.betAmountInput.fill(betAmount.toString());
 	}
 
 	@step()
@@ -53,7 +53,7 @@ export class PlinkoGamePage extends BasePage<PlinkoGamePageMap> {
 
 	@step()
 	public async startManualBet(
-		betAmount: string,
+		betAmount: number | string,
 		options?: { rowsValue?: number; riskValue?: number },
 	): Promise<void> {
 		await this.fillInBetAmount(betAmount);

@@ -6,6 +6,7 @@ export const ROULETTE_GAME_PAGE_ENDPOINT = "/roulette";
 export const PLINKO_GAME_PAGE_ENDPOINT = "/plinko";
 export const PROFILE_PAGE_ENDPOINT = "/profile";
 export const VERIFICATION_PAGE_ENDPOINT = "/aml/level/1";
+export const STATISTICS_PAGE_ENDPOINT = "/statistics";
 export const GEOBLOCKED_PAGE_ENDPOINT = "/geoblocked";
 export const ADMIN_PAGE_ENDPOINT = "/admin";
 export const REWARDS_PAGE_ENDPOINT = "/rewards";

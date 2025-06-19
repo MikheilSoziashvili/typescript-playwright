@@ -1,4 +1,4 @@
-import { parseBalance, waitUntil } from "@core/utils/utils";
+import { parseBalance, parseMultiplier, waitUntil, getFormattedMultiplier } from "@core/utils/utils";
 import { Attributes } from "@enums/playwright/htmlAttributes";
 import { AttributesValues } from "@enums/playwright/htmlAttributesValues";
 import {
@@ -11,6 +11,7 @@ import { step } from "decorators/step";
 import { PlinkoGamePage } from "./plinko-game-page";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { Timeout } from "@enums/timeout";
+
 
 export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 	public constructor(gamdomPage: PlinkoGamePage) {
@@ -165,5 +166,27 @@ export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 		await this.gamdomPage
 			.assertThat()
 			.verifyRiskSliderActive(Timeout.EXTRA_LONG);
+	}
+
+	@step()
+	public async getInGameChipsHistoryButtonValue(): Promise<number> {
+		await this.gamdomPage.assertThat().verifyInGameHistoryIsDisplayed();
+		await this.gamdomPage
+			.assertThat()
+			.verifyInGameChipsHistoryButtonIsDisplayed();
+
+		const inGameChipsHistoryButtonText =
+			await this.gamdomPage.map.inGameChipsHistoryButton.textContent();
+
+		if (!inGameChipsHistoryButtonText) {
+			throw new Error("In-game chips history button has no text content");
+		}
+
+		const multiplier = parseMultiplier(
+			inGameChipsHistoryButtonText.trim(),
+			getFormattedMultiplier({ isBig: true }),
+		);
+
+		return multiplier;
 	}
 }

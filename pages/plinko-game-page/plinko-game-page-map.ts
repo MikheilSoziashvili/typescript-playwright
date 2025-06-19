@@ -140,4 +140,14 @@ export class PlinkoGamePageMap extends BaseMap {
 			this.riskRowsSliderContainer,
 		);
 	}
+
+	public get inGameHistoryContainer(): Locator {
+		return this.plinkoGameWrapper.locator("[class*='Historystyled__Base']");
+	}
+
+	public get inGameChipsHistoryButton(): Locator {
+		return this.inGameHistoryContainer.locator(
+			"[class*='Chipstyled__Chip']",
+		);
+	}
 }

@@ -1,7 +1,10 @@
 import { format } from "date-fns";
 import * as path from "path";
 import { GamdomApi } from "@api/gamdom-api";
-import { DEFAULT_CURRENCY } from "@constants/defaults";
+import {
+	DEFAULT_CURRENCY,
+	DEFAULT_MULTIPLIER,
+} from "@constants/defaults";
 import { MAILINATOR_DOMAIN } from "@constants/domains";
 import { AUTH_PATH } from "@constants/file-paths";
 import { JsonData, WaitUntilOptions } from "@core/interfaces";
@@ -22,6 +25,7 @@ import { Timeout } from "@enums/timeout";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { logger } from "@logger/logger";
 import {
+	currencyToNumberPattern,
 	otpAuthSecretPattern,
 	pageUrl,
 	sanitizeTitlePattern,
@@ -214,8 +218,21 @@ export function formatCurrency(
 	}).format(amount);
 }
 
-export function parseMultiplier(rawValue: string): number {
-	return Number(rawValue.replace("x", ""));
+export function getFormattedMultiplier({ isBig = false }: { isBig?: boolean } = {}): string {
+	return isBig ? DEFAULT_MULTIPLIER.toUpperCase() : DEFAULT_MULTIPLIER;
+}
+
+export function parseMultiplier(
+	rawValue: string,
+	multiplier = getFormattedMultiplier(),
+): number {
+	const parsedMultiplier = Number(rawValue.replace(multiplier, ""));
+	expect(
+		parsedMultiplier,
+		`Failed to parse multiplier from text: "${rawValue}"`,
+	).not.toBeNaN();
+
+	return parsedMultiplier;
 }
 
 export function range(start: number, stop: number, step = 1): number[] {
@@ -1036,6 +1053,31 @@ export function calculateMinesMultiplier(
  */
 export function getCurrentDate(dateFormat = "yyyy-MM-dd"): string {
 	return format(new Date(), dateFormat);
+}
+
+/**
+ * Converts currency text (e.g., "$123.00", "€45.50") to a numeric value.
+ *
+ * @param currencyText - The currency string to convert (e.g., "$123.00")
+ * @returns The numeric value without currency symbol (e.g., 123.00)
+ * @throws Error if the input cannot be parsed to a valid number
+ *
+ * @example
+ * parseCurrencyToNumber("$123.00"); // 123.00
+ * parseCurrencyToNumber("€45.50"); // 45.50
+ * parseCurrencyToNumber("¥1,234"); // 1234
+ */
+export function parseCurrencyToNumber(currencyText: string): number {
+	const numericString = currencyText.replace(currencyToNumberPattern, "");
+
+	const result = parseFloat(numericString);
+
+	expect(
+		result,
+		`Unable to parse currency text "${currencyText}" to a valid number`,
+	).not.toBeNaN();
+
+	return result;
 }
 
 /**

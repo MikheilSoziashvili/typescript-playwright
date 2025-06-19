@@ -191,4 +191,18 @@ export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 			tolerance,
 		);
 	}
+
+	@step()
+	async verifyInGameHistoryIsDisplayed(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.inGameHistoryContainer,
+		]);
+	}
+
+	@step()
+	async verifyInGameChipsHistoryButtonIsDisplayed(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.inGameChipsHistoryButton,
+		]);
+	}
 }
