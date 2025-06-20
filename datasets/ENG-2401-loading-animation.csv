@@ -1,0 +1,52 @@
+linkName,URL
+Base Page,/
+Crash,/crash
+Dice,/dice
+Hilo,/hilo
+Roulette,/roulette
+Plinko,/plinko
+Casino,/casino
+Casino-Favorites,/casino?tab=favorite
+Casino-Slots,/casino?tab=slots
+Casino-Live games,/casino?tab=live-games
+Casino-Table games,/casino?tab=table-games
+Slot Battles,/slots-battles
+Sports,/sports
+E-Sports,/sports/sport/esports
+Help-FAQ,/help/faq
+Help-About Us,/help/about-us
+Help-Fair,/help/fair
+Help-Support,/help/support
+Help-Terms,/help/terms
+Help-Refund Policy,/help/refundpolicy
+Help-Privacy Policy,/help/privacy_policy
+Rewards,/rewards
+Profile,/profile
+Notifications,/notifications
+Statistics,/statistics
+Affiliates,/affiliates
+Privacy,/privacy
+Aml-Level 1,/aml/level/1
+Aml-Level 2,/aml/level/2
+Aml-Level 3,/aml/level/3
+Settings,/settings
+Transactions,/transactions
+Connections,/connections
+Blog,/blog
+Blog-Crypto,/blog/crypto/
+Blog-Guides,/blog/guides/
+Blog-News,/blog/news/
+Blog-Sports,/blog/sports/
+Blog-Casino,/blog/casino/
+Blog-Esports,/blog/esports/
+Modal Wallet-Deposit,/?modal=wallet&tab=deposit
+Modal Wallet-Withdraw,/?modal=wallet&tab=withdraw
+Modal Wallet-Buy Crypto,/?modal=wallet&tab=buycrypto
+Modal Wallet-Vault,/?modal=wallet&tab=vault
+Modal Wallet-Redeem,/?modal=wallet&tab=redeem
+KOTH,/koth
+KOTH-Daily,/koth/daily
+KOTH-Weekly,/koth/weekly
+KOTH-Monthly,/koth/monthly
+Mines,/mines
+Keno,/keno

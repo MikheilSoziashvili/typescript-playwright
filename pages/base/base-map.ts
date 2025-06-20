@@ -149,7 +149,9 @@ export class BaseMap {
 	}
 
 	public getSliderTrack(container?: Locator): Locator {
-		return (container || this.page).locator('span[class*="RangeSliderstyled__Track"]');
+		return (container || this.page).locator(
+			'span[class*="RangeSliderstyled__Track"]',
+		);
 	}
 
 	public getSliderContainerByPlaceholder(
@@ -160,4 +162,14 @@ export class BaseMap {
 			`//div[contains(@class,'Formstyled__Range') and contains(normalize-space(),'${placeholder}')]`,
 		);
 	}
+
+	public getLoadingAnimation(): Locator {
+		return this.page.locator(
+			'[data-testid="page-container-animate"] img[alt="gamdom-loading"]',
+		);
+	}
+
+	public getLoadingAnimationSelector(): string {
+	return 'img[alt="gamdom-loading"]';
+}
 }

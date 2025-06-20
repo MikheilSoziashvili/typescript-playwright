@@ -1,7 +1,13 @@
 import { waitForPageReadyState, waitUntil } from "@core/utils/utils";
+import { BooleanValueString } from "@enums/playwright/booleanValues";
+import { CssStyleValues } from "@enums/playwright/cssStyleValues";
 import { DocumentReadyState } from "@enums/playwright/document-ready-states";
+import { Attributes } from "@enums/playwright/htmlAttributes";
+import { OgProperties } from "@enums/playwright/htmlOgProperties";
+import { OgPropertiesValues } from "@enums/playwright/htmlOgPropertiesValues";
 import { VisibilityState } from "@enums/playwright/visibility-states";
 import { Timeout } from "@enums/timeout";
+import { logger } from "@logger/logger";
 import { Locator, TestInfo, expect } from "@playwright/test";
 import { wwwPattern } from "@support/regex-patterns";
 import * as Configuration from "configuration";
@@ -10,11 +16,6 @@ import { BaseComponent } from "./base-component";
 import { BaseMap } from "./base-map";
 import { BaseModal } from "./base-modal";
 import { BasePage } from "./base-page";
-import { BooleanValueString } from "@enums/playwright/booleanValues";
-import { Attributes } from "@enums/playwright/htmlAttributes";
-import { OgProperties } from "@enums/playwright/htmlOgProperties";
-import { OgPropertiesValues } from "@enums/playwright/htmlOgPropertiesValues";
-import { logger } from "@logger/logger";
 
 export class BaseAsserter<
 	T extends BasePage<BaseMap> | BaseModal<BaseMap> | BaseComponent<BaseMap>,
@@ -451,5 +452,79 @@ export class BaseAsserter<
 
 	public async getTextDecoration(locator: Locator): Promise<string> {
 		return locator.evaluate((el) => getComputedStyle(el).textDecoration);
+	}
+
+	@step("Assert that the loader animation is visible")
+	public async assertLoaderWasVisible(
+		timeoutMs: number = Timeout.SHORT,
+	): Promise<void> {
+		const selector = this.gamdomPage.map.getLoadingAnimationSelector();
+
+		const loaderAppeared = await this.checkLoaderVisibilityOnPage(
+			selector,
+			timeoutMs,
+			CssStyleValues.NONE,
+			VisibilityState.HIDDEN,
+		);
+
+		expect(loaderAppeared).toBe(true);
+	}
+
+	private async checkLoaderVisibilityOnPage(
+		selector: string,
+		timeoutMs: number,
+		noneValue: string,
+		hiddenValue: string,
+	): Promise<boolean> {
+		return this.gamdomPage.page.evaluate(
+			({ selector, timeoutMs, noneValue, hiddenValue }) =>
+				new Promise<boolean>((resolve) => {
+					const timeout = setTimeout(() => resolve(false), timeoutMs);
+					const start = performance.now();
+
+					const isElementVisiblyRendered = (
+						style: CSSStyleDeclaration,
+						none: string,
+						hidden: string,
+					): boolean =>
+						style.display !== none &&
+						style.visibility !== hidden &&
+						parseFloat(style.opacity) > 0;
+
+					const loaderIsVisible = (el: Element): boolean => {
+						const style = window.getComputedStyle(el);
+						return isElementVisiblyRendered(
+							style,
+							noneValue,
+							hiddenValue,
+						);
+					};
+
+					const check = () => {
+						const el = document.querySelector(selector);
+						if (el && loaderIsVisible(el)) {
+							clearTimeout(timeout);
+							resolve(true);
+						} else if (performance.now() - start > timeoutMs) {
+							resolve(false);
+						} else {
+							setTimeout(check, 10);
+						}
+					};
+
+					check();
+				}),
+			{ selector, timeoutMs, noneValue, hiddenValue },
+		);
+	}
+
+	@step("Assert that the loader animation has disappeared")
+	public async assertLoaderHasDisappeared(
+		timeout: number = Timeout.SHORT,
+	): Promise<void> {
+		await this.gamdomPage.map.waitForInvisibility({
+			locator: this.gamdomPage.map.getLoadingAnimation(),
+			timeout: timeout,
+		});
 	}
 }
