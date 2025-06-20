@@ -9,7 +9,7 @@ import { Timeout } from "@enums/timeout";
 import "dotenv/config";
 
 const isScheduledRun = process.env.GITHUB_EVENT_NAME === "schedule";
-const isCI = process.env.CI === "true";
+export const isCI = process.env.CI === "true";
 const shouldCreateExecution = process.env.CREATE_TEST_EXECUTION === "true";
 
 export const environment_url = process.env.CI
