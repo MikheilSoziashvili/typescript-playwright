@@ -57,4 +57,21 @@ export class UserInfoAdminPage extends BasePage<UserInfoAdminPageMap> {
 		await this.insertIPInSearchByIPInput(ipAddress);
 		await this.performReliableClick(this.map.searchIPAddressButton);
 	}
+
+	public async insertSteam64OrUserIdInSearchBySteam64OrUserIdInput(
+		steam64OrUserId: string | number,
+	): Promise<void> {
+		await this.map.searchBySteam64OrUserIdInput.fill(
+			steam64OrUserId.toString(),
+		);
+	}
+
+	public async searchForSteam64OrUserId(
+		steam64OrUserId: string | number,
+	): Promise<void> {
+		await this.insertSteam64OrUserIdInSearchBySteam64OrUserIdInput(
+			steam64OrUserId,
+		);
+		await this.map.showUserInfoButton.click();
+	}
 }

@@ -61,4 +61,20 @@ export class UserInfoAdminPageMap extends BaseMap {
 			hasText: "IP Address",
 		});
 	}
+
+	public get searchBySteam64OrUserIdContainer(): Locator {
+		return this.adminUserInfoContainer.getByTestId(
+			"adminUserInfoSearchBySteamUserId",
+		);
+	}
+
+	public get searchBySteam64OrUserIdInput(): Locator {
+		return this.searchBySteam64OrUserIdContainer.locator("input");
+	}
+
+	public get searchBySteamUserIdButton(): Locator {
+		return this.adminUserInfoContainer.getByTestId(
+			"adminUserInfoSearchBySteamUserIdButton",
+		);
+	}
 }

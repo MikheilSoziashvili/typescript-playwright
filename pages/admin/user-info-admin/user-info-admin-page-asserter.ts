@@ -26,6 +26,14 @@ export class UserInfoAdminPageAsserter extends BaseAsserter<UserInfoAdminPage> {
 	}
 
 	@step()
+	public async searchBySteam64orUserIdElementsDisplayed(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.searchBySteam64OrUserIdContainer,
+			this.gamdomPage.map.searchBySteam64OrUserIdInput,
+		]);
+	}
+
+	@step()
 	public async areNoResultsDisplayedForSearchByUsernameField(): Promise<void> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.searchByUsernameMenuNoResults,
