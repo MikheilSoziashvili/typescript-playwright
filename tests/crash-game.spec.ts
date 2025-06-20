@@ -26,6 +26,7 @@ test.describe("Crash tests", () => {
 	test.slow();
 	test("[ENG-265] Place a single bet on Crash and try to cashout @smoke @originals", async ({
 		crashGamePage,
+		userBalanceHandler,
 	}, testInfo) => {
 		const newUserDetails = getUserDetailsByTestTitle(
 			testInfo.title,
@@ -39,8 +40,7 @@ test.describe("Crash tests", () => {
 
 		await crashGamePage.navigate();
 
-		const accountBalanceBeforeBet =
-			await crashGamePage.authenticatedHeader.getAccountBalance();
+		const accountBalanceBeforeBet = await userBalanceHandler.parseAmount();
 
 		let totalBetsPlaced = 0;
 		let winnings = 0;
@@ -68,9 +68,17 @@ test.describe("Crash tests", () => {
 			winnings,
 		);
 
-		await crashGamePage.authenticatedHeader
+		const backendCoinsAfter =
+			await userBalanceHandler.walletBalanceInCoins();
+
+		const expectedBalanceInCoins =
+			userBalanceHandler.usdToCoins(expectedBalance);
+
+		await crashGamePage
 			.assertThat()
-			.accountBalanceIs(expectedBalance);
+			.verifyBalance(backendCoinsAfter, expectedBalanceInCoins);
+
+		await crashGamePage.assertThat().backendVsUiBalanceMatch();
 	});
 
 	crashAutoCashout.forEach((record) => {

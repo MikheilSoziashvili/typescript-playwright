@@ -32,3 +32,4 @@ export const currencyAmountPattern = (
 	new RegExp(`^\\${currencySymbol}\\d{1,3}(?:,\\d{3})*(?:\\.\\d{2})?$`);
 
 export const currencyToNumberPattern = /[^\d.-]/g;
+export const currencyOnlyPattern = /[^0-9.,\s]/g;

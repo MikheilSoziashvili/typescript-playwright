@@ -8,9 +8,11 @@ import { adminPagesFixtures } from "./admin-pages-fixtures";
 import { gamePagesFixtures } from "./game-pages-fixtures";
 import { gamdomPagesFixtures } from "./gamdom-pages";
 import { dbsFixtures } from "./db-fixtures";
+import { gamdomHandlersFixtures } from "./handlers-fixtures";
 
 export const test = mergeTests(
 	gamdomPagesFixtures,
+	gamdomHandlersFixtures,
 	adminPagesFixtures,
 	gamePagesFixtures,
 	externalPagesFixtures,

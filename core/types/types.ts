@@ -1,10 +1,12 @@
 import { BitcoinFeeEstimateMode } from "@enums/bitcoin";
 import { Cryptocurrency } from "@enums/cryptocurrencies";
+import { Currency } from "@enums/currencies";
 import { HouseEdgeValue } from "@enums/house-edge-values";
 import { OriginalGame } from "@enums/original-games";
 import { RainStatus } from "@enums/rain-status";
 import { Unit } from "@enums/units";
 import { VisibilityOptions } from "@enums/visibility-options";
+import { WalletType } from "@enums/wallet-types";
 import { CrashGamePage } from "@pages/crash-game-page/crash-game-page";
 import { DiceGamePage } from "@pages/dice-game-page/dice-game-page";
 import { HiloGamePage } from "@pages/hilo-game-page/hilo-game-page";
@@ -158,4 +160,24 @@ export type CalculateMinesMultiplierArgs = {
 	houseEdge: HouseEdgeValue.Mines;
 	fieldSize?: number;
 	precision?: number;
+};
+
+export type WalletBalanceItem = {
+	/** Wallet denomination (COINS for fiat, *_SATOSHI / *_GWEI for crypto) */
+	unit: Unit;
+
+	/** Display currency returned by backend (always "USD" in your sample) */
+	currencyName: Currency;
+
+	/** Currency ⇄ USD conversion rate as text (backend sends string) */
+	displayRate: string;
+
+	/** Spot price of 1 unit of the crypto expressed in USD (string) */
+	cryptoPrice: string;
+
+	/** Raw wallet balance in the given `unit` (integer) */
+	balance: number;
+
+	/** DEFAULT (main wallet) or VAULT (storage wallet) */
+	wallet_type: WalletType;
 };

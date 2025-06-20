@@ -16,4 +16,6 @@ export enum ApiEndpoints {
 	GET_CRYPTO_ADMIN_TRANSACTIONS = "/client-api/admin/crypto/getTransactions",
 	GET_ALL_REDIRECTS = "/client-api/redirects/getAllRedirects",
 	CREATE_REDIRECT = "/client-api/admin/redirects/createRedirect",
+	GET_CURRENCY = "/client-api/currency/getCurrency",
+	GET_WALLETS = "/client-api/profile/get-wallets",
 }
