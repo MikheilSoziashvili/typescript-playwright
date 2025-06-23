@@ -32,7 +32,9 @@ walletDataset.forEach((record) => {
 			walletModal,
 		}) => {
 			await homePage.navigateToWallet();
-			await walletModal.steps().depositFromWalletAndVerify(record.wallet);
+			await walletModal
+				.steps()
+				.depositFromWalletAndVerify(record.wallet, record.unit);
 		});
 
 		test(`[ENG-2860] Vault - make a withdrawal from [${record.wallet}] wallet`, async ({
@@ -40,7 +42,9 @@ walletDataset.forEach((record) => {
 			walletModal,
 		}) => {
 			await homePage.navigateToWallet();
-			await walletModal.steps().withdrawFromVaultAndVerify(record.wallet);
+			await walletModal
+				.steps()
+				.withdrawFromVaultAndVerify(record.wallet, record.unit);
 		});
 	});
 });

@@ -118,4 +118,23 @@ export class UserBalanceHandler extends BaseComponent<BaseMap> {
 		const usd = whole * Number(entry.cryptoPrice); // BTC → USD
 		return this.usdToCoins(usd); // USD → backend coins
 	}
+
+	/**
+	 * Retrieves the balance of a wallet (DEFAULT or VAULT) in backend USD.
+	 *
+	 * - For `Unit.COINS` the value is returned as-is (no rounding).
+	 * - For crypto units the method converts:
+	 *   atomic → whole-coin → USD → coins (×1500).
+	 *
+	 * @param unit Wallet denomination, e.g. `Unit.COINS` or `Unit.BTC_SATOSHI`.
+	 * @param type Wallet group, defaulting to `WalletType.DEFAULT`.
+	 * @throws Error when the wallet entry is missing or the backend call fails.
+	 */
+	public async walletBalanceInUsd(
+		unit: Unit = Unit.COINS,
+		type: WalletType = WalletType.DEFAULT,
+	): Promise<number> {
+		const usd = await this.walletBalanceInCoins(unit, type);
+		return this.coinsToUsd(usd);
+	}
 }

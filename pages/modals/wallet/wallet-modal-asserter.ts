@@ -3,7 +3,8 @@ import { WalletModal } from "./wallet-modal";
 import { Timeout } from "@enums/timeout";
 import { expect } from "playwright/test";
 import { step } from "decorators/step";
-import { parseToFloat } from "@core/utils/utils";
+import { Unit } from "@enums/units";
+import { WalletType } from "@enums/wallet-types";
 
 export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 	public constructor(page: WalletModal) {
@@ -19,12 +20,16 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 	}
 
 	@step()
-	public async vaultWalletAmountIs(expectedAmount: number): Promise<void> {
-		const amountText = await this.gamdomPage.getVaultWalletAmount();
-		const actualAmount = parseToFloat(parseFloat(amountText));
-		const roundedExpectedAmount = parseToFloat(expectedAmount);
+	public async vaultWalletAmountIs(
+		expectedUsd: number,
+		unit: Unit,
+	): Promise<void> {
+		const backendUsd = await this.userBalanceHandler.walletBalanceInUsd(
+			unit,
+			WalletType.VAULT,
+		);
 
-		expect(actualAmount).toBe(roundedExpectedAmount);
+		expect(backendUsd).toBeCloseTo(expectedUsd, 2);
 	}
 
 	@step()

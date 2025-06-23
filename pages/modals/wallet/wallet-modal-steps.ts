@@ -5,6 +5,8 @@ import { parseToFloat } from "@core/utils/utils";
 import { Toast } from "@pages/components/toast/toast";
 import { ToastTitle } from "@enums/toast-titles";
 import { ToastSubTitle } from "@enums/toast-subtitles";
+import { Unit } from "@enums/units";
+import { WalletType } from "@enums/wallet-types";
 
 export class WalletModalSteps extends BasePageStep<WalletModal> {
 	public constructor(page: WalletModal) {
@@ -38,6 +40,7 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 	)
 	public async depositFromWalletAndVerify(
 		wallet: string,
+		unit: Unit,
 		depositAmount?: number,
 	): Promise<void> {
 		await this.gamdomPage.openVaultTab();
@@ -51,37 +54,50 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 		await this.gamdomPage.fillVaultAmount(amount);
 		await this.gamdomPage.clickVaultDepositButton();
 
-		const formattedAmount = this.formatAmount(amount);
+		const expectedAmountUsd =
+			await this.userBalanceHandler.walletBalanceInUsd(
+				unit,
+				WalletType.VAULT,
+			);
+
+		const formattedAmount = this.formatAmount(expectedAmountUsd);
 
 		await this.gamdomPage
 			.assertThat()
 			.vaultDepositToastMessageIsDisplayed(formattedAmount);
 		await this.gamdomPage.openWithdrawTabInVault();
 		await this.gamdomPage.selectWalletOption(wallet);
-		await this.gamdomPage.assertThat().vaultWalletAmountIs(amount);
+		await this.gamdomPage.assertThat().vaultWalletAmountIs(amount, unit);
 	}
 
 	@step(
 		`Withdraw from a given vault wallet and verify the amount is available in the wallet`,
 	)
-	public async withdrawFromVaultAndVerify(wallet: string): Promise<void> {
-		await this.depositFromWalletAndVerify(wallet);
+	public async withdrawFromVaultAndVerify(
+		wallet: string,
+		unit: Unit,
+	): Promise<void> {
+		await this.depositFromWalletAndVerify(wallet, unit);
 		await this.gamdomPage.openWithdrawTabInVault();
 		await this.gamdomPage.selectWalletOption(wallet);
 
 		const amount = await this.getVaultAmountMinusOne();
+		const usdBeforeWithdrawal =
+			await this.userBalanceHandler.walletBalanceInUsd(
+				unit,
+				WalletType.VAULT,
+			);
+		const formattedToast = this.formatAmount(usdBeforeWithdrawal - 1);
 
 		await this.gamdomPage.fillVaultAmount(amount);
 		await this.gamdomPage.clickVaultWithdrawButton();
 
-		const formattedWithdraw = this.formatAmount(amount);
-
 		await this.gamdomPage
 			.assertThat()
-			.vaultWithdrawToastMessageIsDisplayed(formattedWithdraw);
+			.vaultWithdrawToastMessageIsDisplayed(formattedToast);
 		await this.gamdomPage.openDepositTabInVault();
 		await this.gamdomPage.selectWalletOption(wallet);
-		await this.gamdomPage.assertThat().vaultWalletAmountIs(amount + 1);
+		await this.gamdomPage.assertThat().vaultWalletAmountIs(1, unit);
 	}
 
 	public async withdrawInVaultWith2FaFlow(
