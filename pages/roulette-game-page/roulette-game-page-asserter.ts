@@ -1,4 +1,4 @@
-import { expect } from "@playwright/test";
+import { expect, Locator } from "@playwright/test";
 import { BaseAsserter } from "@base/base-asserter";
 import { RouletteGamePage } from "./roulette-game-page";
 import { RouletteBetColor } from "@enums/original-games";
@@ -6,6 +6,7 @@ import { plusSignWithExactDecimalCurrency } from "@support/regex-patterns";
 import { parseToFloat } from "@core/utils/utils";
 import { RouletteAutobetSection } from "@enums/roulette-autobet-section";
 import { Timeout } from "@enums/timeout";
+import { logger } from "@logger/logger";
 
 export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 	public constructor(page: RouletteGamePage) {
@@ -45,37 +46,26 @@ export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 		}[],
 	): Promise<void> {
 		for (const { betColor, username, betAmount } of bets) {
-			const betSection = this.gamdomPage.map.betSectionsByColor[betColor];
-
-			const betRows = await this.gamdomPage.map.playersGridRows(
-				betSection,
-			);
+			const betRows = await this.gamdomPage.map.betRowsByColor(
+				betColor,
+			).all();
 
 			for (const row of betRows) {
-				const [rowUsernameText, rowBetAmountText] = await Promise.all([
+				await Promise.all([
 					this.gamdomPage.map
-						.playersGridRowPlayerUsername(row)
+						.betUsername(row)
 						.innerText(),
 					this.gamdomPage.map
-						.playersGridRowBetAmount(row)
+						.betUsernameAndAmount(row)
 						.innerText(),
 				]);
 
-				if (
-					rowUsernameText.includes(username) &&
-					rowBetAmountText.includes(String(betAmount))
-				) {
-					await Promise.all([
-						expect(
-							this.gamdomPage.map.playersGridRowPlayerUsername(
-								row,
-							),
-						).toContainText(username),
-						expect(
-							this.gamdomPage.map.playersGridRowBetAmount(row),
-						).toContainText(String(betAmount)),
-					]);
-
+				if (await this.assertRowUsernameAndBetAmount(
+					row,
+					username,
+					betAmount,
+					`BEFORE SPIN`
+				)) {
 					break;
 				}
 			}
@@ -117,22 +107,42 @@ export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 	}
 
 	public async profitAmountDisplayed(
-		betColor: RouletteBetColor,
-		betAmount: number,
+		bets: {
+			betColor: RouletteBetColor;
+			username: string;
+			betAmount: number;
+		}[],
 	): Promise<void> {
-		const betSection = this.gamdomPage.map.betSectionsByColor[betColor];
+		for (const { betColor, username, betAmount } of bets) {
+			const betSection = this.gamdomPage.map.betSectionsByColor[betColor];
 
-		await expect(this.gamdomPage.map.betProfit(betSection)).toContainText(
-			plusSignWithExactDecimalCurrency(parseToFloat(betAmount)),
-		);
-		const betRow = (
-			await this.gamdomPage.map.playersGridRows(betSection)
-		)[0];
-		await expect(
-			this.gamdomPage.map.playersGridRowBetAmount(betRow),
-		).toContainText(
-			plusSignWithExactDecimalCurrency(parseToFloat(betAmount)),
-		);
+			const betRows = await this.gamdomPage.map.betRowsByColor(
+				betColor,
+			).all();
+
+			for (const row of betRows) {
+				await Promise.all([
+					this.gamdomPage.map
+						.betUsername(row)
+						.innerText(),
+					this.gamdomPage.map
+						.betUsernameAndAmount(row)
+						.innerText(),
+				]);
+
+				if (await this.assertRowUsernameAndBetAmount(
+					row,
+					username,
+					betAmount,
+					`AFTER SPIN`
+				)) {
+					await expect(this.gamdomPage.map.betProfit(betSection)).toContainText(
+						plusSignWithExactDecimalCurrency(parseToFloat(betAmount)),
+					);
+					break;
+				}
+			}
+		}
 	}
 
 	public async previousRollsHistoryUpdated(
@@ -150,5 +160,31 @@ export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 			),
 		).toHaveText("Active");
 		await expect(this.gamdomPage.map.stopGreenHuntButton()).toBeVisible();
+	}
+
+	private async assertRowUsernameAndBetAmount(
+		row: Locator,
+		username: string,
+		betAmount: number,
+		context: `BEFORE SPIN` | `AFTER SPIN`
+	): Promise<boolean> {
+		const [rowUsernameText, rowBetAmountText] = await Promise.all([
+			this.gamdomPage.map.betUsername(row).innerText(),
+			this.gamdomPage.map.betUsernameAndAmount(row).innerText(),
+		]);
+
+		logger.info(`${context}: row username: ${rowUsernameText} with bet amount: ${betAmount}`);
+
+		if (
+			rowUsernameText.includes(username) &&
+			rowBetAmountText.includes(String(betAmount))
+		) {
+			await Promise.all([
+				expect(this.gamdomPage.map.betUsername(row)).toContainText(username),
+				expect(this.gamdomPage.map.betUsernameAndAmount(row)).toContainText(String(betAmount)),
+			]);
+			return true;
+		}
+		return false;
 	}
 }

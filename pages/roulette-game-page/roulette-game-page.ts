@@ -79,6 +79,9 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 		betColor: RouletteBetColor,
 	): Promise<number> {
 		const betRows = this.map.betRowsByColor(betColor);
+		logger.info(
+			`Number of bet rows for color ${betColor}: ${await betRows.count()}`,
+		);
 		return betRows.count();
 	}
 
@@ -89,6 +92,10 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 		const countText = await this.map
 			.betTotalBetsCount(betSection)
 			.innerText();
+
+		logger.info(
+			`Total bets count for color ${betColor}: ${countText}`,	
+		);
 		return parseInt(countText, 10);
 	}
 

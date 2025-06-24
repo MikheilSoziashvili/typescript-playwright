@@ -151,6 +151,14 @@ export class RouletteGamePageMap extends BaseMap {
 			.locator('div[class*="BetListItem-styled__BetListItemWapper"]');
 	}
 
+	public betUsername(row: Locator): Locator {
+		return row.locator("div[class*='BetListItem-styled__UserNameStyled']");
+	}
+
+	public betUsernameAndAmount(row: Locator): Locator {
+		return row.locator("[class*='currency-amount']");
+	}
+
 	public autobetContainer(): Locator {
 		return this.gameContainer.locator("div[class*='AutoBetContainer']");
 	}

@@ -48,13 +48,15 @@ test.describe("Roulette tests", () => {
 					false,
 				);
 
-			await rouletteGamePage.assertThat().playersBetsDisplayed([
-				{
-					betColor: RouletteBetColor.BLACK,
-					username: betTestData.username,
-					betAmount: betTestData.betAmount,
-				},
-			]);
+			await rouletteGamePage
+				.assertThat()
+				.playersBetsDisplayed([
+					{
+						betColor: RouletteBetColor.BLACK,
+						username: betTestData.username,
+						betAmount: betTestData.betAmount,
+					},
+				]);
 
 			await rouletteGamePage
 				.assertThat()
@@ -72,10 +74,13 @@ test.describe("Roulette tests", () => {
 
 		await rouletteGamePage
 			.assertThat()
-			.profitAmountDisplayed(
-				RouletteBetColor.BLACK,
-				betTestData.betAmount,
-			);
+			.profitAmountDisplayed([
+                {
+                    betColor: RouletteBetColor.BLACK,
+                    username: betTestData.username,
+                    betAmount: betTestData.betAmount,
+                },
+            ]);
 
 		const expectedProfit = rouletteGamePage.calculateProfit(
 			betTestData.betAmount,
