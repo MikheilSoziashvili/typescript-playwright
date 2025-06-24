@@ -104,4 +104,19 @@ export class PlinkoGamePage extends BasePage<PlinkoGamePageMap> {
 		const balance = await this.map.userInGameBalance.innerText();
 		return parseBalance(balance);
 	}
+
+	@step()
+	public async pressMinButton(): Promise<void> {
+		await this.map.minButton.click();
+	}
+
+	@step()
+	public async pressHalfButton(): Promise<void> {
+		await this.map.halfButton.click();
+	}
+
+	@step()
+	public async getBetAmountValue(): Promise<string> {
+		return this.map.betAmountInput.inputValue();
+	}
 }

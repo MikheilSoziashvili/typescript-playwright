@@ -1,28 +1,34 @@
-import { BasePage } from "@pages/base/base-page";
-import { Page } from "playwright";
-import { OriginalsAsserter } from "./originals-page-asserter";
-import { OriginalsMap } from "./originals-page-map";
-import { OriginalsSteps } from "./originals-page-steps";
-import { CrashGamePage } from "@pages/crash-game-page/crash-game-page";
-import { DiceGamePage } from "@pages/dice-game-page/dice-game-page";
-import { HiloGamePage } from "@pages/hilo-game-page/hilo-game-page";
-import { RouletteGamePage } from "@pages/roulette-game-page/roulette-game-page";
-import { OriginalGamesPage, OriginalGames } from "@core/types/types";
+import { OriginalGames, OriginalGamesPage } from "@core/types/types";
 import { HiloBetOption } from "@enums/hilo-bet-options";
-import { OriginalGame, RouletteBetColor } from "@enums/original-games";
-import { step } from "decorators/step";
-import { PlinkoGamePage } from "@pages/plinko-game-page/plinko-game-page";
-import { MinesGamePage } from "@pages/mines-game-page/mines-game-page";
+import {
+	MinBetAmount,
+	OriginalGame,
+	RouletteBetColor,
+} from "@enums/original-games";
 import {
 	PlinkoRiskOption,
 	PlinkoRowsOption,
 } from "@enums/plinko/plinko-game-options";
+import { BasePage } from "@pages/base/base-page";
+import { CrashGamePage } from "@pages/crash-game-page/crash-game-page";
+import { DiceGamePage } from "@pages/dice-game-page/dice-game-page";
+import { HiloGamePage } from "@pages/hilo-game-page/hilo-game-page";
+import { KenoGamePage } from "@pages/keno-game/keno-game-page";
+import { MinesGamePage } from "@pages/mines-game-page/mines-game-page";
+import { PlinkoGamePage } from "@pages/plinko-game-page/plinko-game-page";
+import { RouletteGamePage } from "@pages/roulette-game-page/roulette-game-page";
+import { step } from "decorators/step";
+import { Page } from "playwright";
+import { OriginalsAsserter } from "./originals-page-asserter";
+import { OriginalsMap } from "./originals-page-map";
+import { OriginalsSteps } from "./originals-page-steps";
 
 /**
  * The OriginalsPage class acts as a unified interface for interacting with all the "Originals" games.
  * It leverages individual game POMs (Dice, Crash, Hi-Lo, Roulette).
  */
 export class OriginalsPage extends BasePage<OriginalsMap> {
+	public handlers: typeof this._handlers;
 	/**
 	 * A map that associates each OriginalGame to its corresponding page object.
 	 * @type {Record<OriginalGames, OriginalGamesPage>}
@@ -39,6 +45,7 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 	 * @param {RouletteGamePage} rouletteGamePage - The Roulette game page object.
 	 * @param {PlinkoGamePage} plinkoGamePage - The Plinko game page object.
 	 * @param {MinesGamePage} minesGamePage - The Mines game page object.
+	 * @param {KenoGamesPage} kenoGamePage - The Keno game page object.
 	 */
 	public constructor(
 		page: Page,
@@ -48,6 +55,7 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 		private rouletteGamePage: RouletteGamePage,
 		private plinkoGamePage: PlinkoGamePage,
 		private minesGamePage: MinesGamePage,
+		private kenoGamePage: KenoGamePage,
 	) {
 		super(page, new OriginalsMap(page));
 		this.gamesMap = {
@@ -57,7 +65,9 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 			HiLo: this.hiloGamePage,
 			Plinko: this.plinkoGamePage,
 			Mines: this.minesGamePage,
+			Keno: this.kenoGamePage,
 		};
+		this.handlers = this._handlers;
 	}
 
 	/**
@@ -259,5 +269,41 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 				throw new Error(`Unhandled game type: ${String(game)}`);
 			}
 		}
+	}
+
+	private readonly _handlers: Partial<
+		Record<
+			OriginalGame,
+			{
+				setBetAmount?: (amount: number) => Promise<void>;
+				pressMinButton?: () => Promise<void>;
+				pressHalfButton?: () => Promise<void>;
+				getBetAmountValue?: () => Promise<string>;
+			}
+		>
+	> = {
+		[OriginalGame.Plinko]: {
+			setBetAmount: (amount) =>
+				this.plinkoGamePage.fillInBetAmount(amount),
+			pressMinButton: () => this.plinkoGamePage.pressMinButton(),
+			pressHalfButton: () => this.plinkoGamePage.pressHalfButton(),
+			getBetAmountValue: () => this.plinkoGamePage.getBetAmountValue(),
+		},
+		[OriginalGame.Mines]: {
+			setBetAmount: (amount) => this.minesGamePage.insertBet(amount),
+			pressMinButton: () => this.minesGamePage.pressMinButton(),
+			pressHalfButton: () => this.minesGamePage.pressHalfButton(),
+			getBetAmountValue: () => this.minesGamePage.getBetAmountValue(),
+		},
+		[OriginalGame.Keno]: {
+			setBetAmount: (amount) => this.kenoGamePage.insertBet(amount),
+			pressMinButton: () => this.kenoGamePage.pressMinButton(),
+			pressHalfButton: () => this.kenoGamePage.pressHalfButton(),
+			getBetAmountValue: () => this.kenoGamePage.getBetAmountValue(),
+		},
+	};
+
+	public getMinBetAmount(game: OriginalGame): number {
+		return MinBetAmount[game.toUpperCase() as keyof typeof MinBetAmount];
 	}
 }

@@ -6,6 +6,7 @@ export enum OriginalGame {
 	HiLo = "HiLo",
 	Plinko = "Plinko",
 	Mines = "Mines",
+	Keno = "Keno",
 }
 
 export enum RouletteNumberColor {
@@ -28,4 +29,17 @@ export enum HiloBetMultiplierByBetOption {
 	BIG_SYMBOL = 3,
 	ACE = 6,
 	JOKER = 24,
+}
+
+export enum MinBetAmount {
+	PLINKO = 0.1,
+	MINES = 0.01,
+	KENO = PLINKO,
+}
+
+export enum OriginalsHandlerMethods {
+	SetBetAmount = "setBetAmount",
+	PressMinButton = "pressMinButton",
+	PressHalfButton = "pressHalfButton",
+	GetBetAmountValue = "getBetAmountValue",
 }

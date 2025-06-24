@@ -45,4 +45,12 @@ export class MinesGamePageMap extends BaseMap {
 	public get minesNumberSlider(): Locator {
 		return this.page.locator('span[class*="RangeContainer"]');
 	}
+
+	public get minButton(): Locator {
+		return this.page.getByTestId("mines-control-Min");
+	}
+
+	public get halfButton(): Locator {
+		return this.page.getByTestId("mines-control-1/2");
+	}
 }

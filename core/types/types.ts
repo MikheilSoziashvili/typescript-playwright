@@ -10,6 +10,7 @@ import { WalletType } from "@enums/wallet-types";
 import { CrashGamePage } from "@pages/crash-game-page/crash-game-page";
 import { DiceGamePage } from "@pages/dice-game-page/dice-game-page";
 import { HiloGamePage } from "@pages/hilo-game-page/hilo-game-page";
+import { KenoGamePage } from "@pages/keno-game/keno-game-page";
 import { MinesGamePage } from "@pages/mines-game-page/mines-game-page";
 import { PlinkoGamePage } from "@pages/plinko-game-page/plinko-game-page";
 import { RouletteGamePage } from "@pages/roulette-game-page/roulette-game-page";
@@ -98,7 +99,8 @@ export type OriginalGamesPage =
 	| HiloGamePage
 	| RouletteGamePage
 	| PlinkoGamePage
-	| MinesGamePage;
+	| MinesGamePage
+	| KenoGamePage;
 
 export type PoolConfigurationType = {
 	host: string;

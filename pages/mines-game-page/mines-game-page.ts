@@ -304,4 +304,16 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 			}
 		}
 	}
+
+	public async pressMinButton(): Promise<void> {
+		await this.map.minButton.click();
+	}
+
+	public async pressHalfButton(): Promise<void> {
+		await this.map.halfButton.click();
+	}
+
+	public async getBetAmountValue(): Promise<string> {
+		return this.map.betField.inputValue();
+	}
 }

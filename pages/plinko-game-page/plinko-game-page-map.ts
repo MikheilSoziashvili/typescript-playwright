@@ -150,4 +150,16 @@ export class PlinkoGamePageMap extends BaseMap {
 			"[class*='Chipstyled__Chip']",
 		);
 	}
+
+	public get minButton(): Locator {
+		return this.page.locator("button[class*='Buttonstyled__Button']", {
+			hasText: "Min",
+		});
+	}
+
+	public get halfButton(): Locator {
+		return this.page.locator("button[class*='Buttonstyled__Button']", {
+			hasText: "1/2",
+		});
+	}
 }

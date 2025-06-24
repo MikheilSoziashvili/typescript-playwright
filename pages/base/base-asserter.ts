@@ -191,6 +191,23 @@ export class BaseAsserter<
 		});
 	}
 
+	/**
+	 * Verifies that a numeric string or number value rounds correctly to the specified number of decimal places.
+	 *
+	 * @param actual - The actual string or number to be validated.
+	 * @param expected - The expected numeric value after rounding.
+	 * @param decimals - Number of decimal places to round to (default is 2).
+	 */
+	public expectRoundedToBe(
+		actual: string | number,
+		expected: number,
+		decimals = 2,
+	): void {
+		const numericValue = typeof actual === "string" ? parseFloat(actual) : actual;
+		const rounded = Number(numericValue.toFixed(decimals));
+		expect(rounded).toBe(expected);
+	}
+
 	public async isElementVisible(
 		locators: Locator[],
 		timeout: number = Timeout.SHORT,

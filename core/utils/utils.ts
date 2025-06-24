@@ -1,10 +1,7 @@
 import { format } from "date-fns";
 import * as path from "path";
 import { GamdomApi } from "@api/gamdom-api";
-import {
-	DEFAULT_CURRENCY,
-	DEFAULT_MULTIPLIER,
-} from "@constants/defaults";
+import { DEFAULT_CURRENCY, DEFAULT_MULTIPLIER } from "@constants/defaults";
 import { MAILINATOR_DOMAIN } from "@constants/domains";
 import { AUTH_PATH } from "@constants/file-paths";
 import { JsonData, WaitUntilOptions } from "@core/interfaces";
@@ -218,7 +215,9 @@ export function formatCurrency(
 	}).format(amount);
 }
 
-export function getFormattedMultiplier({ isBig = false }: { isBig?: boolean } = {}): string {
+export function getFormattedMultiplier({
+	isBig = false,
+}: { isBig?: boolean } = {}): string {
 	return isBig ? DEFAULT_MULTIPLIER.toUpperCase() : DEFAULT_MULTIPLIER;
 }
 

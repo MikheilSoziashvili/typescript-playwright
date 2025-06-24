@@ -72,6 +72,21 @@ async function enableMinesFeature(
 	});
 }
 
+async function enableKenoFeature(
+	gamdomApi: GamdomApi,
+	cookie: string,
+): Promise<void> {
+	const featureResponse = await gamdomApi.setFeatureState(
+		Feature.KENO,
+		ALL_USER_TYPES_ENABLED,
+		{ Cookie: cookie },
+	);
+
+	featureResponse.forEach((response) => {
+		expect(response.status()).toBe(HttpStatus.OK);
+	});
+}
+
 async function enableVaultFeature(
 	gamdomApi: GamdomApi,
 	cookie: string,
@@ -326,6 +341,7 @@ async function globalSetup(): Promise<void> {
 	await enableVaultFeature(gamdomApi, cookie);
 	await enablePlinkoFeature(gamdomApi, cookie);
 	await enableMinesFeature(gamdomApi, cookie);
+	await enableKenoFeature(gamdomApi, cookie);
 	await ensureKothEventsExist(gamdomApi, cookie);
 
 	if (Configuration.createExecution) {

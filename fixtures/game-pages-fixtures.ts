@@ -6,6 +6,7 @@ import { HiloGamePage } from "@pages/hilo-game-page/hilo-game-page";
 import { OriginalsPage } from "@pages/originals/originals-page";
 import { PlinkoGamePage } from "@pages/plinko-game-page/plinko-game-page";
 import { MinesGamePage } from "@pages/mines-game-page/mines-game-page";
+import { KenoGamePage } from "@pages/keno-game/keno-game-page";
 
 export type GamePages = {
 	originalsPage: OriginalsPage;
@@ -15,6 +16,7 @@ export type GamePages = {
 	hiloGamePage: HiloGamePage;
 	plinkoGamePage: PlinkoGamePage;
 	minesGamePage: MinesGamePage;
+	kenoGamePage: KenoGamePage;
 };
 
 export const gamePagesFixtures = base.extend<GamePages>({
@@ -36,6 +38,9 @@ export const gamePagesFixtures = base.extend<GamePages>({
 	minesGamePage: async ({ page }, use) => {
 		await use(new MinesGamePage(page));
 	},
+	kenoGamePage: async ({ page }, use) => {
+		await use(new KenoGamePage(page));
+	},
 	originalsPage: async (
 		{
 			page,
@@ -45,6 +50,7 @@ export const gamePagesFixtures = base.extend<GamePages>({
 			rouletteGamePage,
 			plinkoGamePage,
 			minesGamePage,
+			kenoGamePage,
 		},
 		use,
 	) => {
@@ -57,6 +63,7 @@ export const gamePagesFixtures = base.extend<GamePages>({
 				rouletteGamePage,
 				plinkoGamePage,
 				minesGamePage,
+				kenoGamePage,
 			),
 		);
 	},
