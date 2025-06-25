@@ -36,12 +36,12 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 		return new HiloGamePageSteps(this);
 	}
 
-	@step()
+	@step("Fill in bet amount")
 	public async fillInBetAmount(betAmount: number): Promise<void> {
 		await this.map.yourBetField.fill(`${betAmount}`);
 	}
 
-	@step()
+	@step("Click bet option")
 	public async clickBetOption(betOption: HiloBetOption): Promise<void> {
 		switch (betOption) {
 			case HiloBetOption.RED:
@@ -55,7 +55,7 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 		}
 	}
 
-	@step()
+	@step("Wait betting window available")
 	public async waitBettingWindowAvailable(
 		timeout = Timeout.EXTRA_MAX / 2,
 	): Promise<void> {
@@ -64,7 +64,7 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 		});
 	}
 
-	@step()
+	@step("Place bet")
 	public async placeBet(
 		betAmount: number,
 		betOption: HiloBetOption,
@@ -74,7 +74,7 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 		await this.clickBetOption(betOption);
 	}
 
-	@step()
+	@step("Wait round result")
 	public async waitRoundResult(): Promise<void> {
 		await this.map.waitFor({
 			locator: this.map.spinningCountdownTimer,
@@ -86,7 +86,7 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 		});
 	}
 
-	@step()
+	@step("Get round result")
 	public async getRoundResult(): Promise<string> {
 		await this.waitRoundResult();
 

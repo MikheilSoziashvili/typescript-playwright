@@ -26,14 +26,14 @@ export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 		await this.map.userAvatarMenuButton.hover();
 	}
 
-	@step()
+	@step("Click user profile dropdown item")
 	public async clickUserProfileDropdownItem(
 		dropdownItem: UserMenuOption,
 	): Promise<void> {
 		await this.map.userAvatarDropdownItem(dropdownItem).click();
 	}
 
-	@step()
+	@step("Navigate to user menu option")
 	public async navigateToUserMenuOption(
 		userMenuOption: UserMenuOption,
 	): Promise<void> {
@@ -66,24 +66,24 @@ export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 		}
 	}
 
-	@step()
+	@step("Click balance dropdown")
 	public async clickBalanceDropdown(): Promise<void> {
 		await this.map.balanceDropdown.click();
 	}
 
-	@step()
+	@step("Change currency")
 	public async changeCurrency(currency: string): Promise<void> {
 		await this.clickBalanceDropdown();
 		await this.map.selectCurrencyOption(currency).click();
 	}
 
-	@step()
+	@step("Change wallet")
 	public async changeWallet(wallet: string): Promise<void> {
 		await this.clickBalanceDropdown();
 		await this.map.walletOption(wallet).click();
 	}
 
-	@step()
+	@step("Get wallet balance")
 	public async getWalletBalance(cryptoCurrency: string): Promise<string> {
 		const text = await this.map
 			.walletBalanceValue(cryptoCurrency)

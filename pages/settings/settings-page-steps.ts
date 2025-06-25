@@ -1,4 +1,5 @@
 import { Timeout } from "@enums/timeout";
+import { step } from "decorators/step";
 import { BasePageStep } from "@pages/base/base-page-step";
 import { Toast } from "@pages/components/toast/toast";
 import { expect } from "@playwright/test";
@@ -10,6 +11,7 @@ export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 		super(gamdomPage);
 	}
 
+	@step("Navigate and enable 2FA authentication")
 	public async navigateAndEnable2FaAuthentication(
 		screenshotPath: string,
 	): Promise<void> {
@@ -17,6 +19,7 @@ export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 		await this.enable2FaAuthentication(screenshotPath);
 	}
 
+	@step("Enable 2FA authentication")
 	public async enable2FaAuthentication(
 		screenshotPath: string,
 	): Promise<void> {
@@ -43,6 +46,7 @@ export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 		});
 	}
 
+	@step("Disable 2FA authentication")
 	public async disable2FaAuthentication(
 		screenshotPath: string,
 	): Promise<void> {
@@ -77,6 +81,7 @@ export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 
 	// Workaround step for disabling the 2FA
 	// TODO: Remove when the issue is fixed
+	@step("Disable 2FA workaround")
 	private async disable2FaWorkaround(screenshotPath: string): Promise<void> {
 		let attempts = 0;
 		while (

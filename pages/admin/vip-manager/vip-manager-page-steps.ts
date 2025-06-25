@@ -11,7 +11,7 @@ export class VipManagerAdminPageSteps extends BasePageStep<VipManagerAdminPage> 
 		super(gamdomPage);
 	}
 
-	@step()
+	@step("Toggle update remove batch vip players")
 	public async toggleUpdateRemoveBatchVipPlayers(
 		updateRemoveButton: Locator,
 	): Promise<void> {
@@ -28,7 +28,7 @@ export class VipManagerAdminPageSteps extends BasePageStep<VipManagerAdminPage> 
 		}
 	}
 
-	@step()
+	@step("Toggle upload remove batch vip players by option")
 	public async toggleUploadRemoveBatchVipPlayersByOption(
 		bulkActionOption: BulkActions,
 	): Promise<void> {
@@ -40,7 +40,7 @@ export class VipManagerAdminPageSteps extends BasePageStep<VipManagerAdminPage> 
 		await this.toggleUpdateRemoveBatchVipPlayers(uploadRemoveButton);
 	}
 
-	@step()
+	@step("Open add vip status modal successfully")
 	public async openAddVipStatusModalSuccessfully(): Promise<void> {
 		await this.gamdomPage.clickAddVipStatusButton();
 		await this.gamdomPage
@@ -50,7 +50,7 @@ export class VipManagerAdminPageSteps extends BasePageStep<VipManagerAdminPage> 
 			]);
 	}
 
-	@step()
+	@step("Open batch update vip players status modal successfully")
 	public async openBatchUpdateVipPlayersStatusModalSuccessfully(): Promise<void> {
 		await this.gamdomPage.clickBatchUpdateButton();
 		await this.gamdomPage
@@ -60,7 +60,7 @@ export class VipManagerAdminPageSteps extends BasePageStep<VipManagerAdminPage> 
 			]);
 	}
 
-	@step()
+	@step("Open change telegram notification settings modal successfully")
 	public async openChangeTelegramNotificationSettingsModalSuccessfully(): Promise<void> {
 		await this.gamdomPage.clickChangeTelegramSettingsButton();
 		await this.gamdomPage

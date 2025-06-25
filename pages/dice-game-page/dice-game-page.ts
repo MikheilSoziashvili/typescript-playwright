@@ -31,7 +31,7 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 		return new DiceGamePageSteps(this);
 	}
 
-	@step()
+	@step("Fill in manual bet data")
 	public async fillInManualBetData(
 		betAmount: number,
 		multiplier?: number,
@@ -41,18 +41,18 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 			(await this.map.manualMultiplierField.fill(`${multiplier}`));
 	}
 
-	@step()
+	@step("Roll dice")
 	public async rollDice(): Promise<void> {
 		await this.map.rollDiceBtn.click();
 	}
 
-	@step()
+	@step("Place bet")
 	public async placeBet(betAmount: number, multiplier = 1.1): Promise<void> {
 		await this.fillInManualBetData(betAmount, multiplier);
 		await this.rollDice();
 	}
 
-	@step()
+	@step("Switch to autobet section")
 	public async switchToAutobetSection(): Promise<void> {
 		await this.map.diceAutobetTabButton.click();
 		await this.map.waitForVisibility({
@@ -60,7 +60,7 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 		});
 	}
 
-	@step()
+	@step("Fill increase by input")
 	public async fillIncreaseByInput(
 		type: BetIncreaseCondition,
 		value: number,
@@ -81,7 +81,7 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 		}
 	}
 
-	@step()
+	@step("Fill in autobet bet data")
 	public async fillInAutobetBetData(
 		parameters: DiceAutobetTestData,
 	): Promise<void> {
@@ -104,27 +104,27 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 		}
 	}
 
-	@step()
+	@step("Start autobet")
 	public async startAutobet(): Promise<void> {
 		await this.map.startAutobetButton.click();
 	}
 
-	@step()
+	@step("Stop autobet")
 	public async stopAutobet(): Promise<void> {
 		await this.map.stopAutobetButton.click();
 	}
 
-	@step()
+	@step("Open last bet details")
 	public async openLastBetDetails(): Promise<void> {
 		await this.map.diceLastResultNumber.click();
 	}
 
-	@step()
+	@step("Open dice history")
 	public async openDiceHistory(): Promise<void> {
 		await this.map.diceRollHistoryButton.click();
 	}
 
-	@step()
+	@step("Roll dice with amount")
 	public async rollDiceWithAmount(amount: number): Promise<void> {
 		await this.fillInManualBetData(amount);
 		await this.rollDice();

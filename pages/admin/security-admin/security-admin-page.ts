@@ -3,6 +3,7 @@ import { Page } from "playwright";
 import { SecurityAdminPageMap } from "./security-admin-page-map";
 import { SECURITY_ADMIN_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
+import { step } from "decorators/step";
 import { SecurityAdminPageAsserter } from "./security-admin-page-asserter";
 import { Toast } from "@pages/components/toast/toast";
 import { ToastSubTitle } from "@enums/toast-subtitles";
@@ -26,6 +27,7 @@ export class SecurityAdminPage extends BasePage<SecurityAdminPageMap> {
 		return new SecurityAdminPageAsserter(this);
 	}
 
+	@step("Update user withdraw limits")
 	public async updateUserWithdrawLimits(
 		alertLimit: number,
 		blockLimit: number,

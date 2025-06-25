@@ -16,6 +16,7 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 		super(gamdomPage);
 	}
 
+	@step("Play until result message is achieved")
 	public async playUntilResultMessageIs(
 		gameResultMessage: DiceGameResultMessage,
 		diceBetData: DiceBetTestData,
@@ -63,6 +64,7 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 		}
 	}
 
+	@step("Roll dice")
 	public async rollDice(diceBetData: DiceBetTestData): Promise<void> {
 		await this.gamdomPage.fillInManualBetData(diceBetData.betAmount);
 		const multiplier = diceBetData.multiplier || 1;
@@ -75,6 +77,7 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 		await this.gamdomPage.rollDice();
 	}
 
+	@step("Start autobet")
 	public async startAutobet(diceBetData: DiceAutobetTestData): Promise<void> {
 		const accountBalanceBeforeBet =
 			await this.gamdomPage.authenticatedHeader.getAccountBalance();
@@ -97,6 +100,7 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 			.accountBalanceHasChanged(accountBalanceBeforeBet);
 	}
 
+	@step("Autobet with increase by condition")
 	public async autobetIncreaseBy(
 		gameResultMessage: DiceGameResultMessage,
 		diceBetData: DiceAutobetTestData,
@@ -121,6 +125,7 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 		}
 	}
 
+	@step("Prepare autobet round")
 	private async prepareAutobetRound(
 		diceBetData: DiceAutobetTestData,
 		type: BetIncreaseCondition,
@@ -140,6 +145,7 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 		await this.gamdomPage.startAutobet();
 	}
 
+	@step("Wait for autobet round to finish")
 	private async waitForAutobetRoundToFinish(): Promise<void> {
 		await waitUntil(
 			async () => {
@@ -158,6 +164,7 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 		await this.gamdomPage.assertThat().diceResultIsDisplayed();
 	}
 
+	@step("Check if winning condition is met")
 	private async isWinningConditionMet(
 		gameResultMessage: DiceGameResultMessage,
 	): Promise<boolean> {
@@ -166,6 +173,7 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 		return diceGameAreaMessage === gameResultMessage;
 	}
 
+	@step("Open history and assert last bet")
 	public async openHistoryAndAssertLastBet(
 		expectedLastBet: number,
 	): Promise<void> {
@@ -173,7 +181,7 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 		await this.gamdomPage.assertThat().lastBetValueIs(expectedLastBet);
 	}
 
-	@step()
+	@step("Check last bets against roll over")
 	public async checkLastBetsAgainstRollOver(
 		autobetData: DiceAutobetTestData,
 		type: BetIncreaseCondition,

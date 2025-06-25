@@ -1,4 +1,5 @@
 import { BaseAsserter } from "@base/base-asserter";
+import { step } from "decorators/step";
 import { expect } from "@playwright/test";
 import { LoginModal } from "./login-modal";
 import { Timeout } from "@enums/timeout";
@@ -10,6 +11,7 @@ export class LoginModalAsserter extends BaseAsserter<LoginModal> {
 		this.fromCsv = fromCsv;
 	}
 
+	@step("Check login modal elements are visible")
 	async loginModalElementsAreVisible(): Promise<void> {
 		await this.checkElementsAreVisible(
 			[
@@ -21,10 +23,12 @@ export class LoginModalAsserter extends BaseAsserter<LoginModal> {
 		);
 	}
 
+	@step("Check login button is disabled")
 	public async loginBtnIsDisabled(): Promise<void> {
 		await expect(this.gamdomPage.map.loginBtn).toBeDisabled();
 	}
 
+	@step("Check username field error tooltip")
 	public async usernameFieldErrorTooltipIs(text: string): Promise<void> {
 		if (!text && this.fromCsv) {
 			return undefined; // if the value comes from csv and is empty - do nothing
@@ -35,6 +39,7 @@ export class LoginModalAsserter extends BaseAsserter<LoginModal> {
 		await this.gamdomPage.map.usernameFieldErrorIcon.click(); // click remove icon to remove tooltip
 	}
 
+	@step("Check password field error tooltip")
 	public async passwordFieldErrorTooltipIs(text: string): Promise<void> {
 		if (!text && this.fromCsv) {
 			return undefined; // if the value comes from csv and is empty - do nothing
@@ -45,6 +50,7 @@ export class LoginModalAsserter extends BaseAsserter<LoginModal> {
 		await this.gamdomPage.map.passwordFieldErrorIcon.click(); // click remove icon to remove tooltip
 	}
 
+	@step("Assert password reset email is sent")
 	public async assertPasswordResetEmailIsSent(): Promise<void> {
 		await expect(
 			this.gamdomPage.map.passwordResetConfirmationText,

@@ -9,7 +9,7 @@ export class MaintenancePageAsserter extends BaseAsserter<MaintenancePage> {
 		super(page);
 	}
 
-	@step()
+	@step("Is social media link correct")
 	public async isSocialMediaLinkCorrect(
 		socialMedia: string,
 		expectedURL: string,
@@ -19,7 +19,7 @@ export class MaintenancePageAsserter extends BaseAsserter<MaintenancePage> {
 		).toHaveAttribute(Attributes.HREF, expectedURL);
 	}
 
-	@step()
+	@step("Footer social media icon visual correct")
 	public async footerSocialMediaIconVisualCorrect(
 		testInfo: TestInfo,
 		socialMedia: string,

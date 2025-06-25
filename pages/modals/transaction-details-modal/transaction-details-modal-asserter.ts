@@ -8,7 +8,7 @@ export class TransactionDetailsModalAsserter extends BaseAsserter<TransactionDet
 		super(page);
 	}
 
-	@step()
+	@step("Assert deposit amount in btc")
 	public async assertDepositAmountInBTC(
 		expectedValue: number,
 	): Promise<void> {

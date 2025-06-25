@@ -1,4 +1,5 @@
 import { BasePageStep } from "@pages/base/base-page-step";
+import { step } from "decorators/step";
 import { GiftCardsAdminPage } from "./gift-cards-admin-page";
 
 export class GiftCardsAdminSteps extends BasePageStep<GiftCardsAdminPage> {
@@ -6,6 +7,7 @@ export class GiftCardsAdminSteps extends BasePageStep<GiftCardsAdminPage> {
 		super(page);
 	}
 
+	@step("Select value from gift card generator dropdown")
 	public async selectValueFromGiftCardGeneratorDropdownValues(
 		dropdownValue: string,
 	): Promise<void> {
@@ -18,6 +20,7 @@ export class GiftCardsAdminSteps extends BasePageStep<GiftCardsAdminPage> {
 			.click();
 	}
 
+	@step("Select quantity from gift card generator dropdown")
 	public async selectQuantityFromGiftCardGeneratorDropdownValues(
 		quantity: string,
 	): Promise<void> {
@@ -30,6 +33,7 @@ export class GiftCardsAdminSteps extends BasePageStep<GiftCardsAdminPage> {
 			.click();
 	}
 
+	@step("Generate gift card from generator")
 	public async generateGiftCardFromGenerator(
 		value: string,
 		quantity: string,
@@ -39,6 +43,7 @@ export class GiftCardsAdminSteps extends BasePageStep<GiftCardsAdminPage> {
 		await this.gamdomPage.map.generateAndDownloadButton.click();
 	}
 
+	@step("Navigate and generate gift card with 2FA flow")
 	public async navigateAndGenerateGiftCardWith2FaFlow(
 		value: string,
 		quantity: string,

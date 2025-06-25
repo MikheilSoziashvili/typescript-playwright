@@ -9,20 +9,21 @@ export class TransactionsSteps extends BasePageStep<TransactionsPage> {
 		super(page);
 	}
 
-	@step()
+	@step("Verify deposit transaction status is")
 	public async verifyDepositTransactionStatusIs(
 		status: TransactionState,
 	): Promise<void> {
 		await this.verifyTransactionStatus(TransactionType.DEPOSIT, status);
 	}
 
-	@step()
+	@step("Verify withdraw transaction status is")
 	public async verifyWithdrawTransactionStatusIs(
 		status: TransactionState,
 	): Promise<void> {
 		await this.verifyTransactionStatus(TransactionType.WITHDRAWAL, status);
 	}
 
+	@step("Verify transaction status")
 	private async verifyTransactionStatus(
 		type: TransactionType,
 		status: TransactionState,

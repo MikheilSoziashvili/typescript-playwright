@@ -1,4 +1,5 @@
 import { BasePage } from "@base/base-page";
+import { step } from "decorators/step";
 import { SETTINGS_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { expect, Page } from "@playwright/test";
@@ -28,20 +29,24 @@ export class SettingsPage extends BasePage<SettingsPageMap> {
 		return new SettingsPageSteps(this);
 	}
 
+	@step("Open 2FA activation modal")
 	public async open2FAActivationModal(): Promise<void> {
 		await this.map.enable2FAButton.click();
 	}
 
+	@step("Open 2FA disable modal")
 	public async open2FADisableModal(): Promise<void> {
 		await this.map.disable2FAButton.click();
 	}
 
+	@step("Take QR code image screenshot")
 	public async takeQRCodeImageScreenshot(
 		screenshotPath: string,
 	): Promise<void> {
 		await this.map.imageQRCode.screenshot({ path: screenshotPath });
 	}
 
+	@step("Fill 2FA code inputs")
 	public async fill2FACodeInputs(code2FA: string): Promise<void> {
 		const inputCount = await this.map.fields2FACodeInputs.count();
 		expect(inputCount).toBe(code2FA.length);

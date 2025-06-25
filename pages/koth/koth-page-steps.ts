@@ -1,4 +1,5 @@
 import { BasePageStep } from "@pages/base/base-page-step";
+import { step } from "decorators/step";
 import { KothPage } from "./koth-page";
 import { expect } from "@playwright/test";
 
@@ -7,6 +8,7 @@ export class KothSteps extends BasePageStep<KothPage> {
 		super(page);
 	}
 
+	@step("Navigate to KOTH event by name")
 	public async navigateToKothEventByName(
 		kothEventName: string,
 	): Promise<void> {

@@ -1,4 +1,5 @@
 import { BasePage } from "@base/base-page";
+import { step } from "decorators/step";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { Page } from "@playwright/test";
 import { BlogCategoryPageAsserter } from "./blog-category-page-asserter";
@@ -18,6 +19,7 @@ export class BlogCategoryPage extends BasePage<BlogCategoryPageMap> {
 		return new BlogCategoryPageSteps(this);
 	}
 
+	@step("Navigate to blog category")
 	public async navigateToBlogCategory(
 		categoryEndpoint: string,
 		parameters?: BasePageNavigationParametersType,

@@ -1,4 +1,5 @@
 import { CASINO_PAGE_ENDPOINT } from "@constants/page-endpoints";
+import { step } from "decorators/step";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { BasePage } from "@pages/base/base-page";
 import { Page } from "@playwright/test";
@@ -28,14 +29,17 @@ export class CasinoPage extends BasePage<CasinoPageMap> {
 		return new CasinoPageSteps(this);
 	}
 
+	@step("Click providers dropdown")
 	public async clickProvidersDropdown(): Promise<void> {
 		await this.map.providersDropdown.click();
 	}
 
+	@step("Click settings button")
 	public async clickSettingsButton(): Promise<void> {
 		await this.map.settingsButton.click();
 	}
 
+	@step("Click providers dropdown in settings modal")
 	public async clickProvidersDropdownInSettingsModal(): Promise<void> {
 		await this.map.providersDropdownInSettingsModal.click();
 	}

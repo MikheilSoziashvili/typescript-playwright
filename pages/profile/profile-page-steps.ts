@@ -1,4 +1,5 @@
 import { MailinatorApi } from "@api/mailinator-api";
+import { step } from "decorators/step";
 import { getRandomEmail, getRandomPhone } from "@core/utils/utils";
 import { ContactType } from "@enums/personal-info-types";
 import { Timeout } from "@enums/timeout";
@@ -12,6 +13,7 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		super(gamdomPage);
 	}
 
+	@step("Set hide user statistics mode")
 	private async setHideUserStatisticsMode(): Promise<void> {
 		if (!(await this.gamdomPage.map.hideStatisticsToggle.isChecked())) {
 			await this.gamdomPage.map.hideStatisticsToggle.click();
@@ -20,6 +22,7 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		}
 	}
 
+	@step("Set show user statistics mode")
 	private async setShowUserStatisticsMode(): Promise<void> {
 		if (await this.gamdomPage.map.hideStatisticsToggle.isChecked()) {
 			await this.gamdomPage.map.hideStatisticsToggle.click();
@@ -28,6 +31,7 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		}
 	}
 
+	@step("Toggle user statistics mode")
 	public async toggleUserStatisticsMode(toggle: "on" | "off"): Promise<void> {
 		if (toggle === "on") {
 			await this.setHideUserStatisticsMode();
@@ -36,11 +40,13 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		}
 	}
 
+	@step("Complete verification flow")
 	public async completeVerificationFlow(): Promise<void> {
 		await this.gamdomPage.map.verifyButton.click();
 		await this.gamdomPage.map.continueVerificationButton.click();
 	}
 
+	@step("Verify email")
 	public async verifyEmail(
 		mailinatorApi: MailinatorApi,
 		domain: string,
@@ -71,6 +77,7 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		await page.goto(verificationLink);
 	}
 
+	@step("Verify email and check profile")
 	public async verifyEmailAndCheckProfile(
 		mailinatorApi: MailinatorApi,
 		domain: string,
@@ -95,40 +102,47 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		await this.gamdomPage.assertThat().assertVerifyButtonNotVisible();
 	}
 
+	@step("Change email successfully")
 	public async changeEmailSuccessfully(email: string): Promise<void> {
 		await this.changeEmail(email);
 		await this.completeAndVerifyEmailChange();
 	}
 
+	@step("Change email")
 	public async changeEmail(email: string): Promise<void> {
 		await this.gamdomPage.map.changeEmailButton.click();
 		await this.gamdomPage.map.changeEmailInput.fill(email);
 		await this.gamdomPage.clickSaveEmail();
 	}
 
+	@step("Complete and verify email change")
 	public async completeAndVerifyEmailChange(): Promise<void> {
 		await this.gamdomPage.continueModal.assertThat().isDisplayed();
 		await this.gamdomPage.continueModal.clickContinueButton();
 		await this.gamdomPage.assertThat().assertChangeEmailButtonVisible();
 	}
 
+	@step("Change phone successfully")
 	public async changePhoneSuccessfully(phone: string): Promise<void> {
 		await this.changePhone(phone);
 		await this.completeAndVerifyPhoneChange();
 	}
 
+	@step("Change phone")
 	public async changePhone(phone: string): Promise<void> {
 		await this.gamdomPage.map.changePhoneButton.click();
 		await this.gamdomPage.map.changePhoneInput.fill(phone);
 		await this.gamdomPage.clickSavePhone();
 	}
 
+	@step("Complete and verify phone change")
 	public async completeAndVerifyPhoneChange(): Promise<void> {
 		await this.gamdomPage.continueModal.assertThat().isDisplayed();
 		await this.gamdomPage.continueModal.clickContinueButton();
 		await this.gamdomPage.assertThat().assertChangePhoneButtonVisible();
 	}
 
+	@step("Logout user successfully")
 	public async logoutUserSuccessfully(): Promise<void> {
 		await this.gamdomPage.navigate();
 		await this.gamdomPage.logout();
@@ -140,6 +154,7 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 			.loggedOutUserElementsAreVisible();
 	}
 
+	@step("Cancel logout")
 	public async cancelLogout(): Promise<void> {
 		await this.gamdomPage.map.logOutButton.click();
 		await this.gamdomPage.continueModal
@@ -148,6 +163,7 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		await this.gamdomPage.continueModal.clickCancelButton();
 	}
 
+	@step("Update contact info with unique value")
 	public async updateContactInfoWithUniqueValue(
 		type: ContactType,
 		isWith2FaFlow: boolean,

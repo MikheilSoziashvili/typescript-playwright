@@ -1,4 +1,5 @@
 import { BasePageStep } from "@pages/base/base-page-step";
+import { step } from "decorators/step";
 import { MinesGamePage } from "./mines-game-page";
 import { MinesBetTestData } from "@dtos/test-data";
 
@@ -7,6 +8,7 @@ export class MinesGamePageSteps extends BasePageStep<MinesGamePage> {
 		super(gamdomPage);
 	}
 
+	@step("Place bet and configure mines")
 	public async placeBetAndConfigureMines(
 		minesBetData: MinesBetTestData,
 	): Promise<void> {
@@ -15,6 +17,7 @@ export class MinesGamePageSteps extends BasePageStep<MinesGamePage> {
 		await this.gamdomPage.chooseMinesNumber(minesBetData.minesNumber);
 	}
 
+	@step("Place manual bet with random tile")
 	public async placeManualBetWithRandomTile(
 		minesBetData: MinesBetTestData,
 	): Promise<void> {
@@ -25,6 +28,7 @@ export class MinesGamePageSteps extends BasePageStep<MinesGamePage> {
 		);
 	}
 
+	@step("Perform manual cashout")
 	public async performManualCashout(): Promise<void> {
 		await this.gamdomPage.assertThat().manualCashoutButtonIsDisplayed();
 		await this.gamdomPage.performManualCashout();

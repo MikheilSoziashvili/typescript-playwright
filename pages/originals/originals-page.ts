@@ -95,7 +95,7 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 	 * @param {OriginalGames} game - The name of the game to navigate to (e.g., "Dice", "Crash", "Roulette", "Hi-Lo").
 	 * @returns {Promise<void>} A promise that resolves when navigation is complete.
 	 */
-	@step()
+	@step("Navigate to game")
 	public async navigateToGame(game: OriginalGames): Promise<void> {
 		const gamePage = this.gamesMap[game];
 		await gamePage.navigate();
@@ -119,7 +119,7 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 	 * @param {number | RouletteBetColor | HiloBetOption | { rowsValue?: PlinkoRowsOption, riskValue?: PlinkoRiskOption } | number} [multiplierOrColorOrOption] - An optional parameter that can represent multiplier, color, betting option, Plinko options, or number of mines, depending on the game.
 	 * @returns {Promise<void>} A promise that resolves when the bet has been placed.
 	 */
-	@step()
+	@step("Place bet")
 	public async placeBet(
 		game: OriginalGames,
 		betAmount: number,
@@ -219,7 +219,7 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 	 * @param {OriginalGames} game - The game to wait for.
 	 * @returns {Promise<void>} A promise that resolves when the game round has finished.
 	 */
-	@step()
+	@step("Wait for game round finish")
 	public async waitForGameRoundFinish(game: OriginalGames): Promise<void> {
 		const gamePage = this.gamesMap[game];
 

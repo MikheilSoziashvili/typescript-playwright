@@ -1,6 +1,7 @@
 import { BasePage } from "@base/base-page";
 import { FREE_SPINS_ADMIN_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
+import { step } from "decorators/step";
 import { Page } from "@playwright/test";
 import { FreeSpinsAdminPageAsserter } from "./free-spins-admin-page-asserter";
 import { FreeSpinsAdminPageMap } from "./free-spins-admin-page-map";
@@ -29,6 +30,7 @@ export class FreeSpinsAdminPage extends BasePage<FreeSpinsAdminPageMap> {
 		return new FreeSpinsAdminPageSteps(this);
 	}
 
+	@step("Select game to give free spins")
 	public async selectGameToGiveFreeSpins(gameTitle: string): Promise<void> {
 		await this.map.waitForVisibility({
 			locator: this.map.findGameToGiveFreeSpinsCardGameTextInput,
@@ -45,6 +47,7 @@ export class FreeSpinsAdminPage extends BasePage<FreeSpinsAdminPageMap> {
 		await gameLocator.click();
 	}
 
+	@step("Give free spins to user")
 	public async giveFreeSpins(parameters: {
 		tableRowIndex: number;
 		betAmount: number;

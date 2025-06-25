@@ -13,7 +13,7 @@ export class OriginalsSteps extends BasePageStep<OriginalsPage> {
 		super(page);
 	}
 
-	@step()
+	@step("Set bet amount")
 	public async setBetAmount(
 		game: OriginalGames,
 		betAmount: number,
@@ -28,7 +28,7 @@ export class OriginalsSteps extends BasePageStep<OriginalsPage> {
 		}
 	}
 
-	@step()
+	@step("Press min button")
 	public async pressMinButton(game: OriginalGames): Promise<void> {
 		const handler = this.handlers[game]?.pressMinButton;
 		expect(
@@ -40,7 +40,7 @@ export class OriginalsSteps extends BasePageStep<OriginalsPage> {
 		}
 	}
 
-	@step()
+	@step("Press half button")
 	public async pressHalfButton(game: OriginalGames): Promise<void> {
 		const handler = this.handlers[game]?.pressHalfButton;
 		expect(
@@ -52,7 +52,7 @@ export class OriginalsSteps extends BasePageStep<OriginalsPage> {
 		}
 	}
 
-	@step()
+	@step("Get bet amount value")
 	public async getBetAmountValue(game: OriginalGames): Promise<string> {
 		const handler = this.handlers[game]?.getBetAmountValue;
 		expect(

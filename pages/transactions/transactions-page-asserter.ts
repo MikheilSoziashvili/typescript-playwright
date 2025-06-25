@@ -9,7 +9,7 @@ export class TransactionsAsserter extends BaseAsserter<TransactionsPage> {
 		super(page);
 	}
 
-	@step()
+	@step("Assert transaction status is")
 	public async assertTransactionStatusIs(
 		expectedStatus: TransactionState,
 	): Promise<void> {

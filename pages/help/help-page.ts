@@ -1,4 +1,5 @@
 import { BasePage } from "@base/base-page";
+import { step } from "decorators/step";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { Page } from "@playwright/test";
 import { HelpPageAsserter } from "./help-page-asserter";
@@ -18,6 +19,7 @@ export class HelpPage extends BasePage<HelpPageMap> {
 		return new HelpPageSteps(this);
 	}
 
+	@step("Navigate to help page category")
 	public async navigateToHelpPageCategory(
 		helpPageEndpoint: string,
 		parameters?: BasePageNavigationParametersType,

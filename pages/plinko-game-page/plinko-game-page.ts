@@ -31,27 +31,27 @@ export class PlinkoGamePage extends BasePage<PlinkoGamePageMap> {
 		return new PlinkoGamePageAsserter(this);
 	}
 
-	@step()
+	@step("Open login modal")
 	public async openLoginModal(): Promise<void> {
 		await this.map.signInButton.click();
 	}
 
-	@step()
+	@step("Click autobet")
 	public async clickAutobet(): Promise<void> {
 		await this.map.autoBetButton.click();
 	}
 
-	@step()
+	@step("Fill in bet amount")
 	public async fillInBetAmount(betAmount: string | number): Promise<void> {
 		await this.map.betAmountInput.fill(betAmount.toString());
 	}
 
-	@step()
+	@step("Drop ball")
 	public async dropBall(): Promise<void> {
 		await this.map.dropBallButton.click();
 	}
 
-	@step()
+	@step("Start manual bet")
 	public async startManualBet(
 		betAmount: number | string,
 		options?: { rowsValue?: number; riskValue?: number },
@@ -75,23 +75,23 @@ export class PlinkoGamePage extends BasePage<PlinkoGamePageMap> {
 		await this.dropBall();
 	}
 
-	@step()
+	@step("Get rows slider value")
 	public async getRowsSliderValue(): Promise<number> {
 		return this.getSliderValue(this.map.betRowsSliderContainer);
 	}
 
-	@step()
+	@step("Get risk slider value")
 	public async getRiskSliderValue(): Promise<number> {
 		return this.getSliderValue(this.map.riskRowsSliderContainer);
 	}
 
-	@step()
+	@step("Get remaining bets count")
 	public async getRemainingBetsCount(): Promise<string> {
 		const count = await this.map.remainingBetsBalanceLabel.innerText();
 		return count.toString();
 	}
 
-	@step()
+	@step("Get number of bets input")
 	public async getNumberOfBetsInput(): Promise<string> {
 		const numberOfBetsInput = await this.map.numberOfBetsInput.getAttribute(
 			Attributes.VALUE,
@@ -99,23 +99,23 @@ export class PlinkoGamePage extends BasePage<PlinkoGamePageMap> {
 		return numberOfBetsInput || "";
 	}
 
-	@step()
+	@step("Get user in game balance")
 	public async getUserInGameBalance(): Promise<number> {
 		const balance = await this.map.userInGameBalance.innerText();
 		return parseBalance(balance);
 	}
 
-	@step()
+	@step("Press min button")
 	public async pressMinButton(): Promise<void> {
 		await this.map.minButton.click();
 	}
 
-	@step()
+	@step("Press half button")
 	public async pressHalfButton(): Promise<void> {
 		await this.map.halfButton.click();
 	}
 
-	@step()
+	@step("Get bet amount value")
 	public async getBetAmountValue(): Promise<string> {
 		return this.map.betAmountInput.inputValue();
 	}

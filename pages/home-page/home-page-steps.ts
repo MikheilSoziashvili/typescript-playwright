@@ -17,7 +17,7 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 		super(gamdomPage);
 	}
 
-	@step()
+	@step("Login username")
 	public async loginUsername(username: string): Promise<void> {
 		await this.gamdomPage.unauthenticatedHeader.openLoginModal();
 
@@ -25,7 +25,7 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 		await this.gamdomPage.assertThat().userIsLoggedIn();
 	}
 
-	@step()
+	@step("Login user")
 	public async loginUser(
 		username: string,
 		password: string,
@@ -39,7 +39,7 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 		}
 	}
 
-	@step()
+	@step("Generate and login user with2fa code successfully")
 	public async generateAndLoginUserWith2FaCodeSuccessfully(
 		username: string,
 		password: string,
@@ -55,7 +55,7 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 		);
 	}
 
-	@step()
+	@step("Login user with2fa code successfully")
 	public async loginUserWith2FaCodeSuccessfully(
 		username: string,
 		password: string,
@@ -69,7 +69,7 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 		await this.gamdomPage.assertThat().userIsLoggedIn();
 	}
 
-	@step()
+	@step("Register new user")
 	public async registerNewUser(
 		params: RegisterTestDataParams = {},
 	): Promise<RegisterTestData> {
@@ -89,7 +89,7 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 		return registeredData;
 	}
 
-	@step()
+	@step("Go to carousel slide")
 	public async goToCarouselSlide(
 		slideName: HomePageBannerCarouselSlideTitle,
 	): Promise<void> {
@@ -97,7 +97,7 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 		await this.gamdomPage.clickCarouselSlide(slideName);
 	}
 
-	@step()
+	@step("Find provider in casino hover")
 	public async findProviderInCasinoHover(
 		providerName: string,
 	): Promise<Locator> {
@@ -135,7 +135,7 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 		return this.gamdomPage.map.providerInCasinoMenu(providerName);
 	}
 
-	@step()
+	@step("Verify provider visibility")
 	public async verifyProviderVisibility(provider: string): Promise<void> {
 		await this.gamdomPage.map.casinoMenuLocator.hover();
 
@@ -148,7 +148,7 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 			]);
 	}
 
-	@step()
+	@step("Verify provider invisibility")
 	public async verifyProviderInvisibility(provider: string): Promise<void> {
 		await this.gamdomPage.map.casinoMenuLocator.hover();
 
@@ -203,6 +203,7 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 		);
 	}
 
+	@step("Reset password")
 	public async resetPassword(email: string): Promise<void> {
 		await this.gamdomPage.loginModal.clickResetPasswordButton();
 		await this.gamdomPage.loginModal.fillInEmail(email);
@@ -212,7 +213,7 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 			.assertPasswordResetEmailIsSent();
 	}
 
-	@step()
+	@step("Change password from email")
 	public async changePasswordFromEmail(
 		newPassword: string,
 		mailinatorApi: MailinatorApi,

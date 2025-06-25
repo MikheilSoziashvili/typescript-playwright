@@ -1,4 +1,5 @@
 import { expect } from "@playwright/test";
+import { step } from "decorators/step";
 import { BaseAsserter } from "@base/base-asserter";
 import { Notification } from "./notification";
 
@@ -7,6 +8,7 @@ export class NotificationAsserter extends BaseAsserter<Notification> {
 		super(page);
 	}
 
+	@step("Check notification title")
 	public async titleIs(
 		title: string,
 		options?: { index?: number },
@@ -16,6 +18,7 @@ export class NotificationAsserter extends BaseAsserter<Notification> {
 		).toHaveText(title);
 	}
 
+	@step("Check notification subtitle")
 	public async subTitleIs(
 		subTitle: string,
 		options?: { index?: number; title?: string },
@@ -25,6 +28,7 @@ export class NotificationAsserter extends BaseAsserter<Notification> {
 		).toHaveText(subTitle);
 	}
 
+	@step("Check notification is displayed")
 	public async isDisplayed(options?: {
 		index?: number;
 		title?: string;
@@ -34,6 +38,7 @@ export class NotificationAsserter extends BaseAsserter<Notification> {
 		).toBeVisible();
 	}
 
+	@step("Check notification is not displayed")
 	public async isNotDisplayed(options?: {
 		index?: number;
 		title?: string;

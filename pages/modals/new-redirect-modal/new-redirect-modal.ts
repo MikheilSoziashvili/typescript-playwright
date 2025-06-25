@@ -22,17 +22,17 @@ export class NewRedirectModal extends BasePage<NewRedirectModalMap> {
 		return new NewRedirectModalAsserter(this);
 	}
 
-	@step()
+	@step("Fill redirect from")
 	private async fillRedirectFrom(fromPath: string): Promise<void> {
 		await this.map.fromPathInput.fill(fromPath);
 	}
 
-	@step()
+	@step("Fill redirect to")
 	private async fillRedirectTo(toPath: string): Promise<void> {
 		await this.map.toPathInput.fill(toPath);
 	}
 
-	@step()
+	@step("Fill redirect fields")
 	public async fillRedirectFields(
 		fromPath: string,
 		toPath: string,
@@ -41,12 +41,12 @@ export class NewRedirectModal extends BasePage<NewRedirectModalMap> {
 		await this.fillRedirectTo(toPath);
 	}
 
-	@step()
+	@step("Click create redirect button")
 	public async clickCreateRedirectButton(): Promise<void> {
 		await this.map.createRedirectButton.click();
 	}
 
-	@step()
+	@step("Click edit redirect button")
 	public async clickEditRedirectButton(): Promise<void> {
 		await this.map.editRedirectButton.click();
 	}

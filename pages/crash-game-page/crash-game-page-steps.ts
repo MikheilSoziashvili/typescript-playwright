@@ -1,4 +1,5 @@
 import { BasePageStep } from "@pages/base/base-page-step";
+import { step } from "decorators/step";
 import { parseToFloat } from "@core/utils/utils";
 import { BetTestData } from "@dtos/test-data";
 import { CrashGamePage } from "./crash-game-page";
@@ -10,6 +11,7 @@ export class CrashGamePageSteps extends BasePageStep<CrashGamePage> {
 		super(gamdomPage);
 	}
 
+	@step("Place bet")
 	public async placeBet(betTestData: BetTestData): Promise<void> {
 		const accountBalanceBeforeBet =
 			await this.gamdomPage.authenticatedHeader.getAccountBalance();
@@ -34,6 +36,7 @@ export class CrashGamePageSteps extends BasePageStep<CrashGamePage> {
 			.accountBalanceIs(accountBalanceBeforeBet - betTestData.betAmount);
 	}
 
+	@step("Toggle autobet setup")
 	public async toggleAutobetSetup(
 		betTestData: BetTestData,
 		stopBetAmount: number,
@@ -42,12 +45,14 @@ export class CrashGamePageSteps extends BasePageStep<CrashGamePage> {
 		await this.gamdomPage.stopBetIfMoreThan(stopBetAmount);
 	}
 
+	@step("Enable autobet and fill amount")
 	public async enableAutobetAndFillAmount(betAmount: number): Promise<void> {
 		await this.gamdomPage.toggleAutobet();
 		await this.gamdomPage.fillInBetAmount(betAmount);
 		await this.gamdomPage.assertThat().startAutobetButtonIsEnabled();
 	}
 
+	@step("Execute actions")
 	private async executeActions(
 		actions: (() => Promise<void>)[],
 	): Promise<void> {
@@ -56,6 +61,7 @@ export class CrashGamePageSteps extends BasePageStep<CrashGamePage> {
 		}
 	}
 
+	@step("Start autobet session")
 	private async startAutobetSession(
 		betAmount: number,
 		autoCashoutMultiplier: number,
@@ -76,6 +82,7 @@ export class CrashGamePageSteps extends BasePageStep<CrashGamePage> {
 		return true;
 	}
 
+	@step("Process round result")
 	private async processRoundResult(
 		autoCashoutMultiplier: number,
 	): Promise<{ betWon: boolean; crashedMultiplier: number }> {
@@ -98,6 +105,7 @@ export class CrashGamePageSteps extends BasePageStep<CrashGamePage> {
 		return { betWon, crashedMultiplier };
 	}
 
+	@step("Update bet amount")
 	private async updateBetAmount(
 		previousBetAmount: number,
 		betWon: boolean,
@@ -120,6 +128,7 @@ export class CrashGamePageSteps extends BasePageStep<CrashGamePage> {
 		return currentBetAmount;
 	}
 
+	@step("Autobet until bet more than threshold")
 	public async autobetUntilBetMoreThan(
 		betTestData: BetTestData,
 		stopIfBetMoreThanAmount: number,

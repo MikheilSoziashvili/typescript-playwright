@@ -13,7 +13,7 @@ export class KothAsserter extends BaseAsserter<KothPage> {
 		super(page);
 	}
 
-	@step()
+	@step("Koth banner visual correct")
 	public async kothBannerVisualCorrect(testInfo: TestInfo): Promise<void> {
 		await this.checkElementVisualCorrect(
 			testInfo,
@@ -29,7 +29,7 @@ export class KothAsserter extends BaseAsserter<KothPage> {
 		);
 	}
 
-	@step()
+	@step("Verify koth banner currency is centered")
 	public async verifyKothBannerCurrencyIsCentered(): Promise<void> {
 		const currencyContainer = this.gamdomPage.map.kothBannerCurrencyAmount;
 		const initialX = await this.gamdomPage.getKothBannerCurrencyXPosition();
@@ -41,7 +41,7 @@ export class KothAsserter extends BaseAsserter<KothPage> {
 		);
 	}
 
-	@step()
+	@step("Verify koth banner timer is centered")
 	public async verifyKothBannerTimerIsCentered(): Promise<void> {
 		const timerContainer = this.gamdomPage.map.kothBannerTimerContainer;
 
@@ -67,7 +67,7 @@ export class KothAsserter extends BaseAsserter<KothPage> {
 		);
 	}
 
-	@step()
+	@step("Verify koth url is")
 	public async verifyKothUrlIs(
 		expectedUrl: string,
 		gamdomApi: GamdomApi,
@@ -82,7 +82,7 @@ export class KothAsserter extends BaseAsserter<KothPage> {
 		await this.waitForAndVerifyCurrentUrlIs(formattedExpectedUrl);
 	}
 
-	@step()
+	@step("Verify koth event page is displayed")
 	public async verifyKothEventPageIsDisplayed(
 		kothPageEndpoint: string,
 	): Promise<void> {
@@ -97,7 +97,7 @@ export class KothAsserter extends BaseAsserter<KothPage> {
 		);
 	}
 
-	@step()
+	@step("Verify koth wagger amount profile card")
 	public async verifyKothWaggerAmountProfileCard(
 		expectedAmount: number,
 	): Promise<void> {
@@ -122,6 +122,7 @@ export class KothAsserter extends BaseAsserter<KothPage> {
 		);
 	}
 
+	@step("Verify user KOTH wager amount in right table")
 	public async verifyUserKothWaggerAmountRightTable(
 		expectedAmount: number,
 		username: string,

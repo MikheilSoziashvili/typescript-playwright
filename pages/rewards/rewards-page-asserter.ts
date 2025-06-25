@@ -26,7 +26,7 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 		);
 	}
 
-	@step()
+	@step("Is special offer activate button disabled")
 	async isSpecialOfferActivateButtonDisabled(): Promise<void> {
 		await expect(
 			this.gamdomPage.map.specialOfferActivateNowButton,
@@ -35,35 +35,35 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 		});
 	}
 
-	@step()
+	@step("Is special offer promotion in progress")
 	async isSpecialOfferPromotionInProgress(): Promise<void> {
 		await expect(
 			this.gamdomPage.map.specialOfferInProgressButton,
 		).toBeVisible();
 	}
 
-	@step()
+	@step("Is special offer promotion not in prgress")
 	async isSpecialOfferPromotionNotInPrgress(): Promise<void> {
 		await expect(
 			this.gamdomPage.map.specialOfferInProgressButton,
 		).toBeHidden();
 	}
 
-	@step()
+	@step("Is instant rakeback locked button visibile")
 	async isInstantRakebackLockedButtonVisibile(): Promise<void> {
 		await expect(
 			this.gamdomPage.map.instantRakebackLockedButton,
 		).toBeVisible();
 	}
 
-	@step()
+	@step("Is instant rakeback locked button disabled")
 	async isInstantRakebackLockedButtonDisabled(): Promise<void> {
 		await expect(
 			this.gamdomPage.map.instantRakebackLockedButton,
 		).toBeDisabled();
 	}
 
-	@step()
+	@step("Is instant rakeback amount visible")
 	async isInstantRakebackAmountVisible(
 		amount: number,
 		currency?: string,
@@ -74,7 +74,7 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 		);
 	}
 
-	@step()
+	@step("Is instant reward visible")
 	async isInstantRewardVisible(): Promise<void> {
 		await this.checkElementsAreVisible(
 			[this.gamdomPage.map.instantRakebackCard],
@@ -107,7 +107,7 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 			.verifyInstantRewardAmountIsCalculated(game, betAmount);
 	}
 
-	@step()
+	@step("Is royalty up rewards in progress")
 	async isRoyaltyUpRewardsInProgress(
 		rewardInProgress: RewardsRoyaltyUpRanks,
 	): Promise<void> {
@@ -117,7 +117,7 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 		]);
 	}
 
-	@step()
+	@step("Is royalty up rewards claimable")
 	async isRoyaltyUpRewardsClaimable(
 		claimableRewards: RewardsRoyaltyUpRanks[],
 	): Promise<void> {

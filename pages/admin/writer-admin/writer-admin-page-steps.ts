@@ -2,6 +2,7 @@ import { BlogPostTestData } from "@dtos/test-data";
 import { BlogPostCategories } from "@enums/post-categories";
 import { Timeout } from "@enums/timeout";
 import { BasePageStep } from "@pages/base/base-page-step";
+import { step } from "decorators/step";
 import { WriterAdminPage } from "./writer-admin-page";
 import { Attributes } from "@enums/playwright/htmlAttributes";
 import { BooleanValueString } from "@enums/playwright/booleanValues";
@@ -11,6 +12,7 @@ export class WriterAdminPageSteps extends BasePageStep<WriterAdminPage> {
 		super(gamdomPage);
 	}
 
+	@step("Select post categories")
 	public async selectPostCategories(
 		categories: BlogPostCategories[],
 	): Promise<void> {
@@ -30,6 +32,7 @@ export class WriterAdminPageSteps extends BasePageStep<WriterAdminPage> {
 		await this.gamdomPage.map.blogTitleInput.click({ force: true });
 	}
 
+	@step("Create article post")
 	public async createArticlePost(postData: BlogPostTestData): Promise<void> {
 		await this.gamdomPage.fillPostParagraph(postData.paragraph);
 		await this.gamdomPage.fillPostTitle(postData.title);

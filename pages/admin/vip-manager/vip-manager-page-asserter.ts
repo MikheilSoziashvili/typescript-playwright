@@ -45,7 +45,7 @@ export class VipManagerAdminPageAsserter extends BaseAsserter<VipManagerAdminPag
 		await this.checkElementsAreVisible(elementsToCheck);
 	}
 
-	@step()
+	@step("Check send notification section presence")
 	public async checkSendNotificationSectionPresence(
 		isVisible: boolean,
 	): Promise<void> {
@@ -58,7 +58,7 @@ export class VipManagerAdminPageAsserter extends BaseAsserter<VipManagerAdminPag
 			  ]);
 	}
 
-	@step()
+	@step("Verify upload files button is disabled")
 	public async verifyUploadFilesButtonIsDisabled(): Promise<void> {
 		await expect(
 			this.gamdomPage.map.uploadBatchUpdateVipPlayersStatusFileButton,

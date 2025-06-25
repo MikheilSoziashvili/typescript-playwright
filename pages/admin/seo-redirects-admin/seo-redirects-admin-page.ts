@@ -33,22 +33,22 @@ export class SeoRedirectsAdminPage extends BasePage<SeoRedirectsAdminMap> {
 		});
 	}
 
-	@step()
+	@step("Click new redirect button")
 	public async clickNewRedirectButton(): Promise<void> {
 		await this.map.newRedirectButton.click();
 	}
 
-	@step()
+	@step("Click delete redirect")
 	public async clickDeleteRedirect(fromPath: string): Promise<void> {
 		await this.map.deleteButtonInRow(fromPath).click();
 	}
 
-	@step()
+	@step("Click edit redirect")
 	public async clickEditRedirect(fromPath: string): Promise<void> {
 		await this.map.editButtonInRow(fromPath).click();
 	}
 
-	@step()
+	@step("Open history tab")
 	public async openHistoryTab(): Promise<void> {
 		await this.map.historyTab.click();
 	}

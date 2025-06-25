@@ -1,4 +1,5 @@
 import { Page } from "@playwright/test";
+import { step } from "decorators/step";
 import { BasePage } from "@base/base-page";
 import { AffiliatesPageMap } from "./affiliates-page-map";
 import { AffiliatesPageAsserter } from "./affiliates-page-asserter";
@@ -30,6 +31,7 @@ export class AffiliatesPage extends BasePage<AffiliatesPageMap> {
 		return new AffiliatesPageSteps(this);
 	}
 
+	@step("Add new affiliate code")
 	public async addNewCode(code: string): Promise<void> {
 		await this.map.newAffilitatesCodeField.fill(code, {
 			timeout: Timeout.LONG, // To be removed when issues in e2e environment are resolved
@@ -37,6 +39,7 @@ export class AffiliatesPage extends BasePage<AffiliatesPageMap> {
 		await this.map.saveAffiliatesCodeButton.click();
 	}
 
+	@step("Get affiliate link")
 	public async getAffiliateLink(): Promise<string> {
 		return (await this.map.copyCodeToClipboardField.getAttribute(
 			Attributes.VALUE,

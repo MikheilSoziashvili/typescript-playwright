@@ -45,7 +45,7 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		}
 	}
 
-	@step()
+	@step("Manual bet value are correct")
 	public async manualBetValueAreCorrect(
 		rollover: string,
 		multiplier: string,
@@ -73,16 +73,17 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		}
 	}
 
-	@step()
+	@step("Dice slider value is correct")
 	public async diceSliderValueIsCorrect(diceValue: string): Promise<void> {
 		await expect(this.gamdomPage.map.diceSliderValue).toHaveText(diceValue);
 	}
 
-	@step()
+	@step("Dice message is not empty")
 	public async diceMessageIsNotEmpty(): Promise<void> {
 		await expect(this.gamdomPage.map.diceGameAreaMessage).not.toBeEmpty();
 	}
 
+	@step("Check dice message")
 	public async diceMessageIs(
 		resultMessage: DiceGameResultMessage,
 	): Promise<void> {
@@ -93,7 +94,7 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		);
 	}
 
-	@step()
+	@step("Dice result is displayed")
 	public async diceResultIsDisplayed(): Promise<void> {
 		const diceResultGameArea =
 			await this.gamdomPage.map.diceResultNumberGameArea
@@ -111,7 +112,7 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		}
 	}
 
-	@step()
+	@step("Autobet values are correct")
 	public async autobetValuesAreCorrect(
 		autobetData: DiceAutobetTestData,
 	): Promise<void> {
@@ -141,21 +142,21 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		}
 	}
 
-	@step()
+	@step("Dice stop autobet button is displayed")
 	public async diceStopAutobetButtonIsDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.stopAutobetButton,
 		]);
 	}
 
-	@step()
+	@step("Dice start autobet button is displayed")
 	public async diceStartAutobetButtonIsDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.startAutobetButton,
 		]);
 	}
 
-	@step()
+	@step("Balance after auto bet is correct")
 	public async balanceAfterAutoBetIsCorrect(
 		initialBalance: number,
 		diceBetData: DiceAutobetTestData,
@@ -184,7 +185,7 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		expect(finalBalance).toEqual(expectedBalance);
 	}
 
-	@step()
+	@step("Dice manual bet menu visual is correct")
 	public async diceManualBetMenuVisualIsCorrect(
 		testInfo: TestInfo,
 	): Promise<void> {
@@ -203,7 +204,7 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		return limit !== undefined && value >= limit;
 	}
 
-	@step()
+	@step("Last bet value is")
 	public async lastBetValueIs(expectedValue: number): Promise<void> {
 		const rawText =
 			(await this.gamdomPage.map.diceLastResultBetValue.textContent()) ??

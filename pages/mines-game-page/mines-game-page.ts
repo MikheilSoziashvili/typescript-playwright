@@ -36,6 +36,7 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 		return new MinesGamePageSteps(this);
 	}
 
+	@step("Navigate and wait for game to load")
 	public async navigateAndWaitForGameToLoad(): Promise<void> {
 		await this.navigate();
 		await expect(this.map.startPlayingButton).toBeVisible({
@@ -43,12 +44,14 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 		});
 	}
 
+	@step("Insert bet amount")
 	public async insertBet(betAmount: number): Promise<void> {
 		await this.map.betField.click();
 		await this.map.betField.clear();
 		await this.map.betField.pressSequentially(`${betAmount}`);
 	}
 
+	@step("Choose number of mines")
 	public async chooseMinesNumber(minesNumber: number): Promise<void> {
 		const slider = this.map.minesNumberSlider;
 		for (let i = 0; i < minesNumber; i++) {
@@ -56,6 +59,7 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 		}
 	}
 
+	@step("Get number of mines")
 	public async getNumberOfMines(): Promise<number> {
 		const numberOfMinesText = await this.map.numberOfMines.innerText();
 		return parseInt(numberOfMinesText, 10);
@@ -79,10 +83,12 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 		return betAmount * multiplier;
 	}
 
+	@step("Get safe tiles count")
 	private async getSafeTilesCount(): Promise<number> {
 		return this.map.safeTiles.count();
 	}
 
+	@step("Get total safe tiles")
 	private async getTotalSafeTiles(): Promise<number> {
 		const numberOfMines = await this.getNumberOfMines();
 		const totalSafeTiles =
@@ -90,6 +96,7 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 		return totalSafeTiles;
 	}
 
+	@step("Start first round")
 	public async startFirstRound(
 		betAmount: number,
 	): Promise<{ updatedTotal: number; updatedAttempts: number }> {
@@ -99,6 +106,7 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 		return { updatedTotal, updatedAttempts };
 	}
 
+	@step("Wait for bomb or safe tile reveal")
 	private async waitForBombOrSafeTileReveal(
 		safeTilesCountBeforeClick: number,
 	): Promise<void> {
@@ -118,6 +126,7 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 		);
 	}
 
+	@step("Click tile and evaluate result")
 	private async clickTileAndEvaluateResult(totalSafeTiles: number): Promise<{
 		isGameWon: boolean;
 		isBombVisible: boolean;
@@ -160,6 +169,7 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 		return { isBetWon: true, gameEnded: true };
 	}
 
+	@step("Handle bomb loss")
 	private async handleBombLoss(
 		betAmount: number,
 		currentTotal: number,
@@ -250,6 +260,7 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 		return totalAmountSpent;
 	}
 
+	@step("Perform manual cashout")
 	public async performManualCashout(): Promise<void> {
 		await this.map.manualCashoutButton.click();
 	}
@@ -278,11 +289,13 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 		return { totalBetsPlaced, hasWonAtLeastOnce };
 	}
 
+	@step("Place initial bet")
 	private async placeInitialBet(betAmount: number): Promise<number> {
 		const { updatedTotal } = await this.startFirstRound(betAmount);
 		return updatedTotal;
 	}
 
+	@step("Play until round ends")
 	private async playUntilRoundEnds(
 		totalSafeTiles: number,
 	): Promise<{ isBombCaught: boolean; hasWon: boolean }> {
@@ -305,14 +318,17 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 		}
 	}
 
+	@step("Press min button")
 	public async pressMinButton(): Promise<void> {
 		await this.map.minButton.click();
 	}
 
+	@step("Press half button")
 	public async pressHalfButton(): Promise<void> {
 		await this.map.halfButton.click();
 	}
 
+	@step("Get bet amount value")
 	public async getBetAmountValue(): Promise<string> {
 		return this.map.betField.inputValue();
 	}

@@ -10,6 +10,7 @@ export class MaintenancePage extends BasePage<MaintenancePageMap> {
 		super(page, new MaintenancePageMap(page));
 	}
 
+	@step("Navigate to maintenance page")
 	public async navigateMaintenancePage(
 		maintenancePageEndpoint: string,
 		parameters?: BasePageNavigationParametersType,
@@ -20,6 +21,7 @@ export class MaintenancePage extends BasePage<MaintenancePageMap> {
 		});
 	}
 
+	@step("Navigate to maintenance page with endpoint")
 	public async navigateToPage(
 		maintenancePageEndpoint: string,
 		parameters?: BasePageNavigationParametersType,
@@ -34,7 +36,7 @@ export class MaintenancePage extends BasePage<MaintenancePageMap> {
 		return new MaintenancePageAsserter(this);
 	}
 
-	@step()
+	@step("Open social media footer link by placeholder")
 	public async openSocialMediaFooterLinkByPlaceholder(
 		footerLink: string,
 	): Promise<void> {

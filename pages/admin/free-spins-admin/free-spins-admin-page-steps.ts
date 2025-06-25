@@ -1,4 +1,5 @@
 import { BasePageStep } from "@pages/base/base-page-step";
+import { step } from "decorators/step";
 import { FreeSpinsAdminPage } from "./free-spins-admin-page";
 
 export class FreeSpinsAdminPageSteps extends BasePageStep<FreeSpinsAdminPage> {
@@ -6,6 +7,7 @@ export class FreeSpinsAdminPageSteps extends BasePageStep<FreeSpinsAdminPage> {
 		super(gamdomPage);
 	}
 
+	@step("Get free spins for user")
 	public async getFreeSpins(parameters: {
 		userId?: number;
 		gameName: string;
@@ -31,6 +33,7 @@ export class FreeSpinsAdminPageSteps extends BasePageStep<FreeSpinsAdminPage> {
 		});
 	}
 
+	@step("Upload batch free spins file")
 	public async uploadBatchFreeSpinsFile(filePath: string): Promise<void> {
 		await this.gamdomPage.map.batchModeCheckbox.check();
 		await this.gamdomPage.map.inputFileBatchFreeSpins.setInputFiles(

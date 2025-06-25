@@ -1,4 +1,5 @@
 import { BasePage } from "@base/base-page";
+import { step } from "decorators/step";
 import { Page } from "@playwright/test";
 import { TransactionsAdminPageAsserter } from "./transactions-admin-page-asserter";
 import { TransactionsAdminPageMap } from "./transactions-admin-page-map";
@@ -18,10 +19,12 @@ export class TransactionsAdminPage extends BasePage<TransactionsAdminPageMap> {
 		return new TransactionsAdminPageSteps(this);
 	}
 
+	@step("Navigate to admin user transactions page")
 	public async navigateToAdminUserTransactionsPage(): Promise<void> {
 		await this.map.transactionsNavigationTabsButton.click();
 	}
 
+	@step("Select log types to fetch")
 	public async selectLogTypesToFetch(logType: LogType): Promise<void> {
 		await this.map.waitForVisibility({
 			locator: this.map.logTypesToFetchFieldInput,
@@ -31,10 +34,12 @@ export class TransactionsAdminPage extends BasePage<TransactionsAdminPageMap> {
 		await this.pressEnterKeyboard();
 	}
 
+	@step("Click fetch data")
 	public async clickFetchData(): Promise<void> {
 		await this.map.fetchWithDateButton.click();
 	}
 
+	@step("Clear log types field input")
 	public async clearLogTypesFieldInput(): Promise<void> {
 		await this.map.clearLogTypesButton.click();
 	}

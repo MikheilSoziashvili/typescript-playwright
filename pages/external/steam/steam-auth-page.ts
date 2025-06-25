@@ -1,4 +1,5 @@
 import { Page } from "@playwright/test";
+import { step } from "decorators/step";
 import { SteamAuthPageMap } from "./steam-auth-map";
 import { BasePage } from "@pages/base/base-page";
 import { SteamAuthPageAsserter } from "./steam-auth-page-asserter";
@@ -23,6 +24,7 @@ export class SteamAuthPage extends BasePage<SteamAuthPageMap> {
 		return new SteamAuthPageAsserter(this);
 	}
 
+	@step("Login to Steam")
 	public async loginToSteam(
 		username: string = Configuration.steam.username,
 		password: string = Configuration.steam.password,

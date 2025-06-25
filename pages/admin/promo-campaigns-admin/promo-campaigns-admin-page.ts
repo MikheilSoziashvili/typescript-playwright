@@ -30,7 +30,7 @@ export class PromoCampaignsAdminPage extends BasePage<PromoCampaignsAdminMap> {
 		return new PromoCampaignsAdminSteps(this);
 	}
 
-	@step()
+	@step("Click create campaign button")
 	public async clickCreateCampaignButton(): Promise<void> {
 		await this.map.newPromoCodeButton.click({ timeout: Timeout.MAX });
 	}

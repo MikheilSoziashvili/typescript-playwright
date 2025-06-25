@@ -39,6 +39,7 @@
 	},
 	"scripts": {
 		"lint": "eslint .",
+		"lint:step-decorators": "node scripts/check-step-decorators.js",
 		"test-pretty": "playwright test --headed | pino-pretty"
 	}
 }

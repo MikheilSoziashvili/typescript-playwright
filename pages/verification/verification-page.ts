@@ -31,12 +31,12 @@ export class VerificationPage extends BasePage<VerificationPageMap> {
 		return new VerificationPageSteps(this);
 	}
 
-	@step()
+	@step("Open country dropdown")
 	public async openCountryDropdown(): Promise<void> {
 		await this.map.countryDropdown.click();
 	}
 
-	@step()
+	@step("Get country dropdown values")
 	public async getCountryDropdownValues(): Promise<string[]> {
 		const countryDropdownValues = await getItemsAttribute(
 			this.map.countryDropdownValueItems,

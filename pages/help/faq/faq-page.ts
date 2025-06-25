@@ -1,4 +1,5 @@
 import { Page } from "@playwright/test";
+import { step } from "decorators/step";
 import { FaqPageMap } from "./faq-page-map";
 import { BasePage } from "@base/base-page";
 import { FaqPageAsserter } from "./faq-page-asserter";
@@ -26,6 +27,7 @@ export class FaqPage extends BasePage<FaqPageMap> {
 		return new FaqPageAsserter(this);
 	}
 
+	@step("Expand affiliate code registered under section")
 	public async expandAffiliateCodeRegisteredUnderSection(): Promise<void> {
 		await this.map.waitForVisibility({
 			locator: this.map.expandAffiliateCodeRegisterButtonLocator,

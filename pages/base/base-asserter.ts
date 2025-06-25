@@ -31,6 +31,7 @@ export class BaseAsserter<
 		this.userBalanceHandler = new UserBalanceHandler(gamdomPage.page);
 	}
 
+	@step("Verify balance matches expected value")
 	public async verifyBalance(
 		actualBalance: number,
 		expectedBalance: number,
@@ -100,6 +101,7 @@ export class BaseAsserter<
 		await expect(locator).toHaveScreenshot(screenshotName, defaultOptions);
 	}
 
+	@step("Verify visual display of element")
 	public async verifyVisualDisplay(
 		testInfo: TestInfo,
 		locator: Locator,
@@ -114,6 +116,7 @@ export class BaseAsserter<
 		});
 	}
 
+	@step("Check that elements are visible")
 	public async checkElementsAreVisible(
 		elements: Locator[],
 		timeout?: number,
@@ -123,6 +126,7 @@ export class BaseAsserter<
 		}
 	}
 
+	@step("Check that elements are not visible")
 	public async checkElementsAreNotVisible(
 		elements: Locator[],
 		timeout?: number,
@@ -132,6 +136,7 @@ export class BaseAsserter<
 		}
 	}
 
+	@step("Assert on elements")
 	protected async assertOnElements(
 		elements: Locator[],
 		assertion: (el: Locator) => Promise<void>,
@@ -146,6 +151,7 @@ export class BaseAsserter<
 		await Promise.all(values.map((value) => assertion(value)));
 	}
 
+	@step("Check that elements are defined")
 	public async checkElementsAreDefined(
 		valuesToCheck: { value: unknown; message: string }[],
 	): Promise<void> {
@@ -154,6 +160,7 @@ export class BaseAsserter<
 		});
 	}
 
+	@step("Check that elements are hidden")
 	public async checkElementsAreHidden(
 		elements: Locator[],
 		timeout?: number,
@@ -163,6 +170,7 @@ export class BaseAsserter<
 		);
 	}
 
+	@step("Check that elements are enabled")
 	public async checkElementsAreEnabled(
 		elements: Locator[],
 		timeout?: number,
@@ -172,6 +180,7 @@ export class BaseAsserter<
 		}
 	}
 
+	@step("Check that elements are disabled")
 	public async checkElementsAreDisabled(
 		elements: Locator[],
 		timeout?: number,
@@ -181,6 +190,7 @@ export class BaseAsserter<
 		}
 	}
 
+	@step("Check that string elements are equal")
 	public async checkStringElementsAreEqual(
 		expectedTexts: string[],
 		actualTexts: string[],
@@ -191,23 +201,7 @@ export class BaseAsserter<
 		});
 	}
 
-	/**
-	 * Verifies that a numeric string or number value rounds correctly to the specified number of decimal places.
-	 *
-	 * @param actual - The actual string or number to be validated.
-	 * @param expected - The expected numeric value after rounding.
-	 * @param decimals - Number of decimal places to round to (default is 2).
-	 */
-	public expectRoundedToBe(
-		actual: string | number,
-		expected: number,
-		decimals = 2,
-	): void {
-		const numericValue = typeof actual === "string" ? parseFloat(actual) : actual;
-		const rounded = Number(numericValue.toFixed(decimals));
-		expect(rounded).toBe(expected);
-	}
-
+	@step("Check if elements are visible")
 	public async isElementVisible(
 		locators: Locator[],
 		timeout: number = Timeout.SHORT,
@@ -225,6 +219,7 @@ export class BaseAsserter<
 		}
 	}
 
+	@step("Verify slider state")
 	public async verifySliderState(
 		slider: Locator,
 		expected: BooleanValueString,
@@ -235,6 +230,24 @@ export class BaseAsserter<
 			expected,
 			{ timeout },
 		);
+	}
+
+	/**
+	 * Verifies that a numeric string or number value rounds correctly to the specified number of decimal places.
+	 *
+	 * @param actual - The actual string or number to be validated.
+	 * @param expected - The expected numeric value after rounding.
+	 * @param decimals - Number of decimal places to round to (default is 2).
+	 */
+	public expectRoundedToBe(
+		actual: string | number,
+		expected: number,
+		decimals = 2,
+	): void {
+		const numericValue =
+			typeof actual === "string" ? parseFloat(actual) : actual;
+		const rounded = Number(numericValue.toFixed(decimals));
+		expect(rounded).toBe(expected);
 	}
 
 	/**
@@ -293,6 +306,7 @@ export class BaseAsserter<
 		expect(newTabUrl).toBe(expectedUrl.toLowerCase());
 	}
 
+	@step("Get new tab URL")
 	private async getNewTabUrl(): Promise<string> {
 		await waitUntil(
 			() => this.gamdomPage.page.context().pages().length > 1,
@@ -320,6 +334,7 @@ export class BaseAsserter<
 	 * @param elementName - A descriptive name for the element (used in error messages).
 	 * @throws An error if the element is not visible or if its X position deviates beyond the threshold.
 	 */
+	@step("Verify element is centered")
 	public async verifyElementIsCentered(
 		element: Locator,
 		initialXPosition: number,
@@ -479,6 +494,7 @@ export class BaseAsserter<
 		}
 	}
 
+	@step("Get text decoration style")
 	public async getTextDecoration(locator: Locator): Promise<string> {
 		return locator.evaluate((el) => getComputedStyle(el).textDecoration);
 	}
@@ -499,6 +515,7 @@ export class BaseAsserter<
 		expect(loaderAppeared).toBe(true);
 	}
 
+	@step("Check loader visibility on page")
 	private async checkLoaderVisibilityOnPage(
 		selector: string,
 		timeoutMs: number,

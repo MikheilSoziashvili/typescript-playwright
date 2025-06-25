@@ -1,4 +1,5 @@
 import { BasePageStep } from "@pages/base/base-page-step";
+import { step } from "decorators/step";
 import { SoftblockModalPage } from "./softblock-modal";
 
 export class SoftblockModalSteps extends BasePageStep<SoftblockModalPage> {
@@ -6,6 +7,7 @@ export class SoftblockModalSteps extends BasePageStep<SoftblockModalPage> {
 		super(page);
 	}
 
+	@step("Close softblock modal")
 	public async closeSoftblockModal(): Promise<void> {
 		await this.gamdomPage.map.softblockModalCloseButton.click();
 	}

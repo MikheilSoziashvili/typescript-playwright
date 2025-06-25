@@ -1,5 +1,5 @@
 module.exports = {
-    extends: ['eslint:recommended', 
+    extends: ['eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/stylistic',
     'plugin:playwright/recommended'

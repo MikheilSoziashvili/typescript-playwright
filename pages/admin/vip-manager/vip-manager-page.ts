@@ -1,6 +1,7 @@
 import { BasePage } from "@base/base-page";
 import { VIP_MANAGER_ADMIN_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
+import { step } from "decorators/step";
 import { Page } from "@playwright/test";
 import { VipManagerAdminPageAsserter } from "./vip-manager-page-asserter";
 import { VipManagerAdminPageMap } from "./vip-manager-page-map";
@@ -28,6 +29,7 @@ export class VipManagerAdminPage extends BasePage<VipManagerAdminPageMap> {
 		return new VipManagerAdminPageSteps(this);
 	}
 
+	@step("Update/remove batch VIP players send file")
 	public async updateRemoveBatchVipPlayersSendFile(
 		filePath: string,
 	): Promise<void> {
@@ -36,18 +38,22 @@ export class VipManagerAdminPage extends BasePage<VipManagerAdminPageMap> {
 		);
 	}
 
+	@step("Upload update/remove batch VIP players file")
 	public async uploadUpdateRemoveBatchVipPlayersFile(): Promise<void> {
 		await this.map.uploadBatchUpdateVipPlayersStatusFileButton.click();
 	}
 
+	@step("Click add VIP status button")
 	public async clickAddVipStatusButton(): Promise<void> {
 		await this.map.addVipStatusButton.click();
 	}
 
+	@step("Click batch update button")
 	public async clickBatchUpdateButton(): Promise<void> {
 		await this.map.batchUpdateButton.click();
 	}
 
+	@step("Click change telegram settings button")
 	public async clickChangeTelegramSettingsButton(): Promise<void> {
 		await this.map.changeTelegramNotificationSettingsBlock.click();
 	}

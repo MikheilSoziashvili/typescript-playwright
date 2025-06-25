@@ -31,22 +31,22 @@ export class TransactionsPage extends BasePage<TransactionsMap> {
 		return new TransactionsSteps(this);
 	}
 
-	@step()
+	@step("Open deposits tab")
 	public async openDepositsTab(): Promise<void> {
 		await this.map.depositsTabs.click();
 	}
 
-	@step()
+	@step("Open withdraws tab")
 	public async openWithdrawsTab(): Promise<void> {
 		await this.map.withdrawsTab.click();
 	}
 
-	@step()
+	@step("Click transaction details button")
 	public async clickTransactionDetailsButton(): Promise<void> {
 		await this.map.transactionDetailsButton.click();
 	}
 
-	@step()
+	@step("Get transaction status")
 	public async getTransactionStatus(): Promise<string> {
 		const status = await this.map.transactionStatus.textContent();
 		if (status === null) {
@@ -55,7 +55,7 @@ export class TransactionsPage extends BasePage<TransactionsMap> {
 		return status;
 	}
 
-	@step()
+	@step("Wait for transaction status")
 	public async waitForTransactionStatus(
 		expectedStatus: TransactionState,
 	): Promise<TransactionState> {

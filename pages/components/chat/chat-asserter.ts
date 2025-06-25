@@ -12,10 +12,12 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 		super(chat);
 	}
 
+	@step("Check chat is displayed")
 	public async chatIsDisplayed(): Promise<void> {
 		await expect(this.gamdomPage.map.chatLocator).toBeVisible();
 	}
 
+	@step("Check placeholder is visible")
 	public async isPlaceholderVisible(
 		placeholder: ChatFooterPlaceholder,
 	): Promise<void> {
@@ -30,6 +32,7 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 
 	// TODO: [ENG-2417] Investigate chat loading issue (tip user test) when trying to read a message
 	// Temporary workaround: Polling for message visibility should be removed after the issue is resolved
+	@step("Check message is visible")
 	public async isMessageVisible(
 		messageInfo: ChatMessageOptions,
 	): Promise<void> {
@@ -59,6 +62,7 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 		}
 	}
 
+	@step("Check info message is visible")
 	public async isInfoMessageVisible(
 		infoMessage: string,
 		index?: number,
@@ -68,6 +72,7 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 		);
 	}
 
+	@step("Check info message is visible by text")
 	public async isInfoMessageVisibleByText(
 		text: string,
 		occurrence = -1,
@@ -77,26 +82,26 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 		).toContainText(text);
 	}
 
-	@step()
+	@step("Verify rain claim is visible")
 	public async isRainClaimVisible(): Promise<boolean> {
 		return this.isElementVisible([this.gamdomPage.map.claimRainButton]);
 	}
 
-	@step()
+	@step("Verify rain bot message is visible")
 	public async isRainBotMessageVisible(): Promise<boolean> {
 		return this.isElementVisible([
 			this.gamdomPage.map.rainBotMessageLocator,
 		]);
 	}
 
-	@step()
+	@step("Rain claimed message is displayed")
 	public async rainClaimedMessageIsDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.rainClaimedMessageLocator,
 		]);
 	}
 
-	@step()
+	@step("Chatroom is selected")
 	public async chatroomIsSelected(chatroomName: string): Promise<void> {
 		await expect(
 			this.gamdomPage.map.chatroomsDropdownSelectedValue,

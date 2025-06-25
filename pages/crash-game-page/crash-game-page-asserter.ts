@@ -1,4 +1,5 @@
 import { Locator, expect } from "@playwright/test";
+import { step } from "decorators/step";
 import { BaseAsserter } from "@base/base-asserter";
 import { CrashGamePage } from "./crash-game-page";
 import { Timeout } from "@enums/timeout";
@@ -13,6 +14,7 @@ export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 		super(page);
 	}
 
+	@step("Check player bets are accepted")
 	public async playerBetsAccepted(
 		bets: {
 			username: string;
@@ -33,6 +35,7 @@ export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 		}
 	}
 
+	@step("Check player bet boxes are displayed")
 	public async playerBetBoxesDisplayed(
 		bets: { betAmount: string }[],
 	): Promise<void> {
@@ -55,6 +58,7 @@ export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 		}
 	}
 
+	@step("Wait for player bet boxes to be absent")
 	public async waitPlayerBetBoxesAbsent(timeout: number): Promise<void> {
 		const betBoxes: Locator[] = await this.gamdomPage.map.betBoxes;
 		for (const betBox of betBoxes) {
@@ -65,6 +69,7 @@ export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 		}
 	}
 
+	@step("Check expected and actual winnings match")
 	public async isExpectedAndActualWinningMatch(
 		expectedWinnings: number,
 		actualWinnings: number,
@@ -75,12 +80,14 @@ export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 		);
 	}
 
+	@step("Check potential win is displayed")
 	public async potentialWinDisplayed(potentialWin: number): Promise<void> {
 		await expect(this.gamdomPage.map.potentialWinAmount).toContainText(
 			`$${parseToFloat(potentialWin)}`,
 		);
 	}
 
+	@step("Check start autobet button is enabled")
 	public async startAutobetButtonIsEnabled(): Promise<void> {
 		await expect(this.gamdomPage.map.placeBetBtn).toBeEnabled();
 		await expect(this.gamdomPage.map.placeBetBtn).toHaveText(
@@ -88,11 +95,13 @@ export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 		);
 	}
 
+	@step("Check bet amount is equal to expected")
 	public async betAmountIsEqualTo(betAmount: number): Promise<void> {
 		const amount = this.gamdomPage.getCurrentBetAmount();
 		expect(betAmount).toEqual(amount);
 	}
 
+	@step("Verify bet amount updated correctly")
 	public async verifyBetAmountUpdatedCorrectly(
 		previousBetAmount: number,
 		betWon: boolean,

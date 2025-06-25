@@ -21,21 +21,21 @@ export class Footer extends BaseComponent<FooterMap> {
 		return new FooterSteps(this);
 	}
 
-	@step()
+	@step("Open footer link by placeholder")
 	public async openFooterLinkByPlaceholder(
 		footerLink: string,
 	): Promise<void> {
 		await this.map.footerLinkByPlaceholder(footerLink).click();
 	}
 
-	@step()
+	@step("Open social media footer link by placeholder")
 	public async openSocialMediaFooterLinkByPlaceholder(
 		footerLink: string,
 	): Promise<void> {
 		await this.map.socialMediaFooterLinkByPlaceholder(footerLink).click();
 	}
 
-	@step()
+	@step("Open live support")
 	public async openLiveSupport(): Promise<void> {
 		await excludeHeaderFromHost(
 			this.page,

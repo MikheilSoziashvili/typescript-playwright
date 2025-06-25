@@ -100,7 +100,7 @@ export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 		]);
 	}
 
-	@step()
+	@step("Verify rows slider inactive")
 	async verifyRowsSliderInactive(timeout?: number): Promise<void> {
 		await this.verifySliderState(
 			this.gamdomPage.map.betRowsSliderInput,
@@ -109,7 +109,7 @@ export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 		);
 	}
 
-	@step()
+	@step("Verify rows slider active")
 	async verifyRowsSliderActive(timeout?: number): Promise<void> {
 		await this.verifySliderState(
 			this.gamdomPage.map.betRowsSliderInput,
@@ -118,7 +118,7 @@ export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 		);
 	}
 
-	@step()
+	@step("Verify risk slider inactive")
 	async verifyRiskSliderInactive(timeout?: number): Promise<void> {
 		await this.verifySliderState(
 			this.gamdomPage.map.riskRowsSliderInput,
@@ -127,7 +127,7 @@ export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 		);
 	}
 
-	@step()
+	@step("Verify risk slider active")
 	async verifyRiskSliderActive(timeout?: number): Promise<void> {
 		await this.verifySliderState(
 			this.gamdomPage.map.riskRowsSliderInput,
@@ -136,19 +136,19 @@ export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 		);
 	}
 
-	@step()
+	@step("Verify rows and risk sliders inactive")
 	async verifyRowsAndRiskSlidersInactive(timeout?: number): Promise<void> {
 		await this.verifyRowsSliderInactive(timeout);
 		await this.verifyRiskSliderInactive(timeout);
 	}
 
-	@step()
+	@step("Verify rows and risk sliders active")
 	async verifyRowsAndRiskSlidersActive(timeout?: number): Promise<void> {
 		await this.verifyRowsSliderActive(timeout);
 		await this.verifyRiskSliderActive(timeout);
 	}
 
-	@step()
+	@step("Verify slider value")
 	async verifySliderValue(
 		sliderContainer: Locator,
 		expectedValue: number,
@@ -168,7 +168,7 @@ export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 		}
 	}
 
-	@step()
+	@step("Verify rows slider value")
 	async verifyRowsSliderValue(
 		expectedValue: number,
 		tolerance = 0,
@@ -180,7 +180,7 @@ export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 		);
 	}
 
-	@step()
+	@step("Verify risk slider value")
 	async verifyRiskSliderValue(
 		expectedValue: number,
 		tolerance = 0,
@@ -192,14 +192,14 @@ export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 		);
 	}
 
-	@step()
+	@step("Verify in game history is displayed")
 	async verifyInGameHistoryIsDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.inGameHistoryContainer,
 		]);
 	}
 
-	@step()
+	@step("Verify in game chips history button is displayed")
 	async verifyInGameChipsHistoryButtonIsDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.inGameChipsHistoryButton,

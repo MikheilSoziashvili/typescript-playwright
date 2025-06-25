@@ -61,14 +61,17 @@ export abstract class BasePage<T extends BaseMap> {
 		this._map = new (this._map.constructor as Constructor<T>)(newPage);
 	}
 
+	@step("Clear browser cookies")
 	public async clearCookies(): Promise<void> {
 		await this.page.context().clearCookies();
 	}
 
+	@step("Press Enter key")
 	public async pressEnterKeyboard(): Promise<void> {
 		await this.page.keyboard.press("Enter");
 	}
 
+	@step("Set extra HTTP headers")
 	public async setExtraHTTPHeaders(
 		headers: Record<string, string> = {},
 	): Promise<void> {
@@ -92,6 +95,7 @@ export abstract class BasePage<T extends BaseMap> {
 		await this.page.waitForLoadState();
 	}
 
+	@step("Close current page")
 	public async closePage(): Promise<void> {
 		await this.page.close();
 	}
@@ -108,12 +112,14 @@ export abstract class BasePage<T extends BaseMap> {
 		throw new Error("Method not implemented");
 	}
 
+	@step("Refresh page")
 	public async refresh(
 		waitUntil: WaitUntilState = WaitUntilState.DOM_CONTENT_LOADED,
 	): Promise<void> {
 		await this.page.reload({ waitUntil });
 	}
 
+	@step("Navigate carousel to specific element by index")
 	async navigateCarouselElementByIndex(
 		carouselItem: Locator,
 		leftArrow: Locator,
@@ -174,6 +180,7 @@ export abstract class BasePage<T extends BaseMap> {
 	 * @returns The numeric position value of the specified axis.
 	 * @throws Error if the element's position cannot be determined.
 	 */
+	@step("Get element position coordinates")
 	public async getElementPosition(
 		element: Locator,
 		axis: BoundingBoxCoordinate,
@@ -219,6 +226,7 @@ export abstract class BasePage<T extends BaseMap> {
 	 * @returns A promise that resolves when the click is successful.
 	 * @throws Error if all click attempts fail.
 	 */
+	@step("Perform reliable click with fallback strategies")
 	public async performReliableClick(
 		locator: Locator,
 		options: {
@@ -289,6 +297,7 @@ export abstract class BasePage<T extends BaseMap> {
 	 * @param locator - The element to click.
 	 * @returns A promise that resolves to true if successful, false otherwise.
 	 */
+	@step("Scroll element into view and click")
 	public async scrollIntoViewAndClick(locator: Locator): Promise<boolean> {
 		try {
 			await locator.scrollIntoViewIfNeeded();
@@ -307,6 +316,7 @@ export abstract class BasePage<T extends BaseMap> {
 	 * @param locator - The element to click.
 	 * @returns A promise that resolves to true if successful, false otherwise.
 	 */
+	@step("Click element at various positions")
 	public async clickAtVariousPositions(locator: Locator): Promise<boolean> {
 		const positions = [
 			{ x: 5, y: 5 },
@@ -336,6 +346,7 @@ export abstract class BasePage<T extends BaseMap> {
 	 * @param locator - The element to click.
 	 * @returns A promise that resolves to true if successful, false otherwise.
 	 */
+	@step("Click element using JavaScript")
 	public async javascriptClick(locator: Locator): Promise<boolean> {
 		try {
 			await locator.evaluate((el: HTMLElement) => el.click());
@@ -354,6 +365,7 @@ export abstract class BasePage<T extends BaseMap> {
 	 * @param page - The Playwright Page instance.
 	 * @returns A promise that resolves to true if successful, false otherwise.
 	 */
+	@step("Click element using mouse simulation")
 	public async mouseSimulationClick(
 		locator: Locator,
 		page: Page,
@@ -384,6 +396,7 @@ export abstract class BasePage<T extends BaseMap> {
 	 * @param delay - Delay in milliseconds before clicking.
 	 * @returns A promise that resolves to true if successful, false otherwise.
 	 */
+	@step("Double scroll and force click element")
 	public async doubleScrollAndForceClick(
 		locator: Locator,
 		page: Page,
@@ -423,6 +436,7 @@ export abstract class BasePage<T extends BaseMap> {
 	 * @param locator - The element to click.
 	 * @returns A promise that resolves to true if successful, false otherwise.
 	 */
+	@step("Force click element")
 	public async simpleForceClick(locator: Locator): Promise<boolean> {
 		try {
 			await locator.click({ force: true }); // eslint-disable-line playwright/no-force-option
@@ -440,6 +454,7 @@ export abstract class BasePage<T extends BaseMap> {
 	 * @param locator - The element to click.
 	 * @returns A promise that resolves to true if successful, false otherwise.
 	 */
+	@step("Dispatch click event on element")
 	public async dispatchClickEvent(locator: Locator): Promise<boolean> {
 		try {
 			await locator.evaluate((el) => {
@@ -464,6 +479,7 @@ export abstract class BasePage<T extends BaseMap> {
 	 * @param locator - The element to click.
 	 * @returns A promise that resolves to true if successful, false otherwise.
 	 */
+	@step("Wait for element stability before clicking")
 	public async waitForElementStability(locator: Locator): Promise<boolean> {
 		try {
 			const initialBox = await locator.boundingBox();
@@ -490,6 +506,7 @@ export abstract class BasePage<T extends BaseMap> {
 	/**
 	 * Retrieves slider bounds (current, min, max values) from ARIA attributes.
 	 */
+	@step("Get slider bounds from ARIA attributes")
 	private async getSliderBounds(sliderThumb: Locator) {
 		const currentValue = parseInt(await sliderThumb.getAttribute(Attributes.ARIA_VALUENOW) || '0', 10);
 		const minValue = parseInt(await sliderThumb.getAttribute(Attributes.ARIA_VALUEMIN) || '0', 10);
@@ -503,7 +520,7 @@ export abstract class BasePage<T extends BaseMap> {
 	 * @param sliderContainer - The Playwright Locator for the slider container element.
 	 * @returns The current value of the slider as a number.
 	 */
-	@step()
+	@step("Get slider value")
 	public async getSliderValue(sliderContainer: Locator): Promise<number> {
 		const sliderThumb = this.map.getSliderThumb(sliderContainer);
 		const { currentValue, minValue, maxValue } = await this.getSliderBounds(sliderThumb);
@@ -517,7 +534,7 @@ export abstract class BasePage<T extends BaseMap> {
 	 * @param targetValue - The desired value to set the slider to (in display units).
 	 * @throws {Error} When the slider bounding box cannot be determined.
 	 */
-	@step()
+	@step("Adjust slider value")
 	public async adjustSliderValue(sliderContainer: Locator, targetValue: number): Promise<void> {
 		const sliderThumb = this.map.getSliderThumb(sliderContainer);
 		const { currentValue, minValue, maxValue } = await this.getSliderBounds(sliderThumb);

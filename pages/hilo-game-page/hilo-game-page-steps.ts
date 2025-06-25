@@ -1,4 +1,5 @@
 import { BasePageStep } from "@pages/base/base-page-step";
+import { step } from "decorators/step";
 import { HiloBetTestData, HiloCardsColorData } from "@dtos/test-data";
 import {
 	HiloGameResultColor,
@@ -39,6 +40,7 @@ export class HiloGamePageSteps extends BasePageStep<HiloGamePage> {
 		);
 	}
 
+	@step("Play until result color is achieved")
 	public async playUntilResultColorIs(
 		resultColor: HiloGameResultColor,
 		testData: HiloBetTestData,
@@ -67,6 +69,7 @@ export class HiloGamePageSteps extends BasePageStep<HiloGamePage> {
 		return accountBalance;
 	}
 
+	@step("Open history modal successfully")
 	public async openHistoryModalSuccessfully(): Promise<void> {
 		await this.gamdomPage.map.hiloHistoryButton.click();
 		await this.gamdomPage
@@ -74,6 +77,7 @@ export class HiloGamePageSteps extends BasePageStep<HiloGamePage> {
 			.checkElementsAreVisible([this.gamdomPage.map.hiloHistoryModal]);
 	}
 
+	@step("Get last hilo rounds cards color count")
 	public async getLastHiloRoundsCardsColorCount(
 		lastRounds: number,
 	): Promise<HiloCardsColorData> {
@@ -98,6 +102,7 @@ export class HiloGamePageSteps extends BasePageStep<HiloGamePage> {
 		return new HiloCardsColorData(red, black, joker);
 	}
 
+	@step("Close history modal successfully")
 	public async closeHistoryModalSuccessfully(): Promise<void> {
 		await this.gamdomPage.map.closeHistoryModalButton.click();
 		await this.gamdomPage
@@ -108,6 +113,7 @@ export class HiloGamePageSteps extends BasePageStep<HiloGamePage> {
 			]);
 	}
 
+	@step("Get stats area cards probability percentage value")
 	public async getStatsAreaCardsProbabilityPercentageValue(): Promise<HiloCardsColorData> {
 		await this.gamdomPage
 			.assertThat()
@@ -131,6 +137,7 @@ export class HiloGamePageSteps extends BasePageStep<HiloGamePage> {
 		return new HiloCardsColorData(redCards, blackCards, 0);
 	}
 
+	@step("Get history modal cards percentage value")
 	public async getHistoryModalCardsPercentageValue(
 		lastRounds: number,
 	): Promise<HiloCardsColorData> {
@@ -157,6 +164,7 @@ export class HiloGamePageSteps extends BasePageStep<HiloGamePage> {
 		);
 	}
 
+	@step("Select last rounds dropdown values")
 	public async selectLastRoundsDropdownValues(
 		lastRounds: number,
 	): Promise<void> {

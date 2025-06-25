@@ -1,4 +1,5 @@
 import { BaseAsserter } from "@base/base-asserter";
+import { step } from "decorators/step";
 import { BlogCategoryPage } from "./blog-category-page";
 import { expect, Locator } from "@playwright/test";
 
@@ -7,6 +8,7 @@ export class BlogCategoryPageAsserter extends BaseAsserter<BlogCategoryPage> {
 		super(page);
 	}
 
+	@step("Check blog category name is displayed in title")
 	public async isBlogCategoryNameDisplayedInTitle(
 		blogCategoryName: string,
 	): Promise<void> {
@@ -16,6 +18,7 @@ export class BlogCategoryPageAsserter extends BaseAsserter<BlogCategoryPage> {
 		expect(actualTitle).toBe(blogCategoryName.toLocaleLowerCase());
 	}
 
+	@step("Check post element title")
 	public async postElementTitleIs(
 		selector: Locator,
 		title: string,
@@ -36,11 +39,13 @@ export class BlogCategoryPageAsserter extends BaseAsserter<BlogCategoryPage> {
 		expect(titleFound).toBe(true);
 	}
 
+	@step("Check post title")
 	public async postTitleIs(title: string, timeout?: number): Promise<void> {
 		const postTitles = this.gamdomPage.map.postTitle;
 		await this.postElementTitleIs(postTitles, title, timeout);
 	}
 
+	@step("Check post subtitle")
 	public async postSubTitleIs(
 		title: string,
 		timeout?: number,
@@ -49,6 +54,7 @@ export class BlogCategoryPageAsserter extends BaseAsserter<BlogCategoryPage> {
 		await this.postElementTitleIs(postSubTitles, title, timeout);
 	}
 
+	@step("Check post is displayed")
 	public async isPostDisplayed(
 		title: string,
 		subTitle: string,

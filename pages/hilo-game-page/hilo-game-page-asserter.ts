@@ -4,6 +4,7 @@ import {
 	HiloGameStatusMessage,
 } from "@enums/hilo-result-messages";
 import { BaseAsserter } from "@base/base-asserter";
+import { step } from "decorators/step";
 import { HiloGamePage } from "./hilo-game-page";
 import { Timeout } from "@enums/timeout";
 
@@ -12,6 +13,7 @@ export class HiloGamePageAsserter extends BaseAsserter<HiloGamePage> {
 		super(page);
 	}
 
+	@step("Check game message")
 	public async gameMessageIs(
 		resultMessage: HiloGameStatusMessage,
 	): Promise<void> {
@@ -25,6 +27,7 @@ export class HiloGamePageAsserter extends BaseAsserter<HiloGamePage> {
 		);
 	}
 
+	@step("Check game result color")
 	public async gameResultColorIs(
 		resultMessage: HiloGameResultColor,
 	): Promise<void> {
@@ -35,6 +38,7 @@ export class HiloGamePageAsserter extends BaseAsserter<HiloGamePage> {
 		);
 	}
 
+	@step("Check card color percentage values are equal")
 	public async cardColorPercentageValuesEqual(
 		expectedPercentage: number,
 		actualPercentage: number,

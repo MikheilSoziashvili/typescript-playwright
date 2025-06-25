@@ -10,6 +10,7 @@ export class GeoblockedPage extends BasePage<GeoblockedPageMap> {
 		super(page, new GeoblockedPageMap(page));
 	}
 
+	@step("Navigate to custom geoblocked page")
 	public async navigateCustomGeoblockedPage(
 		geoblockedPageEndpoint: string,
 		parameters?: BasePageNavigationParametersType,
@@ -20,6 +21,7 @@ export class GeoblockedPage extends BasePage<GeoblockedPageMap> {
 		});
 	}
 
+	@step("Navigate to geoblocked page")
 	public async navigateToPage(
 		geoblockedPageEndpoint: string,
 		parameters?: BasePageNavigationParametersType,
@@ -34,7 +36,7 @@ export class GeoblockedPage extends BasePage<GeoblockedPageMap> {
 		return new GeoblockedPageAsserter(this);
 	}
 
-	@step()
+	@step("Open social media footer link by placeholder")
 	public async openSocialMediaFooterLinkByPlaceholder(
 		footerLink: string,
 	): Promise<void> {

@@ -1,4 +1,5 @@
 import { expect, Page } from "@playwright/test";
+import { step } from "decorators/step";
 import { BaseModal } from "@base/base-modal";
 import { LoginModalMap } from "./login-modal-map";
 import { LoginModalAsserter } from "./login-modal-asserter";
@@ -26,12 +27,14 @@ export class LoginModal extends BaseModal<LoginModalMap> {
 		await this.map.passwordField.blur();
 	}
 
+	@step("Login with credentials")
 	public async login(username: string, password: string): Promise<void> {
 		await this.map.usernameField.fill(username);
 		await this.map.passwordField.fill(password);
 		await this.map.loginBtn.click();
 	}
 
+	@step("Enter 2FA code")
 	public async enter2FaCode(
 		twoFactorAuthenticationCode: string,
 	): Promise<void> {
@@ -46,14 +49,17 @@ export class LoginModal extends BaseModal<LoginModalMap> {
 		}
 	}
 
+	@step("Click Steam button")
 	public async clickSteamButton(): Promise<void> {
 		await this.map.steamButton.click();
 	}
 
+	@step("Click Google button")
 	public async clickGoogleButton(): Promise<void> {
 		await this.map.googleButton.click();
 	}
 
+	@step("Login as user")
 	public async loginAsUser(usernm: string): Promise<void> {
 		const user: TestUserConfigurationObject | undefined = findUser({
 			username: usernm,
@@ -65,17 +71,22 @@ export class LoginModal extends BaseModal<LoginModalMap> {
 		}
 	}
 
+	@step("Click reset password button")
 	public async clickResetPasswordButton(): Promise<void> {
 		await this.map.forgotPasswordButton.click();
 	}
 
+	@step("Fill in email")
 	public async fillInEmail(email: string): Promise<void> {
 		await this.map.emailInput.fill(email);
 	}
+
+	@step("Click send new password button")
 	public async clickSendNewPasswordButton(): Promise<void> {
 		await this.map.sendNewPasswordButton.click();
 	}
 
+	@step("Set new password")
 	public async setNewPassword(password: string): Promise<void> {
 		await this.map.newPasswordInput.fill(password);
 		await this.map.newPasswordConfirmationInput.fill(password);

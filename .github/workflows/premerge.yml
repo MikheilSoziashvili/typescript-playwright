@@ -39,6 +39,9 @@ jobs:
                   PRETTIER_CHECK: 1
                   NODE_OPTIONS: "--max_old_space_size=8192"
 
+            - name: Check for missing @step decorators
+              run: yarn lint:step-decorators
+
     detect-tests:
         needs: premerge-checks
         if: always()

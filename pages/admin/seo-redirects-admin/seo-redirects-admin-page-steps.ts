@@ -7,7 +7,7 @@ export class SeoRedirectsAdminSteps extends BasePageStep<SeoRedirectsAdminPage> 
 		super(page);
 	}
 
-	@step()
+	@step("Delete redirect and assert toast")
 	public async deleteRedirectAndAssertToast(fromPath: string): Promise<void> {
 		await this.gamdomPage.clickDeleteRedirect(fromPath);
 		await this.gamdomPage

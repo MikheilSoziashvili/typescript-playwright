@@ -10,6 +10,7 @@ export class InfoAdminPageSteps extends BasePageStep<InfoAdminPage> {
 		super(gamdomPage);
 	}
 
+	@step("Ban user")
 	public async banUser(options?: { reason?: string }): Promise<void> {
 		await this.gamdomPage.map.waitForVisibility({
 			locator: this.gamdomPage.map.banUserContainer,
@@ -27,6 +28,7 @@ export class InfoAdminPageSteps extends BasePageStep<InfoAdminPage> {
 		await this.gamdomPage.assertThat().isUnbanButtonDisplayed();
 	}
 
+	@step("Tip user")
 	public async tipUser(tipAmount: number): Promise<void> {
 		await this.gamdomPage.assertThat().isTipUserContainerDisplayed();
 		await this.gamdomPage.map.tipAmountInput.clear();
@@ -34,6 +36,7 @@ export class InfoAdminPageSteps extends BasePageStep<InfoAdminPage> {
 		await this.gamdomPage.map.tipButton.click();
 	}
 
+	@step("Tip user with 2FA flow")
 	public async tipUserWith2FaFlow(
 		tipAmount: number,
 		qrCode2FAImagePath: string,
@@ -77,6 +80,7 @@ export class InfoAdminPageSteps extends BasePageStep<InfoAdminPage> {
 			tableValue, BooleanValueString.FALSE);
 	}
 
+	@step("Create note")
 	public async createNote(count = 1): Promise<string[]> {
 		const createdNotes: string[] = [];
 
@@ -91,11 +95,13 @@ export class InfoAdminPageSteps extends BasePageStep<InfoAdminPage> {
 		return createdNotes;
 	}
 
+	@step("Pin note by text")
 	public async pinNoteByText(noteText: string): Promise<void> {
 		const noteRow = this.gamdomPage.map.noteRowByText(noteText);
 		await this.gamdomPage.map.pinButtonInRow(noteRow).click();
 	}
 
+	@step("Set note inactive by text")
 	public async setNoteInactiveByText(noteText: string): Promise<void> {
 		const inactiveNoteRow = this.gamdomPage.map.noteRowByText(noteText);
 		await this.gamdomPage.map

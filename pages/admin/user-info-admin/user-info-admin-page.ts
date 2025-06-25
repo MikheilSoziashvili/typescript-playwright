@@ -1,6 +1,7 @@
 import { BasePage } from "@base/base-page";
 import { USER_INFO_ADMIN_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
+import { step } from "decorators/step";
 import { Page } from "@playwright/test";
 import { UserInfoAdminPageAsserter } from "./user-info-admin-page-asserter";
 import { UserInfoAdminPageMap } from "./user-info-admin-page-map";
@@ -28,20 +29,24 @@ export class UserInfoAdminPage extends BasePage<UserInfoAdminPageMap> {
 		return new UserInfoAdminPageSteps(this);
 	}
 
+	@step("Click SearchByUsername field")
 	public async clickSearchByUsernameField(): Promise<void> {
 		await this.map.searchByUsernameContainer.click();
 	}
 
+	@step("Click SearchByIp field")
 	public async clickSearchByIPField(): Promise<void> {
 		await this.map.searchByIPInput.click();
 	}
 
+	@step("Insert username in search field")
 	public async insertUsernameInSearchByUsernameInput(
 		username: string,
 	): Promise<void> {
 		await this.map.searchByUsernameInput.fill(username);
 	}
 
+	@step("Select username from search results")
 	public async selectUsernameFromSearchForUsernameFiledResults(
 		username: string,
 	): Promise<void> {
@@ -49,15 +54,18 @@ export class UserInfoAdminPage extends BasePage<UserInfoAdminPageMap> {
 		await usernameOption.click();
 	}
 
+	@step("Insert IP address in search field")
 	public async insertIPInSearchByIPInput(ipAddress: string): Promise<void> {
 		await this.map.searchByIPInput.fill(ipAddress);
 	}
 
+	@step("Search for IP address")
 	public async searchForIP(ipAddress: string): Promise<void> {
 		await this.insertIPInSearchByIPInput(ipAddress);
 		await this.performReliableClick(this.map.searchIPAddressButton);
 	}
 
+	@step("Insert Steam64 or UserId in search field")
 	public async insertSteam64OrUserIdInSearchBySteam64OrUserIdInput(
 		steam64OrUserId: string | number,
 	): Promise<void> {
@@ -66,6 +74,7 @@ export class UserInfoAdminPage extends BasePage<UserInfoAdminPageMap> {
 		);
 	}
 
+	@step("Search for Steam64 or UserId")
 	public async searchForSteam64OrUserId(
 		steam64OrUserId: string | number,
 	): Promise<void> {

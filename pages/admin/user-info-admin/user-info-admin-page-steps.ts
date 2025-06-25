@@ -1,4 +1,5 @@
 import { BasePageStep } from "@pages/base/base-page-step";
+import { step } from "decorators/step";
 import { UserInfoAdminPage } from "./user-info-admin-page";
 
 export class UserInfoAdminPageSteps extends BasePageStep<UserInfoAdminPage> {
@@ -6,6 +7,7 @@ export class UserInfoAdminPageSteps extends BasePageStep<UserInfoAdminPage> {
 		super(gamdomPage);
 	}
 
+	@step("Search user")
 	public async searchUser(parameters: {
 		username: string;
 		expectToBeFound?: boolean;
@@ -25,6 +27,7 @@ export class UserInfoAdminPageSteps extends BasePageStep<UserInfoAdminPage> {
 		}
 	}
 
+	@step("Show user details")
 	public async showUserDetails(username: string): Promise<void> {
 		await this.searchUser({
 			username: username,
@@ -36,6 +39,7 @@ export class UserInfoAdminPageSteps extends BasePageStep<UserInfoAdminPage> {
 		await this.gamdomPage.map.showUserInfoButton.click();
 	}
 
+	@step("Navigate and show user details")
 	public async navigateAndShowUserDetails(username: string): Promise<void> {
 		await this.gamdomPage.navigate();
 		await this.showUserDetails(username);

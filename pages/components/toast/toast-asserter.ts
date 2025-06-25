@@ -1,4 +1,5 @@
 import { BaseAsserter } from "@base/base-asserter";
+import { step } from "decorators/step";
 import { Timeout } from "@enums/timeout";
 import { logger } from "@logger/logger";
 import { expect, Locator } from "@playwright/test";
@@ -9,6 +10,7 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 		super(page);
 	}
 
+	@step("Get text from locators")
 	private async getTextFromLocators(locators: Locator): Promise<string[]> {
 		const count = await locators.count();
 		const texts: string[] = [];
@@ -36,6 +38,7 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 		logger.info(message);
 	}
 
+	@step("Poll toast for expected text")
 	private async pollToastForExpectedText({
 		locators,
 		expectedText,
@@ -79,6 +82,7 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 		}
 	}
 
+	@step("Check toast title")
 	public async titleIs(
 		title: string,
 		options?: {
@@ -93,6 +97,7 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 		);
 	}
 
+	@step("Check toast titles")
 	public async titlesAre(
 		titles: {
 			title: string;
@@ -113,6 +118,7 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 		}
 	}
 
+	@step("Check toast subtitle")
 	public async subTitleIs(
 		subTitle: string,
 		options: {
@@ -139,6 +145,7 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 		});
 	}
 
+	@step("Check toast is displayed")
 	public async isDisplayed(options?: {
 		index?: number;
 		subTitle?: string;
@@ -149,6 +156,7 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 		});
 	}
 
+	@step("Check toast is not displayed")
 	public async isNotDisplayed(options?: {
 		index?: number;
 		subTitle?: string;

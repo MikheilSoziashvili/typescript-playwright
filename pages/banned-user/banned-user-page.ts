@@ -10,6 +10,7 @@ export class BannedUserPage extends BasePage<BannedUserPageMap> {
 		super(page, new BannedUserPageMap(page));
 	}
 
+	@step("Navigate to custom banned page")
 	public async navigateCustomBannedPage(
 		bannedPageEndpoint: string,
 		parameters?: BasePageNavigationParametersType,
@@ -20,6 +21,7 @@ export class BannedUserPage extends BasePage<BannedUserPageMap> {
 		});
 	}
 
+	@step("Navigate to banned page")
 	public async navigateToPage(
 		bannedPageEndpoint: string,
 		parameters?: BasePageNavigationParametersType,
@@ -34,14 +36,14 @@ export class BannedUserPage extends BasePage<BannedUserPageMap> {
 		return new BannedUserPageAsserter(this);
 	}
 
-	@step()
+	@step("Wait for red container to be visible")
 	public async waitRedContainerToBeVisible(): Promise<void> {
 		await this.map.waitForVisibility({
 			locator: this.map.redContainer,
 		});
 	}
 
-	@step()
+	@step("Open social media footer link")
 	public async openSocialMediaFooterLinkByPlaceholder(
 		footerLink: string,
 	): Promise<void> {

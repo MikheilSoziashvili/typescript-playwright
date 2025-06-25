@@ -13,7 +13,7 @@ export class CasinoPageAsserter extends BaseAsserter<CasinoPage> {
 		super(page);
 	}
 
-	@step()
+	@step("Verify dropdown option visibility")
 	private async verifyDropdownOptionVisibility(
 		option: GameProvider,
 		shouldBeVisible: boolean,
@@ -26,7 +26,7 @@ export class CasinoPageAsserter extends BaseAsserter<CasinoPage> {
 			: await expect(providerOption).toBeHidden();
 	}
 
-	@step()
+	@step("Verify option state")
 	public async verifyOptionState(
 		provider: GameProvider,
 		expectedResult: VisibilityResult,
@@ -35,7 +35,7 @@ export class CasinoPageAsserter extends BaseAsserter<CasinoPage> {
 		await this.verifyDropdownOptionVisibility(provider, shouldBeVisible);
 	}
 
-	@step()
+	@step("Verify that the casino games scrollbar tab is selected")
 	public async isCasinoGamesScrollbarTabSelected(
 		tabName: string,
 	): Promise<void> {

@@ -1,4 +1,5 @@
 import { BasePageStep } from "@pages/base/base-page-step";
+import { step } from "decorators/step";
 import { PromoCodeModal } from "./promo-code-modal";
 import { CasinoGameName } from "@enums/casino-game";
 
@@ -7,6 +8,7 @@ export class PromoCodeModalSteps extends BasePageStep<PromoCodeModal> {
 		super(page);
 	}
 
+	@step("Create default free spins promo code successfully")
 	public async createDefaultFreeSpinsPromoCodeSuccessfully(
 		campaignName: string,
 		campaignCode: string,
@@ -28,6 +30,7 @@ export class PromoCodeModalSteps extends BasePageStep<PromoCodeModal> {
 		await this.gamdomPage.assertThat().isNotDisplayed();
 	}
 
+	@step("Create default cash promo code successfully")
 	public async createDefaultCashPromoCodeSuccessfully(
 		campaignName: string,
 		campaignCode: string,

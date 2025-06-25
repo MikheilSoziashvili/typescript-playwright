@@ -48,6 +48,7 @@ export class MinesGamePageAsserter extends BaseAsserter<MinesGamePage> {
 		await this.assertBalanceMatches(expectedBalance);
 	}
 
+	@step("Assert balance matches expected")
 	private async assertBalanceMatches(expected: number): Promise<void> {
 		await this.gamdomPage.map.waitForStableXPosition({
 			locator:

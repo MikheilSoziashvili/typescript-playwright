@@ -1,4 +1,5 @@
 import { Page, expect } from "@playwright/test";
+import { step } from "decorators/step";
 import { RouletteGamePageMap } from "./roulette-game-page-map";
 import { RouletteGamePageAsserter } from "./roulette-game-page-asserter";
 import { RouletteBetColor, RouletteNumberColor } from "@enums/original-games";
@@ -38,6 +39,7 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 
 	// Wait for the next betting window if the current round is finishing,
 	// as we don't know the game's state when the test starts.
+	@step("Wait for betting window to be available")
 	public async waitBettingWindowAvailable(): Promise<void> {
 		const timeLeft = await this.getTimeLeftForBetting();
 
@@ -64,17 +66,20 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 		}
 	}
 
+	@step("Wait for round result number")
 	public async waitRoundResultNumber(timeout = 30): Promise<void> {
 		await expect(this.map.roundResultNumber).toBeVisible({
 			timeout: timeout * 1000,
 		});
 	}
 
+	@step("Get round result number")
 	public async getRoundResultNumber(waitTimeout = 30): Promise<string> {
 		await this.waitRoundResultNumber(waitTimeout);
 		return this.map.roundResultNumber.innerText();
 	}
 
+	@step("Get number of bet rows")
 	public async getNumberOfBetRows(
 		betColor: RouletteBetColor,
 	): Promise<number> {
@@ -85,6 +90,7 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 		return betRows.count();
 	}
 
+	@step("Get total bets count")
 	public async getTotalBetsCount(
 		betColor: RouletteBetColor,
 	): Promise<number> {
@@ -99,6 +105,7 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 		return parseInt(countText, 10);
 	}
 
+	@step("Get round result color")
 	public async getRoundResultColor(
 		waitTimeout = 30,
 	): Promise<RouletteNumberColor> {
@@ -126,10 +133,12 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 		}
 	}
 
+	@step("Insert bet")
 	public async insertBet(betAmount: number): Promise<void> {
 		await this.map.betField.fill(`${betAmount}`);
 	}
 
+	@step("Bet on color")
 	public async betOnColor(betColor: RouletteBetColor): Promise<void> {
 		switch (betColor) {
 			case RouletteBetColor.GREEN:
@@ -155,6 +164,7 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 		}
 	}
 
+	@step("Place bet")
 	public async placeBet(
 		betAmount: number,
 		betColor: RouletteBetColor,
@@ -187,6 +197,7 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 		return result;
 	}
 
+	@step("Expand autobet section")
 	public async expandAutobetSection(): Promise<void> {
 		if (await this.map.autobetContainer().isVisible()) {
 			logger.info("Autobet section already expanded");
@@ -198,6 +209,7 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 		}
 	}
 
+	@step("Select green hunt type")
 	public async selectGreenHuntType(type: GreenHuntTypeOption): Promise<void> {
 		await this.map.greenHuntTypeDropdown().click();
 		const option =
@@ -210,6 +222,7 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 
 	// Get the time left for betting, ensuring the game has finished spinning,
 	// by waiting for hidden and visible states since the roulette's state at test start is unknown.
+	@step("Get time left for betting")
 	public async getTimeLeftForBetting(): Promise<number> {
 		const isSpinning = await this.map.gameResultStateLocator.isVisible();
 

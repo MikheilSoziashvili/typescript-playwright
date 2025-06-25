@@ -17,21 +17,21 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		this.fromCsv = fromCsv;
 	}
 
-	@step()
+	@step("Title has text")
 	public async titleHasText(title: string): Promise<void> {
 		await expect(this.gamdomPage.page).toHaveTitle(title, {
 			timeout: Timeout.MAX,
 		});
 	}
 
-	@step()
+	@step("User is logged in")
 	public async userIsLoggedIn(): Promise<void> {
 		await this.gamdomPage.authenticatedHeader
 			.assertThat()
 			.loggedInUserElementsAreVisible();
 	}
 
-	@step()
+	@step("User is logged out")
 	public async userIsLoggedOut(): Promise<void> {
 		await this.gamdomPage.authenticatedHeader
 			.assertThat()
@@ -41,7 +41,7 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 			.loggedOutUserElementsAreVisible();
 	}
 
-	@step()
+	@step("Toast message contains text")
 	public async toastMessageContainsText(text: string): Promise<void> {
 		if (!text && this.fromCsv) {
 			return undefined; // if the value comes from csv and is empty - do nothing
@@ -49,7 +49,7 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		await expect(this.gamdomPage.map.toastMessage).toContainText(text);
 	}
 
-	@step()
+	@step("User is registered")
 	public async userIsRegistered(username: string): Promise<void> {
 		await this.gamdomPage.authenticatedHeader
 			.assertThat()
@@ -64,12 +64,12 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		expect(receivedUsername?.trim()).toBe(`${username}!`);
 	}
 
-	@step()
+	@step("Is banner carousel displayed")
 	public async isBannerCarouselDisplayed(): Promise<void> {
 		await expect(this.gamdomPage.map.bannerCarousel).toBeVisible();
 	}
 
-	@step()
+	@step("Is top banner displayed")
 	public async isTopBannerDisplayed(): Promise<void> {
 		await expect(this.gamdomPage.map.topBannerLocator).toBeVisible();
 	}
@@ -98,6 +98,7 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		await this.checkButtonsDoNotNavigateWhenClicked(socialButtons);
 	}
 
+	@step("Check buttons do not navigate when clicked")
 	public async checkButtonsDoNotNavigateWhenClicked(
 		socialButtons: Locator[],
 	): Promise<void> {
@@ -113,7 +114,7 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		}
 	}
 
-	@step()
+	@step("Is casino game slider displayed")
 	public async isCasinoGameSliderDisplayed(
 		casinoGameSlider: string,
 	): Promise<void> {
@@ -122,7 +123,7 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		).toBeVisible();
 	}
 
-	@step()
+	@step("Top banner visual correct")
 	public async topBannerVisualCorrect(testInfo: TestInfo): Promise<void> {
 		await this.checkElementVisualCorrect(
 			testInfo,
@@ -130,7 +131,7 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		);
 	}
 
-	@step()
+	@step("Koth in header visual correct")
 	public async kothInHeaderVisualCorrect(testInfo: TestInfo): Promise<void> {
 		await this.gamdomPage.map.waitForStableXPosition({
 			locator: this.gamdomPage.map.kothHeaderImageLocator,
@@ -146,7 +147,7 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		);
 	}
 
-	@step()
+	@step("Verify koth currency is centered")
 	public async verifyKothCurrencyIsCentered(): Promise<void> {
 		const currencyContainer =
 			this.gamdomPage.map.firstKothHeaderCurrencyAmount;
@@ -159,7 +160,7 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		);
 	}
 
-	@step()
+	@step("Verify provider state")
 	public async verifyProviderState(
 		provider: string,
 		expectedResult: VisibilityResult,
@@ -190,7 +191,7 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		);
 	}
 
-	@step()
+	@step("Verify provider option displayed in belt")
 	public async verifyProviderOptionDisplayedInBelt(
 		option: GameProvider,
 		shouldBeVisible: boolean,
@@ -203,7 +204,7 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 			: await expect(providerOption).toBeHidden();
 	}
 
-	@step()
+	@step("Verify provider option state in belt")
 	public async verifyProviderOptionStateInBelt(
 		provider: GameProvider,
 		expectedResult: VisibilityResult,

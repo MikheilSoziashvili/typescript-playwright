@@ -7,14 +7,14 @@ export class TwoFactorAuthModalAsserter extends BaseAsserter<TwoFactorAuthModal>
 		super(page);
 	}
 
-	@step()
+	@step("Modal2fa displayed")
 	public async modal2FaDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.popup2FaContainer,
 		]);
 	}
 
-	@step()
+	@step("Modal2fa not displayed")
 	public async modal2FaNotDisplayed(): Promise<void> {
 		await this.checkElementsAreNotVisible([
 			this.gamdomPage.map.popup2FaContainer,

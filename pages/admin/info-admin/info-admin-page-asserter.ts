@@ -114,6 +114,7 @@ export class InfoAdminPageAsserter extends BaseAsserter<InfoAdminPage> {
 		await this.checkElementsAreHidden([pinButton, inactiveButton]);
 	}
 
+	@step("Expect note text in row")
 	private async expectNoteTextInRow(
 		row: Locator,
 		expectedText: string,

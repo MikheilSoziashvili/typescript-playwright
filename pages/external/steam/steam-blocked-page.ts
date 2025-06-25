@@ -1,4 +1,5 @@
 import { Page } from "@playwright/test";
+import { step } from "decorators/step";
 import { BasePage } from "@pages/base/base-page";
 import { SteamBlockedPageMap } from "./steam-blocked-page-map";
 import { SteamBlockedPageAsserter } from "./steam-blocked-page-asserter";
@@ -11,6 +12,7 @@ export class SteamBlockedPage extends BasePage<SteamBlockedPageMap> {
 		return new SteamBlockedPageAsserter(this);
 	}
 
+	@step("Continue and sign in")
 	public async continueAndSignIn(): Promise<void> {
 		await this.map.continueAnywayButton.click();
 		await this.setExtraHTTPHeaders({

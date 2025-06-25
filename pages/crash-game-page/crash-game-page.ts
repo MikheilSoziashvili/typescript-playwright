@@ -1,4 +1,5 @@
 import { BasePage } from "@base/base-page";
+import { step } from "decorators/step";
 import { CRASH_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { BetIncreaseCondition } from "@enums/crash-autobet-section";
@@ -50,6 +51,7 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 		return initialBalance - totalBets + winnings;
 	}
 
+	@step("Play until multiplier is reached")
 	public async playUntilMultiplierIs(
 		multiplier: number,
 		betAmount: number,
@@ -83,11 +85,13 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 		}
 	}
 
+	@step("Get current bet amount")
 	public async getCurrentBetAmount(): Promise<number> {
 		const betAmountText = await this.map.betField.inputValue();
 		return parseFloat(betAmountText);
 	}
 
+	@step("Wait for betting window to be available")
 	public async waitBettingWindowAvailable(
 		timeout = Timeout.EXTRA_MAX / 2,
 	): Promise<void> {
@@ -96,18 +100,21 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 		});
 	}
 
+	@step("Wait for crash")
 	public async waitCrash(timeout = Timeout.EXTRA_MAX / 2): Promise<void> {
 		await expect(this.map.multiplierCounterCrashed).toBeAttached({
 			timeout: timeout,
 		});
 	}
 
+	@step("Wait for previous bet round to finish")
 	public async waitPreviousBetRoundFinish(
 		timeout = Timeout.EXTRA_MAX / 2,
 	): Promise<void> {
 		await this.assertThat().waitPlayerBetBoxesAbsent(timeout);
 	}
 
+	@step("Get crashed multiplier")
 	public async getCrashedMultiplier(): Promise<string> {
 		await this.waitCrash();
 		const crashedMultiplierText =
@@ -116,6 +123,7 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 		return crashedMultiplierText;
 	}
 
+	@step("Place bet")
 	public async placeBet(
 		betAmount: number,
 		autoCashoutMultiplier: number,
@@ -127,18 +135,22 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 		await this.map.placeBetBtn.click();
 	}
 
+	@step("Toggle autobet")
 	public async toggleAutobet(): Promise<void> {
 		await this.map.autobetButton.click();
 	}
 
+	@step("Set stop bet if more than amount")
 	public async stopBetIfMoreThan(amount: number): Promise<void> {
 		await this.map.stopBetIfMoreThanField.fill(amount.toString());
 	}
 
+	@step("Stop autobetting")
 	public async stopAutobetting(): Promise<void> {
 		await this.map.placeBetBtn.click();
 	}
 
+	@step("Fill in bet amount")
 	public async fillInBetAmount(betAmount: number): Promise<void> {
 		await this.map.betField.fill(betAmount.toString());
 	}
@@ -150,6 +162,7 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 	 * @param {string} option - The text of the option to select within the dropdown.
 	 * @returns {Promise<void>} A promise that resolves when the option has been selected.
 	 */
+	@step("Select win or loss condition")
 	public async selectWinOrLossCondition(
 		condition: BetIncreaseCondition,
 		option: string,
@@ -164,6 +177,7 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 		await this.map.onConditionOption(option).click();
 	}
 
+	@step("Fill increase by input")
 	public async fillIncreaseByInput(increaseByAmount: number): Promise<void> {
 		await this.map.increaseByInput.fill(increaseByAmount.toString());
 	}

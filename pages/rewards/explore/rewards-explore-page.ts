@@ -1,4 +1,5 @@
 import { Page } from "@playwright/test";
+import { step } from "decorators/step";
 import { BasePage } from "@base/base-page";
 import { RewardsExplorePageMap } from "./rewards-explore-page-map";
 import { REWARDS_EXPLORE_PAGE_ENDPOINT } from "@constants/page-endpoints";
@@ -23,11 +24,13 @@ export class RewardsExplorePage extends BasePage<RewardsExplorePageMap> {
 		return new RewardsExplorePageAsserter(this);
 	}
 
+	@step("Expand current royalty container")
 	public async expandCurrentRoyaltyContainer(): Promise<void> {
 		await this.map.currentRoyaltyContainerExpandButton.click();
 	}
 
-	public async getCurrentRoyaltyInstantRateback(): Promise<number> {
+	@step("Get current royalty instant rakeback")
+	public async getCurrentRoyaltyInstantRakeback(): Promise<number> {
 		const ratebackText =
 			await this.map.currentRoyaltyContainerInstantRakebackLocator.textContent();
 

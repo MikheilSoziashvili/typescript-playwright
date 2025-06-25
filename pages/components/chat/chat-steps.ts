@@ -27,19 +27,19 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		return new AuthenticatedHeader(this.component.page);
 	}
 
-	@step()
+	@step("Open chat and verify")
 	public async openChatAndVerify(): Promise<void> {
 		await this.authenticatedHeader.expandChatIfNotVisible();
 		await this.component.assertThat().chatIsDisplayed();
 	}
 
-	@step()
+	@step("Verify chat and send message")
 	public async verifyChatAndSendMessage(message: string): Promise<void> {
 		await this.component.assertThat().chatIsDisplayed();
 		await this.sendMessage(message);
 	}
 
-	@step()
+	@step("Send message")
 	public async sendMessage(message: string): Promise<void> {
 		let retryCount = 0;
 		const maxRetries = 3;
@@ -96,7 +96,7 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		}
 	}
 
-	@step()
+	@step("Open tip user modal")
 	public async openTipUserModal(
 		options?: ChatMessageOptions,
 		isWithVerification = true,
@@ -123,7 +123,7 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		}
 	}
 
-	@step()
+	@step("Open user profile modal")
 	public async openUserProfileModal(
 		options?: ChatMessageOptions,
 	): Promise<void> {
@@ -146,6 +146,7 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		await userProfileModal.assertThat().isDisplayed();
 	}
 
+	@step("Verify message and open tip user modal")
 	public async verifyMessageAndOpenTipUserModal(
 		chatMessage: ChatMessageOptions,
 		isWithVerification = true,
@@ -154,7 +155,7 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		await this.openTipUserModal(chatMessage, isWithVerification);
 	}
 
-	@step()
+	@step("Wait upon rain and claim")
 	public async waitUponRainAndClaim(): Promise<void> {
 		await waitUntil(
 			async () => this.component.assertThat().isRainClaimVisible(),
@@ -170,7 +171,7 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		logger.info("Rain claimed.");
 	}
 
-	@step()
+	@step("Select chatroom successfully")
 	public async selectChatroomSuccessfully(
 		chatroomName: string,
 	): Promise<void> {

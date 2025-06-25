@@ -21,6 +21,7 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 		})}`;
 	}
 
+	@step("Get vault amount minus one")
 	private async getVaultAmountMinusOne(): Promise<number> {
 		const rawAmountText = await this.gamdomPage.getVaultWalletAmount();
 		return parseFloat(rawAmountText) - 1;
@@ -100,6 +101,7 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 		await this.gamdomPage.assertThat().vaultWalletAmountIs(1, unit);
 	}
 
+	@step("Withdraw in vault with 2FA flow")
 	public async withdrawInVaultWith2FaFlow(
 		walletOption: string,
 		amount: number,

@@ -9,14 +9,14 @@ export class BannedUserPageAsserter extends BaseAsserter<BannedUserPage> {
 		super(page);
 	}
 
-	@step()
+	@step("Verify banned title is displayed")
 	public async isBannedTitleDisplayed(): Promise<void> {
 		await expect(this.gamdomPage.map.restrictionTitle).toHaveText(
 			"Your account has been Banned!",
 		);
 	}
 
-	@step()
+	@step("Verify banned reason is displayed")
 	public async isBannedReasonDisplayed(reason?: string): Promise<void> {
 		const bannedReason = reason || "Banned";
 		await expect(this.gamdomPage.map.bannedReason).toHaveText(
@@ -24,7 +24,7 @@ export class BannedUserPageAsserter extends BaseAsserter<BannedUserPage> {
 		);
 	}
 
-	@step()
+	@step("Verify social media link is correct")
 	public async isSocialMediaLinkCorrect(
 		socialMedia: string,
 		expectedURL: string,
@@ -34,7 +34,7 @@ export class BannedUserPageAsserter extends BaseAsserter<BannedUserPage> {
 		).toHaveAttribute(Attributes.HREF, expectedURL);
 	}
 
-	@step()
+	@step("Verify footer social media icon visual appearance")
 	public async footerSocialMediaIconVisualCorrect(
 		testInfo: TestInfo,
 		socialMedia: string,

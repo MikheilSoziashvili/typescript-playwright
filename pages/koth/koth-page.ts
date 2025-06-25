@@ -22,6 +22,7 @@ export class KothPage extends BasePage<KothMap> {
 		});
 	}
 
+	@step("Navigate to KOTH event")
 	public async navigateToKothEvent(
 		kothEventPageEndpoint: string,
 		parameters?: BasePageNavigationParametersType,
@@ -40,7 +41,7 @@ export class KothPage extends BasePage<KothMap> {
 		return new KothSteps(this);
 	}
 
-	@step()
+	@step("Get koth banner currency xposition")
 	public async getKothBannerCurrencyXPosition(): Promise<number> {
 		await this.map.waitForStableXPosition({
 			locator: this.map.kothBannerCurrencyAmount,
@@ -51,7 +52,7 @@ export class KothPage extends BasePage<KothMap> {
 		);
 	}
 
-	@step()
+	@step("Get koth banner timer xposition")
 	public async getKothBannerTimerXPosition(): Promise<number> {
 		await this.map.waitForStableXPosition({
 			locator: this.map.kothBannerTimerContainer,

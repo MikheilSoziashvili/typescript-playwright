@@ -7,7 +7,7 @@ export class NewRedirectModalSteps extends BasePageStep<NewRedirectModal> {
 		super(page);
 	}
 
-	@step()
+	@step("Create new redirect")
 	public async createNewRedirect(
 		fromPath: string,
 		toPath: string,
@@ -19,7 +19,7 @@ export class NewRedirectModalSteps extends BasePageStep<NewRedirectModal> {
 			.newRedirectSuccessToastIsDispayed(fromPath, toPath);
 	}
 
-	@step()
+	@step("Edit redirect")
 	public async editRedirect(
 		newFromPath: string,
 		newToPath: string,

@@ -11,7 +11,7 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 		super(page);
 	}
 
-	@step()
+	@step("Vault tab heading is displayed")
 	async vaultTabHeadingIsDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible(
 			[this.gamdomPage.map.vaultTabHeading],
@@ -19,7 +19,7 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 		);
 	}
 
-	@step()
+	@step("Vault wallet amount is")
 	public async vaultWalletAmountIs(
 		expectedUsd: number,
 		unit: Unit,
@@ -32,7 +32,7 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 		expect(backendUsd).toBeCloseTo(expectedUsd, 2);
 	}
 
-	@step()
+	@step("Vault deposit toast message is displayed")
 	public async vaultDepositToastMessageIsDisplayed(
 		amount: string,
 	): Promise<void> {
@@ -43,7 +43,7 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 		);
 	}
 
-	@step()
+	@step("Vault withdraw toast message is displayed")
 	public async vaultWithdrawToastMessageIsDisplayed(
 		amount: string,
 	): Promise<void> {

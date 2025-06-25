@@ -7,7 +7,7 @@ export class VerificationPageSteps extends BasePageStep<VerificationPage> {
 		super(gamdomPage);
 	}
 
-	@step()
+	@step("Expand country dropdown")
 	public async expandCountryDropdown(): Promise<void> {
 		await this.gamdomPage
 			.assertThat()

@@ -32,27 +32,28 @@ export class CryptoAdminPage extends BasePage<CryptoAdminMap> {
 		return new CryptoAdminSteps(this);
 	}
 
-	@step()
+	@step("Refresh crypto data")
 	public async refreshCryptoData(): Promise<void> {
 		await this.map.refreshButton.click();
 	}
 
-	@step()
+	@step("Click min deposit button")
 	public async clickMinDepositButton(nodeTitle: string): Promise<void> {
 		await this.map.minDepositButton(nodeTitle).click();
 	}
 
-	@step()
+	@step("Click min withdraw button")
 	public async clickMinWithdrawButton(nodeTitle: string): Promise<void> {
 		await this.map.minWithdrawButton(nodeTitle).click();
 	}
 
-	@step()
+	@step("Send queued withdrawals")
 	public async sendQueuedWithdrawals(): Promise<void> {
 		await this.navigate();
 		await this.map.sendQueuedWithdrawalsButton.click();
 	}
 
+	@step("Toggle crypto operations")
 	public async toggleCryptoOperations({
 		cryptoName,
 		deposit,

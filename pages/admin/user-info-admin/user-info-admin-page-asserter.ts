@@ -15,7 +15,7 @@ export class UserInfoAdminPageAsserter extends BaseAsserter<UserInfoAdminPage> {
 		]);
 	}
 
-	@step()
+	@step("Search by IPElements displayed")
 	public async searchByIPElementsDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.searchByIPContainer,
@@ -25,7 +25,7 @@ export class UserInfoAdminPageAsserter extends BaseAsserter<UserInfoAdminPage> {
 		]);
 	}
 
-	@step()
+	@step("Search by Steam64 or UserId elements displayed")
 	public async searchBySteam64orUserIdElementsDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.searchBySteam64OrUserIdContainer,
@@ -33,7 +33,7 @@ export class UserInfoAdminPageAsserter extends BaseAsserter<UserInfoAdminPage> {
 		]);
 	}
 
-	@step()
+	@step("No results are displayed for SearchByUsername field")
 	public async areNoResultsDisplayedForSearchByUsernameField(): Promise<void> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.searchByUsernameMenuNoResults,

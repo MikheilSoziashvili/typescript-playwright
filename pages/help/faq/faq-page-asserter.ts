@@ -1,4 +1,5 @@
 import { expect } from "@playwright/test";
+import { step } from "decorators/step";
 import { BaseAsserter } from "@base/base-asserter";
 import { FaqPage } from "./faq-page";
 
@@ -7,6 +8,7 @@ export class FaqPageAsserter extends BaseAsserter<FaqPage> {
 		super(page);
 	}
 
+	@step("Check affiliate code is visible")
 	public async isAffiliateCodeVisible(affiliateCode: string): Promise<void> {
 		await expect(
 			this.gamdomPage.map.affiliateUnderCodeLinkButtonLocator,

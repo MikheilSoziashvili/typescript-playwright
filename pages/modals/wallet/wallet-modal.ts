@@ -93,12 +93,12 @@ export class WalletModal extends BasePage<WalletModalMap> {
 		await this.clickVaultWithdrawButton();
 	}
 
-	@step()
+	@step("Select payment method")
 	public async selectPaymentMethod(paymentMethod: string): Promise<void> {
 		await this.map.cryptoPaymentMethod(paymentMethod).click();
 	}
 
-	@step()
+	@step("Get deposit address")
 	public async getDepositAddress(): Promise<string> {
 		await expect
 			.poll(() => this.map.cryptoDepositAddress.inputValue())
@@ -107,18 +107,18 @@ export class WalletModal extends BasePage<WalletModalMap> {
 		return this.map.cryptoDepositAddress.inputValue();
 	}
 
-	@step()
+	@step("Fill bitcoin address")
 	public async fillBitcoinAddress(address: string): Promise<void> {
 		await this.map.bitcoinAddressInput.fill(address);
 	}
 
-	@step()
+	@step("Fill bitcoin withdraw amount")
 	public async fillBitcoinWithdrawAmount(amount: number): Promise<void> {
 		await this.map.bitcoinWithdrawInput.fill(`${amount}`);
 	}
 
 	//TODO: Revise below method into a more generic one when new crypto withdraw tests are developed, since currently the behaviour is unknown.
-	@step()
+	@step("Withdraw btc")
 	public async withdrawBtc(address: string, amount: number): Promise<void> {
 		await this.openWithdrawTab();
 		await this.selectPaymentMethod(Cryptocurrency.Bitcoin);

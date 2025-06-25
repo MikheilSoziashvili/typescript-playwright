@@ -20,12 +20,12 @@ export class TipRainModal extends BasePage<TipRainModalMap> {
 		return new TipRainModalSteps(this);
 	}
 
-	@step()
+	@step("Insert tip rain value")
 	public async insertTipRainValue(value: number): Promise<void> {
 		await this.map.amountInput.fill(parseToFloat(value));
 	}
 
-	@step()
+	@step("Tip rain value")
 	async tipRainValue(value: number): Promise<void> {
 		await this.insertTipRainValue(value);
 		await this.map.tipButton.click();

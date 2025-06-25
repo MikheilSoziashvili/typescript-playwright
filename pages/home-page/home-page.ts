@@ -31,6 +31,7 @@ export class HomePage extends BasePage<HomePageMap> {
 	}
 
 	// use this method for proxy servers where retries are needed
+	@step("Try navigate with retries")
 	public async tryNavigate(options?: { retries?: number }): Promise<void> {
 		const maxRetries = options?.retries || 3;
 		for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -63,6 +64,7 @@ export class HomePage extends BasePage<HomePageMap> {
 		return new HomePageSteps(this);
 	}
 
+	@step("Navigate and check title")
 	public async navigateAndCheckTitle(): Promise<void> {
 		await this.navigate();
 		await this.assertThat().titleHasText(
@@ -78,7 +80,7 @@ export class HomePage extends BasePage<HomePageMap> {
 		return new RegisterModal(this.page);
 	}
 
-	@step()
+	@step("Wait carousel slide to be active")
 	public async waitCarouselSlideToBeActive(
 		slideName: HomePageBannerCarouselSlideTitle,
 		timeout = Timeout.LONG,
@@ -107,26 +109,29 @@ export class HomePage extends BasePage<HomePageMap> {
 		}
 	}
 
-	@step()
+	@step("Click carousel slide")
 	public async clickCarouselSlide(
 		slideName: HomePageBannerCarouselSlideTitle,
 	): Promise<void> {
 		await this.map.getSlideNavigateButton(slideName).click();
 	}
 
+	@step("Click wallet button")
 	public async clickWalletButton(): Promise<void> {
 		await this.map.walletButton.click();
 	}
 
+	@step("Hover on wallet button")
 	public async hoverOnWalletButton(): Promise<void> {
 		await this.map.walletButton.hover();
 	}
 
+	@step("Click carousel active slide")
 	public async clickCarouselActiveSlide(): Promise<void> {
 		await this.map.bannerCarouselActiveSlide.click();
 	}
 
-	@step()
+	@step("Close top banner")
 	public async closeTopBanner(): Promise<void> {
 		await this.map.topBannerCloseButton.click();
 		await this.map.waitFor({
@@ -135,26 +140,26 @@ export class HomePage extends BasePage<HomePageMap> {
 		});
 	}
 
-	@step()
+	@step("Click on casino header button")
 	public async clickOnCasinoHeaderButton(): Promise<void> {
 		await this.authenticatedHeader.map.casinoNavigationButton.click();
 	}
 
-	@step()
+	@step("Click on casino games slider visit button")
 	public async clickOnCasinoGamesSliderVisitButton(
 		buttonName: string,
 	): Promise<void> {
 		await this.map.casinoGamesSliderVisitButtonByName(buttonName).click();
 	}
 
-	@step()
+	@step("Navigate to wallet")
 	public async navigateToWallet(): Promise<void> {
 		await this.navigate();
 		await this.page.waitForLoadState();
 		await this.clickWalletButton();
 	}
 
-	@step()
+	@step("Get koth currency xposition")
 	public async getKothCurrencyXPosition(): Promise<number> {
 		await this.map.waitForStableXPosition({
 			locator: this.map.firstKothHeaderCurrencyAmount,
@@ -165,7 +170,7 @@ export class HomePage extends BasePage<HomePageMap> {
 		);
 	}
 
-	@step()
+	@step("Click koth image")
 	public async clickKothImage(): Promise<void> {
 		await this.map.kothHeaderImageLocator.click();
 	}

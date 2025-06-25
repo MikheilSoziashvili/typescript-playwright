@@ -18,7 +18,7 @@ export class TwoFactorAuthModal extends BasePage<TwoFactorAuthModalMap> {
 		return new TwoFactorAuthModalSteps(this);
 	}
 
-	@step()
+	@step("Enter2fa code")
 	public async enter2FaCode(
 		twoFactorAuthenticationCode: string,
 	): Promise<void> {

@@ -1,4 +1,5 @@
 import { expect } from "@playwright/test";
+import { step } from "decorators/step";
 import { BaseAsserter } from "@base/base-asserter";
 import { AffiliatesPage } from "./affiliates-page";
 import { Timeout } from "@enums/timeout";
@@ -9,6 +10,7 @@ export class AffiliatesPageAsserter extends BaseAsserter<AffiliatesPage> {
 		super(page);
 	}
 
+	@step("Check created affiliate code is visible")
 	public async isCreatedAffiliateCodeVisible(
 		affiliateCode: string,
 	): Promise<void> {
@@ -19,6 +21,7 @@ export class AffiliatesPageAsserter extends BaseAsserter<AffiliatesPage> {
 		});
 	}
 
+	@step("Check created affiliate code is visible in copy to clipboard field")
 	public async isCreatedAffiliateCodeVisibleInCopyToClipboardField(
 		affiliateCode: string,
 	): Promise<void> {

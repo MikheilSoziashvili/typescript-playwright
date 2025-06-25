@@ -18,7 +18,7 @@ export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 		super(gamdomPage);
 	}
 
-	@step()
+	@step("Navigate to autobet successfully")
 	public async navigateToAutobetSuccessfully(): Promise<void> {
 		await this.gamdomPage.clickAutobet();
 		await expect(this.gamdomPage.map.autoBetButton).toHaveAttribute(
@@ -27,7 +27,7 @@ export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 		);
 	}
 
-	@step()
+	@step("Enter number of bets")
 	public async enterNumberOfBets(betsNumber: string): Promise<void> {
 		await this.gamdomPage
 			.assertThat()
@@ -35,28 +35,28 @@ export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 		await this.gamdomPage.map.numberOfBetsInput.fill(betsNumber);
 	}
 
-	@step()
+	@step("Start autobet successfully")
 	public async startAutobetSuccessfully(): Promise<void> {
 		await this.gamdomPage.assertThat().starAutobetButtonIsDisplayed();
 		await this.gamdomPage.map.startAutobetButton.click();
 		await this.gamdomPage.assertThat().stopAutobetButtonIsDisplayed();
 	}
 
-	@step()
+	@step("Stop autobet successfully")
 	public async stopAutobetSuccessfully(): Promise<void> {
 		await this.gamdomPage.assertThat().stopAutobetButtonIsDisplayed();
 		await this.gamdomPage.map.stopAutobetButton.click();
 		await this.gamdomPage.assertThat().starAutobetButtonIsDisplayed();
 	}
 
-	@step()
+	@step("Fetch remaining bets value")
 	private async fetchRemainingBetsValue(): Promise<number> {
 		const text =
 			await this.gamdomPage.map.remainingBetsBalanceLabel.textContent();
 		return text ? parseInt(text.trim(), 10) : NaN;
 	}
 
-	@step()
+	@step("Validate counter is decreasing")
 	private async validateCounterIsDecreasing(
 		current: number,
 		previous: number,
@@ -67,12 +67,12 @@ export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 		).toBeLessThan(previous);
 	}
 
-	@step()
+	@step("Ensure stop autobet button is visible")
 	private async ensureStopAutobetButtonIsVisible(): Promise<void> {
 		await expect(this.gamdomPage.map.stopAutobetButton).toBeVisible();
 	}
 
-	@step()
+	@step("Verify remaining bets decreasing")
 	public async verifyRemainingBetsDecreasing(
 		initialRemainingBets: string,
 		expectTimeToFinishAutobet = TimeoutSeconds.THIRTY,
@@ -118,7 +118,7 @@ export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 		);
 	}
 
-	@step()
+	@step("Start manual bet")
 	public async startManualBet(
 		betAmount: string,
 		options?: {
@@ -140,7 +140,7 @@ export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 		);
 	}
 
-	@step()
+	@step("Adjust slider values")
 	public async adjustSliderValues(options: {
 		rowsValue?: number | PlinkoRowsOption;
 		riskValue?: number | PlinkoRiskOption;
@@ -158,7 +158,7 @@ export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 		}
 	}
 
-	@step()
+	@step("Wait for sliders to be active")
 	public async waitForSlidersToBeActive(): Promise<void> {
 		await this.gamdomPage
 			.assertThat()
@@ -168,7 +168,7 @@ export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 			.verifyRiskSliderActive(Timeout.EXTRA_LONG);
 	}
 
-	@step()
+	@step("Get in game chips history button value")
 	public async getInGameChipsHistoryButtonValue(): Promise<number> {
 		await this.gamdomPage.assertThat().verifyInGameHistoryIsDisplayed();
 		await this.gamdomPage

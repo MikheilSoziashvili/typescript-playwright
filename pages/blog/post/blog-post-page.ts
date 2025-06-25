@@ -1,4 +1,5 @@
 import { BasePage } from "@base/base-page";
+import { step } from "decorators/step";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { Page } from "@playwright/test";
 import { BlogPostPageMap } from "./blog-page-post-map";
@@ -10,6 +11,7 @@ export class BlogPostPage extends BasePage<BlogPostPageMap> {
 		super(page, new BlogPostPageMap(page));
 	}
 
+	@step("Navigate to blog post")
 	public async navigateToBlogPost(
 		blogPostEndpoint: string,
 		parameters?: BasePageNavigationParametersType,
@@ -28,10 +30,12 @@ export class BlogPostPage extends BasePage<BlogPostPageMap> {
 		return new BlogPostPageSteps(this);
 	}
 
+	@step("Get blog post article title")
 	public async getBlogPostArticleTitle(): Promise<string> {
 		return this.map.blogPostTitle.innerText();
 	}
 
+	@step("Get blog post article subtitle")
 	public async getBlogPostArticleSubTitle(): Promise<string> {
 		return this.map.blogPostSubTitle.innerText();
 	}

@@ -1,4 +1,5 @@
 import { BasePageStep } from "@pages/base/base-page-step";
+import { step } from "decorators/step";
 import { RewardsPage } from "./rewards-page";
 
 export class RewardsPageSteps extends BasePageStep<RewardsPage> {
@@ -6,6 +7,7 @@ export class RewardsPageSteps extends BasePageStep<RewardsPage> {
 		super(gamdomPage);
 	}
 
+	@step("Claim instant reward and verify balance")
 	public async claimInstantRewardAndVerifyBalance(
 		expectedBalance: number,
 	): Promise<void> {
@@ -15,6 +17,7 @@ export class RewardsPageSteps extends BasePageStep<RewardsPage> {
 			.accountBalanceIs(expectedBalance);
 	}
 
+	@step("Claim code")
 	public async claimCode(code: string): Promise<void> {
 		await this.gamdomPage.clickActivateNowButton();
 		await this.gamdomPage.welcomeBonusModal.claimCode(code);

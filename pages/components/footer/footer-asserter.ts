@@ -8,7 +8,7 @@ export class FooterAsserter extends BaseAsserter<Footer> {
 		super(footer);
 	}
 
-	@step()
+	@step("Footer social media icon visual correct")
 	public async footerSocialMediaIconVisualCorrect(
 		testInfo: TestInfo,
 		socialMedia: string,
@@ -19,7 +19,7 @@ export class FooterAsserter extends BaseAsserter<Footer> {
 		);
 	}
 
-	@step()
+	@step("Footer social media icons block visual correct")
 	public async footerSocialMediaIconsBlockVisualCorrect(
 		testInfo: TestInfo,
 	): Promise<void> {

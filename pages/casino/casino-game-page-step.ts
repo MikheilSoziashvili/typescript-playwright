@@ -11,7 +11,7 @@ export class CasinoPageSteps extends BasePageStep<CasinoPage> {
 		super(gamdomPage);
 	}
 
-	@step()
+	@step("Verify provider displayed in dropdown")
 	public async verifyProviderDisplayedInDropdown(
 		provider: GameProvider,
 		expectedResult: VisibilityResult,
@@ -37,7 +37,7 @@ export class CasinoPageSteps extends BasePageStep<CasinoPage> {
 		);
 	}
 
-	@step()
+	@step("Verify provider displayed in settings modal dropdown")
 	public async verifyProviderDisplayedInSettingsModalDropdown(
 		provider: GameProvider,
 		expectedResult: VisibilityResult,

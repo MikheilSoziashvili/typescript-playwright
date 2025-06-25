@@ -10,14 +10,14 @@ export class HelpPageAsserter extends BaseAsserter<HelpPage> {
 		super(page);
 	}
 
-	@step()
+	@step("Is help page title visible")
 	public async isHelpPageTitleVisible(helpPageName: string): Promise<void> {
 		await expect(this.gamdomPage.map.helpPageTitle).toHaveText(
 			helpPageName,
 		);
 	}
 
-	@step()
+	@step("Is help page tab selected")
 	public async isHelpPageTabSelected(tabName: string): Promise<void> {
 		await this.gamdomPage.map.waitForAttributeToHaveValue(
 			this.gamdomPage.map.tabNameByPlaceholder(tabName),
@@ -26,7 +26,7 @@ export class HelpPageAsserter extends BaseAsserter<HelpPage> {
 		);
 	}
 
-	@step()
+	@step("Is text missing in terms of service block")
 	public async isTextMissingInTermsOfServiceBlock(
 		expectedText: string,
 	): Promise<void> {

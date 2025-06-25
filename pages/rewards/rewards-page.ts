@@ -42,6 +42,7 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 		return new WelcomeBonusModal(this.page);
 	}
 
+	@step("Click activate now button")
 	public async clickActivateNowButton(): Promise<void> {
 		await this.map.waitForVisibility({
 			locator: this.map.specialOfferActivateNowButton,
@@ -50,10 +51,12 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 		await this.map.specialOfferActivateNowButton.click();
 	}
 
+	@step("Click instant rakeback claim reward button")
 	public async clickInstantRakebackClaimRewardButton(): Promise<void> {
 		await this.map.instantRakebackClaimRewardButton.click();
 	}
 
+	@step("Get rakeback amount")
 	public async getRakebackAmount(): Promise<string> {
 		const amount = await this.map.instantRakebackAmount.textContent();
 		if (amount) {
@@ -63,7 +66,8 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 		}
 	}
 
-	public async calculateRatebackAmount(parameters: {
+	@step("Calculate rakeback amount")
+	public async calculateRakebackAmount(parameters: {
 		wager: number;
 		rateback: number;
 		houseEdge: RatebackHouseEdge;
@@ -82,7 +86,7 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 
 		return ratebackAmount;
 	}
-	@step()
+	@step("Claim royalty up reward")
 	async claimRoyaltyUpReward(
 		claimRewards: RewardsRoyaltyUpRanks[],
 	): Promise<void> {

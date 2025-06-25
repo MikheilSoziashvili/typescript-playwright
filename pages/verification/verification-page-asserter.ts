@@ -10,7 +10,7 @@ export class VerificationPageAsserter extends BaseAsserter<VerificationPage> {
 		super(page);
 	}
 
-	@step()
+	@step("Country dropdown values not contains items")
 	public async countryDropdownValuesNotContainsItems(
 		expectedMissingItems: string[],
 	): Promise<void> {
@@ -28,7 +28,7 @@ export class VerificationPageAsserter extends BaseAsserter<VerificationPage> {
 		).toHaveLength(0);
 	}
 
-	@step()
+	@step("Verification page title is visible")
 	public async verificationPageTitleIsVisible(): Promise<void> {
 		await expect(this.gamdomPage.map.verificationPageTitle).toBeVisible();
 	}

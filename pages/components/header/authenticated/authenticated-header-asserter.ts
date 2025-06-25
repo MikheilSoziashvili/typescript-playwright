@@ -22,7 +22,7 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 		);
 	}
 
-	@step()
+	@step("Logged in user elements are visible")
 	async loggedInUserElementsAreVisible(): Promise<void> {
 		await this.checkElementsAreVisible(
 			[
@@ -34,7 +34,7 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 		);
 	}
 
-	@step()
+	@step("Logged in user elements are not visible")
 	async loggedInUserElementsAreNotVisible(): Promise<void> {
 		await this.checkElementsAreNotVisible(
 			[
@@ -46,7 +46,7 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 		);
 	}
 
-	@step()
+	@step("Account balance is")
 	public async accountBalanceIs(amount: number): Promise<void> {
 		await expect(
 			await this.gamdomPage.map.getLoadedAccountBalance(),
@@ -55,7 +55,7 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 		});
 	}
 
-	@step()
+	@step("Account balance has changed")
 	public async accountBalanceHasChanged(
 		initialBalance: number,
 	): Promise<void> {
@@ -64,7 +64,7 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 		).not.toHaveText(this.formatUSD(initialBalance));
 	}
 
-	@step()
+	@step("Wallet amount is visual displayed")
 	public async walletAmountIsVisualDisplayed(
 		testInfo: TestInfo,
 	): Promise<void> {
@@ -80,7 +80,7 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 		);
 	}
 
-	@step()
+	@step("Playing string is visual displayed")
 	public async playingStringIsVisualDisplayed(
 		testInfo: TestInfo,
 	): Promise<void> {
@@ -95,7 +95,7 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 		);
 	}
 
-	@step()
+	@step("Wallet balance is")
 	public async walletBalanceIs(
 		wallet: string,
 		expectedAmount: number,
@@ -106,7 +106,7 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 		expect(balance).toBeCloseTo(expectedAmount, 5);
 	}
 
-	@step()
+	@step("Verify user profile dropdown menu is displayed")
 	public async verifyUserProfileDropdownMenuIsDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.userAvatarDropdownMenuContainer,

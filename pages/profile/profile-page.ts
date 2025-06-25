@@ -1,4 +1,5 @@
 import { Page } from "@playwright/test";
+import { step } from "decorators/step";
 import { BasePage } from "@base/base-page";
 import { ProfilePageMap } from "./profile-page-map";
 import { ProfilePageAsserter } from "./profile-page-asserter";
@@ -39,6 +40,7 @@ export class ProfilePage extends BasePage<ProfilePageMap> {
 		return new TwoFactorAuthModal(this.page);
 	}
 
+	@step("Logout")
 	public async logout(): Promise<void> {
 		await this.map.logOutButton.click();
 		await this.continueModal.assertThat().isDisplayed();
@@ -48,14 +50,17 @@ export class ProfilePage extends BasePage<ProfilePageMap> {
 			.loggedOutUserElementsAreVisible();
 	}
 
+	@step("Click save email")
 	public async clickSaveEmail(): Promise<void> {
 		await this.map.saveEmailButton.click();
 	}
 
+	@step("Click save phone")
 	public async clickSavePhone(): Promise<void> {
 		await this.map.savePhoneButton.click();
 	}
 
+	@step("Navigate to user menu option")
 	public async navigateToUserMenuOption(
 		menuItem: UserMenuOption,
 	): Promise<void> {

@@ -19,12 +19,12 @@ export class TransactionDetailsModal extends BasePage<TransactionDetailsModalMap
 		return new TransactionDetailsModalSteps(this);
 	}
 
-	@step()
+	@step("Get deposit amount in btcvalue")
 	public async getDepositAmountInBTCValue(): Promise<string> {
 		return this.map.depositAmountInBTC.inputValue();
 	}
 
-	@step()
+	@step("Get blockchain transaction id")
 	public async getBlockchainTransactionId(): Promise<string> {
 		const href = await this.map.blockchainTransactionLink.getAttribute(
 			Attributes.HREF,

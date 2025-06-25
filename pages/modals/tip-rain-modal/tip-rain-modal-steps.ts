@@ -1,4 +1,5 @@
 import { BasePageStep } from "@pages/base/base-page-step";
+import { step } from "decorators/step";
 import { TipRainModal } from "./tip-rain-modal";
 import { GamdomApi } from "@api/gamdom-api";
 
@@ -7,6 +8,7 @@ export class TipRainModalSteps extends BasePageStep<TipRainModal> {
 		super(page);
 	}
 
+	@step("Tip rain successfully")
 	public async tipRainSuccessfully(
 		gamdomApi: GamdomApi,
 		cookie: string,
@@ -16,6 +18,7 @@ export class TipRainModalSteps extends BasePageStep<TipRainModal> {
 		await this.gamdomPage.assertThat().tipRainModalIsNotDisplayed();
 	}
 
+	@step("Verify modal and tip rain successfully")
 	public async verifyModalAndTipRainSuccessfully(
 		gamdomApi: GamdomApi,
 		cookie: string,

@@ -11,7 +11,7 @@ export class ProvidersPageAsserter extends BaseAsserter<ProvidersPage> {
 		super(page);
 	}
 
-	@step()
+	@step("Verify provider option displayed")
 	public async verifyProviderOptionDisplayed(
 		option: GameProvider,
 		shouldBeVisible: boolean,
@@ -24,7 +24,7 @@ export class ProvidersPageAsserter extends BaseAsserter<ProvidersPage> {
 			: await expect(providerOption).toBeHidden();
 	}
 
-	@step()
+	@step("Verify option state")
 	public async verifyOptionState(
 		provider: GameProvider,
 		expectedResult: VisibilityResult,

@@ -1,4 +1,5 @@
 import { BasePage } from "@base/base-page";
+import { step } from "decorators/step";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { generate2FACodeFromSecret, waitForSeconds } from "@core/utils/utils";
 import { Page } from "@playwright/test";
@@ -25,6 +26,7 @@ export class GoogleAuthPage extends BasePage<GooglePageMap> {
 		return new GoogleAuthPageAsserter(this);
 	}
 
+	@step("Login to Google")
 	public async loginToGoogle(
 		email: string = Configuration.google.email,
 		password: string = Configuration.google.password,
@@ -44,6 +46,7 @@ export class GoogleAuthPage extends BasePage<GooglePageMap> {
 		}
 	}
 
+	@step("Handle two-step verification")
 	private async handleTwoStepVerification(
 		authSecret: string,
 	): Promise<string> {
@@ -85,6 +88,7 @@ export class GoogleAuthPage extends BasePage<GooglePageMap> {
 		return previousCode;
 	}
 
+	@step("Check for wrong code message")
 	private async checkForWrongCodeMessage(): Promise<boolean> {
 		try {
 			await this.map.waitForVisibility({
@@ -101,12 +105,14 @@ export class GoogleAuthPage extends BasePage<GooglePageMap> {
 		}
 	}
 
+	@step("Wait for wrong code message to disappear")
 	private async waitForWrongCodeMessageToDisappear(): Promise<void> {
 		await this.map.waitForInvisibility({
 			locator: this.map.wrongCodeMessage,
 		});
 	}
 
+	@step("Enter credentials")
 	private async enterCredentials(
 		email: string,
 		password: string,
@@ -117,6 +123,7 @@ export class GoogleAuthPage extends BasePage<GooglePageMap> {
 		await this.map.gPasswordNextBtn.click();
 	}
 
+	@step("Check if verify it's you appears")
 	private async verifyItsYouAppears(): Promise<boolean> {
 		try {
 			await this.map.waitForVisibility({
@@ -132,6 +139,7 @@ export class GoogleAuthPage extends BasePage<GooglePageMap> {
 		}
 	}
 
+	@step("Handle verify it's you")
 	private async handleVerifyItsYou(
 		authSecret: string,
 		previousCode: string,
