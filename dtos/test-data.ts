@@ -1,7 +1,11 @@
 import { GAMDOM_EMAIL_DOMAIN } from "@constants/domains";
 import { RegisterTestDataParams } from "@core/interfaces";
 import { HiloBetOption } from "@enums/hilo-bet-options";
-import { HiloBetMultiplierByBetOption } from "@enums/original-games";
+import {
+	HiloBetMultiplierByBetOption,
+	OriginalGame,
+	OriginalsQuickSelectButtons,
+} from "@enums/original-games";
 import { BlogPostCategories } from "@enums/post-categories";
 import { faker } from "@faker-js/faker";
 import { emailDomainPattern, passwordPattern } from "@support/regex-patterns";
@@ -183,3 +187,19 @@ export class BlogPostTestData {
 		this.thumbnailImage = data.thumbnailImage;
 	}
 }
+
+export type QuickSelectScenario = {
+	buttonType: OriginalsQuickSelectButtons;
+	game: OriginalGame;
+	initialBetAmount: number;
+	expectedAfterFirstClick: number;
+	expectedAfterSecondClick: number;
+};
+
+export type RawQuickSelectScenario = {
+	buttonType: string;
+	game: string;
+	initialBetAmount: string;
+	expectedAfterFirstClick: string;
+	expectedAfterSecondClick: string;
+};

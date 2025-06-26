@@ -43,3 +43,8 @@ export enum OriginalsHandlerMethods {
 	PressHalfButton = "pressHalfButton",
 	GetBetAmountValue = "getBetAmountValue",
 }
+
+export enum OriginalsQuickSelectButtons {
+	MIN = "MIN",
+	HALF = "HALF",
+}

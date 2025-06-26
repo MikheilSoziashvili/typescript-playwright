@@ -1,0 +1,10 @@
+buttonType,game,initialBetAmount,expectedAfterFirstClick,expectedAfterSecondClick
+MIN,Mines,10,0.01,
+MIN,Plinko,10,0.10,
+MIN,Keno,10,0.10,
+HALF,Mines,0.06,0.03,0.02
+HALF,Mines,0.07,0.04,0.02
+HALF,Plinko,0.48,0.24,0.12
+HALF,Plinko,0.43,0.22,0.11
+HALF,Keno,0.48,0.24,0.12
+HALF,Keno,0.43,0.22,0.11
