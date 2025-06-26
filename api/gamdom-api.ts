@@ -401,7 +401,7 @@ export class GamdomApi extends BaseApi {
 		event_name: string,
 		max_winners: number,
 		prize_coins: number,
-		game_code = "null",
+		game_code: string | null = null,
 		_headers?: Record<string, string>,
 	): Promise<APIResponse> {
 		const payload: CreateKothEventRequest = {

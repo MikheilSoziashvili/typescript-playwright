@@ -5,5 +5,5 @@ export type CreateKothEventRequest = {
 	event_type: string;
 	max_winners: number;
 	prize_coins: number;
-	game_code: string;
+	game_code: string | null;
 };
