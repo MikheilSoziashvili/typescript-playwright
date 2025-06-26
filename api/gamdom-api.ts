@@ -242,7 +242,7 @@ export class GamdomApi extends BaseApi {
 		id: number,
 		provider_name: string,
 		disabled: boolean,
-		beta_users_only: boolean,
+		qa_users_only: boolean,
 		provider_id: string,
 		imported_from: string,
 		_headers: Record<string, string> = {},
@@ -255,7 +255,7 @@ export class GamdomApi extends BaseApi {
 				disabled: disabled,
 				provider_id: provider_id,
 				imported_from: imported_from,
-				beta_users_only: beta_users_only,
+				qa_users_only: qa_users_only,
 			},
 		];
 

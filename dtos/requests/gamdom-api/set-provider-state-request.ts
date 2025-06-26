@@ -3,7 +3,7 @@ export type SetProviderStateRequest = {
 	provider_name: string;
 	priority: number;
 	disabled: boolean;
-	beta_users_only: boolean;
+	qa_users_only: boolean;
 	provider_id: string;
 	imported_from: string;
 }[];

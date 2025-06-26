@@ -10,5 +10,5 @@ export interface Provider {
 	producer_id: string;
 	provider_url_thumb: string | null;
 	modified_date: string;
-	beta_users_only: boolean;
+	qa_users_only: boolean;
 }

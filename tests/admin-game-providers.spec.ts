@@ -25,7 +25,7 @@ const adminEnableGames = parse_csv(
 	featuresConfiguration: string;
 	providersConfiguration: string;
 	regular_user_result: VisibilityResult;
-	beta_user_result: VisibilityResult;
+	qa_user_result: VisibilityResult;
 }[];
 
 // Map provider names to their corresponding feature enums
@@ -35,16 +35,16 @@ const providerToFeatureMap: Record<string, Feature> = {
 	Pragmatic: Feature.PRAGMATIC_PLAY_INTEGRATION,
 };
 
-// Map configuration strings to their state representations for regular and beta users
-const defineUserConfig = (regular: boolean, beta: boolean) => ({
+// Map configuration strings to their state representations for regular and qa users
+const defineUserConfig = (regular: boolean, qa: boolean) => ({
 	[UserType.REGULAR]: regular,
-	[UserType.BETA]: beta,
+	[UserType.QA_USER]: qa,
 });
 
 const configToStates: Record<string, Partial<Record<UserType, boolean>>> = {
 	both_enabled: defineUserConfig(true, true),
 	regular_enabled: defineUserConfig(true, false),
-	beta_enabled: defineUserConfig(false, true),
+	qa_enabled: defineUserConfig(false, true),
 	both_disabled: defineUserConfig(false, false),
 };
 
@@ -97,7 +97,7 @@ test.describe.serial("Admin Enable Game Provider tests @game-providers", () => {
 			hacksawHub.id,
 			"Hacksaw Gaming hub",
 			hacksawHub.disabled,
-			hacksawHub.beta_users_only,
+			hacksawHub.qa_users_only,
 			hacksawHub.provider_id,
 			hacksawHub.imported_from,
 			{ Cookie: superAdminCookie },
@@ -133,14 +133,14 @@ test.describe.serial("Admin Enable Game Provider tests @game-providers", () => {
 				provider.id,
 				provider.provider_name,
 				provider.disabled,
-				provider.beta_users_only,
+				provider.qa_users_only,
 				provider.provider_id,
 				provider.imported_from,
 				{ Cookie: superAdminCookie },
 			);
 		}
 
-		// Set the specified features to enabled for both regular and beta users
+		// Set the specified features to enabled for both regular and qa users
 		const featuresToEnable: Feature[] = [
 			Feature.HUB88_INTEGRATION,
 			Feature.HACKSAW_INTEGRATION,
@@ -150,7 +150,7 @@ test.describe.serial("Admin Enable Game Provider tests @game-providers", () => {
 		for (const feature of featuresToEnable) {
 			await gamdomApi.setFeatureState(
 				feature,
-				{ [UserType.REGULAR]: true, [UserType.BETA]: true },
+				{ [UserType.REGULAR]: true, [UserType.QA_USER]: true },
 				{ Cookie: superAdminCookie },
 			);
 		}
@@ -164,14 +164,14 @@ test.describe.serial("Admin Enable Game Provider tests @game-providers", () => {
 		const providerEnum = providerEnumMap[record.provider];
 		const providerToFeature = providerToFeatureMap[record.provider];
 		const regularEnabled = Boolean(providerStates[UserType.REGULAR]);
-		const betaEnabled = Boolean(providerStates[UserType.BETA]);
+		const qaEnabled = Boolean(providerStates[UserType.QA_USER]);
 
 		/**
 		 * Define a test for each record.
-		 * The test checks the visibility of game providers for regular and beta users
+		 * The test checks the visibility of game providers for regular and qa users
 		 * based on the configured states.
 		 */
-		test(`[ENG-2745] Admin - enable a game provider only for beta users, test number: [${record.case}`, async ({
+		test(`[ENG-2745] Admin - enable a game provider only for qa users, test number: [${record.case}`, async ({
 			gamdomApi,
 			gamdomDb,
 			homePage,
@@ -198,7 +198,7 @@ test.describe.serial("Admin Enable Game Provider tests @game-providers", () => {
 				),
 			);
 
-			// Set the feature state (enable/disable) for both regular and beta users
+			// Set the feature state (enable/disable) for both regular and qa users
 			await gamdomApi.setFeatureState(providerToFeature, featureStates, {
 				Cookie: superAdminCookie,
 			});
@@ -217,46 +217,46 @@ test.describe.serial("Admin Enable Game Provider tests @game-providers", () => {
 			// Extract the provider ID for use in setting provider state
 			const providerId = targetProvider.id;
 
-			// Set the provider state (enable/disable, beta users only) based on the test configuration
+			// Set the provider state (enable/disable, qa users only) based on the test configuration
 			await gamdomApi.setProviderState(
 				providerId,
 				providerEnum.providerName,
 				!regularEnabled,
-				betaEnabled,
+				qaEnabled,
 				providerEnum.providerIdName,
 				providerEnum.importedFrom,
 				{ Cookie: superAdminCookie },
 			);
 
-			// Create test data for a regular user and a beta user
+			// Create test data for a regular user and a qa user
 			const regularUserData = new RegisterTestData();
-			const betaUserData = new RegisterTestData();
+			const qaUserData = new RegisterTestData();
 
-			// Register and authenticate the beta user
+			// Register and authenticate the qa user
 			await gamdomDb.createNewUser({
-				username: betaUserData.username,
-				password: betaUserData.password,
-				email: betaUserData.email,
-				tags: UserTags.BetaUser,
+				username: qaUserData.username,
+				password: qaUserData.password,
+				email: qaUserData.email,
+				tags: UserTags.QaUser,
 			});
 
 			// ----- Gamdom home page casino hover menu ----- //
-			// Authenticate with the beta user and verify provider visibility
-			const betaUserCookie = await gamdomApi.authenticateWithExistingUser(
-				betaUserData.username,
-				betaUserData.password,
+			// Authenticate with the qa user and verify provider visibility
+			const qaUserCookie = await gamdomApi.authenticateWithExistingUser(
+				qaUserData.username,
+				qaUserData.password,
 			);
 
-			// Set authentication cookies in the browser for the beta user
-			await setAuthenticationCookies(page, betaUserCookie);
+			// Set authentication cookies in the browser for the qa user
+			await setAuthenticationCookies(page, qaUserCookie);
 			await homePage.navigateAndCheckTitle();
 
-			// Verify that the provider is visible or not as expected for the beta user
+			// Verify that the provider is visible or not as expected for the qa user
 			await homePage
 				.assertThat()
 				.verifyProviderState(
 					providerEnum.providerName,
-					record.beta_user_result,
+					record.qa_user_result,
 				);
 
 			// Authenticate with the regular user and verify provider visibility
@@ -287,25 +287,25 @@ test.describe.serial("Admin Enable Game Provider tests @game-providers", () => {
 					record.regular_user_result,
 				);
 
-			// Switch to the beta user and verify provider visibility in the dropdown
-			await setAuthenticationCookies(page, betaUserCookie);
+			// Switch to the qa user and verify provider visibility in the dropdown
+			await setAuthenticationCookies(page, qaUserCookie);
 
 			await casinoPage.navigate();
 			await casinoPage
 				.steps()
 				.verifyProviderDisplayedInDropdown(
 					providerEnum.providerName as GameProvider,
-					record.beta_user_result,
+					record.qa_user_result,
 				);
 
 			// ---- Casino page provider filter dropdown in "Pick Random" feature settings ---- //
-			// Verify provider visibility in the "Pick Random" settings modal for the beta user
+			// Verify provider visibility in the "Pick Random" settings modal for the qa user
 			await casinoPage.navigate();
 			await casinoPage
 				.steps()
 				.verifyProviderDisplayedInSettingsModalDropdown(
 					providerEnum.providerName as GameProvider,
-					record.beta_user_result,
+					record.qa_user_result,
 				);
 
 			// Switch back to the regular user and verify provider visibility in the settings modal
@@ -329,24 +329,24 @@ test.describe.serial("Admin Enable Game Provider tests @game-providers", () => {
 					providerEnum.providerName as GameProvider,
 				);
 
-			// Switch to the beta user and verify provider option state
-			await setAuthenticationCookies(page, betaUserCookie);
+			// Switch to the qa user and verify provider option state
+			await setAuthenticationCookies(page, qaUserCookie);
 			await providersPage
 				.steps()
 				.verifyProviderOptionState(
 					providersPage,
-					record.beta_user_result,
+					record.qa_user_result,
 					providerEnum.providerName as GameProvider,
 				);
 
 			// ---- Homepage provider belt ---- //
-			// Verify that the provider is visible or not as expected for the beta user
+			// Verify that the provider is visible or not as expected for the qa user
 			await homePage
 				.steps()
 				.verifyProviderOptionStateInBelt(
 					homePage,
 					providerEnum.providerName as GameProvider,
-					record.beta_user_result,
+					record.qa_user_result,
 				);
 
 			// Verify that the provider is visible or not as expected for the regular user
