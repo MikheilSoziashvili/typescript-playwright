@@ -132,6 +132,7 @@ async function createKothEvent(
 		event_name,
 		max_winners,
 		prize_coins,
+		undefined,
 		{ Cookie: cookie },
 	);
 
