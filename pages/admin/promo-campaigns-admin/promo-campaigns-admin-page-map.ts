@@ -15,12 +15,28 @@ export class PromoCampaignsAdminMap extends BaseMap {
 		return this.promoCampaignsContainer.getByTestId("newPromoCodeButton");
 	}
 
+	public get searchPromoCodeInputField(): Locator {
+		return this.promoCampaignsContainer.getByPlaceholder("Search Promo Code");
+	}
+
+	public get searchButton(): Locator {
+		return this.promoCampaignsContainer.locator("button", { hasText: "Search" });
+	}
+
+	public get clearButton(): Locator {
+		return this.promoCampaignsContainer.locator("button", { hasText: "Clear" });
+	}
+
 	public get promoCampaignsTable(): Locator {
 		return this.promoCampaignsContainer.locator(`table`);
 	}
 
 	public get promoCampaignsTableBody(): Locator {
 		return this.promoCampaignsTable.locator(`tbody`);
+	}
+
+	public get promoCampaignsTableRows(): Locator {
+		return this.promoCampaignsTableBody.locator(`tr`);
 	}
 
 	public tableRowByCampaignName(campaignName: string): Locator {
@@ -35,8 +51,8 @@ export class PromoCampaignsAdminMap extends BaseMap {
 		return this.tableRowByCampaignName(campaignName).locator(`//td[4]//p`);
 	}
 
-	public promoCodeTableTextByCampaignName(campaignName: string): Locator {
-		return this.tableRowByCampaignName(campaignName).locator(`//td[2]//p`);
+	public promoCodeTableText(): Locator {
+		return this.promoCampaignsTableRows.locator(`//td[2]//p`);
 	}
 
 	public campaignNameTableTextByCampaignName(campaignName: string): Locator {

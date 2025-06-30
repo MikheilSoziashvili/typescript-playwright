@@ -15,4 +15,5 @@ export enum ToastSubTitle {
 	PROMO_CODE_REDEEMED = "Promo code has been redeemed.",
 	PROMO_CODE_ERROR_MESSAGE = "Promo has ended or is inactive.",
 	SUCCESSFULLY_FETCHED_TRANSACTIONS = "Successfully fetched transactions.",
+	PROMOCODE_NOT_FOUND = "Nothing found!",
 }

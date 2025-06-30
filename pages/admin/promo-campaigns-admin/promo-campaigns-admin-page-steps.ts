@@ -77,4 +77,43 @@ export class PromoCampaignsAdminSteps extends BasePageStep<PromoCampaignsAdminPa
 				throw new Error(`Unknown status action: ${newStatus}`);
 		}
 	}
+
+	@step("Search for a promo code exact match in the campaigns table")
+	public async searchPromoCode(
+		campaignCode: string,
+		campaignName: string,
+		numberOfResults: number,
+	): Promise<void> {
+		await this.gamdomPage.map.searchPromoCodeInputField.fill(campaignCode);
+		await this.gamdomPage.searchPromoCode();
+		await this.gamdomPage.map.waitForVisibility({
+			locator: this.gamdomPage.map.clearButton,
+		});
+		await this.gamdomPage
+			.assertThat()
+			.campaignIsDisplayedInCampaignsTable(campaignName);
+		await this.gamdomPage
+			.assertThat()
+			.verifyNumberOfSearchResults(campaignName, numberOfResults);
+	}
+
+	@step("Search for a non-existing promo code in the campaigns table")
+	public async searchForNonExistingPromoCode(
+		campaignCode: string,
+		appendToCode: string,
+	): Promise<void> {
+		await this.gamdomPage.map.searchPromoCodeInputField.fill(campaignCode + appendToCode);
+		await this.gamdomPage.searchPromoCode();
+	}
+
+	@step("Clear search input field")
+	public async clearSearchInputField(): Promise<void> {
+		await this.gamdomPage.clearSearchInputField();
+		await this.gamdomPage
+			.assertThat()
+			.verifySearchInputIsCleared();
+		await this.gamdomPage
+			.assertThat()
+			.verifyTableIsNotEmpty();
+	}
 }

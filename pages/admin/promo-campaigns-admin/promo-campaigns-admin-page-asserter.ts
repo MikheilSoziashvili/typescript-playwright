@@ -29,4 +29,39 @@ export class PromoCampaignsAdminAsserter extends BaseAsserter<PromoCampaignsAdmi
 			),
 		).toHaveText(expectedCampaignStatus);
 	}
+
+	@step("Verify promo code exact match in the campaigns table")
+	public async verifyPromoCodeExactMatch(
+		promoCode: string,
+	): Promise<void> {
+		await expect(
+			this.gamdomPage.map.promoCodeTableText(),
+		).toHaveText(promoCode);
+	}
+
+	@step("Verify the number of search results in the campaigns table")
+	public async verifyNumberOfSearchResults(
+		promoCampaignName: string,
+		numberOfResults: number,
+	): Promise<void> {
+		await expect(
+			this.gamdomPage.map.tableRowByCampaignName(promoCampaignName),
+		).toHaveCount(numberOfResults);
+	}
+
+	@step("Verify the table is not empty")
+	public async verifyTableIsNotEmpty(): Promise<void> {
+		await expect(this.gamdomPage.map.promoCampaignsTableRows).not.toHaveCount(0);
+	}
+
+	@step("Verify search input is cleared")
+	public async verifySearchInputIsCleared(): Promise<void> {
+		await expect(this.gamdomPage.map.searchPromoCodeInputField).toBeEmpty();
+	}
+
+	@step("Verify search input is not cleared")
+	public async verifySearchInputIsNotCleared(promoCode: string): Promise<void> {
+		await expect(this.gamdomPage.map.searchPromoCodeInputField).toHaveValue(promoCode);
+
+	}
 }
