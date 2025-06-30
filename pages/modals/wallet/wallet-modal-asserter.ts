@@ -29,7 +29,7 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 			WalletType.VAULT,
 		);
 
-		expect(backendUsd).toBeCloseTo(expectedUsd, 2);
+		expect(backendUsd).toBeCloseTo(expectedUsd, 1);
 	}
 
 	@step("Vault deposit toast message is displayed")

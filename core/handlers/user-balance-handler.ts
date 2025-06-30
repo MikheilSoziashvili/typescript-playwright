@@ -77,7 +77,8 @@ export class UserBalanceHandler extends BaseComponent<BaseMap> {
 	 * @returns      Exact USD value as a floating-point number.
 	 */
 	public coinsToUsd(coins: number): number {
-		return coins / COINS_PER_USD;
+		const usd = coins / COINS_PER_USD;
+		return Number(usd.toFixed(2));
 	}
 
 	/**
