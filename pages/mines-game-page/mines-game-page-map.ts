@@ -53,4 +53,40 @@ export class MinesGamePageMap extends BaseMap {
 	public get halfButton(): Locator {
 		return this.page.getByTestId("mines-control-1/2");
 	}
+
+	public get gameHistoryButton(): Locator {
+		return this.page.locator("button[data-tooltip='History']");
+	}
+
+	public get gameHistoryModalContainer(): Locator {
+		return this.page.locator('div[class^="ModalHistorystyled__Container"]');
+	}
+
+	public get gameHistoryTable(): Locator {
+		return this.gameHistoryModalContainer.locator("table");
+	}
+
+	public get gameHistoryTableRows(): Locator {
+		return this.gameHistoryTable.locator("tbody tr");
+	}
+
+	public gameHistoryTableRowByIndex(index: number): Locator {
+		return this.gameHistoryTableRows.nth(index);
+	}
+
+	public gameHistoryTableRowBetAmount(index: number): Locator {
+		return this.gameHistoryTableRowByIndex(index).locator("td").nth(2);
+	}
+
+	public get singleBetHistoryModal(): Locator {
+		return this.page.locator('div[class^="ModalRoundstyled__Grid"]');
+	}
+
+	public get singleBetHistoryModalDetails(): Locator {
+		return this.singleBetHistoryModal.locator("div[class^='ModalRoundstyled__CardText']");
+	}
+
+	public get betDetailsBetAmount(): Locator {
+		return this.singleBetHistoryModalDetails.nth(1);
+	}
 }

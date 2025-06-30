@@ -332,4 +332,23 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 	public async getBetAmountValue(): Promise<string> {
 		return this.map.betField.inputValue();
 	}
+
+	@step("Open game history")
+	public async openGameHistory(): Promise<void> {
+		await this.map.gameHistoryButton.click();
+	}
+
+	@step("Get random game history row index")
+	public async getRandomGameHistoryRowIndex(): Promise<number> {
+		const rows = await this.map.gameHistoryTableRows.count();
+		expect(rows, `No game history rows found`).toBeGreaterThan(0);
+		return Math.floor(Math.random() * rows);
+	}
+
+	@step("Open bet details in Game History")
+	public async openBetDetails(
+		betRowIndex: number,
+	): Promise<void> {
+		await this.map.gameHistoryTableRowByIndex(betRowIndex).click();
+	}
 }

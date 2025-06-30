@@ -90,4 +90,36 @@ test.describe("Mines tests", () => {
 				});
 		},
 	);
+
+	test(
+		`[ENG-7319] Mines - Verify Game History`,
+		{
+			tag: ["@originals", "@mines"],
+		},
+		async ({ minesGamePage }) => {
+			await minesGamePage.navigateAndWaitForGameToLoad();
+
+			await minesGamePage.steps().placeBetAndConfigureMines(minesBetData);
+
+			const accountBalanceBeforeBet =
+				await minesGamePage.authenticatedHeader.getAccountBalance();
+
+			const { totalBetsPlaced, hasWonAtLeastOnce } =
+				await minesGamePage.pickRandomTilesUntilBombIsCaught(
+					minesBetData.betAmount,
+				);
+
+			await minesGamePage
+				.assertThat()
+				.accountBalanceAfterGameFlowIsCorrect({
+					accountBalanceBeforeBet: accountBalanceBeforeBet,
+					betAmount: minesBetData.betAmount,
+					totalBetsPlaced: totalBetsPlaced,
+					cashoutMultiplier: minesBetData.cashoutMultiplier,
+					numberOfWins: hasWonAtLeastOnce ? 1 : 0,
+				});
+
+			await minesGamePage.steps().verifyBetIsShownInGameHistory();
+		},
+	);
 });

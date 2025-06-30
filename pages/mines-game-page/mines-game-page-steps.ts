@@ -33,4 +33,23 @@ export class MinesGamePageSteps extends BasePageStep<MinesGamePage> {
 		await this.gamdomPage.assertThat().manualCashoutButtonIsDisplayed();
 		await this.gamdomPage.performManualCashout();
 	}
+
+	@step("Verify bet is shown in the game history")
+	public async verifyBetIsShownInGameHistory(): Promise<void> {
+		await this.gamdomPage.openGameHistory();
+		await this.gamdomPage.assertThat().verifyGameHistoryModalIsOpened();
+
+		const betRowIndex =
+			await this.gamdomPage.getRandomGameHistoryRowIndex();
+		const rowBetAmount = await this.gamdomPage.map
+			.gameHistoryTableRowBetAmount(betRowIndex)
+			.innerText();
+
+		await this.gamdomPage.openBetDetails(betRowIndex);
+		await this.gamdomPage.assertThat().verifyBetDetailsModalIsOpened();
+
+		await this.gamdomPage
+			.assertThat()
+			.verifyBetAmountIsDisplayedInBetDetailsModal(rowBetAmount);
+	}
 }

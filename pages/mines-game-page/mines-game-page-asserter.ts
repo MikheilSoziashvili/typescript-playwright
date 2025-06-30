@@ -84,4 +84,23 @@ export class MinesGamePageAsserter extends BaseAsserter<MinesGamePage> {
 	async pickRandomTileButtonIsNotDisplayed(): Promise<void> {
 		await expect(this.gamdomPage.map.pickRandomTileButton).toBeHidden();
 	}
+
+	@step("Verify Game History modal is opened")
+	async verifyGameHistoryModalIsOpened(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.gameHistoryModalContainer,
+		]);
+	}
+
+	@step("Verify Bet details modal is opened")
+	async verifyBetDetailsModalIsOpened(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.singleBetHistoryModal,
+		]);
+	}
+
+	@step("Verify bet amount is displayed in bet details modal")
+	async verifyBetAmountIsDisplayedInBetDetailsModal(expectedAmount: string): Promise<void> {
+		await expect(this.gamdomPage.map.betDetailsBetAmount).toHaveText(expectedAmount);
+	}
 }
