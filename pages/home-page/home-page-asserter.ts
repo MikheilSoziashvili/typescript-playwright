@@ -9,12 +9,16 @@ import { step } from "decorators/step";
 import { logger } from "@logger/logger";
 import { waitUntil } from "@core/utils/utils";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
+import { ToastTitle } from "@enums/toast-titles";
+import { Toast } from "@pages/components/toast/toast";
 
 export class HomePageAsserter extends BaseAsserter<HomePage> {
 	public fromCsv: boolean;
+	public toast: Toast;
 	public constructor(page: HomePage, fromCsv = false) {
 		super(page);
 		this.fromCsv = fromCsv;
+		this.toast = new Toast(page.page);
 	}
 
 	@step("Title has text")
@@ -51,10 +55,11 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 
 	@step("User is registered")
 	public async userIsRegistered(username: string): Promise<void> {
+		await this.toast.assertThat().titleIs(ToastTitle.SUCCESS);
+
 		await this.gamdomPage.authenticatedHeader
 			.assertThat()
 			.loggedInUserElementsAreVisible();
-		await expect(this.gamdomPage.map.registerSuccessMessage).toBeVisible();
 
 		const receivedUsername =
 			await this.gamdomPage.map.welcomeBackMessage.textContent({

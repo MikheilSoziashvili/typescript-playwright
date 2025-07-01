@@ -9,11 +9,11 @@ export class HomePageMap extends BaseMap {
 	}
 
 	public get toastMessage(): Locator {
-		return this.page.locator("*[role='alert']");
+		return this.page.getByTestId("toastContainer");
 	}
 
 	public get registerSuccessMessage(): Locator {
-		return this.page.locator("p[type='success']");
+		return this.toastMessage.getByTestId("toastTitle");
 	}
 
 	public get welcomeBackMessage(): Locator {

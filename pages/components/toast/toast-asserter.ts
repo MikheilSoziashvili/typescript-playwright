@@ -91,10 +91,14 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 			timeout?: number;
 		},
 	): Promise<void> {
-		await expect(this.gamdomPage.map.toastTitleLocator(options)).toHaveText(
-			title,
-			{ timeout: options?.timeout },
-		);
+		const toastLocators = this.gamdomPage.map.toastTitleLocator(options);
+
+		await this.pollToastForExpectedText({
+			locators: toastLocators,
+			expectedText: title,
+			timeout: options?.timeout ?? Timeout.LONG,
+			logLabel: "title",
+		});
 	}
 
 	@step("Check toast titles")
