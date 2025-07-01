@@ -1,4 +1,4 @@
-import { VERY_LOW_USER_AMOUNT } from "@constants/user-amounts";
+import { VERY_LOW_USER_AMOUNT } from "database/constants/user-amounts";
 import { calculateMinesMultiplier } from "@core/utils/utils";
 import { MinesBetTestData } from "@dtos/test-data";
 import { BrowserName } from "@enums/playwright/project-browser-names";

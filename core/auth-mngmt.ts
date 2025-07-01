@@ -20,7 +20,7 @@ import { RegisterTestData } from "@dtos/test-data";
 import { getFilePath } from "./utils/utils";
 import { HttpStatus } from "@enums/http-status";
 import { GamdomDb } from "database/gamdom-db";
-import { NewUserOptions } from "./api/interfaces/storage-state-new-user-options";
+import { NewUserOptions } from "database/interfaces/storage-state-new-user-options";
 import { DEFAULT_IMAGE } from "@constants/defaults";
 
 const AUTH_STATE_PATH = {

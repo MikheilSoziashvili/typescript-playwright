@@ -140,6 +140,21 @@ async function createKothEvent(
 	logger.info("New KOTH Event created");
 }
 
+async function enablePromotionsFeature(
+	gamdomApi: GamdomApi,
+	cookie: string,
+): Promise<void> {
+	const featureResponse = await gamdomApi.setFeatureState(
+		Feature.PROMOTIONS,
+		ALL_USER_TYPES_ENABLED,
+		{ Cookie: cookie },
+	);
+
+	featureResponse.forEach((response) => {
+		expect(response.status()).toBe(HttpStatus.OK);
+	});
+}
+
 async function updateWithdrawLimits(): Promise<void> {
 	const gamdomDb = new GamdomDb();
 	const defaultWithdrawLimit = 750000000000; // Default value for 500 million USD in coins
@@ -343,6 +358,7 @@ async function globalSetup(): Promise<void> {
 	await enablePlinkoFeature(gamdomApi, cookie);
 	await enableMinesFeature(gamdomApi, cookie);
 	await enableKenoFeature(gamdomApi, cookie);
+	await enablePromotionsFeature(gamdomApi, cookie);
 	await ensureKothEventsExist(gamdomApi, cookie);
 
 	if (Configuration.createExecution) {

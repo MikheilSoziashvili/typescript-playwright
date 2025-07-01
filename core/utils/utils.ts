@@ -26,6 +26,10 @@ import {
 	otpAuthSecretPattern,
 	pageUrl,
 	sanitizeTitlePattern,
+	urlLeadingTrailingHyphensPattern,
+	urlMultipleHyphensPattern,
+	urlSpacesAndUnderscoresPattern,
+	urlSpecialCharactersPattern,
 	wwwPattern,
 } from "@support/regex-patterns";
 import accounting from "accounting";
@@ -264,6 +268,22 @@ export function generateRandomString(options?: {
 		.join("");
 
 	return options?.prefix ? `${options.prefix}${randomString}` : randomString;
+}
+
+/**
+ * Generate a unique custom URL based on string
+ * Examples:
+ * - "Default_promotion_ABC123" -> "default-promotion-abc123"
+ * - "VIP Exclusive Rewards!" -> "vip-exclusive-rewards"
+ * - "100% Welcome Bonus" -> "100-welcome-bonus"
+ */
+export function generateCustomUrl(title: string): string {
+	return title
+		.toLowerCase()
+		.replace(urlSpecialCharactersPattern, "")
+		.replace(urlSpacesAndUnderscoresPattern, "-")
+		.replace(urlMultipleHyphensPattern, "-")
+		.replace(urlLeadingTrailingHyphensPattern, "");
 }
 
 export const getRandomPhone = (countryCode = "+1", length = 9): string => {
@@ -820,6 +840,49 @@ export function formatDate(daysToAdd = 0): string {
 	const date = new Date();
 	date.setDate(date.getDate() + daysToAdd);
 	return date.toISOString().slice(0, 10);
+}
+
+/**
+ * Returns a date as an ISO string with optional offset in days, months, or years.
+ *
+ * @param {Object} [options] - Configuration options for date manipulation
+ * @param {number} [options.daysOffset=0] - Number of days to add/subtract from current date
+ * @param {number} [options.monthsOffset=0] - Number of months to add/subtract from current date
+ * @param {number} [options.yearsOffset=0] - Number of years to add/subtract from current date
+ * @returns {string} The ISO string representation of the calculated date
+ *
+ * @example
+ * // Get current date as ISO string
+ * const now = getISODate();
+ *
+ * @example
+ * // Get yesterday's date
+ * const yesterday = getISODate({ daysOffset: -1 });
+ *
+ * @example
+ * // Get date 2 days ago
+ * const twoDaysAgo = getISODate({ daysOffset: -2 });
+ *
+ * @example
+ * // Get date 1 year in the future
+ * const nextYear = getISODate({ yearsOffset: 1 });
+ */
+export function getISODate({
+	daysOffset = 0,
+	monthsOffset = 0,
+	yearsOffset = 0,
+}: {
+	daysOffset?: number;
+	monthsOffset?: number;
+	yearsOffset?: number;
+} = {}): string {
+	const date = new Date();
+
+	date.setDate(date.getDate() + daysOffset);
+	date.setMonth(date.getMonth() + monthsOffset);
+	date.setFullYear(date.getFullYear() + yearsOffset);
+
+	return date.toISOString();
 }
 
 /**

@@ -39,6 +39,7 @@ import { OurGamesAdminPage } from "@pages/admin/our-games-admin/our-games-admin-
 import { PromoCampaignsAdminPage } from "@pages/admin/promo-campaigns-admin/promo-campaigns-admin-page";
 import { TransactionsAdminPage } from "@pages/admin/transactions-admin/transactions-admin-page";
 import { SeoRedirectsAdminPage } from "@pages/admin/seo-redirects-admin/seo-redirects-admin-page";
+import { PromotionAdminPage } from "@pages/admin/promotion-admin/promotion-admin-page";
 
 export type AdminPages = {
 	baseAdminPage: BaseAdminPage;
@@ -81,6 +82,7 @@ export type AdminPages = {
 	statsAdminPage: StatsAdminPage;
 	ourGamesAdminPage: OurGamesAdminPage;
 	seoRedirectsAdminPage: SeoRedirectsAdminPage;
+	promotionAdminPage: PromotionAdminPage;
 };
 
 export const adminPagesFixtures = base.extend<AdminPages>({
@@ -203,5 +205,8 @@ export const adminPagesFixtures = base.extend<AdminPages>({
 	},
 	seoRedirectsAdminPage: async ({ page }, use) => {
 		await use(new SeoRedirectsAdminPage(page));
+	},
+	promotionAdminPage: async ({ page }, use) => {
+		await use(new PromotionAdminPage(page));
 	},
 });

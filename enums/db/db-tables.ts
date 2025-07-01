@@ -6,4 +6,5 @@ export enum DbTables {
 	AmlInfo = "aml.info",
 	AmlStatus = "aml.status",
 	KothEvents = "koth.events",
+	Promotions = "promotions.promotions",
 }

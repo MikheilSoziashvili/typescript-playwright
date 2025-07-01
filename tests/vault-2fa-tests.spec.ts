@@ -1,5 +1,5 @@
 import { UK_PROXY_CREDENTIALS } from "@constants/proxies";
-import { MEDIUM_USER_AMOUNT } from "@constants/user-amounts";
+import { MEDIUM_USER_AMOUNT } from "database/constants/user-amounts";
 import {
 	createBrowserContextWithProxy,
 	createPngImagePath,

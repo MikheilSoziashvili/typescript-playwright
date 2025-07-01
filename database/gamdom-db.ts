@@ -1,7 +1,15 @@
 import { DEFAULT_IMAGE } from "@constants/defaults";
-import { AmlInfoOptions } from "@core/api/interfaces/aml-info-options";
-import { AmlStatusInsertOptions } from "@core/api/interfaces/aml-status-insert-options";
-import { NewUserOptions } from "@core/api/interfaces/storage-state-new-user-options";
+import {
+	DEFAULT_PROMOTION_VALUES,
+	CASINO_PROMOTION_DEFAULTS,
+	SPORTSBOOK_PROMOTION_DEFAULTS,
+	LIVE_CASINO_PROMOTION_DEFAULTS,
+	VIP_PROMOTION_DEFAULTS,
+} from "./constants/promotion-defaults";
+import { AmlInfoOptions } from "./interfaces/aml-info-options";
+import { AmlStatusInsertOptions } from "./interfaces/aml-status-insert-options";
+import { NewUserOptions } from "./interfaces/storage-state-new-user-options";
+import { PromotionInsertOptions } from "./interfaces/promotion-insert-options";
 import { generateAmlVerificationStatusReasonText } from "@core/helpers/asserter-helpers/text-asserters";
 import {
 	NullableDateString,
@@ -12,7 +20,9 @@ import {
 	convertToScryptHash,
 	formatDate,
 	formatUserTags,
+	generateCustomUrl,
 	generateRandomString,
+	getISODate,
 	getRandomNumber,
 	getRandomPhone,
 } from "@core/utils/utils";
@@ -22,12 +32,14 @@ import { AmlVerificationLevel } from "@enums/db/aml-verification-level";
 import { AmlVerificationStatus } from "@enums/db/aml-verification-status";
 import { CampaignsColumns } from "@enums/db/campaigns-columns";
 import { DbTables } from "@enums/db/db-tables";
+import { PromotionColumns } from "@enums/db/promotion-columns";
 import { SettingsColumns } from "@enums/db/settings-columns";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
 import { UsersColumns } from "@enums/db/users-columns";
 import { WalletsColumns } from "@enums/db/wallets-columns";
 import { WithdrawLimitsSettingsValues } from "@enums/db/withdraw-settings-values";
+import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { Unit } from "@enums/units";
 import * as Configuration from "configuration";
 import { Pool, PoolClient, QueryResultRow } from "pg";
@@ -444,10 +456,8 @@ export class GamdomDb extends BaseDB {
 		hasLogMessage = false,
 		client?: PoolClient,
 	): Promise<QueryResultRow> {
-		const now = new Date().toISOString();
-		const futureDate = new Date();
-		futureDate.setFullYear(futureDate.getFullYear() + 1);
-		const futureDateStr = futureDate.toISOString();
+		const now = getISODate();
+		const futureDateStr = getISODate({ yearsOffset: 1 });
 		const sixDigits = getRandomNumber(6).toString();
 
 		const options: AmlStatusInsertOptions = {
@@ -535,10 +545,8 @@ export class GamdomDb extends BaseDB {
 		hasLogMessage = false,
 		client?: PoolClient,
 	): Promise<QueryResultRow> {
-		const now = new Date().toISOString();
-		const futureDate = new Date();
-		futureDate.setFullYear(futureDate.getFullYear() + 1);
-		const futureDateStr = futureDate.toISOString();
+		const now = getISODate();
+		const futureDateStr = getISODate({ yearsOffset: 1 });
 		const sixDigits = getRandomNumber(6).toString();
 
 		const options: AmlStatusInsertOptions = {
@@ -631,9 +639,7 @@ export class GamdomDb extends BaseDB {
 		maxWinners = 50,
 		prizeCoins = 3000000,
 	): Promise<QueryResultRow> {
-		const startDate = new Date();
-		startDate.setDate(startDate.getDate() - 1); // 1 day before current day
-
+		const startDate = new Date(getISODate({ daysOffset: -1 }));
 		const endDate = new Date(startDate);
 		endDate.setDate(endDate.getDate() + durationDays);
 
@@ -718,5 +724,190 @@ export class GamdomDb extends BaseDB {
 		hasLogMessage = true,
 	): Promise<boolean> {
 		return this.kothEventExists(KothEventName.MONTHLY, hasLogMessage);
+	}
+
+	public async insertPromotion(
+		title: string,
+		subtitle: NullableString = null,
+		description: NullableString = null,
+		termsAndConditions: NullableString = null,
+		imageCover: NullableString = null,
+		imageThumbnail: NullableString = null,
+		howToParticipate: NullableString = null,
+		rewardsInfo: NullableString = null,
+		priority = 1,
+		isVisible: BooleanValueString = BooleanValueString.TRUE,
+		buttonLink: NullableString = null,
+		customUrl: NullableString = null,
+		category: NullableString = null,
+		subCategory: NullableString = null,
+		createdByAdminId = 1,
+		updatedByAdminId = 1,
+		startDate: NullableDateString = null,
+		expirationDate: NullableDateString = null,
+		created: NullableDateString = null,
+		modifiedDate: NullableDateString = null,
+		hasLogMessage = true,
+		client?: PoolClient,
+	): Promise<QueryResultRow> {
+		const now = getISODate();
+		const defaultStartDate = getISODate({ daysOffset: -2 });
+
+		const generatedCustomUrl = customUrl || generateCustomUrl(title);
+
+		const baseData = {
+			[PromotionColumns.Title]: title,
+			[PromotionColumns.Subtitle]: subtitle,
+			[PromotionColumns.Description]: description,
+			[PromotionColumns.TermsAndConditions]: termsAndConditions,
+			[PromotionColumns.ImageCover]: imageCover,
+			[PromotionColumns.ImageThumbnail]: imageThumbnail,
+			[PromotionColumns.HowToParticipate]: howToParticipate,
+			[PromotionColumns.RewardsInfo]: rewardsInfo,
+			[PromotionColumns.Priority]: priority,
+			[PromotionColumns.IsVisible]: isVisible === BooleanValueString.TRUE,
+			[PromotionColumns.ButtonLink]: buttonLink,
+			[PromotionColumns.CustomUrl]: generatedCustomUrl,
+			[PromotionColumns.Category]: category,
+			[PromotionColumns.SubCategory]: subCategory,
+			[PromotionColumns.CreatedByAdminId]: createdByAdminId,
+			[PromotionColumns.UpdatedByAdminId]: updatedByAdminId,
+			[PromotionColumns.StartDate]: startDate || defaultStartDate,
+			[PromotionColumns.ExpirationDate]: expirationDate,
+			[PromotionColumns.Created]: created || now,
+			[PromotionColumns.ModifiedDate]: modifiedDate || now,
+		};
+
+		const data = Object.fromEntries(
+			Object.entries(baseData).filter(([, value]) => value !== null),
+		);
+
+		return this.insert(DbTables.Promotions, data, hasLogMessage, client);
+	}
+
+	public async insertDefaultPromotion(
+		title: string,
+		hasLogMessage = false,
+		client?: PoolClient,
+	): Promise<QueryResultRow> {
+		return this.insertPromotionFromOptions(
+			{ ...DEFAULT_PROMOTION_VALUES, title },
+			hasLogMessage,
+			client,
+		);
+	}
+
+	public async insertPromotionFromOptions(
+		options: PromotionInsertOptions,
+		hasLogMessage = false,
+		client?: PoolClient,
+	): Promise<QueryResultRow> {
+		return this.insertPromotion(
+			options.title,
+			options.subtitle || null,
+			options.description || null,
+			options.termsAndConditions || null,
+			options.imageCover || null,
+			options.imageThumbnail || null,
+			options.howToParticipate || null,
+			options.rewardsInfo || null,
+			options.priority || 1,
+			options.isVisible || BooleanValueString.TRUE,
+			options.buttonLink || null,
+			options.customUrl || null,
+			options.category || null,
+			options.subCategory || null,
+			options.createdByAdminId || 1,
+			options.updatedByAdminId || 1,
+			options.startDate || null,
+			options.expirationDate || null,
+			options.created || null,
+			options.modifiedDate || null,
+			hasLogMessage,
+			client,
+		);
+	}
+
+	public async insertCasinoPromotion(
+		title: string,
+		hasLogMessage = false,
+		client?: PoolClient,
+	): Promise<QueryResultRow> {
+		return this.insertPromotionFromOptions(
+			{ ...CASINO_PROMOTION_DEFAULTS, title },
+			hasLogMessage,
+			client,
+		);
+	}
+
+	public async insertSportsbookPromotion(
+		title: string,
+		hasLogMessage = false,
+		client?: PoolClient,
+	): Promise<QueryResultRow> {
+		return this.insertPromotionFromOptions(
+			{ ...SPORTSBOOK_PROMOTION_DEFAULTS, title },
+			hasLogMessage,
+			client,
+		);
+	}
+
+	public async insertLiveCasinoPromotion(
+		title: string,
+		hasLogMessage = false,
+		client?: PoolClient,
+	): Promise<QueryResultRow> {
+		return this.insertPromotionFromOptions(
+			{ ...LIVE_CASINO_PROMOTION_DEFAULTS, title },
+			hasLogMessage,
+			client,
+		);
+	}
+
+	public async insertVipPromotion(
+		title: string,
+		hasLogMessage = false,
+		client?: PoolClient,
+	): Promise<QueryResultRow> {
+		return this.insertPromotionFromOptions(
+			{ ...VIP_PROMOTION_DEFAULTS, title },
+			hasLogMessage,
+			client,
+		);
+	}
+
+	public async deletePromotionByTitle(
+		title: string,
+		hasLogMessage = false,
+		client?: PoolClient,
+	): Promise<void> {
+		return this.delete(
+			DbTables.Promotions,
+			`${PromotionColumns.Title} = '${title}'`,
+			hasLogMessage,
+			client,
+		);
+	}
+
+	public async expirePromotionByTitle(
+		title: string,
+		hasLogMessage = false,
+		client?: PoolClient,
+	): Promise<QueryResultRow> {
+		const expirationDate = getISODate({ daysOffset: -1 });
+		const now = getISODate();
+
+		const updateData = {
+			[PromotionColumns.ExpirationDate]: expirationDate,
+			[PromotionColumns.ModifiedDate]: now,
+		};
+
+		return this.update(
+			DbTables.Promotions,
+			updateData,
+			`${PromotionColumns.Title} = '${title}'`,
+			hasLogMessage,
+			client,
+		);
 	}
 }

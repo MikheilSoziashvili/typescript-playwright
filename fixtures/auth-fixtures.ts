@@ -5,7 +5,7 @@ import {
 	USER_1_CREDENTIALS,
 } from "@constants/credentials";
 import { GAMDOM_EMAIL_DOMAIN } from "@constants/domains";
-import { NewUserOptions } from "@core/api/interfaces/storage-state-new-user-options";
+import { NewUserOptions } from "database/interfaces/storage-state-new-user-options";
 import {
 	getStorageStateGoogleAuth,
 	getStorageStateNewUserAPI,

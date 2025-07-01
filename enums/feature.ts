@@ -31,4 +31,5 @@ export enum Feature {
 	PLINKO = "PLINKO",
 	MINES = "MINES",
 	KENO = "KENO",
+	PROMOTIONS = "PROMOTIONS",
 }

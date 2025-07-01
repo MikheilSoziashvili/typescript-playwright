@@ -39,7 +39,11 @@ export class BaseDB {
 			return result.rows;
 		} catch (error) {
 			logger.error(`Error during ${logContext}: ${sql}`, error);
-			throw new Error(`Database error during ${logContext}`);
+			throw new Error(
+				`Database error during ${logContext}: ${
+					error instanceof Error ? error.message : String(error)
+				}`,
+			);
 		} finally {
 			if (!client) dbClient.release();
 		}

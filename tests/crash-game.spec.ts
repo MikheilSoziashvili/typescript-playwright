@@ -4,7 +4,7 @@ import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { getUserDetailsByTestTitle, parse_csv } from "@core/utils/utils";
 import { DATASETS_DIR } from "@constants/file-paths";
 import { CsvFilesName } from "../enums/csv-file-name";
-import { SUPER_HIGH_USER_AMOUNT } from "@constants/user-amounts";
+import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
 
 const crashAutoCashout = parse_csv(
 	DATASETS_DIR,

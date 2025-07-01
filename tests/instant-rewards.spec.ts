@@ -2,7 +2,7 @@ import { test } from "@fixtures/fixtures";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { OriginalGame, RouletteBetColor } from "@enums/original-games";
 import { HiloBetOption } from "@enums/hilo-bet-options";
-import { LOW_USER_AMOUNT } from "@constants/user-amounts";
+import { LOW_USER_AMOUNT } from "database/constants/user-amounts";
 
 const instantRewardsInputData = [
 	{
