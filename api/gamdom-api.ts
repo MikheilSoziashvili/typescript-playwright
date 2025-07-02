@@ -120,24 +120,18 @@ export class GamdomApi extends BaseApi {
 			await this.getBasicInfo(userData.username, userData.password)
 		).user.id;
 
-		await this.gamdomDb.withClient(async (client) => {
-			await this.gamdomDb.makeUserSuperAdmin(newUserId, client);
-			await this.gamdomDb.updateUserEmailVerification(
-				newUserId,
-				true,
-				client,
-			);
+		await this.gamdomDb.withClient(async () => {
+			await this.gamdomDb.makeUserSuperAdmin(newUserId);
+			await this.gamdomDb.updateUserEmailVerification(newUserId, true);
 			await this.gamdomDb.updateUserTotalDepositedAmountByUserId(
 				newUserId,
 				300,
-				client,
 			);
 			await this.gamdomDb.insertUserWallet(
 				newUserId,
 				undefined,
 				undefined,
 				true,
-				client,
 			);
 		});
 
@@ -154,18 +148,9 @@ export class GamdomApi extends BaseApi {
 		const newUserId = (
 			await this.getBasicInfo(userData.username, userData.password)
 		).user.id;
-		await this.gamdomDb.withClient(async (client) => {
-			await this.gamdomDb.updateUserEmailVerification(
-				newUserId,
-				true,
-				client,
-			);
-			await this.gamdomDb.updateUserXP(
-				newUserId,
-				undefined,
-				true,
-				client,
-			);
+		await this.gamdomDb.withClient(async () => {
+			await this.gamdomDb.updateUserEmailVerification(newUserId, true);
+			await this.gamdomDb.updateUserXP(newUserId, undefined, true);
 		});
 		return this.authenticateWithExistingUser(
 			userData.username,

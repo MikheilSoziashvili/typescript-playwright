@@ -1,3 +1,4 @@
+import { Protocol } from "@enums/api/protocols";
 import { BitcoinFeeEstimateMode } from "@enums/bitcoin";
 import { Cryptocurrency } from "@enums/cryptocurrencies";
 import { Currency } from "@enums/currencies";
@@ -109,8 +110,16 @@ export type PoolConfigurationType = {
 	database: string;
 	port: number;
 	max: number;
-	idleTimeoutMillis: number;
-	connectionTimeoutMillis: number;
+};
+
+export type DbPoolServiceConfiguration = {
+	protocol: Protocol;
+	url: string;
+	port: number;
+	serviceManager: {
+		healthCheckTimeout: number;
+		healthCheckInterval: number;
+	};
 };
 
 export type RainResponse = APIResponse | RainStatus.ALREADY_ACTIVE;

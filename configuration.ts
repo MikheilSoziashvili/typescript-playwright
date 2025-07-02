@@ -1,9 +1,11 @@
 import { DEFAULT_DB_PORT } from "@constants/defaults";
 import {
+	DbPoolServiceConfiguration,
 	PoolConfigurationType,
 	TestUserConfigurationObject,
 } from "@core/types/types";
 import { asString, getFilePath } from "@core/utils/utils";
+import { Protocol } from "@enums/api/protocols";
 import { ConfiguraitonUrl } from "@enums/configuration-urls";
 import { Timeout } from "@enums/timeout";
 import "dotenv/config";
@@ -71,9 +73,17 @@ export const poolConfig: PoolConfigurationType = {
 	password: asString(process.env.DB_PASSWORD),
 	database: asString(process.env.DB_NAME),
 	port: parseInt(process.env.DB_PORT || DEFAULT_DB_PORT),
-	max: 15,
-	idleTimeoutMillis: Timeout.MAX,
-	connectionTimeoutMillis: Timeout.LONG,
+	max: 50,
+};
+
+export const dbPoolServiceConfig: DbPoolServiceConfiguration = {
+	protocol: Protocol.HTTP,
+	url: "localhost",
+	port: Number(process.env.DB_POOL_SERVICE_PORT ?? 3030),
+	serviceManager: {
+		healthCheckTimeout: Timeout.LONG,
+		healthCheckInterval: Timeout.SHORT,
+	},
 };
 
 export const BitcoinConfig = {

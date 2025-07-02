@@ -97,6 +97,15 @@ Make sure you have the following installed:
 ├── scripts                                       # Utility scripts
 │   ├── check-step-decorators.js                  # Script to detect missing @step decorators
 │   ├── upload_to_s3.sh                           # Script to upload reports to S3
+├── services
+│   ├── db-pool-service                           # Standalone DB Pool Service
+│       ├── enums                                 # DB Pool Service enums
+│       ├── interfaces                            # DB Pool Service interfaces
+│       ├── db-pool-server.ts                     # Express-based DB Pool Service implementation
+│       ├── db-pool-service-manager.ts            # Manages the lifecycle of the DB Pool Service
+│       ├── endpoints.ts                          # Service endpoints
+│       ├── types.ts                              # DB Pool Service type definitions
+│       ├── utils.ts                              # DB Pool Service utility functions
 ├── support                                       # Support files
 │   ├── regex-patterns.ts                         # Regular expression patterns
 ├── tests                                         # Test suites

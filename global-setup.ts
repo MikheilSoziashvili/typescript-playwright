@@ -22,6 +22,7 @@ import * as Configuration from "configuration";
 import { GamdomDb } from "database/gamdom-db";
 import * as fs from "fs";
 import { KOTH_NAME_PREFIX } from "@constants/koth";
+import { DbServiceManager } from "services/db-pool-service/db-pool-service-manager";
 
 async function enableHiloFeature(
 	gamdomApi: GamdomApi,
@@ -164,17 +165,15 @@ async function updateWithdrawLimits(): Promise<void> {
 		WithdrawLimitsSettingsValues.Alert_coins,
 	];
 
-	await gamdomDb.withClient(async (client) => {
+	await gamdomDb.withClient(async () => {
 		for (const withdrawLimit of withdrawLimits) {
 			const existing = await gamdomDb.getWithdrawLimitFromSettingByKey(
 				withdrawLimit,
-				client,
 			);
 			if (existing.length > 0) {
 				await gamdomDb.updateWithdrawLimitInSetting(
 					withdrawLimit,
 					defaultWithdrawLimit,
-					client,
 				);
 				logger.info(
 					`Updated withdraw limit for key "${withdrawLimit}" to: ${defaultWithdrawLimit}`,
@@ -183,7 +182,6 @@ async function updateWithdrawLimits(): Promise<void> {
 				await gamdomDb.insertWithdrawLimitInSetting(
 					withdrawLimit,
 					defaultWithdrawLimit,
-					client,
 				);
 				logger.info(
 					`Inserted withdraw limit for key "${withdrawLimit}" with value: ${defaultWithdrawLimit}`,
@@ -343,6 +341,7 @@ async function ensureKothEventsExist(
 }
 
 async function globalSetup(): Promise<void> {
+	await new DbServiceManager().start();
 	const gamdomApi = new GamdomApi();
 	const cookie = getCookieHeader(
 		await gamdomApi.authenticateWithExistingUser(
