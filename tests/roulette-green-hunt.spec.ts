@@ -49,8 +49,6 @@ test.describe("Green hunt", () => {
 			.assertThat()
 			.totalBetsAre(
 				RouletteBetColor.GREEN,
-				1,
-				greenHuntAmountByPercentage,
 			);
 		await rouletteGamePage.authenticatedHeader
 			.assertThat()

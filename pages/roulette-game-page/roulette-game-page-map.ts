@@ -103,7 +103,7 @@ export class RouletteGamePageMap extends BaseMap {
 
 	public betTotalBetsCount(betSection: Locator): Locator {
 		return this.betDetails(betSection).locator(
-			"div[data-testid*=rouletteNbOfBetsDetails]",
+			"div[data-testid*=rouletteNbOfBetsDetails] h6",
 		);
 	}
 
