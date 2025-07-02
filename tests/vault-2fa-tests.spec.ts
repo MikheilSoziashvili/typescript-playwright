@@ -12,6 +12,7 @@ import { AnnotationType } from "@enums/playwright/annotationsTypes";
 import { Wallet } from "@enums/wallets";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
+import { Unit } from "@enums/units";
 
 test.describe(`Vault wallet - 2FA verifications`, () => {
 	let qrCode2FAImagePath: string;
@@ -60,7 +61,11 @@ test.describe(`Vault wallet - 2FA verifications`, () => {
 			await homePage.navigateToWallet();
 			await walletModal
 				.steps()
-				.depositFromWalletAndVerify(walletType, depositAmount);
+				.depositFromWalletAndVerify(
+					walletType,
+					Unit.COINS,
+					depositAmount,
+				);
 			await walletModal
 				.steps()
 				.withdrawInVaultWith2FaFlow(
