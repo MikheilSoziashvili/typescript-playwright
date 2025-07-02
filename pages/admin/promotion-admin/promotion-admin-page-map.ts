@@ -27,4 +27,10 @@ export class PromotionAdminMap extends BaseMap {
 	): Locator {
 		return this.tableRowByPromotionTitle(promotionTitle).locator(`//td[6]`);
 	}
+
+	public get createNewPromotionButton(): Locator {
+		return this.page.locator("button[type='button']", {
+			hasText: "Create",
+		});
+	}
 }

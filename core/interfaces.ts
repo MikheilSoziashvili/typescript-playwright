@@ -9,6 +9,24 @@ export interface RegisterTestDataParams {
 	useGamdomEmailDomain?: boolean;
 }
 
+export interface PromotionTestDataParams {
+	title: string;
+	customUrl: string;
+	isForVip: string;
+	promotionCategory: string;
+	promotionSubCategory: string;
+	coverImage?: string;
+	thumbnailImage?: string;
+	priority?: number;
+	shortDescription?: string;
+	detailedDescription?: string;
+	termsAndConditions?: string;
+	howToParticipate?: string;
+	prizesDescription?: string;
+	buttonText?: string;
+	buttonLink?: string;
+}
+
 export interface WaitUntilOptions {
 	errorMessage: string;
 	intervalSeconds?: number;

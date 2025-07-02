@@ -8,9 +8,9 @@ import { TwoFactorAuthModal } from "@pages/modals/two-factor-authentication-moda
 import { UserProfileModal } from "@pages/modals/user-profile-modal/user-profile-modal";
 import { WalletModal } from "@pages/modals/wallet/wallet-modal";
 import { SoftblockModalPage } from "@pages/modals/softblock-modal/softblock-modal";
-
 import { test as base } from "@playwright/test";
 import { NewRedirectModal } from "@pages/modals/new-redirect-modal/new-redirect-modal";
+import { PromotionsModal } from "@pages/modals/promotions-modal/promotions-modal";
 
 export type Modals = {
 	tipUserModal: TipUserModal;
@@ -24,6 +24,7 @@ export type Modals = {
 	transactionDetailsModal: TransactionDetailsModal;
 	softblockModal: SoftblockModalPage;
 	newRedirectModal: NewRedirectModal;
+	promotionsModal: PromotionsModal;
 };
 
 export const modalsFixtures = base.extend<Modals>({
@@ -59,5 +60,8 @@ export const modalsFixtures = base.extend<Modals>({
 	},
 	newRedirectModal: async ({ page }, use) => {
 		await use(new NewRedirectModal(page));
+	},
+	promotionsModal: async ({ page }, use) => {
+		await use(new PromotionsModal(page));
 	},
 });

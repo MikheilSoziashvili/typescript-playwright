@@ -6,6 +6,7 @@ import { PROMOTION_ADMIN_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { PromotionAdminMap } from "./promotion-admin-page-map";
 import { PromotionAdminAsserter } from "./promotion-admin-page-asserter";
 import { PromotionAdminSteps } from "./promotion-admin-page-steps";
+import { step } from "decorators/step";
 
 export class PromotionAdminPage extends BasePage<PromotionAdminMap> {
 	public constructor(page: Page) {
@@ -27,5 +28,10 @@ export class PromotionAdminPage extends BasePage<PromotionAdminMap> {
 
 	public steps(): PromotionAdminSteps {
 		return new PromotionAdminSteps(this);
+	}
+
+	@step("Click create promotion button")
+	public async clickCreateNewPromotionButton(): Promise<void> {
+		await this.map.createNewPromotionButton.click();
 	}
 }
