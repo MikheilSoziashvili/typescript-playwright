@@ -16,7 +16,6 @@ import { RegisterTestData } from "@dtos/test-data";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
 import { AnnotationType } from "@enums/playwright/annotationsTypes";
-import { BrowserName } from "@enums/playwright/project-browser-names";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
@@ -88,15 +87,6 @@ test.describe("Rain tests", () => {
 				email: userData.email,
 			}),
 		);
-
-		test.beforeEach(async ({}, testInfo) => {
-			if (testInfo.project.name === BrowserName.FIREFOX) {
-				testInfo.annotations.push({
-					type: AnnotationType.BUG,
-					description: jiraIssueId(6469),
-				});
-			}
-		});
 
 		test("[ENG-2564] Tip rain - Require new 2FA code when IP of user changes", async ({
 			homePage,

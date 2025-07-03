@@ -26,7 +26,8 @@ export class TwoFactorAuthModal extends BasePage<TwoFactorAuthModalMap> {
 		expect(inputCount).toBe(twoFactorAuthenticationCode.length);
 		for (let i = 0; i < inputCount; i++) {
 			const inputDigit = this.map.inputFields2FACode.nth(i);
-			await inputDigit.fill(twoFactorAuthenticationCode[i]);
+			await inputDigit.click();
+			await inputDigit.pressSequentially(twoFactorAuthenticationCode[i]);
 		}
 	}
 }

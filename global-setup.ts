@@ -154,6 +154,7 @@ async function enablePromotionsFeature(
 	featureResponse.forEach((response) => {
 		expect(response.status()).toBe(HttpStatus.OK);
 	});
+	logger.info("Promotions have been successfully enabled.");
 }
 
 async function updateWithdrawLimits(): Promise<void> {
