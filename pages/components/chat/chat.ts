@@ -5,6 +5,7 @@ import { ChatAsserter } from "./chat-asserter";
 import { ChatSteps } from "./chat-steps";
 import { VisibilityState } from "../../../enums/playwright/visibility-states";
 import { Timeout } from "@enums/timeout";
+import { step } from "decorators/step";
 
 export class Chat extends BaseComponent<ChatMap> {
 	constructor(page: Page) {
@@ -19,6 +20,7 @@ export class Chat extends BaseComponent<ChatMap> {
 		return new ChatSteps(this);
 	}
 
+	@step("Wait chat to be displayed")
 	public async waitChatToBeDisplayed(): Promise<void> {
 		await this.map.waitFor({
 			locator: this.map.chatLocator,
@@ -30,16 +32,19 @@ export class Chat extends BaseComponent<ChatMap> {
 		});
 	}
 
+	@step("Claim rain")
 	public async claimRain(): Promise<void> {
 		await this.map.claimRainButton.click();
 	}
 
+	@step("Get rain user count")
 	public async getRainUserCount(): Promise<number> {
 		const userCountText =
 			await this.map.lastRainbotMessageUserCount.innerText();
 		return parseInt(userCountText.trim(), 10);
 	}
 
+	@step("Select chatroom")
 	public async selectChatroom(chatroomName: string): Promise<void> {
 		await this.map.chatroomsDropdownSelectedValue.click();
 		await this.map.chatroomDropdownOption(chatroomName).click();

@@ -2,6 +2,7 @@ import { Page } from "@playwright/test";
 import { BaseComponent } from "@base/base-component";
 import { UnauthenticatedHeaderMap } from "./unauthenticated-header-map";
 import { UnauthenticatedHeaderAsserter } from "./unauthenticated-header-asserter";
+import { step } from "decorators/step";
 
 export class UnauthenticatedHeader extends BaseComponent<UnauthenticatedHeaderMap> {
 	constructor(page: Page) {
@@ -12,10 +13,12 @@ export class UnauthenticatedHeader extends BaseComponent<UnauthenticatedHeaderMa
 		return new UnauthenticatedHeaderAsserter(this);
 	}
 
+	@step("Open login modal")
 	public async openLoginModal(): Promise<void> {
 		await this.map.loginBtn.click();
 	}
 
+	@step("Open register modal")
 	public async openRegisterModal(): Promise<void> {
 		await this.map.signUpBtn.click();
 	}

@@ -2,6 +2,7 @@ import { Page } from "@playwright/test";
 import { BaseComponent } from "@base/base-component";
 import { ToastMap as ToastMap } from "./toast-map";
 import { ToastAsserter as ToastAsserter } from "./toast-asserter";
+import { step } from "decorators/step";
 
 export class Toast extends BaseComponent<ToastMap> {
 	constructor(page: Page) {
@@ -12,6 +13,7 @@ export class Toast extends BaseComponent<ToastMap> {
 		return new ToastAsserter(this);
 	}
 
+	@step("Click here button")
 	public async clickHereButton(options?: {
 		index?: number;
 		subTitle: string;

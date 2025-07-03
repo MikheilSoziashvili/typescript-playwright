@@ -27,62 +27,76 @@ export class WalletModal extends BasePage<WalletModalMap> {
 		return new TwoFactorAuthModal(this.page);
 	}
 
+	@step("Open withdraw tab")
 	public async openWithdrawTab(): Promise<void> {
 		await this.map.withdrawTabButton.click();
 	}
 
+	@step("Open vault tab")
 	public async openVaultTab(): Promise<void> {
 		await this.map.vaultTabButton.click({ timeout: Timeout.LONG });
 	}
 
+	@step("Open redeem tab")
 	public async openRedeemTab(): Promise<void> {
 		await this.map.redeemTabButton.click({ timeout: Timeout.LONG });
 	}
 
+	@step("Open withdraw tab in vault")
 	public async openWithdrawTabInVault(): Promise<void> {
 		await this.map.vaultWithdrawTab.click();
 	}
 
+	@step("Open deposit tab in vault")
 	public async openDepositTabInVault(): Promise<void> {
 		await this.map.vaultDepositTab.click();
 	}
 
+	@step("Select wallet option")
 	public async selectWalletOption(option: string): Promise<void> {
 		await this.map.walletDropdown.click();
 		await this.map.walletDropdownOption(option).click();
 	}
 
+	@step("Fill vault amount")
 	public async fillVaultAmount(amount: number): Promise<void> {
 		await this.map.vaultInputField.fill(`${amount}`);
 	}
 
+	@step("Fill promo code")
 	public async fillPromoCode(promoCode: string): Promise<void> {
 		await this.map.promoCodeInputField.clear();
 		await this.map.promoCodeInputField.fill(`${promoCode}`);
 	}
 
+	@step("Click redeem promo code button")
 	public async clickRedeemPromoCodeButton(): Promise<void> {
 		await this.map.redeemPromoCodeButton.click();
 	}
 
+	@step("Click vault deposit button")
 	public async clickVaultDepositButton(): Promise<void> {
 		await this.map.vaultDepositButton.click();
 	}
 
+	@step("Click vault withdraw button")
 	public async clickVaultWithdrawButton(): Promise<void> {
 		await this.map.vaultWithdrawButton.click();
 	}
 
+	@step("Click crypto withdraw button")
 	public async clickCryptoWithdrawButton(): Promise<void> {
 		await this.map.cryptoWithdrawButton.click();
 	}
 
+	@step("Get vault wallet amount")
 	public async getVaultWalletAmount(): Promise<string> {
 		const amountLocator = this.map.vaultWalletAmount;
 		const amountText = (await amountLocator.textContent()) ?? "";
 		return amountText.replace(sanitizeAmount, "");
 	}
 
+	@step("Withdraw in vault")
 	public async withdrawInVault(
 		walletOption: string,
 		amount: number,

@@ -2,6 +2,7 @@ import { Page } from "@playwright/test";
 import { BaseModal } from "@base/base-modal";
 import { ContinueModalMap } from "./continue-modal-map";
 import { ContinueModalAsserter } from "./continue-modal-asserter";
+import { step } from "decorators/step";
 
 export class ContinueModal extends BaseModal<ContinueModalMap> {
 	constructor(page: Page) {
@@ -12,10 +13,12 @@ export class ContinueModal extends BaseModal<ContinueModalMap> {
 		return new ContinueModalAsserter(this);
 	}
 
+	@step("Click continue button")
 	public async clickContinueButton(): Promise<void> {
 		await this.map.continueButton.click();
 	}
 
+	@step("Click cancel button")
 	public async clickCancelButton(): Promise<void> {
 		await this.map.cancelButton.click();
 	}

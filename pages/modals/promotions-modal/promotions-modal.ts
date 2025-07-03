@@ -4,6 +4,7 @@ import { PromotionsModalMap } from "./promotions-modal-map";
 import { PromotionsModalSteps } from "./promotions-modal-steps";
 import { PromotionsModalAsserter } from "./promotions-modal-asserter";
 import { PromotionTestData } from "@dtos/test-data";
+import { step } from "decorators/step";
 
 export class PromotionsModal extends BasePage<PromotionsModalMap> {
 	constructor(page: Page) {
@@ -18,6 +19,7 @@ export class PromotionsModal extends BasePage<PromotionsModalMap> {
 		return new PromotionsModalAsserter(this);
 	}
 
+	@step("Fill promotions modal fields")
 	public async fillPromotionsModalFields(
 		promotionTestData: PromotionTestData,
 	): Promise<void> {
@@ -58,11 +60,13 @@ export class PromotionsModal extends BasePage<PromotionsModalMap> {
 		await this.uploadThumbnailImage(promotionTestData.thumbnailImage);
 	}
 
+	@step("Select promotion category")
 	public async selectPromotionCategory(category: string): Promise<void> {
 		await this.map.promotionsModalPromotionCategoryDropdown.click();
 		await this.map.promotionDropdownItemByPlaceholder(category).click();
 	}
 
+	@step("Select promotion sub category")
 	public async selectPromotionSubCategory(
 		subCategory: string,
 	): Promise<void> {
@@ -70,23 +74,27 @@ export class PromotionsModal extends BasePage<PromotionsModalMap> {
 		await this.map.promotionDropdownItemByPlaceholder(subCategory).click();
 	}
 
+	@step("Select is for VIP")
 	public async selectIsForVip(isForVip: string): Promise<void> {
 		await this.map.promotionsModalIsForVipDropdown.click();
 		await this.map.promotionDropdownItemByPlaceholder(isForVip).click();
 	}
 
+	@step("Upload cover image")
 	public async uploadCoverImage(imagePath: string): Promise<void> {
 		await this.map
 			.promotionsModalCoverImageUploader()
 			.setInputFiles(imagePath);
 	}
 
+	@step("Upload thumbnail image")
 	public async uploadThumbnailImage(imagePath: string): Promise<void> {
 		await this.map
 			.promotionsModalThumbnailImageUploader()
 			.setInputFiles(imagePath);
 	}
 
+	@step("Click save button")
 	public async clickSaveButton(): Promise<void> {
 		await this.map.promotionsModalSaveButton.click();
 	}

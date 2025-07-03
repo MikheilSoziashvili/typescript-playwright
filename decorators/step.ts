@@ -23,7 +23,9 @@ function step(message?: string) {
 		context: ClassMethodDecoratorContext<This>,
 	) {
 		const stepMessage =
-			message || generateStepMessageFromMethodName(String(context.name));
+			message && message.trim()
+				? message
+				: generateStepMessageFromMethodName(String(context.name));
 
 		return function (this: This, ...args: Args): Promise<T> {
 			return test.step(stepMessage, () =>

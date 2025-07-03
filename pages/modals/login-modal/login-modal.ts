@@ -16,6 +16,7 @@ export class LoginModal extends BaseModal<LoginModalMap> {
 	}
 
 	// TODO: Add test data in a separate class
+	@step("Fill in credentials")
 	public async fillInCredentials(
 		username: string,
 		password: string,

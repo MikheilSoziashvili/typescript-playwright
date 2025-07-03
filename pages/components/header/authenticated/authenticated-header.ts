@@ -18,10 +18,12 @@ export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 		return new AuthenticatedHeaderAsserter(this);
 	}
 
+	@step("Click user profile button")
 	public async clickUserProfileButton(): Promise<void> {
 		await this.map.userAvatarMenuButton.click();
 	}
 
+	@step("Hover on user profile button")
 	public async hoverOnUserProfileButton(): Promise<void> {
 		await this.map.userAvatarMenuButton.hover();
 	}
@@ -41,16 +43,19 @@ export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 		await this.clickUserProfileDropdownItem(userMenuOption);
 	}
 
+	@step("Get account balance")
 	public async getAccountBalance(): Promise<number> {
 		return parseBalance(
 			await (await this.map.getLoadedAccountBalance()).innerText(),
 		);
 	}
 
+	@step("Hover on wallet dropdown")
 	public async hoverOnWalletDropdown(): Promise<void> {
 		await this.map.inGameAccountBalanceContainer.hover();
 	}
 
+	@step("Expand chat if not visible")
 	public async expandChatIfNotVisible(): Promise<void> {
 		const chat = new Chat(this.page);
 

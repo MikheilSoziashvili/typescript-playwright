@@ -78,6 +78,7 @@ export abstract class BasePage<T extends BaseMap> {
 		await this.page.context().setExtraHTTPHeaders(headers);
 	}
 
+	@step("Navigate to page")
 	public async navigate(
 		parameters: BasePageNavigationParametersType,
 	): Promise<void> {
@@ -508,9 +509,18 @@ export abstract class BasePage<T extends BaseMap> {
 	 */
 	@step("Get slider bounds from ARIA attributes")
 	private async getSliderBounds(sliderThumb: Locator) {
-		const currentValue = parseInt(await sliderThumb.getAttribute(Attributes.ARIA_VALUENOW) || '0', 10);
-		const minValue = parseInt(await sliderThumb.getAttribute(Attributes.ARIA_VALUEMIN) || '0', 10);
-		const maxValue = parseInt(await sliderThumb.getAttribute(Attributes.ARIA_VALUEMAX) || '100', 10);
+		const currentValue = parseInt(
+			(await sliderThumb.getAttribute(Attributes.ARIA_VALUENOW)) || "0",
+			10,
+		);
+		const minValue = parseInt(
+			(await sliderThumb.getAttribute(Attributes.ARIA_VALUEMIN)) || "0",
+			10,
+		);
+		const maxValue = parseInt(
+			(await sliderThumb.getAttribute(Attributes.ARIA_VALUEMAX)) || "100",
+			10,
+		);
 		return { currentValue, minValue, maxValue };
 	}
 
@@ -523,7 +533,9 @@ export abstract class BasePage<T extends BaseMap> {
 	@step("Get slider value")
 	public async getSliderValue(sliderContainer: Locator): Promise<number> {
 		const sliderThumb = this.map.getSliderThumb(sliderContainer);
-		const { currentValue, minValue, maxValue } = await this.getSliderBounds(sliderThumb);
+		const { currentValue, minValue, maxValue } = await this.getSliderBounds(
+			sliderThumb,
+		);
 		return getDisplayValue(currentValue, minValue, maxValue);
 	}
 
@@ -535,22 +547,43 @@ export abstract class BasePage<T extends BaseMap> {
 	 * @throws {Error} When the slider bounding box cannot be determined.
 	 */
 	@step("Adjust slider value")
-	public async adjustSliderValue(sliderContainer: Locator, targetValue: number): Promise<void> {
+	public async adjustSliderValue(
+		sliderContainer: Locator,
+		targetValue: number,
+	): Promise<void> {
 		const sliderThumb = this.map.getSliderThumb(sliderContainer);
-		const { currentValue, minValue, maxValue } = await this.getSliderBounds(sliderThumb);
+		const { currentValue, minValue, maxValue } = await this.getSliderBounds(
+			sliderThumb,
+		);
 
-		const adjustedTargetValue = getAdjustedTargetValue(targetValue, minValue, maxValue);
-		const boundedTargetValue = boundValue(adjustedTargetValue, minValue, maxValue);
-		const percentage = calculatePercentage(boundedTargetValue, minValue, maxValue);
+		const adjustedTargetValue = getAdjustedTargetValue(
+			targetValue,
+			minValue,
+			maxValue,
+		);
+		const boundedTargetValue = boundValue(
+			adjustedTargetValue,
+			minValue,
+			maxValue,
+		);
+		const percentage = calculatePercentage(
+			boundedTargetValue,
+			minValue,
+			maxValue,
+		);
 
 		const sliderTrack = this.map.getSliderTrack(sliderContainer);
 		const sliderBox = await sliderTrack.boundingBox();
 		if (!sliderBox) {
-			throw new Error('Could not get slider bounding box');
+			throw new Error("Could not get slider bounding box");
 		}
 
 		const targetX = calculateCoordinate(sliderBox, percentage);
-		const currentPercentage = calculatePercentage(currentValue, minValue, maxValue);
+		const currentPercentage = calculatePercentage(
+			currentValue,
+			minValue,
+			maxValue,
+		);
 		const currentX = calculateCoordinate(sliderBox, currentPercentage);
 		const centerY = sliderBox.y + sliderBox.height / 2;
 

@@ -4,6 +4,7 @@ import { NotificationMap } from "./notification-map";
 import { NotificationAsserter } from "./notification-asserter";
 import { VisibilityState } from "@enums/playwright/visibility-states";
 import { Timeout } from "@enums/timeout";
+import { step } from "decorators/step";
 
 export class Notification extends BaseComponent<NotificationMap> {
 	constructor(page: Page) {
@@ -14,6 +15,7 @@ export class Notification extends BaseComponent<NotificationMap> {
 		return new NotificationAsserter(this);
 	}
 
+	@step("Acknowledge notification")
 	public async aknowledge(options?: {
 		index?: number;
 		title?: string;

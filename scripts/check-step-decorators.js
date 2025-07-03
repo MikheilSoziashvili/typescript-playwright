@@ -15,13 +15,14 @@
 const fs = require('fs');
 const path = require('path');
 
-const FILE_PATTERNS = ['-steps.ts', '-asserter.ts', '-page.ts'];
+const FILE_PATTERNS = ['-steps.ts', '-asserter.ts', '-page.ts', '-modal.ts'];
+
+const EXCLUDED_COMPONENT_PATTERNS = ['-map.ts'];
 
 const EXCLUDED_METHODS = [
   'constructor',
   'assertThat',
   'steps',
-  'navigate',
   'init',
   'map',
   'page',
@@ -58,7 +59,12 @@ function findFiles(dir, patterns) {
           item.endsWith(pattern) && item.includes('-')
         );
 
-        if (matchesPattern) {
+        const isInComponentsFolder = currentDir.includes('pages/components');
+        const isComponentFile = isInComponentsFolder &&
+          item.endsWith('.ts') &&
+          !EXCLUDED_COMPONENT_PATTERNS.some(excluded => item.endsWith(excluded));
+
+        if (matchesPattern || isComponentFile) {
           files.push(fullPath);
         }
       }

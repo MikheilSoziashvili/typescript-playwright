@@ -2,6 +2,7 @@ import { Page } from "@playwright/test";
 import { BaseModal } from "@base/base-modal";
 import { UserProfileModalMap } from "./user-profile-modal-map";
 import { UserProfileModalAsserter } from "./user-profile-modal-asserter";
+import { step } from "decorators/step";
 
 export class UserProfileModal extends BaseModal<UserProfileModalMap> {
 	constructor(page: Page) {
@@ -12,6 +13,7 @@ export class UserProfileModal extends BaseModal<UserProfileModalMap> {
 		return new UserProfileModalAsserter(this);
 	}
 
+	@step("Wait content to load")
 	public async waitContentToLoad(): Promise<void> {
 		await this.map.waitForVisibility({
 			locator: this.map.userAvatar,

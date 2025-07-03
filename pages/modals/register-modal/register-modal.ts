@@ -3,6 +3,7 @@ import { BaseModal } from "@base/base-modal";
 import { RegisterModalMap } from "./register-modal-map";
 import { RegisterTestData } from "@dtos/test-data";
 import { Delay } from "@enums/delay";
+import { step } from "decorators/step";
 
 export class RegisterModal extends BaseModal<RegisterModalMap> {
 	constructor(page: Page) {
@@ -13,10 +14,12 @@ export class RegisterModal extends BaseModal<RegisterModalMap> {
 		throw new Error("Method not implemented.");
 	}
 
+	@step("Wait until checked")
 	private async waitUntilChecked(locator: Locator): Promise<void> {
 		await expect(locator).toHaveClass(/.*checked.*/);
 	}
 
+	@step("Fill in credentials")
 	public async fillInCredentials(
 		registerData: RegisterTestData,
 		options: {
@@ -51,6 +54,7 @@ export class RegisterModal extends BaseModal<RegisterModalMap> {
 		}
 	}
 
+	@step("Click start playing button")
 	public async clickStartPlayingBtn(): Promise<void> {
 		await this.map.startPlayingBtn.focus();
 		await this.map.startPlayingBtn.click({ delay: Delay.SHORT });
