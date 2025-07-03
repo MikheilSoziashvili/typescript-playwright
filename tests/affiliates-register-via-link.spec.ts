@@ -1,5 +1,6 @@
 import { generateRandomString } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
+import { ToastTitle } from "@enums/toast-titles";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 
@@ -35,7 +36,10 @@ test.describe("Register with affiliate link", () => {
 				acceptNewsOffers: true,
 			},
 		);
-		await homePage.registerModal.clickStartPlayingBtn();
+		await Promise.all([
+			homePage.steps().verifyToastMessage(ToastTitle.SUCCESS),
+			homePage.registerModal.clickStartPlayingBtn(),
+		]);
 		await homePage
 			.assertThat()
 			.userIsRegistered(affiliate_user_register_data.username);

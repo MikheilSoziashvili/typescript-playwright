@@ -1,5 +1,6 @@
 import { test } from "@fixtures/fixtures";
 import { RegisterTestData } from "@dtos/test-data";
+import { ToastTitle } from "@enums/toast-titles";
 
 test.describe("Register tests", () => {
 	test.use({ storageState: { cookies: [], origins: [] } });
@@ -13,7 +14,10 @@ test.describe("Register tests", () => {
 			acceptTermsOfService: true,
 			acceptNewsOffers: true,
 		});
-		await homePage.registerModal.clickStartPlayingBtn();
+		await Promise.all([
+			homePage.steps().verifyToastMessage(ToastTitle.SUCCESS),
+			homePage.registerModal.clickStartPlayingBtn(),
+		]);
 		await homePage.assertThat().userIsRegistered(registeredData.username);
 	});
 });

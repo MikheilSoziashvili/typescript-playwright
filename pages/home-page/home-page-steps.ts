@@ -1,20 +1,24 @@
-import { BasePageStep } from "@pages/base/base-page-step";
-import { RegisterTestData } from "@dtos/test-data";
-import { HomePage } from "./home-page";
-import { HomePageBannerCarouselSlideTitle } from "@enums/homepage-banner-carousel-slide-title";
-import { RegisterTestDataParams } from "@core/interfaces";
-import { Locator, Page } from "playwright";
-import { generate2FACodeFromQRCodeImage, waitUntil } from "@core/utils/utils";
-import { Timeout } from "@enums/timeout";
-import { VisibilityResult } from "@core/types/types";
-import { GameProvider } from "@enums/game-providers";
-import { step } from "decorators/step";
 import { MailinatorApi } from "@api/mailinator-api";
+import { RegisterTestDataParams } from "@core/interfaces";
+import { VisibilityResult } from "@core/types/types";
+import { generate2FACodeFromQRCodeImage, waitUntil } from "@core/utils/utils";
+import { RegisterTestData } from "@dtos/test-data";
+import { GameProvider } from "@enums/game-providers";
+import { HomePageBannerCarouselSlideTitle } from "@enums/homepage-banner-carousel-slide-title";
+import { Timeout } from "@enums/timeout";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
+import { BasePageStep } from "@pages/base/base-page-step";
+import { Toast } from "@pages/components/toast/toast";
+import { step } from "decorators/step";
+import { Locator, Page } from "playwright";
+import { HomePage } from "./home-page";
+import { ToastTitle } from "@enums/toast-titles";
 
 export class HomePageSteps extends BasePageStep<HomePage> {
+	public toast: Toast;
 	public constructor(gamdomPage: HomePage) {
 		super(gamdomPage);
+		this.toast = new Toast(gamdomPage.page);
 	}
 
 	@step("Login username")
@@ -81,7 +85,10 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 			acceptTermsOfService: true,
 			acceptNewsOffers: true,
 		});
-		await this.gamdomPage.registerModal.clickStartPlayingBtn();
+		await Promise.all([
+			this.gamdomPage.steps().verifyToastMessage(ToastTitle.SUCCESS),
+			this.gamdomPage.registerModal.clickStartPlayingBtn(),
+		]);
 		await this.gamdomPage
 			.assertThat()
 			.userIsRegistered(registeredData.username);
@@ -244,5 +251,14 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 
 		await page.goto(changePasswordLink);
 		await this.gamdomPage.loginModal.setNewPassword(newPassword);
+	}
+
+	@step("Verify toast message")
+	public async verifyToastMessage(
+		title: string,
+		timeout: number = Timeout.LONG,
+	): Promise<void> {
+		await this.toast.assertThat().isDisplayed({ timeout });
+		await this.toast.assertThat().titleIs(title, { timeout });
 	}
 }

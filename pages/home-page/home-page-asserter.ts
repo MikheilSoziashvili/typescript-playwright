@@ -1,24 +1,20 @@
-import { Timeout } from "@enums/timeout";
 import { BaseAsserter } from "@base/base-asserter";
-import { HomePage } from "./home-page";
-import { expect, Locator, TestInfo } from "@playwright/test";
-import { GameProvider } from "@enums/game-providers";
 import { VisibilityResult } from "@core/types/types";
-import { VisibilityOptions } from "@enums/visibility-options";
-import { step } from "decorators/step";
-import { logger } from "@logger/logger";
 import { waitUntil } from "@core/utils/utils";
+import { GameProvider } from "@enums/game-providers";
+import { Timeout } from "@enums/timeout";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
-import { ToastTitle } from "@enums/toast-titles";
-import { Toast } from "@pages/components/toast/toast";
+import { VisibilityOptions } from "@enums/visibility-options";
+import { logger } from "@logger/logger";
+import { expect, Locator, TestInfo } from "@playwright/test";
+import { step } from "decorators/step";
+import { HomePage } from "./home-page";
 
 export class HomePageAsserter extends BaseAsserter<HomePage> {
 	public fromCsv: boolean;
-	public toast: Toast;
 	public constructor(page: HomePage, fromCsv = false) {
 		super(page);
 		this.fromCsv = fromCsv;
-		this.toast = new Toast(page.page);
 	}
 
 	@step("Title has text")
@@ -55,8 +51,6 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 
 	@step("User is registered")
 	public async userIsRegistered(username: string): Promise<void> {
-		await this.toast.assertThat().titleIs(ToastTitle.SUCCESS);
-
 		await this.gamdomPage.authenticatedHeader
 			.assertThat()
 			.loggedInUserElementsAreVisible();
