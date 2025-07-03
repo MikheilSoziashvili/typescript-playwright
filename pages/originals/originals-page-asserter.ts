@@ -27,4 +27,12 @@ export class OriginalsAsserter extends BaseAsserter<OriginalsPage> {
 			this.gamdomPage.getMinBetAmount(game),
 		);
 	}
+
+	@step("Assert that the bet amount is set to the maximum for {game}")
+	public async betAmountIsMax(game: OriginalGame): Promise<void> {
+		await this.betAmountIsCorrect(
+			game,
+			this.gamdomPage.getMaxBetAmount(game),
+		);
+	}
 }

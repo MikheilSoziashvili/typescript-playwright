@@ -115,6 +115,16 @@ export class PlinkoGamePage extends BasePage<PlinkoGamePageMap> {
 		await this.map.halfButton.click();
 	}
 
+	@step("Press max button")
+	public async pressMaxButton(): Promise<void> {
+		await this.map.maxButton.click();
+	}
+
+	@step("Press double button")
+	public async pressDoubleButton(): Promise<void> {
+		await this.map.doubleButton.click();
+	}
+
 	@step("Get bet amount value")
 	public async getBetAmountValue(): Promise<string> {
 		return this.map.betAmountInput.inputValue();

@@ -1,11 +1,11 @@
-import { BasePage } from "@pages/base/base-page";
-import { Page } from "@playwright/test";
-import { KenoGamePageMap } from "./keno-game-page-map";
-import { KenoGamePageAsserter } from "./keno-game-page-asserter";
-import { KenoGamePageSteps } from "./keno-game-page-steps";
 import { KENO_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
+import { BasePage } from "@pages/base/base-page";
+import { Page } from "@playwright/test";
 import { step } from "decorators/step";
+import { KenoGamePageAsserter } from "./keno-game-page-asserter";
+import { KenoGamePageMap } from "./keno-game-page-map";
+import { KenoGamePageSteps } from "./keno-game-page-steps";
 
 export class KenoGamePage extends BasePage<KenoGamePageMap> {
 	public constructor(page: Page) {
@@ -42,6 +42,16 @@ export class KenoGamePage extends BasePage<KenoGamePageMap> {
 	@step("Press half bet button")
 	public async pressHalfButton(): Promise<void> {
 		await this.map.halfButton.click();
+	}
+
+	@step("Press maximum bet button")
+	public async pressMaxButton(): Promise<void> {
+		await this.map.maxButton.click();
+	}
+
+	@step("Press double bet button")
+	public async pressDoubleButton(): Promise<void> {
+		await this.map.doubleButton.click();
 	}
 
 	@step("Get bet amount value")

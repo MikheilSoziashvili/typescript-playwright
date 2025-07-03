@@ -8,6 +8,7 @@ import {
 } from "@enums/original-games";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
+import { HIGH_USER_AMOUNT } from "database/constants/user-amounts";
 
 test.describe("Quick Select Buttons", () => {
 	test.use(storageStateNewUserDB());
@@ -32,6 +33,10 @@ test.describe("Quick Select Buttons", () => {
 
 	const halfScenario = quickSelectScenarios.filter(
 		(scenario) => scenario.buttonType === OriginalsQuickSelectButtons.HALF,
+	);
+
+	const maxScenario = quickSelectScenarios.filter(
+		(scenario) => scenario.buttonType === OriginalsQuickSelectButtons.MAX,
 	);
 
 	test.describe("MIN button", () => {
@@ -99,6 +104,33 @@ test.describe("Quick Select Buttons", () => {
 
 					await originalsPage.steps().pressHalfButton(game);
 					await originalsPage.assertThat().betAmountIsMin(game);
+				},
+			);
+		}
+	});
+
+	test.describe("MAX button", () => {
+		test.use(storageStateNewUserDB({ amount: HIGH_USER_AMOUNT }));
+
+		for (const { game, initialBetAmount } of maxScenario) {
+			test(
+				`[ENG-5053] should set max amount for ${game}`,
+				{
+					tag: ["@originals"],
+				},
+				async ({ originalsPage }) => {
+					await originalsPage.navigateToGame(game);
+					await originalsPage.authenticatedHeader
+						.assertThat()
+						.loggedInUserElementsAreVisible();
+					await originalsPage
+						.steps()
+						.setBetAmount(game, initialBetAmount);
+					await originalsPage.steps().pressMaxButton(game);
+					await originalsPage.assertThat().betAmountIsMax(game);
+					await originalsPage.steps().pressMaxButton(game);
+					await originalsPage.steps().pressDoubleButton(game);
+					await originalsPage.assertThat().betAmountIsMax(game);
 				},
 			);
 		}

@@ -328,6 +328,16 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 		await this.map.halfButton.click();
 	}
 
+	@step("Press max button")
+	public async pressMaxButton(): Promise<void> {
+		await this.map.maxButton.click();
+	}
+
+	@step("Press double button")
+	public async pressDoubleButton(): Promise<void> {
+		await this.map.doubleButton.click();
+	}
+
 	@step("Get bet amount value")
 	public async getBetAmountValue(): Promise<string> {
 		return this.map.betField.inputValue();
@@ -346,9 +356,7 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 	}
 
 	@step("Open bet details in Game History")
-	public async openBetDetails(
-		betRowIndex: number,
-	): Promise<void> {
+	public async openBetDetails(betRowIndex: number): Promise<void> {
 		await this.map.gameHistoryTableRowByIndex(betRowIndex).click();
 	}
 }

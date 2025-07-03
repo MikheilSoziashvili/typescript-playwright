@@ -54,6 +54,14 @@ export class MinesGamePageMap extends BaseMap {
 		return this.page.getByTestId("mines-control-1/2");
 	}
 
+	public get maxButton(): Locator {
+		return this.page.getByTestId("mines-control-Max");
+	}
+
+	public get doubleButton(): Locator {
+		return this.page.getByTestId("mines-control-x2");
+	}
+
 	public get gameHistoryButton(): Locator {
 		return this.page.locator("button[data-tooltip='History']");
 	}

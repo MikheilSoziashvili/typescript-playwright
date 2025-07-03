@@ -151,15 +151,25 @@ export class PlinkoGamePageMap extends BaseMap {
 		);
 	}
 
-	public get minButton(): Locator {
+	private getButtonByText(text: string): Locator {
 		return this.page.locator("button[class*='Buttonstyled__Button']", {
-			hasText: "Min",
+			hasText: text,
 		});
 	}
 
+	public get minButton(): Locator {
+		return this.getButtonByText("Min");
+	}
+
 	public get halfButton(): Locator {
-		return this.page.locator("button[class*='Buttonstyled__Button']", {
-			hasText: "1/2",
-		});
+		return this.getButtonByText("1/2");
+	}
+
+	public get maxButton(): Locator {
+		return this.getButtonByText("Max");
+	}
+
+	public get doubleButton(): Locator {
+		return this.getButtonByText("x2");
 	}
 }

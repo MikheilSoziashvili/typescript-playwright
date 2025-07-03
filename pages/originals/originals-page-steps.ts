@@ -18,37 +18,53 @@ export class OriginalsSteps extends BasePageStep<OriginalsPage> {
 		game: OriginalGames,
 		betAmount: number,
 	): Promise<void> {
-		const handler = this.handlers[game]?.setBetAmount;
-		expect(
-			handler,
-			`Missing handler for game ${game} and action ${OriginalsHandlerMethods.SetBetAmount}`,
-		).toBeDefined();
-		if (handler) {
-			await handler(betAmount);
-		}
+		await this.invokeHandler(
+			game,
+			OriginalsHandlerMethods.SetBetAmount,
+			betAmount,
+		);
 	}
 
 	@step("Press min button")
 	public async pressMinButton(game: OriginalGames): Promise<void> {
-		const handler = this.handlers[game]?.pressMinButton;
-		expect(
-			handler,
-			`Missing handler for game ${game} and action ${OriginalsHandlerMethods.PressMinButton}`,
-		).toBeDefined();
-		if (handler) {
-			await handler();
-		}
+		await this.invokeHandler(game, OriginalsHandlerMethods.PressMinButton);
 	}
 
 	@step("Press half button")
 	public async pressHalfButton(game: OriginalGames): Promise<void> {
-		const handler = this.handlers[game]?.pressHalfButton;
+		await this.invokeHandler(game, OriginalsHandlerMethods.PressHalfButton);
+	}
+
+	@step("Press max button")
+	public async pressMaxButton(game: OriginalGames): Promise<void> {
+		await this.invokeHandler(game, OriginalsHandlerMethods.PressMaxButton);
+	}
+
+	@step("Press double button")
+	public async pressDoubleButton(game: OriginalGames): Promise<void> {
+		await this.invokeHandler(
+			game,
+			OriginalsHandlerMethods.PressDoubleButton,
+		);
+	}
+
+	@step("Invoke handler")
+	private async invokeHandler(
+		game: OriginalGames,
+		method: OriginalsHandlerMethods,
+		payload?: unknown,
+	): Promise<void> {
+		const handler = this.handlers[game]?.[method];
 		expect(
 			handler,
-			`Missing handler for game ${game} and action ${OriginalsHandlerMethods.PressHalfButton}`,
+			`Missing handler for game ${game} and action ${method}`,
 		).toBeDefined();
 		if (handler) {
-			await handler();
+			if (payload !== undefined) {
+				await (handler as (arg: unknown) => Promise<void>)(payload);
+			} else {
+				await (handler as () => Promise<void>)();
+			}
 		}
 	}
 

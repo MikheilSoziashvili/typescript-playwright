@@ -1,6 +1,7 @@
 import { OriginalGames, OriginalGamesPage } from "@core/types/types";
 import { HiloBetOption } from "@enums/hilo-bet-options";
 import {
+	MaxBetAmount,
 	MinBetAmount,
 	OriginalGame,
 	RouletteBetColor,
@@ -278,6 +279,8 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 				setBetAmount?: (amount: number) => Promise<void>;
 				pressMinButton?: () => Promise<void>;
 				pressHalfButton?: () => Promise<void>;
+				pressMaxButton?: () => Promise<void>;
+				pressDoubleButton?: () => Promise<void>;
 				getBetAmountValue?: () => Promise<string>;
 			}
 		>
@@ -287,23 +290,33 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 				this.plinkoGamePage.fillInBetAmount(amount),
 			pressMinButton: () => this.plinkoGamePage.pressMinButton(),
 			pressHalfButton: () => this.plinkoGamePage.pressHalfButton(),
+			pressMaxButton: () => this.plinkoGamePage.pressMaxButton(),
+			pressDoubleButton: () => this.plinkoGamePage.pressDoubleButton(),
 			getBetAmountValue: () => this.plinkoGamePage.getBetAmountValue(),
 		},
 		[OriginalGame.Mines]: {
 			setBetAmount: (amount) => this.minesGamePage.insertBet(amount),
 			pressMinButton: () => this.minesGamePage.pressMinButton(),
 			pressHalfButton: () => this.minesGamePage.pressHalfButton(),
+			pressMaxButton: () => this.minesGamePage.pressMaxButton(),
+			pressDoubleButton: () => this.minesGamePage.pressDoubleButton(),
 			getBetAmountValue: () => this.minesGamePage.getBetAmountValue(),
 		},
 		[OriginalGame.Keno]: {
 			setBetAmount: (amount) => this.kenoGamePage.insertBet(amount),
 			pressMinButton: () => this.kenoGamePage.pressMinButton(),
 			pressHalfButton: () => this.kenoGamePage.pressHalfButton(),
+			pressMaxButton: () => this.kenoGamePage.pressMaxButton(),
+			pressDoubleButton: () => this.kenoGamePage.pressDoubleButton(),
 			getBetAmountValue: () => this.kenoGamePage.getBetAmountValue(),
 		},
 	};
 
 	public getMinBetAmount(game: OriginalGame): number {
 		return MinBetAmount[game.toUpperCase() as keyof typeof MinBetAmount];
+	}
+
+	public getMaxBetAmount(game: OriginalGame): number {
+		return MaxBetAmount[game.toUpperCase() as keyof typeof MaxBetAmount];
 	}
 }

@@ -11,14 +11,18 @@ export class KenoGamePageMap extends BaseMap {
 	}
 
 	public get minButton(): Locator {
-		return this.page.locator("button[class*='Buttonstyled__Button']", {
-			hasText: "Min",
-		});
+		return this.page.getByTestId("originals-bet-min");
 	}
 
 	public get halfButton(): Locator {
-		return this.page.locator("button[class*='Buttonstyled__Button']", {
-			hasText: "1/2",
-		});
+		return this.page.getByTestId("originals-bet-half");
+	}
+
+	public get maxButton(): Locator {
+		return this.page.getByTestId("originals-bet-max");
+	}
+
+	public get doubleButton(): Locator {
+		return this.page.getByTestId("originals-bet-double");
 	}
 }

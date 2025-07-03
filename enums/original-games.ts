@@ -37,14 +37,23 @@ export enum MinBetAmount {
 	KENO = PLINKO,
 }
 
+export enum MaxBetAmount {
+	PLINKO = 2500,
+	MINES = 200000,
+	KENO = MINES,
+}
+
 export enum OriginalsHandlerMethods {
 	SetBetAmount = "setBetAmount",
 	PressMinButton = "pressMinButton",
 	PressHalfButton = "pressHalfButton",
+	PressMaxButton = "pressMaxButton",
+	PressDoubleButton = "pressDoubleButton",
 	GetBetAmountValue = "getBetAmountValue",
 }
 
 export enum OriginalsQuickSelectButtons {
 	MIN = "MIN",
 	HALF = "HALF",
+	MAX = "MAX",
 }
