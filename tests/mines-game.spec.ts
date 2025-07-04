@@ -92,7 +92,7 @@ test.describe("Mines tests", () => {
 	);
 
 	test(
-		`[ENG-7319] Mines - Verify Game History`,
+		`[ENG-5729] Mines - Verify Game History`,
 		{
 			tag: ["@originals", "@mines"],
 		},
