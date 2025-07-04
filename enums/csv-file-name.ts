@@ -32,6 +32,6 @@ export enum CsvFilesName {
 	CHATROOM_SUCCESSFULLY_SELECTED = "ENG-2870-chatrooms-successfully-selected.csv",
 	LINKED_PLATFORMS = "ENG-1540-userInfo-info-community-connect-actions-ban-linking.csv",
 	LOADING_ANIMATION = "ENG-2401-loading-animation.csv",
-	ORIGINALS_QUICK_SELECT_BUTTONS = "ENG-5454-5455-5053-originals-quick-select-buttons.csv",
+	ORIGINALS_QUICK_SELECT_BUTTONS = "ENG-5454-5455-5053-5456-originals-quick-select-buttons.csv",
 	PROMOTION_COMBINATIONS = "ENG-5576-promotion-combinations.csv",
 }

@@ -56,4 +56,5 @@ export enum OriginalsQuickSelectButtons {
 	MIN = "MIN",
 	HALF = "HALF",
 	MAX = "MAX",
+	DOUBLE = "DOUBLE",
 }

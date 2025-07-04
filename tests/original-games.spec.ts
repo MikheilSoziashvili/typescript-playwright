@@ -39,6 +39,11 @@ test.describe("Quick Select Buttons", () => {
 		(scenario) => scenario.buttonType === OriginalsQuickSelectButtons.MAX,
 	);
 
+	const doubleScenario = quickSelectScenarios.filter(
+		(scenario) =>
+			scenario.buttonType === OriginalsQuickSelectButtons.DOUBLE,
+	);
+
 	test.describe("MIN button", () => {
 		for (const { game, initialBetAmount } of minScenario) {
 			test(
@@ -129,6 +134,53 @@ test.describe("Quick Select Buttons", () => {
 					await originalsPage.steps().pressMaxButton(game);
 					await originalsPage.assertThat().betAmountIsMax(game);
 					await originalsPage.steps().pressMaxButton(game);
+					await originalsPage.steps().pressDoubleButton(game);
+					await originalsPage.assertThat().betAmountIsMax(game);
+				},
+			);
+		}
+	});
+
+	test.describe("DOUBLE button", () => {
+		test.use(storageStateNewUserDB({ amount: HIGH_USER_AMOUNT }));
+
+		for (const {
+			game,
+			initialBetAmount,
+			expectedAfterFirstClick,
+			expectedAfterSecondClick,
+		} of doubleScenario) {
+			test(
+				`[ENG-5456] should double bet for ${game} with initial bet ${initialBetAmount}`,
+				{
+					tag: ["@originals"],
+				},
+				async ({ originalsPage }) => {
+					await originalsPage.navigateToGame(game);
+					await originalsPage.authenticatedHeader
+						.assertThat()
+						.loggedInUserElementsAreVisible();
+
+					await originalsPage
+						.steps()
+						.setBetAmount(game, initialBetAmount);
+
+					await originalsPage.steps().pressDoubleButton(game);
+					await originalsPage
+						.assertThat()
+						.betAmountIsCorrect(
+							game,
+							roundToDecimals(expectedAfterFirstClick, 2),
+						);
+
+					await originalsPage.steps().pressDoubleButton(game);
+					await originalsPage
+						.assertThat()
+						.betAmountIsCorrect(
+							game,
+							roundToDecimals(expectedAfterSecondClick, 2),
+						);
+
 					await originalsPage.steps().pressDoubleButton(game);
 					await originalsPage.assertThat().betAmountIsMax(game);
 				},
