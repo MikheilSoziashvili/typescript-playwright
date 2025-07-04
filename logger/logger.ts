@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import * as winston from "winston";
 import * as Configuration from "../configuration";
 

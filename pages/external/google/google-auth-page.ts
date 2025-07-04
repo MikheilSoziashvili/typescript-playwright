@@ -97,7 +97,7 @@ export class GoogleAuthPage extends BasePage<GooglePageMap> {
 			});
 			logger.info("Wrong code message appear. Generating a new code...");
 			return true;
-		} catch (error) {
+		} catch {
 			logger.info(
 				"'Wrong code' message did not appear within the specified timeframe. Moving forward...",
 			);
@@ -131,7 +131,7 @@ export class GoogleAuthPage extends BasePage<GooglePageMap> {
 			});
 			logger.info("The 'Verify it's you' screen appeared.");
 			return true;
-		} catch (error) {
+		} catch {
 			logger.info(
 				"The 'Verify it's you' screen did not appear. Skipping...",
 			);

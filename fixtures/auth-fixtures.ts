@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 import { GamdomApi } from "@api/gamdom-api";
 import {
 	SUPER_ADMIN_CREDENTIALS,

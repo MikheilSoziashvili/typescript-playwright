@@ -69,6 +69,7 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 					{ timeout },
 				)
 				.toBeTruthy();
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (e) {
 			this.logToastStatus(
 				expectedText,
