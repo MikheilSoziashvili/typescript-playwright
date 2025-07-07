@@ -10,9 +10,6 @@ const gamdomPages = parse_csv(DATASETS_DIR, CsvFilesName.LOADING_ANIMATION) as {
 	URL: string;
 }[];
 
-// TODO: Add Promotions page once automated feature enabling is available.‚
-// Follow-up subtask created as part of ENG-2401.‚
-
 test.describe("Loading animation tests", () => {
 	test.use(storageStateNewSuperAdminUserDB());
 

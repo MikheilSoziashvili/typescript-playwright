@@ -50,3 +50,7 @@ KOTH-Weekly,/koth/weekly
 KOTH-Monthly,/koth/monthly
 Mines,/mines
 Keno,/keno
+Promotions,/promotions
+Promotions-All,/promotions?tab=all
+Promotions-Casino,/promotions?tab=casino
+Promotions-Sportsbook,/promotions?tab=sportsbook
