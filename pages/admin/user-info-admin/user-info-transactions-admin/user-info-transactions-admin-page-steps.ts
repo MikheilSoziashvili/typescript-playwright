@@ -1,10 +1,10 @@
 import { BasePageStep } from "@pages/base/base-page-step";
-import { TransactionsAdminPage } from "./transactions-admin-page";
+import { UserInfoTransactionsAdminPage } from "./user-info-transactions-admin-page";
 import { LogType } from "@enums/log-types";
 import { step } from "decorators/step";
 
-export class TransactionsAdminPageSteps extends BasePageStep<TransactionsAdminPage> {
-	public constructor(gamdomPage: TransactionsAdminPage) {
+export class UserInfoTransactionsAdminPageSteps extends BasePageStep<UserInfoTransactionsAdminPage> {
+	public constructor(gamdomPage: UserInfoTransactionsAdminPage) {
 		super(gamdomPage);
 	}
 

@@ -2,7 +2,7 @@ import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
 import { BanReasonOptions } from "@enums/admin/ban-reason-options";
 
-export class InfoAdminPageMap extends BaseMap {
+export class UserInfoInfoAdminPageMap extends BaseMap {
 	public constructor(page: Page) {
 		super(page);
 	}
@@ -55,28 +55,31 @@ export class InfoAdminPageMap extends BaseMap {
 	}
 
 	public banButtonForLinkingPlatforms(platform: string): Locator {
-		return this.page.locator('button', {
-            hasText: `Ban this user from linking ${platform} account`,
+		return this.page.locator("button", {
+			hasText: `Ban this user from linking ${platform} account`,
 		});
 	}
 
 	public enableButtonForLinkingPlatforms(platform: string): Locator {
-		return this.page.locator('button', {
-            hasText: `Enable this user to add ${platform} account`,
+		return this.page.locator("button", {
+			hasText: `Enable this user to add ${platform} account`,
 		});
 	}
 
 	public getPlatformRow(platform: string): Locator {
-		return this.page.locator('tr', {
-			has: this.page.locator('th', { hasText: platform }),
-	});
-}
-
-	public getBannedValueCellFromRow(row: Locator): Locator {
-		return row.locator('td');
+		return this.page.locator("tr", {
+			has: this.page.locator("th", { hasText: platform }),
+		});
 	}
 
-	public getPlatformLinkingBannedValue(platform: string, value?: string): Locator {
+	public getBannedValueCellFromRow(row: Locator): Locator {
+		return row.locator("td");
+	}
+
+	public getPlatformLinkingBannedValue(
+		platform: string,
+		value?: string,
+	): Locator {
 		const row = this.getPlatformRow(platform);
 		const cell = this.getBannedValueCellFromRow(row);
 

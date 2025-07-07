@@ -1,12 +1,12 @@
 import { expect, Locator } from "@playwright/test";
 import { BaseAsserter } from "@base/base-asserter";
-import { InfoAdminPage } from "./info-admin-page";
+import { UserInfoInfoAdminPage } from "./user-info-info-admin-page";
 import { Timeout } from "@enums/timeout";
 import { step } from "decorators/step";
 import { Attributes } from "@enums/playwright/htmlAttributes";
 
-export class InfoAdminPageAsserter extends BaseAsserter<InfoAdminPage> {
-	public constructor(page: InfoAdminPage) {
+export class UserInfoInfoAdminPageAsserter extends BaseAsserter<UserInfoInfoAdminPage> {
+	public constructor(page: UserInfoInfoAdminPage) {
 		super(page);
 	}
 
@@ -65,12 +65,18 @@ export class InfoAdminPageAsserter extends BaseAsserter<InfoAdminPage> {
 		platform: string,
 		expectedValue: string,
 	): Promise<void> {
-		const actualValue = await this.gamdomPage.map.getPlatformLinkingBannedValue(platform).textContent();
+		const actualValue = await this.gamdomPage.map
+			.getPlatformLinkingBannedValue(platform)
+			.textContent();
 		if (!actualValue?.trim) {
-			throw new Error(`Platform linking ban value for ${platform} is not found.`);
+			throw new Error(
+				`Platform linking ban value for ${platform} is not found.`,
+			);
 		}
 		await this.checkStringElementsAreEqual(
-		[expectedValue], [actualValue.trim()])
+			[expectedValue],
+			[actualValue.trim()],
+		);
 	}
 
 	@step("Check tip user container is displayed")

@@ -1,12 +1,12 @@
 import { BasePageStep } from "@pages/base/base-page-step";
-import { InfoAdminPage } from "./info-admin-page";
+import { UserInfoInfoAdminPage } from "./user-info-info-admin-page";
 import { generateRandomString } from "@core/utils/utils";
 import { BanReasonOptions } from "@enums/admin/ban-reason-options";
 import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { step } from "decorators/step";
 
-export class InfoAdminPageSteps extends BasePageStep<InfoAdminPage> {
-	public constructor(gamdomPage: InfoAdminPage) {
+export class UserInfoInfoAdminPageSteps extends BasePageStep<UserInfoInfoAdminPage> {
+	public constructor(gamdomPage: UserInfoInfoAdminPage) {
 		super(gamdomPage);
 	}
 
@@ -57,27 +57,35 @@ export class InfoAdminPageSteps extends BasePageStep<InfoAdminPage> {
 			.banButtonForLinkingPlatforms(platform)
 			.click();
 
-		await this.gamdomPage.assertThat().isEnableButtonForLinkingPlatformDisplayed(
-			platform
-		);
-		await this.gamdomPage.assertThat().isLinkingPlatformBanValueCorrect(
-			tableValue, BooleanValueString.TRUE);
+		await this.gamdomPage
+			.assertThat()
+			.isEnableButtonForLinkingPlatformDisplayed(platform);
+		await this.gamdomPage
+			.assertThat()
+			.isLinkingPlatformBanValueCorrect(
+				tableValue,
+				BooleanValueString.TRUE,
+			);
 	}
 
 	@step("Enable user to link 3rd party platform")
 	public async enableUserToLinkPlatform(
 		platform: string,
 		tableValue: string,
-	): Promise<void> {		
+	): Promise<void> {
 		await this.gamdomPage.map
 			.enableButtonForLinkingPlatforms(platform)
 			.click();
 
-		await this.gamdomPage.assertThat().isBanButtonForLinkingPlatformDisplayed(
-			platform
-		);
-		await this.gamdomPage.assertThat().isLinkingPlatformBanValueCorrect(
-			tableValue, BooleanValueString.FALSE);
+		await this.gamdomPage
+			.assertThat()
+			.isBanButtonForLinkingPlatformDisplayed(platform);
+		await this.gamdomPage
+			.assertThat()
+			.isLinkingPlatformBanValueCorrect(
+				tableValue,
+				BooleanValueString.FALSE,
+			);
 	}
 
 	@step("Create note")

@@ -1,22 +1,22 @@
 import { BasePage } from "@base/base-page";
 import { step } from "decorators/step";
 import { Page } from "@playwright/test";
-import { TransactionsAdminPageAsserter } from "./transactions-admin-page-asserter";
-import { TransactionsAdminPageMap } from "./transactions-admin-page-map";
-import { TransactionsAdminPageSteps } from "./transactions-admin-page-steps";
+import { UserInfoTransactionsAdminPageAsserter } from "./user-info-transactions-admin-page-asserter";
+import { UserInfoTransactionsAdminPageMap } from "./user-info-transactions-admin-page-map";
+import { UserInfoTransactionsAdminPageSteps } from "./user-info-transactions-admin-page-steps";
 import { LogType } from "@enums/log-types";
 
-export class TransactionsAdminPage extends BasePage<TransactionsAdminPageMap> {
+export class UserInfoTransactionsAdminPage extends BasePage<UserInfoTransactionsAdminPageMap> {
 	public constructor(page: Page) {
-		super(page, new TransactionsAdminPageMap(page));
+		super(page, new UserInfoTransactionsAdminPageMap(page));
 	}
 
-	public override assertThat(): TransactionsAdminPageAsserter {
-		return new TransactionsAdminPageAsserter(this);
+	public override assertThat(): UserInfoTransactionsAdminPageAsserter {
+		return new UserInfoTransactionsAdminPageAsserter(this);
 	}
 
-	public steps(): TransactionsAdminPageSteps {
-		return new TransactionsAdminPageSteps(this);
+	public steps(): UserInfoTransactionsAdminPageSteps {
+		return new UserInfoTransactionsAdminPageSteps(this);
 	}
 
 	@step("Navigate to admin user transactions page")

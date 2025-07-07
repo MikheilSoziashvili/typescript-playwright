@@ -1,15 +1,15 @@
 import { Page } from "@playwright/test";
 import { BasePage } from "@base/base-page";
-import { InfoAdminPageMap } from "./info-admin-page-map";
+import { UserInfoInfoAdminPageMap } from "./user-info-info-admin-page-map";
 import { INFO_ADMIN_PAGE_ENDPOINT } from "@constants/page-endpoints";
-import { InfoAdminPageAsserter } from "./info-admin-page-asserter";
-import { InfoAdminPageSteps } from "./info-admin-page-steps";
+import { UserInfoInfoAdminPageAsserter } from "./user-info-info-admin-page-asserter";
+import { UserInfoInfoAdminPageSteps } from "./user-info-info-admin-page-steps";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { TwoFactorAuthModal } from "@pages/modals/two-factor-authentication-modal/two-factor-auth-modal";
 
-export class InfoAdminPage extends BasePage<InfoAdminPageMap> {
+export class UserInfoInfoAdminPage extends BasePage<UserInfoInfoAdminPageMap> {
 	public constructor(page: Page) {
-		super(page, new InfoAdminPageMap(page));
+		super(page, new UserInfoInfoAdminPageMap(page));
 	}
 
 	public override async navigate(
@@ -21,12 +21,12 @@ export class InfoAdminPage extends BasePage<InfoAdminPageMap> {
 		});
 	}
 
-	public override assertThat(): InfoAdminPageAsserter {
-		return new InfoAdminPageAsserter(this);
+	public override assertThat(): UserInfoInfoAdminPageAsserter {
+		return new UserInfoInfoAdminPageAsserter(this);
 	}
 
-	public steps(): InfoAdminPageSteps {
-		return new InfoAdminPageSteps(this);
+	public steps(): UserInfoInfoAdminPageSteps {
+		return new UserInfoInfoAdminPageSteps(this);
 	}
 
 	public get twoFactorAuthModal(): TwoFactorAuthModal {

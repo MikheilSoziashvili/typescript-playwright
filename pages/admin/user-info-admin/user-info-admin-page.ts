@@ -6,6 +6,7 @@ import { Page } from "@playwright/test";
 import { UserInfoAdminPageAsserter } from "./user-info-admin-page-asserter";
 import { UserInfoAdminPageMap } from "./user-info-admin-page-map";
 import { UserInfoAdminPageSteps } from "./user-info-admin-page-steps";
+import { UserInfoTabs } from "@enums/admin/user-info-tabs";
 
 export class UserInfoAdminPage extends BasePage<UserInfoAdminPageMap> {
 	public constructor(page: Page) {
@@ -82,5 +83,10 @@ export class UserInfoAdminPage extends BasePage<UserInfoAdminPageMap> {
 			steam64OrUserId,
 		);
 		await this.map.showUserInfoButton.click();
+	}
+
+	@step("Click UserInfo Tab")
+	public async clickUserInfoTab(tab: UserInfoTabs): Promise<void> {
+		await this.map.userInfoTab(tab).click();
 	}
 }

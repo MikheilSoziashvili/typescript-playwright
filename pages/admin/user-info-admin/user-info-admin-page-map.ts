@@ -1,5 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
+import { UserInfoTabs } from "@enums/admin/user-info-tabs";
 
 export class UserInfoAdminPageMap extends BaseMap {
 	public constructor(page: Page) {
@@ -76,5 +77,13 @@ export class UserInfoAdminPageMap extends BaseMap {
 		return this.adminUserInfoContainer.getByTestId(
 			"adminUserInfoSearchBySteamUserIdButton",
 		);
+	}
+
+	public get userInfoTabs(): Locator {
+		return this.page.getByTestId("admin-user-info-tabs");
+	}
+
+	public userInfoTab(tab: UserInfoTabs): Locator {
+		return this.userInfoTabs.getByTestId(`admin-user-info-item-${tab}`);
 	}
 }

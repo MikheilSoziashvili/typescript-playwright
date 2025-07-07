@@ -1,7 +1,7 @@
 import { ActionsAdminPage } from "@pages/admin/actions-admin/actions-admin-page";
 import { AffiliatesAdminPage } from "@pages/admin/affiliates-admin/affiliates-admin-page";
 import { FreeSpinsAdminPage } from "@pages/admin/free-spins-admin/free-spins-admin-page";
-import { InfoAdminPage } from "@pages/admin/info-admin/info-admin-page";
+import { UserInfoInfoAdminPage } from "@pages/admin/user-info-admin/user-info-info-admin/user-info-info-admin-page";
 import { SecurityAdminPage } from "@pages/admin/security-admin/security-admin-page";
 import { UserInfoAdminPage } from "@pages/admin/user-info-admin/user-info-admin-page";
 import { VipManagerAdminPage } from "@pages/admin/vip-manager/vip-manager-page";
@@ -37,15 +37,16 @@ import { IpBlockAdminPage } from "@pages/admin/ip-block-admin/ip-block-admin-pag
 import { BaseAdminPage } from "@pages/admin/base-admin/base-admin-page";
 import { OurGamesAdminPage } from "@pages/admin/our-games-admin/our-games-admin-page";
 import { PromoCampaignsAdminPage } from "@pages/admin/promo-campaigns-admin/promo-campaigns-admin-page";
-import { TransactionsAdminPage } from "@pages/admin/transactions-admin/transactions-admin-page";
+import { UserInfoTransactionsAdminPage } from "@pages/admin/user-info-admin/user-info-transactions-admin/user-info-transactions-admin-page";
 import { SeoRedirectsAdminPage } from "@pages/admin/seo-redirects-admin/seo-redirects-admin-page";
 import { PromotionAdminPage } from "@pages/admin/promotion-admin/promotion-admin-page";
+import { UserInfoEditInfoAdminPage } from "@pages/admin/user-info-admin/user-info-edit-info-admin/user-info-edit-info-admin-page";
 
 export type AdminPages = {
 	baseAdminPage: BaseAdminPage;
 	userInfoAdminPage: UserInfoAdminPage;
-	infoAdminPage: InfoAdminPage;
-	transactionsAdminPage: TransactionsAdminPage;
+	infoAdminPage: UserInfoInfoAdminPage;
+	transactionsAdminPage: UserInfoTransactionsAdminPage;
 	freeSpinsAdminPage: FreeSpinsAdminPage;
 	securityAdminPage: SecurityAdminPage;
 	writerAdminPage: WriterAdminPage;
@@ -83,6 +84,7 @@ export type AdminPages = {
 	ourGamesAdminPage: OurGamesAdminPage;
 	seoRedirectsAdminPage: SeoRedirectsAdminPage;
 	promotionAdminPage: PromotionAdminPage;
+	userInfoEditInfoAdminPage: UserInfoEditInfoAdminPage;
 };
 
 export const adminPagesFixtures = base.extend<AdminPages>({
@@ -93,10 +95,10 @@ export const adminPagesFixtures = base.extend<AdminPages>({
 		await use(new UserInfoAdminPage(page));
 	},
 	infoAdminPage: async ({ page }, use) => {
-		await use(new InfoAdminPage(page));
+		await use(new UserInfoInfoAdminPage(page));
 	},
 	transactionsAdminPage: async ({ page }, use) => {
-		await use(new TransactionsAdminPage(page));
+		await use(new UserInfoTransactionsAdminPage(page));
 	},
 	freeSpinsAdminPage: async ({ page }, use) => {
 		await use(new FreeSpinsAdminPage(page));
@@ -208,5 +210,8 @@ export const adminPagesFixtures = base.extend<AdminPages>({
 	},
 	promotionAdminPage: async ({ page }, use) => {
 		await use(new PromotionAdminPage(page));
+	},
+	userInfoEditInfoAdminPage: async ({ page }, use) => {
+		await use(new UserInfoEditInfoAdminPage(page));
 	},
 });

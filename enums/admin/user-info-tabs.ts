@@ -1,0 +1,16 @@
+export enum UserInfoTabs {
+	Info = "Info",
+	Public = "Public",
+	RewardHistory = "Reward History",
+	Trades = "Trades",
+	Transactions = "Transactions",
+	AffiliateInfo = "Affiliate Info",
+	Crypto = "Crypto",
+	Sessions = "Sessions",
+	IPs = "IPs",
+	AffilatorShare = "AffilatorShare",
+	Rewards = "Rewards",
+	KYC = "KYC",
+	FreeSpins = "Free Spins",
+	EditInfo = "Edit Info",
+}

@@ -1,7 +1,7 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
 
-export class TransactionsAdminPageMap extends BaseMap {
+export class UserInfoTransactionsAdminPageMap extends BaseMap {
 	public constructor(page: Page) {
 		super(page);
 	}

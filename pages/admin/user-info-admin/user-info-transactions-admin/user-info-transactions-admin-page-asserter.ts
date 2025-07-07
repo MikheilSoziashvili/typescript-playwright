@@ -1,12 +1,12 @@
 import { BaseAsserter } from "@base/base-asserter";
-import { TransactionsAdminPage } from "./transactions-admin-page";
+import { UserInfoTransactionsAdminPage } from "./user-info-transactions-admin-page";
 import { expect } from "@playwright/test";
 import { step } from "decorators/step";
 import { waitUntil } from "@core/utils/utils";
 import { logger } from "@logger/logger";
 
-export class TransactionsAdminPageAsserter extends BaseAsserter<TransactionsAdminPage> {
-	public constructor(page: TransactionsAdminPage) {
+export class UserInfoTransactionsAdminPageAsserter extends BaseAsserter<UserInfoTransactionsAdminPage> {
+	public constructor(page: UserInfoTransactionsAdminPage) {
 		super(page);
 	}
 
@@ -22,7 +22,9 @@ export class TransactionsAdminPageAsserter extends BaseAsserter<TransactionsAdmi
 			async () => {
 				actualValues =
 					await this.gamdomPage.map.logsTableTransactionDetailsColumn.allTextContents();
-					logger.info(`Waiting for table rows. Got: ${actualValues.length}`);
+				logger.info(
+					`Waiting for table rows. Got: ${actualValues.length}`,
+				);
 				return actualValues.length === expectedValues.length;
 			},
 			{
@@ -35,7 +37,7 @@ export class TransactionsAdminPageAsserter extends BaseAsserter<TransactionsAdmi
 		const missingValues = expectedValues.filter(
 			(value) => !actualValues.includes(value),
 		);
-		
+
 		expect(
 			missingValues,
 			`The following expected values were not found in the transaction details column: ${missingValues.join(
