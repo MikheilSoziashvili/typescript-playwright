@@ -16,6 +16,7 @@ import { ToastTitle } from "@enums/toast-titles";
 import { storageStateNewSuperAdminUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import { GamdomDb } from "database/gamdom-db";
+import { isCI } from "configuration";
 
 const promotionTypes = [
 	{
@@ -55,6 +56,10 @@ const promotionCombinations = parse_csv(
 }[];
 
 test.describe("Promotion tests", () => {
+	test.fixme(
+		isCI,
+		"Skip on CI due to https://gamdom.atlassian.net/browse/ENG-7501",
+	);
 	let promotionName: string;
 	test.use(storageStateNewSuperAdminUserDB());
 
