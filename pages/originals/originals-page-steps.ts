@@ -4,6 +4,7 @@ import { BasePageStep } from "@pages/base/base-page-step";
 import { expect } from "@playwright/test";
 import { step } from "decorators/step";
 import { OriginalsPage } from "./originals-page";
+import { Timeout } from "@enums/timeout";
 
 export class OriginalsSteps extends BasePageStep<OriginalsPage> {
 	public constructor(
@@ -69,12 +70,24 @@ export class OriginalsSteps extends BasePageStep<OriginalsPage> {
 	}
 
 	@step("Get bet amount value")
-	public async getBetAmountValue(game: OriginalGames): Promise<string> {
+	public async getBetAmountValue(
+		game: OriginalGames,
+		expectedAmount: number,
+	): Promise<number> {
 		const handler = this.handlers[game]?.getBetAmountValue;
 		expect(
 			handler,
 			`Missing handler for game ${game} and action ${OriginalsHandlerMethods.GetBetAmountValue}`,
 		).toBeDefined();
-		return (handler as () => Promise<string>)();
+
+		const fetchedBetAmount = handler as () => Promise<string>;
+		await expect
+			.poll(fetchedBetAmount, {
+				timeout: Timeout.EXTRA_SHORT,
+				message: `Expected bet amount for game ${game} was not reached within the timeout`,
+			})
+			.toBe(expectedAmount.toFixed(2));
+
+		return parseFloat(await fetchedBetAmount());
 	}
 }

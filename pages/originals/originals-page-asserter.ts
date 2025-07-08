@@ -16,7 +16,7 @@ export class OriginalsAsserter extends BaseAsserter<OriginalsPage> {
 	): Promise<void> {
 		const actualBetAmount = await this.gamdomPage
 			.steps()
-			.getBetAmountValue(game);
+			.getBetAmountValue(game, expected);
 		this.expectRoundedToBe(actualBetAmount, expected);
 	}
 
