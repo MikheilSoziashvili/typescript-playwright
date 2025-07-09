@@ -92,17 +92,5 @@ export default defineConfig({
 			name: "chromium",
 			use: { browserName: "chromium" },
 		},
-		{
-			name: "firefox",
-			use: {
-				launchOptions: {
-					firefoxUserPrefs: {
-						"webgl.force-enabled": true,
-						"webgl.disabled": false,
-						"dom.webgpu.enabled": true,
-					},
-				},
-			},
-		},
 	],
 });
