@@ -23,7 +23,7 @@ const ipAddressInputs = parse_csv(
 	value: string;
 }[];
 
-test.describe("User info - search by @wip", () => {
+test.describe("User info - search by", () => {
 	test.describe("User info - search by ID", () => {
 		const userData = new RegisterTestData();
 		let userId: number;

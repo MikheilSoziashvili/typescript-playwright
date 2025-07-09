@@ -14,6 +14,7 @@ export class UserInfoAdminPageSteps extends BasePageStep<UserInfoAdminPage> {
 	}): Promise<void> {
 		const { username, expectToBeFound } = parameters;
 		await this.gamdomPage.map.searchByUsernameContainer.click();
+		await this.gamdomPage.map.searchByUsernameInput.clear();
 		await this.gamdomPage.map.searchByUsernameInput.pressSequentially(
 			username,
 		);
