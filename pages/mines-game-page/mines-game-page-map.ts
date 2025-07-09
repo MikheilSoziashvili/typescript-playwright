@@ -35,7 +35,7 @@ export class MinesGamePageMap extends BaseMap {
 	}
 
 	public get winImage(): Locator {
-		return this.page.getByTestId("mines-banner");
+		return this.page.getByTestId("win-banner");
 	}
 
 	public get betField(): Locator {
@@ -91,7 +91,9 @@ export class MinesGamePageMap extends BaseMap {
 	}
 
 	public get singleBetHistoryModalDetails(): Locator {
-		return this.singleBetHistoryModal.locator("div[class^='ModalRoundstyled__CardText']");
+		return this.singleBetHistoryModal.locator(
+			"div[class^='ModalRoundstyled__CardText']",
+		);
 	}
 
 	public get betDetailsBetAmount(): Locator {
