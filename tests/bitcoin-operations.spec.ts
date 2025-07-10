@@ -5,6 +5,7 @@ import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import {
 	getCookieHeader,
+	jiraIssueId,
 	setAuthenticationCookies,
 	waitUntil,
 } from "@core/utils/utils";
@@ -18,6 +19,7 @@ import { Timeout } from "@enums/timeout";
 import { UserTags } from "@enums/db/user-tags";
 import { UserClasses } from "@enums/db/user-classes";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
+import { AnnotationType } from "@enums/playwright/annotationsTypes";
 
 test.describe("Bitcoin tests", () => {
 	test.slow();
@@ -88,125 +90,141 @@ test.describe("Bitcoin tests", () => {
 		storageStateNewUserDB({
 			username: userData.username,
 			password: userData.password,
+			emailVerified: true,
 		}),
 	);
 	test.setTimeout(Timeout.EXTRA_MAX + Timeout.SUPER_MAX);
-	test("[ENG-5450] BTC - deposit and withdraw", async ({
-		bitcoinApi,
-		gamdomDb,
-		homePage,
-		walletModal,
-		transactionsPage,
-		transactionDetailsModal,
-		gamdomApi,
-		cryptoAdminPage,
-		diceGamePage,
-		page,
-		toast,
-	}) => {
-		const superAdminData = new RegisterTestData({
-			useGamdomEmailDomain: true,
-		});
-		const userCookie = await gamdomApi.authenticateWithExistingUser(
-			userData.username,
-			userData.password,
-		);
-		await gamdomDb.createNewUser({
-			username: superAdminData.username,
-			password: superAdminData.password,
-			email: superAdminData.email,
-			tags: UserTags.SuperAdmin,
-			userClass: UserClasses.Admin,
-			emailVerified: true,
-		});
-		const adminCookie = getCookieHeader(
-			await gamdomApi.authenticateWithExistingUser(
-				superAdminData.username,
-				superAdminData.password,
-			),
-		);
-
-		await homePage.navigateToWallet();
-		await walletModal.selectPaymentMethod(Cryptocurrency.Bitcoin);
-		const userDepositAddress = await walletModal.getDepositAddress();
-		const amountToDeposit = 0.00004;
-		const amountToWithdraw = 0.00002;
-		const feeRate = 50;
-
-		const sendResponse = await bitcoinApi.sendBTC(
-			userDepositAddress,
-			amountToDeposit,
-			{
-				feeRate: feeRate,
-				replaceable: false,
+	test(
+		"[ENG-5450] BTC - deposit and withdraw",
+		{
+			annotation: {
+				type: AnnotationType.BUG,
+				description: jiraIssueId(7543),
 			},
-		);
+		},
+		async ({
+			bitcoinApi,
+			gamdomDb,
+			homePage,
+			walletModal,
+			transactionsPage,
+			transactionDetailsModal,
+			gamdomApi,
+			cryptoAdminPage,
+			diceGamePage,
+			page,
+			toast,
+		}) => {
+			const superAdminData = new RegisterTestData({
+				useGamdomEmailDomain: true,
+			});
+			const userCookie = await gamdomApi.authenticateWithExistingUser(
+				userData.username,
+				userData.password,
+			);
+			await gamdomDb.createNewUser({
+				username: superAdminData.username,
+				password: superAdminData.password,
+				email: superAdminData.email,
+				tags: UserTags.SuperAdmin,
+				userClass: UserClasses.Admin,
+				emailVerified: true,
+			});
+			const adminCookie = getCookieHeader(
+				await gamdomApi.authenticateWithExistingUser(
+					superAdminData.username,
+					superAdminData.password,
+				),
+			);
 
-		const transactionId: string = sendResponse.result;
-		await waitBtcTransactionConfirmation(bitcoinApi, transactionId);
+			await homePage.navigateToWallet();
+			await walletModal.selectPaymentMethod(Cryptocurrency.Bitcoin);
+			const userDepositAddress = await walletModal.getDepositAddress();
+			const amountToDeposit = 0.00004;
+			const amountToWithdraw = 0.00002;
+			const feeRate = 50;
 
-		await transactionsPage
-			.steps()
-			.verifyDepositTransactionStatusIs(TransactionState.COMPLETE);
-		await transactionsPage.clickTransactionDetailsButton();
-		await transactionDetailsModal
-			.assertThat()
-			.assertDepositAmountInBTC(amountToDeposit);
-
-		await homePage.navigate();
-		await homePage.authenticatedHeader.clickBalanceDropdown();
-		await homePage.authenticatedHeader
-			.assertThat()
-			.walletBalanceIs(Wallet.BTC, amountToDeposit);
-
-		await cryptoAdminPage
-			.assertThat()
-			.assertTransactionCryptoAmount(
-				gamdomApi,
-				adminCookie,
-				transactionId,
+			const sendResponse = await bitcoinApi.sendBTC(
+				userDepositAddress,
 				amountToDeposit,
+				{
+					feeRate: feeRate,
+					replaceable: false,
+				},
 			);
 
-		await diceGamePage.navigate();
-		await diceGamePage.rollDiceWithAmount(50);
+			const transactionId: string = sendResponse.result;
+			await waitBtcTransactionConfirmation(bitcoinApi, transactionId);
 
-		await homePage.authenticatedHeader.changeWallet(Wallet.BTC);
-		await homePage.navigateToWallet();
-		await walletModal.withdrawBtc(testnetAddress, amountToWithdraw);
-		await toast.assertThat().titleIs(ToastTitle.SUCCESS);
+			await transactionsPage
+				.steps()
+				.verifyDepositTransactionStatusIs(TransactionState.COMPLETE);
+			await transactionsPage.clickTransactionDetailsButton();
+			await transactionDetailsModal
+				.assertThat()
+				.assertDepositAmountInBTC(amountToDeposit);
 
-		await setAuthenticationCookies(page, adminCookie);
-		await cryptoAdminPage.sendQueuedWithdrawals();
+			await homePage.navigate();
+			await homePage.authenticatedHeader.clickBalanceDropdown();
+			await homePage.authenticatedHeader
+				.assertThat()
+				.walletBalanceIs(Wallet.BTC, amountToDeposit);
 
-		await setAuthenticationCookies(page, userCookie);
-		await transactionsPage
-			.steps()
-			.verifyWithdrawTransactionStatusIs(TransactionState.SENT);
-		await transactionsPage.clickTransactionDetailsButton();
+			await cryptoAdminPage
+				.assertThat()
+				.assertTransactionCryptoAmount(
+					gamdomApi,
+					adminCookie,
+					transactionId,
+					amountToDeposit,
+				);
 
-		const withdrawTransactionId =
-			await transactionDetailsModal.getBlockchainTransactionId();
+			await diceGamePage.navigate();
+			await diceGamePage.rollDiceWithAmount(50);
 
-		await waitBtcTransactionConfirmation(bitcoinApi, withdrawTransactionId);
-		await transactionsPage
-			.steps()
-			.verifyWithdrawTransactionStatusIs(TransactionState.CONFIRMED);
+			await homePage.authenticatedHeader.changeWallet(Wallet.BTC);
+			await homePage.navigateToWallet();
+			await walletModal.withdrawBtc(testnetAddress, amountToWithdraw);
+			await toast.assertThat().titleIs(ToastTitle.SUCCESS);
 
-		await homePage.navigate();
-		await homePage.authenticatedHeader.clickBalanceDropdown();
-		await homePage.authenticatedHeader
-			.assertThat()
-			.walletBalanceIs(Wallet.BTC, amountToDeposit - amountToWithdraw);
+			await setAuthenticationCookies(page, adminCookie);
+			await cryptoAdminPage.sendQueuedWithdrawals();
 
-		const adminApiCookie = getCookieHeader(adminCookie);
-		await cryptoAdminPage
-			.assertThat()
-			.assertTransactionCryptoAmount(
-				gamdomApi,
-				adminApiCookie,
+			await setAuthenticationCookies(page, userCookie);
+			await transactionsPage
+				.steps()
+				.verifyWithdrawTransactionStatusIs(TransactionState.SENT);
+			await transactionsPage.clickTransactionDetailsButton();
+
+			const withdrawTransactionId =
+				await transactionDetailsModal.getBlockchainTransactionId();
+
+			await waitBtcTransactionConfirmation(
+				bitcoinApi,
 				withdrawTransactionId,
-				amountToWithdraw,
 			);
-	});
+			await transactionsPage
+				.steps()
+				.verifyWithdrawTransactionStatusIs(TransactionState.CONFIRMED);
+
+			await homePage.navigate();
+			await homePage.authenticatedHeader.clickBalanceDropdown();
+			await homePage.authenticatedHeader
+				.assertThat()
+				.walletBalanceIs(
+					Wallet.BTC,
+					amountToDeposit - amountToWithdraw,
+				);
+
+			const adminApiCookie = getCookieHeader(adminCookie);
+			await cryptoAdminPage
+				.assertThat()
+				.assertTransactionCryptoAmount(
+					gamdomApi,
+					adminApiCookie,
+					withdrawTransactionId,
+					amountToWithdraw,
+				);
+		},
+	);
 });
