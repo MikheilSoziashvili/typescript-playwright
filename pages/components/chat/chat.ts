@@ -27,9 +27,10 @@ export class Chat extends BaseComponent<ChatMap> {
 			state: VisibilityState.ATTACHED,
 			timeout: Timeout.MEDIUM,
 		});
-		await this.map.waitForVisibility({
-			locator: this.map.chatLocator,
-		});
+		await this.assertThat().checkElementsAreVisible([
+			this.map.chatHeader,
+			this.map.chatMessagesList,
+		]);
 	}
 
 	@step("Claim rain")

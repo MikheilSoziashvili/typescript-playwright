@@ -121,9 +121,9 @@ export class BaseAsserter<
 		elements: Locator[],
 		timeout?: number,
 	): Promise<void> {
-		for (const element of elements) {
-			await expect(element).toBeVisible({ timeout });
-		}
+		await this.assertOnElements(elements, (el) =>
+			expect(el).toBeVisible({ timeout }),
+		);
 	}
 
 	@step("Check that elements are not visible")
@@ -131,9 +131,9 @@ export class BaseAsserter<
 		elements: Locator[],
 		timeout?: number,
 	): Promise<void> {
-		for (const element of elements) {
-			await expect(element).not.toBeVisible({ timeout });
-		}
+		await this.assertOnElements(elements, (el) =>
+			expect(el).not.toBeVisible({ timeout }),
+		);
 	}
 
 	@step("Assert on elements")
