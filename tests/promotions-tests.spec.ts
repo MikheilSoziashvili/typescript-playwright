@@ -6,17 +6,19 @@ import {
 } from "@core/utils/utils";
 import { PromotionTestData } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
+import { UserClasses } from "@enums/db/user-classes";
+import { UserTags } from "@enums/db/user-tags";
 import { PromotionCategories } from "@enums/promotion-categories";
 import { PromotionIsVipCategories } from "@enums/promotion-is-vip-categories";
 import { PromotionStatuses } from "@enums/promotion-statuses";
-import { PromotionType } from "@enums/promotion-types";
 import { PromotionSubStatuses } from "@enums/promotion-sub-categories";
+import { PromotionType } from "@enums/promotion-types";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
-import { storageStateNewSuperAdminUserDB } from "@fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
-import { GamdomDb } from "database/gamdom-db";
 import { isCI } from "configuration";
+import { GamdomDb } from "database/gamdom-db";
 
 const promotionTypes = [
 	{
@@ -56,12 +58,15 @@ const promotionCombinations = parse_csv(
 }[];
 
 test.describe("Promotion tests", () => {
-	test.fixme(
-		isCI,
-		"Skip on CI due to https://gamdom.atlassian.net/browse/ENG-7501",
-	);
 	let promotionName: string;
-	test.use(storageStateNewSuperAdminUserDB());
+
+	test.use(
+		storageStateNewUserDB({
+			tags: UserTags.PromotionAdmin,
+			userClass: UserClasses.Admin,
+			emailVerified: true,
+		}),
+	);
 
 	test.afterEach(async ({ gamdomDb }) => {
 		await gamdomDb.deletePromotionByTitle(promotionName);
@@ -117,6 +122,10 @@ test.describe("Promotion tests", () => {
 	});
 
 	test.describe("Promotion creation tests", () => {
+		test.fixme(
+			isCI,
+			"Skip on CI due to https://gamdom.atlassian.net/browse/ENG-7501",
+		);
 		promotionCombinations.forEach((combination) => {
 			test(`[ENG-5576] Promotions - Create a new promotion - Promotion Category: ${combination.category} - Promotion Subcategory: ${combination.subCategory} - Is For VIP: ${combination.isForVip}`, async ({
 				promotionAdminPage,
