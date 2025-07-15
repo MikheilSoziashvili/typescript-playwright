@@ -214,4 +214,10 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 			shouldBeVisible,
 		);
 	}
+
+	@step("Verify animation visibility")
+	public async loaderIsCorrectlyDisplayed(): Promise<void> {
+		await this.loaderWasVisible();
+		await this.loaderHasDisappeared();
+	}
 }

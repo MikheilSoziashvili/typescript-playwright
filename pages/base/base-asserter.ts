@@ -500,7 +500,7 @@ export class BaseAsserter<
 	}
 
 	@step("Assert that the loader animation is visible")
-	public async assertLoaderWasVisible(
+	public async loaderWasVisible(
 		timeoutMs: number = Timeout.SHORT,
 	): Promise<void> {
 		const selector = this.gamdomPage.map.getLoadingAnimationSelector();
@@ -565,7 +565,7 @@ export class BaseAsserter<
 	}
 
 	@step("Assert that the loader animation has disappeared")
-	public async assertLoaderHasDisappeared(
+	public async loaderHasDisappeared(
 		timeout: number = Timeout.SHORT,
 	): Promise<void> {
 		await this.gamdomPage.map.waitForInvisibility({

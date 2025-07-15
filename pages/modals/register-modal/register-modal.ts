@@ -4,14 +4,15 @@ import { RegisterModalMap } from "./register-modal-map";
 import { RegisterTestData } from "@dtos/test-data";
 import { Delay } from "@enums/delay";
 import { step } from "decorators/step";
+import { RegisterModalAsserter } from "./register-modal-asserter";
 
 export class RegisterModal extends BaseModal<RegisterModalMap> {
 	constructor(page: Page) {
 		super(page, new RegisterModalMap(page));
 	}
 
-	public assertThat(): void {
-		throw new Error("Method not implemented.");
+	public assertThat(): RegisterModalAsserter {
+		return new RegisterModalAsserter(this);
 	}
 
 	@step("Wait until checked")
