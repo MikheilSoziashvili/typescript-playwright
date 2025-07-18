@@ -15,7 +15,7 @@ export class PromotionsModalAsserter extends BaseAsserter<PromotionsModal> {
 	}
 
 	@step("Promotions modal is not displayed")
-	public async modalIsNoDisplayed(): Promise<void> {
+	public async modalIsNotDisplayed(): Promise<void> {
 		await this.checkElementsAreNotVisible([
 			this.gamdomPage.map.promotionsModalContainer,
 		]);

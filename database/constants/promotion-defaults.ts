@@ -1,9 +1,11 @@
 import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { PromotionInsertOptions } from "../interfaces/promotion-insert-options";
+import { getISODate } from "@core/utils/utils";
 
 const basePromotionValues: Omit<PromotionInsertOptions, "title"> = {
 	subtitle: "Default subtitle",
-	description: "<h2>Default promotion</h2> This is a default promotion description.",
+	description:
+		"<h2>Default promotion</h2> This is a default promotion description.",
 	termsAndConditions: "Default terms and conditions apply.",
 	imageCover: "default_cover.jpg",
 	imageThumbnail: "default_thumb.jpg",
@@ -12,6 +14,7 @@ const basePromotionValues: Omit<PromotionInsertOptions, "title"> = {
 	priority: 12,
 	isVisible: BooleanValueString.TRUE,
 	buttonLink: "default-link",
+	buttonText: "default-button-text",
 	customUrl: null,
 	category: "CASINO",
 	subCategory: "CASINO",
@@ -19,16 +22,32 @@ const basePromotionValues: Omit<PromotionInsertOptions, "title"> = {
 	updatedByAdminId: 1,
 	startDate: null,
 	expirationDate: null,
-	created: null,
-	modifiedDate: null,
+	created: getISODate({ daysOffset: -30 }),
+	modifiedDate: getISODate({ daysOffset: -20 }),
 	hasLogMessage: true,
 };
 
 function createPromotionDefaults(
-	overrides: Partial<Omit<PromotionInsertOptions, "title">>
+	overrides: Partial<Omit<PromotionInsertOptions, "title">>,
 ): Omit<PromotionInsertOptions, "title"> {
 	return {
 		...basePromotionValues,
+		...overrides,
+	};
+}
+
+function createPromotionDefaultsWithUserId(
+	overrides: Partial<Omit<PromotionInsertOptions, "title">>,
+	userId: number,
+): Omit<PromotionInsertOptions, "title"> {
+	const userIdOverrides = {
+		createdByAdminId: userId,
+		updatedByAdminId: userId,
+	};
+
+	return {
+		...basePromotionValues,
+		...userIdOverrides,
 		...overrides,
 	};
 }
@@ -37,8 +56,10 @@ export const DEFAULT_PROMOTION_VALUES = createPromotionDefaults({});
 
 export const CASINO_PROMOTION_DEFAULTS = createPromotionDefaults({
 	subtitle: "Casino exclusive offer",
-	description: "<h2>Casino Promotion</h2> Enjoy exclusive casino bonuses and rewards.",
-	termsAndConditions: "Casino terms and conditions apply. Wagering requirements may apply.",
+	description:
+		"<h2>Casino Promotion</h2> Enjoy exclusive casino bonuses and rewards.",
+	termsAndConditions:
+		"Casino terms and conditions apply. Wagering requirements may apply.",
 	imageCover: "casino_promo_cover.jpg",
 	imageThumbnail: "casino_promo_thumb.jpg",
 	howToParticipate: "Visit the casino section and opt-in to participate.",
@@ -50,8 +71,10 @@ export const CASINO_PROMOTION_DEFAULTS = createPromotionDefaults({
 
 export const SPORTSBOOK_PROMOTION_DEFAULTS = createPromotionDefaults({
 	subtitle: "Sports betting exclusive",
-	description: "<h2>Sports Promotion</h2> Get enhanced odds and betting bonuses.",
-	termsAndConditions: "Sportsbook terms apply. Minimum odds restrictions may apply.",
+	description:
+		"<h2>Sports Promotion</h2> Get enhanced odds and betting bonuses.",
+	termsAndConditions:
+		"Sportsbook terms apply. Minimum odds restrictions may apply.",
 	imageCover: "sports_promo_cover.jpg",
 	imageThumbnail: "sports_promo_thumb.jpg",
 	howToParticipate: "Place qualifying bets in the sportsbook section.",
@@ -63,8 +86,10 @@ export const SPORTSBOOK_PROMOTION_DEFAULTS = createPromotionDefaults({
 
 export const LIVE_CASINO_PROMOTION_DEFAULTS = createPromotionDefaults({
 	subtitle: "Live dealer exclusive",
-	description: "<h2>Live Casino Promotion</h2> Experience real dealers with exclusive bonuses.",
-	termsAndConditions: "Live casino terms apply. Valid on live dealer games only.",
+	description:
+		"<h2>Live Casino Promotion</h2> Experience real dealers with exclusive bonuses.",
+	termsAndConditions:
+		"Live casino terms apply. Valid on live dealer games only.",
 	imageCover: "live_casino_cover.jpg",
 	imageThumbnail: "live_casino_thumb.jpg",
 	howToParticipate: "Join live dealer tables and opt-in for bonuses.",
@@ -76,7 +101,8 @@ export const LIVE_CASINO_PROMOTION_DEFAULTS = createPromotionDefaults({
 
 export const VIP_PROMOTION_DEFAULTS = createPromotionDefaults({
 	subtitle: "VIP exclusive offer",
-	description: "<h2>VIP Promotion</h2> Exclusive rewards for our VIP members.",
+	description:
+		"<h2>VIP Promotion</h2> Exclusive rewards for our VIP members.",
 	termsAndConditions: "VIP terms apply. Available to VIP members only.",
 	imageCover: "vip_promo_cover.jpg",
 	imageThumbnail: "vip_promo_thumb.jpg",
@@ -86,3 +112,99 @@ export const VIP_PROMOTION_DEFAULTS = createPromotionDefaults({
 	category: "CASINO",
 	subCategory: "CASINO",
 });
+
+export function createDefaultPromotionWithUserId(
+	userId: number,
+): Omit<PromotionInsertOptions, "title"> {
+	return createPromotionDefaultsWithUserId({}, userId);
+}
+
+export function createCasinoPromotionWithUserId(
+	userId: number,
+): Omit<PromotionInsertOptions, "title"> {
+	return createPromotionDefaultsWithUserId(
+		{
+			subtitle: "Casino exclusive offer",
+			description:
+				"<h2>Casino Promotion</h2> Enjoy exclusive casino bonuses and rewards.",
+			termsAndConditions:
+				"Casino terms and conditions apply. Wagering requirements may apply.",
+			imageCover: "casino_promo_cover.jpg",
+			imageThumbnail: "casino_promo_thumb.jpg",
+			howToParticipate:
+				"Visit the casino section and opt-in to participate.",
+			rewardsInfo: "Casino bonus rewards",
+			category: "CASINO",
+			subCategory: "CASINO",
+			priority: 3,
+		},
+		userId,
+	);
+}
+
+export function createSportsbookPromotionWithUserId(
+	userId: number,
+): Omit<PromotionInsertOptions, "title"> {
+	return createPromotionDefaultsWithUserId(
+		{
+			subtitle: "Sports betting exclusive",
+			description:
+				"<h2>Sports Promotion</h2> Get enhanced odds and betting bonuses.",
+			termsAndConditions:
+				"Sportsbook terms apply. Minimum odds restrictions may apply.",
+			imageCover: "sports_promo_cover.jpg",
+			imageThumbnail: "sports_promo_thumb.jpg",
+			howToParticipate:
+				"Place qualifying bets in the sportsbook section.",
+			rewardsInfo: "Enhanced odds and betting bonuses",
+			category: "SPORTSBOOK",
+			subCategory: "SPORTS",
+			priority: 4,
+		},
+		userId,
+	);
+}
+
+export function createLiveCasinoPromotionWithUserId(
+	userId: number,
+): Omit<PromotionInsertOptions, "title"> {
+	return createPromotionDefaultsWithUserId(
+		{
+			subtitle: "Live dealer exclusive",
+			description:
+				"<h2>Live Casino Promotion</h2> Experience real dealers with exclusive bonuses.",
+			termsAndConditions:
+				"Live casino terms apply. Valid on live dealer games only.",
+			imageCover: "live_casino_cover.jpg",
+			imageThumbnail: "live_casino_thumb.jpg",
+			howToParticipate: "Join live dealer tables and opt-in for bonuses.",
+			rewardsInfo: "Live dealer bonuses and cashback",
+			category: "CASINO",
+			subCategory: "LIVECASINO",
+			priority: 5,
+		},
+		userId,
+	);
+}
+
+export function createVipPromotionWithUserId(
+	userId: number,
+): Omit<PromotionInsertOptions, "title"> {
+	return createPromotionDefaultsWithUserId(
+		{
+			subtitle: "VIP exclusive offer",
+			description:
+				"<h2>VIP Promotion</h2> Exclusive rewards for our VIP members.",
+			termsAndConditions:
+				"VIP terms apply. Available to VIP members only.",
+			imageCover: "vip_promo_cover.jpg",
+			imageThumbnail: "vip_promo_thumb.jpg",
+			howToParticipate: "VIP members are automatically eligible.",
+			rewardsInfo: "Exclusive VIP rewards and benefits",
+			priority: 10,
+			category: "CASINO",
+			subCategory: "CASINO",
+		},
+		userId,
+	);
+}

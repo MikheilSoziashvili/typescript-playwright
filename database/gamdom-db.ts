@@ -1,10 +1,10 @@
 import { DEFAULT_IMAGE } from "@constants/defaults";
 import {
-	DEFAULT_PROMOTION_VALUES,
-	CASINO_PROMOTION_DEFAULTS,
-	SPORTSBOOK_PROMOTION_DEFAULTS,
-	LIVE_CASINO_PROMOTION_DEFAULTS,
-	VIP_PROMOTION_DEFAULTS,
+	createDefaultPromotionWithUserId,
+	createCasinoPromotionWithUserId,
+	createSportsbookPromotionWithUserId,
+	createLiveCasinoPromotionWithUserId,
+	createVipPromotionWithUserId,
 } from "./constants/promotion-defaults";
 import { AmlInfoOptions } from "./interfaces/aml-info-options";
 import { AmlStatusInsertOptions } from "./interfaces/aml-status-insert-options";
@@ -684,11 +684,11 @@ export class GamdomDb extends BaseDB {
 		priority = 1,
 		isVisible: BooleanValueString = BooleanValueString.TRUE,
 		buttonLink: NullableString = null,
+		buttonText: NullableString = null,
 		customUrl: NullableString = null,
 		category: NullableString = null,
 		subCategory: NullableString = null,
-		createdByAdminId = 1,
-		updatedByAdminId = 1,
+		userId: number,
 		startDate: NullableDateString = null,
 		expirationDate: NullableDateString = null,
 		created: NullableDateString = null,
@@ -696,9 +696,11 @@ export class GamdomDb extends BaseDB {
 		hasLogMessage = true,
 	): Promise<QueryResultRow> {
 		const now = getISODate();
-		const defaultStartDate = getISODate({ daysOffset: -2 });
+		const defaultStartDate = getISODate({ daysOffset: -3 });
 
 		const generatedCustomUrl = customUrl || generateCustomUrl(title);
+		const finalCreatedByAdminId = userId;
+		const finalUpdatedByAdminId = userId;
 
 		const baseData = {
 			[PromotionColumns.Title]: title,
@@ -712,11 +714,12 @@ export class GamdomDb extends BaseDB {
 			[PromotionColumns.Priority]: priority,
 			[PromotionColumns.IsVisible]: isVisible === BooleanValueString.TRUE,
 			[PromotionColumns.ButtonLink]: buttonLink,
+			[PromotionColumns.ButtonText]: buttonText,
 			[PromotionColumns.CustomUrl]: generatedCustomUrl,
 			[PromotionColumns.Category]: category,
 			[PromotionColumns.SubCategory]: subCategory,
-			[PromotionColumns.CreatedByAdminId]: createdByAdminId,
-			[PromotionColumns.UpdatedByAdminId]: updatedByAdminId,
+			[PromotionColumns.CreatedByAdminId]: finalCreatedByAdminId,
+			[PromotionColumns.UpdatedByAdminId]: finalUpdatedByAdminId,
 			[PromotionColumns.StartDate]: startDate || defaultStartDate,
 			[PromotionColumns.ExpirationDate]: expirationDate,
 			[PromotionColumns.Created]: created || now,
@@ -732,16 +735,23 @@ export class GamdomDb extends BaseDB {
 
 	public async insertDefaultPromotion(
 		title: string,
+		userId: number,
+		startDate?: NullableDateString,
+		expirationDate?: NullableDateString,
 		hasLogMessage = false,
 	): Promise<QueryResultRow> {
+		const defaults = createDefaultPromotionWithUserId(userId);
+
 		return this.insertPromotionFromOptions(
-			{ ...DEFAULT_PROMOTION_VALUES, title },
+			{ ...defaults, title, startDate, expirationDate },
+			userId,
 			hasLogMessage,
 		);
 	}
 
 	public async insertPromotionFromOptions(
 		options: PromotionInsertOptions,
+		userId: number,
 		hasLogMessage = false,
 	): Promise<QueryResultRow> {
 		return this.insertPromotion(
@@ -756,11 +766,11 @@ export class GamdomDb extends BaseDB {
 			options.priority || 1,
 			options.isVisible || BooleanValueString.TRUE,
 			options.buttonLink || null,
+			options.buttonText || null,
 			options.customUrl || null,
 			options.category || null,
 			options.subCategory || null,
-			options.createdByAdminId || 1,
-			options.updatedByAdminId || 1,
+			userId,
 			options.startDate || null,
 			options.expirationDate || null,
 			options.created || null,
@@ -771,40 +781,84 @@ export class GamdomDb extends BaseDB {
 
 	public async insertCasinoPromotion(
 		title: string,
+		userId: number,
+		startDate?: NullableDateString,
+		expirationDate?: NullableDateString,
 		hasLogMessage = false,
 	): Promise<QueryResultRow> {
+		const defaults = createCasinoPromotionWithUserId(userId);
+
 		return this.insertPromotionFromOptions(
-			{ ...CASINO_PROMOTION_DEFAULTS, title },
+			{
+				...defaults,
+				title,
+				startDate,
+				expirationDate,
+			},
+			userId,
 			hasLogMessage,
 		);
 	}
 
 	public async insertSportsbookPromotion(
 		title: string,
+		userId: number,
+		startDate?: NullableDateString,
+		expirationDate?: NullableDateString,
 		hasLogMessage = false,
 	): Promise<QueryResultRow> {
+		const defaults = createSportsbookPromotionWithUserId(userId);
+
 		return this.insertPromotionFromOptions(
-			{ ...SPORTSBOOK_PROMOTION_DEFAULTS, title },
+			{
+				...defaults,
+				title,
+				startDate,
+				expirationDate,
+			},
+			userId,
 			hasLogMessage,
 		);
 	}
 
 	public async insertLiveCasinoPromotion(
 		title: string,
+		userId: number,
+		startDate?: NullableDateString,
+		expirationDate?: NullableDateString,
 		hasLogMessage = false,
 	): Promise<QueryResultRow> {
+		const defaults = createLiveCasinoPromotionWithUserId(userId);
+
 		return this.insertPromotionFromOptions(
-			{ ...LIVE_CASINO_PROMOTION_DEFAULTS, title },
+			{
+				...defaults,
+				title,
+				startDate,
+				expirationDate,
+			},
+			userId,
 			hasLogMessage,
 		);
 	}
 
 	public async insertVipPromotion(
 		title: string,
+		userId: number,
+		startDate?: NullableDateString,
+		expirationDate?: NullableDateString,
 		hasLogMessage = false,
 	): Promise<QueryResultRow> {
+		const defaults = createVipPromotionWithUserId(userId);
+
 		return this.insertPromotionFromOptions(
-			{ ...VIP_PROMOTION_DEFAULTS, title },
+			{
+				...defaults,
+				title,
+				startDate,
+				expirationDate,
+			},
+			userId,
 			hasLogMessage,
 		);
 	}
@@ -829,6 +883,26 @@ export class GamdomDb extends BaseDB {
 
 		const updateData = {
 			[PromotionColumns.ExpirationDate]: expirationDate,
+			[PromotionColumns.ModifiedDate]: now,
+		};
+
+		return this.update(
+			DbTables.Promotions,
+			updateData,
+			`${PromotionColumns.Title} = '${title}'`,
+			hasLogMessage,
+		);
+	}
+
+	public async activatePromotionByTitle(
+		title: string,
+		hasLogMessage = false,
+	): Promise<QueryResultRow> {
+		const startDate = getISODate({ daysOffset: -2 });
+		const now = getISODate();
+
+		const updateData = {
+			[PromotionColumns.StartDate]: startDate,
 			[PromotionColumns.ModifiedDate]: now,
 		};
 

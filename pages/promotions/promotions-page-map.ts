@@ -10,6 +10,16 @@ export class PromotionsPageMap extends BaseMap {
 		return this.page.getByTestId("page-container-animate");
 	}
 
+	public get promotionsPageTitle(): Locator {
+		return this.promotionsContainer.locator("h1", {
+			hasText: "Promotions",
+		});
+	}
+
+	public get promotionsCategoriesFilterContainer(): Locator {
+		return this.promotionsContainer.getByTestId("gam-tabs");
+	}
+
 	public promotionCardByPromotionTitle(promotionTitle: string): Locator {
 		return this.promotionCardTitleByPromotionTitle(promotionTitle).locator(
 			`//ancestor::div[contains(@class,'PromoCard-styled__PromoCard-sc-') or contains(@class,'PromoCard-styled__BannerContainer-sc-')]`,

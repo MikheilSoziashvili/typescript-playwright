@@ -13,6 +13,7 @@ export interface PromotionInsertOptions {
 	priority?: number;
 	isVisible?: BooleanValueString;
 	buttonLink?: NullableString;
+	buttonText?: NullableString;
 	customUrl?: NullableString;
 	category?: NullableString;
 	subCategory?: NullableString;

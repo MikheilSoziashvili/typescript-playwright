@@ -11,6 +11,7 @@ export enum PromotionColumns {
 	Priority = "priority",
 	IsVisible = "is_visible",
 	ButtonLink = "button_link",
+	ButtonText = "button_text",
 	CustomUrl = "custom_url",
 	Category = "category",
 	SubCategory = "sub_category",
