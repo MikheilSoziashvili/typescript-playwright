@@ -738,12 +738,21 @@ export class GamdomDb extends BaseDB {
 		userId: number,
 		startDate?: NullableDateString,
 		expirationDate?: NullableDateString,
+		buttonText?: NullableString,
+		customUrl?: NullableString,
 		hasLogMessage = false,
 	): Promise<QueryResultRow> {
 		const defaults = createDefaultPromotionWithUserId(userId);
 
 		return this.insertPromotionFromOptions(
-			{ ...defaults, title, startDate, expirationDate },
+			{
+				...defaults,
+				title,
+				startDate,
+				expirationDate,
+				buttonText,
+				customUrl,
+			},
 			userId,
 			hasLogMessage,
 		);
@@ -784,6 +793,8 @@ export class GamdomDb extends BaseDB {
 		userId: number,
 		startDate?: NullableDateString,
 		expirationDate?: NullableDateString,
+		buttonText?: NullableString,
+		customUrl?: NullableString,
 		hasLogMessage = false,
 	): Promise<QueryResultRow> {
 		const defaults = createCasinoPromotionWithUserId(userId);
@@ -794,6 +805,8 @@ export class GamdomDb extends BaseDB {
 				title,
 				startDate,
 				expirationDate,
+				buttonText,
+				customUrl,
 			},
 			userId,
 			hasLogMessage,
@@ -805,6 +818,8 @@ export class GamdomDb extends BaseDB {
 		userId: number,
 		startDate?: NullableDateString,
 		expirationDate?: NullableDateString,
+		buttonText?: NullableString,
+		customUrl?: NullableString,
 		hasLogMessage = false,
 	): Promise<QueryResultRow> {
 		const defaults = createSportsbookPromotionWithUserId(userId);
@@ -815,6 +830,8 @@ export class GamdomDb extends BaseDB {
 				title,
 				startDate,
 				expirationDate,
+				buttonText,
+				customUrl,
 			},
 			userId,
 			hasLogMessage,
@@ -826,6 +843,8 @@ export class GamdomDb extends BaseDB {
 		userId: number,
 		startDate?: NullableDateString,
 		expirationDate?: NullableDateString,
+		buttonText?: NullableString,
+		customUrl?: NullableString,
 		hasLogMessage = false,
 	): Promise<QueryResultRow> {
 		const defaults = createLiveCasinoPromotionWithUserId(userId);
@@ -836,6 +855,8 @@ export class GamdomDb extends BaseDB {
 				title,
 				startDate,
 				expirationDate,
+				buttonText,
+				customUrl,
 			},
 			userId,
 			hasLogMessage,
@@ -847,6 +868,8 @@ export class GamdomDb extends BaseDB {
 		userId: number,
 		startDate?: NullableDateString,
 		expirationDate?: NullableDateString,
+		buttonText?: NullableString,
+		customUrl?: NullableString,
 		hasLogMessage = false,
 	): Promise<QueryResultRow> {
 		const defaults = createVipPromotionWithUserId(userId);
@@ -857,6 +880,8 @@ export class GamdomDb extends BaseDB {
 				title,
 				startDate,
 				expirationDate,
+				buttonText,
+				customUrl,
 			},
 			userId,
 			hasLogMessage,

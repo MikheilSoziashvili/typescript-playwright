@@ -45,9 +45,8 @@ export class PromotionsModal extends BasePage<PromotionsModalMap> {
 		await this.map.promotionsModalPrizesDescriptionInput.fill(
 			promotionTestData.prizesDescription,
 		);
-		await this.map.promotionsModalButtonTextInput.fill(
-			promotionTestData.buttonText,
-		);
+		await this.fillPromotionButtonTextInput(promotionTestData.buttonText);
+
 		await this.map.promotionsModalButtonLinkInput.fill(
 			promotionTestData.buttonLink,
 		);
@@ -97,5 +96,12 @@ export class PromotionsModal extends BasePage<PromotionsModalMap> {
 	@step("Click save button")
 	public async clickSaveButton(): Promise<void> {
 		await this.map.promotionsModalSaveButton.click();
+	}
+
+	@step("Fill in button text input")
+	public async fillPromotionButtonTextInput(
+		buttonText: string,
+	): Promise<void> {
+		await this.map.promotionsModalButtonTextInput.fill(buttonText);
 	}
 }

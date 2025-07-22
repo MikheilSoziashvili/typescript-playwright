@@ -35,4 +35,5 @@ export enum CsvFilesName {
 	ORIGINALS_QUICK_SELECT_BUTTONS = "ENG-5454-5455-5053-5456-originals-quick-select-buttons.csv",
 	PROMOTION_COMBINATIONS = "ENG-5576-promotion-combinations.csv",
 	STAFF_ROLE_TAGS = "ENG-5443-Edit Info-Verify-that-selecting-a-Staff-Role-tag-checks-the-corresponding-specific-tags.csv",
+	PROMOTION_BUTTON_TEXT_INPUT_VALIDATIONS = "ENG-6121-promotion-button-text-input-validations.csv",
 }

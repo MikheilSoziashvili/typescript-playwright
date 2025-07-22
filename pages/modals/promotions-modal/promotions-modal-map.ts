@@ -36,8 +36,8 @@ export class PromotionsModalMap extends BaseMap {
 
 	public promotionsModalRichTextInputByLabelName(labelName: string): Locator {
 		return this.page
-			.locator('label', { hasText: labelName })
-			.locator('..')
+			.locator("label", { hasText: labelName })
+			.locator("..")
 			.locator('div[role="textbox"] p');
 	}
 
@@ -110,6 +110,12 @@ export class PromotionsModalMap extends BaseMap {
 
 	public get promotionsModalButtonTextInput(): Locator {
 		return this.getInputField("buttonText", this.promotionsModalBody);
+	}
+
+	public get promotionsModalButtonTextInputContainer(): Locator {
+		return this.promotionsModalButtonTextInput.locator(
+			"xpath=//parent::div",
+		);
 	}
 
 	public get promotionsModalButtonLinkInput(): Locator {

@@ -31,6 +31,7 @@ export const SLOTS_BATTLE_PAGE_ENDPOINT = "/slots-battles";
 export const SECURITY_ADMIN_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/SecurityAdmin`;
 export const BLOG = "/blog";
 export const PROMOTIONS_PAGE_ENDPOINT = "/promotions";
+export const PROMOTION_PAGE_ENDPOINT = "/promotion";
 export const CASINO_PAGE_ENDPOINT = "/casino";
 export const POVIDERS_PAGE_ENDPOINT = "/providers";
 export const KOTH_ENDPOINT = "/koth";

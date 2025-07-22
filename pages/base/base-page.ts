@@ -71,6 +71,11 @@ export abstract class BasePage<T extends BaseMap> {
 		await this.page.keyboard.press("Enter");
 	}
 
+	@step("Press Tab key")
+	public async pressTabKeyboard(): Promise<void> {
+		await this.page.keyboard.press("Tab");
+	}
+
 	@step("Set extra HTTP headers")
 	public async setExtraHTTPHeaders(
 		headers: Record<string, string> = {},

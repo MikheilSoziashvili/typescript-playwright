@@ -4,11 +4,13 @@ import {
 	generateRandomString,
 	getISODate,
 	parse_csv,
+	parseToBoolean,
 } from "@core/utils/utils";
 import { PromotionTestData, RegisterTestData } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
+import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { PromotionCategories } from "@enums/promotion-categories";
 import { PromotionIsVipCategories } from "@enums/promotion-is-vip-categories";
 import { PromotionStatuses } from "@enums/promotion-statuses";
@@ -27,6 +29,8 @@ type PromotionInsertMethod = (
 	name: string,
 	userId: number,
 	startDate?: string,
+	buttonText?: string,
+	customUrl?: string,
 	expirationDate?: string,
 ) => Promise<unknown>;
 
@@ -38,6 +42,8 @@ const promotionTestData = {
 			name: string,
 			userId: number,
 			startDate?: string,
+			buttonText?: string,
+			customUrl?: string,
 			expirationDate?: string,
 		) =>
 			gamdomDb.insertDefaultPromotion(
@@ -45,6 +51,8 @@ const promotionTestData = {
 				userId,
 				startDate,
 				expirationDate,
+				buttonText,
+				customUrl,
 			),
 	},
 	[PromotionType.CASINO]: {
@@ -54,6 +62,8 @@ const promotionTestData = {
 			name: string,
 			userId: number,
 			startDate?: string,
+			buttonText?: string,
+			customUrl?: string,
 			expirationDate?: string,
 		) =>
 			gamdomDb.insertCasinoPromotion(
@@ -61,6 +71,8 @@ const promotionTestData = {
 				userId,
 				startDate,
 				expirationDate,
+				buttonText,
+				customUrl,
 			),
 	},
 	[PromotionType.VIP]: {
@@ -70,6 +82,8 @@ const promotionTestData = {
 			name: string,
 			userId: number,
 			startDate?: string,
+			buttonText?: string,
+			customUrl?: string,
 			expirationDate?: string,
 		) =>
 			gamdomDb.insertVipPromotion(
@@ -77,6 +91,8 @@ const promotionTestData = {
 				userId,
 				startDate,
 				expirationDate,
+				buttonText,
+				customUrl,
 			),
 	},
 	[PromotionType.SPORTSBOOK]: {
@@ -86,6 +102,8 @@ const promotionTestData = {
 			name: string,
 			userId: number,
 			startDate?: string,
+			buttonText?: string,
+			customUrl?: string,
 			expirationDate?: string,
 		) =>
 			gamdomDb.insertSportsbookPromotion(
@@ -93,6 +111,8 @@ const promotionTestData = {
 				userId,
 				startDate,
 				expirationDate,
+				buttonText,
+				customUrl,
 			),
 	},
 	[PromotionType.LIVE_CASINO]: {
@@ -102,6 +122,8 @@ const promotionTestData = {
 			name: string,
 			userId: number,
 			startDate?: string,
+			buttonText?: string,
+			customUrl?: string,
 			expirationDate?: string,
 		) =>
 			gamdomDb.insertLiveCasinoPromotion(
@@ -109,11 +131,21 @@ const promotionTestData = {
 				userId,
 				startDate,
 				expirationDate,
+				buttonText,
+				customUrl,
 			),
 	},
 };
 
 const promotionTypes = Object.values(promotionTestData);
+
+const promotionButtonTextInputValidations = parse_csv(
+	DATASETS_DIR,
+	CsvFilesName.PROMOTION_BUTTON_TEXT_INPUT_VALIDATIONS,
+) as {
+	buttonText: string;
+	errorMessagePresence: BooleanValueString;
+}[];
 
 const testScenarios = {
 	expiration: {
@@ -195,6 +227,7 @@ test.describe("Promotion tests", () => {
 	let promotionName: string;
 	let userId: number;
 
+	test.slow();
 	test.use(
 		storageStateNewUserDB({
 			tags: UserTags.PromotionAdmin,
@@ -335,6 +368,56 @@ test.describe("Promotion tests", () => {
 					.promotionIsDisplayedInPromotionsTable(
 						promotionTestData.title,
 					);
+			});
+		});
+	});
+
+	test.describe("Promotion verifications tests", () => {
+		promotionButtonTextInputValidations.forEach((validation) => {
+			test(`[ENG-6121] Promotions - Promotion modal - Verify 'Play Now' button input text field validation - ${validation.buttonText}`, async ({
+				promotionAdminPage,
+				promotionsModal,
+			}) => {
+				await promotionAdminPage.navigate();
+				await promotionAdminPage.clickCreateNewPromotionButton();
+				await promotionsModal.assertThat().modalIsDisplayed();
+				await promotionsModal
+					.steps()
+					.fillPromotionButtonTextInputAndVerifyErrorMessagePresence(
+						validation.buttonText,
+						parseToBoolean(validation.errorMessagePresence),
+					);
+			});
+		});
+
+		promotionTypes.forEach((promotionType) => {
+			test(`[ENG-6121] Promotions - Promotion button text verification - ${promotionType.name}`, async ({
+				gamdomDb,
+				promotionPage,
+			}) => {
+				promotionName = generateRandomString({
+					prefix: `${promotionType.name.toLowerCase()}_promotion_`,
+					length: 5,
+				});
+				const customButtonText = `${promotionType.name} Button`;
+				const customUrl = generateCustomUrl(promotionName);
+
+				await promotionType.insertMethod(
+					gamdomDb,
+					promotionName,
+					userId,
+					getISODate({ daysOffset: -1 }),
+					customButtonText,
+					customUrl,
+				);
+
+				await promotionPage.navigateToPromotion(customUrl);
+				await promotionPage
+					.assertThat()
+					.promotionRewardsButtonHasText(customButtonText);
+				await promotionPage
+					.assertThat()
+					.promotionHowToParticipateButtonHasText(customButtonText);
 			});
 		});
 	});

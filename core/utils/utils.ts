@@ -45,6 +45,7 @@ import xml2js from "xml2js";
 import { CurrencySymbol } from "@enums/currenciesSymbols";
 import { NumberSeparators } from "@enums/number-separators";
 import { expect } from "@playwright/test";
+import { BooleanValueString } from "@enums/playwright/booleanValues";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -250,6 +251,10 @@ export function roundToDecimals(value: number, decimals = 5): number {
 
 export function parseToFloat(num: number, fractionDigits = 2): string {
 	return parseFloat(`${num}`).toFixed(fractionDigits);
+}
+
+export function parseToBoolean(value: BooleanValueString): boolean {
+	return value.toLowerCase() === BooleanValueString.TRUE;
 }
 
 export function truncateToDecimals(value: number, decimals = 1): number {
