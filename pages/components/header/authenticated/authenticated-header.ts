@@ -60,14 +60,38 @@ export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 		const chat = new Chat(this.page);
 
 		try {
+			await chat.waitChatToBeDisplayed();
+			logger.info("Chat already expanded");
+			return;
+		} catch {
+			logger.info("Chat not expanded, attempting to open it");
+		}
+
+		try {
 			await this.map.waitForVisibility({
 				locator: this.map.chatButton,
-				timeout: Timeout.SHORT,
+				timeout: Timeout.LONG,
 			});
-			await this.map.chatButton.click();
+		} catch (error) {
+			logger.error("Chat button is not visible", error);
+			throw new Error("Chat button not found or not clickable", {
+				cause: error,
+			});
+		}
+
+		await this.map.chatButton.click();
+
+		try {
 			await chat.waitChatToBeDisplayed();
-		} catch {
-			logger.info("Chat already expanded");
+			logger.info("Chat successfully expanded");
+		} catch (error) {
+			logger.error("Chat failed to open ", error);
+			throw new Error(
+				"Chat did not load after clicking the chat button",
+				{
+					cause: error,
+				},
+			);
 		}
 	}
 
