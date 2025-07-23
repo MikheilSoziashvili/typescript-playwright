@@ -8,8 +8,20 @@ on:
         inputs:
             environment:
                 description: "Environment to run tests against"
-                type: string
+                type: choice
                 required: true
+                options:
+                    - qa
+                    - staging
+                    - custom
+            env_url:
+                description: "Custom Environment URL (required if environment=custom)"
+                type: string
+                required: false
+            db_host:
+                description: "Custom DB host (optional for qa/staging, required for custom)"
+                type: string
+                required: false
             tag:
                 description: "Tag scope"
                 required: true
@@ -22,10 +34,6 @@ on:
                     - originals
             custom_options:
                 description: "Custom command-line options"
-                type: string
-                required: false
-            db_host:
-                description: "Custom DB host"
                 type: string
                 required: false
             run_game_providers_tests:
@@ -62,6 +70,9 @@ on:
                 type: boolean
                 required: false
                 default: false
+
+    schedule:
+        - cron: "0 3 * * *"
 
     workflow_call:
         secrets:
@@ -144,9 +155,6 @@ on:
                 required: true
                 description: "Bitcoin node RPC password"
 
-    schedule:
-        - cron: "0 3 * * *"
-
 concurrency:
     group: ${{ github.event_name == 'repository_dispatch' && format('auto-deploy-env-{0}', github.event.client_payload.pr_number) || format('playwright-e2e-{0}', github.ref) }}
     cancel-in-progress: ${{ github.event_name == 'repository_dispatch' }}
@@ -155,6 +163,7 @@ jobs:
     tests:
         timeout-minutes: 600
         runs-on: self-hosted-dind
+        environment: ${{ ((inputs.environment || 'staging') == 'custom' && null) || (inputs.environment || 'staging') }}
         permissions:
             pull-requests: write
             contents: read
@@ -183,14 +192,31 @@ jobs:
             AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
             AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             AWS_DEFAULT_REGION: eu-west-2
-            ENVIRONMENT_URL: ${{ github.event.client_payload.environment_url || (inputs.environment == '' && vars.ENVIRONMENT_URL || inputs.environment) }}
-            SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
-            OAUTH2_JWT: ${{ secrets.OAUTH2_JWT }}
-            DB_HOST: ${{ inputs.db_host || github.event.client_payload.db-host || secrets.DB_HOST }}
+
+            # Fallback logic: custom input -> event payload -> environment variable
+            ENVIRONMENT_URL: >-
+                ${{ 
+                  (inputs.environment || 'staging') == 'custom'
+                    && (inputs.env_url || github.event.client_payload.env_url)
+                  || inputs.env_url
+                  || github.event.client_payload.env_url
+                  || vars.ENVIRONMENT_URL
+                }}
+            DB_HOST: >-
+                ${{ 
+                  (inputs.environment || 'staging') == 'custom'
+                    && (inputs.db_host || github.event.client_payload.db_host)
+                  || inputs.db_host
+                  || github.event.client_payload.db_host
+                  || secrets.DB_HOST
+                }}
             DB_USER: ${{ secrets.DB_USER }}
             DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
             DB_NAME: ${{ secrets.DB_NAME }}
             DB_PORT: ${{ secrets.DB_PORT }}
+
+            SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
+            OAUTH2_JWT: ${{ secrets.OAUTH2_JWT }}
             BITCOIN_RPC_HOST: ${{ secrets.BITCOIN_RPC_HOST }}
             BITCOIN_RPC_PORT: ${{ secrets.BITCOIN_RPC_PORT }}
             BITCOIN_RPC_USER: ${{ secrets.BITCOIN_RPC_USER }}
@@ -201,12 +227,27 @@ jobs:
             INVERT_GAME_PROVIDERS_TESTS: --grep-invert @game-providers
             CUSTOM_OPTIONS: ${{ github.event.client_payload.custom_options || inputs.custom_options }}
             PLAYWRIGHT_TEST: yarn playwright test
-            # Set default 3 default workers for scheduled runs and custom workers based on input.workers for more runs
             WORKERS: ${{ github.event_name == 'schedule' && '--workers=5' || format('--workers={0}', inputs.workers || '5')}}
             CREATE_TEST_EXECUTION: ${{ inputs.create_test_execution }}
             GITHUB_EVENT_NAME: ${{ github.event_name }}
 
         steps:
+            - name: Validate required inputs for custom environment
+              if: ${{ (inputs.environment || 'staging') == 'custom' }}
+              run: |
+                  if [ -z "${{ inputs.env_url }}" ] && [ -z "${{ github.event.client_payload.env_url }}" ]; then
+                    echo "ERROR: You must provide env_url when using custom environment."
+                    exit 1
+                  fi
+                  if [ -z "${{ inputs.db_host }}" ] && [ -z "${{ github.event.client_payload.db_host }}" ]; then
+                    echo "ERROR: You must provide db_host when using custom environment."
+                    exit 1
+                  fi
+
+            - name: Log resolved environment URL
+              run: |
+                  echo "Executing E2E tests against environment: ${{ env.ENVIRONMENT_URL }}"
+
             - name: Validation For Environment URL
               run: |
                   echo "Validating that Environment URL is valid format (and does not end with slash)"
@@ -217,12 +258,10 @@ jobs:
               run: |
                   echo "Validating TEST_EXECUTION_ID format..."
                   TEST_EXECUTION_ID="${{ inputs.test_execution_id }}"
-
                   if ! echo "${TEST_EXECUTION_ID}" | grep -qE '^ENG-[0-9]+$'; then
-                      echo "ERROR: TEST_EXECUTION_ID must be in the format ENG-{number}, e.g., ENG-1477"
-                      exit 1
+                    echo "ERROR: TEST_EXECUTION_ID must be in the format ENG-{number}, e.g., ENG-1477"
+                    exit 1
                   fi
-
                   echo "TEST_EXECUTION_ID is valid: ${TEST_EXECUTION_ID}"
                   echo "TEST_EXECUTION_ID=$TEST_EXECUTION_ID" >> $GITHUB_ENV
 
