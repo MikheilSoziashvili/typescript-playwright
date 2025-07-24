@@ -227,7 +227,7 @@ jobs:
             INVERT_GAME_PROVIDERS_TESTS: --grep-invert @game-providers
             CUSTOM_OPTIONS: ${{ github.event.client_payload.custom_options || inputs.custom_options }}
             PLAYWRIGHT_TEST: yarn playwright test
-            WORKERS: ${{ github.event_name == 'schedule' && '--workers=5' || format('--workers={0}', inputs.workers || '5')}}
+            WORKERS: ${{ github.event_name == 'schedule' && '--workers=10' || format('--workers={0}', inputs.workers || '10')}}
             CREATE_TEST_EXECUTION: ${{ inputs.create_test_execution }}
             GITHUB_EVENT_NAME: ${{ github.event_name }}
 
