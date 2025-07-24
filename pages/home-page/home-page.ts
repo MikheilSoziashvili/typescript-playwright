@@ -180,4 +180,9 @@ export class HomePage extends BasePage<HomePageMap> {
 		await this.map.gamdomLogoButton.click();
 		await this.page.waitForLoadState(WaitUntilState.LOAD);
 	}
+
+	@step("Click play button")
+	public async clickPlayFromFreeSpinsNotification(): Promise<void> {
+		await this.map.notificationPlayButton.click();
+	}
 }

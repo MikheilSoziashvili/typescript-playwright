@@ -11,6 +11,8 @@ import { step } from "decorators/step";
 import { HomePage } from "./home-page";
 import { digitsOnlyPattern } from "@support/regex-patterns";
 import { IntervalMs } from "@enums/interval-millisecond";
+import { CasinoGameUrl } from "@enums/casino-game";
+import * as Configuration from "configuration";
 
 export class HomePageAsserter extends BaseAsserter<HomePage> {
 	public fromCsv: boolean;
@@ -269,24 +271,40 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		locator: Locator,
 		sectionName: string,
 	): Promise<void> {
-		await expect.poll(
-			async () => {
-				const totalBetsText = await locator.textContent();
-				const totalBetsNumber = parseFloat(
-					totalBetsText?.match(digitsOnlyPattern)?.[0] || "0",
-				);
+		await expect
+			.poll(
+				async () => {
+					const totalBetsText = await locator.textContent();
+					const totalBetsNumber = parseFloat(
+						totalBetsText?.match(digitsOnlyPattern)?.[0] || "0",
+					);
 
-				logger.info(
-					`Polling for total bets in ${sectionName} section: ${totalBetsNumber}`,
-				);
+					logger.info(
+						`Polling for total bets in ${sectionName} section: ${totalBetsNumber}`,
+					);
 
-				return totalBetsNumber;
-			},
-			{
-				message: `Total bets in ${sectionName} section did not update in time`,
-				intervals: [IntervalMs.SHORT],
-				timeout: Timeout.LONG,
-			},
-		).toBeGreaterThan(0);
+					return totalBetsNumber;
+				},
+				{
+					message: `Total bets in ${sectionName} section did not update in time`,
+					intervals: [IntervalMs.SHORT],
+					timeout: Timeout.LONG,
+				},
+			)
+			.toBeGreaterThan(0);
+	}
+
+	@step("Verify free spins pop-up visibility")
+	public async freeSpinsPopupIsVisible(): Promise<void> {
+		await expect(this.gamdomPage.map.freeSpinsNotification).toBeVisible({
+			timeout: Timeout.SHORT,
+		});
+	}
+
+	@step("Verify redirection to game")
+	public async userIsRedirectedToGame(): Promise<void> {
+		await expect(this.gamdomPage.page).toHaveURL(
+			`${Configuration.environment_url}${CasinoGameUrl.BARREL_BONANZA}`,
+		);
 	}
 }

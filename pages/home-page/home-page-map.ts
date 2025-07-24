@@ -159,7 +159,7 @@ export class HomePageMap extends BaseMap {
 
 	public get recentWinsProfitAmount(): Locator {
 		return this.recentWinsSectionContainer.locator(
-			`span[class*='currency-amount']`
+			`span[class*='currency-amount']`,
 		);
 	}
 
@@ -176,12 +176,20 @@ export class HomePageMap extends BaseMap {
 	}
 
 	public get liveBetsSectionTotalBets(): Locator {
-		return this.page
-			.locator("span[class*='MuiTypography-liveSelection']")
+		return this.page.locator("span[class*='MuiTypography-liveSelection']");
 	}
 
 	public get gamdomLogoButton(): Locator {
-		return this.page
-			.locator("div[class*='GamdomLogoWithIconButton-styled_']")
+		return this.page.locator(
+			"div[class*='GamdomLogoWithIconButton-styled_']",
+		);
+	}
+
+	public get freeSpinsNotification(): Locator {
+		return this.page.getByTestId("notificationContainer");
+	}
+
+	public get notificationPlayButton(): Locator {
+		return this.page.getByTestId("notificationGotItButton");
 	}
 }
