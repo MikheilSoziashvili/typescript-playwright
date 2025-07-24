@@ -35,4 +35,15 @@ export class OriginalsAsserter extends BaseAsserter<OriginalsPage> {
 			this.gamdomPage.getMaxBetAmount(game),
 		);
 	}
+
+	@step("Assert that the bet amount remains unchanged after negative input")
+	public async betAmountRemainsUnchangedAfterNegativeInput(
+		game: OriginalGame,
+		expectedBetAmount: number,
+	): Promise<void> {
+		const currentBetAmount = await this.gamdomPage
+			.steps()
+			.getBetAmountValue(game, expectedBetAmount);
+		this.expectRoundedToBe(currentBetAmount, expectedBetAmount);
+	}
 }

@@ -1,6 +1,11 @@
 import { DATASETS_DIR } from "@constants/file-paths";
 import { parse_csv, roundToDecimals } from "@core/utils/utils";
-import { QuickSelectScenario, RawQuickSelectScenario } from "@dtos/test-data";
+import {
+	NegativeBetValidationScenario,
+	QuickSelectScenario,
+	RawNegativeBetValidationScenario,
+	RawQuickSelectScenario,
+} from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
 import {
 	OriginalGame,
@@ -183,6 +188,52 @@ test.describe("Quick Select Buttons", () => {
 
 					await originalsPage.steps().pressDoubleButton(game);
 					await originalsPage.assertThat().betAmountIsMax(game);
+				},
+			);
+		}
+	});
+
+	test.describe("Negative Bet Amount Validation", () => {
+		test.use(storageStateNewUserDB());
+
+		const negativeBetRawRows = parse_csv(
+			DATASETS_DIR,
+			CsvFilesName.ORIGINALS_NEGATIVE_BET_VALIDATION,
+		) as RawNegativeBetValidationScenario[];
+
+		const negativeBetScenarios: NegativeBetValidationScenario[] =
+			negativeBetRawRows.map((raw) => ({
+				game: OriginalGame[raw.game as keyof typeof OriginalGame],
+				negativeBetAmount: parseFloat(raw.negativeBetAmount),
+				expectedBetAmount: parseFloat(raw.expectedBetAmount),
+			}));
+
+		for (const {
+			game,
+			negativeBetAmount,
+			expectedBetAmount,
+		} of negativeBetScenarios) {
+			test(
+				`[ENG-6968] should not accept negative bet amount ${negativeBetAmount} for ${game}`,
+				{
+					tag: ["@originals, @mines, @plinko, @keno"],
+				},
+				async ({ originalsPage }) => {
+					await originalsPage.navigateToGame(game);
+					await originalsPage.authenticatedHeader
+						.assertThat()
+						.loggedInUserElementsAreVisible();
+
+					await originalsPage
+						.steps()
+						.setBetAmount(game, negativeBetAmount);
+
+					await originalsPage
+						.assertThat()
+						.betAmountRemainsUnchangedAfterNegativeInput(
+							game,
+							expectedBetAmount,
+						);
 				},
 			);
 		}

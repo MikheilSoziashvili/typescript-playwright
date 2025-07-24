@@ -37,4 +37,5 @@ export enum CsvFilesName {
 	PROMOTION_BUTTON_TEXT_INPUT_VALIDATIONS = "ENG-6121-promotion-button-text-input-validations.csv",
 	STAFF_ROLE_TAGS = "ENG-5543-Edit-Info-Verify-that-selecting-a-Staff-Role-tag-checks-the-corresponding-specific-tags.csv",
 	STAFF_ROLE_TAGS_VISIBILITY = "ENG-5552-Edit-Info-Verify-that-admins-with-different-staff-roles-can-see-specific-tags-in-the-edit-info-page.csv",
+	ORIGINALS_NEGATIVE_BET_VALIDATION = "ENG-6968-originals-negative-bet-validation.csv",
 }

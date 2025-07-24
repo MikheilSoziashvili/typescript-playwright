@@ -1,5 +1,8 @@
 import { GAMDOM_EMAIL_DOMAIN } from "@constants/domains";
-import { PromotionTestDataParams, RegisterTestDataParams } from "@core/interfaces";
+import {
+	PromotionTestDataParams,
+	RegisterTestDataParams,
+} from "@core/interfaces";
 import { HiloBetOption } from "@enums/hilo-bet-options";
 import {
 	HiloBetMultiplierByBetOption,
@@ -203,6 +206,18 @@ export type RawQuickSelectScenario = {
 	expectedAfterFirstClick: string;
 	expectedAfterSecondClick: string;
 };
+
+export interface RawNegativeBetValidationScenario {
+	game: string;
+	negativeBetAmount: string;
+	expectedBetAmount: string;
+}
+
+export interface NegativeBetValidationScenario {
+	game: OriginalGame;
+	negativeBetAmount: number;
+	expectedBetAmount: number;
+}
 
 export class PromotionTestData {
 	public title: string;
