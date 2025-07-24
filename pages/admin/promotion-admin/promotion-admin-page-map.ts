@@ -28,6 +28,32 @@ export class PromotionAdminMap extends BaseMap {
 		return this.tableRowByPromotionTitle(promotionTitle).locator(`//td[6]`);
 	}
 
+	public promotionStatusTableActionsContainerByPromotionTitle(
+		promotionTitle: string,
+	): Locator {
+		return this.tableRowByPromotionTitle(promotionTitle).locator(
+			`//td[13]`,
+		);
+	}
+
+	public promotionStatusTableActionButtonByPromotionTitle(
+		promotionTitle: string,
+		actionButton: string,
+	): Locator {
+		return this.promotionStatusTableActionsContainerByPromotionTitle(
+			promotionTitle,
+		).locator(`button[aria-label="${actionButton}"]`);
+	}
+
+	public promotionStatusTableDeleteButtonByPromotionTitle(
+		promotionTitle: string,
+	): Locator {
+		return this.promotionStatusTableActionButtonByPromotionTitle(
+			promotionTitle,
+			"Delete this promotion",
+		);
+	}
+
 	public get createNewPromotionButton(): Locator {
 		return this.page.locator("button[type='button']", {
 			hasText: "Create",

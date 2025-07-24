@@ -104,4 +104,9 @@ export class PromotionsModal extends BasePage<PromotionsModalMap> {
 	): Promise<void> {
 		await this.map.promotionsModalButtonTextInput.fill(buttonText);
 	}
+
+	@step("Click delete promotion button")
+	public async clickDeletePromotionButton(): Promise<void> {
+		await this.map.confirmDeletePromotionButton.click();
+	}
 }

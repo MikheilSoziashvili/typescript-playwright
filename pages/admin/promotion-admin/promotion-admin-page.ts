@@ -34,4 +34,13 @@ export class PromotionAdminPage extends BasePage<PromotionAdminMap> {
 	public async clickCreateNewPromotionButton(): Promise<void> {
 		await this.map.createNewPromotionButton.click();
 	}
+
+	@step("Click delete promotion button")
+	public async clickDeletePromotionButton(
+		promotionTitle: string,
+	): Promise<void> {
+		await this.map
+			.promotionStatusTableDeleteButtonByPromotionTitle(promotionTitle)
+			.click();
+	}
 }

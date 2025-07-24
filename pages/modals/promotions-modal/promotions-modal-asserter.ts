@@ -37,4 +37,18 @@ export class PromotionsModalAsserter extends BaseAsserter<PromotionsModal> {
 		) ?? false;
 		expect(isErrorMessagePresent).toBe(expectedPresence);
 	}
+
+	@step("Verify promotion delete confirmation modal is displayed")
+	public async promotionDeleteConfirmationModalIsDisplayed(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.confirmDeletePromotionModal,
+		]);
+	}
+
+	@step("Verify promotion delete confirmation modal is not displayed")
+	public async promotionDeleteConfirmationModalIsNotDisplayed(): Promise<void> {
+		await this.checkElementsAreNotVisible([
+			this.gamdomPage.map.confirmDeletePromotionModal,
+		]);
+	}
 }

@@ -20,4 +20,15 @@ export class PromotionsModalSteps extends BasePageStep<PromotionsModal> {
 			.assertThat()
 			.promotionButtonTextInputErrorMessagePresence(expectedPresence);
 	}
+
+	@step("Delete promotion successfully")
+	public async deletePromotionSuccessfully(): Promise<void> {
+		await this.gamdomPage
+			.assertThat()
+			.promotionDeleteConfirmationModalIsDisplayed();
+		await this.gamdomPage.clickDeletePromotionButton();
+		await this.gamdomPage
+			.assertThat()
+			.promotionDeleteConfirmationModalIsNotDisplayed();
+	}
 }

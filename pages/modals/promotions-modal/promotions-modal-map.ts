@@ -156,4 +156,16 @@ export class PromotionsModalMap extends BaseMap {
 			hasText: "Save",
 		});
 	}
+
+	public get confirmDeletePromotionModal(): Locator {
+		return this.page.locator(`[role="dialog"]`, {
+			hasText: "Confirm Delete",
+		});
+	}
+
+	public get confirmDeletePromotionButton(): Locator {
+		return this.confirmDeletePromotionModal.locator(`button`, {
+			hasText: "Delete",
+		});
+	}
 }

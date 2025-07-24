@@ -17,4 +17,5 @@ export enum ToastSubTitle {
 	SUCCESSFULLY_FETCHED_TRANSACTIONS = "Successfully fetched transactions.",
 	PROMOCODE_NOT_FOUND = "Nothing found!",
 	PROMOTION_CREATED_SUCCESSFULLY = "Promotion created successfully",
+	PROMOTION_DELETED = "Promotion deleted",
 }

@@ -21,6 +21,17 @@ export class PromotionAdminAsserter extends BaseAsserter<PromotionAdminPage> {
 		);
 	}
 
+	@step("Verify that the promotion is not displayed in the promotion table")
+	public async promotionIsNotDisplayedInPromotionsTable(
+		promotionTitle: string,
+		timeout = Timeout.LONG,
+	): Promise<void> {
+		await this.checkElementsAreNotVisible(
+			[this.gamdomPage.map.tableRowByPromotionTitle(promotionTitle)],
+			timeout,
+		);
+	}
+
 	@step("Verify promotion status in the promotions table")
 	public async verifyPromotionStatus(
 		promotionTitle: string,
