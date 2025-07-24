@@ -11,6 +11,9 @@ export class UserInfoEditInfoAdminPageMap extends BaseMap {
 		return this.page.locator(`xpath=//span[normalize-space(.)='${tag}']/i`);
 	}
 
+	public getTagLabel(tag: UserTags): Locator {
+		return this.page.getByText(tag, { exact: true });
+	}
 	public get saveButton(): Locator {
 		return this.page.locator("button", { hasText: "SAVE" });
 	}

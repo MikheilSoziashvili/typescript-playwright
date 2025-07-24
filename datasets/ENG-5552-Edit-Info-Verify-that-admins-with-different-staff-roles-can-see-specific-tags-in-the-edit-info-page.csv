@@ -1,0 +1,7 @@
+adminStaffRole,userTags
+SupportStaff,PrecreditCrypto
+MarketingStaff,"Streamer,StreamerVip,YouTuber,NoKoth,NoAffilComission,NoRakeback,VipAffiliatePanelAccess,PrecreditCrypto,SeoAffiliate,NotActiveStreamer,StreamerMarketingManagers,JpAffiliate,LossbackUser"
+VipStaff,"NoKoth,NoRakeback,VipAffiliatePanelAccess,PrecreditCrypto,LossbackUser"
+SocialMediaStaff,PrecreditCrypto
+PaymentsStaff,"NoKoth,NoRakeback,NoAffilComission,IncreaseFreeCoinsOnTip"
+TechOpsStaff,"NoKoth,NoRakeback,NoAffilComission,IncreaseFreeCoinsOnTip"

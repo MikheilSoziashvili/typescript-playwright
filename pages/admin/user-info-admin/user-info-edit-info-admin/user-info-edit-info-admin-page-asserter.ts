@@ -9,8 +9,8 @@ export class UserInfoEditInfoAdminPageAsserter extends BaseAsserter<UserInfoEdit
 		super(page);
 	}
 
-	@step("Assert if user tags are checked or not")
-	public async assertTagsChecked(
+	@step("Verify if user tags are checked or not")
+	public async verifyTagsAreChecked(
 		tags: UserTags[],
 		shouldBeChecked: boolean,
 	): Promise<void> {
@@ -18,6 +18,16 @@ export class UserInfoEditInfoAdminPageAsserter extends BaseAsserter<UserInfoEdit
 			tags.map(async (tag) => {
 				const isChecked = await this.gamdomPage.isTagChecked(tag);
 				expect(isChecked).toBe(shouldBeChecked);
+			}),
+		);
+	}
+
+	@step("Verify if user tags are visible")
+	public async verifyTagsAreVisible(tags: UserTags[]): Promise<void> {
+		await Promise.all(
+			tags.map(async (tag) => {
+				const tagLabel = this.gamdomPage.map.getTagLabel(tag);
+				await expect(tagLabel).toBeVisible();
 			}),
 		);
 	}
