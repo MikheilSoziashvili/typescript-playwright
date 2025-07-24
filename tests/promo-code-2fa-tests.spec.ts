@@ -1,4 +1,4 @@
-import { UK_PROXY_CREDENTIALS } from "@constants/proxies";
+import { PT_PROXY_CREDENTIALS } from "@constants/proxies";
 import {
 	createBrowserContextWithProxy,
 	createPngImagePath,
@@ -52,7 +52,7 @@ test.describe("Promo Code tests", () => {
 		await initializePageObjectsWithCookies(
 			await (await browser.newContext()).cookies(),
 			initialPage,
-			await createBrowserContextWithProxy(browser, UK_PROXY_CREDENTIALS),
+			await createBrowserContextWithProxy(browser, PT_PROXY_CREDENTIALS),
 			...Object.values(pages),
 		);
 
