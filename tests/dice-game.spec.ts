@@ -28,7 +28,7 @@ test.describe("Dice tests", () => {
 
 		await diceGamePage
 			.steps()
-			.playUntilResultMessageIs(DiceGameResultMessage.WIN, diceBetData);
+			.playUntilNumberOfWins(diceBetData, 1);
 
 		await diceGamePage
 			.assertThat()

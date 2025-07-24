@@ -9,6 +9,8 @@ import { logger } from "@logger/logger";
 import { expect, Locator, TestInfo } from "@playwright/test";
 import { step } from "decorators/step";
 import { HomePage } from "./home-page";
+import { digitsOnlyPattern } from "@support/regex-patterns";
+import { IntervalMs } from "@enums/interval-millisecond";
 
 export class HomePageAsserter extends BaseAsserter<HomePage> {
 	public fromCsv: boolean;
@@ -219,5 +221,72 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 	public async loaderIsCorrectlyDisplayed(): Promise<void> {
 		await this.loaderWasVisible();
 		await this.loaderHasDisappeared();
+	}
+
+	@step("Verify Recent Wins section is visible")
+	public async verifyRecentWinsSectionIsVisibleAndPopulated(): Promise<void> {
+		await this.gamdomPage
+			.assertThat()
+			.checkElementsAreVisible([
+				this.gamdomPage.map.recentWinsSectionContainer,
+			]);
+
+		await this.gamdomPage
+			.assertThat()
+			.isElementVisible([this.gamdomPage.map.recentWinsProfitAmount]);
+
+		const recentWinsList =
+			await this.gamdomPage.map.recentWinsProfitAmount.count();
+
+		expect(recentWinsList, "Recent Wins section should have 10 items").toBe(
+			10,
+		);
+	}
+
+	@step("Verify recent wins details are not visible")
+	public async verifyRecentWinsDetailsAreNotVisible(): Promise<void> {
+		await this.gamdomPage
+			.assertThat()
+			.checkElementsAreNotVisible([
+				this.gamdomPage.map.recentWinsProfitAmount,
+			]);
+	}
+
+	@step("Verify total bets are not 0 and updated in time")
+	public async verifyTotalBetsAreNotZeroAndUpdatedInTime(): Promise<void> {
+		await this.verifySectionTotalBetsAreNotZero(
+			this.gamdomPage.map.recentWinsSectionTotalBets,
+			"Recent Wins section",
+		);
+		await this.verifySectionTotalBetsAreNotZero(
+			this.gamdomPage.map.liveBetsSectionTotalBets,
+			"Live Bets section",
+		);
+	}
+
+	@step("Verify total bets are not 0")
+	private async verifySectionTotalBetsAreNotZero(
+		locator: Locator,
+		sectionName: string,
+	): Promise<void> {
+		await expect.poll(
+			async () => {
+				const totalBetsText = await locator.textContent();
+				const totalBetsNumber = parseFloat(
+					totalBetsText?.match(digitsOnlyPattern)?.[0] || "0",
+				);
+
+				logger.info(
+					`Polling for total bets in ${sectionName} section: ${totalBetsNumber}`,
+				);
+
+				return totalBetsNumber;
+			},
+			{
+				message: `Total bets in ${sectionName} section did not update in time`,
+				intervals: [IntervalMs.SHORT],
+				timeout: Timeout.LONG,
+			},
+		).toBeGreaterThan(0);
 	}
 }

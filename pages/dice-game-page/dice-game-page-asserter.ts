@@ -7,6 +7,7 @@ import { parseToFloat } from "@core/utils/utils";
 import { DiceAutobetTestData } from "@dtos/test-data";
 import { step } from "decorators/step";
 import { sanitizeAmount } from "@support/regex-patterns";
+import { IntervalMs } from "@enums/interval-millisecond";
 
 export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 	public constructor(page: DiceGamePage) {
@@ -53,7 +54,10 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		profitOnWin: string,
 	): Promise<void> {
 		const fieldValues = [
-			{ field: this.gamdomPage.map.manualRollOverField, value: rollover },
+			{
+				field: this.gamdomPage.map.manualRollOverField,
+				value: rollover,
+			},
 			{
 				field: this.gamdomPage.map.manualMultiplierField,
 				value: multiplier,
@@ -88,9 +92,11 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		resultMessage: DiceGameResultMessage,
 	): Promise<void> {
 		await expect(this.gamdomPage.map.diceGameAreaMessage).not.toBeEmpty();
-
 		await expect(this.gamdomPage.map.diceGameAreaMessage).toHaveText(
 			resultMessage,
+			{
+				timeout: Timeout.SHORT,
+			},
 		);
 	}
 
@@ -105,11 +111,26 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 
 		const diceResultHistory =
 			await this.gamdomPage.map.diceLastResultNumber.textContent();
-		if (diceResultHistory) {
-			await expect(
-				this.gamdomPage.map.diceResultNumberGameArea.first(),
-			).toHaveText(diceResultHistory);
-		}
+
+		expect(
+			parseFloat(diceResultHistory ?? "0"),
+			"Dice result history must be greater than 0",
+		).toBeGreaterThan(0);
+
+		await expect
+			.poll(
+				() =>
+					this.gamdomPage.map.diceResultNumberGameArea
+						.first()
+						.textContent(),
+				{
+					message:
+						"Dice result history is not the same as current dice result",
+					timeout: Timeout.SHORT,
+					intervals: [IntervalMs.SHORT],
+				},
+			)
+			.toBe(diceResultHistory);
 	}
 
 	@step("Autobet values are correct")

@@ -1,6 +1,9 @@
 export enum TimeoutSeconds {
+	HALF = 0.5,
+	ONE = 1,
 	THREE = 3,
 	TWO = 2,
+	FIVE = 5,
 	TEN = 10,
 	THIRTY = 30,
 	SIXTY = 60,

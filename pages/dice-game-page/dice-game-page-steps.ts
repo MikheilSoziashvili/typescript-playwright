@@ -10,58 +10,150 @@ import {
 } from "@core/utils/utils";
 import { BetIncreaseCondition } from "@enums/dice-autobet-section-name";
 import { step } from "decorators/step";
+import { getExpectedDiceBetValues } from "@formulas/betting-calculations";
+import { expect } from "@playwright/test";
+import { TimeoutSeconds } from "@enums/timeout-seconds";
+import { Timeout } from "@enums/timeout";
+import { IntervalMs } from "@enums/interval-millisecond";
 
 export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 	public constructor(gamdomPage: DiceGamePage) {
 		super(gamdomPage);
 	}
 
-	@step("Play until result message is achieved")
-	public async playUntilResultMessageIs(
-		gameResultMessage: DiceGameResultMessage,
+	@step("Play until number of wins")
+	public async playUntilNumberOfWins(
+		diceBetData: DiceBetTestData,
+		expectedWins: number,
+	): Promise<void> {
+		let winCounter = 0;
+		let previousDiceResult: number | null = null;
+		let previousHistoryResult: number | null = null;
+
+		do {
+			let isWin = false;
+			while (!isWin) {
+				const accountBalanceBeforeBet =
+					await this.gamdomPage.authenticatedHeader.getAccountBalance();
+
+				await this.assertDiceBetValuesAreCorrect(diceBetData);
+
+				await this.gamdomPage.rollDice();
+
+				await expect
+					.poll(
+						async () =>
+							this.gamdomPage.isManualBetInputFieldDisabled(),
+						{
+							message:
+								"Input value should be enabled after rolling dice.",
+							intervals: [IntervalMs.SHORT],
+							timeout: Timeout.SHORT,
+						},
+					)
+					.toBe(false);
+
+				await this.gamdomPage.assertThat().diceResultIsDisplayed();
+
+				const { newDiceResult, newHistoryResult } =
+					await this.waitForNewDiceResult(
+						previousDiceResult,
+						previousHistoryResult,
+					);
+
+				previousDiceResult = newDiceResult;
+				previousHistoryResult = newHistoryResult;
+
+				const { parsedDiceResult } = await this.getParsedDiceResults();
+				const expectedValues = getExpectedDiceBetValues(diceBetData);
+				const rollOver = parseFloat(expectedValues.rollOver);
+
+				isWin = parsedDiceResult > rollOver;
+
+				if (diceBetData.multiplier != undefined) {
+					const expectedBalance = isWin
+						? accountBalanceBeforeBet +
+						  diceBetData.betAmount * (diceBetData.multiplier - 1)
+						: accountBalanceBeforeBet - diceBetData.betAmount;
+					await this.gamdomPage.authenticatedHeader
+						.assertThat()
+						.accountBalanceIs(expectedBalance);
+				}
+
+				if (!isWin) {
+					logger.info("Dice game lost! Rolling dice again...");
+				}
+			}
+
+			winCounter++;
+			logger.info(`Win #${winCounter} of ${expectedWins} achieved`);
+		} while (winCounter < expectedWins);
+	}
+
+	@step("Assert dice bet values are correct")
+	public async assertDiceBetValuesAreCorrect(
 		diceBetData: DiceBetTestData,
 	): Promise<void> {
-		let isWin = false;
-
-		while (!isWin) {
-			const accountBalanceBeforeBet =
-				await this.gamdomPage.authenticatedHeader.getAccountBalance();
-
-			await this.gamdomPage.fillInManualBetData(
-				diceBetData.betAmount,
-				diceBetData.multiplier,
+		await this.gamdomPage.fillInManualBetData(
+			diceBetData.betAmount,
+			diceBetData.multiplier,
+		);
+		const expectedValues = getExpectedDiceBetValues(diceBetData);
+		await this.gamdomPage
+			.assertThat()
+			.manualBetValueAreCorrect(
+				expectedValues.rollOver,
+				expectedValues.multiplier,
+				expectedValues.winChance,
+				expectedValues.profitOnWin,
 			);
-			// TODO Need to refactor this part. If we change the multiplier, this values are not correct anymore
-			await this.gamdomPage
-				.assertThat()
-				.manualBetValueAreCorrect("34.000000", "1.50", "66.00", "0.50");
-			await this.gamdomPage
-				.assertThat()
-				.diceSliderValueIsCorrect("34.00");
+		await this.gamdomPage
+			.assertThat()
+			.diceSliderValueIsCorrect(expectedValues.diceSliderValue ?? "");
+	}
 
-			await this.gamdomPage.rollDice();
+	@step("wait for dice result to be updated")
+	async waitForNewDiceResult(
+		previousDiceResult: number | null,
+		previousHistoryResult: number | null,
+	): Promise<{
+		newDiceResult: number | null;
+		newHistoryResult: number | null;
+	}> {
+		let newDiceResult: number | null = null;
+		let newHistoryResult: number | null = null;
 
-			await this.gamdomPage.assertThat().diceMessageIsNotEmpty();
-			await this.gamdomPage.assertThat().diceResultIsDisplayed();
+		await waitUntil(
+			async () => {
+				const { parsedDiceResult, parsedHistoryResult } =
+					await this.getParsedDiceResults();
 
-			const diceGameAreaMessage =
-				await this.gamdomPage.map.diceGameAreaMessage.textContent();
-			isWin = diceGameAreaMessage === gameResultMessage;
+				if (
+					previousDiceResult !== null &&
+					parsedDiceResult === previousDiceResult &&
+					previousHistoryResult !== null &&
+					parsedHistoryResult === previousHistoryResult
+				) {
+					logger.info(
+						`Dice result '${parsedDiceResult}' is same as previous. Waiting for change.`,
+					);
+					return false;
+				}
 
-			if (diceBetData.multiplier != undefined) {
-				const expectedBalance = isWin
-					? accountBalanceBeforeBet +
-					  diceBetData.betAmount * (diceBetData.multiplier - 1)
-					: accountBalanceBeforeBet - diceBetData.betAmount;
-				await this.gamdomPage.authenticatedHeader
-					.assertThat()
-					.accountBalanceIs(expectedBalance);
-			}
+				newDiceResult = parsedDiceResult;
+				newHistoryResult = parsedHistoryResult;
 
-			if (!isWin) {
-				logger.info("Dice game lost! Rolling dice again...");
-			}
-		}
+				logger.info(`New dice result found: ${newDiceResult}`);
+				return true;
+			},
+			{
+				errorMessage: `Current dice result did not change after rolling.`,
+				intervalSeconds: TimeoutSeconds.HALF,
+				timeoutSeconds: TimeoutSeconds.FIVE,
+			},
+		);
+
+		return { newDiceResult, newHistoryResult };
 	}
 
 	@step("Roll dice")
@@ -75,6 +167,12 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 				diceBetData.betAmount * multiplier,
 			);
 		await this.gamdomPage.rollDice();
+		await expect(
+			this.gamdomPage.isManualBetInputFieldDisabled(),
+		).resolves.toBe(true);
+		await this.gamdomPage
+			.assertThat()
+			.checkElementsAreVisible([this.gamdomPage.map.diceGameAreaMessage]);
 	}
 
 	@step("Start autobet")
@@ -231,5 +329,25 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 		}
 
 		return true;
+	}
+
+	@step("Get parsed dice results")
+	private async getParsedDiceResults(): Promise<{
+		parsedDiceResult: number;
+		parsedHistoryResult: number;
+	}> {
+		const tempDiceText = await this.gamdomPage.map.diceResultNumberGameArea
+			.first()
+			.textContent();
+		const tempHistoryText =
+			await this.gamdomPage.map.diceLastResultNumber.textContent();
+
+		const parsedDiceResult = parseFloat(tempDiceText ?? "0");
+		const parsedHistoryResult = parseFloat(tempHistoryText ?? "0");
+
+		logger.info(`Current dice result: ${parsedDiceResult}`);
+		logger.info(`Current dice history result: ${parsedHistoryResult}`);
+
+		return { parsedDiceResult, parsedHistoryResult };
 	}
 }

@@ -122,6 +122,25 @@ async function enableEvBasedRewards(
 	logger.info("Rewards have been successfully enabled.");
 }
 
+async function enableRecentWins(
+	gamdomApi: GamdomApi,
+	cookie: string,
+): Promise<void> {
+	logger.info("Enabling Recent Wins...");
+
+	const featureResponse = await gamdomApi.setFeatureState(
+		Feature.RECENT_WINS,
+		ALL_USER_TYPES_ENABLED,
+		{ Cookie: cookie },
+	);
+
+	featureResponse.forEach((response) => {
+		expect(response.status()).toBe(HttpStatus.OK);
+	});
+
+	logger.info("Recent Wins have been successfully enabled.");
+}
+
 async function createKothEvent(
 	gamdomApi: GamdomApi,
 	event_name: string,
@@ -360,6 +379,7 @@ async function globalSetup(): Promise<void> {
 	await enableKenoFeature(gamdomApi, cookie);
 	await enablePromotionsFeature(gamdomApi, cookie);
 	await ensureKothEventsExist(gamdomApi, cookie);
+	await enableRecentWins(gamdomApi, cookie);
 
 	if (Configuration.createExecution) {
 		const existingKey = process.env.TEST_EXECUTION_ID;

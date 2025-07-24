@@ -152,4 +152,36 @@ export class HomePageMap extends BaseMap {
 			)
 			.first();
 	}
+
+	public get recentWinsSectionContainer(): Locator {
+		return this.page.locator(`div[class*='RecentWins-styled__Container']`);
+	}
+
+	public get recentWinsProfitAmount(): Locator {
+		return this.recentWinsSectionContainer.locator(
+			`span[class*='currency-amount']`
+		);
+	}
+
+	public get recentWinsSectionList(): Locator {
+		return this.recentWinsSectionContainer.locator(
+			`div[class*='RecentWins-styled__Content-sc']`,
+		);
+	}
+
+	public get recentWinsSectionTotalBets(): Locator {
+		return this.recentWinsSectionContainer.locator(
+			`p[class*='MuiTypography-liveSelection']`,
+		);
+	}
+
+	public get liveBetsSectionTotalBets(): Locator {
+		return this.page
+			.locator("span[class*='MuiTypography-liveSelection']")
+	}
+
+	public get gamdomLogoButton(): Locator {
+		return this.page
+			.locator("div[class*='GamdomLogoWithIconButton-styled_']")
+	}
 }
