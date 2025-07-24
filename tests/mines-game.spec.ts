@@ -1,6 +1,6 @@
 import { VERY_LOW_USER_AMOUNT } from "database/constants/user-amounts";
 import { calculateMinesMultiplier } from "@core/utils/utils";
-import { MinesBetTestData } from "@dtos/test-data";
+import { MinesAutobetTestData, MinesBetTestData } from "@dtos/test-data";
 import { BrowserName } from "@enums/playwright/project-browser-names";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
@@ -11,7 +11,7 @@ test.describe("Mines tests", () => {
 	test.slow();
 
 	const minesBetData = new MinesBetTestData({
-		minesNumber: 1,
+		minesNumber: 0, // default sliuder value for 1 mine
 		cashoutMultiplier: calculateMinesMultiplier({
 			stepNumber: 24,
 			mines: 1,
@@ -120,6 +120,61 @@ test.describe("Mines tests", () => {
 				});
 
 			await minesGamePage.steps().verifyBetIsShownInGameHistory();
+		},
+	);
+
+	test(
+		`[ENG-6143] Mines - Autobet Increase By`,
+		{
+			tag: ["@originals", "@mines"],
+		},
+		async ({ minesGamePage, userBalanceHandler }) => {
+			const minesBetDataForAutobet = new MinesBetTestData({
+				betAmount: 1,
+				minesNumber: 3,
+				cashoutMultiplier: calculateMinesMultiplier({
+					stepNumber: 1,
+					mines: 4,
+					houseEdge: 0.01,
+				}),
+			});
+
+			const minesAutobetData = new MinesAutobetTestData({
+				numberOfAutobetRounds: 1,
+				onWinIncreaseByPercent: 20,
+				onLossIncreaseByPercent: 50,
+			});
+
+			await minesGamePage.navigateAndWaitForGameToLoad();
+
+			const accountBalanceBeforeBet =
+				await userBalanceHandler.walletBalanceInUsd();
+
+			await minesGamePage
+				.steps()
+				.openAndConfigureAutobet(
+					minesBetDataForAutobet,
+					minesAutobetData.numberOfAutobetRounds,
+					minesAutobetData.onWinIncreaseByPercent,
+					minesAutobetData.onLossIncreaseByPercent,
+				);
+
+			const { betAmountHistory, winningBets } = await minesGamePage
+				.steps()
+				.pickRandomTilesUntilBombCaughtAutobet(
+					minesBetDataForAutobet.betAmount,
+					minesAutobetData.onWinIncreaseByPercent,
+					minesAutobetData.onLossIncreaseByPercent,
+				);
+
+			await minesGamePage
+				.assertThat()
+				.accountBalanceAfterAutobetIsCorrect({
+					accountBalanceBeforeBet: accountBalanceBeforeBet,
+					betAmountHistory: betAmountHistory,
+					winningBets: winningBets,
+					cashoutMultiplier: minesBetDataForAutobet.cashoutMultiplier,
+				});
 		},
 	);
 });

@@ -43,7 +43,7 @@ export class MinesGamePageMap extends BaseMap {
 	}
 
 	public get minesNumberSlider(): Locator {
-		return this.page.locator('span[class*="RangeContainer"]');
+		return this.page.getByRole("slider").first();
 	}
 
 	public get minButton(): Locator {
@@ -98,5 +98,29 @@ export class MinesGamePageMap extends BaseMap {
 
 	public get betDetailsBetAmount(): Locator {
 		return this.singleBetHistoryModalDetails.nth(1);
+	}
+
+	public get autobetTab(): Locator {
+		return this.page.getByTestId("mines-tabs-autobet");
+	}
+
+	public get autoBetsCountInput(): Locator {
+		return this.page.getByTestId("mines-autobet-bets-count");
+	}
+
+	public get onWinIncreaseByInput(): Locator {
+		return this.page.getByTestId("mines-autobet-win-increase");
+	}
+
+	public get onLossIncreaseByInput(): Locator {
+		return this.page.getByTestId("mines-autobet-loss-increase");
+	}
+
+	public get autoBetRandomTileButton(): Locator {
+		return this.page.getByTestId("mines-random-tile");
+	}
+
+	public get startAutobetButton(): Locator {
+		return this.page.getByTestId("mines-start-autobet");
 	}
 }

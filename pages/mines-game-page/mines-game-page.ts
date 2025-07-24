@@ -54,6 +54,7 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 	@step("Choose number of mines")
 	public async chooseMinesNumber(minesNumber: number): Promise<void> {
 		const slider = this.map.minesNumberSlider;
+		await slider.focus();
 		for (let i = 0; i < minesNumber; i++) {
 			await slider.press("ArrowRight");
 		}
@@ -358,5 +359,104 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 	@step("Open bet details in Game History")
 	public async openBetDetails(betRowIndex: number): Promise<void> {
 		await this.map.gameHistoryTableRowByIndex(betRowIndex).click();
+	}
+
+	@step("Open Autobet tab")
+	public async openAutobetTab(): Promise<void> {
+		await this.map.autobetTab.click();
+	}
+
+	@step("Configure increase by percentage on win and on loss")
+	public async configureAutobetIncreaseBy(
+		autobetsNumber: number,
+		onWinPercentage: number,
+		onLossPercentage: number,
+	): Promise<void> {
+		await this.map.autoBetsCountInput.click();
+		await this.map.autoBetsCountInput.fill(autobetsNumber.toString());
+		await this.map.onWinIncreaseByInput.click();
+		await this.map.onWinIncreaseByInput.fill(onWinPercentage.toString());
+		await this.map.onLossIncreaseByInput.click();
+		await this.map.onLossIncreaseByInput.fill(onLossPercentage.toString());
+	}
+
+	@step("Click on Auto Bet Random Tile button")
+	public async clickOnAutoBetRandomTileButton(): Promise<void> {
+		await this.map.autoBetRandomTileButton.click();
+		await this.isBetAmountFieldDisabled();
+	}
+
+	@step("Start Autobet")
+	public async startAutobet(): Promise<void> {
+		await this.map.startAutobetButton.click();
+	}
+
+	@step("Execute single autobet round")
+	public async executeSingleAutobetRound(): Promise<{
+		isBombCaught: boolean;
+		isWin: boolean;
+	}> {
+		await this.map.startAutobetButton.click();
+		return this.waitForAutobetRoundResult();
+	}
+
+	@step("Wait for autobet round result")
+	public async waitForAutobetRoundResult(): Promise<{
+		isBombCaught: boolean;
+		isWin: boolean;
+	}> {
+		await waitUntil(
+			async () => {
+				const { bombVisible, winVisible, startDisabled } =
+					await this.getAutobetRoundStatus();
+
+				return (bombVisible || winVisible) && startDisabled;
+			},
+			{
+				errorMessage:
+					"Failed to determine autobet round result in time",
+				timeoutSeconds: Timeout.SHORT,
+			},
+		);
+
+		const { bombVisible: isBombCaught, winVisible: isWinVisible } =
+			await this.getAutobetRoundStatus();
+
+		const isWin = !isBombCaught && isWinVisible;
+
+		logger.info(
+			`Autobet round result - Bomb: ${isBombCaught}, Win: ${isWin}`,
+		);
+
+		return { isBombCaught, isWin };
+	}
+
+	@step("Calculate bet amount with percentage")
+	public async calculateBetAmountWithPercentage(
+		currentAmount: number,
+		percentage: number,
+	): Promise<number> {
+		return parseFloat((currentAmount * (1 + percentage / 100)).toFixed(2));
+	}
+
+	@step("Is bet amount field disabled?")
+	public async isBetAmountFieldDisabled(): Promise<void> {
+		const betAmountField = this.map.betField;
+		await expect(betAmountField).toBeDisabled();
+	}
+
+	@step("Get Autobet round status")
+	private async getAutobetRoundStatus(): Promise<{
+		bombVisible: boolean;
+		winVisible: boolean;
+		startDisabled: boolean;
+	}> {
+		const [bombVisible, winVisible, startDisabled] = await Promise.all([
+			this.map.bombTile.isVisible(),
+			this.map.winImage.isVisible(),
+			this.map.startAutobetButton.isDisabled(),
+		]);
+
+		return { bombVisible, winVisible, startDisabled };
 	}
 }

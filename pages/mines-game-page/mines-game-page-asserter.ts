@@ -4,6 +4,7 @@ import { BaseAsserter } from "@pages/base/base-asserter";
 import { expect } from "@playwright/test";
 import { step } from "decorators/step";
 import { MinesGamePage } from "./mines-game-page";
+import { Timeout } from "@enums/timeout";
 
 export class MinesGamePageAsserter extends BaseAsserter<MinesGamePage> {
 	public constructor(page: MinesGamePage) {
@@ -54,20 +55,17 @@ export class MinesGamePageAsserter extends BaseAsserter<MinesGamePage> {
 			locator:
 				await this.gamdomPage.authenticatedHeader.map.getLoadedAccountBalance(),
 		});
-		const actual = roundToDecimals(
-			await this.gamdomPage.authenticatedHeader.getAccountBalance(),
-		);
-		const actualTruncated = truncateToDecimals(actual, 1);
-		const expectedTruncated = truncateToDecimals(
-			roundToDecimals(expected, 2),
-			1,
-		);
+
+		const actual = await this.userBalanceHandler.walletBalanceInUsd();
+
+		const actualTruncated = truncateToDecimals(actual);
+		const expectedTruncated = truncateToDecimals(roundToDecimals(expected));
 
 		logger.info(
 			`Wallet balance: ${actualTruncated} = Expected: ${expectedTruncated}`,
 		);
 
-		expect(actualTruncated).toEqual(expectedTruncated);
+		expect(actualTruncated).toBeCloseTo(expectedTruncated);
 	}
 
 	@step("Start playing button is displayed")
@@ -100,7 +98,69 @@ export class MinesGamePageAsserter extends BaseAsserter<MinesGamePage> {
 	}
 
 	@step("Verify bet amount is displayed in bet details modal")
-	async verifyBetAmountIsDisplayedInBetDetailsModal(expectedAmount: string): Promise<void> {
-		await expect(this.gamdomPage.map.betDetailsBetAmount).toHaveText(expectedAmount);
+	async verifyBetAmountIsDisplayedInBetDetailsModal(
+		expectedAmount: string,
+	): Promise<void> {
+		await expect(this.gamdomPage.map.betDetailsBetAmount).toHaveText(
+			expectedAmount,
+		);
+	}
+
+	@step("Verify bet amount in field")
+	public async verifyBetAmountInField(expectedAmount: number): Promise<void> {
+		await expect
+			.poll(
+				async () => {
+					const actualBetAmount =
+						await this.gamdomPage.getBetAmountValue();
+					return parseFloat(actualBetAmount);
+				},
+				{
+					message: `Expected bet amount in field to be ${expectedAmount}`,
+					timeout: Timeout.SHORT,
+					intervals: [Timeout.ULTRA_SHORT],
+				},
+			)
+			.toBeCloseTo(expectedAmount, 1);
+	}
+
+	@step("Account balance is correct after autobet with percentage increase")
+	public async accountBalanceAfterAutobetIsCorrect({
+		accountBalanceBeforeBet,
+		betAmountHistory,
+		winningBets,
+		cashoutMultiplier,
+	}: {
+		accountBalanceBeforeBet: number;
+		betAmountHistory: number[];
+		winningBets: number[];
+		cashoutMultiplier: number;
+	}): Promise<void> {
+		const totalBetsDeducted = betAmountHistory.reduce(
+			(sum, bet) => sum + bet,
+			0,
+		);
+
+		const totalPayoutsFromWins = winningBets.reduce((sum, bet) => {
+			const payoutAmount = this.gamdomPage.calculateWinnings(
+				bet,
+				cashoutMultiplier,
+			);
+			logger.info(`Winning bet ${bet} -> payout: ${payoutAmount}`);
+			return sum + payoutAmount;
+		}, 0);
+
+		const expectedBalance =
+			accountBalanceBeforeBet - totalBetsDeducted + totalPayoutsFromWins;
+		const expectedBalanceRounded = roundToDecimals(expectedBalance);
+
+		const currentBalance =
+			await this.userBalanceHandler.walletBalanceInUsd();
+		logger.info(`Current balance: ${currentBalance}`);
+		logger.info(`Bet history: ${betAmountHistory.join(", ")}`);
+		logger.info(`Winning bets: ${winningBets.join(", ")}`);
+		logger.info(`Expected balance: ${expectedBalance}`);
+
+		await this.assertBalanceMatches(expectedBalanceRounded);
 	}
 }

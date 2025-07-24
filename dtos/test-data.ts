@@ -88,6 +88,22 @@ export class MinesBetTestData {
 	}
 }
 
+export class MinesAutobetTestData {
+	public numberOfAutobetRounds: number;
+	public onWinIncreaseByPercent: number;
+	public onLossIncreaseByPercent: number;
+
+	constructor(options: {
+		numberOfAutobetRounds: number;
+		onWinIncreaseByPercent: number;
+		onLossIncreaseByPercent: number;
+	}) {
+		this.numberOfAutobetRounds = options.numberOfAutobetRounds;
+		this.onWinIncreaseByPercent = options.onWinIncreaseByPercent;
+		this.onLossIncreaseByPercent = options.onLossIncreaseByPercent;
+	}
+}
+
 export class DiceBetTestData {
 	public betAmount: number;
 	public multiplier?: number;

@@ -50,3 +50,8 @@ export function getExpectedDiceBetValues(betData: DiceBetTestData): {
 		diceSliderValue: parseToFloat(diceSliderValue),
 	};
 }
+
+export const calculateBetAmountWithPercentage = (
+	betAmount: number,
+	percentage: number,
+): number => parseFloat((betAmount * (1 + percentage / 100)).toFixed(2));
