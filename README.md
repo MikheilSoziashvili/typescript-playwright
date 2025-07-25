@@ -108,6 +108,12 @@ Make sure you have the following installed:
 │       ├── utils.ts                              # DB Pool Service utility functions
 ├── support                                       # Support files
 │   ├── regex-patterns.ts                         # Regular expression patterns
+├── test-data                                     # Test data management
+│   ├── core                                      # Test data core functionality
+│   ├── mappings                                  # Test data mappings for CSV file names and DTOs
+│   ├── parsers                                   # Test data file parsers
+│   ├── custom-exceptions.ts                      # Test data custom exceptions
+│   ├── test-data-manager.ts                      # Test data manager
 ├── tests                                         # Test suites
 │   ├── visual                                    # Visual test suites
 │   │   ├── homepage-visual.spec.ts               # Visual test suite (example)

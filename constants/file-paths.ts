@@ -14,6 +14,11 @@ export const storageStateDir: string = getFilePath(
 export const DATASETS_DIR = "datasets";
 export const TEST_FILES_DIR = "test-files";
 export const AUTH_PATH = "core/.auth";
+export const DATASETS_DIR_PATH = path.join(
+	path.resolve(__dirname),
+	"..",
+	DATASETS_DIR,
+);
 
 export const GOOGLE_AUTH_STATE_FILE_PATH: string = getFilePath(
 	`${GOOGLE_AUTH_CREDENTIALS.username}.json`,

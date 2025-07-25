@@ -4,7 +4,6 @@ import {
 	NegativeBetValidationScenario,
 	QuickSelectScenario,
 	RawNegativeBetValidationScenario,
-	RawQuickSelectScenario,
 } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
 import {
@@ -14,24 +13,16 @@ import {
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import { HIGH_USER_AMOUNT } from "database/constants/user-amounts";
+import { testData } from "test-data/test-data-manager";
 
 test.describe("Quick Select Buttons", () => {
 	test.use(storageStateNewUserDB());
 
-	const quickSelectRawRows = parse_csv(
-		DATASETS_DIR,
-		CsvFilesName.ORIGINALS_QUICK_SELECT_BUTTONS,
-	) as RawQuickSelectScenario[];
+	const quickSelectScenarios: QuickSelectScenario[] =
+		testData().fromCsvParsed({
+			file: CsvFilesName.ORIGINALS_QUICK_SELECT_BUTTONS,
+		});
 
-	const quickSelectScenarios: QuickSelectScenario[] = quickSelectRawRows.map(
-		(raw) => ({
-			buttonType: raw.buttonType as OriginalsQuickSelectButtons,
-			game: OriginalGame[raw.game as keyof typeof OriginalGame],
-			initialBetAmount: parseFloat(raw.initialBetAmount),
-			expectedAfterFirstClick: parseFloat(raw.expectedAfterFirstClick),
-			expectedAfterSecondClick: parseFloat(raw.expectedAfterSecondClick),
-		}),
-	);
 	const minScenario = quickSelectScenarios.filter(
 		(scenario) => scenario.buttonType === OriginalsQuickSelectButtons.MIN,
 	);

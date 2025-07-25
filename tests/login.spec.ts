@@ -3,41 +3,40 @@ import { parse_csv, toJson } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { test } from "@fixtures/fixtures";
 import { users } from "configuration";
+import { testData } from "test-data/test-data-manager";
 
 test.describe("Login tests", () => {
 	test.use({ storageState: { cookies: [], origins: [] } });
-	for (const record of parse_csv(
-		DATASETS_DIR,
-		CsvFilesName.LOGIN_NOT_POSSIBLE,
-	) as {
-		username: string;
-		password: string;
-		expected_username_warning: string;
-		expected_password_warning: string;
-	}[]) {
-		test(`[ENG-294] Login using username - Login is not possible: [Username: ${record.username}] [Password: ${record.password}]`, async ({
-			homePage,
-		}) => {
-			await homePage.navigateAndCheckTitle();
+	testData()
+		.fromCsvRaw({ file: CsvFilesName.LOGIN_NOT_POSSIBLE })
+		.forEach((record) => {
+			test(`[ENG-294] Login using username - Login is not possible: [Username: ${record.username}] [Password: ${record.password}]`, async ({
+				homePage,
+			}) => {
+				await homePage.navigateAndCheckTitle();
 
-			await homePage.unauthenticatedHeader.openLoginModal();
-			await homePage.loginModal.fillInCredentials(
-				record.username,
-				record.password,
-			);
+				await homePage.unauthenticatedHeader.openLoginModal();
+				await homePage.loginModal.fillInCredentials(
+					record.username,
+					record.password,
+				);
 
-			await homePage.loginModal
-				.assertThat(true)
-				.usernameFieldErrorTooltipIs(record.expected_username_warning);
+				await homePage.loginModal
+					.assertThat(true)
+					.usernameFieldErrorTooltipIs(
+						record.expected_username_warning,
+					);
 
-			await homePage.loginModal
-				.assertThat(true)
-				.passwordFieldErrorTooltipIs(record.expected_password_warning);
+				await homePage.loginModal
+					.assertThat(true)
+					.passwordFieldErrorTooltipIs(
+						record.expected_password_warning,
+					);
 
-			// Temporary solution. Previously button was disabled until inputs are correct, now it is not. Discussed with Johannes (To be aligned)
-			// await homePage.loginModal.assertThat().loginBtnIsDisabled();
+				// Temporary solution. Previously button was disabled until inputs are correct, now it is not. Discussed with Johannes (To be aligned)
+				// await homePage.loginModal.assertThat().loginBtnIsDisabled();
+			});
 		});
-	}
 
 	for (const record of parse_csv(
 		DATASETS_DIR,
