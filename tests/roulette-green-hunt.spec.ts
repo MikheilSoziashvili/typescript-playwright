@@ -10,6 +10,7 @@ test.describe("Green hunt", () => {
 	test.use(storageStateNewUserDB());
 	test("[ENG-1090] Roulette - green hunt @originals", async ({
 		rouletteGamePage,
+		userBalanceHandler,
 	}, testInfo) => {
 		const newUserDetails = getUserDetailsByTestTitle(
 			testInfo.title,
@@ -33,8 +34,7 @@ test.describe("Green hunt", () => {
 				greenHuntPercentage,
 			);
 
-		const accountBalance =
-			await rouletteGamePage.authenticatedHeader.getAccountBalance();
+		const accountBalance = await userBalanceHandler.walletBalanceInUsd();
 		await rouletteGamePage.insertBet(betTestData.betAmount);
 		await rouletteGamePage.assertThat().betButtonsEnabled();
 		await rouletteGamePage.betOnColor(RouletteBetColor.RED);
@@ -47,9 +47,7 @@ test.describe("Green hunt", () => {
 		]);
 		await rouletteGamePage
 			.assertThat()
-			.totalBetsAre(
-				RouletteBetColor.GREEN,
-			);
+			.totalBetsAre(RouletteBetColor.GREEN);
 		await rouletteGamePage.authenticatedHeader
 			.assertThat()
 			.accountBalanceIs(

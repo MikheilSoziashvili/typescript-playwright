@@ -48,11 +48,7 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 
 	@step("Account balance is")
 	public async accountBalanceIs(amount: number): Promise<void> {
-		await expect(
-			await this.gamdomPage.map.getLoadedAccountBalance(),
-		).toHaveText(this.formatUSD(amount), {
-			timeout: Timeout.LONG,
-		});
+		expect(await this.userBalanceHandler.walletBalanceInUsd()).toBe(amount);
 	}
 
 	@step("Account balance has changed")
