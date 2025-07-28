@@ -192,4 +192,38 @@ export class HomePageMap extends BaseMap {
 	public get notificationPlayButton(): Locator {
 		return this.page.getByTestId("notificationGotItButton");
 	}
+
+	public get originalsNavButton(): Locator {
+		return this.page.getByTestId("navLink-home");
+	}
+
+	public get originalsNavContainer(): Locator {
+		return this.page.getByTestId("hoverContainer");
+	}
+
+	public originalsGameFromSubNav(game: string): Locator {
+		return this.originalsNavContainer.locator(
+			`a[href='/${game.toLowerCase()}']`,
+		);
+	}
+
+	public get originalsSectionSliderContainer(): Locator {
+		return this.page.locator(
+			`div[class*='Originals-styled__Container-sc-']`,
+		);
+	}
+
+	public originalsGameFromSection(game: string): Locator {
+		return this.originalsSectionSliderContainer
+			.locator(
+				`//a[@href="/${game.toLowerCase()}"]/parent::div[contains(@class, "swiper")]`,
+			)
+			.first();
+	}
+
+	public get originalsSliderNextButton(): Locator {
+		return this.originalsSectionSliderContainer.locator(
+			`button[class*= ArrowButton] i[class*=icon-angle-right]`,
+		);
+	}
 }

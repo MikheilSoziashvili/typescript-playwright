@@ -1,9 +1,12 @@
-import { test } from "@fixtures/fixtures";
-import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
-import { parse_csv } from "@core/utils/utils";
 import { DATASETS_DIR } from "@constants/file-paths";
+import { GameToEndpointMap } from "@constants/game-endpoints";
+import { parse_csv } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
+import { LaunchLocation } from "@enums/homepage-launch-locations";
+import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
+import { test } from "@fixtures/fixtures";
 import { environment_url } from "configuration";
+import { testData } from "test-data/test-data-manager";
 
 test.describe("Homepage navigation", () => {
 	test.use(storageStateNewUserDB());
@@ -43,3 +46,33 @@ test.describe("Homepage navigation", () => {
 		});
 	});
 });
+
+test.describe(
+	"[ENG-5798] Homepage - Originals Launch",
+	{ tag: ["@originals"] },
+	() => {
+		const originalsLaunchScenarios = testData().fromCsvRaw({
+			file: CsvFilesName.HOMEPAGE_ORIGINALS_LAUNCH,
+		});
+
+		originalsLaunchScenarios.forEach((scenario) => {
+			test(`[ENG-5798] should launch ${scenario.game} from ${scenario.location}`, async ({
+				homePage,
+			}) => {
+				await homePage.navigate();
+
+				const expectedUrl = GameToEndpointMap[scenario.game];
+				await homePage
+					.steps()
+					.clickOnOriginalsGameLaunchTile(
+						scenario.game,
+						scenario.location as LaunchLocation,
+					);
+
+				await homePage
+					.assertThat()
+					.originalsGameIsLaunched(scenario.game, expectedUrl);
+			});
+		});
+	},
+);

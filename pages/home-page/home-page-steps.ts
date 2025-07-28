@@ -5,14 +5,16 @@ import { generate2FACodeFromQRCodeImage, waitUntil } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { GameProvider } from "@enums/game-providers";
 import { HomePageBannerCarouselSlideTitle } from "@enums/homepage-banner-carousel-slide-title";
+import { LaunchLocation } from "@enums/homepage-launch-locations";
 import { Timeout } from "@enums/timeout";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
+import { ToastTitle } from "@enums/toast-titles";
 import { BasePageStep } from "@pages/base/base-page-step";
 import { Toast } from "@pages/components/toast/toast";
 import { step } from "decorators/step";
 import { Locator, Page } from "playwright";
 import { HomePage } from "./home-page";
-import { ToastTitle } from "@enums/toast-titles";
+import { logger } from "@logger/logger";
 
 export class HomePageSteps extends BasePageStep<HomePage> {
 	public toast: Toast;
@@ -260,5 +262,54 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 	): Promise<void> {
 		await this.toast.assertThat().isDisplayed({ timeout });
 		await this.toast.assertThat().titleIs(title, { timeout });
+	}
+
+	@step("Click on Originals game tile in slider")
+	public async clickGameInOriginalsSlider(game: string): Promise<void> {
+		const nextButton = this.gamdomPage.map.originalsSliderNextButton;
+
+		await waitUntil(
+			async () => {
+				const gameTile =
+					this.gamdomPage.map.originalsGameFromSection(game);
+
+				try {
+					const box = await gameTile.boundingBox();
+					const isVisible = await gameTile.isVisible();
+
+					if (box && isVisible) {
+						await gameTile.click({ timeout: Timeout.MEDIUM });
+						return true;
+					}
+				} catch (error) {
+					logger.debug(
+						`[Originals slider] Game '${game}' not clickable yet. Retrying...`,
+						error,
+					);
+				}
+
+				await nextButton.click();
+				return false;
+			},
+			{
+				errorMessage: `Game '${game}' not found in Originals slider after full scroll attempts`,
+				timeoutSeconds: TimeoutSeconds.THIRTY,
+			},
+		);
+	}
+
+	@step("Click on Originals game launch tile")
+	public async clickOnOriginalsGameLaunchTile(
+		game: string,
+		location: LaunchLocation,
+	): Promise<void> {
+		location === LaunchLocation.SubNav
+			? await (async () => {
+					await this.gamdomPage.map.originalsNavButton.hover();
+					const gameTile =
+						this.gamdomPage.map.originalsGameFromSubNav(game);
+					await gameTile.click();
+			  })()
+			: await this.clickGameInOriginalsSlider(game);
 	}
 }

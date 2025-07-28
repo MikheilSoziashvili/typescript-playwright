@@ -307,4 +307,12 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 			`${Configuration.environment_url}${CasinoGameUrl.BARREL_BONANZA}`,
 		);
 	}
+
+	@step("Verify Originals game is launched")
+	public async originalsGameIsLaunched(
+		_game: string,
+		expectedUrl: string,
+	): Promise<void> {
+		await expect(this.gamdomPage.page).toHaveURL(expectedUrl);
+	}
 }
