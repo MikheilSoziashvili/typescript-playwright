@@ -1,5 +1,5 @@
-import { format } from "date-fns";
 import * as path from "path";
+import { format } from "date-fns";
 import { GamdomApi } from "@api/gamdom-api";
 import { DEFAULT_CURRENCY, DEFAULT_MULTIPLIER } from "@constants/defaults";
 import { MAILINATOR_DOMAIN } from "@constants/domains";
@@ -15,12 +15,16 @@ import { RegisterTestData } from "@dtos/test-data";
 import { Protocol } from "@enums/api/protocols";
 import { ConfiguraitonUrl } from "@enums/configuration-urls";
 import { Currency } from "@enums/currencies";
+import { CurrencySymbol } from "@enums/currenciesSymbols";
 import { UserTags } from "@enums/db/user-tags";
 import { Locale } from "@enums/locale";
+import { NumberSeparators } from "@enums/number-separators";
+import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { DocumentReadyState } from "@enums/playwright/document-ready-states";
 import { Timeout } from "@enums/timeout";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { logger } from "@logger/logger";
+import { expect } from "@playwright/test";
 import {
 	currencyToNumberPattern,
 	otpAuthSecretPattern,
@@ -42,10 +46,6 @@ import { Browser, BrowserContext, Cookie, Locator, Page } from "playwright";
 import { PNG, PNGOptions } from "pngjs";
 import sharp from "sharp";
 import xml2js from "xml2js";
-import { CurrencySymbol } from "@enums/currenciesSymbols";
-import { NumberSeparators } from "@enums/number-separators";
-import { expect } from "@playwright/test";
-import { BooleanValueString } from "@enums/playwright/booleanValues";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -461,6 +461,36 @@ export async function setContextAuthenticationCookies(
 	setCookie: string,
 ): Promise<void> {
 	await context.addCookies(createAuthCookie(setCookie));
+}
+
+/**
+ * Encodes a raw cookie string (e.g., from `Set-Cookie` headers) into a format
+ * suitable for use in the `Cookie` request header.
+ *
+ * This function:
+ * - Extracts only the cookie `name=value` parts, discarding directives like `Path`, `Secure`, `HttpOnly`, etc.
+ * - Percent-encodes special characters in cookie values (e.g., spaces, semicolons).
+ * - Joins multiple cookies using `; ` to match HTTP header format.
+ *
+ * @param {string[]} rawCookies - An array of raw `Set-Cookie` header strings.
+ * @returns {string} A single encoded cookie string, ready to be sent in a `Cookie` header.
+ *
+ * @example
+ * const rawCookies = [
+ *   "session_id=abc 123; Path=/; HttpOnly",
+ * ];
+ * const encoded = encodeCookieHeader(rawCookies);
+ * // Result: "session_id=abc%20123"
+ */
+export async function encodeCookieHeader(rawCookie: string): Promise<string> {
+	return rawCookie
+		.split(";")
+		.map((pair) => {
+			const [key, value] = pair.split("=");
+			if (!value) return key;
+			return `${key.trim()}=${encodeURIComponent(value.trim())}`;
+		})
+		.join("; ");
 }
 
 export function getCookieName(setCookie: string): string {

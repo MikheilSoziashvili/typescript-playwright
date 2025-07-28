@@ -2,15 +2,15 @@ import { BaseAsserter } from "@base/base-asserter";
 import { VisibilityResult } from "@core/types/types";
 import { waitUntil } from "@core/utils/utils";
 import { GameProvider } from "@enums/game-providers";
+import { IntervalMs } from "@enums/interval-millisecond";
 import { Timeout } from "@enums/timeout";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { VisibilityOptions } from "@enums/visibility-options";
 import { logger } from "@logger/logger";
 import { expect, Locator, TestInfo } from "@playwright/test";
+import { digitsOnlyPattern } from "@support/regex-patterns";
 import { step } from "decorators/step";
 import { HomePage } from "./home-page";
-import { digitsOnlyPattern } from "@support/regex-patterns";
-import { IntervalMs } from "@enums/interval-millisecond";
 import { CasinoGameUrl } from "@enums/casino-game";
 import * as Configuration from "configuration";
 

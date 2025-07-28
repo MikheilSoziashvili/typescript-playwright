@@ -1,17 +1,21 @@
-import { parseBalance, parseMultiplier, waitUntil, getFormattedMultiplier } from "@core/utils/utils";
+import {
+	getFormattedMultiplier,
+	parseBalance,
+	parseMultiplier,
+	waitUntil,
+} from "@core/utils/utils";
 import { Attributes } from "@enums/playwright/htmlAttributes";
 import { AttributesValues } from "@enums/playwright/htmlAttributesValues";
 import {
 	PlinkoRiskOption,
 	PlinkoRowsOption,
 } from "@enums/plinko/plinko-game-options";
+import { Timeout } from "@enums/timeout";
+import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { BasePageStep } from "@pages/base/base-page-step";
 import { expect, Locator } from "@playwright/test";
 import { step } from "decorators/step";
 import { PlinkoGamePage } from "./plinko-game-page";
-import { TimeoutSeconds } from "@enums/timeout-seconds";
-import { Timeout } from "@enums/timeout";
-
 
 export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 	public constructor(gamdomPage: PlinkoGamePage) {
@@ -188,5 +192,22 @@ export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 		);
 
 		return multiplier;
+	}
+
+	@step("Calculate the winnings")
+	public async calculateWinnings(
+		betAmount: number,
+		multiplier: number,
+	): Promise<number> {
+		return betAmount * multiplier;
+	}
+
+	@step("Calculate expected balance after bet")
+	public async calculateExpectedBalance(
+		accountBalanceBeforeBet: number,
+		betAmount: number,
+		winnings: number,
+	): Promise<number> {
+		return accountBalanceBeforeBet - betAmount + winnings;
 	}
 }

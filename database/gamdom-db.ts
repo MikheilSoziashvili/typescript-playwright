@@ -1,15 +1,4 @@
 import { DEFAULT_IMAGE } from "@constants/defaults";
-import {
-	createDefaultPromotionWithUserId,
-	createCasinoPromotionWithUserId,
-	createSportsbookPromotionWithUserId,
-	createLiveCasinoPromotionWithUserId,
-	createVipPromotionWithUserId,
-} from "./constants/promotion-defaults";
-import { AmlInfoOptions } from "./interfaces/aml-info-options";
-import { AmlStatusInsertOptions } from "./interfaces/aml-status-insert-options";
-import { NewUserOptions } from "./interfaces/storage-state-new-user-options";
-import { PromotionInsertOptions } from "./interfaces/promotion-insert-options";
 import { generateAmlVerificationStatusReasonText } from "@core/helpers/asserter-helpers/text-asserters";
 import {
 	NullableDateString,
@@ -32,6 +21,8 @@ import { AmlVerificationLevel } from "@enums/db/aml-verification-level";
 import { AmlVerificationStatus } from "@enums/db/aml-verification-status";
 import { CampaignsColumns } from "@enums/db/campaigns-columns";
 import { DbTables } from "@enums/db/db-tables";
+import { KothEventColumns } from "@enums/db/koth-event-columns";
+import { KothEventName, KothEventType } from "@enums/db/koth-event-types";
 import { PromotionColumns } from "@enums/db/promotion-columns";
 import { SettingsColumns } from "@enums/db/settings-columns";
 import { UserClasses } from "@enums/db/user-classes";
@@ -43,8 +34,17 @@ import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { Unit } from "@enums/units";
 import { QueryResultRow } from "pg";
 import { BaseDB } from "./base-db";
-import { KothEventName, KothEventType } from "@enums/db/koth-event-types";
-import { KothEventColumns } from "@enums/db/koth-event-columns";
+import {
+	createCasinoPromotionWithUserId,
+	createDefaultPromotionWithUserId,
+	createLiveCasinoPromotionWithUserId,
+	createSportsbookPromotionWithUserId,
+	createVipPromotionWithUserId,
+} from "./constants/promotion-defaults";
+import { AmlInfoOptions } from "./interfaces/aml-info-options";
+import { AmlStatusInsertOptions } from "./interfaces/aml-status-insert-options";
+import { PromotionInsertOptions } from "./interfaces/promotion-insert-options";
+import { NewUserOptions } from "./interfaces/storage-state-new-user-options";
 
 export class GamdomDb extends BaseDB {
 	constructor() {
@@ -108,6 +108,45 @@ export class GamdomDb extends BaseDB {
 			`${UsersColumns.Id} = ${userId}`,
 			true,
 		);
+	}
+
+	public async updateUserWalletAmounts(
+		userId: number,
+		unit: Unit,
+		amount: number,
+	): Promise<QueryResultRow> {
+		return this.update(
+			DbTables.Wallets,
+			{ [WalletsColumns.Balance]: amount },
+			`${WalletsColumns.UserId} = ${userId} AND ${WalletsColumns.Unit} = '${unit}'`,
+			true,
+		);
+	}
+
+	public async upsertUserWallet(
+		userId: number,
+		unit: Unit,
+		amount: number,
+	): Promise<QueryResultRow[]> {
+		const result = await this.query(
+			DbTables.Wallets,
+			"*",
+			`${WalletsColumns.UserId} = $1 AND ${WalletsColumns.Unit} = $2`,
+			[userId, unit],
+			false,
+		);
+
+		if (result.length > 0) {
+			const updated = await this.updateUserWalletAmounts(
+				userId,
+				unit,
+				amount,
+			);
+			return [updated];
+		}
+
+		const inserted = await this.insertUserWallet(userId, unit, amount);
+		return [inserted];
 	}
 
 	public async updateUserEmailVerification(

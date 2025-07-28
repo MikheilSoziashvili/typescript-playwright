@@ -39,6 +39,15 @@ export class BaseAsserter<
 		expect(actualBalance).toBe(expectedBalance);
 	}
 
+	@step("Verify balance matches expected value with tolerance")
+	public async verifyBalanceWithTolerance(
+		actualBalance: number,
+		expectedBalance: number,
+		tolerance: number,
+	): Promise<void> {
+		expect(actualBalance - expectedBalance).toBeLessThanOrEqual(tolerance);
+	}
+
 	/**
 	 * Verifies that a specified element's visual appearance matches the expected
 	 * screenshot. Captures a screenshot of the element and compares it with the
