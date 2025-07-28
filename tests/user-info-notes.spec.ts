@@ -1,8 +1,9 @@
 import { setAuthenticationCookies } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
+import { UserClasses } from "@enums/db/user-classes";
+import { UserTags } from "@enums/db/user-tags";
 import {
-	storageStateNewSuperAdminUserDB,
-	storageStateNewUserDB,
+	storageStateNewUserDB
 } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 
@@ -22,16 +23,21 @@ test.describe("User info - notes", () => {
 		page,
 		userInfoAdminPage,
 		infoAdminPage,
+		gamdomDb,
 	}) => {
 		const superAdminUserData = new RegisterTestData();
-		storageStateNewSuperAdminUserDB({
+		await gamdomDb.createNewUser({
 			username: superAdminUserData.username,
 			password: superAdminUserData.password,
+			email: superAdminUserData.email,
+			tags: UserTags.SuperAdmin,
+			userClass: UserClasses.Admin,
 		});
-		const cookie = await gamdomApi.authenticateWithNewSuperAdminUser(
-			superAdminUserData,
+		const superAdminCookie = await gamdomApi.authenticateWithExistingUser(
+			superAdminUserData.username,
+			superAdminUserData.password,
 		);
-		await setAuthenticationCookies(page, cookie);
+		await setAuthenticationCookies(page, superAdminCookie);
 
 		await userInfoAdminPage.navigate();
 		await userInfoAdminPage.steps().showUserDetails(userData.username);
