@@ -2,6 +2,7 @@ import { test } from "@fixtures/fixtures";
 import { ChatFooterPlaceholder } from "@enums/chat-footer-palceholders";
 import { ChatMessageOptions } from "@components/chat/chat-map";
 import {
+	encodeCookieHeader,
 	generateRandomString,
 	setAuthenticationCookies,
 } from "@core/utils/utils";
@@ -11,6 +12,8 @@ import {
 	buildTipUserMessageInfo,
 	buildTipUserSubTitle,
 } from "@core/helpers/asserter-helpers/text-asserters";
+import { Unit } from "@enums/units";
+import { WalletType } from "@enums/wallet-types";
 
 test.describe("Tip user tests", () => {
 	const message_1 = generateRandomString({ prefix: "automation_message_" });
@@ -60,6 +63,9 @@ test.describe("Tip user tests", () => {
 			USER_2_CREDENTIALS.username,
 			USER_2_CREDENTIALS.password,
 		);
+		const headersUser2 = {
+			Cookie: await encodeCookieHeader(cookie),
+		};
 		await setAuthenticationCookies(page, cookie);
 
 		await homePage.navigate();
@@ -94,7 +100,12 @@ test.describe("Tip user tests", () => {
 		);
 		await homePage.authenticatedHeader
 			.assertThat()
-			.accountBalanceIs(user2AccountBalance - Number(tipValue));
+			.accountBalanceIs(
+				user2AccountBalance - Number(tipValue),
+				Unit.COINS,
+				WalletType.DEFAULT,
+				headersUser2,
+			);
 		await chat
 			.assertThat()
 			.isPlaceholderVisible(ChatFooterPlaceholder.START_TYPING);
@@ -104,10 +115,18 @@ test.describe("Tip user tests", () => {
 			USER_3_CREDENTIALS.username,
 			USER_3_CREDENTIALS.password,
 		);
+		const headersUser3 = {
+			Cookie: await encodeCookieHeader(cookieUser3),
+		};
 		await setAuthenticationCookies(page, cookieUser3);
 		await homePage.navigate();
 		await homePage.authenticatedHeader
 			.assertThat()
-			.accountBalanceIs(user3AccountBalance + Number(tipValue));
+			.accountBalanceIs(
+				user3AccountBalance + Number(tipValue),
+				Unit.COINS,
+				WalletType.DEFAULT,
+				headersUser3,
+			);
 	});
 });

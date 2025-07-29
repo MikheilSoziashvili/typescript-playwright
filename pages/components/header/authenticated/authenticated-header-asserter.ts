@@ -6,6 +6,8 @@ import { step } from "decorators/step";
 import { AuthenticatedHeader } from "./authenticated-header";
 import { CurrencySymbol } from "@enums/currenciesSymbols";
 import { NumberSeparators } from "@enums/number-separators";
+import { Unit } from "@enums/units";
+import { WalletType } from "@enums/wallet-types";
 
 export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeader> {
 	public constructor(authenticatedHeader: AuthenticatedHeader) {
@@ -47,8 +49,19 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 	}
 
 	@step("Account balance is")
-	public async accountBalanceIs(amount: number): Promise<void> {
-		expect(await this.userBalanceHandler.walletBalanceInUsd()).toBe(amount);
+	public async accountBalanceIs(
+		amount: number,
+		unit: Unit = Unit.COINS,
+		type: WalletType = WalletType.DEFAULT,
+		headers?: Record<string, string>,
+	): Promise<void> {
+		const expectedBalance =
+			await this.userBalanceHandler.walletBalanceInUsd(
+				unit,
+				type,
+				headers,
+			);
+		expect(expectedBalance).toBe(amount);
 	}
 
 	@step("Account balance has changed")

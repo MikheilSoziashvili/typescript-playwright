@@ -215,8 +215,9 @@ export class UserBalanceHandler extends BaseComponent<BaseMap> {
 	public async walletBalanceInUsd(
 		unit: Unit = Unit.COINS,
 		type: WalletType = WalletType.DEFAULT,
+		headers?: Record<string, string>,
 	): Promise<number> {
-		const usd = await this.walletBalanceInCoins(unit, type);
+		const usd = await this.walletBalanceInCoins(unit, type, headers);
 		return this.coinsToUsd(usd);
 	}
 
