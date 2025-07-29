@@ -356,6 +356,30 @@ export function normalizeUrl(url: string): string {
 	return url.replace(wwwPattern, "");
 }
 
+/**
+ * Constructs a full URL from a relative path using the provided base URL
+ * If the URL is already absolute (starts with http or https), returns it unchanged
+ * @param urlOrPath - The relative path (e.g., "/profile", "profile") or absolute URL
+ * @param baseUrl - The base URL to use (defaults to environment_url)
+ * @param protocol - Reserved parameter for future protocol-specific logic (defaults to HTTPS)
+ * @returns The full URL (e.g., "https://staging-for-e2e-tests.teamgamdom.com/profile")
+ */
+export function buildFullUrl(
+	urlOrPath: string,
+	baseUrl: string = environment_url,
+	protocol: Protocol = Protocol.HTTPS,
+): string {
+	if (urlOrPath.startsWith(protocol)) {
+		return urlOrPath;
+	}
+
+	const normalizedPath = urlOrPath.startsWith("/")
+		? urlOrPath
+		: `/${urlOrPath}`;
+
+	return `${baseUrl}${normalizedPath}`;
+}
+
 export function generateEmailAndInbox(): { email: string; inbox: string } {
 	const email = `${generateRandomString({
 		prefix: "gmdverify",

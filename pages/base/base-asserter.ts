@@ -1,4 +1,4 @@
-import { waitForPageReadyState, waitUntil } from "@core/utils/utils";
+import { waitForPageReadyState, waitUntil, buildFullUrl } from "@core/utils/utils";
 import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { CssStyleValues } from "@enums/playwright/cssStyleValues";
 import { DocumentReadyState } from "@enums/playwright/document-ready-states";
@@ -10,7 +10,7 @@ import { Timeout } from "@enums/timeout";
 import { logger } from "@logger/logger";
 import { Locator, TestInfo, expect } from "@playwright/test";
 import { wwwPattern } from "@support/regex-patterns";
-import * as Configuration from "configuration";
+
 import { step } from "decorators/step";
 import { BaseComponent } from "./base-component";
 import { BaseMap } from "./base-map";
@@ -259,17 +259,7 @@ export class BaseAsserter<
 		expect(rounded).toBe(expected);
 	}
 
-	/**
-	 * Normalizes a URL by adding the environment URL prefix if it's a relative path
-	 * @param url The URL to normalize
-	 * @returns The normalized URL with full domain
-	 * @private
-	 */
-	private normalizeUrl(url: string): string {
-		return url.startsWith("http")
-			? url
-			: `${Configuration.environment_url}${url}`;
-	}
+
 
 	@step("Wait for and verify current URL is as expected")
 	public async waitForAndVerifyCurrentUrlIs(
@@ -277,7 +267,7 @@ export class BaseAsserter<
 		decodingUrl = false,
 		timeout = Timeout.LONG,
 	): Promise<void> {
-		const normalizedExpectedUrl = this.normalizeUrl(expectedUrl);
+		const normalizedExpectedUrl = buildFullUrl(expectedUrl);
 
 		await this.gamdomPage.page.waitForURL(
 			(url) => {
@@ -433,7 +423,7 @@ export class BaseAsserter<
 		logger.info(`Checking ${urls.length} URLs for broken links`);
 
 		for (const url of urls) {
-			const normalizedUrl = this.normalizeUrl(url);
+			const normalizedUrl = buildFullUrl(url);
 
 			try {
 				const response = await this.gamdomPage.page.request.get(

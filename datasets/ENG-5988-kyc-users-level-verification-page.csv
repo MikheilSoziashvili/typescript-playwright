@@ -1,4 +1,4 @@
 kycLevel,verificationPageURL
-Level1,https://staging-for-e2e-tests.teamgamdom.com/aml/level/1
-Level2,https://staging-for-e2e-tests.teamgamdom.com/aml/level/2
-Level3,https://staging-for-e2e-tests.teamgamdom.com/aml/level/3
+Level1,/aml/level/1
+Level2,/aml/level/2
+Level3,/aml/level/3
