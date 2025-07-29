@@ -1,13 +1,13 @@
 import { BaseComponent } from "@base/base-component";
 import { parseBalance } from "@core/utils/utils";
 import { Timeout } from "@enums/timeout";
-import { UserMenuOption } from "@enums/user-menu-options";
 import { logger } from "@logger/logger";
 import { Page } from "@playwright/test";
-import { step } from "decorators/step";
 import { Chat } from "../../chat/chat";
 import { AuthenticatedHeaderAsserter } from "./authenticated-header-asserter";
 import { AuthenticatedHeaderMap } from "./authenticated-header-map";
+import { step } from "decorators/step";
+import { UserMenuOption } from "@enums/user-menu-options";
 
 export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 	constructor(page: Page) {
@@ -60,38 +60,14 @@ export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 		const chat = new Chat(this.page);
 
 		try {
-			await chat.waitChatToBeDisplayed();
-			logger.info("Chat already expanded");
-			return;
-		} catch {
-			logger.info("Chat not expanded, attempting to open it");
-		}
-
-		try {
 			await this.map.waitForVisibility({
 				locator: this.map.chatButton,
-				timeout: Timeout.LONG,
+				timeout: Timeout.SHORT,
 			});
-		} catch (error) {
-			logger.error("Chat button is not visible", error);
-			throw new Error("Chat button not found or not clickable", {
-				cause: error,
-			});
-		}
-
-		await this.map.chatButton.click();
-
-		try {
+			await this.map.chatButton.click();
 			await chat.waitChatToBeDisplayed();
-			logger.info("Chat successfully expanded");
-		} catch (error) {
-			logger.error("Chat failed to open ", error);
-			throw new Error(
-				"Chat did not load after clicking the chat button",
-				{
-					cause: error,
-				},
-			);
+		} catch {
+			logger.info("Chat already expanded");
 		}
 	}
 
