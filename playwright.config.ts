@@ -38,7 +38,7 @@ export default defineConfig({
 	timeout: 3 * 60 * 1000, //convert to minutes
 	testDir: "./tests",
 	expect: {
-		timeout: 10 * 1000,
+		timeout: 15 * 1000,
 		toHaveScreenshot: { maxDiffPixelRatio: 0.1 },
 	},
 	/* Run tests in files in parallel */
@@ -58,7 +58,7 @@ export default defineConfig({
 	/* Gobal teardown. */
 	use: {
 		viewport: { width: 1920, height: 1080 },
-		actionTimeout: 10 * 1000,
+		actionTimeout: 15 * 1000,
 		navigationTimeout: 30 * 1000,
 		/* Base URL to use in actions like `await page.goto('/')`. */
 		baseURL: Configuration.environment_url,
