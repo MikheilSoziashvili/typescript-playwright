@@ -119,7 +119,6 @@ export class DbServiceManager {
 					`[DB Pool Service Manager] Received ${signal}, shutting down...`,
 				);
 				await this.cleanup();
-				process.exit(1);
 			})();
 		});
 	}
@@ -149,7 +148,6 @@ export class DbServiceManager {
 			logger.warn("[DB Pool Service Manager] Uncaught Exception:", err);
 			void (async () => {
 				await this.cleanup();
-				process.exit(1);
 			})();
 		});
 	}
