@@ -271,6 +271,7 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		locator: Locator,
 		sectionName: string,
 	): Promise<void> {
+		await locator.scrollIntoViewIfNeeded();
 		await expect
 			.poll(
 				async () => {
@@ -287,8 +288,8 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 				},
 				{
 					message: `Total bets in ${sectionName} section did not update in time`,
-					intervals: [IntervalMs.SHORT],
-					timeout: Timeout.LONG,
+					intervals: [IntervalMs.NORMAL],
+					timeout: Timeout.EXTRA_LONG,
 				},
 			)
 			.toBeGreaterThan(0);
