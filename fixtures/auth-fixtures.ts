@@ -94,19 +94,21 @@ export const storageStateSuperadmin: Fixtures<
 	},
 };
 
-export const storageStateUserAPI: (
+export const storageStateUserAPI = (
 	username: string,
 	password?: string,
-) => Fixtures<
+): Fixtures<
 	{},
 	{},
 	PlaywrightTestArgs & PlaywrightTestOptions,
 	PlaywrightWorkerArgs & PlaywrightWorkerOptions
-> = (username, password) => ({
-	storageState: async ({}, use) => {
+> => ({
+	storageState: async ({}, use, workerInfo) => {
 		const storageStatePath = await getStorageStateUserAPI(
 			username,
 			password,
+			workerInfo.workerIndex,
+			workerInfo.project.name,
 		);
 		await use(storageStatePath);
 	},

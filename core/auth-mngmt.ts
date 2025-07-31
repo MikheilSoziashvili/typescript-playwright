@@ -17,7 +17,7 @@ import * as fs from "fs";
 import { CredentialsType } from "./types/types";
 import { GamdomApi } from "@api/gamdom-api";
 import { RegisterTestData } from "@dtos/test-data";
-import { getFilePath } from "./utils/utils";
+import { getFilePath, writeUserDetails } from "./utils/utils";
 import { HttpStatus } from "@enums/http-status";
 import { GamdomDb } from "database/gamdom-db";
 import { NewUserOptions } from "database/interfaces/storage-state-new-user-options";
@@ -87,38 +87,35 @@ export async function getStorageStateUser(
 
 export async function getStorageStateUserAPI(
 	username: string,
-	password?: string,
+	password: string | undefined,
+	workerIndex: number,
+	testInfoTitle: string,
 ): Promise<string> {
-	const gamdomApi = new GamdomApi();
-
-	if (!password) {
-		if (CREDENTIALS_MAP.has(username)) {
-			password = CREDENTIALS_MAP.get(username);
-		} else {
-			throw new Error(`No password provided for user ${username}`);
-		}
+	const predefinedPath = AUTH_STATE_PATH[username];
+	if (predefinedPath && fs.existsSync(predefinedPath)) {
+		return predefinedPath;
 	}
 
-	const response = await gamdomApi.login(username, password);
+	const resolvedPassword =
+		password ?? CREDENTIALS_MAP.get(username) ?? undefined;
+
+	if (!resolvedPassword) {
+		throw new Error(`Password must be provided for user ${username}`);
+	}
+
+	const gamdomApi = new GamdomApi();
+	const response = await gamdomApi.login(username, resolvedPassword);
+
 	expect(response.status(), "Login failed").toBe(HttpStatus.OK);
 	expect(
 		response.headers()["set-cookie"],
 		"No cookies received from login response",
 	).toBeTruthy();
 
-	let path = AUTH_STATE_PATH[username];
-
-	if (!path) {
-		path = getFilePath(`${username}.json`, storageStateDir);
-		AUTH_STATE_PATH[username] = path;
-	}
-
 	const context = await gamdomApi.getContext();
-	await context.storageState({
-		path: path,
-	});
+	const storageState = await context.storageState();
 
-	return path;
+	return writeUserDetails(testInfoTitle, workerIndex, storageState);
 }
 
 export async function getStorageStateNewUserAPI(

@@ -553,19 +553,43 @@ export const getUserDetailsByTestTitle = (
 	return data;
 };
 
+/**
+ * Writes any JSON-serializable data (e.g., user credentials or storage state)
+ * to a file named using the test title and worker index.
+ *
+ *
+ * @param title - The test title or project name to identify the file
+ * @param workerIndex - The Playwright worker index (ensures parallel safety)
+ * @param data - The JSON-serializable data to save (user credentials, storage state)
+ * @returns The full path to the written file
+ *
+ * @example
+ * // Writing user credentials
+ * writeUserDetails(testInfo.title, testInfo.workerIndex, {
+ *   username: userData.username,
+ *   password: userData.password,
+ *   email: userData.email,
+ * });
+ *
+ * @example
+ * // Writing Playwright storage state per worker
+ * const storageState = await context.storageState();
+ * return writeUserDetails(testInfoTitle, workerIndex, storageState);
+ */
 export const writeUserDetails = (
-	testInfoTitle: string,
+	title: string,
 	workerIndex: number,
-	userDetails: { username: string; password: string; email?: string },
-): void => {
-	const sanitizedTitle = testInfoTitle.replace(sanitizeTitlePattern, "_");
+	data: unknown,
+): string => {
+	const sanitizedTitle = title.replace(sanitizeTitlePattern, "_");
 	const filePath = path.join(
 		process.cwd(),
 		AUTH_PATH,
 		`${sanitizedTitle}_worker${workerIndex}.json`,
 	);
 
-	fs.writeFileSync(filePath, JSON.stringify(userDetails, null, 2), "utf-8");
+	fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8");
+	return filePath;
 };
 
 /**
