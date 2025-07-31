@@ -1,3 +1,4 @@
+import { RegisterTestData } from "@dtos/test-data";
 import { Protocol } from "@enums/api/protocols";
 import { BitcoinFeeEstimateMode } from "@enums/bitcoin";
 import { Cryptocurrency } from "@enums/cryptocurrencies";
@@ -6,6 +7,7 @@ import { HouseEdgeValue } from "@enums/house-edge-values";
 import { OriginalGame } from "@enums/original-games";
 import { RainStatus } from "@enums/rain-status";
 import { Unit } from "@enums/units";
+import { UserRoles } from "@enums/user-roles";
 import { VisibilityOptions } from "@enums/visibility-options";
 import { WalletType } from "@enums/wallet-types";
 import { CrashGamePage } from "@pages/crash-game-page/crash-game-page";
@@ -191,4 +193,10 @@ export type WalletBalanceItem = {
 
 	/** DEFAULT (main wallet) or VAULT (storage wallet) */
 	wallet_type: WalletType;
+};
+
+export type UserWithConfig = {
+	role: UserRoles;
+	userData: RegisterTestData;
+	config: Record<string, unknown>;
 };

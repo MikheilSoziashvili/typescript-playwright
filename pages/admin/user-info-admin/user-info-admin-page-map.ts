@@ -1,6 +1,6 @@
-import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
 import { UserInfoTabs } from "@enums/admin/user-info-tabs";
+import { Locator, Page } from "@playwright/test";
 
 export class UserInfoAdminPageMap extends BaseMap {
 	public constructor(page: Page) {
@@ -86,4 +86,14 @@ export class UserInfoAdminPageMap extends BaseMap {
 	public userInfoTab(tab: UserInfoTabs): Locator {
 		return this.userInfoTabs.getByTestId(`admin-user-info-item-${tab}`);
 	}
+
+	public get userInfoTabsContainer(): Locator {
+		return this.page.getByTestId("userInfoTabsContainer");
+	}
+
+	public userBadgeByName(badgeName: string): Locator {
+    return this.userInfoTabsContainer.locator("div[class*='UserInfo-styled__Badge']").filter({
+        hasText: badgeName,
+    });
+}
 }

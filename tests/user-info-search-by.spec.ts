@@ -4,12 +4,17 @@ import {
 	ADMIN_IP_USERS_PAGE_ENDPOINT,
 	INFO_ADMIN_PAGE_ENDPOINT,
 } from "@constants/page-endpoints";
+import { createUsers, getUserIds } from "@core/utils/user-setup-utils";
 import {
 	generateRandomString,
-	getRegisterDataRandomUsernameWithPrefix, parse_csv
+	getRegisterDataRandomUsernameWithPrefix,
+	parse_csv,
 } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
+import { UserClasses } from "@enums/db/user-classes";
+import { UserTags } from "@enums/db/user-tags";
+import { UserRoles } from "@enums/user-roles";
 import {
 	storageStateNewSuperAdminUserDB,
 	storageStateUserAPI,
@@ -147,5 +152,59 @@ test.describe("User info - search by", () => {
 				.assertThat()
 				.isUsernameDisplayedInTitle(VALID_USERNAME);
 		});
+	});
+});
+
+test.describe("User info - user badges", () => {
+	test.use(storageStateNewSuperAdminUserDB());
+
+	const userRoleData = Array.from(
+		{ length: 3 },
+		() => new RegisterTestData(),
+	);
+	const [userStreamerData, adminUserData, moderatorUserData] = userRoleData;
+
+	const usersWithConfigs = [
+		{
+			role: UserRoles.Streamer,
+			userData: userStreamerData,
+			config: { tags: UserTags.Streamer, userClass: UserClasses.User },
+		},
+		{
+			role: UserRoles.Admin,
+			userData: adminUserData,
+			config: { userClass: UserClasses.Admin },
+		},
+		{
+			role: UserRoles.Moderator,
+			userData: moderatorUserData,
+			config: { userClass: UserClasses.Moderator },
+		},
+	];
+
+	let userIds: Record<string, number>;
+
+	test.beforeAll(async ({ gamdomDb, gamdomApi }) => {
+		await createUsers(usersWithConfigs, gamdomDb);
+		userIds = await getUserIds(usersWithConfigs, gamdomApi);
+	});
+
+	usersWithConfigs.forEach(({ role }) => {
+		test(
+			`[ENG-7562] User info - user badges - ${role}`,
+			{ tag: ["@admin", "@admin-panel"] },
+			async ({ userInfoAdminPage }) => {
+				const userId = userIds[role];
+
+				await userInfoAdminPage.navigate();
+				await userInfoAdminPage
+					.assertThat()
+					.searchBySteam64orUserIdElementsDisplayed();
+
+				await userInfoAdminPage.searchForSteam64OrUserId(userId);
+
+				await userInfoAdminPage.assertThat().isBadgeDisplayed(role);
+			},
+		);
 	});
 });

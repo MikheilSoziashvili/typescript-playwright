@@ -56,4 +56,11 @@ export class UserInfoAdminPageAsserter extends BaseAsserter<UserInfoAdminPage> {
 			this.gamdomPage.map.showUserInfoButton,
 		]);
 	}
+
+	@step("Check if badge is displayed")
+	public async isBadgeDisplayed(badgeName: string): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.userBadgeByName(badgeName),
+		]);
+	}
 }
