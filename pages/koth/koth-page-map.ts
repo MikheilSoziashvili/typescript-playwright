@@ -21,7 +21,7 @@ export class KothMap extends BaseMap {
 	public get kothBannerCurrencyAmount(): Locator {
 		return this.kothBannerContainer
 			.getByTestId("koth-prize-display")
-			.locator("span.currency-amount");
+			.locator("span[class*='StyledCoins']");
 	}
 
 	public get kothBannerTimerContainer(): Locator {

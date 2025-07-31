@@ -92,7 +92,7 @@ export class PlinkoGamePageMap extends BaseMap {
 
 	public get remainingBetsBalanceLabel(): Locator {
 		return this.getSpanByClassContains(
-			"Balance-",
+			"BetsCountAmount-",
 			this.remainingBetsContainer,
 		);
 	}
