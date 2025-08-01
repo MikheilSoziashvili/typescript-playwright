@@ -147,9 +147,7 @@ export class HomePageMap extends BaseMap {
 
 	public get firstKothHeaderCurrencyAmount(): Locator {
 		return this.page
-			.locator(
-				'div[class*="swiper-slide"] span[class*="StyledCoins"]',
-			)
+			.locator('div[class*="swiper-slide"] span[class*="StyledCoins"]')
 			.first();
 	}
 
@@ -158,8 +156,8 @@ export class HomePageMap extends BaseMap {
 	}
 
 	public get recentWinsProfitAmount(): Locator {
-		return this.recentWinsSectionContainer.locator(
-			`span[class*='currency-amount']`,
+		return this.page.locator(
+			'[class*="RecentWins-styled__Item"] span.currency-amount',
 		);
 	}
 
