@@ -296,13 +296,6 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 			.toBeGreaterThan(0);
 	}
 
-	@step("Verify free spins pop-up visibility")
-	public async freeSpinsPopupIsVisible(): Promise<void> {
-		await expect(this.gamdomPage.map.freeSpinsNotification).toBeVisible({
-			timeout: Timeout.SHORT,
-		});
-	}
-
 	@step("Verify redirection to game")
 	public async userIsRedirectedToGame(): Promise<void> {
 		await expect(this.gamdomPage.page).toHaveURL(

@@ -124,8 +124,7 @@ test.describe("Grant free spins", { tag: ["@rewards", "@spins"] }, () => {
 				gameName: CasinoGameName.BARREL_BONANZA,
 				betAmount: 1,
 			});
-
-			await userHomePage.assertThat().freeSpinsPopupIsVisible();
+			await userHomePage.getNotification().assertThat().isDisplayed();
 			await userHomePage.clickPlayFromFreeSpinsNotification();
 			await userHomePage.assertThat().userIsRedirectedToGame();
 		});

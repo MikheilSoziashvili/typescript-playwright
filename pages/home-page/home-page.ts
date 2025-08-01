@@ -15,10 +15,14 @@ import { waitForSeconds } from "@core/utils/utils";
 import { WaitUntilState } from "@enums/wait-until-states";
 import { step } from "decorators/step";
 import { BoundingBoxCoordinate } from "@enums/bounding-box-coordinates";
+import { Notification } from "@pages/components/notification/notification";
 
 export class HomePage extends BasePage<HomePageMap> {
-	public constructor(page: Page) {
+	private readonly notification: Notification;
+
+	constructor(page: Page) {
 		super(page, new HomePageMap(page));
+		this.notification = new Notification(page);
 	}
 
 	public override async navigate(
@@ -181,13 +185,17 @@ export class HomePage extends BasePage<HomePageMap> {
 		await this.page.waitForLoadState(WaitUntilState.LOAD);
 	}
 
-	@step("Click play button")
-	public async clickPlayFromFreeSpinsNotification(): Promise<void> {
-		await this.map.notificationPlayButton.click();
-	}
-
 	@step("Click on top line header link")
 	public async clickOnTopLineHeaderLink(tab: string): Promise<void> {
 		await this.map.topLineHeaderLink(tab).click();
+	}
+
+	@step("Click play button")
+	public async clickPlayFromFreeSpinsNotification(): Promise<void> {
+		await this.notification.aknowledge();
+	}
+
+	public getNotification(): Notification {
+		return this.notification;
 	}
 }

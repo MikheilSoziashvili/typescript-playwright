@@ -183,14 +183,6 @@ export class HomePageMap extends BaseMap {
 		);
 	}
 
-	public get freeSpinsNotification(): Locator {
-		return this.page.getByTestId("notificationContainer");
-	}
-
-	public get notificationPlayButton(): Locator {
-		return this.page.getByTestId("notificationGotItButton");
-	}
-
 	public get originalsNavButton(): Locator {
 		return this.page.getByTestId("navLink-home");
 	}
