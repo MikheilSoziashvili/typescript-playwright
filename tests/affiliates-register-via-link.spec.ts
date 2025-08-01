@@ -1,5 +1,6 @@
-import { generateRandomString } from "@core/utils/utils";
+import { generateRandomString, jiraIssueId } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
+import { AnnotationType } from "@enums/playwright/annotationsTypes";
 import { ToastTitle } from "@enums/toast-titles";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
@@ -19,35 +20,41 @@ test.describe("Register with affiliate link", () => {
 		affiliateLink = await affiliatesPage.getAffiliateLink();
 	});
 
-	test("[ENG-1136] Register via affiliate link", async ({
-		homePage,
-		faqPage,
-	}) => {
-		await homePage.navigate({
-			link: affiliateLink,
-			cookies: { clearCookies: true },
-		});
-
-		const affiliate_user_register_data = new RegisterTestData();
-		await homePage.registerModal.fillInCredentials(
-			affiliate_user_register_data,
-			{
-				acceptTermsOfService: true,
-				acceptNewsOffers: true,
+	test(
+		"[ENG-1136] Register via affiliate link",
+		{
+			annotation: {
+				type: AnnotationType.BUG,
+				description: jiraIssueId(7309),
 			},
-		);
-		await Promise.all([
-			homePage.steps().verifyToastMessage(ToastTitle.SUCCESS),
-			homePage.registerModal.clickStartPlayingBtn(),
-		]);
-		await homePage
-			.assertThat()
-			.userIsRegistered(affiliate_user_register_data.username);
+		},
+		async ({ homePage, faqPage }) => {
+			await homePage.navigate({
+				link: affiliateLink,
+				cookies: { clearCookies: true },
+			});
 
-		await faqPage.navigate();
-		await faqPage.expandAffiliateCodeRegisteredUnderSection();
-		await faqPage
-			.assertThat()
-			.isAffiliateCodeVisible(AUTOMATION_AFFILIATES_CODE);
-	});
+			const affiliate_user_register_data = new RegisterTestData();
+			await homePage.registerModal.fillInCredentials(
+				affiliate_user_register_data,
+				{
+					acceptTermsOfService: true,
+					acceptNewsOffers: true,
+				},
+			);
+			await Promise.all([
+				homePage.steps().verifyToastMessage(ToastTitle.SUCCESS),
+				homePage.registerModal.clickStartPlayingBtn(),
+			]);
+			await homePage
+				.assertThat()
+				.userIsRegistered(affiliate_user_register_data.username);
+
+			await faqPage.navigate();
+			await faqPage.expandAffiliateCodeRegisteredUnderSection();
+			await faqPage
+				.assertThat()
+				.isAffiliateCodeVisible(AUTOMATION_AFFILIATES_CODE);
+		},
+	);
 });
