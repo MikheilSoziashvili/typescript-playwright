@@ -185,4 +185,9 @@ export class HomePage extends BasePage<HomePageMap> {
 	public async clickPlayFromFreeSpinsNotification(): Promise<void> {
 		await this.map.notificationPlayButton.click();
 	}
+
+	@step("Click on top line header link")
+	public async clickOnTopLineHeaderLink(tab: string): Promise<void> {
+		await this.map.topLineHeaderLink(tab).click();
+	}
 }

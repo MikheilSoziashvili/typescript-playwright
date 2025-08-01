@@ -76,3 +76,27 @@ test.describe(
 		});
 	},
 );
+
+test.describe("Top line header links tests", () => {
+	const topLineHeaderLinks = testData().fromCsvRaw({
+		file: CsvFilesName.HOMEPAGE_TOP_LINE_HEADER_LINKS,
+	});
+
+	topLineHeaderLinks.forEach(({ link, expectedUrl }) => {
+		test(
+			`[ENG-5256] Verify top line header link: ${link} for a logged out user`,
+			{ tag: "@homepage" },
+			async ({ homePage }) => {
+				await homePage.navigate();
+				await homePage
+					.assertThat()
+					.verifyLinksAreAccessible([expectedUrl]);
+
+				await homePage.clickOnTopLineHeaderLink(link);
+				await homePage
+					.assertThat()
+					.waitForAndVerifyCurrentUrlIs(expectedUrl);
+			},
+		);
+	});
+});

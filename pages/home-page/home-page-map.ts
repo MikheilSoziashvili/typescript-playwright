@@ -224,4 +224,12 @@ export class HomePageMap extends BaseMap {
 			`button[class*= ArrowButton] i[class*=icon-angle-right]`,
 		);
 	}
+
+	public get headerContainer(): Locator {
+		return this.page.getByTestId("headerContainer");
+	}
+
+	public topLineHeaderLink(tab: string): Locator {
+		return this.headerContainer.locator("span[class*='-navbarSecondary']", {hasText: `${tab}`});
+	}
 }
