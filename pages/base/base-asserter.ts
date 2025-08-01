@@ -1,4 +1,8 @@
-import { waitForPageReadyState, waitUntil, buildFullUrl } from "@core/utils/utils";
+import {
+	waitForPageReadyState,
+	waitUntil,
+	buildFullUrl,
+} from "@core/utils/utils";
 import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { CssStyleValues } from "@enums/playwright/cssStyleValues";
 import { DocumentReadyState } from "@enums/playwright/document-ready-states";
@@ -145,6 +149,16 @@ export class BaseAsserter<
 		);
 	}
 
+	@step("Check that elements have expected text")
+	public async checkElementsHaveText(
+		pairs: { locator: Locator; expectedText: string }[],
+		timeout?: number,
+	): Promise<void> {
+		for (const { locator, expectedText } of pairs) {
+			await expect(locator).toHaveText(expectedText, { timeout });
+		}
+	}
+
 	@step("Assert on elements")
 	protected async assertOnElements(
 		elements: Locator[],
@@ -258,8 +272,6 @@ export class BaseAsserter<
 		const rounded = Number(numericValue.toFixed(decimals));
 		expect(rounded).toBe(expected);
 	}
-
-
 
 	@step("Wait for and verify current URL is as expected")
 	public async waitForAndVerifyCurrentUrlIs(

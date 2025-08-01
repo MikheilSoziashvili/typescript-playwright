@@ -18,6 +18,10 @@ export class UserInfoInfoAdminPageMap extends BaseMap {
 		return this.page.getByTestId("adminInfoBanContainer");
 	}
 
+	public get sendNotificationContainer(): Locator {
+		return this.page.getByTestId("adminInfoSendNotificationContainer");
+	}
+
 	public get banReasonDropdown(): Locator {
 		return this.banUserContainer.getByTestId("Input");
 	}
@@ -51,7 +55,9 @@ export class UserInfoInfoAdminPageMap extends BaseMap {
 	}
 
 	public get sendNotificationButton(): Locator {
-		return this.page.getByTestId("adminInfoSendNotificationButton");
+		return this.sendNotificationContainer.getByTestId(
+			"adminInfoSendNotificationButton",
+		);
 	}
 
 	public banButtonForLinkingPlatforms(platform: string): Locator {
@@ -140,5 +146,23 @@ export class UserInfoInfoAdminPageMap extends BaseMap {
 
 	public setInactiveButtonInRow(row: Locator): Locator {
 		return row.locator('[data-testid^="adminNoteSetInactiveButton"]');
+	}
+
+	private getInputByTestId(testId: string): Locator {
+		return this.sendNotificationContainer
+			.getByTestId(testId)
+			.locator("input");
+	}
+
+	public get sendNotificationTitleInput(): Locator {
+		return this.getInputByTestId("adminInfoSendNotificationTitle");
+	}
+
+	public get sendNotificationDescriptionInput(): Locator {
+		return this.getInputByTestId("adminInfoSendNotificationDescription");
+	}
+
+	public get sendNotificationReasonInput(): Locator {
+		return this.getInputByTestId("adminInfoSendNotificationReason");
 	}
 }

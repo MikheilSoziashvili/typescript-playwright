@@ -1,0 +1,7 @@
+userTag,userRole
+UserInfoAdmin,SuperAdmin
+UserInfoAdmin,admin
+UserInfoAdmin,user
+SuperAdmin,SuperAdmin
+SuperAdmin,admin
+SuperAdmin,user

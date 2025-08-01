@@ -4,6 +4,8 @@ import { UserInfoInfoAdminPage } from "./user-info-info-admin-page";
 import { Timeout } from "@enums/timeout";
 import { step } from "decorators/step";
 import { Attributes } from "@enums/playwright/htmlAttributes";
+import { ToastTitle } from "@enums/toast-titles";
+import { ToastSubTitle } from "@enums/toast-subtitles";
 
 export class UserInfoInfoAdminPageAsserter extends BaseAsserter<UserInfoInfoAdminPage> {
 	public constructor(page: UserInfoInfoAdminPage) {
@@ -127,5 +129,13 @@ export class UserInfoInfoAdminPageAsserter extends BaseAsserter<UserInfoInfoAdmi
 	): Promise<void> {
 		const cell = this.gamdomPage.map.noteTextCellInRow(row);
 		await expect(cell).toContainText(expectedText);
+	}
+
+	@step("Notification sent successfully toast is displayed")
+	public async notificationSentToastIsDisplayed(): Promise<void> {
+		await this.gamdomPage.toast.assertThat().titleIs(ToastTitle.SUCCESS);
+		await this.gamdomPage.toast
+			.assertThat()
+			.subTitleIs(ToastSubTitle.NOTIFICATION_SENT);
 	}
 }
