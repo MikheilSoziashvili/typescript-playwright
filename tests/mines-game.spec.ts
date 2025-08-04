@@ -30,7 +30,7 @@ test.describe("Mines tests", () => {
 		{
 			tag: ["@originals", "@mines"],
 		},
-		async ({ minesGamePage }, testInfo) => {
+		async ({ minesGamePage, userBalanceHandler }, testInfo) => {
 			test.fixme(
 				testInfo.project.name === BrowserName.FIREFOX,
 				"https://gamdom.atlassian.net/browse/ENG-7162",
@@ -40,7 +40,7 @@ test.describe("Mines tests", () => {
 			await minesGamePage.steps().placeBetAndConfigureMines(minesBetData);
 
 			const accountBalanceBeforeBet =
-				await minesGamePage.authenticatedHeader.getAccountBalance();
+				await userBalanceHandler.walletBalanceInUsd();
 
 			const totalBetsPlaced = await minesGamePage.pickRandomTilesUntilWin(
 				minesBetData.betAmount,
@@ -66,13 +66,13 @@ test.describe("Mines tests", () => {
 		{
 			tag: ["@smoke", "@originals", "@mines"],
 		},
-		async ({ minesGamePage }) => {
+		async ({ minesGamePage, userBalanceHandler }) => {
 			await minesGamePage.navigateAndWaitForGameToLoad();
 
 			await minesGamePage.steps().placeBetAndConfigureMines(minesBetData);
 
 			const accountBalanceBeforeBet =
-				await minesGamePage.authenticatedHeader.getAccountBalance();
+				await userBalanceHandler.walletBalanceInUsd();
 
 			const { totalBetsPlaced, hasWonAtLeastOnce } =
 				await minesGamePage.pickRandomTilesUntilBombIsCaught(
@@ -128,7 +128,7 @@ test.describe("Mines tests", () => {
 		{
 			tag: ["@originals", "@mines"],
 		},
-		async ({ minesGamePage, userBalanceHandler }) => {
+		async ({ minesGamePage }) => {
 			const minesBetDataForAutobet = new MinesBetTestData({
 				betAmount: 1,
 				minesNumber: 3,
@@ -147,9 +147,6 @@ test.describe("Mines tests", () => {
 
 			await minesGamePage.navigateAndWaitForGameToLoad();
 
-			const accountBalanceBeforeBet =
-				await userBalanceHandler.walletBalanceInUsd();
-
 			await minesGamePage
 				.steps()
 				.openAndConfigureAutobet(
@@ -159,22 +156,14 @@ test.describe("Mines tests", () => {
 					minesAutobetData.onLossIncreaseByPercent,
 				);
 
-			const { betAmountHistory, winningBets } = await minesGamePage
+			await minesGamePage
 				.steps()
 				.pickRandomTilesUntilBombCaughtAutobet(
 					minesBetDataForAutobet.betAmount,
 					minesAutobetData.onWinIncreaseByPercent,
 					minesAutobetData.onLossIncreaseByPercent,
+					minesBetDataForAutobet.cashoutMultiplier,
 				);
-
-			await minesGamePage
-				.assertThat()
-				.accountBalanceAfterAutobetIsCorrect({
-					accountBalanceBeforeBet: accountBalanceBeforeBet,
-					betAmountHistory: betAmountHistory,
-					winningBets: winningBets,
-					cashoutMultiplier: minesBetDataForAutobet.cashoutMultiplier,
-				});
 		},
 	);
 });

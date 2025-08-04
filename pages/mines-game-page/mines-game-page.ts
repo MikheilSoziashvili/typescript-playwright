@@ -1,10 +1,6 @@
 import { MINES_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
-import {
-	roundToDecimals,
-	truncateToDecimals,
-	waitUntil,
-} from "@core/utils/utils";
+import { roundToDecimals, waitUntil } from "@core/utils/utils";
 import { Timeout } from "@enums/timeout";
 import { logger } from "@logger/logger";
 import { BasePage } from "@pages/base/base-page";
@@ -72,16 +68,15 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 		winnings: number,
 	): number {
 		const rawBalance = initialBalance - totalBets + winnings;
-		const roundedBalance = roundToDecimals(rawBalance, 2);
-		const finalBalance = truncateToDecimals(roundedBalance, 1);
+		const roundedBalance = roundToDecimals(rawBalance, 1);
 		logger.info(
-			`Raw balance: ${rawBalance}, Rounded balance: ${roundedBalance}, Final balance: ${finalBalance}`,
+			`Raw balance: ${rawBalance}, Rounded balance: ${roundedBalance}`,
 		);
-		return finalBalance;
+		return roundedBalance;
 	}
 
 	public calculateWinnings(betAmount: number, multiplier: number): number {
-		return betAmount * multiplier;
+		return roundToDecimals(betAmount * multiplier, 2);
 	}
 
 	@step("Get safe tiles count")

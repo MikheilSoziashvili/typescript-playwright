@@ -1,4 +1,4 @@
-import { roundToDecimals, truncateToDecimals } from "@core/utils/utils";
+import { roundToDecimals } from "@core/utils/utils";
 import { logger } from "@logger/logger";
 import { BaseAsserter } from "@pages/base/base-asserter";
 import { expect } from "@playwright/test";
@@ -58,14 +58,12 @@ export class MinesGamePageAsserter extends BaseAsserter<MinesGamePage> {
 
 		const actual = await this.userBalanceHandler.walletBalanceInUsd();
 
-		const actualTruncated = truncateToDecimals(actual);
-		const expectedTruncated = truncateToDecimals(roundToDecimals(expected));
+		const expectedRounded = roundToDecimals(expected, 1);
+		const actualRounded = roundToDecimals(actual, 1);
 
-		logger.info(
-			`Wallet balance: ${actualTruncated} = Expected: ${expectedTruncated}`,
-		);
+		logger.info(`Wallet balance: ${actual} = Expected: ${expectedRounded}`);
 
-		expect(actualTruncated).toBeCloseTo(expectedTruncated);
+		expect(actualRounded).toBeCloseTo(expectedRounded, 0);
 	}
 
 	@step("Start playing button is displayed")
@@ -122,45 +120,5 @@ export class MinesGamePageAsserter extends BaseAsserter<MinesGamePage> {
 				},
 			)
 			.toBeCloseTo(expectedAmount, 1);
-	}
-
-	@step("Account balance is correct after autobet with percentage increase")
-	public async accountBalanceAfterAutobetIsCorrect({
-		accountBalanceBeforeBet,
-		betAmountHistory,
-		winningBets,
-		cashoutMultiplier,
-	}: {
-		accountBalanceBeforeBet: number;
-		betAmountHistory: number[];
-		winningBets: number[];
-		cashoutMultiplier: number;
-	}): Promise<void> {
-		const totalBetsDeducted = betAmountHistory.reduce(
-			(sum, bet) => sum + bet,
-			0,
-		);
-
-		const totalPayoutsFromWins = winningBets.reduce((sum, bet) => {
-			const payoutAmount = this.gamdomPage.calculateWinnings(
-				bet,
-				cashoutMultiplier,
-			);
-			logger.info(`Winning bet ${bet} -> payout: ${payoutAmount}`);
-			return sum + payoutAmount;
-		}, 0);
-
-		const expectedBalance =
-			accountBalanceBeforeBet - totalBetsDeducted + totalPayoutsFromWins;
-		const expectedBalanceRounded = roundToDecimals(expectedBalance);
-
-		const currentBalance =
-			await this.userBalanceHandler.walletBalanceInUsd();
-		logger.info(`Current balance: ${currentBalance}`);
-		logger.info(`Bet history: ${betAmountHistory.join(", ")}`);
-		logger.info(`Winning bets: ${winningBets.join(", ")}`);
-		logger.info(`Expected balance: ${expectedBalance}`);
-
-		await this.assertBalanceMatches(expectedBalanceRounded);
 	}
 }

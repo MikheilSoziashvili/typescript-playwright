@@ -91,24 +91,21 @@ export class MinesGamePageSteps extends BasePageStep<MinesGamePage> {
 	}
 
 	@step(
-		"Pick random tiles until bomb caught (Autobet with bet amount tracking)",
+		"Pick random tiles until bomb caught (Autobet with per-round balance assertions)",
 	)
 	public async pickRandomTilesUntilBombCaughtAutobet(
 		betAmount: number,
 		onWinPercentage: number,
 		onLossPercentage: number,
+		cashoutMultiplier: number,
 	): Promise<{
 		totalBetsPlaced: number;
 		hasWonAtLeastOnce: boolean;
-		betAmountHistory: number[];
-		winningBets: number[];
 	}> {
 		let totalBetsPlaced = 0;
 		let hasWonAtLeastOnce = false;
 		let isBombCaught = false;
 		let currentBetAmount = betAmount;
-		const betAmountHistory: number[] = [];
-		const winningBets: number[] = [];
 		let roundCount = 0;
 		const maxRounds = 25;
 
@@ -119,7 +116,8 @@ export class MinesGamePageSteps extends BasePageStep<MinesGamePage> {
 			roundCount++;
 			logger.info(`=== ROUND ${roundCount} ===`);
 
-			betAmountHistory.push(currentBetAmount);
+			const accountBalanceBeforeRound =
+				await this.userBalanceHandler.walletBalanceInUsd();
 			totalBetsPlaced += currentBetAmount;
 
 			const roundResult =
@@ -131,6 +129,8 @@ export class MinesGamePageSteps extends BasePageStep<MinesGamePage> {
 				betAmount,
 				currentBetAmount,
 				onLossPercentage,
+				accountBalanceBeforeRound,
+				cashoutMultiplier,
 			);
 			isBombCaught = bombResult.isBombCaught;
 			currentBetAmount = bombResult.currentBetAmount;
@@ -141,7 +141,8 @@ export class MinesGamePageSteps extends BasePageStep<MinesGamePage> {
 				hasWonAtLeastOnce,
 				currentBetAmount,
 				onWinPercentage,
-				winningBets,
+				accountBalanceBeforeRound,
+				cashoutMultiplier,
 			);
 			hasWonAtLeastOnce = winResult.hasWonAtLeastOnce;
 			currentBetAmount = winResult.currentBetAmount;
@@ -154,8 +155,6 @@ export class MinesGamePageSteps extends BasePageStep<MinesGamePage> {
 		return {
 			totalBetsPlaced,
 			hasWonAtLeastOnce,
-			betAmountHistory,
-			winningBets,
 		};
 	}
 
@@ -166,6 +165,8 @@ export class MinesGamePageSteps extends BasePageStep<MinesGamePage> {
 		betAmount: number,
 		currentBetAmount: number,
 		onLossPercentage: number,
+		accountBalanceBeforeRound: number,
+		cashoutMultiplier: number,
 	): Promise<{
 		isBombCaught: boolean;
 		currentBetAmount: number;
@@ -191,21 +192,34 @@ export class MinesGamePageSteps extends BasePageStep<MinesGamePage> {
 				currentBetAmount: betAmount,
 				shouldContinue: true,
 			};
-		} else {
-			const nextBetAmount = calculateBetAmountWithPercentage(
-				currentBetAmount,
-				onLossPercentage,
-			);
-			logger.info(`Next bet amount after loss: ${nextBetAmount}`);
-			await this.gamdomPage
-				.assertThat()
-				.verifyBetAmountInField(nextBetAmount);
-			return {
-				isBombCaught: true,
-				currentBetAmount: nextBetAmount,
-				shouldContinue: false,
-			};
 		}
+
+		await this.gamdomPage
+			.assertThat()
+			.accountBalanceAfterGameFlowIsCorrect({
+				accountBalanceBeforeBet: accountBalanceBeforeRound,
+				betAmount: currentBetAmount,
+				totalBetsPlaced: currentBetAmount,
+				cashoutMultiplier: cashoutMultiplier,
+				numberOfWins: 0,
+			});
+
+		const nextBetAmount = calculateBetAmountWithPercentage(
+			currentBetAmount,
+			onLossPercentage,
+		);
+
+		logger.info(`Next bet amount after loss: ${nextBetAmount}`);
+
+		await this.gamdomPage
+			.assertThat()
+			.verifyBetAmountInField(nextBetAmount);
+
+		return {
+			isBombCaught: true,
+			currentBetAmount: nextBetAmount,
+			shouldContinue: false,
+		};
 	}
 
 	@step("Handle case when win is detected in Autobet")
@@ -214,24 +228,42 @@ export class MinesGamePageSteps extends BasePageStep<MinesGamePage> {
 		hasWonAtLeastOnce: boolean,
 		currentBetAmount: number,
 		onWinPercentage: number,
-		winningBets: number[],
-	): Promise<{ hasWonAtLeastOnce: boolean; currentBetAmount: number }> {
+		accountBalanceBeforeRound: number,
+		cashoutMultiplier: number,
+	): Promise<{
+		hasWonAtLeastOnce: boolean;
+		currentBetAmount: number;
+	}> {
 		if (!isWin) {
 			return { hasWonAtLeastOnce, currentBetAmount };
 		}
 
 		logger.info("Win detected in autobet round");
-		winningBets.push(currentBetAmount);
+
+		await this.gamdomPage
+			.assertThat()
+			.accountBalanceAfterGameFlowIsCorrect({
+				accountBalanceBeforeBet: accountBalanceBeforeRound,
+				betAmount: currentBetAmount,
+				totalBetsPlaced: currentBetAmount,
+				cashoutMultiplier: cashoutMultiplier,
+				numberOfWins: 1,
+			});
 
 		const nextBetAmount = calculateBetAmountWithPercentage(
 			currentBetAmount,
 			onWinPercentage,
 		);
+
 		logger.info(`Next bet amount after win: ${nextBetAmount}`);
+
 		await this.gamdomPage
 			.assertThat()
 			.verifyBetAmountInField(nextBetAmount);
 
-		return { hasWonAtLeastOnce: true, currentBetAmount: nextBetAmount };
+		return {
+			hasWonAtLeastOnce: true,
+			currentBetAmount: nextBetAmount,
+		};
 	}
 }
