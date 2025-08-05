@@ -46,6 +46,7 @@ import { Browser, BrowserContext, Cookie, Locator, Page } from "playwright";
 import { PNG, PNGOptions } from "pngjs";
 import sharp from "sharp";
 import xml2js from "xml2js";
+import { isFileNotFoundError } from "./error-utils";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -672,15 +673,22 @@ export async function isElementVisible(locator: Locator): Promise<boolean> {
 export async function deleteFilesWithFilePaths(
 	filePaths: string[],
 ): Promise<void> {
-	filePaths.forEach((filePath) => {
-		fs.unlink(filePath, (err) => {
-			if (err) {
-				logger.error(`Error deleting file ${filePath}:`, err);
+	const deletePromises = filePaths.map(async (filePath) => {
+		try {
+			await fs.promises.unlink(filePath);
+			logger.info(`File deleted: ${filePath}`);
+		} catch (err) {
+			if (isFileNotFoundError(err)) {
+				logger.warn(
+					`File does not exist, skipping deletion: ${filePath}`,
+				);
 			} else {
-				logger.info(`File deleted: ${filePath}`);
+				logger.error(`Error deleting file ${filePath}:`, err);
 			}
-		});
+		}
 	});
+
+	await Promise.all(deletePromises);
 }
 
 /**
