@@ -22,9 +22,9 @@ export class UserInfoAdminPageMap extends BaseMap {
 	}
 
 	public get searchByUsernameMenuNoResults(): Locator {
-		return this.searchByUsernameContainer.locator(
-			'div.Select-noresults:text-is("Type to search")',
-		);
+		return this.searchByUsernameContainer.locator(".Select-noresults", {
+			hasText: "Type to search",
+		});
 	}
 
 	public searchByUsernameMenuOption(option: string): Locator {
@@ -92,8 +92,10 @@ export class UserInfoAdminPageMap extends BaseMap {
 	}
 
 	public userBadgeByName(badgeName: string): Locator {
-    return this.userInfoTabsContainer.locator("div[class*='UserInfo-styled__Badge']").filter({
-        hasText: badgeName,
-    });
-}
+		return this.userInfoTabsContainer
+			.locator("div[class*='UserInfo-styled__Badge']")
+			.filter({
+				hasText: badgeName,
+			});
+	}
 }
