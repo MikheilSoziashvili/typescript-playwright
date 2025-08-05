@@ -611,4 +611,10 @@ export class GamdomApi extends BaseApi {
 			await this.createRedirect(fromPath, toPath);
 		}
 	}
+
+	public async getPublicRedirectResponse(
+		fromPath: string,
+	): Promise<APIResponse> {
+		return this.get({ endpoint: fromPath }, { maxRedirects: 0 });
+	}
 }

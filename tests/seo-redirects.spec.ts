@@ -2,6 +2,11 @@ import { test } from "@fixtures/fixtures";
 import { storageStateNewSuperAdminUserDB } from "../fixtures/auth-fixtures";
 import { generateRandomString, getCookieHeader } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
+import { HttpStatus } from "@enums/http-status";
+import {
+	ESPORTS_REDIRECT_FROM,
+	ESPORTS_REDIRECT_TO,
+} from "../constants/seo-redirects";
 
 test.describe("SEO Redirects tests", () => {
 	test.describe("SEO Redirects - create, edit, delete and check history", () => {
@@ -128,5 +133,22 @@ test.describe("SEO Redirects tests", () => {
 				.assertThat()
 				.waitForAndVerifyCurrentUrlIs(`${toPath}`);
 		});
+	});
+
+	test.describe("SEO Redirects - public URL redirects", () => {
+		test(
+			"[ENG-6190] - /esports redirects to /sports/esports with 301 status",
+			{ tag: "@sports/e-sports betting" },
+			async ({ gamdomApi, gamdomApiAsserter }) => {
+				const response = await gamdomApi.getPublicRedirectResponse(
+					ESPORTS_REDIRECT_FROM,
+				);
+				await gamdomApiAsserter.assertPublicRedirect(
+					response,
+					HttpStatus.MOVED_PERMANENTLY,
+					ESPORTS_REDIRECT_TO,
+				);
+			},
+		);
 	});
 });
