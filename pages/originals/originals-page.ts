@@ -255,9 +255,15 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 				break;
 			}
 			case OriginalGame.Mines: {
-				await (gamePage as MinesGamePage)
-					.steps()
-					.performManualCashout();
+				const isCashoutAvailable = await (
+					gamePage as MinesGamePage
+				).map.manualCashoutButton.isVisible();
+
+				if (isCashoutAvailable) {
+					await (gamePage as MinesGamePage)
+						.steps()
+						.performManualCashout();
+				}
 				await (gamePage as MinesGamePage)
 					.assertThat()
 					.startPlayingButtonIsDisplayed();

@@ -60,7 +60,7 @@ const gameTestData: GameTestData[] = [
 	{
 		game: OriginalGame.Mines,
 		betAmount: 100,
-		betOption: 3,
+		betOption: 2,
 	},
 ];
 
