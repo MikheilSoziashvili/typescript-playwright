@@ -64,12 +64,7 @@ test.describe("Footer redirects tests", () => {
 			footer,
 		}) => {
 			await homePage.navigate();
-			await Promise.all([
-				homePage.page.waitForURL(record.expectedURL, {
-					timeout: Timeout.MEDIUM,
-				}),
-				footer.openFooterLinkByPlaceholder(record.linkName),
-			]);
+			await footer.openFooterLinkByPlaceholder(record.linkName);
 			await footer
 				.assertThat()
 				.waitForAndVerifyCurrentUrlIs(record.expectedURL);
