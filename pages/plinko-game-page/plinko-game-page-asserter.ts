@@ -205,4 +205,32 @@ export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 			this.gamdomPage.map.inGameChipsHistoryButton,
 		]);
 	}
+
+	@step("Verify balance and 'Your Bet' updated simultaneously")
+	async balanceAndYourBetUpdatedSimultaneosly(
+		initialAccountBalance: number,
+		initialYourBetBalance: number,
+	): Promise<void> {
+		await expect
+			.poll(async () => {
+				const currentAccountBalance =
+					await this.userBalanceHandler.walletBalanceInUsd();
+				const currentYourBetBalance =
+					await this.gamdomPage.getYourBetValue();
+
+				return {
+					balanceChanged:
+						currentAccountBalance !== initialAccountBalance,
+					yourBetChanged:
+						currentYourBetBalance !== initialYourBetBalance,
+					valuesMatch:
+						currentAccountBalance === currentYourBetBalance,
+				};
+			})
+			.toMatchObject({
+				balanceChanged: true,
+				yourBetChanged: true,
+				valuesMatch: true,
+			});
+	}
 }

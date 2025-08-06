@@ -129,4 +129,9 @@ export class PlinkoGamePage extends BasePage<PlinkoGamePageMap> {
 	public async getBetAmountValue(): Promise<string> {
 		return this.map.betAmountInput.inputValue();
 	}
+
+	@step("Get 'Your Bet' value as number")
+	public async getYourBetValue(): Promise<number> {
+		return parseBalance(await this.map.yourBetValue.innerText());
+	}
 }

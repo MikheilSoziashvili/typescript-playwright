@@ -172,4 +172,8 @@ export class PlinkoGamePageMap extends BaseMap {
 	public get doubleButton(): Locator {
 		return this.getButtonByText("x2");
 	}
+
+	public get yourBetValue(): Locator {
+		return this.page.getByTestId("Plinko-balance");
+	}
 }
