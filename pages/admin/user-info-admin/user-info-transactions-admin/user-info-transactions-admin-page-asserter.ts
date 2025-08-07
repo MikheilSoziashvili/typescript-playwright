@@ -45,4 +45,64 @@ export class UserInfoTransactionsAdminPageAsserter extends BaseAsserter<UserInfo
 			)}`,
 		).toHaveLength(0);
 	}
+	
+	/**
+	 * Extracts the "Balance After" values for all winning rounds from the transactions table.
+	 * 
+	 * This method uses the transaction details column to find only rows marked as "WIN",
+	 * then maps those rows to the corresponding values in the Balance After column.
+	 * The returned list is reversed to ensure newest transactions appear first.
+	 *
+	 * @param transactionDetails - The text contents of the transaction details column.
+	 * @param allBalanceAfterValues - The text contents of the Balance After column.
+	 * @returns An array of balance strings for winning rounds, sorted newest first.
+	 */
+	private getBalancesForWinningRounds(
+		transactionDetails: string[],
+		allBalanceAfterValues: string[],
+	): string[] {
+		const winRowIndexes = transactionDetails
+			.map((text, rowIndex) => (text.includes("WIN") ? rowIndex : -1))
+			.filter((rowIndex) => rowIndex !== -1);
+
+		return winRowIndexes
+			.map((rowIndex) => allBalanceAfterValues[rowIndex])
+			.reverse();
+	}
+
+	@step("Verify logs table Balance After column values")
+	public async verifyLogsTableBalanceAfterColumnValues(
+		expectedValues: number[],
+	): Promise<void> {
+		await this.checkElementsAreVisible([this.gamdomPage.map.logsTableBody]);
+
+		const [transactionDetails, allBalanceAfterValues] = await Promise.all([
+			this.gamdomPage.map.logsTableTransactionDetailsColumn.allTextContents(),
+			this.gamdomPage.map.logsTableBalanceAfterColumn.allTextContents(),
+		]);
+
+		const winBalances = this.getBalancesForWinningRounds(
+			transactionDetails,
+			allBalanceAfterValues,
+		);
+
+		logger.info(`Balance After WIN rows: ${JSON.stringify(winBalances)}`);
+
+		const formattedExpectedValues = expectedValues.map(
+			(balance) => `$${balance.toLocaleString()}`,
+		);
+
+		expect(winBalances.length).toBe(formattedExpectedValues.length);
+		expect(winBalances).toEqual(formattedExpectedValues);
+	}
+
+	@step("Verify Plinko total wagered")
+	public async verifyPlinkoTotalWagered(
+		expectedValue: string,
+	): Promise<void> {
+		const actualValue =
+			await this.gamdomPage.map.plinkoWageredCell.innerText();
+		logger.info(`Plinko total wagered displayed: ${actualValue}`);
+		expect(actualValue.trim()).toBe(expectedValue);
+	}
 }

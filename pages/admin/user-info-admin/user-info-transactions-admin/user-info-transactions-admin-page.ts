@@ -43,4 +43,9 @@ export class UserInfoTransactionsAdminPage extends BasePage<UserInfoTransactions
 	public async clearLogTypesFieldInput(): Promise<void> {
 		await this.map.clearLogTypesButton.click();
 	}
+
+	@step("Check the stats calculation box")
+	public async checkStatsCalculationBox(): Promise<void> {
+		await this.map.statsCalculationCheckbox.check();
+	}
 }

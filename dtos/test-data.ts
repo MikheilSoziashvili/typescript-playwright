@@ -72,6 +72,14 @@ export class BetTestData {
 	}
 }
 
+export class PlinkoBetTestData {
+	public betAmount: number;
+
+	constructor(options: { betAmount?: number } = {}) {
+		this.betAmount = options.betAmount ?? 0.10;
+	}
+}
+
 export class MinesBetTestData {
 	public betAmount: number;
 	public minesNumber: number;

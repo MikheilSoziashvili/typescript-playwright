@@ -28,4 +28,11 @@ export class UserInfoTransactionsAdminPageSteps extends BasePageStep<UserInfoTra
 			await this.gamdomPage.clearLogTypesFieldInput();
 		}
 	}
+
+	@step("Select log types only")
+	public async selectLogTypesOnly(logTypes: LogType[]): Promise<void> {
+		for (const logType of logTypes) {
+			await this.gamdomPage.selectLogTypesToFetch(logType);
+		}
+	}
 }

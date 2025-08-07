@@ -59,4 +59,24 @@ export class UserInfoTransactionsAdminPageMap extends BaseMap {
 			'[data-testid="transaction-details"]:not(.user-event-info)',
 		);
 	}
+
+	public get statsCalculationCheckbox(): Locator {
+		return this.transactionsAdminPageContent.getByTestId(
+			`stats-calculations-checkbox`,
+		);
+	}
+
+	public get logsTableBalanceAfterColumn(): Locator {
+		return this.logsTableBody.locator(
+			'[data-testid="transaction-balance-after"]:not(.user-event-info)',
+		);
+	}
+
+	public get wageredStatsTable(): Locator {
+		return this.page.getByTestId("wagered-stats-table");
+	}
+
+	public get plinkoWageredCell(): Locator {
+		return this.wageredStatsTable.getByTestId("plinko-wagered");
+	}
 }

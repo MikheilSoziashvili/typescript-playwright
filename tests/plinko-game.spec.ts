@@ -8,13 +8,17 @@ import {
 	parse_csv,
 	setAuthenticationCookies,
 } from "@core/utils/utils";
-import { RegisterTestData } from "@dtos/test-data";
+import { PlinkoBetTestData, RegisterTestData } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
+import { LogType } from "@enums/log-types";
 import { OriginalGame } from "@enums/original-games";
 import { Unit } from "@enums/units";
 import { UserMenuOption } from "@enums/user-menu-options";
 import { WalletType } from "@enums/wallet-types";
-import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
+import {
+	storageStateNewSuperAdminUserDB,
+	storageStateNewUserDB,
+} from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import { logger } from "@logger/logger";
 import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
@@ -211,6 +215,72 @@ test.describe(
 					});
 				});
 			});
+		});
+
+		test.describe("Plinko transactions", () => {
+			const superAdminData = new RegisterTestData({
+				useGamdomEmailDomain: true,
+			});
+			test.use(
+				storageStateNewSuperAdminUserDB({
+					username: superAdminData.username,
+					password: superAdminData.password,
+				}),
+			);
+
+			test(
+				"[ENG-5472] Verify Plinko is displayed in transactions tab",
+				{ tag: "@transactions" },
+				async ({
+					plinkoGamePage,
+					userInfoAdminPage,
+					transactionsAdminPage,
+				}) => {
+					const plinkoBetData = new PlinkoBetTestData({
+						betAmount: 10,
+					});
+					const numberOfGames = 5;
+					await plinkoGamePage.navigate();
+
+					const balances = await plinkoGamePage
+						.steps()
+						.playMultipleGamesAndGetBalances(
+							plinkoBetData.betAmount,
+							numberOfGames,
+						);
+
+					logger.info(
+						`Balances array after playing: ${JSON.stringify(
+							balances,
+						)}`,
+					);
+
+					const totalWagered = `$${(
+						plinkoBetData.betAmount * numberOfGames
+					).toFixed(2)}`;
+					logger.info(`Total wagered in Plinko: ${totalWagered}`);
+
+					await userInfoAdminPage.navigate();
+					await userInfoAdminPage
+						.steps()
+						.showUserDetails(superAdminData.username);
+					await transactionsAdminPage.navigateToAdminUserTransactionsPage();
+					await transactionsAdminPage.checkStatsCalculationBox();
+
+					await transactionsAdminPage
+						.steps()
+						.selectLogTypesOnly([LogType.BET, LogType.BET_WIN]);
+
+					await transactionsAdminPage.clickFetchData();
+
+					await transactionsAdminPage
+						.assertThat()
+						.verifyLogsTableBalanceAfterColumnValues(balances);
+					await transactionsAdminPage
+						.assertThat()
+						.verifyPlinkoTotalWagered(totalWagered);
+				},
+			);
 		});
 	},
 );

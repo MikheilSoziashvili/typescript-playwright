@@ -122,8 +122,8 @@ export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 		);
 	}
 
-	@step("Start manual bet")
-	public async startManualBet(
+	@step("Start manual bet with balance check")
+	public async startManualBetWithBalanceCheck(
 		betAmount: string,
 		options?: {
 			rowsValue?: number | PlinkoRowsOption;
@@ -209,5 +209,24 @@ export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 		winnings: number,
 	): Promise<number> {
 		return accountBalanceBeforeBet - betAmount + winnings;
+	}
+
+	@step("Play multiple Plinko games and get balances")
+	public async playMultipleGamesAndGetBalances(
+		betAmount: number,
+		numberOfGames: number,
+	): Promise<number[]> {
+		const balances: number[] = [];
+
+		for (let i = 0; i < numberOfGames; i++) {
+			await this.gamdomPage.startManualBet(betAmount.toString());
+			await this.waitForSlidersToBeActive();
+
+			const balanceAfterBet =
+				await this.userBalanceHandler.walletBalanceInUsd();
+			balances.push(balanceAfterBet);
+		}
+
+		return balances;
 	}
 }
