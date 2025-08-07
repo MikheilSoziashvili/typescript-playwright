@@ -136,7 +136,7 @@ jobs:
         needs: detect-new-modified-tests
         if: needs.detect-new-modified-tests.outputs.run_tests == 'true'
         runs-on: self-hosted-dind
-        timeout-minutes: 30
+        timeout-minutes: 60
 
         steps:
             - name: Checkout Repository

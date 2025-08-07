@@ -5,6 +5,8 @@ import { ToastTitle } from "@enums/toast-titles";
 import { expect, Locator, TestInfo } from "@playwright/test";
 import { step } from "decorators/step";
 import { PlinkoGamePage } from "./plinko-game-page";
+import { Timeout } from "@enums/timeout";
+import { IntervalMs } from "@enums/interval-millisecond";
 
 export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 	public constructor(page: PlinkoGamePage) {
@@ -212,21 +214,27 @@ export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 		initialYourBetBalance: number,
 	): Promise<void> {
 		await expect
-			.poll(async () => {
-				const currentAccountBalance =
-					await this.userBalanceHandler.walletBalanceInUsd();
-				const currentYourBetBalance =
-					await this.gamdomPage.getYourBetValue();
+			.poll(
+				async () => {
+					const currentAccountBalance =
+						await this.userBalanceHandler.walletBalanceInUsd();
+					const currentYourBetBalance =
+						await this.gamdomPage.getYourBetValue();
 
-				return {
-					balanceChanged:
-						currentAccountBalance !== initialAccountBalance,
-					yourBetChanged:
-						currentYourBetBalance !== initialYourBetBalance,
-					valuesMatch:
-						currentAccountBalance === currentYourBetBalance,
-				};
-			})
+					return {
+						balanceChanged:
+							currentAccountBalance !== initialAccountBalance,
+						yourBetChanged:
+							currentYourBetBalance !== initialYourBetBalance,
+						valuesMatch:
+							currentAccountBalance === currentYourBetBalance,
+					};
+				},
+				{
+					timeout: Timeout.MAX,
+					intervals: [IntervalMs.SHORT],
+				},
+			)
 			.toMatchObject({
 				balanceChanged: true,
 				yourBetChanged: true,

@@ -8,7 +8,6 @@ import { UserTags } from "@enums/db/user-tags";
 import { test } from "@fixtures/fixtures";
 import { environment_url } from "configuration";
 import { storageStateNewUserDB } from "../fixtures/auth-fixtures";
-import { Timeout } from "@enums/timeout";
 
 const footerRecords = parse_csv(
 	DATASETS_DIR,
