@@ -18,5 +18,6 @@ export enum ToastSubTitle {
 	PROMOCODE_NOT_FOUND = "Nothing found!",
 	PROMOTION_CREATED_SUCCESSFULLY = "Promotion created successfully",
 	PROMOTION_DELETED = "Promotion deleted",
-	NOTIFICATION_SENT = "Notification sent successfully!"
+	NOTIFICATION_SENT = "Notification sent successfully!",
+	BALANCE_TOO_LOW = "Balance too low",
 }
