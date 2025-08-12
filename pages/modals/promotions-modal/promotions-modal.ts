@@ -23,6 +23,7 @@ export class PromotionsModal extends BasePage<PromotionsModalMap> {
 	public async fillPromotionsModalFields(
 		promotionTestData: PromotionTestData,
 	): Promise<void> {
+		await this.map.promotionsModalTitleInput.clear();
 		await this.map.promotionsModalTitleInput.fill(promotionTestData.title);
 		await this.map.promotionsModalCustomUrlInput.fill(
 			promotionTestData.customUrl,

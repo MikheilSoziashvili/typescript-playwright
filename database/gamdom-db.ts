@@ -928,9 +928,20 @@ export class GamdomDb extends BaseDB {
 	}
 
 	public async deletePromotionByTitle(
-		title: string,
+		title: string | string[],
 		hasLogMessage = false,
 	): Promise<void> {
+		if (Array.isArray(title)) {
+			const titleConditions = title
+				.map((t) => `${PromotionColumns.Title} = '${t}'`)
+				.join(" OR ");
+			return this.delete(
+				DbTables.Promotions,
+				titleConditions,
+				hasLogMessage,
+			);
+		}
+
 		return this.delete(
 			DbTables.Promotions,
 			`${PromotionColumns.Title} = '${title}'`,

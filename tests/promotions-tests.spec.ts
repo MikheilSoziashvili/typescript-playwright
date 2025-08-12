@@ -3,6 +3,7 @@ import {
 	generateCustomUrl,
 	generateRandomString,
 	getISODate,
+	getRandomNumber,
 	parse_csv,
 	parseToBoolean,
 } from "@core/utils/utils";
@@ -228,6 +229,7 @@ test.describe(
 	{ tag: ["@Promotions", "@AdminPanel"] },
 	() => {
 		let promotionName: string;
+		let promotionNewName: string;
 		let userId: number;
 
 		test.slow();
@@ -262,7 +264,10 @@ test.describe(
 		});
 
 		test.afterEach(async ({ gamdomDb }) => {
-			await gamdomDb.deletePromotionByTitle(promotionName);
+			await gamdomDb.deletePromotionByTitle([
+				promotionName,
+				promotionNewName,
+			]);
 		});
 
 		test.describe("Promotion expiration tests", () => {
@@ -293,7 +298,7 @@ test.describe(
 							);
 						await promotionAdminPage
 							.assertThat()
-							.verifyPromotionStatus(
+							.promotionStatusMatches(
 								promotionName,
 								scenario.initialStatus,
 							);
@@ -318,7 +323,7 @@ test.describe(
 							);
 						await promotionAdminPage
 							.assertThat()
-							.verifyPromotionStatus(
+							.promotionStatusMatches(
 								promotionName,
 								scenario.finalStatus,
 							);
@@ -339,50 +344,47 @@ test.describe(
 
 		test.describe("Promotion CRUD tests", () => {
 			promotionCombinations.forEach((combination) => {
-				test(`[ENG-5576] Promotions - Create a new promotion - Promotion Category: ${combination.category} - Promotion Subcategory: ${combination.subCategory} - Is For VIP: ${combination.isForVip}`, async ({
-					promotionAdminPage,
-					promotionsModal,
-					toast,
-				}) => {
-					test.fixme(
-						isCI,
-						"Skip on CI due to https://gamdom.atlassian.net/browse/ENG-7501",
-					);
-					promotionName = generateRandomString({
-						prefix: `new_promotion_${combination.category}_${combination.subCategory}_${combination.isForVip}_`,
-						length: 3,
-					});
-					const promotionTestData = new PromotionTestData({
-						title: promotionName,
-						customUrl: generateCustomUrl(promotionName),
-						isForVip:
-							PromotionIsVipCategories[combination.isForVip],
-						promotionCategory:
-							PromotionCategories[combination.category],
-						promotionSubCategory:
-							PromotionSubStatuses[combination.subCategory],
-					});
+				test(
+					`[ENG-5576] Promotions - Create a new promotion - Promotion Category: ${combination.category} - Promotion Subcategory: ${combination.subCategory} - Is For VIP: ${combination.isForVip}`,
+					{ tag: ["@local"] },
+					async ({ promotionAdminPage, promotionsModal, toast }) => {
+						test.fixme(
+							isCI,
+							"Skip on CI due to https://gamdom.atlassian.net/browse/ENG-7501",
+						);
+						promotionName = generateRandomString({
+							prefix: `new_promotion_${combination.category}_${combination.subCategory}_${combination.isForVip}_`,
+							length: 3,
+						});
+						const promotionTestData = new PromotionTestData({
+							title: promotionName,
+							customUrl: generateCustomUrl(promotionName),
+							isForVip:
+								PromotionIsVipCategories[combination.isForVip],
+							promotionCategory:
+								PromotionCategories[combination.category],
+							promotionSubCategory:
+								PromotionSubStatuses[combination.subCategory],
+						});
 
-					await promotionAdminPage.navigate();
-					await promotionAdminPage.clickCreateNewPromotionButton();
-					await promotionsModal.assertThat().modalIsDisplayed();
-					await promotionsModal.fillPromotionsModalFields(
-						promotionTestData,
-					);
-					await promotionsModal.clickSaveButton();
-					await promotionsModal.assertThat().modalIsNotDisplayed();
-					await toast.assertThat().titleIs(ToastTitle.SUCCESS);
-					await toast
-						.assertThat()
-						.subTitleIs(
-							ToastSubTitle.PROMOTION_CREATED_SUCCESSFULLY,
-						);
-					await promotionAdminPage
-						.assertThat()
-						.promotionIsDisplayedInPromotionsTable(
-							promotionTestData.title,
-						);
-				});
+						await promotionAdminPage.navigate();
+						await promotionAdminPage.clickCreateNewPromotionButton();
+						await promotionsModal
+							.steps()
+							.fillPromotionSuccessfully(promotionTestData);
+						await toast.assertThat().titleIs(ToastTitle.SUCCESS);
+						await toast
+							.assertThat()
+							.subTitleIs(
+								ToastSubTitle.PROMOTION_CREATED_SUCCESSFULLY,
+							);
+						await promotionAdminPage
+							.assertThat()
+							.promotionIsDisplayedInPromotionsTable(
+								promotionTestData.title,
+							);
+					},
+				);
 			});
 
 			promotionTypes.forEach((promotionType) => {
@@ -421,6 +423,86 @@ test.describe(
 						.promotionIsNotDisplayedInPromotionsTable(
 							promotionName,
 						);
+				});
+			});
+
+			promotionTypes.forEach((promotionType) => {
+				promotionCombinations.forEach((combination) => {
+					test(
+						`[ENG-5736] Promotions - Update '${promotionType.name}' active promotion. Promotion Category: ${combination.category} - Promotion Subcategory: ${combination.subCategory} - Is For VIP: ${combination.isForVip}`,
+						{ tag: ["@local"] },
+						async ({
+							promotionAdminPage,
+							promotionsModal,
+							toast,
+							gamdomDb,
+						}) => {
+							test.fixme(
+								isCI,
+								"Skip on CI due to https://gamdom.atlassian.net/browse/ENG-7501",
+							);
+							promotionName = generateRandomString({
+								prefix: `${promotionType.name.toLowerCase()}_promotion_`,
+								length: 5,
+							});
+
+							promotionNewName = generateRandomString({
+								prefix: `new_${promotionType.name.toLowerCase()}_promotion_`,
+								length: 5,
+							});
+
+							const randomPromotionPriority = getRandomNumber(2);
+							const promotionTestData = new PromotionTestData({
+								title: promotionNewName,
+								customUrl: generateCustomUrl(promotionNewName),
+								isForVip:
+									PromotionIsVipCategories[
+										combination.isForVip
+									],
+								promotionCategory: PromotionCategories.ALL,
+								promotionSubCategory: PromotionSubStatuses.NONE,
+								priority: randomPromotionPriority,
+							});
+
+							await promotionType.insertMethod(
+								gamdomDb,
+								promotionName,
+								userId,
+							);
+
+							await promotionAdminPage.navigate();
+							await promotionAdminPage
+								.assertThat()
+								.promotionIsDisplayedInPromotionsTable(
+									promotionName,
+								);
+
+							await promotionAdminPage.clickEditPromotionButton(
+								promotionName,
+							);
+							await promotionsModal
+								.steps()
+								.fillPromotionSuccessfully(promotionTestData);
+							await toast
+								.assertThat()
+								.titleIs(ToastTitle.SUCCESS);
+							await toast
+								.assertThat()
+								.subTitleIs(
+									ToastSubTitle.PROMOTION_UPDATED_SUCCESSFULLY,
+								);
+
+							await promotionAdminPage
+								.assertThat()
+								.promotionDataMatches(
+									promotionNewName,
+									PromotionStatuses.ACTIVE,
+									randomPromotionPriority,
+									PromotionCategories.ALL,
+									promotionTestData.buttonLink,
+								);
+						},
+					);
 				});
 			});
 

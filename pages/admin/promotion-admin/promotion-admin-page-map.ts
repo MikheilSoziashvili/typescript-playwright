@@ -54,9 +54,42 @@ export class PromotionAdminMap extends BaseMap {
 		);
 	}
 
+	public promotionStatusTableEditButtonByPromotionTitle(
+		promotionTitle: string,
+	): Locator {
+		return this.promotionStatusTableActionButtonByPromotionTitle(
+			promotionTitle,
+			"Edit this promotion",
+		);
+	}
+
 	public get createNewPromotionButton(): Locator {
 		return this.page.locator("button[type='button']", {
 			hasText: "Create",
 		});
+	}
+
+	public promotionPriorityTableLabelByPromotionTitle(
+		promotionTitle: string,
+	): Locator {
+		return this.tableRowByPromotionTitle(promotionTitle).locator(`//td[3]`);
+	}
+
+	public promotionTypeTableLabelByPromotionTitle(
+		promotionTitle: string,
+	): Locator {
+		return this.tableRowByPromotionTitle(promotionTitle).locator(`//td[4]`);
+	}
+
+	public promotionCategoryTableLabelByPromotionTitle(
+		promotionTitle: string,
+	): Locator {
+		return this.tableRowByPromotionTitle(promotionTitle).locator(`//td[5]`);
+	}
+
+	public promotionPlayNowLinkTableLabelByPromotionTitle(
+		promotionTitle: string,
+	): Locator {
+		return this.tableRowByPromotionTitle(promotionTitle).locator(`//td[7]`);
 	}
 }

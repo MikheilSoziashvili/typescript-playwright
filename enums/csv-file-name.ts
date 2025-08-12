@@ -33,7 +33,7 @@ export enum CsvFilesName {
 	LINKED_PLATFORMS = "ENG-1540-userInfo-info-community-connect-actions-ban-linking.csv",
 	LOADING_ANIMATION = "ENG-2401-loading-animation.csv",
 	ORIGINALS_QUICK_SELECT_BUTTONS = "ENG-5454-5455-5053-5456-originals-quick-select-buttons.csv",
-	PROMOTION_COMBINATIONS = "ENG-5576-promotion-combinations.csv",
+	PROMOTION_COMBINATIONS = "ENG-5576-5376-promotion-combinations.csv",
 	PROMOTION_BUTTON_TEXT_INPUT_VALIDATIONS = "ENG-6121-promotion-button-text-input-validations.csv",
 	STAFF_ROLE_TAGS = "ENG-5543-Edit-Info-Verify-that-selecting-a-Staff-Role-tag-checks-the-corresponding-specific-tags.csv",
 	STAFF_ROLE_TAGS_VISIBILITY = "ENG-5552-Edit-Info-Verify-that-admins-with-different-staff-roles-can-see-specific-tags-in-the-edit-info-page.csv",

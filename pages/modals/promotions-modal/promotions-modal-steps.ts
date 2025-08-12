@@ -1,6 +1,7 @@
 import { BasePageStep } from "@pages/base/base-page-step";
 import { PromotionsModal } from "./promotions-modal";
 import { step } from "decorators/step";
+import { PromotionTestData } from "@dtos/test-data";
 
 export class PromotionsModalSteps extends BasePageStep<PromotionsModal> {
 	public constructor(page: PromotionsModal) {
@@ -30,5 +31,15 @@ export class PromotionsModalSteps extends BasePageStep<PromotionsModal> {
 		await this.gamdomPage
 			.assertThat()
 			.promotionDeleteConfirmationModalIsNotDisplayed();
+	}
+
+	@step("Fill promotion successfully")
+	public async fillPromotionSuccessfully(
+		promotionTestData: PromotionTestData,
+	): Promise<void> {
+		await this.gamdomPage.assertThat().modalIsDisplayed();
+		await this.gamdomPage.fillPromotionsModalFields(promotionTestData);
+		await this.gamdomPage.clickSaveButton();
+		await this.gamdomPage.assertThat().modalIsNotDisplayed();
 	}
 }
