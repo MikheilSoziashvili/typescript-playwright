@@ -29,10 +29,14 @@ export class UserInfoInfoAdminPageSteps extends BasePageStep<UserInfoInfoAdminPa
 	}
 
 	@step("Tip user")
-	public async tipUser(tipAmount: number): Promise<void> {
+	public async tipUser(tipAmount: number, tipType?: string): Promise<void> {
 		await this.gamdomPage.assertThat().isTipUserContainerDisplayed();
 		await this.gamdomPage.map.tipAmountInput.clear();
 		await this.gamdomPage.map.tipAmountInput.fill(tipAmount.toString());
+		if (tipType) {
+			await this.gamdomPage.map.tipDropdown.click();
+			await this.gamdomPage.map.selectTipType(tipType).click();
+		}
 		await this.gamdomPage.map.tipButton.click();
 	}
 
@@ -40,8 +44,9 @@ export class UserInfoInfoAdminPageSteps extends BasePageStep<UserInfoInfoAdminPa
 	public async tipUserWith2FaFlow(
 		tipAmount: number,
 		qrCode2FAImagePath: string,
+		tipType?: string,
 	): Promise<void> {
-		await this.tipUser(tipAmount);
+		await this.tipUser(tipAmount, tipType);
 		await this.gamdomPage.twoFactorAuthModal
 			.steps()
 			.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
@@ -73,6 +78,7 @@ export class UserInfoInfoAdminPageSteps extends BasePageStep<UserInfoInfoAdminPa
 		platform: string,
 		tableValue: string,
 	): Promise<void> {
+		this.gamdomPage.acceptDialog();
 		await this.gamdomPage.map
 			.enableButtonForLinkingPlatforms(platform)
 			.click();

@@ -1,6 +1,7 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
 import { Directions } from "@enums/directions";
+import { RewardType } from "@enums/admin/reward-type";
 
 export class RewardsPageMap extends BaseMap {
 	public constructor(page: Page) {
@@ -115,5 +116,49 @@ export class RewardsPageMap extends BaseMap {
 
 	public get royaltyUpSliderPreviousButton(): Locator {
 		return this.royaltyUpSliderButtonsContainer(Directions.LEFT);
+	}
+
+	public rewardCard(reward: string): Locator {
+		return this.page.locator('div[class^="common-styled__ItemWrapper"]', {
+			has: this.page.getByText(reward),
+		});
+	}
+
+	public rewardCardButton(reward: string, buttonText: string): Locator {
+		return this.rewardCard(reward).locator("button", {
+			has: this.page.getByText(buttonText),
+		});
+	}
+
+	public rewardCardButtonValue(reward: string, buttonText: string): Locator {
+		return this.rewardCardButton(reward, buttonText).locator(
+			".currency-amount",
+		);
+	}
+
+	public getRewardCard(type: RewardType): Locator {
+		return this.page.getByTestId(`rewardsCard-${type}`);
+	}
+
+	public getRewardAmount(type: RewardType): Locator {
+		return this.getRewardCard(type).getByTestId(`rewardsAmount-${type}`);
+	}
+
+	public getRewardClaimButton(type: RewardType): Locator {
+		return this.getRewardCard(type).locator("button", {
+			hasText: "Claim Reward",
+		});
+	}
+
+	public get royaltyUpCardItem(): Locator {
+		return this.page.locator(`div[class*="RoyaltyUpItem-styled__Item-sc"]`);
+	}
+
+	public get royaltyUpClaimButton(): Locator {
+		return this.page
+			.locator('div[class*="RoyaltyUpItem-styled__Item-sc"]', {
+				hasText: "Bronze 3",
+			})
+			.locator('button:has-text("Claim")');
 	}
 }

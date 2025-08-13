@@ -320,6 +320,10 @@ export const getRandomNumber = (length: number): number => {
 	return parseInt(number, 10);
 };
 
+export function getRandomIndex(max: number): number {
+	return Math.floor(Math.random() * max);
+}
+
 export function getRegisterDataRandomUsernameWithPrefix(
 	usernamePrefix: string,
 ): RegisterTestData {

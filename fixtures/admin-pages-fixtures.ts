@@ -41,6 +41,9 @@ import { UserInfoTransactionsAdminPage } from "@pages/admin/user-info-admin/user
 import { SeoRedirectsAdminPage } from "@pages/admin/seo-redirects-admin/seo-redirects-admin-page";
 import { PromotionAdminPage } from "@pages/admin/promotion-admin/promotion-admin-page";
 import { UserInfoEditInfoAdminPage } from "@pages/admin/user-info-admin/user-info-edit-info-admin/user-info-edit-info-admin-page";
+import { UserInfoRewardsAdminPage } from "@pages/admin/user-info-admin/user-info-rewards-admin/user-info-rewards-admin-page";
+import { UserInfoRewardsHistoryAdminPage } from "@pages/admin/user-info-admin/user-info-rewards-history-admin/user-info-rewards-history-admin-page";
+import { UserInfoKycAdminPage } from "@pages/admin/user-info-admin/user-info-kyc-admin/user-info-kyc-admin-page";
 
 export type AdminPages = {
 	baseAdminPage: BaseAdminPage;
@@ -85,6 +88,9 @@ export type AdminPages = {
 	seoRedirectsAdminPage: SeoRedirectsAdminPage;
 	promotionAdminPage: PromotionAdminPage;
 	userInfoEditInfoAdminPage: UserInfoEditInfoAdminPage;
+	userInfoRewardsAdminPage: UserInfoRewardsAdminPage;
+	userInfoRewardsHistoryAdminPage: UserInfoRewardsHistoryAdminPage;
+	userInfoKycAdminPage: UserInfoKycAdminPage;
 };
 
 export const adminPagesFixtures = base.extend<AdminPages>({
@@ -213,5 +219,14 @@ export const adminPagesFixtures = base.extend<AdminPages>({
 	},
 	userInfoEditInfoAdminPage: async ({ page }, use) => {
 		await use(new UserInfoEditInfoAdminPage(page));
+	},
+	userInfoRewardsAdminPage: async ({ page }, use) => {
+		await use(new UserInfoRewardsAdminPage(page));
+	},
+	userInfoRewardsHistoryAdminPage: async ({ page }, use) => {
+		await use(new UserInfoRewardsHistoryAdminPage(page));
+	},
+	userInfoKycAdminPage: async ({ page }, use) => {
+		await use(new UserInfoKycAdminPage(page));
 	},
 });

@@ -287,3 +287,25 @@ export class PromotionTestData {
 		this.buttonLink = data.buttonLink ?? "automation-button-link";
 	}
 }
+
+export class BulkRewardTestData {
+	public rewardType: string;
+	public rewards: { userId: number; rewardCoins: number }[];
+	public periodIdentifier: string;
+	public overrideKey: string | null;
+	public startDate: string | null;
+
+	constructor(
+		rewardType: string,
+		rewards: { userId: number; rewardCoins: number }[],
+		periodIdentifier: string,
+		overrideKey: string | null = null,
+		startDate: string | null = null,
+	) {
+		this.rewardType = rewardType;
+		this.rewards = rewards;
+		this.periodIdentifier = periodIdentifier;
+		this.overrideKey = overrideKey;
+		this.startDate = startDate;
+	}
+}

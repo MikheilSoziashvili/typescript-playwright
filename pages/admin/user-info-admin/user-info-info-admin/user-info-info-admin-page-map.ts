@@ -108,6 +108,16 @@ export class UserInfoInfoAdminPageMap extends BaseMap {
 		return this.tipUserContainer.getByPlaceholder("Tip amount");
 	}
 
+	public get tipDropdown(): Locator {
+		return this.page
+			.locator('div[role="combobox"]')
+			.filter({ has: this.page.locator("span.notranslate") });
+	}
+
+	public selectTipType(tip: string): Locator {
+		return this.page.locator(`[data-value="${tip}"]`);
+	}
+
 	public get notesTable(): Locator {
 		return this.page.getByTestId("adminNotesTable");
 	}

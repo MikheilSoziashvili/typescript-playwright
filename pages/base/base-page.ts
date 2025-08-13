@@ -15,7 +15,7 @@ import { Protocol } from "@enums/api/protocols";
 import { Directions } from "@enums/directions";
 import { Timeout } from "@enums/timeout";
 import { WaitUntilState } from "@enums/wait-until-states";
-import { Locator, Page } from "@playwright/test";
+import { Dialog, Locator, Page } from "@playwright/test";
 import { BaseMap } from "./base-map";
 import { BoundingBoxCoordinate } from "@enums/bounding-box-coordinates";
 import { logger } from "@logger/logger";
@@ -205,8 +205,10 @@ export abstract class BasePage<T extends BaseMap> {
 	}
 
 	public acceptDialog(options: AcceptDialogOptions = {}): void {
-		this.page.on("dialog", async (dialog) => {
+		const dialogHandler = async (dialog: Dialog) => {
 			const { expectedMessage, inputText } = options;
+
+			this.page.off("dialog", dialogHandler);
 
 			if (
 				expectedMessage !== undefined &&
@@ -217,7 +219,9 @@ export abstract class BasePage<T extends BaseMap> {
 			}
 
 			await dialog.accept();
-		});
+		};
+
+		this.page.on("dialog", dialogHandler);
 	}
 
 	/**

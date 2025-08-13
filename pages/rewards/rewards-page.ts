@@ -15,6 +15,7 @@ import { step } from "decorators/step";
 import { RewardsPageAsserter } from "./rewards-page-asserter";
 import { RewardsPageMap } from "./rewards-page-map";
 import { RewardsPageSteps } from "./rewards-page-steps";
+import { RewardType } from "@enums/admin/reward-type";
 
 export class RewardsPage extends BasePage<RewardsPageMap> {
 	public constructor(page: Page) {
@@ -129,5 +130,23 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 				.assertThat()
 				.accountBalanceIs(accountBalanceInitial + expectedRewardValue);
 		}
+	}
+
+	@step("Click Activate button for reward")
+	async clickOnRewardButton(
+		reward: string,
+		buttonText: string,
+	): Promise<void> {
+		await this.map.rewardCardButton(reward, buttonText).click();
+	}
+
+	@step("Claim royalty up reward")
+	async claimSingleRoyaltyUpReward(): Promise<void> {
+		await this.map.royaltyUpClaimButton.click();
+	}
+
+	@step("Claim reward")
+	async claimReward(rewardType: RewardType): Promise<void> {
+		await this.map.getRewardClaimButton(rewardType).click();
 	}
 }

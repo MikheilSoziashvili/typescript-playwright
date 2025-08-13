@@ -18,4 +18,5 @@ export enum ApiEndpoints {
 	CREATE_REDIRECT = "/client-api/admin/redirects/createRedirect",
 	GET_CURRENCY = "/client-api/currency/getCurrency",
 	GET_WALLETS = "/client-api/profile/get-wallets",
+	BULK_REWARD = "/client-api/admin/rewards/bulkReward",
 }

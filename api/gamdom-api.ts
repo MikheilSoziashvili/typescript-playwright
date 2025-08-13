@@ -30,6 +30,7 @@ import { GetCryptoAdminTransactionsRequest } from "@dtos/requests/gamdom-api/get
 import { UserType } from "@enums/user-types";
 import { GetAllRedirectsResponse } from "@dtos/responses/gamdom-api/get-all-redirects-response";
 import { CreateRedirectRequest } from "@dtos/requests/gamdom-api/create-redirect-request";
+import { BulkRewardRequest } from "@dtos/requests/gamdom-api/bulk-reward-request";
 
 export class GamdomApi extends BaseApi {
 	private gamdomDb: GamdomDb;
@@ -616,5 +617,17 @@ export class GamdomApi extends BaseApi {
 		fromPath: string,
 	): Promise<APIResponse> {
 		return this.get({ endpoint: fromPath }, { maxRedirects: 0 });
+	}
+
+	public async bulkReward(
+		payload: BulkRewardRequest,
+		_headers?: Record<string, string>,
+	): Promise<APIResponse> {
+		const parameters = this.buildParameters(
+			ApiEndpoints.BULK_REWARD,
+			payload,
+			_headers,
+		);
+		return this.post(parameters);
 	}
 }

@@ -159,6 +159,16 @@ export class BaseAsserter<
 		}
 	}
 
+	@step("Check that elements contain expected text")
+	public async checkElementsContainText(
+		pairs: { locator: Locator; expectedText: string }[],
+		timeout?: number,
+	): Promise<void> {
+		for (const { locator, expectedText } of pairs) {
+			await expect(locator).toContainText(expectedText, { timeout });
+		}
+	}
+
 	@step("Assert on elements")
 	protected async assertOnElements(
 		elements: Locator[],

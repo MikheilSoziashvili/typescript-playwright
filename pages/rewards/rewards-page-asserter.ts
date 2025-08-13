@@ -9,6 +9,7 @@ import { step } from "decorators/step";
 import { RewardsRoyaltyUpRanksValues } from "../../constants/rewards-royalty-up-rank-values";
 import { OriginalGame } from "@enums/original-games";
 import { calculateInstantReward } from "@formulas/instant-reward";
+import { RewardType } from "@enums/admin/reward-type";
 
 export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 	public constructor(page: RewardsPage) {
@@ -139,5 +140,66 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 				this.gamdomPage.map.royaltyUpItemClaimButton(reward),
 			).toHaveText(`Claim $${expectedRewardValue}`);
 		}
+	}
+
+	@step("Reward is visible and can be activated")
+	async rewardIsVisibleAndCanBeActivated(
+		reward: string,
+		buttonText: string,
+	): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.rewardCard(reward),
+			this.gamdomPage.map.rewardCardButton(reward, buttonText),
+		]);
+	}
+
+	@step("Reward can be claimed")
+	async rewardCanBeClaimed(
+		reward: string,
+		buttonText: string,
+		rewardValue: string,
+	): Promise<void> {
+		await this.checkElementsContainText([
+			{
+				locator: this.gamdomPage.map.rewardCard(reward),
+				expectedText: rewardValue,
+			},
+		]);
+	}
+
+	@step("Reward is claimed and active")
+	async rewardIsClaimedAndActive(
+		reward: string,
+		buttonText: string,
+	): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.rewardCardButton(reward, buttonText),
+		]);
+	}
+
+	@step("Instant and royalty up rewards are available")
+	async instantAndRoyaltyUpRewardsAreAvailable(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.getRewardAmount(RewardType.INSTANT),
+			this.gamdomPage.map.getRewardClaimButton(RewardType.INSTANT),
+			this.gamdomPage.map.royaltyUpClaimButton,
+		]);
+	}
+
+	@step("Weekly reward is visible and can be activated")
+	async weeklyRewardIsVisibleAndAvailable(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.rewardsOffersList,
+			this.gamdomPage.map.getRewardAmount(RewardType.WEEKLY),
+			this.gamdomPage.map.getRewardClaimButton(RewardType.WEEKLY),
+		]);
+	}
+
+	@step("Monthly reward is visible and can be activated")
+	async monthlyRewardIsVisibleAndAvailable(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.getRewardAmount(RewardType.MONTHLY),
+			this.gamdomPage.map.getRewardClaimButton(RewardType.MONTHLY),
+		]);
 	}
 }

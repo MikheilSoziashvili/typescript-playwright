@@ -21,4 +21,5 @@ export enum ToastSubTitle {
 	PROMOTION_DELETED = "Promotion deleted",
 	NOTIFICATION_SENT = "Notification sent successfully!",
 	BALANCE_TOO_LOW = "Balance too low",
+	VERIFICATION_PENDING = "Your request is being handled",
 }
