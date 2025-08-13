@@ -42,4 +42,5 @@ export enum CsvFilesName {
 	HOMEPAGE_ORIGINALS_LAUNCH = "ENG-5798-originals-launch-from-homepage.csv",
 	HOMEPAGE_TOP_LINE_HEADER_LINKS = "ENG-5256-homepage-top-line-header-links.csv",
 	USER_INFO_SEND_NOTIFICATION = "ENG-2808-UserInfo-tab-verify-the-Send-notification-function.csv",
+	KOTH_CURRENCIES_SYMBOLS = "ENG-4484-koth-currencies-symbols.csv",
 }

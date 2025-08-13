@@ -151,6 +151,12 @@ export class HomePageMap extends BaseMap {
 			.first();
 	}
 
+	public get allKothHeaderCurrencyAmounts(): Locator {
+		return this.page.locator(
+			'div[class*="swiper-slide"] span[class*="StyledCoins"]',
+		);
+	}
+
 	public get recentWinsSectionContainer(): Locator {
 		return this.page.locator(`div[class*='RecentWins-styled__Container']`);
 	}
@@ -222,6 +228,8 @@ export class HomePageMap extends BaseMap {
 	}
 
 	public topLineHeaderLink(tab: string): Locator {
-		return this.headerContainer.locator("span[class*='-navbarSecondary']", {hasText: `${tab}`});
+		return this.headerContainer.locator("span[class*='-navbarSecondary']", {
+			hasText: `${tab}`,
+		});
 	}
 }

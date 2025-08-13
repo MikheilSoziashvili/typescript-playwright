@@ -312,4 +312,17 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 			  })()
 			: await this.clickGameInOriginalsSlider(game);
 	}
+
+	@step("Get all KOTH header currency amounts")
+	public async getAllKothHeaderCurrencyAmounts(): Promise<string[]> {
+		const amounts = (
+			await this.gamdomPage.map.allKothHeaderCurrencyAmounts.allTextContents()
+		)
+			.map((e) => e.trim())
+			.filter(Boolean);
+
+		logger.info(`Found ${amounts.length} badge amount(s):`, amounts);
+
+		return amounts;
+	}
 }

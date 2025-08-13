@@ -142,7 +142,7 @@ export class AuthenticatedHeaderMap extends BaseMap {
 	}
 
 	public get balanceDropdown(): Locator {
-		return this.page.locator("i[class*='bal-arrow']");
+		return this.page.getByTestId("headerBalanceArrowDropdownButton");
 	}
 
 	public walletOption(cryptoCurrency: string): Locator {

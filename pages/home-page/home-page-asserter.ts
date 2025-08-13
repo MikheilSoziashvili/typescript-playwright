@@ -8,7 +8,11 @@ import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { VisibilityOptions } from "@enums/visibility-options";
 import { logger } from "@logger/logger";
 import { expect, Locator, TestInfo } from "@playwright/test";
-import { digitsOnlyPattern } from "@support/regex-patterns";
+import {
+	digitsOnlyPattern,
+	plainAmount,
+	shortScaled,
+} from "@support/regex-patterns";
 import { step } from "decorators/step";
 import { HomePage } from "./home-page";
 import { CasinoGameUrl } from "@enums/casino-game";
@@ -309,5 +313,33 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		expectedUrl: string,
 	): Promise<void> {
 		await expect(this.gamdomPage.page).toHaveURL(expectedUrl);
+	}
+
+	@step("Verify all Koth header currency amount formats")
+	public async allKothheaderCurrenyAmountFormatsAreCorrect(
+		amounts: string[],
+		symbol: string,
+	): Promise<void> {
+		for (const fullTextRaw of amounts) {
+			logger.info(
+				`Checking amount text: "${fullTextRaw}" for symbol "${symbol}"`,
+			);
+
+			const fullText = fullTextRaw.trim();
+			const numericPart = fullText.replace(symbol, "").trim();
+
+			await this.assertAllTruthy([
+				{
+					condition: fullText.includes(symbol),
+					message: `Missing currency symbol/code "${symbol}" in: "${fullTextRaw}"`,
+				},
+				{
+					condition:
+						plainAmount.test(numericPart) ||
+						shortScaled.test(numericPart),
+					message: `Invalid KOTH amount format "${fullTextRaw}" after removing "${symbol}" -> "${numericPart}"`,
+				},
+			]);
+		}
 	}
 }

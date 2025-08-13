@@ -37,3 +37,5 @@ export const urlSpecialCharactersPattern = /[^a-z0-9\s-_]/g;
 export const urlSpacesAndUnderscoresPattern = /[\s_]+/g;
 export const urlMultipleHyphensPattern = /-+/g;
 export const urlLeadingTrailingHyphensPattern = /^-|-$/g;
+export const plainAmount = /^\d+(\.\d{2})?$/;
+export const shortScaled = /^\d+(\.\d{1,2})?[kmbKMB]$/;

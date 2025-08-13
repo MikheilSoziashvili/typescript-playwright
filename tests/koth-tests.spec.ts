@@ -4,7 +4,9 @@ import {
 	KOTH_ENDPOINT,
 	KOTH_WEEKLY_ENDPOINT,
 } from "@constants/page-endpoints";
+import { setAuthenticationCookies } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
+import { CsvFilesName } from "@enums/csv-file-name";
 import { HiloBetOption } from "@enums/hilo-bet-options";
 import { OriginalGame, RouletteBetColor } from "@enums/original-games";
 import {
@@ -14,6 +16,7 @@ import {
 import { Timeout } from "@enums/timeout";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
+import { testData } from "test-data/test-data-manager";
 
 const userData = new RegisterTestData();
 
@@ -109,4 +112,51 @@ test.describe("KoTH game tests", () => {
 				.verifyKothWaggerAmountProfileCard(totalWageredAmount);
 		}
 	});
+});
+
+test.describe("KoTH - currency & amount format across badges", () => {
+	const newUserData = new RegisterTestData();
+	let newUserCookie: string;
+
+	test.beforeAll(async ({ gamdomDb, gamdomApi }) => {
+		await gamdomDb.createNewUser({
+			username: newUserData.username,
+			password: newUserData.password,
+			email: newUserData.email,
+		});
+
+		newUserCookie = await gamdomApi.authenticateWithExistingUser(
+			newUserData.username,
+			newUserData.password,
+		);
+	});
+
+	testData()
+		.fromCsvRaw({
+			file: CsvFilesName.KOTH_CURRENCIES_SYMBOLS,
+		})
+		.forEach(({ currencyCode, symbol }) => {
+			test(
+				`[ENG-4484] Currency: ${currencyCode} → all KoTH badges show correct symbol and format`,
+				{ tag: ["@koth"] },
+				async ({ homePage, page }) => {
+					await setAuthenticationCookies(page, newUserCookie);
+
+					await homePage.navigate();
+					await homePage.authenticatedHeader.changeCurrency(
+						currencyCode,
+					);
+
+					const amounts = await homePage
+						.steps()
+						.getAllKothHeaderCurrencyAmounts();
+					await homePage
+						.assertThat()
+						.allKothheaderCurrenyAmountFormatsAreCorrect(
+							amounts,
+							symbol,
+						);
+				},
+			);
+		});
 });

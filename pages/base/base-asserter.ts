@@ -613,4 +613,19 @@ export class BaseAsserter<
 
 		expect(uiUsd).toBeCloseTo(backendUsd, toleranceCents);
 	}
+
+	@step("Assert all conditions are truthy")
+	public async assertAllTruthy(
+		assertions: {
+			condition: boolean | Promise<boolean>;
+			message: string;
+		}[],
+	): Promise<void> {
+		await Promise.all(
+			assertions.map(async ({ condition, message }) => {
+				const resolved = await condition;
+				expect(resolved, message).toBeTruthy();
+			}),
+		);
+	}
 }
