@@ -6,6 +6,8 @@ import { step } from "decorators/step";
 import { Attributes } from "@enums/playwright/htmlAttributes";
 import { ToastTitle } from "@enums/toast-titles";
 import { ToastSubTitle } from "@enums/toast-subtitles";
+import { CountryCodes } from "@enums/country-codes";
+import { quotesRemovalPattern } from "@support/regex-patterns";
 
 export class UserInfoInfoAdminPageAsserter extends BaseAsserter<UserInfoInfoAdminPage> {
 	public constructor(page: UserInfoInfoAdminPage) {
@@ -137,5 +139,18 @@ export class UserInfoInfoAdminPageAsserter extends BaseAsserter<UserInfoInfoAdmi
 		await this.gamdomPage.toast
 			.assertThat()
 			.subTitleIs(ToastSubTitle.NOTIFICATION_SENT);
+	}
+
+	@step("Check last country code is correct")
+	public async lastCountryCodeCorrect(
+		countryCode: CountryCodes,
+	): Promise<void> {
+		const cellText = await this.gamdomPage.map.lastCountryTableCell.textContent();
+		const cleanedText = cellText?.replace(quotesRemovalPattern, '') || '';
+
+		await this.checkStringElementsAreEqual(
+			[countryCode],
+			[cleanedText],
+		);
 	}
 }

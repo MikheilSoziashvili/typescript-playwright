@@ -175,4 +175,18 @@ export class UserInfoInfoAdminPageMap extends BaseMap {
 	public get sendNotificationReasonInput(): Locator {
 		return this.getInputByTestId("adminInfoSendNotificationReason");
 	}
+
+	public getTableRowByHeaderText(headerText: string): Locator {
+		return this.adminInfoTable.locator("tr", {
+			has: this.page.locator("th", { hasText: headerText }),
+		});
+	}
+
+	public getTableCellByHeaderText(headerText: string): Locator {
+		return this.getTableRowByHeaderText(headerText).locator("td");
+	}
+
+	public get lastCountryTableCell(): Locator {
+		return this.getTableCellByHeaderText("last_country");
+	}
 }
