@@ -16,11 +16,13 @@ test.describe("Email Verification Tests", () => {
 		gamdomApi,
 	}) => {
 		// reduce code duplication from 19-23 to be in a beforeEach (eventually take them out in another describe)
-		const { email, inbox } = generateEmailAndInbox();
+		let { email, inbox } = generateEmailAndInbox();
 		const userData = new RegisterTestData({ email });
 
 		const cookie = await gamdomApi.authenticateWithNewUser(userData);
 		await setAuthenticationCookies(page, cookie);
+
+		({ email, inbox } = generateEmailAndInbox(userData.email));
 
 		await profilePage
 			.steps()
@@ -38,11 +40,13 @@ test.describe("Email Verification Tests", () => {
 		profilePage,
 		gamdomApi,
 	}) => {
-		const { email, inbox } = generateEmailAndInbox();
+		let { email, inbox } = generateEmailAndInbox();
 		const userData = new RegisterTestData({ email });
 
 		const cookie = await gamdomApi.authenticateWithNewUser(userData);
 		await setAuthenticationCookies(page, cookie);
+
+		({ email, inbox } = generateEmailAndInbox(userData.email));
 
 		await profilePage.navigate();
 		await profilePage.steps().completeVerificationFlow();
@@ -59,16 +63,18 @@ test.describe("Email Verification Tests", () => {
 	});
 
 	test("[ENG-1132] E-mail verification - changing e-mail", async ({
+		gamdomApiDbFacade,
 		mailinatorApi,
 		page,
 		profilePage,
-		gamdomApi,
 	}) => {
 		const { email } = generateEmailAndInbox();
 		const newEmailData = generateEmailAndInbox();
-		const userData = new RegisterTestData({ email });
 
-		const cookie = await gamdomApi.authenticateWithNewUser(userData);
+		const { cookie } = await gamdomApiDbFacade.createSingleUserDbAndAuth({
+			email: email,
+		});
+
 		await setAuthenticationCookies(page, cookie);
 
 		await profilePage.navigate();

@@ -9,6 +9,7 @@ import { gamePagesFixtures } from "./game-pages-fixtures";
 import { gamdomPagesFixtures } from "./gamdom-pages";
 import { dbsFixtures } from "./db-fixtures";
 import { gamdomHandlersFixtures } from "./handlers-fixtures";
+import { facadesFixtures } from "./facade-fixtures";
 
 export const test = mergeTests(
 	gamdomPagesFixtures,
@@ -20,4 +21,5 @@ export const test = mergeTests(
 	modalsFixtures,
 	apisFixtures,
 	dbsFixtures,
+	facadesFixtures,
 );

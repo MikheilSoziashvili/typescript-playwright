@@ -1,7 +1,6 @@
 import { test } from "@fixtures/fixtures";
 import { storageStateNewSuperAdminUserDB } from "../fixtures/auth-fixtures";
 import { generateRandomString, getCookieHeader } from "@core/utils/utils";
-import { RegisterTestData } from "@dtos/test-data";
 import { HttpStatus } from "@enums/http-status";
 import {
 	ESPORTS_REDIRECT_FROM,
@@ -100,27 +99,20 @@ test.describe("SEO Redirects tests", () => {
 	});
 
 	test.describe("SEO Redirects - functional", () => {
-		const superAdminData = new RegisterTestData({
-			useGamdomEmailDomain: true,
-		});
-		test.use(
-			storageStateNewSuperAdminUserDB({
-				username: superAdminData.username,
-				password: superAdminData.password,
-			}),
-		);
-
 		const fromPath = "/blog/esports-10";
 		const toPath = "/bg-BG/blog/esports-10";
 
 		test("[ENG-5620] Verify redirect functionality", async ({
+			gamdomApiDbFacade,
 			blogPostPage,
 			gamdomApi,
 		}) => {
+			const { user: superAdminUser } =
+				await gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
 			const superAdminCookie = getCookieHeader(
 				await gamdomApi.authenticateWithExistingUser(
-					superAdminData.username,
-					superAdminData.password,
+					superAdminUser.username,
+					superAdminUser.password,
 				),
 			);
 			await gamdomApi.ensureRedirectExists(

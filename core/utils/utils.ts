@@ -385,11 +385,18 @@ export function buildFullUrl(
 	return `${baseUrl}${normalizedPath}`;
 }
 
-export function generateEmailAndInbox(): { email: string; inbox: string } {
-	const email = `${generateRandomString({
-		prefix: "gmdverify",
-		length: 10,
-	})}@${MAILINATOR_DOMAIN}`;
+export function generateEmailAndInbox(overrideEmail?: string): {
+	email: string;
+	inbox: string;
+} {
+	const email = `${
+		overrideEmail
+			? overrideEmail
+			: generateRandomString({
+					prefix: "gmdverify",
+					length: 10,
+			  })
+	}@${MAILINATOR_DOMAIN}`;
 	const inbox = email.split("@")[0];
 
 	return { email, inbox };

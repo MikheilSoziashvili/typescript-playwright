@@ -22,6 +22,7 @@ import {
 import { test } from "@fixtures/fixtures";
 import { logger } from "@logger/logger";
 import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
+import { testData } from "test-data/test-data-manager";
 
 const walletUnits = Object.values(Unit);
 
@@ -91,129 +92,103 @@ test.describe(
 
 		test.describe("Plinko game - User Balance tests", () => {
 			test.slow();
-			const newUserData = new RegisterTestData();
 
 			//TODO - Remove this when the issue with the user balance is fixed - the last assertion needs to be updated and not use the tolerance!!
 
 			test.describe("[ENG-5415] Place bets across multiple wallets", () => {
-				const plinkoWalletBetDataset = parse_csv(
-					DATASETS_DIR,
-					CsvFilesName.PLINKO_BETS_ACROSS_MULTIPLE_WALLETS,
-				) as {
-					Wallet: string;
-					BetCurrency: string;
-					BetAmount: number;
-				}[];
+				testData()
+					.fromCsvParsed({
+						file: CsvFilesName.PLINKO_BETS_ACROSS_MULTIPLE_WALLETS,
+					})
+					.forEach((record) => {
+						test(`Place bet using ${record.Wallet} and verify display in ${record.BetCurrency}`, async ({
+							gamdomApiDbFacade,
+							plinkoGamePage,
+							homePage,
+							userBalanceHandler,
+							page,
+						}) => {
+							const { cookie } =
+								await gamdomApiDbFacade.createUserWithWalletsAndAuth(
+									{
+										walletUnits: walletUnits,
+										amount: SUPER_HIGH_USER_AMOUNT,
+									},
+								);
 
-				let newUserCookie: string;
+							await setAuthenticationCookies(page, cookie);
 
-				test.beforeAll(async ({ gamdomDb, gamdomApi }) => {
-					await gamdomDb.createNewUser({
-						username: newUserData.username,
-						password: newUserData.password,
-						email: newUserData.email,
-					});
+							await plinkoGamePage.navigate();
 
-					const userId = (
-						await gamdomApi.getBasicInfo(
-							newUserData.username,
-							newUserData.password,
-						)
-					).user.id;
+							const headers = {
+								Cookie: await encodeCookieHeader(cookie),
+							};
 
-					await Promise.all(
-						walletUnits.map((unit) =>
-							gamdomDb.upsertUserWallet(
-								userId,
-								unit,
-								SUPER_HIGH_USER_AMOUNT,
-							),
-						),
-					);
-
-					newUserCookie =
-						await gamdomApi.authenticateWithExistingUser(
-							newUserData.username,
-							newUserData.password,
-						);
-				});
-
-				plinkoWalletBetDataset.forEach((record) => {
-					test(`Place bet using ${record.Wallet} and verify display in ${record.BetCurrency}`, async ({
-						plinkoGamePage,
-						homePage,
-						userBalanceHandler,
-						page,
-					}) => {
-						await setAuthenticationCookies(page, newUserCookie);
-
-						await plinkoGamePage.navigate();
-
-						const headers = {
-							Cookie: await encodeCookieHeader(newUserCookie),
-						};
-
-						await homePage.authenticatedHeader.changeWalletAndCurrency(
-							record.Wallet,
-							record.BetCurrency,
-						);
-
-						await plinkoGamePage.startManualBet(
-							record.BetAmount.toString(),
-						);
-						logger.info(
-							`Bet amount placed: ${record.BetAmount} ${record.BetCurrency}`,
-						);
-						await plinkoGamePage.steps().waitForSlidersToBeActive();
-
-						const betWinMultiplier = await plinkoGamePage
-							.steps()
-							.getInGameChipsHistoryButtonValue();
-						logger.info(`Bet win multiplier: ${betWinMultiplier}`);
-
-						const winnings = await plinkoGamePage
-							.steps()
-							.calculateWinnings(
-								record.BetAmount,
-								betWinMultiplier,
+							await homePage.authenticatedHeader.changeWalletAndCurrency(
+								record.Wallet,
+								record.BetCurrency,
 							);
-						logger.info(`Winnings calculated: ${winnings}`);
 
-						const expectedBalanceAfterBet = await plinkoGamePage
-							.steps()
-							.calculateExpectedBalance(
-								await userBalanceHandler.walletBalanceInCurrencyAsCoins(
+							await plinkoGamePage.startManualBet(
+								record.BetAmount.toString(),
+							);
+							logger.info(
+								`Bet amount placed: ${record.BetAmount} ${record.BetCurrency}`,
+							);
+							await plinkoGamePage
+								.steps()
+								.waitForSlidersToBeActive();
+
+							const betWinMultiplier = await plinkoGamePage
+								.steps()
+								.getInGameChipsHistoryButtonValue();
+							logger.info(
+								`Bet win multiplier: ${betWinMultiplier}`,
+							);
+
+							const winnings = await plinkoGamePage
+								.steps()
+								.calculateWinnings(
+									record.BetAmount,
+									betWinMultiplier,
+								);
+							logger.info(`Winnings calculated: ${winnings}`);
+
+							const expectedBalanceAfterBet = await plinkoGamePage
+								.steps()
+								.calculateExpectedBalance(
+									await userBalanceHandler.walletBalanceInCurrencyAsCoins(
+										toWalletUnit(record.Wallet),
+										toCurrencyEnum(record.BetCurrency),
+										WalletType.DEFAULT,
+										headers,
+									),
+									record.BetAmount,
+									winnings,
+								);
+							logger.info(
+								`Expected balance after bet: ${expectedBalanceAfterBet}`,
+							);
+
+							const backendCoinsAfterBet =
+								await userBalanceHandler.walletBalanceInCoins(
 									toWalletUnit(record.Wallet),
-									toCurrencyEnum(record.BetCurrency),
 									WalletType.DEFAULT,
 									headers,
-								),
-								record.BetAmount,
-								winnings,
+								);
+							logger.info(
+								`Backend coins after bet: ${backendCoinsAfterBet}`,
 							);
-						logger.info(
-							`Expected balance after bet: ${expectedBalanceAfterBet}`,
-						);
 
-						const backendCoinsAfterBet =
-							await userBalanceHandler.walletBalanceInCoins(
-								toWalletUnit(record.Wallet),
-								WalletType.DEFAULT,
-								headers,
-							);
-						logger.info(
-							`Backend coins after bet: ${backendCoinsAfterBet}`,
-						);
-
-						await plinkoGamePage
-							.assertThat()
-							.verifyBalanceWithTolerance(
-								backendCoinsAfterBet,
-								expectedBalanceAfterBet,
-								1100,
-							);
+							await plinkoGamePage
+								.assertThat()
+								.verifyBalanceWithTolerance(
+									backendCoinsAfterBet,
+									expectedBalanceAfterBet,
+									1100,
+								);
+						});
 					});
-				});
 			});
 		});
 

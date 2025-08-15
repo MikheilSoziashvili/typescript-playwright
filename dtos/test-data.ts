@@ -24,15 +24,34 @@ export class RegisterTestData {
 		password,
 		useGamdomEmailDomain,
 	}: RegisterTestDataParams = {}) {
-		this.#username = username || faker.string.alphanumeric({ length: 7 });
+		// Used to isolate test data between parallel workers
+		const workerSuffix = process.env.TEST_WORKER_INDEX
+			? `w${process.env.TEST_WORKER_INDEX}`
+			: "";
+
+		this.#username =
+			(username || faker.string.alphanumeric({ length: 15 })) +
+			workerSuffix;
+
 		this.#password =
 			password ||
 			faker.internet.password({ length: 15, pattern: passwordPattern });
-		this.#email = email || faker.internet.email();
 
-		this.#email = useGamdomEmailDomain
-			? this.#email.replace(emailDomainPattern, GAMDOM_EMAIL_DOMAIN)
-			: this.#email;
+		const baseEmail = email || faker.internet.email();
+
+		const [localPart, domainPart] = baseEmail.split("@");
+		const suffixedLocalPart = localPart + workerSuffix;
+
+		let emailWithWorker = `${suffixedLocalPart}@${domainPart}`;
+
+		if (useGamdomEmailDomain) {
+			emailWithWorker = emailWithWorker.replace(
+				emailDomainPattern,
+				GAMDOM_EMAIL_DOMAIN,
+			);
+		}
+
+		this.#email = emailWithWorker;
 	}
 
 	get username(): string {
@@ -76,7 +95,7 @@ export class PlinkoBetTestData {
 	public betAmount: number;
 
 	constructor(options: { betAmount?: number } = {}) {
-		this.betAmount = options.betAmount ?? 0.10;
+		this.betAmount = options.betAmount ?? 0.1;
 	}
 }
 

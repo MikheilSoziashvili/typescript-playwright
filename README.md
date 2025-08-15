@@ -68,6 +68,7 @@ Make sure you have the following installed:
 ├── core                                          # Project Core Packages
 │   ├── .auth                                     # Location for saving storage state JSONs
 │   ├── auth-mngmt.ts                             # Authentication management functions - create or use already created authentication state
+│   ├── facades                                   # Facade classes
 │   ├── helpers                                   # Helper functions and utilities
 │   ├── interfaces.ts                             # TypeScript interfaces
 │   ├── reporters                                 # Custom reporters

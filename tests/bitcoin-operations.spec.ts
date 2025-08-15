@@ -12,7 +12,6 @@ import {
 import { RegisterTestData } from "@dtos/test-data";
 import { Wallet } from "@enums/wallets";
 import { CryptoNode } from "@enums/crypto-nodes";
-import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { TransactionState } from "@enums/transaction-states";
 import { testnetAddress } from "@constants/crypto";
 import { Timeout } from "@enums/timeout";
@@ -75,24 +74,9 @@ test.describe("Bitcoin tests", () => {
 
 			await cryptoAdminPage.clickMinDepositButton(CryptoNode.nodeBTC1);
 			await cryptoAdminPage.clickMinWithdrawButton(CryptoNode.nodeBTC1);
-
-			const userCookie = await gamdomApi.authenticateWithExistingUser(
-				userData.username,
-				userData.password,
-			);
-			await setAuthenticationCookies(page, userCookie);
 		},
 	);
 
-	const userData = new RegisterTestData();
-
-	test.use(
-		storageStateNewUserDB({
-			username: userData.username,
-			password: userData.password,
-			emailVerified: true,
-		}),
-	);
 	test.setTimeout(Timeout.EXTRA_MAX + Timeout.SUPER_MAX);
 	test(
 		"[ENG-5450] BTC - deposit and withdraw",
@@ -103,6 +87,7 @@ test.describe("Bitcoin tests", () => {
 			},
 		},
 		async ({
+			gamdomApiDbFacade,
 			bitcoinApi,
 			gamdomDb,
 			homePage,
@@ -115,13 +100,17 @@ test.describe("Bitcoin tests", () => {
 			page,
 			toast,
 		}) => {
+			const { cookie } =
+				await gamdomApiDbFacade.createSingleUserDbAndAuth();
+
+			await setAuthenticationCookies(page, cookie);
+
 			const superAdminData = new RegisterTestData({
 				useGamdomEmailDomain: true,
 			});
-			const userCookie = await gamdomApi.authenticateWithExistingUser(
-				userData.username,
-				userData.password,
-			);
+
+			const userCookie = cookie;
+
 			await gamdomDb.createNewUser({
 				username: superAdminData.username,
 				password: superAdminData.password,
