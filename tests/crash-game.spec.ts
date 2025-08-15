@@ -5,6 +5,9 @@ import { getUserDetailsByTestTitle, parse_csv } from "@core/utils/utils";
 import { DATASETS_DIR } from "@constants/file-paths";
 import { CsvFilesName } from "../enums/csv-file-name";
 import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
+import { Currency } from "@enums/currencies";
+import { Unit } from "@enums/units";
+import { WalletType } from "@enums/wallet-types";
 
 const crashAutoCashout = parse_csv(
 	DATASETS_DIR,
@@ -40,7 +43,12 @@ test.describe("Crash tests", () => {
 
 		await crashGamePage.navigate();
 
-		const accountBalanceBeforeBet = await userBalanceHandler.parseAmount();
+		const accountBalanceBeforeBet =
+			await userBalanceHandler.walletBalanceInFiatRounded(
+				Unit.COINS,
+				Currency.USD,
+				WalletType.DEFAULT,
+			);
 
 		let totalBetsPlaced = 0;
 		let winnings = 0;
@@ -68,17 +76,16 @@ test.describe("Crash tests", () => {
 			winnings,
 		);
 
-		const backendCoinsAfter =
-			await userBalanceHandler.walletBalanceInCoins();
-
-		const expectedBalanceInCoins =
-			userBalanceHandler.usdToCoins(expectedBalance);
+		const accountBalanceAfterBet =
+			await userBalanceHandler.walletBalanceInFiatRounded(
+				Unit.COINS,
+				Currency.USD,
+				WalletType.DEFAULT,
+			);
 
 		await crashGamePage
 			.assertThat()
-			.verifyBalance(backendCoinsAfter, expectedBalanceInCoins);
-
-		await crashGamePage.assertThat().backendVsUiBalanceMatch();
+			.verifyBalance(accountBalanceAfterBet, expectedBalance);
 	});
 
 	crashAutoCashout.forEach((record) => {

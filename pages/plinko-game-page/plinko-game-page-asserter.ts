@@ -7,6 +7,7 @@ import { step } from "decorators/step";
 import { PlinkoGamePage } from "./plinko-game-page";
 import { Timeout } from "@enums/timeout";
 import { IntervalMs } from "@enums/interval-millisecond";
+import { Currency } from "@enums/currencies";
 
 export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 	public constructor(page: PlinkoGamePage) {
@@ -240,5 +241,12 @@ export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 				yourBetChanged: true,
 				valuesMatch: true,
 			});
+	}
+	@step("Verify currency in bet amount field has changed")
+	public async betAmountCurrencyChanged(currency: Currency): Promise<void> {
+		await expect(this.gamdomPage.map.betAmountInput).toHaveAttribute(
+			"title",
+			`Type amount in ${currency}`,
+		);
 	}
 }

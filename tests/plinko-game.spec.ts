@@ -93,8 +93,6 @@ test.describe(
 		test.describe("Plinko game - User Balance tests", () => {
 			test.slow();
 
-			//TODO - Remove this when the issue with the user balance is fixed - the last assertion needs to be updated and not use the tolerance!!
-
 			test.describe("[ENG-5415] Place bets across multiple wallets", () => {
 				testData()
 					.fromCsvParsed({
@@ -129,12 +127,26 @@ test.describe(
 								record.BetCurrency,
 							);
 
+							const walletUnit = toWalletUnit(record.Wallet);
+							const betCurrency = toCurrencyEnum(
+								record.BetCurrency,
+							);
+
+							await plinkoGamePage
+								.assertThat()
+								.betAmountCurrencyChanged(betCurrency);
+
+							const coinsBefore =
+								await userBalanceHandler.walletBalanceInCoins(
+									walletUnit,
+									WalletType.DEFAULT,
+									headers,
+								);
+
 							await plinkoGamePage.startManualBet(
 								record.BetAmount.toString(),
 							);
-							logger.info(
-								`Bet amount placed: ${record.BetAmount} ${record.BetCurrency}`,
-							);
+
 							await plinkoGamePage
 								.steps()
 								.waitForSlidersToBeActive();
@@ -142,50 +154,40 @@ test.describe(
 							const betWinMultiplier = await plinkoGamePage
 								.steps()
 								.getInGameChipsHistoryButtonValue();
-							logger.info(
-								`Bet win multiplier: ${betWinMultiplier}`,
-							);
 
-							const winnings = await plinkoGamePage
-								.steps()
-								.calculateWinnings(
-									record.BetAmount,
+							const stakeCoins =
+								await userBalanceHandler.convertDisplayCurrencyToCoins(
+									Number(record.BetAmount),
+									betCurrency,
+									headers,
+								);
+
+							const payoutCoins =
+								userBalanceHandler.calculatePayoutCoins(
+									stakeCoins,
 									betWinMultiplier,
 								);
-							logger.info(`Winnings calculated: ${winnings}`);
 
-							const expectedBalanceAfterBet = await plinkoGamePage
+							const expectedCoinsAfter = await plinkoGamePage
 								.steps()
 								.calculateExpectedBalance(
-									await userBalanceHandler.walletBalanceInCurrencyAsCoins(
-										toWalletUnit(record.Wallet),
-										toCurrencyEnum(record.BetCurrency),
-										WalletType.DEFAULT,
-										headers,
-									),
-									record.BetAmount,
-									winnings,
+									coinsBefore,
+									stakeCoins,
+									payoutCoins,
 								);
-							logger.info(
-								`Expected balance after bet: ${expectedBalanceAfterBet}`,
-							);
 
-							const backendCoinsAfterBet =
+							const coinsAfter =
 								await userBalanceHandler.walletBalanceInCoins(
-									toWalletUnit(record.Wallet),
+									walletUnit,
 									WalletType.DEFAULT,
 									headers,
 								);
-							logger.info(
-								`Backend coins after bet: ${backendCoinsAfterBet}`,
-							);
 
 							await plinkoGamePage
 								.assertThat()
 								.verifyBalanceWithTolerance(
-									backendCoinsAfterBet,
-									expectedBalanceAfterBet,
-									1100,
+									coinsAfter,
+									expectedCoinsAfter,
 								);
 						});
 					});

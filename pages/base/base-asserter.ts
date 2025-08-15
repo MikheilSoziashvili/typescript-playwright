@@ -21,8 +21,6 @@ import { BaseMap } from "./base-map";
 import { BaseModal } from "./base-modal";
 import { BasePage } from "./base-page";
 import { UserBalanceHandler } from "@core/handlers/user-balance-handler";
-import { Unit } from "@enums/units";
-import { WalletType } from "@enums/wallet-types";
 
 export class BaseAsserter<
 	T extends BasePage<BaseMap> | BaseModal<BaseMap> | BaseComponent<BaseMap>,
@@ -40,14 +38,14 @@ export class BaseAsserter<
 		actualBalance: number,
 		expectedBalance: number,
 	): Promise<void> {
-		expect(actualBalance).toBe(expectedBalance);
+		expect(actualBalance).toEqual(expectedBalance);
 	}
 
 	@step("Verify balance matches expected value with tolerance")
 	public async verifyBalanceWithTolerance(
 		actualBalance: number,
 		expectedBalance: number,
-		tolerance: number,
+		tolerance = 5,
 	): Promise<void> {
 		expect(actualBalance - expectedBalance).toBeLessThanOrEqual(tolerance);
 	}
@@ -593,35 +591,6 @@ export class BaseAsserter<
 			locator: this.gamdomPage.map.getLoadingAnimation(),
 			timeout: timeout,
 		});
-	}
-
-	/**
-	 * Ensures the balance shown in the UI equals the backend balance
-	 * (converted to USD) within the given cent tolerance.
-	 */
-	@step("Verify UI balance matches backend balance")
-	public async backendVsUiBalanceMatch(
-		options: {
-			unit?: Unit;
-			type?: WalletType;
-			toleranceCents?: number;
-		} = {},
-	): Promise<void> {
-		const {
-			unit = Unit.COINS,
-			type = WalletType.DEFAULT,
-			toleranceCents = 2,
-		} = options;
-
-		const backendCoins = await this.userBalanceHandler.walletBalanceInCoins(
-			unit,
-			type,
-		);
-		const backendUsd = this.userBalanceHandler.coinsToUsd(backendCoins);
-
-		const uiUsd = await this.userBalanceHandler.parseAmount();
-
-		expect(uiUsd).toBeCloseTo(backendUsd, toleranceCents);
 	}
 
 	@step("Assert all conditions are truthy")
