@@ -83,6 +83,23 @@ export class UserInfoInfoAdminPageAsserter extends BaseAsserter<UserInfoInfoAdmi
 		);
 	}
 
+	@step("The userId is present in the table")
+	public async userIdIsPresentInTable(expectedValue: string): Promise<void> {
+		const actualValue = await this.gamdomPage.map
+			.getUserIdValue(expectedValue)
+			.textContent();
+		const actualValueTrimmed = actualValue?.trim();
+
+		if (!actualValueTrimmed) {
+			throw new Error(`User ID value for ${expectedValue} is not found.`);
+		}
+
+		await this.checkStringElementsAreEqual(
+			[expectedValue],
+			[actualValueTrimmed],
+		);
+	}
+
 	@step("Check tip user container is displayed")
 	public async isTipUserContainerDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible([
@@ -145,12 +162,10 @@ export class UserInfoInfoAdminPageAsserter extends BaseAsserter<UserInfoInfoAdmi
 	public async lastCountryCodeCorrect(
 		countryCode: CountryCodes,
 	): Promise<void> {
-		const cellText = await this.gamdomPage.map.lastCountryTableCell.textContent();
-		const cleanedText = cellText?.replace(quotesRemovalPattern, '') || '';
+		const cellText =
+			await this.gamdomPage.map.lastCountryTableCell.textContent();
+		const cleanedText = cellText?.replace(quotesRemovalPattern, "") || "";
 
-		await this.checkStringElementsAreEqual(
-			[countryCode],
-			[cleanedText],
-		);
+		await this.checkStringElementsAreEqual([countryCode], [cleanedText]);
 	}
 }

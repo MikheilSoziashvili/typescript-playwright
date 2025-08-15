@@ -78,6 +78,16 @@ export class UserInfoInfoAdminPageMap extends BaseMap {
 		});
 	}
 
+	public get getUserIdRow(): Locator {
+		return this.page.locator("tr", {
+			has: this.page.locator("th", { hasText: "id" }),
+		});
+	}
+
+	public get getUserIdValueFromRow(): Locator {
+		return this.getUserIdRow.locator("td");
+	}
+
 	public getBannedValueCellFromRow(row: Locator): Locator {
 		return row.locator("td");
 	}
@@ -93,6 +103,11 @@ export class UserInfoInfoAdminPageMap extends BaseMap {
 			return cell;
 		}
 
+		return cell.filter({ hasText: value });
+	}
+
+	public getUserIdValue(value: string): Locator {
+		const cell = this.getUserIdValueFromRow;
 		return cell.filter({ hasText: value });
 	}
 
