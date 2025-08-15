@@ -22,4 +22,5 @@ export enum ToastSubTitle {
 	NOTIFICATION_SENT = "Notification sent successfully!",
 	BALANCE_TOO_LOW = "Balance too low",
 	VERIFICATION_PENDING = "Your request is being handled",
+	FREE_SPINS_REVOKED = "Successfully revoked specified free spin.",
 }

@@ -17,6 +17,6 @@ export class NotificationsPageMap extends BaseMap {
 	}
 
 	public getNotificationDescription(title: string): Locator {
-		return this.getNotificationByTitle(title).locator("p");
+		return this.getNotificationByTitle(title).locator("p").first();
 	}
 }

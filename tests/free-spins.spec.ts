@@ -1,6 +1,7 @@
 import { BATCH_FREE_SPINS_FILE_PATH } from "@constants/file-paths";
 import { setAuthenticationCookies } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
+import { DialogInput } from "@enums/admin/dialog-input";
 import { CasinoGameName } from "@enums/casino-game";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
@@ -13,6 +14,7 @@ import {
 import { test } from "@fixtures/fixtures";
 import { FreeSpinsAdminPage } from "@pages/admin/free-spins-admin/free-spins-admin-page";
 import { HomePage } from "@pages/home-page/home-page";
+import { NotificationsPage } from "@pages/notifications/notifications-page";
 import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
 import { USER_1_ID } from "database/constants/user-ids";
 
@@ -184,3 +186,72 @@ test.describe("Free spins tests", () => {
 		});
 	});
 });
+
+test.describe(
+	"Free spins - Revoke Free spins",
+	{ tag: ["@rewards", "@spins"] },
+	() => {
+		const title = "Promotion";
+		const description = `The free spins promotion for Barrel Bonanza game has revoked. Note: ${DialogInput.REVOKE_FREE_SPINS_REASON}`;
+
+		test.use(storageStateNewSuperAdminUserDB());
+		test("[ENG-2866] Revoke Free spins and verify user notification", async ({
+			browser,
+			gamdomApi,
+			gamdomDb,
+			freeSpinsAdminPage,
+			toast,
+		}) => {
+			const userData = new RegisterTestData();
+
+			await gamdomDb.createNewUser({
+				username: userData.username,
+				password: userData.password,
+				email: userData.email,
+			});
+			const userCookie = await gamdomApi.authenticateWithExistingUser(
+				userData.username,
+				userData.password,
+			);
+			const userContext = await browser.newContext();
+			const userPage = await userContext.newPage();
+			await setAuthenticationCookies(userPage, userCookie);
+			const userHomePage = new HomePage(userPage);
+			await userHomePage.navigate();
+
+			await freeSpinsAdminPage.navigate();
+
+			const userId = (
+				await gamdomApi.getBasicInfo(
+					userData.username,
+					userData.password,
+				)
+			).user.id;
+
+			await freeSpinsAdminPage.steps().getFreeSpins({
+				userId: userId,
+				gameName: CasinoGameName.BARREL_BONANZA,
+				betAmount: 1,
+			});
+			await userHomePage.getNotification().assertThat().isDisplayed();
+
+			await freeSpinsAdminPage.getActivatedFreeSpins();
+			await freeSpinsAdminPage.revokeFreeSpins();
+			await toast.assertThat().titleIs(ToastTitle.SUCCESS, {
+				subTitle: ToastSubTitle.FREE_SPINS_REVOKED,
+			});
+
+			await freeSpinsAdminPage.getActivatedFreeSpins();
+			await freeSpinsAdminPage.assertThat().freeSpinsAreRevoked();
+
+			const userNotificationPage = new NotificationsPage(userPage);
+			await userNotificationPage.navigate();
+			await userNotificationPage
+				.assertThat()
+				.notificationVisibleAndHasTitleAndDescription(
+					title,
+					description,
+				);
+		});
+	},
+);

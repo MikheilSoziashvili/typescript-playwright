@@ -74,4 +74,16 @@ export class FreeSpinsAdminPageMap extends BaseMap {
 	public get inputFileBatchFreeSpins(): Locator {
 		return this.findGameToGiveFreeSpinsCard.locator(`input[type="file"]`);
 	}
+
+	public get freeSpinsOfUserContainer(): Locator {
+		return this.page.getByTestId("getFreespinsOfUserContainer");
+	}
+
+	public get getFreeSpinsOfUser(): Locator {
+		return this.freeSpinsOfUserContainer.getByTestId("getButton");
+	}
+
+	public get freeSpinsActionButton(): Locator {
+		return this.page.locator("td.clickable").locator("button");
+	}
 }

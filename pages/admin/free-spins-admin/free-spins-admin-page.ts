@@ -7,6 +7,7 @@ import { FreeSpinsAdminPageAsserter } from "./free-spins-admin-page-asserter";
 import { FreeSpinsAdminPageMap } from "./free-spins-admin-page-map";
 import { FreeSpinsAdminPageSteps } from "./free-spins-admin-page-steps";
 import { Timeout } from "@enums/timeout";
+import { DialogInput } from "@enums/admin/dialog-input";
 
 export class FreeSpinsAdminPage extends BasePage<FreeSpinsAdminPageMap> {
 	public constructor(page: Page) {
@@ -59,5 +60,19 @@ export class FreeSpinsAdminPage extends BasePage<FreeSpinsAdminPageMap> {
 		await this.map
 			.getPossibleSpinsTableBetCountGiveButton(tableRowIndex)
 			.click();
+	}
+
+	@step("Revoke free spins")
+	public async revokeFreeSpins(): Promise<void> {
+		this.acceptDialog({
+			expectedMessage: "Note to show to user",
+			inputText: DialogInput.REVOKE_FREE_SPINS_REASON,
+		});
+		await this.map.freeSpinsActionButton.click();
+	}
+
+	@step("Get activated free spins")
+	public async getActivatedFreeSpins(): Promise<void> {
+		await this.map.getFreeSpinsOfUser.click();
 	}
 }
