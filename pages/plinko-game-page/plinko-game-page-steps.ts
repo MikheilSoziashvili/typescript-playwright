@@ -223,7 +223,7 @@ export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 			await this.waitForSlidersToBeActive();
 
 			const balanceAfterBet =
-				await this.userBalanceHandler.walletBalanceInUsd();
+				await this.userBalanceHandler.walletBalanceInFiatRounded();
 			balances.push(balanceAfterBet);
 		}
 

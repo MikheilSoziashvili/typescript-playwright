@@ -14,6 +14,7 @@ import {
 } from "@core/helpers/asserter-helpers/text-asserters";
 import { Unit } from "@enums/units";
 import { WalletType } from "@enums/wallet-types";
+import { Currency } from "@enums/currencies";
 
 test.describe("Tip user tests", () => {
 	const message_1 = generateRandomString({ prefix: "automation_message_" });
@@ -103,6 +104,7 @@ test.describe("Tip user tests", () => {
 			.accountBalanceIs(
 				user2AccountBalance - Number(tipValue),
 				Unit.COINS,
+				Currency.USD,
 				WalletType.DEFAULT,
 				headersUser2,
 			);
@@ -125,6 +127,7 @@ test.describe("Tip user tests", () => {
 			.accountBalanceIs(
 				user3AccountBalance + Number(tipValue),
 				Unit.COINS,
+				Currency.USD,
 				WalletType.DEFAULT,
 				headersUser3,
 			);

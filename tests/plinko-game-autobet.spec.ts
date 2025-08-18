@@ -63,7 +63,7 @@ test.describe(
 			userBalanceHandler,
 		}) => {
 			const initialAccountBalance =
-				await userBalanceHandler.walletBalanceInUsd();
+				await userBalanceHandler.walletBalanceInFiatRounded();
 			const initialYourBetBalance =
 				await plinkoGamePage.getYourBetValue();
 

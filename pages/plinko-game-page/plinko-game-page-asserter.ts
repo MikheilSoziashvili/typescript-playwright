@@ -218,7 +218,7 @@ export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 			.poll(
 				async () => {
 					const currentAccountBalance =
-						await this.userBalanceHandler.walletBalanceInUsd();
+						await this.userBalanceHandler.walletBalanceInFiatRounded();
 					const currentYourBetBalance =
 						await this.gamdomPage.getYourBetValue();
 

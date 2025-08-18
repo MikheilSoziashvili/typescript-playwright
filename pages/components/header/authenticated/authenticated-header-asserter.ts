@@ -8,6 +8,7 @@ import { CurrencySymbol } from "@enums/currenciesSymbols";
 import { NumberSeparators } from "@enums/number-separators";
 import { Unit } from "@enums/units";
 import { WalletType } from "@enums/wallet-types";
+import { Currency } from "@enums/currencies";
 
 export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeader> {
 	public constructor(authenticatedHeader: AuthenticatedHeader) {
@@ -52,12 +53,14 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 	public async accountBalanceIs(
 		amount: number,
 		unit: Unit = Unit.COINS,
+		currency = Currency.USD,
 		type: WalletType = WalletType.DEFAULT,
 		headers?: Record<string, string>,
 	): Promise<void> {
 		const expectedBalance =
-			await this.userBalanceHandler.walletBalanceInUsd(
+			await this.userBalanceHandler.walletBalanceInFiatRounded(
 				unit,
+				currency,
 				type,
 				headers,
 			);
