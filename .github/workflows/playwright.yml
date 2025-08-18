@@ -32,12 +32,13 @@ on:
                     - smoke
                     - visual
                     - originals
+                    - game-providers
             custom_options:
                 description: "Custom command-line options"
                 type: string
                 required: false
-            run_game_providers_tests:
-                description: "Run Game Providers tests"
+            run_sequential_tests:
+                description: "Run Sequential tests"
                 type: choice
                 required: true
                 default: false
@@ -223,8 +224,8 @@ jobs:
             BITCOIN_RPC_PASS: ${{ secrets.BITCOIN_RPC_PASS }}
             TAG: ${{ github.event.client_payload.tag || (inputs.tag == '' && 'smoke') || inputs.tag }}
             SHARD_OPTION: --shard ${{ matrix.shard }}/${{ strategy.job-total }}
-            GREP_GAME_PROVIDERS_TESTS: --grep @game-providers
-            INVERT_GAME_PROVIDERS_TESTS: --grep-invert @game-providers
+            GREP_SEQUENTIAL_TESTS: --grep @sequential
+            INVERT_SEQUENTIAL_TESTS: --grep-invert @sequential
             CUSTOM_OPTIONS: ${{ github.event.client_payload.custom_options || inputs.custom_options }}
             PLAYWRIGHT_TEST: yarn playwright test
             WORKERS: ${{ github.event_name == 'schedule' && '--workers=10' || format('--workers={0}', inputs.workers || '10')}}
@@ -296,7 +297,7 @@ jobs:
 
             - name: Run Playwright tests (Cron trigger)
               if: ${{ github.event_name == 'schedule' }}
-              run: $PLAYWRIGHT_TEST $INVERT_GAME_PROVIDERS_TESTS $WORKERS $SHARD_OPTION
+              run: $PLAYWRIGHT_TEST $INVERT_SEQUENTIAL_TESTS $WORKERS $SHARD_OPTION
 
             - name: Run Playwright tests (Manual trigger)
               if: ${{ github.event_name != 'schedule' }}
@@ -308,8 +309,7 @@ jobs:
                     echo "Running tests with tag: "@$TAG" ${CUSTOM_OPTIONS:+and custom options: $CUSTOM_OPTIONS}"
                     TEST_COMMAND="$TEST_COMMAND --grep @${TAG}"
                   fi
-                  $TEST_COMMAND $CUSTOM_OPTIONS $INVERT_GAME_PROVIDERS_TESTS $WORKERS $SHARD_OPTION
-
+                  [ -n "$CUSTOM_OPTIONS" ] && $PLAYWRIGHT_TEST $CUSTOM_OPTIONS $SHARD_OPTION || $TEST_COMMAND $INVERT_SEQUENTIAL_TESTS $WORKERS $SHARD_OPTION
             - name: Upload blob report to GitHub Actions Artifacts
               if: always()
               uses: actions/upload-artifact@v4
@@ -318,14 +318,14 @@ jobs:
                   path: ./blob-report
                   retention-days: 1
 
-            - name: Game Providers Tests
+            - name: Sequential Tests (Global Settings)
               if: always()
               run: |
-                  if [ ${{ github.event_name }} == 'schedule' ] || [ "${{ inputs.run_game_providers_tests }}" == "true" ]; then
-                    echo "Running all tests related to Game Providers"
-                    $PLAYWRIGHT_TEST $GREP_GAME_PROVIDERS_TESTS
+                  if [ ${{ github.event_name }} == 'schedule' ] || [ "${{ inputs.run_sequential_tests }}" == "true" ]; then
+                    echo "Running sequential tests that modify global platform settings..."
+                    $PLAYWRIGHT_TEST $GREP_SEQUENTIAL_TESTS
                   else
-                    echo "Game Providers tests WILL NOT be executed."
+                    echo "Sequential tests are disabled for this run."
                   fi
 
             - name: Upload blob report to GitHub Actions Artifacts 2
