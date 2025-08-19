@@ -23,4 +23,7 @@ export enum ToastSubTitle {
 	BALANCE_TOO_LOW = "Balance too low",
 	VERIFICATION_PENDING = "Your request is being handled",
 	FREE_SPINS_REVOKED = "Successfully revoked specified free spin.",
+	NO_CHANGES_WERE_MADE = "No changes were made.",
+	SUCCESSFUL_EDIT = "Edit successful!",
+	ONLY_DECREASE_WALLET_AMOUNT = "Sorry, You only can decrease the wallet amount!"
 }

@@ -1,16 +1,20 @@
-import { RegisterTestData } from "@dtos/test-data";
+import { DATASETS_DIR } from "@constants/file-paths";
+import { parse_csv } from "@core/utils/utils";
+import { BalanceEditStep, RegisterTestData } from "@dtos/test-data";
 import { UserInfoTabs } from "@enums/admin/user-info-tabs";
+import { CsvFilesName } from "@enums/csv-file-name";
+import { UserClasses } from "@enums/db/user-classes";
+import { UserTags } from "@enums/db/user-tags";
+import { ToastSubTitle } from "@enums/toast-subtitles";
+import { ToastTitle } from "@enums/toast-titles";
+import { Unit } from "@enums/units";
 import {
 	storageStateNewSuperAdminUserDB,
 	storageStateNewUserDB,
 } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
-import { DATASETS_DIR } from "@constants/file-paths";
-import { parse_csv } from "@core/utils/utils";
-import { CsvFilesName } from "@enums/csv-file-name";
-import { UserTags } from "@enums/db/user-tags";
-import { UserClasses } from "@enums/db/user-classes";
-import { ToastTitle } from "@enums/toast-titles";
+import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
+import { testData } from "test-data/test-data-manager";
 
 interface StaffRoleCsvRecord {
 	staffRoleTag: keyof typeof UserTags;
@@ -133,5 +137,149 @@ test.describe(
 				});
 			});
 		});
+
+		test.describe(
+			"Edit info - Verify Edit Balance",
+			{ tag: "@edit-info" },
+			() => {
+				test.use(
+					storageStateNewUserDB({
+						userClass: UserClasses.Admin,
+						tags: UserTags.SupportStaff,
+					}),
+				);
+
+				const newUserData = new RegisterTestData();
+				const walletUnits = Object.values(Unit);
+
+				const wagerEditSteps: BalanceEditStep[] = [
+					{
+						name: "Save without changes",
+						action: async (_pageObj, _wallet, _page) => {
+							await Promise.resolve();
+						},
+						expectedTitle: ToastTitle.FAILED,
+						expectedMsg: ToastSubTitle.NO_CHANGES_WERE_MADE,
+					},
+					{
+						name: "Increase wager_req_end",
+						action: async (pageObj, _wallet, _page) =>
+							pageObj
+								.steps()
+								.adjustValueByLabel("wager_req_end", +1),
+						expectedTitle: ToastTitle.SUCCESS,
+						expectedMsg: ToastSubTitle.SUCCESSFUL_EDIT,
+					},
+					{
+						name: "Decrease wager_req_end",
+						action: async (pageObj, _wallet, _page) =>
+							pageObj
+								.steps()
+								.adjustValueByLabel("wager_req_end", -1),
+						expectedTitle: ToastTitle.SUCCESS,
+						expectedMsg: ToastSubTitle.SUCCESSFUL_EDIT,
+					},
+				];
+
+				const walletEditSteps: BalanceEditStep[] = [
+					{
+						name: "Increase $1 of wallet",
+						action: async (pageObj, wallet, _page) =>
+							pageObj.steps().adjustValueByLabel(wallet, +1),
+						expectedTitle: ToastTitle.FAILED,
+						expectedMsg: ToastSubTitle.ONLY_DECREASE_WALLET_AMOUNT,
+					},
+					{
+						name: "Refresh & decrease $1 of wallet",
+						action: async (pageObj, wallet, page) => {
+							await page.reload();
+							await pageObj
+								.steps()
+								.adjustValueByLabel(wallet, -1);
+						},
+						expectedTitle: ToastTitle.SUCCESS,
+						expectedMsg: ToastSubTitle.SUCCESSFUL_EDIT,
+					},
+				];
+
+				test.beforeAll(async ({ gamdomApi, gamdomDb }) => {
+					await gamdomDb.createNewUser({
+						username: newUserData.username,
+						password: newUserData.password,
+						email: newUserData.email,
+					});
+					const userId = (
+						await gamdomApi.getBasicInfo(
+							newUserData.username,
+							newUserData.password,
+						)
+					).user.id;
+
+					await Promise.all(
+						walletUnits.map((unit) =>
+							gamdomDb.upsertUserWallet(
+								userId,
+								unit,
+								SUPER_HIGH_USER_AMOUNT,
+							),
+						),
+					);
+				});
+
+				test("[ENG-6392] Edit info - wager_req_end flow", async ({
+					userInfoAdminPage,
+					userInfoEditInfoAdminPage,
+					toast,
+					page,
+				}) => {
+					await userInfoAdminPage
+						.steps()
+						.navigateAndShowUserDetails(newUserData.username);
+					await userInfoAdminPage.clickUserInfoTab(
+						UserInfoTabs.EditInfo,
+					);
+
+					await userInfoEditInfoAdminPage
+						.steps()
+						.runEditSteps(
+							wagerEditSteps,
+							"",
+							page,
+							toast.assertThat(),
+						);
+				});
+
+				testData()
+					.fromCsvRaw({
+						file: CsvFilesName.EDIT_INFO_ADJUSTING_WALLETS,
+					})
+					.forEach(({ wallet }) => {
+						test(`[ENG-6392] Edit info - wallet balance flow for ${wallet}`, async ({
+							userInfoAdminPage,
+							userInfoEditInfoAdminPage,
+							toast,
+							page,
+						}) => {
+							await userInfoAdminPage
+								.steps()
+								.navigateAndShowUserDetails(
+									newUserData.username,
+								);
+							await userInfoAdminPage.clickUserInfoTab(
+								UserInfoTabs.EditInfo,
+							);
+
+							await userInfoEditInfoAdminPage
+								.steps()
+								.runEditSteps(
+									walletEditSteps,
+									wallet,
+									page,
+									toast.assertThat(),
+								);
+						});
+					});
+			},
+		);
 	},
 );

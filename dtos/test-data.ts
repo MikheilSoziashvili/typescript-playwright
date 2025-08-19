@@ -10,7 +10,11 @@ import {
 	OriginalsQuickSelectButtons,
 } from "@enums/original-games";
 import { BlogPostCategories } from "@enums/post-categories";
+import { ToastSubTitle } from "@enums/toast-subtitles";
+import { ToastTitle } from "@enums/toast-titles";
 import { faker } from "@faker-js/faker";
+import { UserInfoEditInfoAdminPage } from "@pages/admin/user-info-admin/user-info-edit-info-admin/user-info-edit-info-admin-page";
+import { Page } from "@playwright/test";
 import { emailDomainPattern, passwordPattern } from "@support/regex-patterns";
 
 export class RegisterTestData {
@@ -305,6 +309,19 @@ export class PromotionTestData {
 		this.buttonText = data.buttonText ?? "Automation Button";
 		this.buttonLink = data.buttonLink ?? "automation-button-link";
 	}
+}
+
+export type BalanceEditAction = (
+	pageObj: UserInfoEditInfoAdminPage,
+	wallet: string,
+	page: Page,
+) => Promise<void> | void;
+
+export interface BalanceEditStep {
+	name: string;
+	action: BalanceEditAction;
+	expectedTitle: ToastTitle;
+	expectedMsg: ToastSubTitle;
 }
 
 export class BulkRewardTestData {

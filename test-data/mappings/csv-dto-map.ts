@@ -8,6 +8,7 @@ import {
 	UserProfileItemsLinksAccessibilityCsv,
 	PlinkoBetsAcrossMultipleWalletsCsv,
 	ChatroomsSuccessfullySelectedCsv,
+	EditInfoAdjustingWalletsCsv,
 } from "@dtos/csv";
 import { UserInfoSendNotificationCsv } from "@dtos/csv/user-info-send-notification-csv";
 import { CsvFilesName } from "@enums/csv-file-name";
@@ -23,4 +24,5 @@ export type CsvDtoMap = {
 	[CsvFilesName.USER_PROFILE_ITEMS_LINKS_ACCESSIBILITY]: UserProfileItemsLinksAccessibilityCsv;
 	[CsvFilesName.PLINKO_BETS_ACROSS_MULTIPLE_WALLETS]: PlinkoBetsAcrossMultipleWalletsCsv;
 	[CsvFilesName.CHATROOM_SUCCESSFULLY_SELECTED]: ChatroomsSuccessfullySelectedCsv;
+	[CsvFilesName.EDIT_INFO_ADJUSTING_WALLETS]: EditInfoAdjustingWalletsCsv;
 };
