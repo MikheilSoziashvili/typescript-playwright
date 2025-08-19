@@ -80,12 +80,16 @@ test.describe("Rain tests", () => {
 
 	test.describe("Tip rain tests", () => {
 		const userData = new RegisterTestData();
+
 		test.use(
-			storageStateNewUserDB({
-				username: userData.username,
-				password: userData.password,
-				email: userData.email,
-			}),
+			storageStateNewUserDB(
+				{
+					username: userData.username,
+					password: userData.password,
+					email: userData.email,
+				},
+				userData,
+			),
 		);
 
 		test("[ENG-2564] Tip rain - Require new 2FA code when IP of user changes", async ({

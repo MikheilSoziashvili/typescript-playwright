@@ -244,6 +244,7 @@ async function tipNewUserAndLogDetails(
 
 export async function createNewUserWithStorageStateDB(
 	options: NewUserOptions,
+	explicitRegisterData?: RegisterTestData,
 ): Promise<{
 	storageStatePath: string;
 	newUser: RegisterTestData;
@@ -252,12 +253,14 @@ export async function createNewUserWithStorageStateDB(
 	const gamdomApi = new GamdomApi();
 	const useGamdomEmailDomain = options.isEmailWithGamdomDomain ?? false;
 
-	const newUser = new RegisterTestData({
-		username: options.username,
-		password: options.password,
-		email: options.email,
-		useGamdomEmailDomain: useGamdomEmailDomain,
-	});
+	const newUser = explicitRegisterData
+		? explicitRegisterData
+		: new RegisterTestData({
+				username: options.username,
+				password: options.password,
+				email: options.email,
+				useGamdomEmailDomain: useGamdomEmailDomain,
+		  });
 
 	const storageStatePath = await getStorageStateNewUserDB({
 		username: newUser.username,
@@ -283,14 +286,18 @@ export async function createNewUserWithStorageStateDB(
 
 export const storageStateNewUserDB: (
 	options?: NewUserOptions,
+	explicitRegisterData?: RegisterTestData,
 ) => Fixtures<
 	{},
 	{},
 	PlaywrightTestArgs & PlaywrightTestOptions,
 	PlaywrightWorkerArgs & PlaywrightWorkerOptions
-> = (options = {}) => ({
+> = (options = {}, explicitRegisterData) => ({
 	storageState: async ({}, use, testInfo) => {
-		const result = await createNewUserWithStorageStateDB(options);
+		const result = await createNewUserWithStorageStateDB(
+			options,
+			explicitRegisterData,
+		);
 		const storageStatePath = result.storageStatePath;
 		const newUser = result.newUser;
 

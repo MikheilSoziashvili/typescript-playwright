@@ -10,6 +10,7 @@ import {
 import { Unit } from "@enums/units";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
+import { DEFAULT_IMAGE } from "@constants/defaults";
 
 export class GamdomApiDbFacade {
 	private gamdomApi: GamdomApi;
@@ -39,6 +40,10 @@ export class GamdomApiDbFacade {
 		emailVerified?: boolean;
 		updateUserEmailVerification?: boolean;
 		email?: string | string[];
+		image?: string;
+		amount?: number;
+		unit?: Unit;
+		startingXp?: number;
 		tags?: UserTags[] | UserTags;
 		userClass?: UserClasses;
 	}): Promise<UserData[]> {
@@ -47,6 +52,10 @@ export class GamdomApiDbFacade {
 			emailVerified = true,
 			updateUserEmailVerification = false,
 			email,
+			image = DEFAULT_IMAGE,
+			amount = 10000000,
+			unit = Unit.COINS,
+			startingXp = 10001200,
 			tags,
 			userClass,
 		} = options;
@@ -63,6 +72,10 @@ export class GamdomApiDbFacade {
 					password: user.password,
 					email: user.email,
 					emailVerified: emailVerified,
+					image: image,
+					amount: amount,
+					unit: unit,
+					startingXp: startingXp,
 					tags: tags,
 					userClass: userClass,
 				};
@@ -206,6 +219,10 @@ export class GamdomApiDbFacade {
 		updateUserEmailVerification?: boolean;
 		useGamdomEmailDomain?: boolean;
 		email?: string;
+		image?: string;
+		amount?: number;
+		unit?: Unit;
+		startingXp?: number;
 		tags?: UserTags[] | UserTags;
 		userClass?: UserClasses;
 	}): Promise<AuthenticatedUser> {
@@ -219,6 +236,10 @@ export class GamdomApiDbFacade {
 			emailVerified: emailVerified,
 			updateUserEmailVerification: updateUserEmailVerification,
 			email: customEmail,
+			image: options?.image,
+			amount: options?.amount,
+			unit: options?.unit,
+			startingXp: options?.startingXp,
 			tags: options?.tags,
 			userClass: options?.userClass,
 		});
