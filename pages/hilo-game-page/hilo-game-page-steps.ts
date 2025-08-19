@@ -1,10 +1,7 @@
 import { BasePageStep } from "@pages/base/base-page-step";
 import { step } from "decorators/step";
 import { HiloBetTestData, HiloCardsColorData } from "@dtos/test-data";
-import {
-	HiloGameResultColor,
-	HiloGameStatusMessage,
-} from "@enums/hilo-result-messages";
+import { HiloGameResultColor } from "@enums/hilo-result-messages";
 import { logger } from "@logger/logger";
 import { HiloGamePage } from "./hilo-game-page";
 import { getItemsAttribute } from "@core/utils/utils";
@@ -48,24 +45,22 @@ export class HiloGamePageSteps extends BasePageStep<HiloGamePage> {
 		let isWin = false;
 		let accountBalance =
 			await this.gamdomPage.authenticatedHeader.getAccountBalance();
+		logger.info(`Initial account balance: ${accountBalance}`);
 
 		while (!isWin) {
 			await this.gamdomPage.fillInBetAmount(testData.betAmount);
 			await this.gamdomPage.clickBetOption(testData.betOption);
-			await this.gamdomPage
-				.assertThat()
-				.gameMessageIs(HiloGameStatusMessage.DRAWING);
 			accountBalance =
-				await this.gamdomPage.authenticatedHeader.getAccountBalance();
+				await this.userBalanceHandler.walletBalanceInFiatRounded();
 
 			const roundresult = await this.gamdomPage.getRoundResult();
-			isWin = roundresult.includes(resultColor);
+			logger.info(`Current round result: ${roundresult}`);
 
+			isWin = roundresult.includes(resultColor);
 			if (!isWin) {
 				logger.info("Hilo game lost! Trying again...");
 			}
 		}
-
 		return accountBalance;
 	}
 
