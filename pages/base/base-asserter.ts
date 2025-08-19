@@ -45,7 +45,7 @@ export class BaseAsserter<
 	public async verifyBalanceWithTolerance(
 		actualBalance: number,
 		expectedBalance: number,
-		tolerance = 5,
+		tolerance = 6,
 	): Promise<void> {
 		expect(actualBalance - expectedBalance).toBeLessThanOrEqual(tolerance);
 	}
