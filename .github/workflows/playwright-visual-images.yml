@@ -31,7 +31,7 @@ permissions:
 jobs:
     visual-tests-images:
         timeout-minutes: 60
-        runs-on: self-hosted-dind
+        runs-on: self-hosted-dind-playwright
 
         env:
             CI: ""

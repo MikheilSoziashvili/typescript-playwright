@@ -163,7 +163,7 @@ concurrency:
 jobs:
     tests:
         timeout-minutes: 600
-        runs-on: self-hosted-dind
+        runs-on: self-hosted-dind-playwright
         environment: ${{ ((inputs.environment || 'staging') == 'custom' && null) || (inputs.environment || 'staging') }}
         permissions:
             pull-requests: write
