@@ -34,7 +34,8 @@ test.describe("Green hunt", () => {
 				greenHuntPercentage,
 			);
 
-		const accountBalance = await userBalanceHandler.walletBalanceInUsd();
+		const accountBalance =
+			await userBalanceHandler.walletBalanceInFiatRounded();
 		await rouletteGamePage.insertBet(betTestData.betAmount);
 		await rouletteGamePage.assertThat().betButtonsEnabled();
 		await rouletteGamePage.betOnColor(RouletteBetColor.RED);
