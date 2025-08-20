@@ -29,7 +29,7 @@ export async function waitBtcTransactionConfirmation(
 		{
 			errorMessage: `Transaction ${transactionId} was not confirmed in time`,
 			intervalSeconds: 20,
-			timeoutSeconds: 1500,
+			timeoutSeconds: 600,
 		},
 	);
 }
