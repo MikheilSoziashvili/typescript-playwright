@@ -175,6 +175,10 @@ test.describe(
 									stakeCoins,
 									payoutCoins,
 								);
+							
+							await homePage.map.waitForStableXPosition({
+								locator: await homePage.authenticatedHeader.map.getLoadedAccountBalance(),
+							});
 
 							const coinsAfter =
 								await userBalanceHandler.walletBalanceInCoins(
