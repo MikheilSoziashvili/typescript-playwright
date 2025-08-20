@@ -49,7 +49,7 @@ on:
                 description: "Set number of parallel workers"
                 type: choice
                 required: true
-                default: 10
+                default: 15
                 options:
                     - 5
                     - 6
@@ -228,7 +228,7 @@ jobs:
             INVERT_SEQUENTIAL_TESTS: --grep-invert @sequential
             CUSTOM_OPTIONS: ${{ github.event.client_payload.custom_options || inputs.custom_options }}
             PLAYWRIGHT_TEST: yarn playwright test
-            WORKERS: ${{ github.event_name == 'schedule' && '--workers=10' || format('--workers={0}', inputs.workers || '10')}}
+            WORKERS: ${{ github.event_name == 'schedule' && '--workers=15' || format('--workers={0}', inputs.workers || '15')}}
             CREATE_TEST_EXECUTION: ${{ inputs.create_test_execution }}
             GITHUB_EVENT_NAME: ${{ github.event_name }}
 
