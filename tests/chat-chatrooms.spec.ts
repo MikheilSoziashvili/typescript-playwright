@@ -30,7 +30,7 @@ test.describe(
 				}) => {
 					const { user, cookie } =
 						await gamdomApiDbFacade.createSingleUserDbAndAuth({
-							verifyEmail: true,
+							emailVerified: true,
 						});
 					const messageInfo: ChatMessageOptions = {
 						username: user.username,

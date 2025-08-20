@@ -30,6 +30,22 @@ export class ProfilePageMap extends BaseMap {
 		return this.page.getByTestId("profileEmailContainer");
 	}
 
+	public get usernameContainer(): Locator {
+		return this.page.getByTestId("profileUsernameContainer");
+	}
+
+	public get changeUsernameButton(): Locator {
+		return this.usernameContainer.getByTestId("changeButton");
+	}
+
+	public get changeUsernameInput(): Locator {
+		return this.getInputField("username", this.usernameContainer);
+	}
+
+	public get saveUsernameButton(): Locator {
+		return this.usernameContainer.getByTestId("saveButton");
+	}
+
 	public get changeEmailButton(): Locator {
 		return this.emailNumberContainer.getByTestId("changeButton");
 	}

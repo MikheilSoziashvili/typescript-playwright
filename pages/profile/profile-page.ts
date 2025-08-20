@@ -60,6 +60,11 @@ export class ProfilePage extends BasePage<ProfilePageMap> {
 		await this.map.savePhoneButton.click();
 	}
 
+	@step("Click save username")
+	public async clickSaveUsername(): Promise<void> {
+		await this.map.saveUsernameButton.click();
+	}
+
 	@step("Navigate to user menu option")
 	public async navigateToUserMenuOption(
 		menuItem: UserMenuOption,

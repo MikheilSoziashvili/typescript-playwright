@@ -135,6 +135,15 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		await this.gamdomPage.clickSavePhone();
 	}
 
+	@step("Change username")
+	public async changeUsername(username: string): Promise<void> {
+		await this.gamdomPage.map.changeUsernameButton.click();
+		await this.gamdomPage.map.changeUsernameInput.fill(username);
+		await this.gamdomPage.clickSaveUsername();
+		await this.gamdomPage.continueModal.assertThat().isDisplayed();
+		await this.gamdomPage.continueModal.clickContinueButton();
+	}
+
 	@step("Complete and verify phone change")
 	public async completeAndVerifyPhoneChange(): Promise<void> {
 		await this.gamdomPage.continueModal.assertThat().isDisplayed();

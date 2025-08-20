@@ -325,4 +325,10 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 
 		return amounts;
 	}
+
+	@step("Navigate to homepage and expand chat if not visible")
+	public async navigateAndExpandChat(): Promise<void> {
+		await this.gamdomPage.navigate();
+		await this.gamdomPage.authenticatedHeader.expandChatIfNotVisible();
+	}
 }

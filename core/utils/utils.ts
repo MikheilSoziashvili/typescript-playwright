@@ -47,6 +47,7 @@ import { PNG, PNGOptions } from "pngjs";
 import sharp from "sharp";
 import xml2js from "xml2js";
 import { isFileNotFoundError } from "./error-utils";
+import { ChatMessageOptions } from "@pages/components/chat/chat-map";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -1294,4 +1295,17 @@ export function validateNumericValues(
 	}
 
 	return results;
+}
+
+export function buildMessagePairs(
+	username: string,
+	count = 2,
+): { message: string; info: ChatMessageOptions }[] {
+	return Array.from({ length: count }, () => {
+		const message = generateRandomString({ prefix: "automation_ignore_" });
+		return {
+			message: message,
+			info: { username: username, message: message },
+		};
+	});
 }

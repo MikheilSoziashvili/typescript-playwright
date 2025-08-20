@@ -43,6 +43,13 @@ export function buildTipUserMessageInfo(params: {
 	return message;
 }
 
+export function buildIgnoreUserMessageInfo(params: {
+	ignoredUser: string;
+}): string {
+	const message = `User ${params.ignoredUser} ignored`;
+	return message;
+}
+
 export function buildTipRainUserMessageInfo(params: {
 	username: string;
 	tipRainAmount: number;

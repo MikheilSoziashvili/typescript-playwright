@@ -17,10 +17,14 @@ import { ChatMessageOptions } from "./chat-map";
 
 export class ChatSteps extends BaseComponentStep<Chat> {
 	private authenticatedHeader: AuthenticatedHeader;
+	private commonUserOptionsPopup: CommonUserOptionsPopup;
 
 	public constructor(component: Chat) {
 		super(component);
 		this.authenticatedHeader = this.createAuthenticatedHeader();
+		this.commonUserOptionsPopup = new CommonUserOptionsPopup(
+			this.component.page,
+		);
 	}
 
 	private createAuthenticatedHeader(): AuthenticatedHeader {
@@ -37,6 +41,15 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 	public async verifyChatAndSendMessage(message: string): Promise<void> {
 		await this.component.assertThat().chatIsDisplayed();
 		await this.sendMessage(message);
+	}
+
+	@step("Send a message and verify it is visible")
+	public async sendMessageAndVerifyItsVisible(
+		message: string,
+		messageInfo: ChatMessageOptions,
+	): Promise<void> {
+		await this.sendMessage(message);
+		await this.component.assertThat().isMessageVisible(messageInfo);
 	}
 
 	@step("Send message")
@@ -144,6 +157,23 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		const userProfileModal = new UserProfileModal(this.component.page);
 		await userProfileModal.waitContentToLoad();
 		await userProfileModal.assertThat().isDisplayed();
+	}
+
+	@step("Ignore user from chat")
+	public async ignoreUserFromChat(
+		options?: ChatMessageOptions,
+	): Promise<void> {
+		const messageUserLevel = this.component.map.messageUserAvatar(options);
+		await this.component.map.waitForVisibility({
+			locator: messageUserLevel,
+		});
+
+		await messageUserLevel.click();
+
+		await this.commonUserOptionsPopup.assertThat().isDisplayed();
+		await this.commonUserOptionsPopup.clickOption(
+			CommonUserPopupOption.IGNORE,
+		);
 	}
 
 	@step("Verify message and open tip user modal")
