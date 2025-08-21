@@ -27,6 +27,10 @@ export const DE_PROXY_CREDENTIALS =
 export const NL_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8004");
 
+// Japan server
+export const JP_PROXY_CREDENTIALS =
+	createProxyCredentials("dc.oxylabs.io:8005");
+
 // Belgium server
 export const BE_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8006");

@@ -79,14 +79,15 @@ for (const baseURL of baseUrls) {
 
 /* Skipping softblocked countries due to current proxy limitations:
 - AU: too far, site not loading
-- DE: proxy routes traffic through US
-- PT, UK: proxies not working
+- DE, PT: fastly routes traffic through US and ZA
+- UK - Disabled from soft blocked countries as the CI runners are in the UK
 Unskip once proxies are stable or replaced.*/
 for (const country of softBlockedCountries) {
 	test.describe(`Soft blocked country: ${country}`, () => {
 		test.fixme(
 			country !== SoftBlockedCountry.DENMARK &&
 				country !== SoftBlockedCountry.SPAIN,
+			"Skip due to proxy limitations and issues",
 		);
 		test.use({
 			proxy: softBlockedCredentialsMap.get(country),

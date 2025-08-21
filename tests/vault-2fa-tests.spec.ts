@@ -1,5 +1,4 @@
-import { UK_PROXY_CREDENTIALS } from "@constants/proxies";
-import { MEDIUM_USER_AMOUNT } from "database/constants/user-amounts";
+import { PT_PROXY_CREDENTIALS } from "@constants/proxies";
 import {
 	createBrowserContextWithProxy,
 	createPngImagePath,
@@ -9,10 +8,11 @@ import {
 	jiraIssueId,
 } from "@core/utils/utils";
 import { AnnotationType } from "@enums/playwright/annotationsTypes";
+import { Unit } from "@enums/units";
 import { Wallet } from "@enums/wallets";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
-import { Unit } from "@enums/units";
+import { MEDIUM_USER_AMOUNT } from "database/constants/user-amounts";
 
 test.describe(`Vault wallet - 2FA verifications`, () => {
 	let qrCode2FAImagePath: string;
@@ -81,7 +81,7 @@ test.describe(`Vault wallet - 2FA verifications`, () => {
 				initialPage,
 				await createBrowserContextWithProxy(
 					browser,
-					UK_PROXY_CREDENTIALS,
+					PT_PROXY_CREDENTIALS,
 				),
 				...Object.values(pages),
 			);
