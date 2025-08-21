@@ -42,6 +42,7 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 
 	@step("Insert bet amount")
 	public async insertBet(betAmount: number): Promise<void> {
+		await this.map.waitForStableXPosition({ locator: this.map.betField });
 		await this.map.betField.click();
 		await this.map.betField.clear();
 		await this.map.betField.pressSequentially(`${betAmount}`);

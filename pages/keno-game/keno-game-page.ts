@@ -31,6 +31,9 @@ export class KenoGamePage extends BasePage<KenoGamePageMap> {
 
 	@step("Insert bet amount")
 	public async insertBet(betAmount: string | number): Promise<void> {
+		await this.map.waitForStableXPosition({
+			locator: this.map.betAmountInput,
+		});
 		await this.map.betAmountInput.fill(betAmount.toString());
 	}
 
