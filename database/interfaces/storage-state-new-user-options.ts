@@ -7,6 +7,7 @@ export interface NewUserOptions {
 	username?: string;
 	password?: string;
 	email?: string;
+	wagered?: number;
 	amount?: number;
 	unit?: Unit;
 	startingXp?: number;

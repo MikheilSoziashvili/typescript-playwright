@@ -10,7 +10,7 @@ import {
 import { Unit } from "@enums/units";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
-import { DEFAULT_IMAGE } from "@constants/defaults";
+import { DEFAULT_IMAGE, DEFAULT_WAGERED } from "@constants/defaults";
 
 export class GamdomApiDbFacade {
 	private gamdomApi: GamdomApi;
@@ -40,6 +40,7 @@ export class GamdomApiDbFacade {
 		emailVerified?: boolean;
 		updateUserEmailVerification?: boolean;
 		email?: string | string[];
+		wagered?: number;
 		image?: string;
 		amount?: number;
 		unit?: Unit;
@@ -52,6 +53,7 @@ export class GamdomApiDbFacade {
 			emailVerified = true,
 			updateUserEmailVerification = false,
 			email,
+			wagered = DEFAULT_WAGERED,
 			image = DEFAULT_IMAGE,
 			amount = 10000000,
 			unit = Unit.COINS,
@@ -72,6 +74,7 @@ export class GamdomApiDbFacade {
 					password: user.password,
 					email: user.email,
 					emailVerified: emailVerified,
+					wagered: wagered,
 					image: image,
 					amount: amount,
 					unit: unit,
@@ -219,6 +222,7 @@ export class GamdomApiDbFacade {
 		updateUserEmailVerification?: boolean;
 		useGamdomEmailDomain?: boolean;
 		email?: string;
+		wagered?: number;
 		image?: string;
 		amount?: number;
 		unit?: Unit;
@@ -236,6 +240,7 @@ export class GamdomApiDbFacade {
 			emailVerified: emailVerified,
 			updateUserEmailVerification: updateUserEmailVerification,
 			email: customEmail,
+			wagered: options?.wagered,
 			image: options?.image,
 			amount: options?.amount,
 			unit: options?.unit,

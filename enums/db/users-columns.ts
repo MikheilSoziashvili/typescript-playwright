@@ -2,6 +2,7 @@ export enum UsersColumns {
 	Id = "id",
 	Username = "username",
 	Email = "email",
+	Wagered = "wagered",
 	Tags = "tags",
 	UserClass = "userclass",
 	TotalDeposited = "total_deposited",

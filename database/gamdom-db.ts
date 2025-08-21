@@ -1,4 +1,4 @@
-import { DEFAULT_IMAGE } from "@constants/defaults";
+import { DEFAULT_IMAGE, DEFAULT_WAGERED } from "@constants/defaults";
 import { generateAmlVerificationStatusReasonText } from "@core/helpers/asserter-helpers/text-asserters";
 import {
 	NullableDateString,
@@ -573,6 +573,7 @@ export class GamdomDb extends BaseDB {
 		username,
 		email,
 		password,
+		wagered = DEFAULT_WAGERED,
 		image = DEFAULT_IMAGE,
 		amount = 10000000,
 		startingXp = 10001200,
@@ -597,6 +598,7 @@ export class GamdomDb extends BaseDB {
 				{
 					[UsersColumns.Username]: username,
 					[UsersColumns.Email]: email.toLowerCase(),
+					[UsersColumns.Wagered]: wagered,
 					[UsersColumns.Image]: image,
 					[UsersColumns.PasswordHash]: passwordHash,
 					[UsersColumns.EmailVerified]: emailVerified,
