@@ -1,13 +1,19 @@
-import { VERY_LOW_USER_AMOUNT } from "database/constants/user-amounts";
-import { calculateMinesMultiplier } from "@core/utils/utils";
+import { testDetails } from "@core/helpers/test-details-helper";
+import {
+	calculateMinesMultiplier,
+	getCookieHeader,
+	setAuthenticationCookies,
+} from "@core/utils/utils";
 import { MinesAutobetTestData, MinesBetTestData } from "@dtos/test-data";
+import { Feature } from "@enums/feature";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { BrowserName } from "@enums/playwright/project-browser-names";
+import { TestTag } from "@enums/test-tags";
+import { UserType } from "@enums/user-types";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import { logger } from "@logger/logger";
-import { testDetails } from "@core/helpers/test-details-helper";
-import { TestTag } from "@enums/test-tags";
-import { JiraComponent } from "@enums/jira/jira-components";
+import { VERY_LOW_USER_AMOUNT } from "database/constants/user-amounts";
 
 test.describe("Mines tests", () => {
 	test.use(storageStateNewUserDB({ amount: VERY_LOW_USER_AMOUNT }));
@@ -164,3 +170,56 @@ test.describe("Mines tests", () => {
 		},
 	);
 });
+
+test.describe.serial(
+	"Mines - feature",
+	testDetails().withTags(TestTag.SEQUENTIAL).apply(),
+	() => {
+		let superAdminCookie: string;
+
+		test.beforeEach(async ({ gamdomApiDbFacade, gamdomApi, page }) => {
+			const { cookie } =
+				await gamdomApiDbFacade.createSuperAdminUserDbAndAuth({});
+			const cookieHeader = getCookieHeader(cookie);
+			superAdminCookie = cookieHeader;
+
+			await setAuthenticationCookies(page, cookie);
+
+			await gamdomApi.setFeatureState(
+				Feature.PLINKO,
+				{
+					[UserType.REGULAR]: false,
+					[UserType.QA_USER]: false,
+				},
+				{ Cookie: superAdminCookie },
+			);
+		});
+
+		test(
+			"[ENG-5532] Mines game can be launched when Plinko is unavailable",
+			testDetails()
+				.withTags(TestTag.ORIGINALS, JiraComponent.MINES)
+				.apply(),
+			async ({ minesGamePage, plinkoGamePage }) => {
+				await plinkoGamePage.navigate();
+				await plinkoGamePage.assertThat().plinkoIsDisabled();
+
+				await minesGamePage.navigateAndWaitForGameToLoad();
+				await minesGamePage
+					.assertThat()
+					.startPlayingButtonIsDisplayed();
+			},
+		);
+
+		test.afterAll(async ({ gamdomApi }) => {
+			await gamdomApi.setFeatureState(
+				Feature.PLINKO,
+				{
+					[UserType.REGULAR]: true,
+					[UserType.QA_USER]: true,
+				},
+				{ Cookie: superAdminCookie },
+			);
+		});
+	},
+);

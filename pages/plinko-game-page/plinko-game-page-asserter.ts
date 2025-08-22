@@ -249,4 +249,21 @@ export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 			`Type amount in ${currency}`,
 		);
 	}
+
+	async plinkoIsDisabled(): Promise<void> {
+		await expect
+			.poll(
+				async () => {
+					await this.gamdomPage.navigate();
+					return this.gamdomPage.map
+						.disabledGameMessage()
+						.isVisible();
+				},
+				{
+					timeout: Timeout.LONG,
+					intervals: [IntervalMs.SHORT],
+				},
+			)
+			.toBe(true);
+	}
 }

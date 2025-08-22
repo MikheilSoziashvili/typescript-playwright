@@ -176,4 +176,10 @@ export class PlinkoGamePageMap extends BaseMap {
 	public get yourBetValue(): Locator {
 		return this.page.getByTestId("Plinko-balance");
 	}
+
+	public disabledGameMessage(): Locator {
+		return this.page
+			.getByTestId("page-container-animate")
+			.filter({ hasText: "This game is currently disabled." });
+	}
 }
