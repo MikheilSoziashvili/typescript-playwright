@@ -123,4 +123,10 @@ export class MinesGamePageMap extends BaseMap {
 	public get startAutobetButton(): Locator {
 		return this.page.getByTestId("mines-start-autobet");
 	}
+
+	public disabledGameMessage(): Locator {
+		return this.page
+			.getByTestId("page-container-animate")
+			.filter({ hasText: "This game is currently disabled." });
+	}
 }

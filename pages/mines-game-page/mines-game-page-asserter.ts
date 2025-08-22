@@ -5,6 +5,7 @@ import { expect } from "@playwright/test";
 import { step } from "decorators/step";
 import { MinesGamePage } from "./mines-game-page";
 import { Timeout } from "@enums/timeout";
+import { IntervalMs } from "@enums/interval-millisecond";
 
 export class MinesGamePageAsserter extends BaseAsserter<MinesGamePage> {
 	public constructor(page: MinesGamePage) {
@@ -120,5 +121,23 @@ export class MinesGamePageAsserter extends BaseAsserter<MinesGamePage> {
 				},
 			)
 			.toBeCloseTo(expectedAmount, 1);
+	}
+
+	@step("Mines game is disabled")
+	public async minesIsDisabled(): Promise<void> {
+		await expect
+			.poll(
+				async () => {
+					await this.gamdomPage.navigate();
+					return this.gamdomPage.map
+						.disabledGameMessage()
+						.isVisible();
+				},
+				{
+					timeout: Timeout.LONG,
+					intervals: [IntervalMs.SHORT],
+				},
+			)
+			.toBe(true);
 	}
 }

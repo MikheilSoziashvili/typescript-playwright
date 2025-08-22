@@ -250,7 +250,8 @@ export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 		);
 	}
 
-	async plinkoIsDisabled(): Promise<void> {
+	@step("Plinko game is disabled")
+	public async plinkoIsDisabled(): Promise<void> {
 		await expect
 			.poll(
 				async () => {

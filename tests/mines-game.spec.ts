@@ -180,8 +180,7 @@ test.describe.serial(
 		test.beforeEach(async ({ gamdomApiDbFacade, gamdomApi, page }) => {
 			const { cookie } =
 				await gamdomApiDbFacade.createSuperAdminUserDbAndAuth({});
-			const cookieHeader = getCookieHeader(cookie);
-			superAdminCookie = cookieHeader;
+			superAdminCookie = getCookieHeader(cookie);
 
 			await setAuthenticationCookies(page, cookie);
 

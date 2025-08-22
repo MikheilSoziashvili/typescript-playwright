@@ -6,17 +6,20 @@ import {
 } from "@core/utils/currency-wallet-utils";
 import {
 	encodeCookieHeader,
+	getCookieHeader,
 	parse_csv,
 	setAuthenticationCookies,
 } from "@core/utils/utils";
 import { PlinkoBetTestData, RegisterTestData } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
+import { Feature } from "@enums/feature";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { LogType } from "@enums/log-types";
 import { OriginalGame } from "@enums/original-games";
 import { TestTag } from "@enums/test-tags";
 import { Unit } from "@enums/units";
 import { UserMenuOption } from "@enums/user-menu-options";
+import { UserType } from "@enums/user-types";
 import { WalletType } from "@enums/wallet-types";
 import {
 	storageStateNewSuperAdminUserDB,
@@ -274,6 +277,56 @@ test.describe(
 						.assertThat()
 						.verifyPlinkoTotalWagered(totalWagered);
 				},
+			);
+		});
+	},
+);
+
+test.describe.serial(
+	"Plinko - feature",
+	testDetails().withTags(TestTag.SEQUENTIAL).apply(),
+	() => {
+		let superAdminCookie: string;
+
+		test.beforeEach(async ({ gamdomApiDbFacade, gamdomApi, page }) => {
+			const { cookie } =
+				await gamdomApiDbFacade.createSuperAdminUserDbAndAuth({});
+			superAdminCookie = getCookieHeader(cookie);
+
+			await setAuthenticationCookies(page, cookie);
+
+			await gamdomApi.setFeatureState(
+				Feature.MINES,
+				{
+					[UserType.REGULAR]: false,
+					[UserType.QA_USER]: false,
+				},
+				{ Cookie: superAdminCookie },
+			);
+		});
+
+		test(
+			"[ENG-5528] Plinko game can be launched when Mines is unavailable",
+			testDetails()
+				.withTags(TestTag.ORIGINALS, JiraComponent.PLINKO)
+				.apply(),
+			async ({ minesGamePage, plinkoGamePage }) => {
+				await minesGamePage.navigate();
+				await minesGamePage.assertThat().minesIsDisabled();
+
+				await plinkoGamePage.navigateAndWaitForGameToLoad();
+				await plinkoGamePage.assertThat().dropBallButtonIsDisplayed();
+			},
+		);
+
+		test.afterAll(async ({ gamdomApi }) => {
+			await gamdomApi.setFeatureState(
+				Feature.MINES,
+				{
+					[UserType.REGULAR]: true,
+					[UserType.QA_USER]: true,
+				},
+				{ Cookie: superAdminCookie },
 			);
 		});
 	},

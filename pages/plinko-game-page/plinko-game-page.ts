@@ -3,11 +3,12 @@ import { PLINKO_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { parseBalance } from "@core/utils/utils";
 import { Attributes } from "@enums/playwright/htmlAttributes";
-import { Page } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
 import { step } from "decorators/step";
 import { PlinkoGamePageAsserter } from "./plinko-game-page-asserter";
 import { PlinkoGamePageMap } from "./plinko-game-page-map";
 import { PlinkoGamePageSteps } from "./plinko-game-page-steps";
+import { Timeout } from "@enums/timeout";
 
 export class PlinkoGamePage extends BasePage<PlinkoGamePageMap> {
 	public constructor(page: Page) {
@@ -136,5 +137,13 @@ export class PlinkoGamePage extends BasePage<PlinkoGamePageMap> {
 	@step("Get 'Your Bet' value as number")
 	public async getYourBetValue(): Promise<number> {
 		return parseBalance(await this.map.yourBetValue.innerText());
+	}
+
+	@step("Navigate and wait for game to load")
+	public async navigateAndWaitForGameToLoad(): Promise<void> {
+		await this.navigate();
+		await expect(this.map.dropBallButton).toBeVisible({
+			timeout: Timeout.MEDIUM,
+		});
 	}
 }
