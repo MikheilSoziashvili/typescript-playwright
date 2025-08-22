@@ -2,6 +2,7 @@ import { AnyTag } from "@core/types/types";
 import { jiraIssueId } from "@core/utils/utils";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraIssueType } from "@enums/jira/jira-issue-types";
+import { AnnotationType } from "@enums/playwright/annotationsTypes";
 import { TestDetails } from "@playwright/test";
 import {
 	nonAlphanumSpacePattern,
@@ -152,5 +153,34 @@ class TestDetailsBuilder {
 		const hyphenated = words.map((w) => w.toLowerCase()).join("-");
 
 		return `@${hyphenated}`;
+	}
+
+	/**
+	 * Adds arbitrary annotations to the test/test suite.
+	 *
+	 * Wraps {@link withAnnotations} to accept any {@link AnnotationType} with a free-form
+	 * description and appends them to the underlying Playwright {@link TestDetails} metadata.
+	 *
+	 * @param annotations - One or more annotations to add. Must not be empty.
+	 * @returns {TestDetailsBuilder} This builder instance for chaining.
+	 * @throws {Error} If no annotations are provided.
+	 *
+	 * @example
+	 * testDetails()
+	 *   .withArbitraryAnnotations(
+	 *     { type: AnnotationType.Info, description: "Nightly run" },
+	 *     { type: AnnotationType.Issue, description: "JR-123 regression" }
+	 *   )
+	 *   .apply();
+	 */
+	public withArbitraryAnnotations(
+		...annotations: { type: AnnotationType; description: string }[]
+	): TestDetailsBuilder {
+		return this.withAnnotations(
+			...annotations.map((annotation) => ({
+				type: annotation.type,
+				description: annotation.description,
+			})),
+		);
 	}
 }

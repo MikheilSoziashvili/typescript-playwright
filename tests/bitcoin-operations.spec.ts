@@ -18,6 +18,7 @@ import { UserTags } from "@enums/db/user-tags";
 import { UserClasses } from "@enums/db/user-classes";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { testDetails } from "@core/helpers/test-details-helper";
+import { AnnotationType } from "@enums/playwright/annotationsTypes";
 
 test.describe("Bitcoin tests", () => {
 	test.slow();
@@ -79,7 +80,12 @@ test.describe("Bitcoin tests", () => {
 	test.setTimeout(Timeout.EXTRA_MAX + Timeout.SUPER_MAX);
 	test(
 		"[ENG-5450] BTC - deposit and withdraw",
-		testDetails().withJiraBugTickets("7543").apply(),
+		testDetails()
+			.withArbitraryAnnotations({
+				type: AnnotationType.INFRASTRUCTURE,
+				description: "Rate limit issues",
+			})
+			.apply(),
 		async ({
 			gamdomApiDbFacade,
 			bitcoinApi,

@@ -7,6 +7,7 @@ import { ToastTitle } from "@enums/toast-titles";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { Unit } from "@enums/units";
 import { WalletType } from "@enums/wallet-types";
+import { Currency } from "@enums/currencies";
 
 export class WalletModalSteps extends BasePageStep<WalletModal> {
 	public constructor(page: WalletModal) {
@@ -56,8 +57,9 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 		await this.gamdomPage.clickVaultDepositButton();
 
 		const expectedAmountUsd =
-			await this.userBalanceHandler.walletBalanceInUsd(
+			await this.userBalanceHandler.walletBalanceInFiatRounded(
 				unit,
+				Currency.USD,
 				WalletType.VAULT,
 			);
 
@@ -84,8 +86,9 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 
 		const amount = await this.getVaultAmountMinusOne();
 		const usdBeforeWithdrawal =
-			await this.userBalanceHandler.walletBalanceInUsd(
+			await this.userBalanceHandler.walletBalanceInFiatRounded(
 				unit,
+				Currency.USD,
 				WalletType.VAULT,
 			);
 		const formattedToast = this.formatAmount(usdBeforeWithdrawal - 1);
