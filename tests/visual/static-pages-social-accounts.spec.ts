@@ -1,7 +1,9 @@
 import { DATASETS_DIR } from "@constants/file-paths";
+import { testDetails } from "@core/helpers/test-details-helper";
 import { SocialMediaRecord } from "@core/types/types";
 import { parse_csv } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
+import { TestTag } from "@enums/test-tags";
 import { test } from "@fixtures/fixtures";
 import { BannedUserPage } from "@pages/banned-user/banned-user-page";
 import { GeoblockedPage } from "@pages/geoblocked/geoblocked-page";
@@ -31,46 +33,53 @@ test.describe("Static pages - social accounts", () => {
 	}).forEach(([pageType, socialMediaList]) => {
 		const typedPageType = pageType as keyof typeof SOCIAL_MEDIA_FILE_NAMES;
 		socialMediaList.forEach((socialMedia) => {
-			test(`[ENG-2480] Verify '${socialMedia.social_account}' social account in '${socialMedia.static_page}' static page @visual`, async ({
-				homePage,
-				bannedUserPage,
-				geoblockedPage,
-				maintenancePage,
-			}, testInfo) => {
-				const pageObjects: Record<
-					keyof typeof SOCIAL_MEDIA_FILE_NAMES,
-					BannedUserPage | GeoblockedPage | MaintenancePage
-				> = {
-					banned: bannedUserPage,
-					geoblocked: geoblockedPage,
-					maintenance: maintenancePage,
-				};
+			test(
+				`[ENG-2480] Verify '${socialMedia.social_account}' social account in '${socialMedia.static_page}' static page`,
+				testDetails().withTags(TestTag.VISUAL).apply(),
+				async (
+					{
+						homePage,
+						bannedUserPage,
+						geoblockedPage,
+						maintenancePage,
+					},
+					testInfo,
+				) => {
+					const pageObjects: Record<
+						keyof typeof SOCIAL_MEDIA_FILE_NAMES,
+						BannedUserPage | GeoblockedPage | MaintenancePage
+					> = {
+						banned: bannedUserPage,
+						geoblocked: geoblockedPage,
+						maintenance: maintenancePage,
+					};
 
-				const pageObject = pageObjects[typedPageType];
+					const pageObject = pageObjects[typedPageType];
 
-				await pageObject.navigateToPage(socialMedia.static_page);
-				await pageObject
-					.assertThat()
-					.footerSocialMediaIconVisualCorrect(
-						testInfo,
+					await pageObject.navigateToPage(socialMedia.static_page);
+					await pageObject
+						.assertThat()
+						.footerSocialMediaIconVisualCorrect(
+							testInfo,
+							socialMedia.locator,
+						);
+					await pageObject
+						.assertThat()
+						.isSocialMediaLinkCorrect(
+							socialMedia.locator,
+							socialMedia.external_url,
+						);
+					await pageObject.openSocialMediaFooterLinkByPlaceholder(
 						socialMedia.locator,
 					);
-				await pageObject
-					.assertThat()
-					.isSocialMediaLinkCorrect(
-						socialMedia.locator,
-						socialMedia.external_url,
-					);
-				await pageObject.openSocialMediaFooterLinkByPlaceholder(
-					socialMedia.locator,
-				);
-				await homePage
-					.assertThat()
-					.verifyNewTabUrlParts([
-						`${socialMedia.socialMedia_UrlPart}`,
-						`${socialMedia.gamdom_UrlPart}`,
-					]);
-			});
+					await homePage
+						.assertThat()
+						.verifyNewTabUrlParts([
+							`${socialMedia.socialMedia_UrlPart}`,
+							`${socialMedia.gamdom_UrlPart}`,
+						]);
+				},
+			);
 		});
 	});
 });

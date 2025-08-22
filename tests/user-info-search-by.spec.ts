@@ -4,6 +4,7 @@ import {
 	ADMIN_IP_USERS_PAGE_ENDPOINT,
 	INFO_ADMIN_PAGE_ENDPOINT,
 } from "@constants/page-endpoints";
+import { testDetails } from "@core/helpers/test-details-helper";
 import { createUsers, getUserIds } from "@core/utils/user-setup-utils";
 import {
 	generateRandomString,
@@ -14,6 +15,7 @@ import { RegisterTestData } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { UserRoles } from "@enums/user-roles";
 import {
 	storageStateNewSuperAdminUserDB,
@@ -192,7 +194,9 @@ test.describe("User info - user badges", () => {
 	usersWithConfigs.forEach(({ role }) => {
 		test(
 			`[ENG-7562] User info - user badges - ${role}`,
-			{ tag: ["@admin", "@admin-panel"] },
+			testDetails()
+				.withTags(JiraComponent.ADMIN, JiraComponent.ADMIN_PANEL)
+				.apply(),
 			async ({ userInfoAdminPage }) => {
 				const userId = userIds[role];
 

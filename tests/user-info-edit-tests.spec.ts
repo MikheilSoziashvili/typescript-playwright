@@ -1,11 +1,12 @@
 import { DATASETS_DIR } from "@constants/file-paths";
-import { jiraIssueId, parse_csv } from "@core/utils/utils";
+import { parse_csv } from "@core/utils/utils";
+import { testDetails } from "@core/helpers/test-details-helper";
 import { BalanceEditStep, RegisterTestData } from "@dtos/test-data";
 import { UserInfoTabs } from "@enums/admin/user-info-tabs";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
-import { AnnotationType } from "@enums/playwright/annotationsTypes";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { Unit } from "@enums/units";
@@ -38,9 +39,9 @@ const staffRoleVisibilityDataset = parse_csv(
 
 test.describe(
 	"User info - edit tests",
-	{
-		tag: ["@admin-panel, @user-info"],
-	},
+	testDetails()
+		.withTags(JiraComponent.ADMIN_PANEL, JiraComponent.USER_INFO)
+		.apply(),
 	() => {
 		test.describe("Edit Info - Verify tags selection", () => {
 			test.use(storageStateNewSuperAdminUserDB());
@@ -48,12 +49,7 @@ test.describe(
 			staffRoleDataset.forEach((record) => {
 				test(
 					`[ENG-5543] Edit Info - Selecting '${record.staffRoleTag}' checks its related tags`,
-					{
-						annotation: {
-							type: AnnotationType.BUG,
-							description: jiraIssueId(8283),
-						},
-					},
+					testDetails().withJiraBugTickets("8283").apply(),
 					async ({
 						userInfoAdminPage,
 						gamdomDb,
@@ -150,7 +146,7 @@ test.describe(
 
 		test.describe(
 			"Edit info - Verify Edit Balance",
-			{ tag: "@edit-info" },
+			testDetails().withTags(JiraComponent.EDIT_INFO).apply(),
 			() => {
 				test.use(
 					storageStateNewUserDB({

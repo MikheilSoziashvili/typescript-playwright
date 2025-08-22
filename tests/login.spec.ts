@@ -1,6 +1,8 @@
 import { DATASETS_DIR } from "@constants/file-paths";
+import { testDetails } from "@core/helpers/test-details-helper";
 import { parse_csv, toJson } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
+import { TestTag } from "@enums/test-tags";
 import { test } from "@fixtures/fixtures";
 import { users } from "configuration";
 import { testData } from "test-data/test-data-manager";
@@ -110,36 +112,38 @@ test.describe("Login tests", () => {
 		username: string;
 		password: string;
 	}[]) {
-		test(`[ENG-1070] Login with ${user.username} @smoke`, async ({
-			homePage,
-		}) => {
+		test(
+			`[ENG-1070] Login with ${user.username}`,
+			testDetails().withTags(TestTag.SMOKE).apply(),
+			async ({ homePage }) => {
+				await homePage.navigateAndCheckTitle();
+
+				await homePage.unauthenticatedHeader.openLoginModal();
+				await homePage.loginModal.login(user.username, user.password);
+
+				await homePage.authenticatedHeader
+					.assertThat()
+					.loggedInUserElementsAreVisible();
+			},
+		);
+	}
+
+	test(
+		"[ENG-292] Login with steam user",
+		testDetails().withTags(TestTag.SMOKE).apply(),
+		async ({ homePage, steamAuthPage, steamBlockedPage }) => {
 			await homePage.navigateAndCheckTitle();
 
 			await homePage.unauthenticatedHeader.openLoginModal();
-			await homePage.loginModal.login(user.username, user.password);
+			await homePage.loginModal.clickSteamButton();
+			await steamAuthPage.loginToSteam();
+			await steamBlockedPage.continueAndSignIn();
 
 			await homePage.authenticatedHeader
 				.assertThat()
 				.loggedInUserElementsAreVisible();
-		});
-	}
-
-	test("[ENG-292] Login with steam user @smoke", async ({
-		homePage,
-		steamAuthPage,
-		steamBlockedPage,
-	}) => {
-		await homePage.navigateAndCheckTitle();
-
-		await homePage.unauthenticatedHeader.openLoginModal();
-		await homePage.loginModal.clickSteamButton();
-		await steamAuthPage.loginToSteam();
-		await steamBlockedPage.continueAndSignIn();
-
-		await homePage.authenticatedHeader
-			.assertThat()
-			.loggedInUserElementsAreVisible();
-	});
+		},
+	);
 
 	test("[ENG-2722] Login with Google user through Google auth portal", async ({
 		homePage,

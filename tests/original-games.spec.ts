@@ -1,4 +1,5 @@
 import { DATASETS_DIR } from "@constants/file-paths";
+import { testDetails } from "@core/helpers/test-details-helper";
 import { parse_csv, roundToDecimals } from "@core/utils/utils";
 import {
 	NegativeBetValidationScenario,
@@ -6,10 +7,12 @@ import {
 	RawNegativeBetValidationScenario,
 } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
+import { JiraComponent } from "@enums/jira/jira-components";
 import {
 	OriginalGame,
 	OriginalsQuickSelectButtons,
 } from "@enums/original-games";
+import { TestTag } from "@enums/test-tags";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import { HIGH_USER_AMOUNT } from "database/constants/user-amounts";
@@ -44,9 +47,7 @@ test.describe("Quick Select Buttons", () => {
 		for (const { game, initialBetAmount } of minScenario) {
 			test(
 				`[ENG-5455] should set min amount for ${game}`,
-				{
-					tag: ["@originals"],
-				},
+				testDetails().withTags(TestTag.ORIGINALS).apply(),
 				async ({ originalsPage }) => {
 					await originalsPage.navigateToGame(game);
 					await originalsPage.authenticatedHeader
@@ -74,9 +75,7 @@ test.describe("Quick Select Buttons", () => {
 		} of halfScenario) {
 			test(
 				`[ENG-5454] should halve bet for ${game} with initial bet ${initialBetAmount}`,
-				{
-					tag: ["@originals"],
-				},
+				testDetails().withTags(TestTag.ORIGINALS).apply(),
 				async ({ originalsPage }) => {
 					await originalsPage.navigateToGame(game);
 					await originalsPage.authenticatedHeader
@@ -116,9 +115,7 @@ test.describe("Quick Select Buttons", () => {
 		for (const { game, initialBetAmount } of maxScenario) {
 			test(
 				`[ENG-5053] should set max amount for ${game}`,
-				{
-					tag: ["@originals"],
-				},
+				testDetails().withTags(TestTag.ORIGINALS).apply(),
 				async ({ originalsPage }) => {
 					await originalsPage.navigateToGame(game);
 					await originalsPage.authenticatedHeader
@@ -148,9 +145,7 @@ test.describe("Quick Select Buttons", () => {
 		} of doubleScenario) {
 			test(
 				`[ENG-5456] should double bet for ${game} with initial bet ${initialBetAmount}`,
-				{
-					tag: ["@originals"],
-				},
+				testDetails().withTags(TestTag.ORIGINALS).apply(),
 				async ({ originalsPage }) => {
 					await originalsPage.navigateToGame(game);
 					await originalsPage.authenticatedHeader
@@ -206,9 +201,14 @@ test.describe("Quick Select Buttons", () => {
 		} of negativeBetScenarios) {
 			test(
 				`[ENG-6968] should not accept negative bet amount ${negativeBetAmount} for ${game}`,
-				{
-					tag: ["@originals, @mines, @plinko, @keno"],
-				},
+				testDetails()
+					.withTags(
+						TestTag.ORIGINALS,
+						JiraComponent.MINES,
+						JiraComponent.PLINKO,
+						JiraComponent.KENO,
+					)
+					.apply(),
 				async ({ originalsPage }) => {
 					await originalsPage.navigateToGame(game);
 					await originalsPage.authenticatedHeader

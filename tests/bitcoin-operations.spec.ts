@@ -5,7 +5,6 @@ import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import {
 	getCookieHeader,
-	jiraIssueId,
 	setAuthenticationCookies,
 	waitUntil,
 } from "@core/utils/utils";
@@ -18,7 +17,7 @@ import { Timeout } from "@enums/timeout";
 import { UserTags } from "@enums/db/user-tags";
 import { UserClasses } from "@enums/db/user-classes";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
-import { AnnotationType } from "@enums/playwright/annotationsTypes";
+import { testDetails } from "@core/helpers/test-details-helper";
 
 test.describe("Bitcoin tests", () => {
 	test.slow();
@@ -80,12 +79,7 @@ test.describe("Bitcoin tests", () => {
 	test.setTimeout(Timeout.EXTRA_MAX + Timeout.SUPER_MAX);
 	test(
 		"[ENG-5450] BTC - deposit and withdraw",
-		{
-			annotation: {
-				type: AnnotationType.BUG,
-				description: jiraIssueId(7543),
-			},
-		},
+		testDetails().withJiraBugTickets("7543").apply(),
 		async ({
 			gamdomApiDbFacade,
 			bitcoinApi,

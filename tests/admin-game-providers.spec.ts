@@ -1,6 +1,7 @@
 import { DATASETS_DIR } from "@constants/file-paths";
 import { Providers } from "@constants/providers";
 import { Provider } from "@core/api/interfaces/provider";
+import { testDetails } from "@core/helpers/test-details-helper";
 import { ProviderDetails, VisibilityResult } from "@core/types/types";
 import {
 	getCookieHeader,
@@ -13,6 +14,7 @@ import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
 import { Feature } from "@enums/feature";
 import { GameProvider } from "@enums/game-providers";
+import { TestTag } from "@enums/test-tags";
 import { UserType } from "@enums/user-types";
 import { test } from "@fixtures/fixtures";
 
@@ -59,7 +61,7 @@ let initialProvidersState: Provider[] = [];
 
 test.describe.serial(
 	"Admin Enable Game Provider tests",
-	{ tag: ["@sequential", "@game-providers"] },
+	testDetails().withTags(TestTag.SEQUENTIAL, TestTag.GAME_PROVIDERS).apply(),
 	() => {
 		test.slow();
 

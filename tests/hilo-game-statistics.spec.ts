@@ -1,9 +1,11 @@
 import { DATASETS_DIR } from "@constants/file-paths";
+import { testDetails } from "@core/helpers/test-details-helper";
 import { jiraIssueId, parse_csv } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { HiloGameStatusMessage } from "@enums/hilo-result-messages";
 import { OriginalGame } from "@enums/original-games";
 import { AnnotationType } from "@enums/playwright/annotationsTypes";
+import { TestTag } from "@enums/test-tags";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 
@@ -14,53 +16,59 @@ const lastRoundsInputs = parse_csv(
 	lastRounds: number;
 }[];
 
-test.describe("Hilo game - statistics tests", () => {
-	test.use(storageStateNewUserDB());
-	test.slow();
+test.describe(
+	"Hilo game - statistics tests",
+	testDetails().withTags(TestTag.ORIGINALS).apply(),
+	() => {
+		test.use(storageStateNewUserDB());
+		test.slow();
 
-	lastRoundsInputs.forEach((input) => {
-		test(
-			`[ENG-2138] Verify last '${input.lastRounds}' rounds Red/Black percentage history statistics @originals`,
-			{
-				annotation: {
-					type: AnnotationType.BUG,
-					description: jiraIssueId(4718),
+		lastRoundsInputs.forEach((input) => {
+			test(
+				`[ENG-2138] Verify last '${input.lastRounds}' rounds Red/Black percentage history statistics`,
+				{
+					annotation: {
+						type: AnnotationType.BUG,
+						description: jiraIssueId(4718),
+					},
 				},
-			},
-			async ({ hiloGamePage, originalsPage }) => {
-				await hiloGamePage.navigate();
-				await originalsPage.waitForGameRoundFinish(OriginalGame.HiLo);
-				await hiloGamePage
-					.assertThat()
-					.gameMessageIs(HiloGameStatusMessage.SPINNING_IN);
-
-				await hiloGamePage.steps().openHistoryModalSuccessfully();
-
-				const hiloCardsColorDataHistoryModal = await hiloGamePage
-					.steps()
-					.getHistoryModalCardsPercentageValue(input.lastRounds);
-
-				await hiloGamePage.steps().closeHistoryModalSuccessfully();
-				await hiloGamePage
-					.steps()
-					.selectLastRoundsDropdownValues(input.lastRounds);
-				const hiloCardsColorDataStatsArea = await hiloGamePage
-					.steps()
-					.getStatsAreaCardsProbabilityPercentageValue();
-
-				await hiloGamePage
-					.assertThat()
-					.cardColorPercentageValuesEqual(
-						hiloCardsColorDataHistoryModal.blackCards,
-						hiloCardsColorDataStatsArea.blackCards,
+				async ({ hiloGamePage, originalsPage }) => {
+					await hiloGamePage.navigate();
+					await originalsPage.waitForGameRoundFinish(
+						OriginalGame.HiLo,
 					);
-				await hiloGamePage
-					.assertThat()
-					.cardColorPercentageValuesEqual(
-						hiloCardsColorDataHistoryModal.redCards,
-						hiloCardsColorDataStatsArea.redCards,
-					);
-			},
-		);
-	});
-});
+					await hiloGamePage
+						.assertThat()
+						.gameMessageIs(HiloGameStatusMessage.SPINNING_IN);
+
+					await hiloGamePage.steps().openHistoryModalSuccessfully();
+
+					const hiloCardsColorDataHistoryModal = await hiloGamePage
+						.steps()
+						.getHistoryModalCardsPercentageValue(input.lastRounds);
+
+					await hiloGamePage.steps().closeHistoryModalSuccessfully();
+					await hiloGamePage
+						.steps()
+						.selectLastRoundsDropdownValues(input.lastRounds);
+					const hiloCardsColorDataStatsArea = await hiloGamePage
+						.steps()
+						.getStatsAreaCardsProbabilityPercentageValue();
+
+					await hiloGamePage
+						.assertThat()
+						.cardColorPercentageValuesEqual(
+							hiloCardsColorDataHistoryModal.blackCards,
+							hiloCardsColorDataStatsArea.blackCards,
+						);
+					await hiloGamePage
+						.assertThat()
+						.cardColorPercentageValuesEqual(
+							hiloCardsColorDataHistoryModal.redCards,
+							hiloCardsColorDataStatsArea.redCards,
+						);
+				},
+			);
+		});
+	},
+);

@@ -1,8 +1,11 @@
 import { DATASETS_DIR } from "@constants/file-paths";
 import { GameToEndpointMap } from "@constants/game-endpoints";
+import { testDetails } from "@core/helpers/test-details-helper";
 import { parse_csv } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { LaunchLocation } from "@enums/homepage-launch-locations";
+import { JiraComponent } from "@enums/jira/jira-components";
+import { TestTag } from "@enums/test-tags";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import { environment_url } from "configuration";
@@ -49,7 +52,7 @@ test.describe("Homepage navigation", () => {
 
 test.describe(
 	"[ENG-5798] Homepage - Originals Launch",
-	{ tag: ["@originals"] },
+	testDetails().withTags(TestTag.ORIGINALS).apply(),
 	() => {
 		const originalsLaunchScenarios = testData().fromCsvRaw({
 			file: CsvFilesName.HOMEPAGE_ORIGINALS_LAUNCH,
@@ -85,7 +88,7 @@ test.describe("Top line header links tests", () => {
 	topLineHeaderLinks.forEach(({ link, expectedUrl }) => {
 		test(
 			`[ENG-5256] Verify top line header link: ${link} for a logged out user`,
-			{ tag: "@homepage" },
+			testDetails().withTags(JiraComponent.HOMEPAGE).apply(),
 			async ({ homePage }) => {
 				await homePage.navigate();
 				await homePage

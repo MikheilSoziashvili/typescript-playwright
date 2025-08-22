@@ -1,4 +1,5 @@
 import { DATASETS_DIR } from "@constants/file-paths";
+import { testDetails } from "@core/helpers/test-details-helper";
 import {
 	generateCustomUrl,
 	generateRandomString,
@@ -11,12 +12,14 @@ import { PromotionTestData, RegisterTestData } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { PromotionCategories } from "@enums/promotion-categories";
 import { PromotionIsVipCategories } from "@enums/promotion-is-vip-categories";
 import { PromotionStatuses } from "@enums/promotion-statuses";
 import { PromotionSubStatuses } from "@enums/promotion-sub-categories";
 import { PromotionType } from "@enums/promotion-types";
+import { TestTag } from "@enums/test-tags";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
@@ -226,7 +229,9 @@ const promotionCombinations = parse_csv(
 
 test.describe(
 	"Promotion tests",
-	{ tag: ["@Promotions", "@AdminPanel"] },
+	testDetails()
+		.withTags(JiraComponent.PROMOTIONS, JiraComponent.ADMIN_PANEL)
+		.apply(),
 	() => {
 		let promotionName: string;
 		let promotionNewName: string;
@@ -346,7 +351,7 @@ test.describe(
 			promotionCombinations.forEach((combination) => {
 				test(
 					`[ENG-5576] Promotions - Create a new promotion - Promotion Category: ${combination.category} - Promotion Subcategory: ${combination.subCategory} - Is For VIP: ${combination.isForVip}`,
-					{ tag: ["@local"] },
+					testDetails().withTags(TestTag.LOCAL).apply(),
 					async ({ promotionAdminPage, promotionsModal, toast }) => {
 						test.fixme(
 							isCI,
@@ -430,7 +435,7 @@ test.describe(
 				promotionCombinations.forEach((combination) => {
 					test(
 						`[ENG-5736] Promotions - Update '${promotionType.name}' active promotion. Promotion Category: ${combination.category} - Promotion Subcategory: ${combination.subCategory} - Is For VIP: ${combination.isForVip}`,
-						{ tag: ["@local"] },
+						testDetails().withTags(TestTag.LOCAL).apply(),
 						async ({
 							promotionAdminPage,
 							promotionsModal,

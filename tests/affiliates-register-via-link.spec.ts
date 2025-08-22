@@ -1,6 +1,6 @@
-import { generateRandomString, jiraIssueId } from "@core/utils/utils";
+import { testDetails } from "@core/helpers/test-details-helper";
+import { generateRandomString } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
-import { AnnotationType } from "@enums/playwright/annotationsTypes";
 import { ToastTitle } from "@enums/toast-titles";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
@@ -22,12 +22,7 @@ test.describe("Register with affiliate link", () => {
 
 	test(
 		"[ENG-1136] Register via affiliate link",
-		{
-			annotation: {
-				type: AnnotationType.BUG,
-				description: jiraIssueId(7309),
-			},
-		},
+		testDetails().withJiraBugTickets("7309").apply(),
 		async ({ homePage, faqPage }) => {
 			await homePage.navigate({
 				link: affiliateLink,

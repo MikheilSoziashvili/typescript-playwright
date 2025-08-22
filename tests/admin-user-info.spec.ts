@@ -1,12 +1,12 @@
+import { testDetails } from "@core/helpers/test-details-helper";
 import { RegisterTestData } from "@dtos/test-data";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { storageStateNewSuperAdminUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 
 test.describe(
 	"User info data",
-	{
-		tag: ["@admin-panel"],
-	},
+	testDetails().withTags(JiraComponent.ADMIN_PANEL).apply(),
 	() => {
 		test.use(storageStateNewSuperAdminUserDB());
 

@@ -40,3 +40,4 @@ export const urlLeadingTrailingHyphensPattern = /^-|-$/g;
 export const quotesRemovalPattern = /['"]/g;
 export const plainAmount = /^\d+(\.\d{2})?$/;
 export const shortScaled = /^\d+(\.\d{1,2})?[kmbKMB]$/;
+export const nonAlphanumSpacePattern = /[^a-zA-Z0-9 ]/g;

@@ -1,20 +1,18 @@
 import { test } from "@fixtures/fixtures";
 import { RegisterTestData } from "@dtos/test-data";
 import { ToastTitle } from "@enums/toast-titles";
-import { AnnotationType } from "@enums/playwright/annotationsTypes";
-import { jiraIssueId } from "@core/utils/utils";
+import { testDetails } from "@core/helpers/test-details-helper";
+import { TestTag } from "@enums/test-tags";
 
 test.describe("Register tests", () => {
 	test.use({ storageState: { cookies: [], origins: [] } });
 
 	test(
-		"[ENG-296] Register with email @smoke",
-		{
-			annotation: {
-				type: AnnotationType.BUG,
-				description: jiraIssueId(7309),
-			},
-		},
+		"[ENG-296] Register with email",
+		testDetails()
+			.withTags(TestTag.SMOKE)
+			.withJiraBugTickets("7309")
+			.apply(),
 		async ({ homePage }) => {
 			await homePage.navigateAndCheckTitle();
 			await homePage.unauthenticatedHeader.openRegisterModal();

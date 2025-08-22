@@ -5,6 +5,9 @@ import { BrowserName } from "@enums/playwright/project-browser-names";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import { logger } from "@logger/logger";
+import { testDetails } from "@core/helpers/test-details-helper";
+import { TestTag } from "@enums/test-tags";
+import { JiraComponent } from "@enums/jira/jira-components";
 
 test.describe("Mines tests", () => {
 	test.use(storageStateNewUserDB({ amount: VERY_LOW_USER_AMOUNT }));
@@ -27,9 +30,7 @@ test.describe("Mines tests", () => {
 
 	test(
 		`[ENG-6486] Mines - place a bet and try to win - Pick random tiles`,
-		{
-			tag: ["@originals", "@mines"],
-		},
+		testDetails().withTags(TestTag.ORIGINALS, JiraComponent.MINES).apply(),
 		async ({ minesGamePage, userBalanceHandler }, testInfo) => {
 			test.fixme(
 				testInfo.project.name === BrowserName.FIREFOX,
@@ -63,9 +64,9 @@ test.describe("Mines tests", () => {
 
 	test(
 		`[ENG-6927] Mines - Play until catch a bomb`,
-		{
-			tag: ["@smoke", "@originals", "@mines"],
-		},
+		testDetails()
+			.withTags(TestTag.SMOKE, TestTag.ORIGINALS, JiraComponent.MINES)
+			.apply(),
 		async ({ minesGamePage, userBalanceHandler }) => {
 			await minesGamePage.navigateAndWaitForGameToLoad();
 
@@ -93,9 +94,7 @@ test.describe("Mines tests", () => {
 
 	test(
 		`[ENG-5729] Mines - Verify Game History`,
-		{
-			tag: ["@originals", "@mines"],
-		},
+		testDetails().withTags(TestTag.ORIGINALS, JiraComponent.MINES).apply(),
 		async ({ minesGamePage }) => {
 			await minesGamePage.navigateAndWaitForGameToLoad();
 
@@ -125,9 +124,7 @@ test.describe("Mines tests", () => {
 
 	test(
 		`[ENG-6143] Mines - Autobet Increase By`,
-		{
-			tag: ["@originals", "@mines"],
-		},
+		testDetails().withTags(TestTag.ORIGINALS, JiraComponent.MINES).apply(),
 		async ({ minesGamePage }) => {
 			const minesBetDataForAutobet = new MinesBetTestData({
 				betAmount: 1,

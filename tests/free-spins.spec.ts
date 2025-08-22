@@ -1,10 +1,12 @@
 import { BATCH_FREE_SPINS_FILE_PATH } from "@constants/file-paths";
+import { testDetails } from "@core/helpers/test-details-helper";
 import { setAuthenticationCookies } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { DialogInput } from "@enums/admin/dialog-input";
 import { CasinoGameName } from "@enums/casino-game";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import {
@@ -19,67 +21,75 @@ import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
 import { USER_1_ID } from "database/constants/user-ids";
 
 test.describe("Free spins tests", () => {
-	test.describe("Grant free spins", { tag: ["@rewards"] }, () => {
-		test.use(
-			storageStateNewSuperAdminUserDB({ amount: SUPER_HIGH_USER_AMOUNT }),
-		);
-		test(
-			"[ENG-932] Granting free spins",
-			{ tag: ["@free-spins"] },
-			async ({ freeSpinsAdminPage, toast }) => {
-				await freeSpinsAdminPage.navigate();
+	test.describe(
+		"Grant free spins",
+		testDetails().withTags(JiraComponent.REWARDS).apply(),
+		() => {
+			test.use(
+				storageStateNewSuperAdminUserDB({
+					amount: SUPER_HIGH_USER_AMOUNT,
+				}),
+			);
+			test(
+				"[ENG-932] Granting free spins",
+				testDetails().withTags(JiraComponent.FREE_SPINS).apply(),
+				async ({ freeSpinsAdminPage, toast }) => {
+					await freeSpinsAdminPage.navigate();
 
-				await freeSpinsAdminPage.steps().getFreeSpins({
-					userId: USER_1_ID,
-					gameName: CasinoGameName.BARREL_BONANZA,
-					betAmount: 100,
-				});
+					await freeSpinsAdminPage.steps().getFreeSpins({
+						userId: USER_1_ID,
+						gameName: CasinoGameName.BARREL_BONANZA,
+						betAmount: 100,
+					});
 
-				await toast.assertThat().titlesAre([
-					{
-						title: ToastTitle.SUCCESS,
-						subTitle: ToastSubTitle.SENDING_OUT_FREESPINS,
-					},
-					{
-						title: ToastTitle.SUCCESS,
-						subTitle: ToastSubTitle.CASINO_REWARD_GIVEN,
-					},
-				]);
-			},
-		);
+					await toast.assertThat().titlesAre([
+						{
+							title: ToastTitle.SUCCESS,
+							subTitle: ToastSubTitle.SENDING_OUT_FREESPINS,
+						},
+						{
+							title: ToastTitle.SUCCESS,
+							subTitle: ToastSubTitle.CASINO_REWARD_GIVEN,
+						},
+					]);
+				},
+			);
 
-		test(
-			"[ENG-5008] Granting free spins in batch",
-			{ tag: ["@spins"] },
-			async ({ freeSpinsAdminPage, toast }) => {
-				await freeSpinsAdminPage.navigate();
+			test(
+				"[ENG-5008] Granting free spins in batch",
+				testDetails().withTags(JiraComponent.FREE_SPINS).apply(),
+				async ({ freeSpinsAdminPage, toast }) => {
+					await freeSpinsAdminPage.navigate();
 
-				await freeSpinsAdminPage
-					.steps()
-					.uploadBatchFreeSpinsFile(BATCH_FREE_SPINS_FILE_PATH);
+					await freeSpinsAdminPage
+						.steps()
+						.uploadBatchFreeSpinsFile(BATCH_FREE_SPINS_FILE_PATH);
 
-				await freeSpinsAdminPage.steps().getFreeSpins({
-					gameName: CasinoGameName.BARREL_BONANZA,
-					betAmount: 100,
-				});
+					await freeSpinsAdminPage.steps().getFreeSpins({
+						gameName: CasinoGameName.BARREL_BONANZA,
+						betAmount: 100,
+					});
 
-				await toast.assertThat().titlesAre([
-					{
-						title: ToastTitle.SUCCESS,
-						subTitle: ToastSubTitle.SENDING_OUT_FREESPINS,
-					},
-					{
-						title: ToastTitle.SUCCESS,
-						subTitle: ToastSubTitle.CASINO_REWARD_GIVEN,
-					},
-				]);
-			},
-		);
-	});
+					await toast.assertThat().titlesAre([
+						{
+							title: ToastTitle.SUCCESS,
+							subTitle: ToastSubTitle.SENDING_OUT_FREESPINS,
+						},
+						{
+							title: ToastTitle.SUCCESS,
+							subTitle: ToastSubTitle.CASINO_REWARD_GIVEN,
+						},
+					]);
+				},
+			);
+		},
+	);
 
 	test.describe(
 		"Free spins claim tests",
-		{ tag: ["@rewards", "@spins"] },
+		testDetails()
+			.withTags(JiraComponent.REWARDS, JiraComponent.FREE_SPINS)
+			.apply(),
 		() => {
 			test.use(
 				storageStateNewSuperAdminUserDB({
@@ -153,43 +163,49 @@ test.describe("Free spins tests", () => {
 		},
 	);
 
-	test.describe("Free spins cannot be sent", { tag: ["@free-spins"] }, () => {
-		test.use(
-			storageStateNewUserDB({
-				amount: 0,
-				tags: UserTags.FreeSpinsAdmin,
-				userClass: UserClasses.Admin,
-			}),
-		);
-		test("[ENG-3474] Verify free spins cannot be sent when admin wallet is 0", async ({
-			freeSpinsAdminPage,
-			toast,
-		}) => {
-			await freeSpinsAdminPage.navigate();
+	test.describe(
+		"Free spins cannot be sent",
+		testDetails().withTags(JiraComponent.FREE_SPINS).apply(),
+		() => {
+			test.use(
+				storageStateNewUserDB({
+					amount: 0,
+					tags: UserTags.FreeSpinsAdmin,
+					userClass: UserClasses.Admin,
+				}),
+			);
+			test("[ENG-3474] Verify free spins cannot be sent when admin wallet is 0", async ({
+				freeSpinsAdminPage,
+				toast,
+			}) => {
+				await freeSpinsAdminPage.navigate();
 
-			await freeSpinsAdminPage.steps().getFreeSpins({
-				userId: USER_1_ID,
-				gameName: CasinoGameName.MYSTIC_CHIEF,
-				betAmount: 200,
+				await freeSpinsAdminPage.steps().getFreeSpins({
+					userId: USER_1_ID,
+					gameName: CasinoGameName.MYSTIC_CHIEF,
+					betAmount: 200,
+				});
+
+				await toast.assertThat().titlesAre([
+					{
+						title: ToastTitle.SUCCESS,
+						subTitle: ToastSubTitle.SENDING_OUT_FREESPINS,
+					},
+					{
+						title: ToastTitle.FAILED,
+						subTitle: ToastSubTitle.BALANCE_TOO_LOW,
+					},
+				]);
 			});
-
-			await toast.assertThat().titlesAre([
-				{
-					title: ToastTitle.SUCCESS,
-					subTitle: ToastSubTitle.SENDING_OUT_FREESPINS,
-				},
-				{
-					title: ToastTitle.FAILED,
-					subTitle: ToastSubTitle.BALANCE_TOO_LOW,
-				},
-			]);
-		});
-	});
+		},
+	);
 });
 
 test.describe(
 	"Free spins - Revoke Free spins",
-	{ tag: ["@rewards", "@spins"] },
+	testDetails()
+		.withTags(JiraComponent.REWARDS, JiraComponent.FREE_SPINS)
+		.apply(),
 	() => {
 		const title = "Promotion";
 		const description = `The free spins promotion for Barrel Bonanza game has revoked. Note: ${DialogInput.REVOKE_FREE_SPINS_REASON}`;

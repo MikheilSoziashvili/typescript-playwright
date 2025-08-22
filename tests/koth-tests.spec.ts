@@ -4,10 +4,12 @@ import {
 	KOTH_ENDPOINT,
 	KOTH_WEEKLY_ENDPOINT,
 } from "@constants/page-endpoints";
+import { testDetails } from "@core/helpers/test-details-helper";
 import { setAuthenticationCookies } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { HiloBetOption } from "@enums/hilo-bet-options";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { OriginalGame, RouletteBetColor } from "@enums/original-games";
 import {
 	PlinkoRiskOption,
@@ -138,7 +140,7 @@ test.describe("KoTH - currency & amount format across badges", () => {
 		.forEach(({ currencyCode, symbol }) => {
 			test(
 				`[ENG-4484] Currency: ${currencyCode} → all KoTH badges show correct symbol and format`,
-				{ tag: ["@koth"] },
+				testDetails().withTags(JiraComponent.KOTH).apply(),
 				async ({ homePage, page }) => {
 					await setAuthenticationCookies(page, newUserCookie);
 

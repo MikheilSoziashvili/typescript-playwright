@@ -4,8 +4,10 @@ import { BitcoinFeeEstimateMode } from "@enums/bitcoin";
 import { Cryptocurrency } from "@enums/cryptocurrencies";
 import { Currency } from "@enums/currencies";
 import { HouseEdgeValue } from "@enums/house-edge-values";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { OriginalGame } from "@enums/original-games";
 import { RainStatus } from "@enums/rain-status";
+import { TestTag } from "@enums/test-tags";
 import { Unit } from "@enums/units";
 import { UserRoles } from "@enums/user-roles";
 import { VisibilityOptions } from "@enums/visibility-options";
@@ -200,3 +202,5 @@ export type UserWithConfig = {
 	userData: RegisterTestData;
 	config: Record<string, unknown>;
 };
+
+export type AnyTag = TestTag | JiraComponent;

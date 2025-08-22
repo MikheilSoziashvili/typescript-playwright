@@ -6,6 +6,8 @@ import { parse_csv } from "@core/utils/utils";
 import { DATASETS_DIR } from "@constants/file-paths";
 import { CsvFilesName } from "../enums/csv-file-name";
 import { BetIncreaseCondition } from "@enums/dice-autobet-section-name";
+import { testDetails } from "@core/helpers/test-details-helper";
+import { TestTag } from "@enums/test-tags";
 
 test.describe("Dice game autobet", () => {
 	test.use(storageStateNewUserDB());
@@ -20,24 +22,26 @@ test.describe("Dice game autobet", () => {
 		stopOnProfit: number;
 		stopOnLoss: number;
 	}[]) {
-		test(`"[ENG-1415] Dice - autobet with roll over ${betData.rollOver} @originals"`, async ({
-			diceGamePage,
-		}) => {
-			await diceGamePage.navigate();
-			await diceGamePage
-				.assertThat()
-				.diceMessageIs(DiceGameResultMessage.PLACE_YOUR_BETS);
+		test(
+			`"[ENG-1415] Dice - autobet with roll over ${betData.rollOver}"`,
+			testDetails().withTags(TestTag.ORIGINALS).apply(),
+			async ({ diceGamePage }) => {
+				await diceGamePage.navigate();
+				await diceGamePage
+					.assertThat()
+					.diceMessageIs(DiceGameResultMessage.PLACE_YOUR_BETS);
 
-			const diceBetData = new DiceAutobetTestData(betData);
-			const initialBalance =
-				await diceGamePage.authenticatedHeader.getAccountBalance();
+				const diceBetData = new DiceAutobetTestData(betData);
+				const initialBalance =
+					await diceGamePage.authenticatedHeader.getAccountBalance();
 
-			await diceGamePage.steps().startAutobet(diceBetData);
+				await diceGamePage.steps().startAutobet(diceBetData);
 
-			await diceGamePage
-				.assertThat()
-				.balanceAfterAutoBetIsCorrect(initialBalance, diceBetData);
-		});
+				await diceGamePage
+					.assertThat()
+					.balanceAfterAutoBetIsCorrect(initialBalance, diceBetData);
+			},
+		);
 	}
 
 	const increaseByDataset = parse_csv(

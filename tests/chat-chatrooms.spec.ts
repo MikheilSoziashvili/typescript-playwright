@@ -6,12 +6,12 @@ import {
 import { ChatMessageOptions } from "@pages/components/chat/chat-map";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { testData } from "test-data/test-data-manager";
+import { testDetails } from "@core/helpers/test-details-helper";
+import { JiraComponent } from "@enums/jira/jira-components";
 
 test.describe(
 	"Chat - chatrooms tests",
-	{
-		tag: "@chat",
-	},
+	testDetails().withTags(JiraComponent.CHAT).apply(),
 	() => {
 		const message = generateRandomString({ prefix: "chatroom_auto_msg_" });
 

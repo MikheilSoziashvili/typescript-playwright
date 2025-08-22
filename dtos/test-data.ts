@@ -29,6 +29,7 @@ export class RegisterTestData {
 		useGamdomEmailDomain,
 	}: RegisterTestDataParams = {}) {
 		// Used to isolate test data between parallel workers
+		// Note: think about adding shard index for executions on more than a single shard
 		const workerSuffix = process.env.TEST_WORKER_INDEX
 			? `w${process.env.TEST_WORKER_INDEX}`
 			: "";

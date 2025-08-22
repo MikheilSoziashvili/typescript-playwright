@@ -8,6 +8,8 @@ import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
 import { Currency } from "@enums/currencies";
 import { Unit } from "@enums/units";
 import { WalletType } from "@enums/wallet-types";
+import { testDetails } from "@core/helpers/test-details-helper";
+import { TestTag } from "@enums/test-tags";
 
 const crashAutoCashout = parse_csv(
 	DATASETS_DIR,
@@ -18,132 +20,137 @@ const crashAutoCashout = parse_csv(
 	expected_results: string;
 }[];
 
-test.describe("Crash tests", () => {
-	test.use(storageStateNewUserDB({ amount: SUPER_HIGH_USER_AMOUNT }));
-	test.slow();
+test.describe(
+	"Crash tests",
+	testDetails().withTags(TestTag.ORIGINALS).apply(),
+	() => {
+		test.use(storageStateNewUserDB({ amount: SUPER_HIGH_USER_AMOUNT }));
+		test.slow();
 
-	test.beforeEach(async ({ homePage }) => {
-		await homePage.navigate();
-	});
+		test.beforeEach(async ({ homePage }) => {
+			await homePage.navigate();
+		});
 
-	test.slow();
-	test("[ENG-265] Place a single bet on Crash and try to cashout @smoke @originals", async ({
-		crashGamePage,
-		userBalanceHandler,
-	}, testInfo) => {
-		const newUserDetails = getUserDetailsByTestTitle(
-			testInfo.title,
-			testInfo.workerIndex,
-		);
-		const betTestData: BetTestData = new BetTestData(
-			newUserDetails.username,
-			10,
-			Number("1.10"),
-		);
-
-		await crashGamePage.navigate();
-
-		const accountBalanceBeforeBet =
-			await userBalanceHandler.walletBalanceInFiatRounded(
-				Unit.COINS,
-				Currency.USD,
-				WalletType.DEFAULT,
-			);
-
-		let totalBetsPlaced = 0;
-		let winnings = 0;
-
-		await crashGamePage.playUntilMultiplierIs(
-			betTestData.autoCashoutMultiplier,
-			betTestData.betAmount,
-			async () => {
-				await crashGamePage.steps().placeBet(betTestData);
-				totalBetsPlaced = crashGamePage.trackTotalBets(
-					betTestData.betAmount,
-					totalBetsPlaced,
+		test.slow();
+		test(
+			"[ENG-265] Place a single bet on Crash and try to cashout",
+			testDetails().withTags(TestTag.SMOKE).apply(),
+			async ({ crashGamePage, userBalanceHandler }, testInfo) => {
+				const newUserDetails = getUserDetailsByTestTitle(
+					testInfo.title,
+					testInfo.workerIndex,
 				);
-			},
-		);
+				const betTestData: BetTestData = new BetTestData(
+					newUserDetails.username,
+					10,
+					Number("1.10"),
+				);
 
-		winnings = crashGamePage.calculateWinnings(
-			betTestData.betAmount,
-			betTestData.autoCashoutMultiplier,
-		);
+				await crashGamePage.navigate();
 
-		const expectedBalance = crashGamePage.calculateExpectedBalance(
-			accountBalanceBeforeBet,
-			totalBetsPlaced,
-			winnings,
-		);
-
-		const accountBalanceAfterBet =
-			await userBalanceHandler.walletBalanceInFiatRounded(
-				Unit.COINS,
-				Currency.USD,
-				WalletType.DEFAULT,
-			);
-
-		await crashGamePage
-			.assertThat()
-			.verifyBalance(accountBalanceAfterBet, expectedBalance);
-	});
-
-	crashAutoCashout.forEach((record) => {
-		test(`[ENG-1118] Crash - Auto Cashout with: [${record.your_bet}] value bets @originals`, async ({
-			crashGamePage,
-		}, testInfo) => {
-			const newUserDetails = getUserDetailsByTestTitle(
-				testInfo.title,
-				testInfo.workerIndex,
-			);
-
-			const betTestData: BetTestData = new BetTestData(
-				newUserDetails.username,
-				Number(record.your_bet),
-				Number(record.auto_cashout),
-			);
-
-			await crashGamePage.navigate();
-
-			const accountBalanceBeforeBet =
-				await crashGamePage.authenticatedHeader.getAccountBalance();
-
-			let totalBetsPlaced = 0;
-			let winnings = 0;
-
-			await crashGamePage.playUntilMultiplierIs(
-				betTestData.autoCashoutMultiplier,
-				betTestData.betAmount,
-				async () => {
-					await crashGamePage.steps().placeBet(betTestData);
-					totalBetsPlaced = crashGamePage.trackTotalBets(
-						betTestData.betAmount,
-						totalBetsPlaced,
+				const accountBalanceBeforeBet =
+					await userBalanceHandler.walletBalanceInFiatRounded(
+						Unit.COINS,
+						Currency.USD,
+						WalletType.DEFAULT,
 					);
-				},
-			);
 
-			winnings = crashGamePage.calculateWinnings(
-				betTestData.betAmount,
-				betTestData.autoCashoutMultiplier,
-			);
+				let totalBetsPlaced = 0;
+				let winnings = 0;
 
-			await crashGamePage
-				.assertThat()
-				.isExpectedAndActualWinningMatch(
-					Number(record.expected_results),
+				await crashGamePage.playUntilMultiplierIs(
+					betTestData.autoCashoutMultiplier,
+					betTestData.betAmount,
+					async () => {
+						await crashGamePage.steps().placeBet(betTestData);
+						totalBetsPlaced = crashGamePage.trackTotalBets(
+							betTestData.betAmount,
+							totalBetsPlaced,
+						);
+					},
+				);
+
+				winnings = crashGamePage.calculateWinnings(
+					betTestData.betAmount,
+					betTestData.autoCashoutMultiplier,
+				);
+
+				const expectedBalance = crashGamePage.calculateExpectedBalance(
+					accountBalanceBeforeBet,
+					totalBetsPlaced,
 					winnings,
 				);
 
-			const expectedBalance = crashGamePage.calculateExpectedBalance(
-				accountBalanceBeforeBet,
-				totalBetsPlaced,
-				winnings,
-			);
+				const accountBalanceAfterBet =
+					await userBalanceHandler.walletBalanceInFiatRounded(
+						Unit.COINS,
+						Currency.USD,
+						WalletType.DEFAULT,
+					);
 
-			await crashGamePage.authenticatedHeader
-				.assertThat()
-				.accountBalanceIs(expectedBalance);
+				await crashGamePage
+					.assertThat()
+					.verifyBalance(accountBalanceAfterBet, expectedBalance);
+			},
+		);
+
+		crashAutoCashout.forEach((record) => {
+			test(`[ENG-1118] Crash - Auto Cashout with: [${record.your_bet}] value bets`, async ({
+				crashGamePage,
+			}, testInfo) => {
+				const newUserDetails = getUserDetailsByTestTitle(
+					testInfo.title,
+					testInfo.workerIndex,
+				);
+
+				const betTestData: BetTestData = new BetTestData(
+					newUserDetails.username,
+					Number(record.your_bet),
+					Number(record.auto_cashout),
+				);
+
+				await crashGamePage.navigate();
+
+				const accountBalanceBeforeBet =
+					await crashGamePage.authenticatedHeader.getAccountBalance();
+
+				let totalBetsPlaced = 0;
+				let winnings = 0;
+
+				await crashGamePage.playUntilMultiplierIs(
+					betTestData.autoCashoutMultiplier,
+					betTestData.betAmount,
+					async () => {
+						await crashGamePage.steps().placeBet(betTestData);
+						totalBetsPlaced = crashGamePage.trackTotalBets(
+							betTestData.betAmount,
+							totalBetsPlaced,
+						);
+					},
+				);
+
+				winnings = crashGamePage.calculateWinnings(
+					betTestData.betAmount,
+					betTestData.autoCashoutMultiplier,
+				);
+
+				await crashGamePage
+					.assertThat()
+					.isExpectedAndActualWinningMatch(
+						Number(record.expected_results),
+						winnings,
+					);
+
+				const expectedBalance = crashGamePage.calculateExpectedBalance(
+					accountBalanceBeforeBet,
+					totalBetsPlaced,
+					winnings,
+				);
+
+				await crashGamePage.authenticatedHeader
+					.assertThat()
+					.accountBalanceIs(expectedBalance);
+			});
 		});
-	});
-});
+	},
+);

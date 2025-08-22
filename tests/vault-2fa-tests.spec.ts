@@ -5,14 +5,13 @@ import {
 	deleteFilesWithFilePaths,
 	initializePageObjects,
 	initializePageObjectsWithCookies,
-	jiraIssueId,
 } from "@core/utils/utils";
-import { AnnotationType } from "@enums/playwright/annotationsTypes";
 import { Unit } from "@enums/units";
 import { Wallet } from "@enums/wallets";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import { MEDIUM_USER_AMOUNT } from "database/constants/user-amounts";
+import { testDetails } from "@core/helpers/test-details-helper";
 
 test.describe(`Vault wallet - 2FA verifications`, () => {
 	let qrCode2FAImagePath: string;
@@ -34,12 +33,7 @@ test.describe(`Vault wallet - 2FA verifications`, () => {
 
 	test(
 		`[ENG-2566] Vault wallet - Require new 2FA code when IP of user changes`,
-		{
-			annotation: {
-				type: AnnotationType.BUG,
-				description: jiraIssueId(5109),
-			},
-		},
+		testDetails().withJiraBugTickets("5109").apply(),
 		async ({
 			browser,
 			homePage,

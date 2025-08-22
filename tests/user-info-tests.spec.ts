@@ -1,4 +1,5 @@
 import { DK_PROXY_CREDENTIALS, ES_PROXY_CREDENTIALS } from "@constants/proxies";
+import { testDetails } from "@core/helpers/test-details-helper";
 import {
 	createBrowserContextWithProxy,
 	initializePageObjects,
@@ -8,14 +9,15 @@ import { RegisterTestData } from "@dtos/test-data";
 import { CountryCodes } from "@enums/country-codes";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 
 test.describe(
 	"User info tests",
-	{
-		tag: ["@admin-panel, @user-info"],
-	},
+	testDetails()
+		.withTags(JiraComponent.ADMIN_PANEL, JiraComponent.USER_INFO)
+		.apply(),
 	() => {
 		const userData = new RegisterTestData();
 

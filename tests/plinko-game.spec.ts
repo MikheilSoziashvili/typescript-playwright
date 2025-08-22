@@ -1,4 +1,5 @@
 import { DATASETS_DIR } from "@constants/file-paths";
+import { testDetails } from "@core/helpers/test-details-helper";
 import {
 	toCurrencyEnum,
 	toWalletUnit,
@@ -10,8 +11,10 @@ import {
 } from "@core/utils/utils";
 import { PlinkoBetTestData, RegisterTestData } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { LogType } from "@enums/log-types";
 import { OriginalGame } from "@enums/original-games";
+import { TestTag } from "@enums/test-tags";
 import { Unit } from "@enums/units";
 import { UserMenuOption } from "@enums/user-menu-options";
 import { WalletType } from "@enums/wallet-types";
@@ -28,7 +31,13 @@ const walletUnits = Object.values(Unit);
 
 test.describe(
 	"Plinko tests",
-	{ tag: ["@originals", "@plinko", "@sok-games"] },
+	testDetails()
+		.withTags(
+			TestTag.ORIGINALS,
+			JiraComponent.PLINKO,
+			JiraComponent.SOK_GAMES,
+		)
+		.apply(),
 	() => {
 		test.describe("Plinko Sign-In feature tests", () => {
 			test.beforeEach(async ({}) => {
@@ -39,23 +48,26 @@ test.describe(
 					username: string;
 					password: string;
 				}[]) {
-					test(`[ENG-5128] Sign In feature on Plinko - Login successful: [Username: ${record.username}] [Password: ${record.password}] @smoke @originals`, async ({
-						plinkoGamePage,
-						loginModal,
-					}) => {
-						await plinkoGamePage.navigate();
-						await plinkoGamePage
-							.assertThat()
-							.signInButtonIsDisplayed();
-						await plinkoGamePage.openLoginModal();
-						await loginModal.login(
-							record.username,
-							record.password,
-						);
-						await plinkoGamePage
-							.assertThat()
-							.dropBallButtonIsDisplayed();
-					});
+					test(
+						`[ENG-5128] Sign In feature on Plinko - Login successful: [Username: ${record.username}] [Password: ${record.password}]`,
+						testDetails()
+							.withTags(TestTag.SMOKE, TestTag.ORIGINALS)
+							.apply(),
+						async ({ plinkoGamePage, loginModal }) => {
+							await plinkoGamePage.navigate();
+							await plinkoGamePage
+								.assertThat()
+								.signInButtonIsDisplayed();
+							await plinkoGamePage.openLoginModal();
+							await loginModal.login(
+								record.username,
+								record.password,
+							);
+							await plinkoGamePage
+								.assertThat()
+								.dropBallButtonIsDisplayed();
+						},
+					);
 				}
 			});
 		});
@@ -175,9 +187,10 @@ test.describe(
 									stakeCoins,
 									payoutCoins,
 								);
-							
+
 							await homePage.map.waitForStableXPosition({
-								locator: await homePage.authenticatedHeader.map.getLoadedAccountBalance(),
+								locator:
+									await homePage.authenticatedHeader.map.getLoadedAccountBalance(),
 							});
 
 							const coinsAfter =
@@ -211,7 +224,7 @@ test.describe(
 
 			test(
 				"[ENG-5472] Verify Plinko is displayed in transactions tab",
-				{ tag: "@transactions" },
+				testDetails().withTags(JiraComponent.TRANSACTIONS).apply(),
 				async ({
 					plinkoGamePage,
 					userInfoAdminPage,

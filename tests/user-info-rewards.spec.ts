@@ -1,4 +1,5 @@
 import { buildTipUserSubTitle } from "@core/helpers/asserter-helpers/text-asserters";
+import { testDetails } from "@core/helpers/test-details-helper";
 import {
 	createPngImagePath,
 	deleteFilesWithFilePaths,
@@ -15,6 +16,7 @@ import { RewardsSource } from "@enums/admin/rewards-source";
 import { UserInfoTabs } from "@enums/admin/user-info-tabs";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { storageStateNewSuperAdminUserDB } from "@fixtures/auth-fixtures";
@@ -29,9 +31,9 @@ import { getISOWeek, getMonth, getYear } from "date-fns";
 
 test.describe(
 	"User info - Rewards History - Custom rewards",
-	{
-		tag: ["@rewards", "@admin-panel"],
-	},
+	testDetails()
+		.withTags(JiraComponent.REWARDS, JiraComponent.ADMIN_PANEL)
+		.apply(),
 	() => {
 		const initialAmount = "$0.00";
 		const amount = "$1.00";
@@ -735,9 +737,9 @@ test.describe(
 
 test.describe(
 	"User info - Rewards History - Promo campaigns",
-	{
-		tag: ["@rewards", "@admin-panel"],
-	},
+	testDetails()
+		.withTags(JiraComponent.REWARDS, JiraComponent.ADMIN_PANEL)
+		.apply(),
 	() => {
 		let qrCode2FAImagePath: string;
 		const ammount = "$100.00";
@@ -911,9 +913,9 @@ test.describe(
 
 test.describe(
 	"User info - Rewards History - Tips",
-	{
-		tag: ["@rewards", "@admin-panel"],
-	},
+	testDetails()
+		.withTags(JiraComponent.REWARDS, JiraComponent.ADMIN_PANEL)
+		.apply(),
 	() => {
 		let qrCode2FAImagePath: string;
 		const tipAmount = 1;
@@ -990,9 +992,9 @@ test.describe(
 
 test.describe(
 	"User info - Rewards History - Royalty up and Instant reward",
-	{
-		tag: ["@rewards", "@admin-panel"],
-	},
+	testDetails()
+		.withTags(JiraComponent.REWARDS, JiraComponent.ADMIN_PANEL)
+		.apply(),
 	() => {
 		test.use(storageStateNewSuperAdminUserDB());
 
@@ -1177,9 +1179,9 @@ test.describe(
 
 test.describe(
 	"User info - Rewards History - Weekly and monthly",
-	{
-		tag: ["@rewards", "@admin-panel"],
-	},
+	testDetails()
+		.withTags(JiraComponent.REWARDS, JiraComponent.ADMIN_PANEL)
+		.apply(),
 	() => {
 		test.use(storageStateNewSuperAdminUserDB());
 		const weeklyAmount = "$0.01";

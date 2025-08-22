@@ -1,6 +1,7 @@
 import { PT_PROXY_CREDENTIALS } from "@constants/proxies";
 import { TIP_RAIN } from "@constants/tip-rain";
 import { buildTipRainUserMessageInfo } from "@core/helpers/asserter-helpers/text-asserters";
+import { testDetails } from "@core/helpers/test-details-helper";
 import {
 	convertCoinsToUsd,
 	createBrowserContextWithProxy,
@@ -9,13 +10,11 @@ import {
 	getCookieHeader,
 	initializePageObjects,
 	initializePageObjectsWithCookies,
-	jiraIssueId,
 	waitUntil,
 } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
-import { AnnotationType } from "@enums/playwright/annotationsTypes";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
@@ -35,12 +34,7 @@ test.describe("Rain tests", () => {
 		test.use(storageStateNewUserDB());
 		test(
 			"[ENG-2863] Rain - try to claim the rain",
-			{
-				annotation: {
-					type: AnnotationType.BUG,
-					description: jiraIssueId(5094),
-				},
-			},
+			testDetails().withJiraBugTickets("5094").apply(),
 			async ({ homePage, chat }) => {
 				await homePage.navigate();
 				await chat.steps().openChatAndVerify();

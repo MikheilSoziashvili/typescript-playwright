@@ -6,6 +6,8 @@ import {
 	ESPORTS_REDIRECT_FROM,
 	ESPORTS_REDIRECT_TO,
 } from "../constants/seo-redirects";
+import { testDetails } from "@core/helpers/test-details-helper";
+import { JiraComponent } from "@enums/jira/jira-components";
 
 test.describe("SEO Redirects tests", () => {
 	test.describe("SEO Redirects - create, edit, delete and check history", () => {
@@ -130,7 +132,9 @@ test.describe("SEO Redirects tests", () => {
 	test.describe("SEO Redirects - public URL redirects", () => {
 		test(
 			"[ENG-6190] - /esports redirects to /sports/esports with 301 status",
-			{ tag: "@sports/e-sports betting" },
+			testDetails()
+				.withTags(JiraComponent.SPORTS_ESPORTS_BETTING)
+				.apply(),
 			async ({ gamdomApi, gamdomApiAsserter }) => {
 				const response = await gamdomApi.getPublicRedirectResponse(
 					ESPORTS_REDIRECT_FROM,
