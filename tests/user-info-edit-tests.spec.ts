@@ -1,10 +1,11 @@
 import { DATASETS_DIR } from "@constants/file-paths";
-import { parse_csv } from "@core/utils/utils";
+import { jiraIssueId, parse_csv } from "@core/utils/utils";
 import { BalanceEditStep, RegisterTestData } from "@dtos/test-data";
 import { UserInfoTabs } from "@enums/admin/user-info-tabs";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
+import { AnnotationType } from "@enums/playwright/annotationsTypes";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { Unit } from "@enums/units";
@@ -45,50 +46,59 @@ test.describe(
 			test.use(storageStateNewSuperAdminUserDB());
 
 			staffRoleDataset.forEach((record) => {
-				test(`[ENG-5543] Edit Info - Selecting '${record.staffRoleTag}' checks its related tags`, async ({
-					userInfoAdminPage,
-					gamdomDb,
-					userInfoEditInfoAdminPage,
-					toast,
-				}) => {
-					const superAdminUserData = new RegisterTestData();
-					await gamdomDb.createNewUser({
-						username: superAdminUserData.username,
-						password: superAdminUserData.password,
-						email: superAdminUserData.email,
-						emailVerified: true,
-						userClass: UserClasses.Admin,
-					});
+				test(
+					`[ENG-5543] Edit Info - Selecting '${record.staffRoleTag}' checks its related tags`,
+					{
+						annotation: {
+							type: AnnotationType.BUG,
+							description: jiraIssueId(8283),
+						},
+					},
+					async ({
+						userInfoAdminPage,
+						gamdomDb,
+						userInfoEditInfoAdminPage,
+						toast,
+					}) => {
+						const superAdminUserData = new RegisterTestData();
+						await gamdomDb.createNewUser({
+							username: superAdminUserData.username,
+							password: superAdminUserData.password,
+							email: superAdminUserData.email,
+							emailVerified: true,
+							userClass: UserClasses.Admin,
+						});
 
-					const tagSources = [record.tags1, record.tags2];
-					const expectedTags = tagSources.flatMap((tags) =>
-						tags
-							.split(",")
-							.map((t) => t.trim())
-							.map((t) => {
-								const tag =
-									UserTags[t as keyof typeof UserTags];
-								return tag;
-							}),
-					);
-
-					await userInfoAdminPage
-						.steps()
-						.navigateAndShowUserDetails(
-							superAdminUserData.username,
+						const tagSources = [record.tags1, record.tags2];
+						const expectedTags = tagSources.flatMap((tags) =>
+							tags
+								.split(",")
+								.map((t) => t.trim())
+								.map((t) => {
+									const tag =
+										UserTags[t as keyof typeof UserTags];
+									return tag;
+								}),
 						);
-					await userInfoAdminPage.clickUserInfoTab(
-						UserInfoTabs.EditInfo,
-					);
-					await userInfoEditInfoAdminPage.toggleTag(
-						UserTags[record.staffRoleTag],
-					);
-					await userInfoEditInfoAdminPage
-						.assertThat()
-						.verifyTagsAreChecked(expectedTags, true);
-					await userInfoEditInfoAdminPage.clickSaveButton();
-					await toast.assertThat().titleIs(ToastTitle.SUCCESS);
-				});
+
+						await userInfoAdminPage
+							.steps()
+							.navigateAndShowUserDetails(
+								superAdminUserData.username,
+							);
+						await userInfoAdminPage.clickUserInfoTab(
+							UserInfoTabs.EditInfo,
+						);
+						await userInfoEditInfoAdminPage.toggleTag(
+							UserTags[record.staffRoleTag],
+						);
+						await userInfoEditInfoAdminPage
+							.assertThat()
+							.verifyTagsAreChecked(expectedTags, true);
+						await userInfoEditInfoAdminPage.clickSaveButton();
+						await toast.assertThat().titleIs(ToastTitle.SUCCESS);
+					},
+				);
 			});
 		});
 
