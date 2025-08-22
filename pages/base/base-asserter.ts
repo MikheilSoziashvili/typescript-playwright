@@ -131,9 +131,10 @@ export class BaseAsserter<
 	public async checkElementsAreVisible(
 		elements: Locator[],
 		timeout?: number,
+		message?: string,
 	): Promise<void> {
 		await this.assertOnElements(elements, (el) =>
-			expect(el).toBeVisible({ timeout }),
+			expect(el, message).toBeVisible({ timeout }),
 		);
 	}
 
@@ -141,9 +142,10 @@ export class BaseAsserter<
 	public async checkElementsAreNotVisible(
 		elements: Locator[],
 		timeout?: number,
+		message?: string,
 	): Promise<void> {
 		await this.assertOnElements(elements, (el) =>
-			expect(el).not.toBeVisible({ timeout }),
+			expect(el, message).not.toBeVisible({ timeout }),
 		);
 	}
 
@@ -195,9 +197,10 @@ export class BaseAsserter<
 	public async checkElementsAreHidden(
 		elements: Locator[],
 		timeout?: number,
+		message?: string,
 	): Promise<void> {
 		await this.assertOnElements(elements, (el) =>
-			expect(el).toBeHidden({ timeout }),
+			expect(el, message).toBeHidden({ timeout }),
 		);
 	}
 

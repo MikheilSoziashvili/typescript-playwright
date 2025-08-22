@@ -3,4 +3,6 @@ export enum AttributesValues {
 	ACTIVE = "active",
 	INACTIVE = "inactive",
 	ERROR = "error",
+	OPEN = "open",
+	CLOSED = "closed",
 }

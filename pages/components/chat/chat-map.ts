@@ -12,8 +12,20 @@ export class ChatMap extends BaseMap {
 		super(page);
 	}
 
+	public get chatOpenedStateContainer(): Locator {
+		return this.page.locator("[data-testid*=chatSectionContainer-]");
+	}
+
+	public get chatOpenedContainerLocator(): Locator {
+		return this.page.getByTestId("chatSectionContainer-open");
+	}
+
+	public get chatClosedContainerLocator(): Locator {
+		return this.page.getByTestId("chatSectionContainer-closed");
+	}
+
 	public get chatLocator(): Locator {
-		return this.page.getByTestId("chatSection");
+		return this.chatOpenedContainerLocator.getByTestId("chatSection");
 	}
 
 	public get chatHeader(): Locator {
@@ -24,9 +36,33 @@ export class ChatMap extends BaseMap {
 		return this.chatLocator.locator("ul#chat-messages");
 	}
 
+	public get chatMessagesContainer(): Locator {
+		return this.chatLocator.getByTestId("chatMessagesContainer");
+	}
+
+	public get chatMessagesConnecting(): Locator {
+		return this.chatLocator.getByTestId("chatMessages-connecting");
+	}
+
+	public get chatMessagesJoining(): Locator {
+		return this.chatLocator.getByTestId("chatMessages-joining");
+	}
+
+	public get chatMessagesDisconnected(): Locator {
+		return this.chatLocator.getByTestId("chatMessages-disconnected");
+	}
+
+	public get chatMessagesWithContent(): Locator {
+		return this.chatLocator.getByTestId("chatMessages-withContent");
+	}
+
+	public get chatMessagesEmpty(): Locator {
+		return this.chatLocator.getByTestId("chatMessages-empty");
+	}
+
 	public messageLocator(options?: ChatMessageOptions): Locator {
 		const messageLocator = this.chatMessagesList.locator(
-			"li[class*= MessageSay-]",
+			`li[data-testid*="messageSay-container-"]`,
 		);
 		if (options?.index) {
 			return messageLocator.nth(options.index - 1);
@@ -44,25 +80,30 @@ export class ChatMap extends BaseMap {
 		}
 	}
 
-	public messageUserLevel(options?: ChatMessageOptions): Locator {
+	public messageUserAvatar(options?: ChatMessageOptions): Locator {
 		return this.messageLocator(options).locator(
-			"span[class*= LevelButtonArea] div[class*=_FlexContainer]",
+			`[data-testid*="messageSay-userProfile"]`,
 		);
 	}
 
-	public messageUserAvatar(options?: ChatMessageOptions): Locator {
-		return this.messageLocator(options).locator("span[class*= UserPofile]");
+	public get infoMessageContainer(): Locator {
+		return this.chatMessagesList.locator(
+			`li[data-testid*="messageClient-container"]`,
+		);
+	}
+
+	public get infoMessages(): Locator {
+		return this.infoMessageContainer.locator(
+			`[data-testid*="messageClient-message"]`,
+		);
 	}
 
 	public infoMessageLocator(index?: number): Locator {
-		const infoLocator = this.chatMessagesList.locator(
-			"li[class*= MessageMix-] span[class*= client-message]",
-		);
+		const infoLocator = this.infoMessages;
 		if (index) {
 			return infoLocator.nth(index - 1);
-		} else {
-			return infoLocator.last();
 		}
+		return infoLocator.last();
 	}
 
 	/**
@@ -72,33 +113,37 @@ export class ChatMap extends BaseMap {
 	 * @param occurrence  0 = first match, 1 = second … ;  -1 (default) = latest.
 	 */
 	public infoMessageByText(expectedText: string, occurrence = -1): Locator {
-		const matches = this.chatMessagesList.locator(
-			"span[class*=client-message]",
-			{ hasText: expectedText },
-		);
-
+		const matches = this.infoMessages.filter({ hasText: expectedText });
 		return occurrence === -1 ? matches.last() : matches.nth(occurrence);
 	}
 
+	public get rainBotMessageContainer(): Locator {
+		return this.page.locator(`li[data-testid*="messageRain-container-"]`);
+	}
+
 	public get rainBotMessageLocator(): Locator {
-		return this.page.locator(
-			"li[class*= MessageRain-] span[class*=RainBotMessage]",
+		return this.rainBotMessageContainer.locator(
+			`[data-testid*="messageRain-message"]`,
 		);
 	}
 
+	public get rainTransitionGroupContainer(): Locator {
+		return this.page.getByTestId(`rainBox-transitionGroup`);
+	}
+
 	public get claimRainButton(): Locator {
-		return this.page.locator(
-			'div[class*="RainBox"] div[class*="ellipsis"]',
+		return this.rainTransitionGroupContainer.locator(
+			`[data-testid*="claimRain-button"] [data-testid*="claimRain-buttonText"]`,
 		);
 	}
 
 	public get lastRainbotMessageUserCount(): Locator {
-		return this.page.locator('span[class*="RainBotMessage"]').last();
+		return this.rainBotMessageLocator.last();
 	}
 
 	public get rainClaimedMessageLocator(): Locator {
-		return this.page.locator(
-			'div[class*="RainBox"] label[class*="RainMessage"]',
+		return this.rainTransitionGroupContainer.locator(
+			`[data-testid*="rainBox-message"]`,
 		);
 	}
 
@@ -107,15 +152,15 @@ export class ChatMap extends BaseMap {
 	}
 
 	public get chatTextBox(): Locator {
-		return this.chatFooter.locator('div > div[class*="chat_inputbox"]');
+		return this.chatFooter.getByTestId("chatInput-editable");
 	}
 
 	public get chatTextBoxPlaceholder(): Locator {
-		return this.chatFooter.locator("span[data-slate-placeholder]");
+		return this.chatFooter.getByTestId("chatInput-placeholder");
 	}
 
 	public get sendMessageButton(): Locator {
-		return this.chatFooter.locator("button[aria-label=send-message]");
+		return this.chatFooter.getByTestId("chatInput-sendButton");
 	}
 
 	public get chatroomsDropdownContainer(): Locator {

@@ -1,11 +1,9 @@
 import { Page } from "@playwright/test";
-import { BaseComponent } from "../../base/base-component";
-import { ChatMap } from "./chat-map";
-import { ChatAsserter } from "./chat-asserter";
-import { ChatSteps } from "./chat-steps";
-import { VisibilityState } from "../../../enums/playwright/visibility-states";
-import { Timeout } from "@enums/timeout";
 import { step } from "decorators/step";
+import { BaseComponent } from "../../base/base-component";
+import { ChatAsserter } from "./chat-asserter";
+import { ChatMap } from "./chat-map";
+import { ChatSteps } from "./chat-steps";
 
 export class Chat extends BaseComponent<ChatMap> {
 	constructor(page: Page) {
@@ -22,11 +20,7 @@ export class Chat extends BaseComponent<ChatMap> {
 
 	@step("Wait chat to be displayed")
 	public async waitChatToBeDisplayed(): Promise<void> {
-		await this.map.waitFor({
-			locator: this.map.chatLocator,
-			state: VisibilityState.ATTACHED,
-			timeout: Timeout.MEDIUM,
-		});
+		await this.assertThat().chatIsDisplayed();
 		await this.assertThat().checkElementsAreVisible([
 			this.map.chatHeader,
 			this.map.chatMessagesList,

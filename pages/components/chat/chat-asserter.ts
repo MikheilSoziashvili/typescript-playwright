@@ -1,11 +1,13 @@
-import { expect } from "@playwright/test";
 import { BaseAsserter } from "@base/base-asserter";
-import { Chat } from "./chat";
 import { ChatFooterPlaceholder } from "@enums/chat-footer-palceholders";
+import { Attributes } from "@enums/playwright/htmlAttributes";
+import { AttributesValues } from "@enums/playwright/htmlAttributesValues";
+import { logger } from "@logger/logger";
+import { expect } from "@playwright/test";
+import { step } from "decorators/step";
+import { Chat } from "./chat";
 import { ChatMessageOptions } from "./chat-map";
 import { Timeout } from "@enums/timeout";
-import { logger } from "@logger/logger";
-import { step } from "decorators/step";
 
 export class ChatAsserter extends BaseAsserter<Chat> {
 	public constructor(chat: Chat) {
@@ -40,7 +42,29 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 
 	@step("Check chat is displayed")
 	public async chatIsDisplayed(): Promise<void> {
-		await expect(this.gamdomPage.map.chatLocator).toBeVisible();
+		await this.chatIsOpenSuccessfully();
+		await this.checkElementsAreVisible([this.gamdomPage.map.chatLocator]);
+		await this.chatMessagesConnectingIsNotDisplayed();
+		await this.chatMessagesJoiningIsNotDisplayed();
+		await this.chatMessagesDisconnectedIsNotDisplayed();
+	}
+
+	@step("Check chat is opened")
+	public async chatIsOpenSuccessfully(): Promise<void> {
+		const chatState =
+			await this.gamdomPage.map.chatOpenedStateContainer.getAttribute(
+				Attributes.DATA_TESTID,
+			);
+		expect(chatState).toContain(AttributesValues.OPEN);
+	}
+
+	@step("Check chat is closed")
+	public async chatIsClosedSuccessfully(): Promise<void> {
+		const chatState =
+			await this.gamdomPage.map.chatOpenedStateContainer.getAttribute(
+				Attributes.DATA_TESTID,
+			);
+		expect(chatState).toContain(AttributesValues.CLOSED);
 	}
 
 	@step("Check placeholder is visible")
@@ -126,5 +150,77 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 		await expect(
 			this.gamdomPage.map.chatroomsDropdownSelectedValue,
 		).toHaveText(chatroomName);
+	}
+
+	@step("Chat messages: connecting state is displayed")
+	public async chatMessagesConnectingIsDisplayed(): Promise<void> {
+		await this.checkElementsAreVisible(
+			[this.gamdomPage.map.chatMessagesConnecting],
+			undefined,
+			"Expected chat to be in 'connecting' state, but it is not.",
+		);
+	}
+
+	@step("Chat messages: joining state is displayed")
+	public async chatMessagesJoiningIsDisplayed(): Promise<void> {
+		await this.checkElementsAreVisible(
+			[this.gamdomPage.map.chatMessagesJoining],
+			undefined,
+			"Expected chat to be in 'joining' state, but it is not.",
+		);
+	}
+
+	@step("Chat messages: disconnected state is displayed")
+	public async chatMessagesDisconnectedIsDisplayed(): Promise<void> {
+		await this.checkElementsAreVisible(
+			[this.gamdomPage.map.chatMessagesDisconnected],
+			undefined,
+			"Expected chat to be in 'disconnected' state, but it is not.",
+		);
+	}
+
+	@step("Chat messages: with content state is displayed")
+	public async chatMessagesWithContentIsDisplayed(): Promise<void> {
+		await this.checkElementsAreVisible(
+			[this.gamdomPage.map.chatMessagesWithContent],
+			undefined,
+			"Expected chat to be in 'withContent' state, but it is not.",
+		);
+	}
+
+	@step("Chat messages: empty state is displayed")
+	public async chatMessagesEmptyIsDisplayed(): Promise<void> {
+		await this.checkElementsAreVisible(
+			[this.gamdomPage.map.chatMessagesEmpty],
+			undefined,
+			"Expected chat to be in 'empty' state, but it is not.",
+		);
+	}
+
+	@step("Chat messages: connecting state is not displayed")
+	public async chatMessagesConnectingIsNotDisplayed(): Promise<void> {
+		await this.checkElementsAreNotVisible(
+			[this.gamdomPage.map.chatMessagesConnecting],
+			undefined,
+			"Chat is in 'connecting' state, but it should not be.",
+		);
+	}
+
+	@step("Chat messages: joining state is not displayed")
+	public async chatMessagesJoiningIsNotDisplayed(): Promise<void> {
+		await this.checkElementsAreNotVisible(
+			[this.gamdomPage.map.chatMessagesJoining],
+			undefined,
+			"Chat is in 'joining' state, but it should not be.",
+		);
+	}
+
+	@step("Chat messages: disconnected state is not displayed")
+	public async chatMessagesDisconnectedIsNotDisplayed(): Promise<void> {
+		await this.checkElementsAreNotVisible(
+			[this.gamdomPage.map.chatMessagesDisconnected],
+			undefined,
+			"Chat is in 'disconnected' state, but it should not be.",
+		);
 	}
 }
