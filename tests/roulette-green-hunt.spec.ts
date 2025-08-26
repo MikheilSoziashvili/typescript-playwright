@@ -7,12 +7,16 @@ import { calculateGreenHuntAmountByPercentage } from "@formulas/roulette";
 import { getUserDetailsByTestTitle } from "@core/utils/utils";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { TestTag } from "@enums/test-tags";
+import { JiraUser } from "@enums/jira/jira-users";
 
 test.describe("Green hunt", () => {
 	test.use(storageStateNewUserDB());
 	test(
 		"[ENG-1090] Roulette - green hunt",
-		testDetails().withTags(TestTag.ORIGINALS).apply(),
+		testDetails()
+			.withTags(TestTag.ORIGINALS)
+			.withAuthor(JiraUser.NIKOLAY_GENOV)
+			.apply(),
 		async ({ rouletteGamePage, userBalanceHandler }, testInfo) => {
 			const newUserDetails = getUserDetailsByTestTitle(
 				testInfo.title,

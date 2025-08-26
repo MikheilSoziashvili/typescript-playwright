@@ -14,6 +14,8 @@ import { ToastTitle } from "@enums/toast-titles";
 import { storageStateUserAPI } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import { CsvFilesName } from "../enums/csv-file-name";
+import { testDetails } from "@core/helpers/test-details-helper";
+import { JiraUser } from "@enums/jira/jira-users";
 
 const postRecords = parse_csv(
 	DATASETS_DIR,
@@ -41,58 +43,58 @@ test.describe("Create article and posts tests", () => {
 	});
 
 	postRecords.forEach((postRecords) => {
-		test(`[ENG-1057] Create new [${postRecords.category}] article and post it in [${postRecords.category_endpoint}] category`, async ({
-			writerAdminPage,
-			toast,
-			blogCategoryPage,
-		}) => {
-			test.fixme(
-				true,
-				`[ENG-2627] Newly created post articles are not displayed in post category page`,
-			);
-			const postArticleTestData = new BlogPostTestData({
-				paragraph: generateRandomString({
-					prefix: "automation_blog_paragraph_",
-					length: 5,
-				}),
-				title: generateRandomString({
-					prefix: "automation_blog_title_",
-				}),
-				subTitle: generateRandomString({
-					prefix: "automation_blog_sub_title_",
-				}),
-				author: generateRandomString({
-					prefix: "automation_blog_author_",
-				}),
-				slug: generateRandomString({
-					prefix: "automation-blog-slug-",
-				}),
-				categories: [postRecords.category],
-				coverImage: dummyCoverImageFilePath,
-				thumbnailImage: dummyThumbnailImageFilePath,
-			});
+		test(
+			`[ENG-1057] Create new [${postRecords.category}] article and post it in [${postRecords.category_endpoint}] category`,
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			async ({ writerAdminPage, toast, blogCategoryPage }) => {
+				test.fixme(
+					true,
+					`[ENG-2627] Newly created post articles are not displayed in post category page`,
+				);
+				const postArticleTestData = new BlogPostTestData({
+					paragraph: generateRandomString({
+						prefix: "automation_blog_paragraph_",
+						length: 5,
+					}),
+					title: generateRandomString({
+						prefix: "automation_blog_title_",
+					}),
+					subTitle: generateRandomString({
+						prefix: "automation_blog_sub_title_",
+					}),
+					author: generateRandomString({
+						prefix: "automation_blog_author_",
+					}),
+					slug: generateRandomString({
+						prefix: "automation-blog-slug-",
+					}),
+					categories: [postRecords.category],
+					coverImage: dummyCoverImageFilePath,
+					thumbnailImage: dummyThumbnailImageFilePath,
+				});
 
-			await writerAdminPage.navigate();
-			await writerAdminPage.assertThat().isMainBlocksDisplayed();
-			await writerAdminPage
-				.steps()
-				.createArticlePost(postArticleTestData);
-			await toast.assertThat().titleIs(ToastTitle.SUCCESS);
-			await toast
-				.assertThat()
-				.subTitleIs(ToastSubTitle.SUCCESSFUL_UPLOAD);
-			await blogCategoryPage
-				.steps()
-				.navigateToBlogCategorySuccessfully(
-					postRecords.category_endpoint,
-					postRecords.category,
-				);
-			await blogCategoryPage
-				.assertThat()
-				.isPostDisplayed(
-					postArticleTestData.title,
-					postArticleTestData.subTitle,
-				);
-		});
+				await writerAdminPage.navigate();
+				await writerAdminPage.assertThat().isMainBlocksDisplayed();
+				await writerAdminPage
+					.steps()
+					.createArticlePost(postArticleTestData);
+				await toast.assertThat().titleIs(ToastTitle.SUCCESS);
+				await toast
+					.assertThat()
+					.subTitleIs(ToastSubTitle.SUCCESSFUL_UPLOAD);
+				await blogCategoryPage
+					.steps()
+					.navigateToBlogCategorySuccessfully(
+						postRecords.category_endpoint,
+						postRecords.category,
+					);
+				await blogCategoryPage
+					.assertThat()
+					.isPostDisplayed(
+						postArticleTestData.title,
+						postArticleTestData.subTitle,
+					);
+			},
+		);
 	});
 });

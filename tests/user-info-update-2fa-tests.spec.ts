@@ -12,6 +12,8 @@ import { CsvFilesName } from "@enums/csv-file-name";
 import { ContactType } from "@enums/personal-info-types";
 import { test } from "@fixtures/fixtures";
 import { storageStateNewUserDB } from "../fixtures/auth-fixtures";
+import { testDetails } from "@core/helpers/test-details-helper";
+import { JiraUser } from "@enums/jira/jira-users";
 
 const contactInfoInputs = parse_csv(
 	DATASETS_DIR,
@@ -36,51 +38,51 @@ test.describe("User info update tests", () => {
 	test.use(storageStateNewUserDB());
 
 	contactInfoInputs.forEach((contactType) => {
-		test(`[ENG-2567] Profile page - change ${contactType.field} - Require new 2FA code when IP of user changes`, async ({
-			profilePage,
-			twoFactorAuthModal,
-			browser,
-		}) => {
-			const pages = {
-				profilePage,
-				twoFactorAuthModal,
-			};
-			const initialPage = await initializePageObjects(
-				await browser.newContext(),
-				...Object.values(pages),
-			);
-
-			await profilePage.navigate();
-			await profilePage
-				.steps()
-				.updateContactInfoWithUniqueValue(
-					contactType.field,
-					true,
-					qrCode2FAImagePath,
+		test(
+			`[ENG-2567] Profile page - change ${contactType.field} - Require new 2FA code when IP of user changes`,
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			async ({ profilePage, twoFactorAuthModal, browser }) => {
+				const pages = {
+					profilePage,
+					twoFactorAuthModal,
+				};
+				const initialPage = await initializePageObjects(
+					await browser.newContext(),
+					...Object.values(pages),
 				);
 
-			await profilePage
-				.steps()
-				.updateContactInfoWithUniqueValue(contactType.field, false);
+				await profilePage.navigate();
+				await profilePage
+					.steps()
+					.updateContactInfoWithUniqueValue(
+						contactType.field,
+						true,
+						qrCode2FAImagePath,
+					);
 
-			await initializePageObjectsWithCookies(
-				await (await browser.newContext()).cookies(),
-				initialPage,
-				await createBrowserContextWithProxy(
-					browser,
-					PT_PROXY_CREDENTIALS,
-				),
-				...Object.values(pages),
-			);
+				await profilePage
+					.steps()
+					.updateContactInfoWithUniqueValue(contactType.field, false);
 
-			await profilePage.navigate();
-			await profilePage
-				.steps()
-				.updateContactInfoWithUniqueValue(
-					contactType.field,
-					true,
-					qrCode2FAImagePath,
+				await initializePageObjectsWithCookies(
+					await (await browser.newContext()).cookies(),
+					initialPage,
+					await createBrowserContextWithProxy(
+						browser,
+						PT_PROXY_CREDENTIALS,
+					),
+					...Object.values(pages),
 				);
-		});
+
+				await profilePage.navigate();
+				await profilePage
+					.steps()
+					.updateContactInfoWithUniqueValue(
+						contactType.field,
+						true,
+						qrCode2FAImagePath,
+					);
+			},
+		);
 	});
 });

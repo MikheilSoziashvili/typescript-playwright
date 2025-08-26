@@ -1,6 +1,7 @@
 import { ChatMessageOptions } from "@components/chat/chat-map";
 import { PT_PROXY_CREDENTIALS } from "@constants/proxies";
 import { buildTipUserMessageInfo } from "@core/helpers/asserter-helpers/text-asserters";
+import { testDetails } from "@core/helpers/test-details-helper";
 import {
 	createBrowserContextWithProxy,
 	createPngImagePath,
@@ -14,6 +15,7 @@ import {
 import { RegisterTestData } from "@dtos/test-data";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
+import { JiraUser } from "@enums/jira/jira-users";
 import { test } from "@fixtures/fixtures";
 
 test.describe("Tip user 2FA tests", () => {
@@ -61,82 +63,89 @@ test.describe("Tip user 2FA tests", () => {
 		await deleteFilesWithFilePaths([qrCode2FAImagePath]);
 	});
 
-	test("[ENG-2562] Tip User - Require new 2FA code when IP of user changes", async ({
-		homePage,
-		gamdomApi,
-		chat,
-		tipUserModal,
-		toast,
-		twoFactorAuthModal,
-		settingsPage,
-		gamdomDb,
-		browser,
-	}) => {
-		const context = await browser.newContext();
-		const pages = {
+	test(
+		"[ENG-2562] Tip User - Require new 2FA code when IP of user changes",
+		testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+		async ({
 			homePage,
-			tipUserModal,
+			gamdomApi,
 			chat,
+			tipUserModal,
 			toast,
 			twoFactorAuthModal,
 			settingsPage,
-		};
-		const initialPage = await initializePageObjects(
-			context,
-			...Object.values(pages),
-		);
+			gamdomDb,
+			browser,
+		}) => {
+			const context = await browser.newContext();
+			const pages = {
+				homePage,
+				tipUserModal,
+				chat,
+				toast,
+				twoFactorAuthModal,
+				settingsPage,
+			};
+			const initialPage = await initializePageObjects(
+				context,
+				...Object.values(pages),
+			);
 
-		await homePage.navigate({ cookies: { clearCookies: true } });
-		await gamdomDb.createNewUser({
-			username: superAdminUserData.username,
-			password: superAdminUserData.password,
-			email: superAdminUserData.email,
-			tags: UserTags.SuperAdmin,
-			userClass: UserClasses.Admin,
-			emailVerified: true,
-		});
-		const cookie = await gamdomApi.authenticateWithExistingUser(
-			superAdminUserData.username,
-			superAdminUserData.password,
-		);
-		await setContextAuthenticationCookies(context, cookie);
+			await homePage.navigate({ cookies: { clearCookies: true } });
+			await gamdomDb.createNewUser({
+				username: superAdminUserData.username,
+				password: superAdminUserData.password,
+				email: superAdminUserData.email,
+				tags: UserTags.SuperAdmin,
+				userClass: UserClasses.Admin,
+				emailVerified: true,
+			});
+			const cookie = await gamdomApi.authenticateWithExistingUser(
+				superAdminUserData.username,
+				superAdminUserData.password,
+			);
+			await setContextAuthenticationCookies(context, cookie);
 
-		await settingsPage
-			.steps()
-			.navigateAndEnable2FaAuthentication(qrCode2FAImagePath);
-		await homePage.authenticatedHeader.expandChatIfNotVisible();
-		await chat
-			.steps()
-			.verifyMessageAndOpenTipUserModal(chatUserMessageInfo, false);
-		await twoFactorAuthModal
-			.steps()
-			.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
-		await tipUserModal.tipUser(tipValue);
-		await chat.assertThat().isInfoMessageVisible(tipUserInfoMessage);
+			await settingsPage
+				.steps()
+				.navigateAndEnable2FaAuthentication(qrCode2FAImagePath);
+			await homePage.authenticatedHeader.expandChatIfNotVisible();
+			await chat
+				.steps()
+				.verifyMessageAndOpenTipUserModal(chatUserMessageInfo, false);
+			await twoFactorAuthModal
+				.steps()
+				.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
+			await tipUserModal.tipUser(tipValue);
+			await chat.assertThat().isInfoMessageVisible(tipUserInfoMessage);
 
-		await chat
-			.steps()
-			.verifyMessageAndOpenTipUserModal(chatUserMessageInfo, false);
-		await twoFactorAuthModal.assertThat().modal2FaNotDisplayed();
-		await tipUserModal.tipUser(tipValue);
-		await chat.assertThat().isInfoMessageVisible(tipUserInfoMessage);
+			await chat
+				.steps()
+				.verifyMessageAndOpenTipUserModal(chatUserMessageInfo, false);
+			await twoFactorAuthModal.assertThat().modal2FaNotDisplayed();
+			await tipUserModal.tipUser(tipValue);
+			await chat.assertThat().isInfoMessageVisible(tipUserInfoMessage);
 
-		await initializePageObjectsWithCookies(
-			await context.cookies(),
-			initialPage,
-			await createBrowserContextWithProxy(browser, PT_PROXY_CREDENTIALS),
-			...Object.values(pages),
-		);
+			await initializePageObjectsWithCookies(
+				await context.cookies(),
+				initialPage,
+				await createBrowserContextWithProxy(
+					browser,
+					PT_PROXY_CREDENTIALS,
+				),
+				...Object.values(pages),
+			);
 
-		await homePage.navigate();
-		await homePage.authenticatedHeader.expandChatIfNotVisible();
-		await chat
-			.steps()
-			.verifyMessageAndOpenTipUserModal(chatUserMessageInfo, false);
-		await twoFactorAuthModal
-			.steps()
-			.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
-		await tipUserModal.tipUser(tipValue);
-		await chat.assertThat().isInfoMessageVisible(tipUserInfoMessage);
-	});
+			await homePage.navigate();
+			await homePage.authenticatedHeader.expandChatIfNotVisible();
+			await chat
+				.steps()
+				.verifyMessageAndOpenTipUserModal(chatUserMessageInfo, false);
+			await twoFactorAuthModal
+				.steps()
+				.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
+			await tipUserModal.tipUser(tipValue);
+			await chat.assertThat().isInfoMessageVisible(tipUserInfoMessage);
+		},
+	);
 });

@@ -14,6 +14,7 @@ import { PlinkoBetTestData, RegisterTestData } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { Feature } from "@enums/feature";
 import { JiraComponent } from "@enums/jira/jira-components";
+import { JiraUser } from "@enums/jira/jira-users";
 import { LogType } from "@enums/log-types";
 import { OriginalGame } from "@enums/original-games";
 import { TestTag } from "@enums/test-tags";
@@ -55,6 +56,7 @@ test.describe(
 						`[ENG-5128] Sign In feature on Plinko - Login successful: [Username: ${record.username}] [Password: ${record.password}]`,
 						testDetails()
 							.withTags(TestTag.SMOKE, TestTag.ORIGINALS)
+							.withAuthor(JiraUser.RALUCA_ARITON)
 							.apply(),
 						async ({ plinkoGamePage, loginModal }) => {
 							await plinkoGamePage.navigate();
@@ -79,30 +81,30 @@ test.describe(
 			test.use(storageStateNewUserDB());
 			test.slow();
 
-			test("[ENG-5164] Verify Plinko is displayed in statistics and in the Last 24 Hours Stats", async ({
-				plinkoGamePage,
-				homePage,
-				statisticsPage,
-			}) => {
-				const betAmount = 100;
-				await plinkoGamePage.navigate();
-				await plinkoGamePage.startManualBet(betAmount.toString());
-				await plinkoGamePage.steps().waitForSlidersToBeActive();
-				const betWinMultiplier = await plinkoGamePage
-					.steps()
-					.getInGameChipsHistoryButtonValue();
-				await homePage.authenticatedHeader.navigateToUserMenuOption(
-					UserMenuOption.STATISTICS,
-				);
-
-				await statisticsPage
-					.assertThat()
-					.last24HoursGameLargestProfitIs(
-						OriginalGame.Plinko,
-						betWinMultiplier,
-						betAmount,
+			test(
+				"[ENG-5164] Verify Plinko is displayed in statistics and in the Last 24 Hours Stats",
+				testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+				async ({ plinkoGamePage, homePage, statisticsPage }) => {
+					const betAmount = 100;
+					await plinkoGamePage.navigate();
+					await plinkoGamePage.startManualBet(betAmount.toString());
+					await plinkoGamePage.steps().waitForSlidersToBeActive();
+					const betWinMultiplier = await plinkoGamePage
+						.steps()
+						.getInGameChipsHistoryButtonValue();
+					await homePage.authenticatedHeader.navigateToUserMenuOption(
+						UserMenuOption.STATISTICS,
 					);
-			});
+
+					await statisticsPage
+						.assertThat()
+						.last24HoursGameLargestProfitIs(
+							OriginalGame.Plinko,
+							betWinMultiplier,
+							betAmount,
+						);
+				},
+			);
 		});
 
 		test.describe("Plinko game - User Balance tests", () => {
@@ -114,102 +116,108 @@ test.describe(
 						file: CsvFilesName.PLINKO_BETS_ACROSS_MULTIPLE_WALLETS,
 					})
 					.forEach((record) => {
-						test(`Place bet using ${record.Wallet} and verify display in ${record.BetCurrency}`, async ({
-							gamdomApiDbFacade,
-							plinkoGamePage,
-							homePage,
-							userBalanceHandler,
-							page,
-						}) => {
-							const { cookie } =
-								await gamdomApiDbFacade.createUserWithWalletsAndAuth(
-									{
-										walletUnits: walletUnits,
-										amount: SUPER_HIGH_USER_AMOUNT,
-									},
+						test(
+							`Place bet using ${record.Wallet} and verify display in ${record.BetCurrency}`,
+							testDetails()
+								.withAuthor(JiraUser.RALUCA_ARITON)
+								.apply(),
+							async ({
+								gamdomApiDbFacade,
+								plinkoGamePage,
+								homePage,
+								userBalanceHandler,
+								page,
+							}) => {
+								const { cookie } =
+									await gamdomApiDbFacade.createUserWithWalletsAndAuth(
+										{
+											walletUnits: walletUnits,
+											amount: SUPER_HIGH_USER_AMOUNT,
+										},
+									);
+
+								await setAuthenticationCookies(page, cookie);
+
+								await plinkoGamePage.navigate();
+
+								const headers = {
+									Cookie: await encodeCookieHeader(cookie),
+								};
+
+								await homePage.authenticatedHeader.changeWalletAndCurrency(
+									record.Wallet,
+									record.BetCurrency,
 								);
 
-							await setAuthenticationCookies(page, cookie);
-
-							await plinkoGamePage.navigate();
-
-							const headers = {
-								Cookie: await encodeCookieHeader(cookie),
-							};
-
-							await homePage.authenticatedHeader.changeWalletAndCurrency(
-								record.Wallet,
-								record.BetCurrency,
-							);
-
-							const walletUnit = toWalletUnit(record.Wallet);
-							const betCurrency = toCurrencyEnum(
-								record.BetCurrency,
-							);
-
-							await plinkoGamePage
-								.assertThat()
-								.betAmountCurrencyChanged(betCurrency);
-
-							const coinsBefore =
-								await userBalanceHandler.walletBalanceInCoins(
-									walletUnit,
-									WalletType.DEFAULT,
-									headers,
+								const walletUnit = toWalletUnit(record.Wallet);
+								const betCurrency = toCurrencyEnum(
+									record.BetCurrency,
 								);
 
-							await plinkoGamePage.startManualBet(
-								record.BetAmount.toString(),
-							);
+								await plinkoGamePage
+									.assertThat()
+									.betAmountCurrencyChanged(betCurrency);
 
-							await plinkoGamePage
-								.steps()
-								.waitForSlidersToBeActive();
+								const coinsBefore =
+									await userBalanceHandler.walletBalanceInCoins(
+										walletUnit,
+										WalletType.DEFAULT,
+										headers,
+									);
 
-							const betWinMultiplier = await plinkoGamePage
-								.steps()
-								.getInGameChipsHistoryButtonValue();
-
-							const stakeCoins =
-								await userBalanceHandler.convertDisplayCurrencyToCoins(
-									Number(record.BetAmount),
-									betCurrency,
-									headers,
+								await plinkoGamePage.startManualBet(
+									record.BetAmount.toString(),
 								);
 
-							const payoutCoins =
-								userBalanceHandler.calculatePayoutCoins(
-									stakeCoins,
-									betWinMultiplier,
-								);
+								await plinkoGamePage
+									.steps()
+									.waitForSlidersToBeActive();
 
-							const expectedCoinsAfter = await plinkoGamePage
-								.steps()
-								.calculateExpectedBalance(
-									coinsBefore,
-									stakeCoins,
-									payoutCoins,
-								);
+								const betWinMultiplier = await plinkoGamePage
+									.steps()
+									.getInGameChipsHistoryButtonValue();
 
-							await homePage.map.waitForStableXPosition({
-								locator:
-									await homePage.authenticatedHeader.map.getLoadedAccountBalance(),
-							});
+								const stakeCoins =
+									await userBalanceHandler.convertDisplayCurrencyToCoins(
+										Number(record.BetAmount),
+										betCurrency,
+										headers,
+									);
 
-							const coinsAfter =
-								await userBalanceHandler.walletBalanceInCoins(
-									walletUnit,
-									WalletType.DEFAULT,
-									headers,
-								);
+								const payoutCoins =
+									userBalanceHandler.calculatePayoutCoins(
+										stakeCoins,
+										betWinMultiplier,
+									);
 
-							await plinkoGamePage
-								.assertThat()
-								.verifyBalanceWithTolerance(
-									coinsAfter,
-									expectedCoinsAfter,
-								);
-						});
+								const expectedCoinsAfter = await plinkoGamePage
+									.steps()
+									.calculateExpectedBalance(
+										coinsBefore,
+										stakeCoins,
+										payoutCoins,
+									);
+
+								await homePage.map.waitForStableXPosition({
+									locator:
+										await homePage.authenticatedHeader.map.getLoadedAccountBalance(),
+								});
+
+								const coinsAfter =
+									await userBalanceHandler.walletBalanceInCoins(
+										walletUnit,
+										WalletType.DEFAULT,
+										headers,
+									);
+
+								await plinkoGamePage
+									.assertThat()
+									.verifyBalanceWithTolerance(
+										coinsAfter,
+										expectedCoinsAfter,
+									);
+							},
+						);
 					});
 			});
 		});
@@ -227,7 +235,10 @@ test.describe(
 
 			test(
 				"[ENG-5472] Verify Plinko is displayed in transactions tab",
-				testDetails().withTags(JiraComponent.TRANSACTIONS).apply(),
+				testDetails()
+					.withTags(JiraComponent.TRANSACTIONS)
+					.withAuthor(JiraUser.RALUCA_ARITON)
+					.apply(),
 				async ({
 					plinkoGamePage,
 					userInfoAdminPage,
@@ -309,6 +320,7 @@ test.describe.serial(
 			"[ENG-5528] Plinko game can be launched when Mines is unavailable",
 			testDetails()
 				.withTags(TestTag.ORIGINALS, JiraComponent.PLINKO)
+				.withAuthor(JiraUser.RALUCA_ARITON)
 				.apply(),
 			async ({ minesGamePage, plinkoGamePage }) => {
 				await minesGamePage.navigate();

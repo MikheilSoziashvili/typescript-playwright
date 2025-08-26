@@ -10,6 +10,7 @@ import { RegisterTestData } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { HiloBetOption } from "@enums/hilo-bet-options";
 import { JiraComponent } from "@enums/jira/jira-components";
+import { JiraUser } from "@enums/jira/jira-users";
 import { OriginalGame, RouletteBetColor } from "@enums/original-games";
 import {
 	PlinkoRiskOption,
@@ -80,40 +81,46 @@ test.describe("KoTH game tests", () => {
 	test.slow();
 	test.setTimeout(Timeout.SUPER_MAX);
 
-	test(`[ENG-6457] KoTH - Verify wagered amounts from all Originals games are displayed in KOTH leaderboards`, async ({
-		kothPage,
-		originalsPage,
-	}) => {
-		let totalWageredAmount = 0;
-		const kothEndpoints = [
-			KOTH_ENDPOINT,
-			KOTH_DAILY_ENDPOINT,
-			KOTH_WEEKLY_ENDPOINT,
-		];
-		for (const data of gameTestData) {
-			await originalsPage.navigateToGame(data.game);
-			await originalsPage.placeBet(
-				data.game,
-				data.betAmount,
-				data.betOption,
-			);
-			await originalsPage.waitForGameRoundFinish(data.game);
-			totalWageredAmount += data.betAmount;
+	test(
+		`[ENG-6457] KoTH - Verify wagered amounts from all Originals games are displayed in KOTH leaderboards`,
+		testDetails()
+			.withTags(JiraComponent.KOTH)
+			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+			.apply(),
+		async ({ kothPage, originalsPage }) => {
+			let totalWageredAmount = 0;
+			const kothEndpoints = [
+				KOTH_ENDPOINT,
+				KOTH_DAILY_ENDPOINT,
+				KOTH_WEEKLY_ENDPOINT,
+			];
+			for (const data of gameTestData) {
+				await originalsPage.navigateToGame(data.game);
+				await originalsPage.placeBet(
+					data.game,
+					data.betAmount,
+					data.betOption,
+				);
+				await originalsPage.waitForGameRoundFinish(data.game);
+				totalWageredAmount += data.betAmount;
 
-			for (const kothEndpoint of kothEndpoints) {
-				await kothPage.navigateToKothEvent(`${kothEndpoint}`);
+				for (const kothEndpoint of kothEndpoints) {
+					await kothPage.navigateToKothEvent(`${kothEndpoint}`);
+					await kothPage
+						.assertThat()
+						.verifyKothWaggerAmountProfileCard(totalWageredAmount);
+				}
+
+				await kothPage
+					.steps()
+					.navigateToKothEventByName(KOTH_NAME_PREFIX);
+
 				await kothPage
 					.assertThat()
 					.verifyKothWaggerAmountProfileCard(totalWageredAmount);
 			}
-
-			await kothPage.steps().navigateToKothEventByName(KOTH_NAME_PREFIX);
-
-			await kothPage
-				.assertThat()
-				.verifyKothWaggerAmountProfileCard(totalWageredAmount);
-		}
-	});
+		},
+	);
 });
 
 test.describe("KoTH - currency & amount format across badges", () => {
@@ -140,7 +147,10 @@ test.describe("KoTH - currency & amount format across badges", () => {
 		.forEach(({ currencyCode, symbol }) => {
 			test(
 				`[ENG-4484] Currency: ${currencyCode} → all KoTH badges show correct symbol and format`,
-				testDetails().withTags(JiraComponent.KOTH).apply(),
+				testDetails()
+					.withTags(JiraComponent.KOTH)
+					.withAuthor(JiraUser.RALUCA_ARITON)
+					.apply(),
 				async ({ homePage, page }) => {
 					await setAuthenticationCookies(page, newUserCookie);
 

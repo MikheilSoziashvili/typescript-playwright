@@ -3,6 +3,7 @@ import {
 	buildFreeSpinsPromoCodeTransactionsDetailsValue,
 	buildInformationalCashPromoCodeTransactionsDetailsValue,
 } from "@core/helpers/asserter-helpers/text-asserters";
+import { testDetails } from "@core/helpers/test-details-helper";
 import {
 	createPngImagePath,
 	deleteFilesWithFilePaths,
@@ -13,6 +14,7 @@ import {
 import { RegisterTestData } from "@dtos/test-data";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
+import { JiraUser } from "@enums/jira/jira-users";
 import { LogType } from "@enums/log-types";
 import { test } from "@fixtures/fixtures";
 
@@ -31,128 +33,137 @@ test.describe("Promo code log filters tests", () => {
 		await deleteFilesWithFilePaths([qrCode2FAImagePath]);
 	});
 
-	test(`[ENG-4833] Promo Codes - Verify that Promo Win Cash & Promo Win Free Spins log filters are working`, async ({
-		promoCampaignsAdminPage,
-		promoCodeModal,
-		walletModal,
-		homePage,
-		settingsPage,
-		twoFactorAuthModal,
-		gamdomApi,
-		page,
-		userInfoAdminPage,
-		transactionsAdminPage,
-		gamdomDb,
-	}) => {
-		qrCode2FAImagePath = createPngImagePath();
-		await homePage.navigate({ cookies: { clearCookies: true } });
-		await gamdomDb.createNewUser({
-			username: superAdminUserData.username,
-			password: superAdminUserData.password,
-			email: superAdminUserData.email,
-			tags: UserTags.SuperAdmin,
-			userClass: UserClasses.Admin,
-			emailVerified: true,
-		});
-		const superAdminCookie = await gamdomApi.authenticateWithExistingUser(
-			superAdminUserData.username,
-			superAdminUserData.password,
-		);
-		await setAuthenticationCookies(page, superAdminCookie);
+	test(
+		`[ENG-4833] Promo Codes - Verify that Promo Win Cash & Promo Win Free Spins log filters are working`,
+		testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+		async ({
+			promoCampaignsAdminPage,
+			promoCodeModal,
+			walletModal,
+			homePage,
+			settingsPage,
+			twoFactorAuthModal,
+			gamdomApi,
+			page,
+			userInfoAdminPage,
+			transactionsAdminPage,
+			gamdomDb,
+		}) => {
+			qrCode2FAImagePath = createPngImagePath();
+			await homePage.navigate({ cookies: { clearCookies: true } });
+			await gamdomDb.createNewUser({
+				username: superAdminUserData.username,
+				password: superAdminUserData.password,
+				email: superAdminUserData.email,
+				tags: UserTags.SuperAdmin,
+				userClass: UserClasses.Admin,
+				emailVerified: true,
+			});
+			const superAdminCookie =
+				await gamdomApi.authenticateWithExistingUser(
+					superAdminUserData.username,
+					superAdminUserData.password,
+				);
+			await setAuthenticationCookies(page, superAdminCookie);
 
-		await settingsPage
-			.steps()
-			.navigateAndEnable2FaAuthentication(qrCode2FAImagePath);
-		await promoCampaignsAdminPage.navigate();
-		await promoCampaignsAdminPage.clickCreateCampaignButton();
-		await promoCodeModal.assertThat().isNotDisplayed();
-		await twoFactorAuthModal
-			.steps()
-			.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
-		await promoCampaignsAdminPage.clickCreateCampaignButton();
-		await promoCodeModal
-			.steps()
-			.createDefaultCashPromoCodeSuccessfully(
-				cashCampaignName,
-				cashCampaignCode,
+			await settingsPage
+				.steps()
+				.navigateAndEnable2FaAuthentication(qrCode2FAImagePath);
+			await promoCampaignsAdminPage.navigate();
+			await promoCampaignsAdminPage.clickCreateCampaignButton();
+			await promoCodeModal.assertThat().isNotDisplayed();
+			await twoFactorAuthModal
+				.steps()
+				.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
+			await promoCampaignsAdminPage.clickCreateCampaignButton();
+			await promoCodeModal
+				.steps()
+				.createDefaultCashPromoCodeSuccessfully(
+					cashCampaignName,
+					cashCampaignCode,
+				);
+			await promoCampaignsAdminPage.clickCreateCampaignButton();
+			await promoCodeModal
+				.steps()
+				.createDefaultFreeSpinsPromoCodeSuccessfully(
+					freeSpinsCampaignName,
+					freeSpinsCampaignCode,
+				);
+			await homePage.navigate({ cookies: { clearCookies: true } });
+
+			await gamdomDb.createNewUser(newUserData);
+			const newUserCookie = await gamdomApi.authenticateWithExistingUser(
+				newUserData.username,
+				newUserData.password,
 			);
-		await promoCampaignsAdminPage.clickCreateCampaignButton();
-		await promoCodeModal
-			.steps()
-			.createDefaultFreeSpinsPromoCodeSuccessfully(
-				freeSpinsCampaignName,
-				freeSpinsCampaignCode,
+			await setAuthenticationCookies(page, newUserCookie);
+			await homePage.navigateToWallet();
+			await walletModal
+				.steps()
+				.redeemPromoCodeSuccessfully(cashCampaignCode);
+			await walletModal
+				.steps()
+				.redeemPromoCodeSuccessfully(freeSpinsCampaignCode);
+
+			await homePage.navigate({ cookies: { clearCookies: true } });
+
+			const code2FA = await generate2FACodeFromQRCodeImage(
+				qrCode2FAImagePath,
 			);
-		await homePage.navigate({ cookies: { clearCookies: true } });
+			await homePage
+				.steps()
+				.loginUserWith2FaCodeSuccessfully(
+					superAdminUserData.username,
+					superAdminUserData.password,
+					code2FA,
+				);
 
-		await gamdomDb.createNewUser(newUserData);
-		const newUserCookie = await gamdomApi.authenticateWithExistingUser(
-			newUserData.username,
-			newUserData.password,
-		);
-		await setAuthenticationCookies(page, newUserCookie);
-		await homePage.navigateToWallet();
-		await walletModal.steps().redeemPromoCodeSuccessfully(cashCampaignCode);
-		await walletModal
-			.steps()
-			.redeemPromoCodeSuccessfully(freeSpinsCampaignCode);
+			await userInfoAdminPage.navigate();
+			await userInfoAdminPage
+				.steps()
+				.showUserDetails(newUserData.username);
+			await transactionsAdminPage.navigateToAdminUserTransactionsPage();
 
-		await homePage.navigate({ cookies: { clearCookies: true } });
+			await transactionsAdminPage
+				.steps()
+				.filterAndVerifyLogTypes(
+					[LogType.PROMO_WIN_FREE_SPINS],
+					[
+						buildFreeSpinsPromoCodeTransactionsDetailsValue(
+							freeSpinsCampaignCode,
+						),
+					],
+					true,
+				);
 
-		const code2FA = await generate2FACodeFromQRCodeImage(
-			qrCode2FAImagePath,
-		);
-		await homePage
-			.steps()
-			.loginUserWith2FaCodeSuccessfully(
-				superAdminUserData.username,
-				superAdminUserData.password,
-				code2FA,
-			);
+			await transactionsAdminPage
+				.steps()
+				.filterAndVerifyLogTypes(
+					[LogType.PROMO_WIN_CASH],
+					[
+						buildInformationalCashPromoCodeTransactionsDetailsValue(),
+						buildCashPromoCodeTransactionsDetailsValue(
+							cashCampaignCode,
+						),
+					],
+					true,
+				);
 
-		await userInfoAdminPage.navigate();
-		await userInfoAdminPage.steps().showUserDetails(newUserData.username);
-		await transactionsAdminPage.navigateToAdminUserTransactionsPage();
-
-		await transactionsAdminPage
-			.steps()
-			.filterAndVerifyLogTypes(
-				[LogType.PROMO_WIN_FREE_SPINS],
-				[
-					buildFreeSpinsPromoCodeTransactionsDetailsValue(
-						freeSpinsCampaignCode,
-					),
-				],
-				true,
-			);
-
-		await transactionsAdminPage
-			.steps()
-			.filterAndVerifyLogTypes(
-				[LogType.PROMO_WIN_CASH],
-				[
-					buildInformationalCashPromoCodeTransactionsDetailsValue(),
-					buildCashPromoCodeTransactionsDetailsValue(
-						cashCampaignCode,
-					),
-				],
-				true,
-			);
-
-		await transactionsAdminPage
-			.steps()
-			.filterAndVerifyLogTypes(
-				[LogType.PROMO_WIN_CASH, LogType.PROMO_WIN_FREE_SPINS],
-				[
-					buildInformationalCashPromoCodeTransactionsDetailsValue(),
-					buildFreeSpinsPromoCodeTransactionsDetailsValue(
-						freeSpinsCampaignCode,
-					),
-					buildCashPromoCodeTransactionsDetailsValue(
-						cashCampaignCode,
-					),
-				],
-				true,
-			);
-	});
+			await transactionsAdminPage
+				.steps()
+				.filterAndVerifyLogTypes(
+					[LogType.PROMO_WIN_CASH, LogType.PROMO_WIN_FREE_SPINS],
+					[
+						buildInformationalCashPromoCodeTransactionsDetailsValue(),
+						buildFreeSpinsPromoCodeTransactionsDetailsValue(
+							freeSpinsCampaignCode,
+						),
+						buildCashPromoCodeTransactionsDetailsValue(
+							cashCampaignCode,
+						),
+					],
+					true,
+				);
+		},
+	);
 });

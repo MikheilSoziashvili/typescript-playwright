@@ -19,6 +19,7 @@ import { Chat } from "@pages/components/chat/chat";
 import { UserData } from "@core/facades/gamdom-api-db/interfaces";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { TestTag } from "@enums/test-tags";
+import { JiraUser } from "@enums/jira/jira-users";
 
 test.describe("Tip user tests", () => {
 	let user1: UserData;
@@ -27,7 +28,10 @@ test.describe("Tip user tests", () => {
 
 	test(
 		"[ENG-290] 'Tip User' from the chat",
-		testDetails().withTags(TestTag.SMOKE).apply(),
+		testDetails()
+			.withTags(TestTag.SMOKE)
+			.withAuthor(JiraUser.NIKOLAY_GENOV)
+			.apply(),
 		async ({
 			homePage,
 			gamdomApi,

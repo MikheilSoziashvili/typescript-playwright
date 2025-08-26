@@ -1,10 +1,12 @@
 import { ChatMessageOptions } from "@components/chat/chat-map";
+import { testDetails } from "@core/helpers/test-details-helper";
 import {
 	generateRandomString,
 	setAuthenticationCookies,
 } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { ChatFooterPlaceholder } from "@enums/chat-footer-palceholders";
+import { JiraUser } from "@enums/jira/jira-users";
 import { test } from "@fixtures/fixtures";
 
 const userHiddenStats = new RegisterTestData();
@@ -37,33 +39,37 @@ test.describe("User statistics tests", () => {
 		},
 	);
 
-	test("[ENG-300] Hide statistics from other users", async ({
-		gamdomApi,
-		gamdomDb,
-		homePage,
-		chat,
-		userProfileModal,
-		page,
-	}) => {
-		test.slow();
-		const newUser = new RegisterTestData();
-		await gamdomDb.createNewUser(newUser);
-		const cookie = await gamdomApi.authenticateWithExistingUser(
-			newUser.username,
-			newUser.password,
-		);
-		await setAuthenticationCookies(page, cookie);
-		await homePage.navigate();
-		await homePage.authenticatedHeader.expandChatIfNotVisible();
+	test(
+		"[ENG-300] Hide statistics from other users",
+		testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+		async ({
+			gamdomApi,
+			gamdomDb,
+			homePage,
+			chat,
+			userProfileModal,
+			page,
+		}) => {
+			test.slow();
+			const newUser = new RegisterTestData();
+			await gamdomDb.createNewUser(newUser);
+			const cookie = await gamdomApi.authenticateWithExistingUser(
+				newUser.username,
+				newUser.password,
+			);
+			await setAuthenticationCookies(page, cookie);
+			await homePage.navigate();
+			await homePage.authenticatedHeader.expandChatIfNotVisible();
 
-		await chat.assertThat().chatIsDisplayed();
-		await chat.removeFocus();
-		await chat
-			.assertThat()
-			.isPlaceholderVisible(ChatFooterPlaceholder.START_TYPING);
-		await chat.assertThat().isMessageVisible(messageInfo);
+			await chat.assertThat().chatIsDisplayed();
+			await chat.removeFocus();
+			await chat
+				.assertThat()
+				.isPlaceholderVisible(ChatFooterPlaceholder.START_TYPING);
+			await chat.assertThat().isMessageVisible(messageInfo);
 
-		await chat.steps().openUserProfileModal(messageInfo);
-		await userProfileModal.assertThat().isPrivateUserModeDisplayed();
-	});
+			await chat.steps().openUserProfileModal(messageInfo);
+			await userProfileModal.assertThat().isPrivateUserModeDisplayed();
+		},
+	);
 });

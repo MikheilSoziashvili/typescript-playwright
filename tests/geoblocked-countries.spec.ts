@@ -11,11 +11,13 @@ import {
 	US_PROXY_CREDENTIALS,
 	BE_PROXY_CREDENTIALS,
 } from "@constants/proxies";
+import { testDetails } from "@core/helpers/test-details-helper";
 import { ProxyCredentialsType } from "@core/types/types";
 import {
 	GeoblockedCountry,
 	SoftBlockedCountry,
 } from "@enums/geoblocked-countries";
+import { JiraUser } from "@enums/jira/jira-users";
 import { test } from "@fixtures/fixtures";
 import * as Configuration from "configuration";
 
@@ -61,18 +63,19 @@ for (const baseURL of baseUrls) {
 				baseURL: baseURL,
 			});
 
-			test(`[ENG-5596] Check the country-based access restrictions : Blocked in ${country} for URL ${baseURL}`, async ({
-				homePage,
-				geoblockedPage,
-			}) => {
-				await homePage.tryNavigate({ retries: 5 });
-				await geoblockedPage
-					.assertThat()
-					.isGeoblockedErrorTitleDisplayed();
-				await geoblockedPage
-					.assertThat()
-					.isBlockedCountryNameDisplayed(country);
-			});
+			test(
+				`[ENG-5596] Check the country-based access restrictions : Blocked in ${country} for URL ${baseURL}`,
+				testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+				async ({ homePage, geoblockedPage }) => {
+					await homePage.tryNavigate({ retries: 5 });
+					await geoblockedPage
+						.assertThat()
+						.isGeoblockedErrorTitleDisplayed();
+					await geoblockedPage
+						.assertThat()
+						.isBlockedCountryNameDisplayed(country);
+				},
+			);
 		});
 	}
 }
@@ -93,33 +96,34 @@ for (const country of softBlockedCountries) {
 			proxy: softBlockedCredentialsMap.get(country),
 		});
 
-		test(`[ENG-2621] Check the country-based access restrictions : Soft blocked in ${country}`, async ({
-			homePage,
-			softblockModal,
-		}) => {
-			await homePage.navigate();
+		test(
+			`[ENG-2621] Check the country-based access restrictions : Soft blocked in ${country}`,
+			testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+			async ({ homePage, softblockModal }) => {
+				await homePage.navigate();
 
-			await softblockModal.assertThat().isDisplayed();
+				await softblockModal.assertThat().isDisplayed();
 
-			await softblockModal
-				.assertThat()
-				.hasCorrectTitle(SOFTBLOCK_MODAL_TITLE);
+				await softblockModal
+					.assertThat()
+					.hasCorrectTitle(SOFTBLOCK_MODAL_TITLE);
 
-			await softblockModal.steps().closeSoftblockModal();
-			await softblockModal.assertThat().isNotDisplayed();
+				await softblockModal.steps().closeSoftblockModal();
+				await softblockModal.assertThat().isNotDisplayed();
 
-			await homePage.unauthenticatedHeader
-				.assertThat()
-				.isCreateAccountButtonDisabled();
+				await homePage.unauthenticatedHeader
+					.assertThat()
+					.isCreateAccountButtonDisabled();
 
-			await homePage.assertThat().verifyTopBannerButtonsState();
+				await homePage.assertThat().verifyTopBannerButtonsState();
 
-			await homePage
-				.steps()
-				.loginUser(
-					USER_1_CREDENTIALS.username,
-					USER_1_CREDENTIALS.password,
-				);
-		});
+				await homePage
+					.steps()
+					.loginUser(
+						USER_1_CREDENTIALS.username,
+						USER_1_CREDENTIALS.password,
+					);
+			},
+		);
 	});
 }

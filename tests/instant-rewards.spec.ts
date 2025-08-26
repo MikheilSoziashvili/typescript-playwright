@@ -3,6 +3,8 @@ import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { OriginalGame, RouletteBetColor } from "@enums/original-games";
 import { HiloBetOption } from "@enums/hilo-bet-options";
 import { LOW_USER_AMOUNT } from "database/constants/user-amounts";
+import { testDetails } from "@core/helpers/test-details-helper";
+import { JiraUser } from "@enums/jira/jira-users";
 
 const instantRewardsInputData = [
 	{
@@ -36,34 +38,37 @@ instantRewardsInputData.forEach((inputData) => {
 		test.slow();
 		test.use(storageStateNewUserDB({ amount: LOW_USER_AMOUNT }));
 
-		test(`[ENG-3679] Rewards - Instant reward - ${inputData.game} - Bet: ${inputData.betAmount}`, async ({
-			originalsPage,
-			rewardsPage,
-		}) => {
-			await originalsPage.navigateToGame(inputData.game);
-			await originalsPage.placeBet(
-				inputData.game,
-				inputData.betAmount,
-				inputData.betType,
-			);
-			await originalsPage.waitForGameRoundFinish(inputData.game);
-
-			await rewardsPage.navigate();
-			await rewardsPage
-				.assertThat()
-				.instantRewardVisibleAndCalculated(
+		test(
+			`[ENG-3679] Rewards - Instant reward - ${inputData.game} - Bet: ${inputData.betAmount}`,
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			async ({ originalsPage, rewardsPage }) => {
+				await originalsPage.navigateToGame(inputData.game);
+				await originalsPage.placeBet(
 					inputData.game,
 					inputData.betAmount,
+					inputData.betType,
 				);
-			const accountBalanceInitial =
-				await rewardsPage.authenticatedHeader.getAccountBalance();
-			const roundedFinalBalance = parseFloat(
-				(accountBalanceInitial + inputData.expectedReward).toFixed(2),
-			);
+				await originalsPage.waitForGameRoundFinish(inputData.game);
 
-			await rewardsPage
-				.steps()
-				.claimInstantRewardAndVerifyBalance(roundedFinalBalance);
-		});
+				await rewardsPage.navigate();
+				await rewardsPage
+					.assertThat()
+					.instantRewardVisibleAndCalculated(
+						inputData.game,
+						inputData.betAmount,
+					);
+				const accountBalanceInitial =
+					await rewardsPage.authenticatedHeader.getAccountBalance();
+				const roundedFinalBalance = parseFloat(
+					(accountBalanceInitial + inputData.expectedReward).toFixed(
+						2,
+					),
+				);
+
+				await rewardsPage
+					.steps()
+					.claimInstantRewardAndVerifyBalance(roundedFinalBalance);
+			},
+		);
 	});
 });

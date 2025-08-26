@@ -8,6 +8,7 @@ import {
 } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { JiraComponent } from "@enums/jira/jira-components";
+import { JiraUser } from "@enums/jira/jira-users";
 import {
 	OriginalGame,
 	OriginalsQuickSelectButtons,
@@ -47,7 +48,10 @@ test.describe("Quick Select Buttons", () => {
 		for (const { game, initialBetAmount } of minScenario) {
 			test(
 				`[ENG-5455] should set min amount for ${game}`,
-				testDetails().withTags(TestTag.ORIGINALS).apply(),
+				testDetails()
+					.withTags(TestTag.ORIGINALS)
+					.withAuthor(JiraUser.RALUCA_ARITON)
+					.apply(),
 				async ({ originalsPage }) => {
 					await originalsPage.navigateToGame(game);
 					await originalsPage.authenticatedHeader
@@ -75,7 +79,10 @@ test.describe("Quick Select Buttons", () => {
 		} of halfScenario) {
 			test(
 				`[ENG-5454] should halve bet for ${game} with initial bet ${initialBetAmount}`,
-				testDetails().withTags(TestTag.ORIGINALS).apply(),
+				testDetails()
+					.withTags(TestTag.ORIGINALS)
+					.withAuthor(JiraUser.RALUCA_ARITON)
+					.apply(),
 				async ({ originalsPage }) => {
 					await originalsPage.navigateToGame(game);
 					await originalsPage.authenticatedHeader
@@ -115,7 +122,10 @@ test.describe("Quick Select Buttons", () => {
 		for (const { game, initialBetAmount } of maxScenario) {
 			test(
 				`[ENG-5053] should set max amount for ${game}`,
-				testDetails().withTags(TestTag.ORIGINALS).apply(),
+				testDetails()
+					.withTags(TestTag.ORIGINALS)
+					.withAuthor(JiraUser.RALUCA_ARITON)
+					.apply(),
 				async ({ originalsPage }) => {
 					await originalsPage.navigateToGame(game);
 					await originalsPage.authenticatedHeader
@@ -145,7 +155,10 @@ test.describe("Quick Select Buttons", () => {
 		} of doubleScenario) {
 			test(
 				`[ENG-5456] should double bet for ${game} with initial bet ${initialBetAmount}`,
-				testDetails().withTags(TestTag.ORIGINALS).apply(),
+				testDetails()
+					.withTags(TestTag.ORIGINALS)
+					.withAuthor(JiraUser.RALUCA_ARITON)
+					.apply(),
 				async ({ originalsPage }) => {
 					await originalsPage.navigateToGame(game);
 					await originalsPage.authenticatedHeader
@@ -208,6 +221,7 @@ test.describe("Quick Select Buttons", () => {
 						JiraComponent.PLINKO,
 						JiraComponent.KENO,
 					)
+					.withAuthor(JiraUser.RALUCA_ARITON)
 					.apply(),
 				async ({ originalsPage }) => {
 					await originalsPage.navigateToGame(game);

@@ -8,6 +8,7 @@ import { CsvFilesName } from "../enums/csv-file-name";
 import { BetIncreaseCondition } from "@enums/dice-autobet-section-name";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { TestTag } from "@enums/test-tags";
+import { JiraUser } from "@enums/jira/jira-users";
 
 test.describe("Dice game autobet", () => {
 	test.use(storageStateNewUserDB());
@@ -24,7 +25,10 @@ test.describe("Dice game autobet", () => {
 	}[]) {
 		test(
 			`"[ENG-1415] Dice - autobet with roll over ${betData.rollOver}"`,
-			testDetails().withTags(TestTag.ORIGINALS).apply(),
+			testDetails()
+				.withTags(TestTag.ORIGINALS)
+				.withAuthor(JiraUser.NIKOLAY_GENOV)
+				.apply(),
 			async ({ diceGamePage }) => {
 				await diceGamePage.navigate();
 				await diceGamePage
@@ -62,27 +66,29 @@ test.describe("Dice game autobet", () => {
 	};
 
 	increaseByDataset.forEach((record) => {
-		test(`[ENG-2843] Dice - Autobet - Increase by on condition ${record.input}`, async ({
-			diceGamePage,
-		}) => {
-			const increaseByTestData = new DiceAutobetTestData({
-				betAmount: 10,
-				numberOfBets: 2,
-				rollOver: record.roll_over,
-			});
+		test(
+			`[ENG-2843] Dice - Autobet - Increase by on condition ${record.input}`,
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			async ({ diceGamePage }) => {
+				const increaseByTestData = new DiceAutobetTestData({
+					betAmount: 10,
+					numberOfBets: 2,
+					rollOver: record.roll_over,
+				});
 
-			const gameResultEnum = diceGameResultEnumMap[record.input];
+				const gameResultEnum = diceGameResultEnumMap[record.input];
 
-			await diceGamePage.navigate();
-			await diceGamePage
-				.steps()
-				.autobetIncreaseBy(
-					gameResultEnum,
-					increaseByTestData,
-					record.input,
-					50,
-				);
-			await diceGamePage.steps().openHistoryAndAssertLastBet(15);
-		});
+				await diceGamePage.navigate();
+				await diceGamePage
+					.steps()
+					.autobetIncreaseBy(
+						gameResultEnum,
+						increaseByTestData,
+						record.input,
+						50,
+					);
+				await diceGamePage.steps().openHistoryAndAssertLastBet(15);
+			},
+		);
 	});
 });

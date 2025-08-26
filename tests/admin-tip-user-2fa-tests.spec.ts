@@ -12,6 +12,8 @@ import { RegisterTestData } from "@dtos/test-data";
 import { test } from "@fixtures/fixtures";
 import { emailDomainPattern } from "@support/regex-patterns";
 import { storageStateNewSuperAdminUserDB } from "../fixtures/auth-fixtures";
+import { testDetails } from "@core/helpers/test-details-helper";
+import { JiraUser } from "@enums/jira/jira-users";
 
 test.describe("Tip user through admin panel tests", () => {
 	let qrCode2FAImagePath: string;
@@ -43,65 +45,72 @@ test.describe("Tip user through admin panel tests", () => {
 		}),
 	);
 
-	test("[ENG-2563] Tip user through admin panel - Require new 2FA code when IP of user changes", async ({
-		homePage,
-		userInfoAdminPage,
-		infoAdminPage,
-		twoFactorAuthModal,
-		toast,
-		browser,
-	}) => {
-		const pages = {
+	test(
+		"[ENG-2563] Tip user through admin panel - Require new 2FA code when IP of user changes",
+		testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+		async ({
 			homePage,
 			userInfoAdminPage,
 			infoAdminPage,
 			twoFactorAuthModal,
 			toast,
-		};
-		const initialPage = await initializePageObjects(
-			await browser.newContext(),
-			...Object.values(pages),
-		);
+			browser,
+		}) => {
+			const pages = {
+				homePage,
+				userInfoAdminPage,
+				infoAdminPage,
+				twoFactorAuthModal,
+				toast,
+			};
+			const initialPage = await initializePageObjects(
+				await browser.newContext(),
+				...Object.values(pages),
+			);
 
-		await userInfoAdminPage
-			.steps()
-			.navigateAndShowUserDetails(newUserData.username);
-		await infoAdminPage
-			.steps()
-			.tipUserWith2FaFlow(tipAmount, qrCode2FAImagePath);
-		await toast.assertThat().subTitleIs(
-			buildTipUserSubTitle({
-				username: newUserData.username,
-				tipAmount: tipAmount,
-			}),
-		);
-		await infoAdminPage.steps().tipUser(tipAmount);
-		await twoFactorAuthModal.assertThat().modal2FaNotDisplayed();
-		await toast.assertThat().subTitleIs(
-			buildTipUserSubTitle({
-				username: newUserData.username,
-				tipAmount: tipAmount,
-			}),
-		);
+			await userInfoAdminPage
+				.steps()
+				.navigateAndShowUserDetails(newUserData.username);
+			await infoAdminPage
+				.steps()
+				.tipUserWith2FaFlow(tipAmount, qrCode2FAImagePath);
+			await toast.assertThat().subTitleIs(
+				buildTipUserSubTitle({
+					username: newUserData.username,
+					tipAmount: tipAmount,
+				}),
+			);
+			await infoAdminPage.steps().tipUser(tipAmount);
+			await twoFactorAuthModal.assertThat().modal2FaNotDisplayed();
+			await toast.assertThat().subTitleIs(
+				buildTipUserSubTitle({
+					username: newUserData.username,
+					tipAmount: tipAmount,
+				}),
+			);
 
-		await initializePageObjectsWithCookies(
-			await (await browser.newContext()).cookies(),
-			initialPage,
-			await createBrowserContextWithProxy(browser, PT_PROXY_CREDENTIALS),
-			...Object.values(pages),
-		);
+			await initializePageObjectsWithCookies(
+				await (await browser.newContext()).cookies(),
+				initialPage,
+				await createBrowserContextWithProxy(
+					browser,
+					PT_PROXY_CREDENTIALS,
+				),
+				...Object.values(pages),
+			);
 
-		await userInfoAdminPage
-			.steps()
-			.navigateAndShowUserDetails(newUserData.username);
-		await infoAdminPage
-			.steps()
-			.tipUserWith2FaFlow(tipAmount, qrCode2FAImagePath);
-		await toast.assertThat().subTitleIs(
-			buildTipUserSubTitle({
-				username: newUserData.username,
-				tipAmount: tipAmount,
-			}),
-		);
-	});
+			await userInfoAdminPage
+				.steps()
+				.navigateAndShowUserDetails(newUserData.username);
+			await infoAdminPage
+				.steps()
+				.tipUserWith2FaFlow(tipAmount, qrCode2FAImagePath);
+			await toast.assertThat().subTitleIs(
+				buildTipUserSubTitle({
+					username: newUserData.username,
+					tipAmount: tipAmount,
+				}),
+			);
+		},
+	);
 });

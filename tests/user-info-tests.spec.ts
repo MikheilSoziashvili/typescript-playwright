@@ -10,6 +10,7 @@ import { CountryCodes } from "@enums/country-codes";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
 import { JiraComponent } from "@enums/jira/jira-components";
+import { JiraUser } from "@enums/jira/jira-users";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 
@@ -31,56 +32,64 @@ test.describe(
 				tags: UserTags.UserInfoAdmin,
 			}),
 		);
-		test("[ENG-5086] User info -  verify that last_country property is updated correctly", async ({
-			userInfoAdminPage,
-			infoAdminPage,
-			softblockModal,
-			browser,
-		}) => {
-			const context = await browser.newContext();
-			const pages = {
+		test(
+			"[ENG-5086] User info -  verify that last_country property is updated correctly",
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			async ({
 				userInfoAdminPage,
 				infoAdminPage,
 				softblockModal,
-			};
-			const initialPage = await initializePageObjects(
-				context,
-				...Object.values(pages),
-			);
+				browser,
+			}) => {
+				const context = await browser.newContext();
+				const pages = {
+					userInfoAdminPage,
+					infoAdminPage,
+					softblockModal,
+				};
+				const initialPage = await initializePageObjects(
+					context,
+					...Object.values(pages),
+				);
 
-			await initializePageObjectsWithCookies(
-				await context.cookies(),
-				initialPage,
-				await createBrowserContextWithProxy(
-					browser,
-					DK_PROXY_CREDENTIALS,
-				),
-				...Object.values(pages),
-			);
+				await initializePageObjectsWithCookies(
+					await context.cookies(),
+					initialPage,
+					await createBrowserContextWithProxy(
+						browser,
+						DK_PROXY_CREDENTIALS,
+					),
+					...Object.values(pages),
+				);
 
-			await userInfoAdminPage.navigate();
-			await softblockModal.steps().closeSoftblockModal();
-			await userInfoAdminPage.steps().showUserDetails(userData.username);
-			await infoAdminPage
-				.assertThat()
-				.lastCountryCodeCorrect(CountryCodes.DK);
+				await userInfoAdminPage.navigate();
+				await softblockModal.steps().closeSoftblockModal();
+				await userInfoAdminPage
+					.steps()
+					.showUserDetails(userData.username);
+				await infoAdminPage
+					.assertThat()
+					.lastCountryCodeCorrect(CountryCodes.DK);
 
-			await initializePageObjectsWithCookies(
-				await context.cookies(),
-				initialPage,
-				await createBrowserContextWithProxy(
-					browser,
-					ES_PROXY_CREDENTIALS,
-				),
-				...Object.values(pages),
-			);
+				await initializePageObjectsWithCookies(
+					await context.cookies(),
+					initialPage,
+					await createBrowserContextWithProxy(
+						browser,
+						ES_PROXY_CREDENTIALS,
+					),
+					...Object.values(pages),
+				);
 
-			await userInfoAdminPage.navigate();
-			await softblockModal.steps().closeSoftblockModal();
-			await userInfoAdminPage.steps().showUserDetails(userData.username);
-			await infoAdminPage
-				.assertThat()
-				.lastCountryCodeCorrect(CountryCodes.ES);
-		});
+				await userInfoAdminPage.navigate();
+				await softblockModal.steps().closeSoftblockModal();
+				await userInfoAdminPage
+					.steps()
+					.showUserDetails(userData.username);
+				await infoAdminPage
+					.assertThat()
+					.lastCountryCodeCorrect(CountryCodes.ES);
+			},
+		);
 	},
 );

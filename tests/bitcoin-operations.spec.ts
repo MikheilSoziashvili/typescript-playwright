@@ -19,6 +19,7 @@ import { UserClasses } from "@enums/db/user-classes";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { AnnotationType } from "@enums/playwright/annotationsTypes";
+import { JiraUser } from "@enums/jira/jira-users";
 
 test.describe("Bitcoin tests", () => {
 	test.slow();
@@ -85,6 +86,7 @@ test.describe("Bitcoin tests", () => {
 				type: AnnotationType.INFRASTRUCTURE,
 				description: "Rate limit issues",
 			})
+			.withAuthor(JiraUser.ANGEL_PETROV)
 			.apply(),
 		async ({
 			gamdomApiDbFacade,

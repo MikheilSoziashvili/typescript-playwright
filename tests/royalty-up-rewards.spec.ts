@@ -7,6 +7,8 @@ import { generateEmailAndInbox } from "@core/utils/utils";
 import { MAILINATOR_DOMAIN } from "@constants/domains";
 import { OriginalGame, RouletteBetColor } from "@enums/original-games";
 import { HiloBetOption } from "@enums/hilo-bet-options";
+import { testDetails } from "@core/helpers/test-details-helper";
+import { JiraUser } from "@enums/jira/jira-users";
 
 // TODO: Add additional test data for different games and bet types when rewards calculation is defined.
 const rewardsInputData = [
@@ -97,49 +99,55 @@ rewardsInputData.forEach((inputData) => {
 			);
 		});
 
-		test(`[ENG-3712] Verify in-progress rank gain for '${inputData.game}' Originals game with '${inputData.betAmount}' bet, expected rank '${inputData.expectedInProgressRanks}', and claim all Royalty-Up rewards`, async ({
-			rewardsPage,
-			toast,
-			page,
-			profilePage,
-			mailinatorApi,
-			originalsPage,
-		}) => {
-			test.slow();
-			await profilePage
-				.steps()
-				.verifyEmail(mailinatorApi, MAILINATOR_DOMAIN, inbox, page);
+		test(
+			`[ENG-3712] Verify in-progress rank gain for '${inputData.game}' Originals game with '${inputData.betAmount}' bet, expected rank '${inputData.expectedInProgressRanks}', and claim all Royalty-Up rewards`,
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			async ({
+				rewardsPage,
+				toast,
+				page,
+				profilePage,
+				mailinatorApi,
+				originalsPage,
+			}) => {
+				test.slow();
+				await profilePage
+					.steps()
+					.verifyEmail(mailinatorApi, MAILINATOR_DOMAIN, inbox, page);
 
-			await originalsPage.navigateToGame(inputData.game);
-			await originalsPage.placeBet(
-				inputData.game,
-				inputData.betAmount,
-				inputData.betType,
-			);
-
-			await toast.assertThat().isDisplayed();
-			await toast.assertThat().titleIs(ToastTitle.SUCCESS, {
-				subTitle: buildRewardsRoyaltyUpRankSubTitle(
-					inputData.expectedRankToast,
-				),
-			});
-
-			await originalsPage.waitForGameRoundFinish(inputData.game);
-
-			await rewardsPage.navigate();
-			await rewardsPage
-				.assertThat()
-				.isRoyaltyUpRewardsClaimable(inputData.expectedClaimableRanks);
-
-			await rewardsPage.claimRoyaltyUpReward(
-				inputData.expectedClaimableRanks,
-			);
-
-			await rewardsPage
-				.assertThat()
-				.isRoyaltyUpRewardsInProgress(
-					inputData.expectedInProgressRanks,
+				await originalsPage.navigateToGame(inputData.game);
+				await originalsPage.placeBet(
+					inputData.game,
+					inputData.betAmount,
+					inputData.betType,
 				);
-		});
+
+				await toast.assertThat().isDisplayed();
+				await toast.assertThat().titleIs(ToastTitle.SUCCESS, {
+					subTitle: buildRewardsRoyaltyUpRankSubTitle(
+						inputData.expectedRankToast,
+					),
+				});
+
+				await originalsPage.waitForGameRoundFinish(inputData.game);
+
+				await rewardsPage.navigate();
+				await rewardsPage
+					.assertThat()
+					.isRoyaltyUpRewardsClaimable(
+						inputData.expectedClaimableRanks,
+					);
+
+				await rewardsPage.claimRoyaltyUpReward(
+					inputData.expectedClaimableRanks,
+				);
+
+				await rewardsPage
+					.assertThat()
+					.isRoyaltyUpRewardsInProgress(
+						inputData.expectedInProgressRanks,
+					);
+			},
+		);
 	});
 });

@@ -4,6 +4,7 @@ import {
 	setAuthenticationCookies,
 } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
+import { JiraUser } from "@enums/jira/jira-users";
 import { NotificationTitle } from "@enums/notification-titles";
 import { TestTag } from "@enums/test-tags";
 import { ToastTitle } from "@enums/toast-titles";
@@ -20,7 +21,10 @@ test.describe("Use affiliate code", () => {
 	test.slow();
 	test(
 		"[ENG-297] Create an affiliate code and use it with a new account",
-		testDetails().withTags(TestTag.SMOKE).apply(),
+		testDetails()
+			.withTags(TestTag.SMOKE)
+			.withAuthor(JiraUser.NIKOLAY_GENOV)
+			.apply(),
 		async ({
 			homePage,
 			affiliatesPage,

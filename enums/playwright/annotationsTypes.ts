@@ -1,6 +1,7 @@
 export enum AnnotationType {
-	BUG = "bug",
-	PERFORMANCE = "performance",
-	INFRASTRUCTURE = "infrastructure",
-	BROWSER_SPECIFIC = "browser-specific",
+	AUTHOR = "Author",
+	BUG = "Bug",
+	PERFORMANCE = "Performance",
+	INFRASTRUCTURE = "Infrastructure",
+	BROWSER_SPECIFIC = "Browser-specific",
 }

@@ -1,10 +1,10 @@
 import { DATASETS_DIR } from "@constants/file-paths";
 import { testDetails } from "@core/helpers/test-details-helper";
-import { jiraIssueId, parse_csv } from "@core/utils/utils";
+import { parse_csv } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { HiloGameStatusMessage } from "@enums/hilo-result-messages";
+import { JiraUser } from "@enums/jira/jira-users";
 import { OriginalGame } from "@enums/original-games";
-import { AnnotationType } from "@enums/playwright/annotationsTypes";
 import { TestTag } from "@enums/test-tags";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
@@ -26,12 +26,10 @@ test.describe(
 		lastRoundsInputs.forEach((input) => {
 			test(
 				`[ENG-2138] Verify last '${input.lastRounds}' rounds Red/Black percentage history statistics`,
-				{
-					annotation: {
-						type: AnnotationType.BUG,
-						description: jiraIssueId(4718),
-					},
-				},
+				testDetails()
+					.withJiraBugTickets("4718")
+					.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+					.apply(),
 				async ({ hiloGamePage, originalsPage }) => {
 					await hiloGamePage.navigate();
 					await originalsPage.waitForGameRoundFinish(

@@ -8,6 +8,7 @@ import { CsvFilesName } from "@enums/csv-file-name";
 import { testData } from "test-data/test-data-manager";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraComponent } from "@enums/jira/jira-components";
+import { JiraUser } from "@enums/jira/jira-users";
 
 test.describe(
 	"Chat - chatrooms tests",
@@ -22,41 +23,45 @@ test.describe(
 		testData()
 			.fromCsvRaw({ file: CsvFilesName.CHATROOM_SUCCESSFULLY_SELECTED })
 			.forEach((input) => {
-				test(`[ENG-2870] Chat - chatroom '${input.chatroom}' successfully selected with previous messages displayed`, async ({
-					gamdomApiDbFacade,
-					homePage,
-					profilePage,
-					chat,
-				}) => {
-					const { user, cookie } =
-						await gamdomApiDbFacade.createSingleUserDbAndAuth({
-							emailVerified: true,
-						});
-					const messageInfo: ChatMessageOptions = {
-						username: user.username,
-						message: message,
-					};
+				test(
+					`[ENG-2870] Chat - chatroom '${input.chatroom}' successfully selected with previous messages displayed`,
+					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+					async ({
+						gamdomApiDbFacade,
+						homePage,
+						profilePage,
+						chat,
+					}) => {
+						const { user, cookie } =
+							await gamdomApiDbFacade.createSingleUserDbAndAuth({
+								emailVerified: true,
+							});
+						const messageInfo: ChatMessageOptions = {
+							username: user.username,
+							message: message,
+						};
 
-					await setAuthenticationCookies(homePage.page, cookie);
+						await setAuthenticationCookies(homePage.page, cookie);
 
-					await homePage.navigate();
-					await chat.steps().openChatAndVerify();
-					await chat
-						.steps()
-						.selectChatroomSuccessfully(input.chatroom);
-					await chat.steps().sendMessage(message);
-					await profilePage.navigate();
-					await profilePage.logout();
-					await homePage.unauthenticatedHeader
-						.assertThat()
-						.loggedOutUserElementsAreVisible();
-					await homePage.navigate();
-					await chat.steps().openChatAndVerify();
-					await chat
-						.steps()
-						.selectChatroomSuccessfully(input.chatroom);
-					await chat.assertThat().isMessageVisible(messageInfo);
-				});
+						await homePage.navigate();
+						await chat.steps().openChatAndVerify();
+						await chat
+							.steps()
+							.selectChatroomSuccessfully(input.chatroom);
+						await chat.steps().sendMessage(message);
+						await profilePage.navigate();
+						await profilePage.logout();
+						await homePage.unauthenticatedHeader
+							.assertThat()
+							.loggedOutUserElementsAreVisible();
+						await homePage.navigate();
+						await chat.steps().openChatAndVerify();
+						await chat
+							.steps()
+							.selectChatroomSuccessfully(input.chatroom);
+						await chat.assertThat().isMessageVisible(messageInfo);
+					},
+				);
 			});
 	},
 );

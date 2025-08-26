@@ -5,6 +5,8 @@ import { storageStateNewSuperAdminUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import * as Configuration from "configuration";
 import { HomePage } from "@pages/home-page/home-page";
+import { testDetails } from "@core/helpers/test-details-helper";
+import { JiraUser } from "@enums/jira/jira-users";
 
 const gamdomPages = parse_csv(DATASETS_DIR, CsvFilesName.LOADING_ANIMATION) as {
 	linkName: string;
@@ -15,17 +17,19 @@ test.describe("Loading animation tests", () => {
 	test.use(storageStateNewSuperAdminUserDB());
 
 	gamdomPages.forEach((record) => {
-		test(`[ENG-2401] Loading animation for '${record.linkName}' should be correctly displayed on all pages`, async ({
-			homePage,
-		}) => {
-			await homePage.navigate({
-				link: `${Configuration.environment_url}${record.URL}`,
-			});
-			await homePage.assertThat().loaderIsCorrectlyDisplayed();
-			await homePage
-				.assertThat()
-				.waitForAndVerifyCurrentUrlIs(record.URL);
-		});
+		test(
+			`[ENG-2401] Loading animation for '${record.linkName}' should be correctly displayed on all pages`,
+			testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+			async ({ homePage }) => {
+				await homePage.navigate({
+					link: `${Configuration.environment_url}${record.URL}`,
+				});
+				await homePage.assertThat().loaderIsCorrectlyDisplayed();
+				await homePage
+					.assertThat()
+					.waitForAndVerifyCurrentUrlIs(record.URL);
+			},
+		);
 	});
 });
 
@@ -57,13 +61,15 @@ const getAuthenticationModalScenarios = (): AuthModalScenario[] => [
 test.describe("Loading animation tests for authentication modals", () => {
 	const modalScenarios = getAuthenticationModalScenarios();
 	for (const scenario of modalScenarios) {
-		test(`[ENG-2376] Loading animation appears when opening '${scenario.name}' modal`, async ({
-			homePage,
-		}) => {
-			await homePage.navigate();
-			await scenario.openModal(homePage);
-			await scenario.assertVisible(homePage);
-			await homePage.assertThat().loaderIsCorrectlyDisplayed();
-		});
+		test(
+			`[ENG-2376] Loading animation appears when opening '${scenario.name}' modal`,
+			testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+			async ({ homePage }) => {
+				await homePage.navigate();
+				await scenario.openModal(homePage);
+				await scenario.assertVisible(homePage);
+				await homePage.assertThat().loaderIsCorrectlyDisplayed();
+			},
+		);
 	}
 });

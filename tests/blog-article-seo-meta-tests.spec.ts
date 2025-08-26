@@ -1,5 +1,7 @@
 import { PRODUCTION_BASE_URL } from "@constants/page-urls";
+import { testDetails } from "@core/helpers/test-details-helper";
 import { normalizeUrl } from "@core/utils/utils";
+import { JiraUser } from "@enums/jira/jira-users";
 import { OgProperties } from "@enums/playwright/htmlOgProperties";
 import { OgPropertiesValues } from "@enums/playwright/htmlOgPropertiesValues";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
@@ -9,40 +11,41 @@ import * as Configuration from "configuration";
 test.describe("Blog article - SEO meta tests", () => {
 	test.use(storageStateNewUserDB());
 
-	test(`[ENG-5680] Verify SEO meta information for Blog article`, async ({
-		blogPage,
-		blogPostPage,
-	}) => {
-		await blogPage.navigate();
-		await blogPage.clickViewArticleButton();
-		await blogPostPage.refresh();
-		const blogPostTitle = await blogPostPage.getBlogPostArticleTitle();
-		const blogPostSubTitle =
-			await blogPostPage.getBlogPostArticleSubTitle();
-		const blogPostUrl = normalizeUrl(
-			blogPostPage.page
-				.url()
-				.toString()
-				.replace(
-					`${Configuration.environment_url}`,
-					`${PRODUCTION_BASE_URL}`,
-				),
-		);
-		await blogPage
-			.assertThat()
-			.verifyOgPropertiesValues(
-				[
-					OgProperties.OG_TITLE,
-					OgProperties.OG_DESCRIPTION,
-					OgProperties.OG_TYPE,
-					OgProperties.OG_URL,
-				],
-				[
-					blogPostTitle,
-					blogPostSubTitle,
-					OgPropertiesValues.OG_TYPE,
-					blogPostUrl,
-				],
+	test(
+		`[ENG-5680] Verify SEO meta information for Blog article`,
+		testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+		async ({ blogPage, blogPostPage }) => {
+			await blogPage.navigate();
+			await blogPage.clickViewArticleButton();
+			await blogPostPage.refresh();
+			const blogPostTitle = await blogPostPage.getBlogPostArticleTitle();
+			const blogPostSubTitle =
+				await blogPostPage.getBlogPostArticleSubTitle();
+			const blogPostUrl = normalizeUrl(
+				blogPostPage.page
+					.url()
+					.toString()
+					.replace(
+						`${Configuration.environment_url}`,
+						`${PRODUCTION_BASE_URL}`,
+					),
 			);
-	});
+			await blogPage
+				.assertThat()
+				.verifyOgPropertiesValues(
+					[
+						OgProperties.OG_TITLE,
+						OgProperties.OG_DESCRIPTION,
+						OgProperties.OG_TYPE,
+						OgProperties.OG_URL,
+					],
+					[
+						blogPostTitle,
+						blogPostSubTitle,
+						OgPropertiesValues.OG_TYPE,
+						blogPostUrl,
+					],
+				);
+		},
+	);
 });

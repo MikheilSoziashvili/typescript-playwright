@@ -7,6 +7,7 @@ import {
 import { MinesAutobetTestData, MinesBetTestData } from "@dtos/test-data";
 import { Feature } from "@enums/feature";
 import { JiraComponent } from "@enums/jira/jira-components";
+import { JiraUser } from "@enums/jira/jira-users";
 import { BrowserName } from "@enums/playwright/project-browser-names";
 import { TestTag } from "@enums/test-tags";
 import { UserType } from "@enums/user-types";
@@ -36,7 +37,10 @@ test.describe("Mines tests", () => {
 
 	test(
 		`[ENG-6486] Mines - place a bet and try to win - Pick random tiles`,
-		testDetails().withTags(TestTag.ORIGINALS, JiraComponent.MINES).apply(),
+		testDetails()
+			.withTags(TestTag.ORIGINALS, JiraComponent.MINES)
+			.withAuthor(JiraUser.RALUCA_ARITON)
+			.apply(),
 		async ({ minesGamePage, userBalanceHandler }, testInfo) => {
 			test.fixme(
 				testInfo.project.name === BrowserName.FIREFOX,
@@ -72,6 +76,7 @@ test.describe("Mines tests", () => {
 		`[ENG-6927] Mines - Play until catch a bomb`,
 		testDetails()
 			.withTags(TestTag.SMOKE, TestTag.ORIGINALS, JiraComponent.MINES)
+			.withAuthor(JiraUser.RALUCA_ARITON)
 			.apply(),
 		async ({ minesGamePage, userBalanceHandler }) => {
 			await minesGamePage.navigateAndWaitForGameToLoad();
@@ -100,7 +105,10 @@ test.describe("Mines tests", () => {
 
 	test(
 		`[ENG-5729] Mines - Verify Game History`,
-		testDetails().withTags(TestTag.ORIGINALS, JiraComponent.MINES).apply(),
+		testDetails()
+			.withTags(TestTag.ORIGINALS, JiraComponent.MINES)
+			.withAuthor(JiraUser.RALUCA_ARITON)
+			.apply(),
 		async ({ minesGamePage }) => {
 			await minesGamePage.navigateAndWaitForGameToLoad();
 
@@ -130,7 +138,10 @@ test.describe("Mines tests", () => {
 
 	test(
 		`[ENG-6143] Mines - Autobet Increase By`,
-		testDetails().withTags(TestTag.ORIGINALS, JiraComponent.MINES).apply(),
+		testDetails()
+			.withTags(TestTag.ORIGINALS, JiraComponent.MINES)
+			.withAuthor(JiraUser.NIKOLAY_GENOV)
+			.apply(),
 		async ({ minesGamePage }) => {
 			const minesBetDataForAutobet = new MinesBetTestData({
 				betAmount: 1,
@@ -198,6 +209,7 @@ test.describe.serial(
 			"[ENG-5532] Mines game can be launched when Plinko is unavailable",
 			testDetails()
 				.withTags(TestTag.ORIGINALS, JiraComponent.MINES)
+				.withAuthor(JiraUser.RALUCA_ARITON)
 				.apply(),
 			async ({ minesGamePage, plinkoGamePage }) => {
 				await plinkoGamePage.navigate();

@@ -4,6 +4,7 @@ import { DiceBetTestData } from "@dtos/test-data";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraComponent } from "@enums/jira/jira-components";
+import { JiraUser } from "@enums/jira/jira-users";
 
 test.describe("Recent Wins and Live Bets sections", () => {
 	test.use(storageStateNewUserDB());
@@ -12,6 +13,7 @@ test.describe("Recent Wins and Live Bets sections", () => {
 		testDetails()
 			.withTags(JiraComponent.HOMEPAGE)
 			.withJiraBugTickets("7893")
+			.withAuthor(JiraUser.NIKOLAY_GENOV)
 			.apply(),
 		async ({ diceGamePage, homePage }) => {
 			await diceGamePage.navigate();

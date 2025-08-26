@@ -2,6 +2,7 @@ import { AnyTag } from "@core/types/types";
 import { jiraIssueId } from "@core/utils/utils";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraIssueType } from "@enums/jira/jira-issue-types";
+import { JiraUser } from "@enums/jira/jira-users";
 import { AnnotationType } from "@enums/playwright/annotationsTypes";
 import { TestDetails } from "@playwright/test";
 import {
@@ -79,7 +80,11 @@ class TestDetailsBuilder {
 			throw new Error("No annotations provided");
 		}
 
-		this._testDetails.annotation = annotations;
+		this._testDetails.annotation = [
+			...this.annotationToArray(this._testDetails.annotation),
+			...annotations,
+		];
+
 		return this;
 	}
 
@@ -182,5 +187,30 @@ class TestDetailsBuilder {
 				description: annotation.description,
 			})),
 		);
+	}
+
+	/**
+	 * Adds an author annotation to the test/test suite.
+	 *
+	 * Wraps {@link withAnnotations} to mark the responsible test author in the
+	 * underlying Playwright {@link TestDetails} metadata.
+	 *
+	 * @param authorName - The test author, specified as a {@link JiraUser} enum value.
+	 * @returns {TestDetailsBuilder} This builder instance for chaining.
+	 *
+	 * @example
+	 * testDetails()
+	 *   .withAuthor(JiraUser.SVETOSLAV_LAZAROV)
+	 *   .apply();
+	 */
+	public withAuthor(authorName: JiraUser): TestDetailsBuilder {
+		return this.withAnnotations({
+			type: AnnotationType.AUTHOR,
+			description: `${authorName}@teamgamdom.com`,
+		});
+	}
+
+	private annotationToArray<T>(value: T | T[] | undefined): T[] {
+		return Array.isArray(value) ? value : value ? [value] : [];
 	}
 }

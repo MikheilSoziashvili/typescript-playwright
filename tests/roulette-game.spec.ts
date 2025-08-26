@@ -6,12 +6,16 @@ import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { getUserDetailsByTestTitle } from "@core/utils/utils";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { TestTag } from "@enums/test-tags";
+import { JiraUser } from "@enums/jira/jira-users";
 
 test.describe("Roulette tests", () => {
 	test.use(storageStateNewUserDB());
 	test(
 		"[ENG-264] Place a single bet on Roulette and try to win",
-		testDetails().withTags(TestTag.SMOKE, TestTag.ORIGINALS).apply(),
+		testDetails()
+			.withTags(TestTag.SMOKE, TestTag.ORIGINALS)
+			.withAuthor(JiraUser.NIKOLAY_GENOV)
+			.apply(),
 		async ({ rouletteGamePage }, testInfo) => {
 			test.slow(); // it takes some more time until a 'black' number is in
 			const newUserDetails = getUserDetailsByTestTitle(

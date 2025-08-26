@@ -14,6 +14,7 @@ import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
 import { Feature } from "@enums/feature";
 import { GameProvider } from "@enums/game-providers";
+import { JiraUser } from "@enums/jira/jira-users";
 import { TestTag } from "@enums/test-tags";
 import { UserType } from "@enums/user-types";
 import { test } from "@fixtures/fixtures";
@@ -177,199 +178,204 @@ test.describe.serial(
 			 * The test checks the visibility of game providers for regular and qa users
 			 * based on the configured states.
 			 */
-			test(`[ENG-2745] Admin - enable a game provider only for qa users, test number: [${record.case}`, async ({
-				gamdomApi,
-				gamdomDb,
-				homePage,
-				casinoPage,
-				providersPage,
-				page,
-			}) => {
-				// Authenticate as super admin to perform administrative actions
-				const superAdminData = new RegisterTestData({
-					useGamdomEmailDomain: true,
-				});
-				await gamdomDb.createNewUser({
-					username: superAdminData.username,
-					password: superAdminData.password,
-					email: superAdminData.email,
-					tags: UserTags.SuperAdmin,
-					userClass: UserClasses.Admin,
-					emailVerified: true,
-				});
-				const superAdminCookie = getCookieHeader(
-					await gamdomApi.authenticateWithExistingUser(
-						superAdminData.username,
-						superAdminData.password,
-					),
-				);
+			test(
+				`[ENG-2745] Admin - enable a game provider only for qa users, test number: [${record.case}`,
+				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+				async ({
+					gamdomApi,
+					gamdomDb,
+					homePage,
+					casinoPage,
+					providersPage,
+					page,
+				}) => {
+					// Authenticate as super admin to perform administrative actions
+					const superAdminData = new RegisterTestData({
+						useGamdomEmailDomain: true,
+					});
+					await gamdomDb.createNewUser({
+						username: superAdminData.username,
+						password: superAdminData.password,
+						email: superAdminData.email,
+						tags: UserTags.SuperAdmin,
+						userClass: UserClasses.Admin,
+						emailVerified: true,
+					});
+					const superAdminCookie = getCookieHeader(
+						await gamdomApi.authenticateWithExistingUser(
+							superAdminData.username,
+							superAdminData.password,
+						),
+					);
 
-				// Set the feature state (enable/disable) for both regular and qa users
-				await gamdomApi.setFeatureState(
-					providerToFeature,
-					featureStates,
-					{
+					// Set the feature state (enable/disable) for both regular and qa users
+					await gamdomApi.setFeatureState(
+						providerToFeature,
+						featureStates,
+						{
+							Cookie: superAdminCookie,
+						},
+					);
+
+					// Retrieve all providers to find the target provider
+					const providers = await gamdomApi.getProviders({
 						Cookie: superAdminCookie,
-					},
-				);
+					});
 
-				// Retrieve all providers to find the target provider
-				const providers = await gamdomApi.getProviders({
-					Cookie: superAdminCookie,
-				});
+					// Find the target provider using its name
+					const targetProvider = providers.find(
+						(provider) =>
+							provider.provider_name ===
+							providerEnum.providerName,
+					) as Provider;
 
-				// Find the target provider using its name
-				const targetProvider = providers.find(
-					(provider) =>
-						provider.provider_name === providerEnum.providerName,
-				) as Provider;
+					// Extract the provider ID for use in setting provider state
+					const providerId = targetProvider.id;
 
-				// Extract the provider ID for use in setting provider state
-				const providerId = targetProvider.id;
-
-				// Set the provider state (enable/disable, qa users only) based on the test configuration
-				await gamdomApi.setProviderState(
-					providerId,
-					providerEnum.providerName,
-					!regularEnabled,
-					qaEnabled,
-					providerEnum.providerIdName,
-					providerEnum.importedFrom,
-					{ Cookie: superAdminCookie },
-				);
-
-				// Create test data for a regular user and a qa user
-				const regularUserData = new RegisterTestData();
-				const qaUserData = new RegisterTestData();
-
-				// Register and authenticate the qa user
-				await gamdomDb.createNewUser({
-					username: qaUserData.username,
-					password: qaUserData.password,
-					email: qaUserData.email,
-					tags: UserTags.QaUser,
-				});
-
-				// ----- Gamdom home page casino hover menu ----- //
-				// Authenticate with the qa user and verify provider visibility
-				const qaUserCookie =
-					await gamdomApi.authenticateWithExistingUser(
-						qaUserData.username,
-						qaUserData.password,
-					);
-
-				// Set authentication cookies in the browser for the qa user
-				await setAuthenticationCookies(page, qaUserCookie);
-				await homePage.navigateAndCheckTitle();
-
-				// Verify that the provider is visible or not as expected for the qa user
-				await homePage
-					.assertThat()
-					.verifyProviderState(
+					// Set the provider state (enable/disable, qa users only) based on the test configuration
+					await gamdomApi.setProviderState(
+						providerId,
 						providerEnum.providerName,
-						record.qa_user_result,
+						!regularEnabled,
+						qaEnabled,
+						providerEnum.providerIdName,
+						providerEnum.importedFrom,
+						{ Cookie: superAdminCookie },
 					);
 
-				// Authenticate with the regular user and verify provider visibility
-				await gamdomDb.createNewUser(regularUserData);
-				const regularUserCookie =
-					await gamdomApi.authenticateWithExistingUser(
-						regularUserData.username,
-						regularUserData.password,
-					);
-				await setAuthenticationCookies(page, regularUserCookie);
-				await homePage.navigateAndCheckTitle();
+					// Create test data for a regular user and a qa user
+					const regularUserData = new RegisterTestData();
+					const qaUserData = new RegisterTestData();
 
-				// Verify that the provider is visible or not as expected for the regular user
-				await homePage
-					.assertThat()
-					.verifyProviderState(
-						providerEnum.providerName,
-						record.regular_user_result,
-					);
+					// Register and authenticate the qa user
+					await gamdomDb.createNewUser({
+						username: qaUserData.username,
+						password: qaUserData.password,
+						email: qaUserData.email,
+						tags: UserTags.QaUser,
+					});
 
-				// ---- Casino page provider filter dropdown ---- //
-				// Navigate to the casino page as the regular user and verify provider visibility in the dropdown
-				await casinoPage.navigate();
-				await casinoPage
-					.steps()
-					.verifyProviderDisplayedInDropdown(
-						providerEnum.providerName as GameProvider,
-						record.regular_user_result,
-					);
+					// ----- Gamdom home page casino hover menu ----- //
+					// Authenticate with the qa user and verify provider visibility
+					const qaUserCookie =
+						await gamdomApi.authenticateWithExistingUser(
+							qaUserData.username,
+							qaUserData.password,
+						);
 
-				// Switch to the qa user and verify provider visibility in the dropdown
-				await setAuthenticationCookies(page, qaUserCookie);
+					// Set authentication cookies in the browser for the qa user
+					await setAuthenticationCookies(page, qaUserCookie);
+					await homePage.navigateAndCheckTitle();
 
-				await casinoPage.navigate();
-				await casinoPage
-					.steps()
-					.verifyProviderDisplayedInDropdown(
-						providerEnum.providerName as GameProvider,
-						record.qa_user_result,
-					);
+					// Verify that the provider is visible or not as expected for the qa user
+					await homePage
+						.assertThat()
+						.verifyProviderState(
+							providerEnum.providerName,
+							record.qa_user_result,
+						);
 
-				// ---- Casino page provider filter dropdown in "Pick Random" feature settings ---- //
-				// Verify provider visibility in the "Pick Random" settings modal for the qa user
-				await casinoPage.navigate();
-				await casinoPage
-					.steps()
-					.verifyProviderDisplayedInSettingsModalDropdown(
-						providerEnum.providerName as GameProvider,
-						record.qa_user_result,
-					);
+					// Authenticate with the regular user and verify provider visibility
+					await gamdomDb.createNewUser(regularUserData);
+					const regularUserCookie =
+						await gamdomApi.authenticateWithExistingUser(
+							regularUserData.username,
+							regularUserData.password,
+						);
+					await setAuthenticationCookies(page, regularUserCookie);
+					await homePage.navigateAndCheckTitle();
 
-				// Switch back to the regular user and verify provider visibility in the settings modal
-				await setAuthenticationCookies(page, regularUserCookie);
+					// Verify that the provider is visible or not as expected for the regular user
+					await homePage
+						.assertThat()
+						.verifyProviderState(
+							providerEnum.providerName,
+							record.regular_user_result,
+						);
 
-				await casinoPage.navigate();
-				await casinoPage
-					.steps()
-					.verifyProviderDisplayedInDropdown(
-						providerEnum.providerName as GameProvider,
-						record.regular_user_result,
-					);
+					// ---- Casino page provider filter dropdown ---- //
+					// Navigate to the casino page as the regular user and verify provider visibility in the dropdown
+					await casinoPage.navigate();
+					await casinoPage
+						.steps()
+						.verifyProviderDisplayedInDropdown(
+							providerEnum.providerName as GameProvider,
+							record.regular_user_result,
+						);
 
-				// ---- Providers page ---- //
-				// Navigate to the providers page as the regular user and verify provider option state
-				await providersPage
-					.steps()
-					.verifyProviderOptionState(
-						providersPage,
-						record.regular_user_result,
-						providerEnum.providerName as GameProvider,
-					);
+					// Switch to the qa user and verify provider visibility in the dropdown
+					await setAuthenticationCookies(page, qaUserCookie);
 
-				// Switch to the qa user and verify provider option state
-				await setAuthenticationCookies(page, qaUserCookie);
-				await providersPage
-					.steps()
-					.verifyProviderOptionState(
-						providersPage,
-						record.qa_user_result,
-						providerEnum.providerName as GameProvider,
-					);
+					await casinoPage.navigate();
+					await casinoPage
+						.steps()
+						.verifyProviderDisplayedInDropdown(
+							providerEnum.providerName as GameProvider,
+							record.qa_user_result,
+						);
 
-				// ---- Homepage provider belt ---- //
-				// Verify that the provider is visible or not as expected for the qa user
-				await homePage
-					.steps()
-					.verifyProviderOptionStateInBelt(
-						homePage,
-						providerEnum.providerName as GameProvider,
-						record.qa_user_result,
-					);
+					// ---- Casino page provider filter dropdown in "Pick Random" feature settings ---- //
+					// Verify provider visibility in the "Pick Random" settings modal for the qa user
+					await casinoPage.navigate();
+					await casinoPage
+						.steps()
+						.verifyProviderDisplayedInSettingsModalDropdown(
+							providerEnum.providerName as GameProvider,
+							record.qa_user_result,
+						);
 
-				// Verify that the provider is visible or not as expected for the regular user
-				await setAuthenticationCookies(page, regularUserCookie);
-				await homePage
-					.steps()
-					.verifyProviderOptionStateInBelt(
-						homePage,
-						providerEnum.providerName as GameProvider,
-						record.regular_user_result,
-					);
-			});
+					// Switch back to the regular user and verify provider visibility in the settings modal
+					await setAuthenticationCookies(page, regularUserCookie);
+
+					await casinoPage.navigate();
+					await casinoPage
+						.steps()
+						.verifyProviderDisplayedInDropdown(
+							providerEnum.providerName as GameProvider,
+							record.regular_user_result,
+						);
+
+					// ---- Providers page ---- //
+					// Navigate to the providers page as the regular user and verify provider option state
+					await providersPage
+						.steps()
+						.verifyProviderOptionState(
+							providersPage,
+							record.regular_user_result,
+							providerEnum.providerName as GameProvider,
+						);
+
+					// Switch to the qa user and verify provider option state
+					await setAuthenticationCookies(page, qaUserCookie);
+					await providersPage
+						.steps()
+						.verifyProviderOptionState(
+							providersPage,
+							record.qa_user_result,
+							providerEnum.providerName as GameProvider,
+						);
+
+					// ---- Homepage provider belt ---- //
+					// Verify that the provider is visible or not as expected for the qa user
+					await homePage
+						.steps()
+						.verifyProviderOptionStateInBelt(
+							homePage,
+							providerEnum.providerName as GameProvider,
+							record.qa_user_result,
+						);
+
+					// Verify that the provider is visible or not as expected for the regular user
+					await setAuthenticationCookies(page, regularUserCookie);
+					await homePage
+						.steps()
+						.verifyProviderOptionStateInBelt(
+							homePage,
+							providerEnum.providerName as GameProvider,
+							record.regular_user_result,
+						);
+				},
+			);
 		});
 	},
 );

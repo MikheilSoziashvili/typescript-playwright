@@ -17,6 +17,7 @@ import {
 import { test } from "@fixtures/fixtures";
 import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
 import { testData } from "test-data/test-data-manager";
+import { JiraUser } from "@enums/jira/jira-users";
 
 interface StaffRoleCsvRecord {
 	staffRoleTag: keyof typeof UserTags;
@@ -49,7 +50,10 @@ test.describe(
 			staffRoleDataset.forEach((record) => {
 				test(
 					`[ENG-5543] Edit Info - Selecting '${record.staffRoleTag}' checks its related tags`,
-					testDetails().withJiraBugTickets("8283").apply(),
+					testDetails()
+						.withJiraBugTickets("8283")
+						.withAuthor(JiraUser.ANGEL_PETROV)
+						.apply(),
 					async ({
 						userInfoAdminPage,
 						gamdomDb,
@@ -109,38 +113,43 @@ test.describe(
 					}),
 				);
 
-				test(`[ENG-5552] Admin with '${recordVisibility.adminStaffRole}' can see assigned tags`, async ({
-					userInfoAdminPage,
-					gamdomDb,
-					userInfoEditInfoAdminPage,
-				}) => {
-					const newUserData = new RegisterTestData();
-					await gamdomDb.createNewUser({
-						username: newUserData.username,
-						password: newUserData.password,
-						email: newUserData.email,
-						emailVerified: true,
-						userClass: UserClasses.User,
-					});
-
-					const expectedTags = recordVisibility.userTags
-						.split(",")
-						.map((t) => t.trim())
-						.map((t) => {
-							const tag = UserTags[t as keyof typeof UserTags];
-							return tag;
+				test(
+					`[ENG-5552] Admin with '${recordVisibility.adminStaffRole}' can see assigned tags`,
+					testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+					async ({
+						userInfoAdminPage,
+						gamdomDb,
+						userInfoEditInfoAdminPage,
+					}) => {
+						const newUserData = new RegisterTestData();
+						await gamdomDb.createNewUser({
+							username: newUserData.username,
+							password: newUserData.password,
+							email: newUserData.email,
+							emailVerified: true,
+							userClass: UserClasses.User,
 						});
 
-					await userInfoAdminPage
-						.steps()
-						.navigateAndShowUserDetails(newUserData.username);
-					await userInfoAdminPage.clickUserInfoTab(
-						UserInfoTabs.EditInfo,
-					);
-					await userInfoEditInfoAdminPage
-						.assertThat()
-						.verifyTagsAreVisible(expectedTags);
-				});
+						const expectedTags = recordVisibility.userTags
+							.split(",")
+							.map((t) => t.trim())
+							.map((t) => {
+								const tag =
+									UserTags[t as keyof typeof UserTags];
+								return tag;
+							});
+
+						await userInfoAdminPage
+							.steps()
+							.navigateAndShowUserDetails(newUserData.username);
+						await userInfoAdminPage.clickUserInfoTab(
+							UserInfoTabs.EditInfo,
+						);
+						await userInfoEditInfoAdminPage
+							.assertThat()
+							.verifyTagsAreVisible(expectedTags);
+					},
+				);
 			});
 		});
 
@@ -232,58 +241,68 @@ test.describe(
 					);
 				});
 
-				test("[ENG-6392] Edit info - wager_req_end flow", async ({
-					userInfoAdminPage,
-					userInfoEditInfoAdminPage,
-					toast,
-					page,
-				}) => {
-					await userInfoAdminPage
-						.steps()
-						.navigateAndShowUserDetails(newUserData.username);
-					await userInfoAdminPage.clickUserInfoTab(
-						UserInfoTabs.EditInfo,
-					);
-
-					await userInfoEditInfoAdminPage
-						.steps()
-						.runEditSteps(
-							wagerEditSteps,
-							"",
-							page,
-							toast.assertThat(),
+				test(
+					"[ENG-6392] Edit info - wager_req_end flow",
+					testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+					async ({
+						userInfoAdminPage,
+						userInfoEditInfoAdminPage,
+						toast,
+						page,
+					}) => {
+						await userInfoAdminPage
+							.steps()
+							.navigateAndShowUserDetails(newUserData.username);
+						await userInfoAdminPage.clickUserInfoTab(
+							UserInfoTabs.EditInfo,
 						);
-				});
+
+						await userInfoEditInfoAdminPage
+							.steps()
+							.runEditSteps(
+								wagerEditSteps,
+								"",
+								page,
+								toast.assertThat(),
+							);
+					},
+				);
 
 				testData()
 					.fromCsvRaw({
 						file: CsvFilesName.EDIT_INFO_ADJUSTING_WALLETS,
 					})
 					.forEach(({ wallet }) => {
-						test(`[ENG-6392] Edit info - wallet balance flow for ${wallet}`, async ({
-							userInfoAdminPage,
-							userInfoEditInfoAdminPage,
-							toast,
-							page,
-						}) => {
-							await userInfoAdminPage
-								.steps()
-								.navigateAndShowUserDetails(
-									newUserData.username,
+						test(
+							`[ENG-6392] Edit info - wallet balance flow for ${wallet}`,
+							testDetails()
+								.withAuthor(JiraUser.RALUCA_ARITON)
+								.apply(),
+							async ({
+								userInfoAdminPage,
+								userInfoEditInfoAdminPage,
+								toast,
+								page,
+							}) => {
+								await userInfoAdminPage
+									.steps()
+									.navigateAndShowUserDetails(
+										newUserData.username,
+									);
+								await userInfoAdminPage.clickUserInfoTab(
+									UserInfoTabs.EditInfo,
 								);
-							await userInfoAdminPage.clickUserInfoTab(
-								UserInfoTabs.EditInfo,
-							);
 
-							await userInfoEditInfoAdminPage
-								.steps()
-								.runEditSteps(
-									walletEditSteps,
-									wallet,
-									page,
-									toast.assertThat(),
-								);
-						});
+								await userInfoEditInfoAdminPage
+									.steps()
+									.runEditSteps(
+										walletEditSteps,
+										wallet,
+										page,
+										toast.assertThat(),
+									);
+							},
+						);
 					});
 			},
 		);

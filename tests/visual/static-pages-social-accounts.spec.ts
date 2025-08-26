@@ -3,6 +3,7 @@ import { testDetails } from "@core/helpers/test-details-helper";
 import { SocialMediaRecord } from "@core/types/types";
 import { parse_csv } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
+import { JiraUser } from "@enums/jira/jira-users";
 import { TestTag } from "@enums/test-tags";
 import { test } from "@fixtures/fixtures";
 import { BannedUserPage } from "@pages/banned-user/banned-user-page";
@@ -35,7 +36,10 @@ test.describe("Static pages - social accounts", () => {
 		socialMediaList.forEach((socialMedia) => {
 			test(
 				`[ENG-2480] Verify '${socialMedia.social_account}' social account in '${socialMedia.static_page}' static page`,
-				testDetails().withTags(TestTag.VISUAL).apply(),
+				testDetails()
+					.withTags(TestTag.VISUAL)
+					.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+					.apply(),
 				async (
 					{
 						homePage,

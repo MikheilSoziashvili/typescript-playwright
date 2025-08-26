@@ -1,6 +1,8 @@
+import { testDetails } from "@core/helpers/test-details-helper";
 import { setAuthenticationCookies } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { AmlVerificationLevel } from "@enums/db/aml-verification-level";
+import { JiraUser } from "@enums/jira/jira-users";
 import { UserMenuOption } from "@enums/user-menu-options";
 import { test } from "@fixtures/fixtures";
 import { ProfilePage } from "@pages/profile/profile-page";
@@ -38,46 +40,51 @@ test.describe("User profile links accessibility", () => {
 				file: CsvFilesName.KYC_USERS_LEVEL_VERIFICATION_PAGE,
 			})
 			.forEach((kycLevelData) => {
-				test(`[ENG-5988] Open "Verification" from the User Profile dropdown for user with aml ${kycLevelData.kycLevel}`, async ({
-					gamdomApiDbFacade,
-					gamdomApi,
-					homePage,
-					verificationPage,
-					page,
-				}) => {
-					const [userData] =
-						await gamdomApiDbFacade.createUsersWithAmlLevelsDb({
-							users: [
-								{
-									level: AmlVerificationLevel[
-										kycLevelData.kycLevel as keyof typeof AmlVerificationLevel
-									],
-								},
-							],
-						});
-					const cookie = await gamdomApi.authenticateWithExistingUser(
-						userData.username,
-						userData.password,
-					);
-					await setAuthenticationCookies(page, cookie);
-					await homePage.navigate();
-					await homePage.authenticatedHeader.navigateToUserMenuOption(
-						UserMenuOption.VERIFICATION,
-					);
-					await verificationPage
-						.assertThat()
-						.verifyLinksAreAccessible([
-							kycLevelData.verificationPageURL,
-						]);
-					await verificationPage
-						.assertThat()
-						.waitForAndVerifyCurrentUrlIs(
-							kycLevelData.verificationPageURL,
+				test(
+					`[ENG-5988] Open "Verification" from the User Profile dropdown for user with aml ${kycLevelData.kycLevel}`,
+					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+					async ({
+						gamdomApiDbFacade,
+						gamdomApi,
+						homePage,
+						verificationPage,
+						page,
+					}) => {
+						const [userData] =
+							await gamdomApiDbFacade.createUsersWithAmlLevelsDb({
+								users: [
+									{
+										level: AmlVerificationLevel[
+											kycLevelData.kycLevel as keyof typeof AmlVerificationLevel
+										],
+									},
+								],
+							});
+						const cookie =
+							await gamdomApi.authenticateWithExistingUser(
+								userData.username,
+								userData.password,
+							);
+						await setAuthenticationCookies(page, cookie);
+						await homePage.navigate();
+						await homePage.authenticatedHeader.navigateToUserMenuOption(
+							UserMenuOption.VERIFICATION,
 						);
-					await verificationPage
-						.assertThat()
-						.verificationPageTitleIsVisible();
-				});
+						await verificationPage
+							.assertThat()
+							.verifyLinksAreAccessible([
+								kycLevelData.verificationPageURL,
+							]);
+						await verificationPage
+							.assertThat()
+							.waitForAndVerifyCurrentUrlIs(
+								kycLevelData.verificationPageURL,
+							);
+						await verificationPage
+							.assertThat()
+							.verificationPageTitleIsVisible();
+					},
+				);
 			});
 	});
 
@@ -89,49 +96,55 @@ test.describe("User profile links accessibility", () => {
 			.forEach((menuItem) => {
 				testDataInput.forEach(
 					({ testId, menuType, navigationMethod }) => {
-						test(`[${testId}] Verify '${menuItem.menuItemLink}' User Profile ${menuType} link item accessibility for user with aml ${menuItem.userKycLevel}`, async ({
-							gamdomApiDbFacade,
-							gamdomApi,
-							profilePage,
-							page,
-						}) => {
-							const [userData] =
-								await gamdomApiDbFacade.createUsersWithAmlLevelsDb(
-									{
-										users: [
-											{
-												level: AmlVerificationLevel[
-													menuItem.userKycLevel as keyof typeof AmlVerificationLevel
-												],
-											},
-										],
-									},
-								);
-
-							const cookie =
-								await gamdomApi.authenticateWithExistingUser(
-									userData.username,
-									userData.password,
-								);
-							await setAuthenticationCookies(page, cookie);
-							await profilePage.navigate();
-
-							await navigationMethod(
+						test(
+							`[${testId}] Verify '${menuItem.menuItemLink}' User Profile ${menuType} link item accessibility for user with aml ${menuItem.userKycLevel}`,
+							testDetails()
+								.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+								.apply(),
+							async ({
+								gamdomApiDbFacade,
+								gamdomApi,
 								profilePage,
-								menuItem.menuItemLink,
-							);
+								page,
+							}) => {
+								const [userData] =
+									await gamdomApiDbFacade.createUsersWithAmlLevelsDb(
+										{
+											users: [
+												{
+													level: AmlVerificationLevel[
+														menuItem.userKycLevel as keyof typeof AmlVerificationLevel
+													],
+												},
+											],
+										},
+									);
 
-							await profilePage
-								.assertThat()
-								.verifyLinksAreAccessible([
-									menuItem.expectedUrl,
-								]);
-							await profilePage
-								.assertThat()
-								.waitForAndVerifyCurrentUrlIs(
-									menuItem.expectedUrl,
+								const cookie =
+									await gamdomApi.authenticateWithExistingUser(
+										userData.username,
+										userData.password,
+									);
+								await setAuthenticationCookies(page, cookie);
+								await profilePage.navigate();
+
+								await navigationMethod(
+									profilePage,
+									menuItem.menuItemLink,
 								);
-						});
+
+								await profilePage
+									.assertThat()
+									.verifyLinksAreAccessible([
+										menuItem.expectedUrl,
+									]);
+								await profilePage
+									.assertThat()
+									.waitForAndVerifyCurrentUrlIs(
+										menuItem.expectedUrl,
+									);
+							},
+						);
 					},
 				);
 			});

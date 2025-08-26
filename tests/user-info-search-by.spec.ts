@@ -16,6 +16,7 @@ import { CsvFilesName } from "@enums/csv-file-name";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
 import { JiraComponent } from "@enums/jira/jira-components";
+import { JiraUser } from "@enums/jira/jira-users";
 import { UserRoles } from "@enums/user-roles";
 import {
 	storageStateNewSuperAdminUserDB,
@@ -53,43 +54,45 @@ test.describe("User info - search by", () => {
 			).user.id;
 		});
 
-		test(`[ENG-4990] User info - simple search by ID`, async ({
-			userInfoAdminPage,
-			baseAdminPage,
-		}) => {
-			await userInfoAdminPage.navigate();
-			await userInfoAdminPage
-				.assertThat()
-				.searchBySteam64orUserIdElementsDisplayed();
-			await userInfoAdminPage.searchForSteam64OrUserId(userId);
-			await baseAdminPage
-				.assertThat()
-				.waitForAndVerifyCurrentUrlIs(
-					`${INFO_ADMIN_PAGE_ENDPOINT}/${userId}`,
-					true,
-				);
-		});
+		test(
+			`[ENG-4990] User info - simple search by ID`,
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			async ({ userInfoAdminPage, baseAdminPage }) => {
+				await userInfoAdminPage.navigate();
+				await userInfoAdminPage
+					.assertThat()
+					.searchBySteam64orUserIdElementsDisplayed();
+				await userInfoAdminPage.searchForSteam64OrUserId(userId);
+				await baseAdminPage
+					.assertThat()
+					.waitForAndVerifyCurrentUrlIs(
+						`${INFO_ADMIN_PAGE_ENDPOINT}/${userId}`,
+						true,
+					);
+			},
+		);
 	});
 
 	ipAddressInputs.forEach((input) => {
 		test.describe("User info - search by IP", () => {
 			test.use(storageStateUserAPI(SUPER_ADMIN_CREDENTIALS.username));
-			test(`[ENG-1456] User info - Search by '${input.value}' IP`, async ({
-				userInfoAdminPage,
-				baseAdminPage,
-			}) => {
-				await userInfoAdminPage.navigate();
-				await userInfoAdminPage
-					.assertThat()
-					.searchByIPElementsDisplayed();
-				await userInfoAdminPage.searchForIP(`${input.value}`);
-				await baseAdminPage
-					.assertThat()
-					.waitForAndVerifyCurrentUrlIs(
-						`${ADMIN_IP_USERS_PAGE_ENDPOINT}/${input.value}`,
-						true,
-					);
-			});
+			test(
+				`[ENG-1456] User info - Search by '${input.value}' IP`,
+				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+				async ({ userInfoAdminPage, baseAdminPage }) => {
+					await userInfoAdminPage.navigate();
+					await userInfoAdminPage
+						.assertThat()
+						.searchByIPElementsDisplayed();
+					await userInfoAdminPage.searchForIP(`${input.value}`);
+					await baseAdminPage
+						.assertThat()
+						.waitForAndVerifyCurrentUrlIs(
+							`${ADMIN_IP_USERS_PAGE_ENDPOINT}/${input.value}`,
+							true,
+						);
+				},
+			);
 		});
 	});
 
@@ -117,43 +120,50 @@ test.describe("User info - search by", () => {
 
 		test.use(storageStateNewSuperAdminUserDB());
 
-		test("[ENG-1386] User info - search by field (wild card)", async ({
-			userInfoAdminPage,
-			infoAdminPage,
-		}) => {
-			await userInfoAdminPage.navigate();
-			await userInfoAdminPage
-				.assertThat()
-				.isSearchByUsernameFieldDisplayed();
-			await userInfoAdminPage.assertThat().isShowInfoButtonDisplayed();
-			await userInfoAdminPage.clickSearchByUsernameField();
-			await userInfoAdminPage
-				.assertThat()
-				.areNoResultsDisplayedForSearchByUsernameField();
-			await userInfoAdminPage.steps().searchUser({
-				username: INVALID_USERNAME,
-				expectToBeFound: false,
-			});
-			await userInfoAdminPage.steps().searchUser({
-				username: VALID_USERNAME,
-				expectToBeFound: true,
-			});
-			await userInfoAdminPage.insertUsernameInSearchByUsernameInput(
-				VALID_USERNAME_PREFIX,
-			);
-			await userInfoAdminPage
-				.assertThat()
-				.isSearchByUsernameResultDisplayed(users.firstUser.username);
-			await userInfoAdminPage
-				.assertThat()
-				.isSearchByUsernameResultDisplayed(users.secondUser.username);
+		test(
+			"[ENG-1386] User info - search by field (wild card)",
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			async ({ userInfoAdminPage, infoAdminPage }) => {
+				await userInfoAdminPage.navigate();
+				await userInfoAdminPage
+					.assertThat()
+					.isSearchByUsernameFieldDisplayed();
+				await userInfoAdminPage
+					.assertThat()
+					.isShowInfoButtonDisplayed();
+				await userInfoAdminPage.clickSearchByUsernameField();
+				await userInfoAdminPage
+					.assertThat()
+					.areNoResultsDisplayedForSearchByUsernameField();
+				await userInfoAdminPage.steps().searchUser({
+					username: INVALID_USERNAME,
+					expectToBeFound: false,
+				});
+				await userInfoAdminPage.steps().searchUser({
+					username: VALID_USERNAME,
+					expectToBeFound: true,
+				});
+				await userInfoAdminPage.insertUsernameInSearchByUsernameInput(
+					VALID_USERNAME_PREFIX,
+				);
+				await userInfoAdminPage
+					.assertThat()
+					.isSearchByUsernameResultDisplayed(
+						users.firstUser.username,
+					);
+				await userInfoAdminPage
+					.assertThat()
+					.isSearchByUsernameResultDisplayed(
+						users.secondUser.username,
+					);
 
-			await userInfoAdminPage.steps().showUserDetails(VALID_USERNAME);
-			await infoAdminPage.assertThat().pageElementsAreVisible();
-			await infoAdminPage
-				.assertThat()
-				.isUsernameDisplayedInTitle(VALID_USERNAME);
-		});
+				await userInfoAdminPage.steps().showUserDetails(VALID_USERNAME);
+				await infoAdminPage.assertThat().pageElementsAreVisible();
+				await infoAdminPage
+					.assertThat()
+					.isUsernameDisplayedInTitle(VALID_USERNAME);
+			},
+		);
 	});
 });
 
@@ -196,6 +206,7 @@ test.describe("User info - user badges", () => {
 			`[ENG-7562] User info - user badges - ${role}`,
 			testDetails()
 				.withTags(JiraComponent.ADMIN, JiraComponent.ADMIN_PANEL)
+				.withAuthor(JiraUser.RALUCA_ARITON)
 				.apply(),
 			async ({ userInfoAdminPage }) => {
 				const userId = userIds[role];

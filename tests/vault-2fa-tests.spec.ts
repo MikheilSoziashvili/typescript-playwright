@@ -12,6 +12,7 @@ import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import { MEDIUM_USER_AMOUNT } from "database/constants/user-amounts";
 import { testDetails } from "@core/helpers/test-details-helper";
+import { JiraUser } from "@enums/jira/jira-users";
 
 test.describe(`Vault wallet - 2FA verifications`, () => {
 	let qrCode2FAImagePath: string;
@@ -33,7 +34,10 @@ test.describe(`Vault wallet - 2FA verifications`, () => {
 
 	test(
 		`[ENG-2566] Vault wallet - Require new 2FA code when IP of user changes`,
-		testDetails().withJiraBugTickets("5109").apply(),
+		testDetails()
+			.withJiraBugTickets("5109")
+			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+			.apply(),
 		async ({
 			browser,
 			homePage,

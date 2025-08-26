@@ -5,6 +5,7 @@ import { parse_csv } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { TestTag } from "@enums/test-tags";
+import { JiraUser } from "@enums/jira/jira-users";
 
 const kothDataset = parse_csv(DATASETS_DIR, CsvFilesName.KOTH_VISUAL) as {
 	currency: string;
@@ -22,7 +23,10 @@ kothDataset.forEach((record) => {
 
 		test(
 			`[ENG-4483] KOTH - visual in header with currency: ${record.currency}`,
-			testDetails().withTags(TestTag.VISUAL).apply(),
+			testDetails()
+				.withTags(TestTag.VISUAL)
+				.withAuthor(JiraUser.ANGEL_PETROV)
+				.apply(),
 			async ({ homePage }, testInfo) => {
 				await homePage.getKothCurrencyXPosition();
 				await homePage.assertThat().kothInHeaderVisualCorrect(testInfo);

@@ -12,6 +12,8 @@ import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { test } from "@fixtures/fixtures";
 import { storageStateNewSuperAdminUserDB } from "../fixtures/auth-fixtures";
+import { testDetails } from "@core/helpers/test-details-helper";
+import { JiraUser } from "@enums/jira/jira-users";
 
 const promoCampaignStatuses = parse_csv(
 	DATASETS_DIR,
@@ -61,19 +63,62 @@ test.describe("Promo Campaign with duplicate codes of finished campaigns tests",
 	test.use(storageStateNewSuperAdminUserDB({}));
 
 	promoCampaignStatuses.forEach((promoCampaignStatus) => {
-		test(`[ENG-4935] Promo Codes - Verify duplicate codes of ${promoCampaignStatus.status} campaigns still work`, async ({
+		test(
+			`[ENG-4935] Promo Codes - Verify duplicate codes of ${promoCampaignStatus.status} campaigns still work`,
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			async ({
+				promoCampaignsAdminPage,
+				promoCodeModal,
+				walletModal,
+				homePage,
+			}) => {
+				await promoCampaignsAdminPage
+					.steps()
+					.changePromoCampaignStatus(
+						campaignName,
+						promoCampaignStatus.status,
+					);
+				await promoCampaignsAdminPage.clickCreateCampaignButton();
+				await promoCodeModal
+					.steps()
+					.createDefaultCashPromoCodeSuccessfully(
+						campaignName + campaignName,
+						campaignCode,
+					);
+				await homePage.navigateToWallet();
+				await walletModal
+					.steps()
+					.redeemPromoCodeSuccessfully(campaignCode);
+			},
+		);
+	});
+
+	test(
+		`[ENG-4935] Promo Codes - Verify duplicate codes of expired campaigns still work`,
+		testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+		async ({
 			promoCampaignsAdminPage,
 			promoCodeModal,
 			walletModal,
 			homePage,
+			gamdomDb,
+			toast,
 		}) => {
-			await promoCampaignsAdminPage
-				.steps()
-				.changePromoCampaignStatus(
-					campaignName,
-					promoCampaignStatus.status,
-				);
+			await gamdomDb.updateCampaignExpirationDateByName(campaignName);
+			await homePage.navigateToWallet();
+			await walletModal.steps().redeemPromoCode(campaignCode);
+			await toast.assertThat().titleIs(ToastTitle.FAILED);
+			await toast
+				.assertThat()
+				.subTitleIs(ToastSubTitle.PROMO_CODE_ERROR_MESSAGE);
+			await promoCampaignsAdminPage.navigate();
 			await promoCampaignsAdminPage.clickCreateCampaignButton();
+			await promoCampaignsAdminPage
+				.assertThat()
+				.verifyPromoCampaignStatus(
+					campaignName,
+					PromoCampaignStatuses.FINISHED,
+				);
 			await promoCodeModal
 				.steps()
 				.createDefaultCashPromoCodeSuccessfully(
@@ -82,39 +127,6 @@ test.describe("Promo Campaign with duplicate codes of finished campaigns tests",
 				);
 			await homePage.navigateToWallet();
 			await walletModal.steps().redeemPromoCodeSuccessfully(campaignCode);
-		});
-	});
-
-	test(`[ENG-4935] Promo Codes - Verify duplicate codes of expired campaigns still work`, async ({
-		promoCampaignsAdminPage,
-		promoCodeModal,
-		walletModal,
-		homePage,
-		gamdomDb,
-		toast,
-	}) => {
-		await gamdomDb.updateCampaignExpirationDateByName(campaignName);
-		await homePage.navigateToWallet();
-		await walletModal.steps().redeemPromoCode(campaignCode);
-		await toast.assertThat().titleIs(ToastTitle.FAILED);
-		await toast
-			.assertThat()
-			.subTitleIs(ToastSubTitle.PROMO_CODE_ERROR_MESSAGE);
-		await promoCampaignsAdminPage.navigate();
-		await promoCampaignsAdminPage.clickCreateCampaignButton();
-		await promoCampaignsAdminPage
-			.assertThat()
-			.verifyPromoCampaignStatus(
-				campaignName,
-				PromoCampaignStatuses.FINISHED,
-			);
-		await promoCodeModal
-			.steps()
-			.createDefaultCashPromoCodeSuccessfully(
-				campaignName + campaignName,
-				campaignCode,
-			);
-		await homePage.navigateToWallet();
-		await walletModal.steps().redeemPromoCodeSuccessfully(campaignCode);
-	});
+		},
+	);
 });

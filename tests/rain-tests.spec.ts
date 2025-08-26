@@ -15,6 +15,7 @@ import {
 import { RegisterTestData } from "@dtos/test-data";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
+import { JiraUser } from "@enums/jira/jira-users";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
@@ -34,7 +35,10 @@ test.describe("Rain tests", () => {
 		test.use(storageStateNewUserDB());
 		test(
 			"[ENG-2863] Rain - try to claim the rain",
-			testDetails().withJiraBugTickets("5094").apply(),
+			testDetails()
+				.withJiraBugTickets("5094")
+				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+				.apply(),
 			async ({ homePage, chat }) => {
 				await homePage.navigate();
 				await chat.steps().openChatAndVerify();
@@ -86,104 +90,108 @@ test.describe("Rain tests", () => {
 			),
 		);
 
-		test("[ENG-2564] Tip rain - Require new 2FA code when IP of user changes", async ({
-			homePage,
-			chat,
-			tipRainModal,
-			twoFactorAuthModal,
-			settingsPage,
-			gamdomApi,
-			browser,
-			gamdomDb,
-		}) => {
-			const pages = {
+		test(
+			"[ENG-2564] Tip rain - Require new 2FA code when IP of user changes",
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			async ({
 				homePage,
+				chat,
 				tipRainModal,
 				twoFactorAuthModal,
 				settingsPage,
-				chat,
-			};
+				gamdomApi,
+				browser,
+				gamdomDb,
+			}) => {
+				const pages = {
+					homePage,
+					tipRainModal,
+					twoFactorAuthModal,
+					settingsPage,
+					chat,
+				};
 
-			await gamdomDb.createNewUser({
-				username: superAdminData.username,
-				password: superAdminData.password,
-				email: superAdminData.email,
-				tags: UserTags.SuperAdmin,
-				userClass: UserClasses.Admin,
-				emailVerified: true,
-			});
-			const superAdminCookie = getCookieHeader(
-				await gamdomApi.authenticateWithExistingUser(
-					superAdminData.username,
-					superAdminData.password,
-				),
-			);
-			const initialPage = await initializePageObjects(
-				await browser.newContext(),
-				...Object.values(pages),
-			);
-
-			qrCode2FAImagePath = createPngImagePath();
-			await settingsPage
-				.steps()
-				.navigateAndEnable2FaAuthentication(qrCode2FAImagePath);
-
-			await homePage.navigate();
-			await homePage.authenticatedHeader.expandChatIfNotVisible();
-			await chat.steps().verifyChatAndSendMessage(TIP_RAIN);
-			await twoFactorAuthModal
-				.steps()
-				.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
-			await tipRainModal
-				.steps()
-				.verifyModalAndTipRainSuccessfully(
-					gamdomApi,
-					superAdminCookie,
-					tipRainAmount,
+				await gamdomDb.createNewUser({
+					username: superAdminData.username,
+					password: superAdminData.password,
+					email: superAdminData.email,
+					tags: UserTags.SuperAdmin,
+					userClass: UserClasses.Admin,
+					emailVerified: true,
+				});
+				const superAdminCookie = getCookieHeader(
+					await gamdomApi.authenticateWithExistingUser(
+						superAdminData.username,
+						superAdminData.password,
+					),
 				);
-			await chat.assertThat().isInfoMessageVisibleByText(
-				buildTipRainUserMessageInfo({
-					username: userData.username,
-					tipRainAmount: tipRainAmount,
-				}),
-			);
-
-			await chat.steps().verifyChatAndSendMessage(TIP_RAIN);
-			await twoFactorAuthModal.assertThat().modal2FaNotDisplayed();
-
-			await initializePageObjectsWithCookies(
-				await (await browser.newContext()).cookies(),
-				initialPage,
-				await createBrowserContextWithProxy(
-					browser,
-					PT_PROXY_CREDENTIALS,
-				),
-				...Object.values(pages),
-			);
-
-			await homePage.navigate();
-			await homePage.authenticatedHeader
-				.assertThat()
-				.loggedInUserElementsAreVisible();
-			await homePage.authenticatedHeader.expandChatIfNotVisible();
-			await chat.steps().verifyChatAndSendMessage(TIP_RAIN);
-			await twoFactorAuthModal
-				.steps()
-				.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
-			await tipRainModal
-				.steps()
-				.verifyModalAndTipRainSuccessfully(
-					gamdomApi,
-					superAdminCookie,
-					tipRainAmount,
+				const initialPage = await initializePageObjects(
+					await browser.newContext(),
+					...Object.values(pages),
 				);
-			await chat.assertThat().isInfoMessageVisibleByText(
-				buildTipRainUserMessageInfo({
-					username: userData.username,
-					tipRainAmount: tipRainAmount,
-				}),
-			);
-			await deleteFilesWithFilePaths([qrCode2FAImagePath]);
-		});
+
+				qrCode2FAImagePath = createPngImagePath();
+				await settingsPage
+					.steps()
+					.navigateAndEnable2FaAuthentication(qrCode2FAImagePath);
+
+				await homePage.navigate();
+				await homePage.authenticatedHeader.expandChatIfNotVisible();
+				await chat.steps().verifyChatAndSendMessage(TIP_RAIN);
+				await twoFactorAuthModal
+					.steps()
+					.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
+				await tipRainModal
+					.steps()
+					.verifyModalAndTipRainSuccessfully(
+						gamdomApi,
+						superAdminCookie,
+						tipRainAmount,
+					);
+				await chat.assertThat().isInfoMessageVisibleByText(
+					buildTipRainUserMessageInfo({
+						username: userData.username,
+						tipRainAmount: tipRainAmount,
+					}),
+				);
+
+				await chat.steps().verifyChatAndSendMessage(TIP_RAIN);
+				await twoFactorAuthModal.assertThat().modal2FaNotDisplayed();
+
+				await initializePageObjectsWithCookies(
+					await (await browser.newContext()).cookies(),
+					initialPage,
+					await createBrowserContextWithProxy(
+						browser,
+						PT_PROXY_CREDENTIALS,
+					),
+					...Object.values(pages),
+				);
+
+				await homePage.navigate();
+				await homePage.authenticatedHeader
+					.assertThat()
+					.loggedInUserElementsAreVisible();
+				await homePage.authenticatedHeader.expandChatIfNotVisible();
+				await chat.steps().verifyChatAndSendMessage(TIP_RAIN);
+				await twoFactorAuthModal
+					.steps()
+					.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
+				await tipRainModal
+					.steps()
+					.verifyModalAndTipRainSuccessfully(
+						gamdomApi,
+						superAdminCookie,
+						tipRainAmount,
+					);
+				await chat.assertThat().isInfoMessageVisibleByText(
+					buildTipRainUserMessageInfo({
+						username: userData.username,
+						tipRainAmount: tipRainAmount,
+					}),
+				);
+				await deleteFilesWithFilePaths([qrCode2FAImagePath]);
+			},
+		);
 	});
 });

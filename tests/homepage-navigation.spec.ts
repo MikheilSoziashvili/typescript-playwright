@@ -5,6 +5,7 @@ import { parse_csv } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { LaunchLocation } from "@enums/homepage-launch-locations";
 import { JiraComponent } from "@enums/jira/jira-components";
+import { JiraUser } from "@enums/jira/jira-users";
 import { TestTag } from "@enums/test-tags";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
@@ -25,28 +26,29 @@ test.describe("Homepage navigation", () => {
 	}[];
 
 	casinoSliders.forEach((casinoSlider) => {
-		test(`[ENG-3832] Homepage - verify '${casinoSlider.sliderButton}' button correct navigation to '${casinoSlider.sliderTitle}' page`, async ({
-			homePage,
-			casinoPage,
-		}) => {
-			await homePage.navigateAndCheckTitle();
-			await homePage
-				.assertThat()
-				.isCasinoGameSliderDisplayed(`${casinoSlider.sliderTitle}`);
-			await homePage.clickOnCasinoGamesSliderVisitButton(
-				`${casinoSlider.sliderButton}`,
-			);
-			await casinoPage
-				.assertThat()
-				.waitForAndVerifyCurrentUrlIs(
-					`${environment_url}${casinoSlider.urlEndpoint}`,
+		test(
+			`[ENG-3832] Homepage - verify '${casinoSlider.sliderButton}' button correct navigation to '${casinoSlider.sliderTitle}' page`,
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			async ({ homePage, casinoPage }) => {
+				await homePage.navigateAndCheckTitle();
+				await homePage
+					.assertThat()
+					.isCasinoGameSliderDisplayed(`${casinoSlider.sliderTitle}`);
+				await homePage.clickOnCasinoGamesSliderVisitButton(
+					`${casinoSlider.sliderButton}`,
 				);
-			await casinoPage
-				.assertThat()
-				.isCasinoGamesScrollbarTabSelected(
-					`${casinoSlider.casinoScrollbarTab}`,
-				);
-		});
+				await casinoPage
+					.assertThat()
+					.waitForAndVerifyCurrentUrlIs(
+						`${environment_url}${casinoSlider.urlEndpoint}`,
+					);
+				await casinoPage
+					.assertThat()
+					.isCasinoGamesScrollbarTabSelected(
+						`${casinoSlider.casinoScrollbarTab}`,
+					);
+			},
+		);
 	});
 });
 
@@ -59,23 +61,25 @@ test.describe(
 		});
 
 		originalsLaunchScenarios.forEach((scenario) => {
-			test(`[ENG-5798] should launch ${scenario.game} from ${scenario.location}`, async ({
-				homePage,
-			}) => {
-				await homePage.navigate();
+			test(
+				`[ENG-5798] should launch ${scenario.game} from ${scenario.location}`,
+				testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+				async ({ homePage }) => {
+					await homePage.navigate();
 
-				const expectedUrl = GameToEndpointMap[scenario.game];
-				await homePage
-					.steps()
-					.clickOnOriginalsGameLaunchTile(
-						scenario.game,
-						scenario.location as LaunchLocation,
-					);
+					const expectedUrl = GameToEndpointMap[scenario.game];
+					await homePage
+						.steps()
+						.clickOnOriginalsGameLaunchTile(
+							scenario.game,
+							scenario.location as LaunchLocation,
+						);
 
-				await homePage
-					.assertThat()
-					.originalsGameIsLaunched(scenario.game, expectedUrl);
-			});
+					await homePage
+						.assertThat()
+						.originalsGameIsLaunched(scenario.game, expectedUrl);
+				},
+			);
 		});
 	},
 );
@@ -88,7 +92,10 @@ test.describe("Top line header links tests", () => {
 	topLineHeaderLinks.forEach(({ link, expectedUrl }) => {
 		test(
 			`[ENG-5256] Verify top line header link: ${link} for a logged out user`,
-			testDetails().withTags(JiraComponent.HOMEPAGE).apply(),
+			testDetails()
+				.withTags(JiraComponent.HOMEPAGE)
+				.withAuthor(JiraUser.RALUCA_ARITON)
+				.apply(),
 			async ({ homePage }) => {
 				await homePage.navigate();
 				await homePage

@@ -8,6 +8,8 @@ import {
 } from "@core/utils/utils";
 import { test } from "@fixtures/fixtures";
 import { storageStateNewSuperAdminUserDB } from "../fixtures/auth-fixtures";
+import { testDetails } from "@core/helpers/test-details-helper";
+import { JiraUser } from "@enums/jira/jira-users";
 
 test.describe("Promo Code tests", () => {
 	let qrCode2FAImagePath: string;
@@ -24,45 +26,52 @@ test.describe("Promo Code tests", () => {
 
 	test.use(storageStateNewSuperAdminUserDB());
 
-	test("[ENG-3966] Promo Code - Require new 2FA code when IP of user changes", async ({
-		promoCampaignsAdminPage,
-		twoFactorAuthModal,
-		promoCodeModal,
-		browser,
-	}) => {
-		const pages = {
+	test(
+		"[ENG-3966] Promo Code - Require new 2FA code when IP of user changes",
+		testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+		async ({
 			promoCampaignsAdminPage,
 			twoFactorAuthModal,
 			promoCodeModal,
-		};
-		const initialPage = await initializePageObjects(
-			await browser.newContext(),
-			...Object.values(pages),
-		);
+			browser,
+		}) => {
+			const pages = {
+				promoCampaignsAdminPage,
+				twoFactorAuthModal,
+				promoCodeModal,
+			};
+			const initialPage = await initializePageObjects(
+				await browser.newContext(),
+				...Object.values(pages),
+			);
 
-		await promoCampaignsAdminPage.navigate();
-		await promoCampaignsAdminPage.clickCreateCampaignButton();
-		await promoCodeModal.assertThat().isNotDisplayed();
-		await twoFactorAuthModal
-			.steps()
-			.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
-		await promoCampaignsAdminPage.clickCreateCampaignButton();
-		await promoCodeModal.assertThat().isDisplayed();
+			await promoCampaignsAdminPage.navigate();
+			await promoCampaignsAdminPage.clickCreateCampaignButton();
+			await promoCodeModal.assertThat().isNotDisplayed();
+			await twoFactorAuthModal
+				.steps()
+				.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
+			await promoCampaignsAdminPage.clickCreateCampaignButton();
+			await promoCodeModal.assertThat().isDisplayed();
 
-		await initializePageObjectsWithCookies(
-			await (await browser.newContext()).cookies(),
-			initialPage,
-			await createBrowserContextWithProxy(browser, PT_PROXY_CREDENTIALS),
-			...Object.values(pages),
-		);
+			await initializePageObjectsWithCookies(
+				await (await browser.newContext()).cookies(),
+				initialPage,
+				await createBrowserContextWithProxy(
+					browser,
+					PT_PROXY_CREDENTIALS,
+				),
+				...Object.values(pages),
+			);
 
-		await promoCampaignsAdminPage.navigate();
-		await promoCampaignsAdminPage.clickCreateCampaignButton();
-		await promoCodeModal.assertThat().isNotDisplayed();
-		await twoFactorAuthModal
-			.steps()
-			.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
-		await promoCampaignsAdminPage.clickCreateCampaignButton();
-		await promoCodeModal.assertThat().isDisplayed();
-	});
+			await promoCampaignsAdminPage.navigate();
+			await promoCampaignsAdminPage.clickCreateCampaignButton();
+			await promoCodeModal.assertThat().isNotDisplayed();
+			await twoFactorAuthModal
+				.steps()
+				.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
+			await promoCampaignsAdminPage.clickCreateCampaignButton();
+			await promoCodeModal.assertThat().isDisplayed();
+		},
+	);
 });

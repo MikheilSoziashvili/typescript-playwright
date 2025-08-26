@@ -13,6 +13,7 @@ import { CsvFilesName } from "@enums/csv-file-name";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
 import { JiraComponent } from "@enums/jira/jira-components";
+import { JiraUser } from "@enums/jira/jira-users";
 import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { PromotionCategories } from "@enums/promotion-categories";
 import { PromotionIsVipCategories } from "@enums/promotion-is-vip-categories";
@@ -278,71 +279,77 @@ test.describe(
 		test.describe("Promotion expiration tests", () => {
 			promotionTypes.forEach((promotionType) => {
 				Object.values(testScenarios).forEach((scenario) => {
-					test(`[${scenario.testId}] Promotions - '${promotionType.name}' ${scenario.description}`, async ({
-						gamdomDb,
-						promotionsPage,
-						promotionAdminPage,
-					}) => {
-						promotionName = generateRandomString({
-							prefix: "promotion_",
-							length: 5,
-						});
-
-						await scenario.createPromotion(
-							promotionType.insertMethod,
+					test(
+						`[${scenario.testId}] Promotions - '${promotionType.name}' ${scenario.description}`,
+						testDetails()
+							.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+							.apply(),
+						async ({
 							gamdomDb,
-							promotionName,
-							userId,
-						);
-
-						await promotionAdminPage.navigate();
-						await promotionAdminPage
-							.assertThat()
-							.promotionIsDisplayedInPromotionsTable(
-								promotionName,
-							);
-						await promotionAdminPage
-							.assertThat()
-							.promotionStatusMatches(
-								promotionName,
-								scenario.initialStatus,
-							);
-
-						await promotionsPage.navigate();
-						await promotionsPage
-							.assertThat()
-							.promotionsPageIsLoaded();
-
-						await scenario.initialVisibilityAssertion(
 							promotionsPage,
-							promotionName,
-						);
+							promotionAdminPage,
+						}) => {
+							promotionName = generateRandomString({
+								prefix: "promotion_",
+								length: 5,
+							});
 
-						await scenario.action(gamdomDb, promotionName);
-
-						await promotionAdminPage.navigate();
-						await promotionAdminPage
-							.assertThat()
-							.promotionIsDisplayedInPromotionsTable(
+							await scenario.createPromotion(
+								promotionType.insertMethod,
+								gamdomDb,
 								promotionName,
-							);
-						await promotionAdminPage
-							.assertThat()
-							.promotionStatusMatches(
-								promotionName,
-								scenario.finalStatus,
+								userId,
 							);
 
-						await promotionsPage.navigate();
-						await promotionsPage
-							.assertThat()
-							.promotionsPageIsLoaded();
+							await promotionAdminPage.navigate();
+							await promotionAdminPage
+								.assertThat()
+								.promotionIsDisplayedInPromotionsTable(
+									promotionName,
+								);
+							await promotionAdminPage
+								.assertThat()
+								.promotionStatusMatches(
+									promotionName,
+									scenario.initialStatus,
+								);
 
-						await scenario.finalVisibilityAssertion(
-							promotionsPage,
-							promotionName,
-						);
-					});
+							await promotionsPage.navigate();
+							await promotionsPage
+								.assertThat()
+								.promotionsPageIsLoaded();
+
+							await scenario.initialVisibilityAssertion(
+								promotionsPage,
+								promotionName,
+							);
+
+							await scenario.action(gamdomDb, promotionName);
+
+							await promotionAdminPage.navigate();
+							await promotionAdminPage
+								.assertThat()
+								.promotionIsDisplayedInPromotionsTable(
+									promotionName,
+								);
+							await promotionAdminPage
+								.assertThat()
+								.promotionStatusMatches(
+									promotionName,
+									scenario.finalStatus,
+								);
+
+							await promotionsPage.navigate();
+							await promotionsPage
+								.assertThat()
+								.promotionsPageIsLoaded();
+
+							await scenario.finalVisibilityAssertion(
+								promotionsPage,
+								promotionName,
+							);
+						},
+					);
 				});
 			});
 		});
@@ -351,7 +358,10 @@ test.describe(
 			promotionCombinations.forEach((combination) => {
 				test(
 					`[ENG-5576] Promotions - Create a new promotion - Promotion Category: ${combination.category} - Promotion Subcategory: ${combination.subCategory} - Is For VIP: ${combination.isForVip}`,
-					testDetails().withTags(TestTag.LOCAL).apply(),
+					testDetails()
+						.withTags(TestTag.LOCAL)
+						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+						.apply(),
 					async ({ promotionAdminPage, promotionsModal, toast }) => {
 						test.fixme(
 							isCI,
@@ -393,49 +403,60 @@ test.describe(
 			});
 
 			promotionTypes.forEach((promotionType) => {
-				test(`[ENG-5735] Promotions - Delete '${promotionType.name}' active promotion`, async ({
-					promotionAdminPage,
-					promotionsModal,
-					toast,
-					gamdomDb,
-				}) => {
-					promotionName = generateRandomString({
-						prefix: `${promotionType.name.toLowerCase()}_promotion_`,
-						length: 5,
-					});
-
-					await promotionType.insertMethod(
+				test(
+					`[ENG-5735] Promotions - Delete '${promotionType.name}' active promotion`,
+					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+					async ({
+						promotionAdminPage,
+						promotionsModal,
+						toast,
 						gamdomDb,
-						promotionName,
-						userId,
-					);
+					}) => {
+						promotionName = generateRandomString({
+							prefix: `${promotionType.name.toLowerCase()}_promotion_`,
+							length: 5,
+						});
 
-					await promotionAdminPage.navigate();
-					await promotionAdminPage
-						.assertThat()
-						.promotionIsDisplayedInPromotionsTable(promotionName);
-					await promotionAdminPage.clickDeletePromotionButton(
-						promotionName,
-					);
+						await promotionType.insertMethod(
+							gamdomDb,
+							promotionName,
+							userId,
+						);
 
-					await promotionsModal.steps().deletePromotionSuccessfully();
-					await toast.assertThat().titleIs(ToastTitle.SUCCESS);
-					await toast
-						.assertThat()
-						.subTitleIs(ToastSubTitle.PROMOTION_DELETED);
-					await promotionAdminPage
-						.assertThat()
-						.promotionIsNotDisplayedInPromotionsTable(
+						await promotionAdminPage.navigate();
+						await promotionAdminPage
+							.assertThat()
+							.promotionIsDisplayedInPromotionsTable(
+								promotionName,
+							);
+						await promotionAdminPage.clickDeletePromotionButton(
 							promotionName,
 						);
-				});
+
+						await promotionsModal
+							.steps()
+							.deletePromotionSuccessfully();
+						await toast.assertThat().titleIs(ToastTitle.SUCCESS);
+						await toast
+							.assertThat()
+							.subTitleIs(ToastSubTitle.PROMOTION_DELETED);
+						await promotionAdminPage
+							.assertThat()
+							.promotionIsNotDisplayedInPromotionsTable(
+								promotionName,
+							);
+					},
+				);
 			});
 
 			promotionTypes.forEach((promotionType) => {
 				promotionCombinations.forEach((combination) => {
 					test(
 						`[ENG-5736] Promotions - Update '${promotionType.name}' active promotion. Promotion Category: ${combination.category} - Promotion Subcategory: ${combination.subCategory} - Is For VIP: ${combination.isForVip}`,
-						testDetails().withTags(TestTag.LOCAL).apply(),
+						testDetails()
+							.withTags(TestTag.LOCAL)
+							.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+							.apply(),
 						async ({
 							promotionAdminPage,
 							promotionsModal,
@@ -513,53 +534,65 @@ test.describe(
 
 			test.describe("Promotion verifications tests", () => {
 				promotionButtonTextInputValidations.forEach((validation) => {
-					test(`[ENG-6121] Promotions - Promotion modal - Verify 'Play Now' button input text field validation - ${validation.buttonText}`, async ({
-						promotionAdminPage,
-						promotionsModal,
-					}) => {
-						await promotionAdminPage.navigate();
-						await promotionAdminPage.clickCreateNewPromotionButton();
-						await promotionsModal.assertThat().modalIsDisplayed();
-						await promotionsModal
-							.steps()
-							.fillPromotionButtonTextInputAndVerifyErrorMessagePresence(
-								validation.buttonText,
-								parseToBoolean(validation.errorMessagePresence),
-							);
-					});
+					test(
+						`[ENG-6121] Promotions - Promotion modal - Verify 'Play Now' button input text field validation - ${validation.buttonText}`,
+						testDetails()
+							.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+							.apply(),
+						async ({ promotionAdminPage, promotionsModal }) => {
+							await promotionAdminPage.navigate();
+							await promotionAdminPage.clickCreateNewPromotionButton();
+							await promotionsModal
+								.assertThat()
+								.modalIsDisplayed();
+							await promotionsModal
+								.steps()
+								.fillPromotionButtonTextInputAndVerifyErrorMessagePresence(
+									validation.buttonText,
+									parseToBoolean(
+										validation.errorMessagePresence,
+									),
+								);
+						},
+					);
 				});
 
 				promotionTypes.forEach((promotionType) => {
-					test(`[ENG-6121] Promotions - Promotion button text verification - ${promotionType.name}`, async ({
-						gamdomDb,
-						promotionPage,
-					}) => {
-						promotionName = generateRandomString({
-							prefix: `${promotionType.name.toLowerCase()}_promotion_`,
-							length: 5,
-						});
-						const customButtonText = `${promotionType.name} Button`;
-						const customUrl = generateCustomUrl(promotionName);
+					test(
+						`[ENG-6121] Promotions - Promotion button text verification - ${promotionType.name}`,
+						testDetails()
+							.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+							.apply(),
+						async ({ gamdomDb, promotionPage }) => {
+							promotionName = generateRandomString({
+								prefix: `${promotionType.name.toLowerCase()}_promotion_`,
+								length: 5,
+							});
+							const customButtonText = `${promotionType.name} Button`;
+							const customUrl = generateCustomUrl(promotionName);
 
-						await promotionType.insertMethod(
-							gamdomDb,
-							promotionName,
-							userId,
-							getISODate({ daysOffset: -1 }),
-							customButtonText,
-							customUrl,
-						);
-
-						await promotionPage.navigateToPromotion(customUrl);
-						await promotionPage
-							.assertThat()
-							.promotionRewardsButtonHasText(customButtonText);
-						await promotionPage
-							.assertThat()
-							.promotionHowToParticipateButtonHasText(
+							await promotionType.insertMethod(
+								gamdomDb,
+								promotionName,
+								userId,
+								getISODate({ daysOffset: -1 }),
 								customButtonText,
+								customUrl,
 							);
-					});
+
+							await promotionPage.navigateToPromotion(customUrl);
+							await promotionPage
+								.assertThat()
+								.promotionRewardsButtonHasText(
+									customButtonText,
+								);
+							await promotionPage
+								.assertThat()
+								.promotionHowToParticipateButtonHasText(
+									customButtonText,
+								);
+						},
+					);
 				});
 			});
 		});

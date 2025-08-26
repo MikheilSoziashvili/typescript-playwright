@@ -1,5 +1,6 @@
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraComponent } from "@enums/jira/jira-components";
+import { JiraUser } from "@enums/jira/jira-users";
 import { TestTag } from "@enums/test-tags";
 import { Timeout } from "@enums/timeout";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
@@ -27,63 +28,70 @@ test.describe(
 			await plinkoGamePage.steps().enterNumberOfBets(numberOfAutoBets);
 		});
 
-		test(`[ENG-5051] Plinko - Autobet - Players choice`, async ({
-			plinkoGamePage,
-		}) => {
-			await plinkoGamePage
-				.assertThat()
-				.numberOfBetsInputAndRemainingBetsLabelAreEqual();
-			await plinkoGamePage.steps().startAutobetSuccessfully();
-			await plinkoGamePage
-				.steps()
-				.verifyRemainingBetsDecreasing(numberOfAutoBets);
-			await plinkoGamePage
-				.assertThat()
-				.autobetFinishInGameToastIsDisplayed();
-			await plinkoGamePage.assertThat().starAutobetButtonIsDisplayed();
-			await plinkoGamePage
-				.assertThat()
-				.numberOfBetsInputAndRemainingBetsLabelAreEqual();
-		});
+		test(
+			`[ENG-5051] Plinko - Autobet - Players choice`,
+			testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+			async ({ plinkoGamePage }) => {
+				await plinkoGamePage
+					.assertThat()
+					.numberOfBetsInputAndRemainingBetsLabelAreEqual();
+				await plinkoGamePage.steps().startAutobetSuccessfully();
+				await plinkoGamePage
+					.steps()
+					.verifyRemainingBetsDecreasing(numberOfAutoBets);
+				await plinkoGamePage
+					.assertThat()
+					.autobetFinishInGameToastIsDisplayed();
+				await plinkoGamePage
+					.assertThat()
+					.starAutobetButtonIsDisplayed();
+				await plinkoGamePage
+					.assertThat()
+					.numberOfBetsInputAndRemainingBetsLabelAreEqual();
+			},
+		);
 
-		test(`[ENG-5048] Plinko - Autobet - Start-Stop`, async ({
-			plinkoGamePage,
-		}) => {
-			await plinkoGamePage.steps().startAutobetSuccessfully();
-			await plinkoGamePage
-				.assertThat()
-				.verifyRowsAndRiskSlidersInactive();
-			await plinkoGamePage.steps().stopAutobetSuccessfully();
-			const initialAccountBalance =
-				await plinkoGamePage.authenticatedHeader.getAccountBalance();
-			await plinkoGamePage
-				.assertThat()
-				.autobetFinishInGameToastIsDisplayed();
-			await plinkoGamePage
-				.assertThat()
-				.verifyRowsAndRiskSlidersActive(Timeout.LONG);
-			await plinkoGamePage.authenticatedHeader
-				.assertThat()
-				.accountBalanceHasChanged(initialAccountBalance);
-		});
+		test(
+			`[ENG-5048] Plinko - Autobet - Start-Stop`,
+			testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+			async ({ plinkoGamePage }) => {
+				await plinkoGamePage.steps().startAutobetSuccessfully();
+				await plinkoGamePage
+					.assertThat()
+					.verifyRowsAndRiskSlidersInactive();
+				await plinkoGamePage.steps().stopAutobetSuccessfully();
+				const initialAccountBalance =
+					await plinkoGamePage.authenticatedHeader.getAccountBalance();
+				await plinkoGamePage
+					.assertThat()
+					.autobetFinishInGameToastIsDisplayed();
+				await plinkoGamePage
+					.assertThat()
+					.verifyRowsAndRiskSlidersActive(Timeout.LONG);
+				await plinkoGamePage.authenticatedHeader
+					.assertThat()
+					.accountBalanceHasChanged(initialAccountBalance);
+			},
+		);
 
-		test(`[ENG-5789] Plinko - Autobet - Verify balance update`, async ({
-			plinkoGamePage,
-			userBalanceHandler,
-		}) => {
-			const initialAccountBalance =
-				await userBalanceHandler.walletBalanceInFiatRounded();
-			const initialYourBetBalance =
-				await plinkoGamePage.getYourBetValue();
+		test(
+			`[ENG-5789] Plinko - Autobet - Verify balance update`,
+			testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+			async ({ plinkoGamePage, userBalanceHandler }) => {
+				const initialAccountBalance =
+					await userBalanceHandler.walletBalanceInFiatRounded();
+				const initialYourBetBalance =
+					await plinkoGamePage.getYourBetValue();
 
-			await plinkoGamePage.steps().startAutobetSuccessfully();
+				await plinkoGamePage.steps().startAutobetSuccessfully();
 
-			await plinkoGamePage
-				.assertThat()
-				.balanceAndYourBetUpdatedSimultaneosly(
-					initialAccountBalance,
-					initialYourBetBalance,
-				);
-		});
+				await plinkoGamePage
+					.assertThat()
+					.balanceAndYourBetUpdatedSimultaneosly(
+						initialAccountBalance,
+						initialYourBetBalance,
+					);
+			},
+		);
 	},
 );

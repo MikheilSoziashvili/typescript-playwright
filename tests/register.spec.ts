@@ -3,6 +3,7 @@ import { RegisterTestData } from "@dtos/test-data";
 import { ToastTitle } from "@enums/toast-titles";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { TestTag } from "@enums/test-tags";
+import { JiraUser } from "@enums/jira/jira-users";
 
 test.describe("Register tests", () => {
 	test.use({ storageState: { cookies: [], origins: [] } });
@@ -12,6 +13,7 @@ test.describe("Register tests", () => {
 		testDetails()
 			.withTags(TestTag.SMOKE)
 			.withJiraBugTickets("7309")
+			.withAuthor(JiraUser.RALUCA_ARITON)
 			.apply(),
 		async ({ homePage }) => {
 			await homePage.navigateAndCheckTitle();
