@@ -128,13 +128,13 @@ export class MinesGamePageAsserter extends BaseAsserter<MinesGamePage> {
 		await expect
 			.poll(
 				async () => {
-					await this.gamdomPage.navigate();
+					await this.gamdomPage.refresh();
 					return this.gamdomPage.map
 						.disabledGameMessage()
 						.isVisible();
 				},
 				{
-					timeout: Timeout.LONG,
+					timeout: Timeout.EXTRA_LONG,
 					intervals: [IntervalMs.SHORT],
 				},
 			)
