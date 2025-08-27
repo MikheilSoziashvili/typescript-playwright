@@ -52,6 +52,39 @@ export class CrashGamePageSteps extends BasePageStep<CrashGamePage> {
 		await this.gamdomPage.assertThat().startAutobetButtonIsEnabled();
 	}
 
+	@step("Start autobet")
+	public async startAutobet(betAmount: number): Promise<void> {
+		await this.enableAutobetAndFillAmount(betAmount);
+		await this.gamdomPage.map.placeBetBtn.click();
+		await this.gamdomPage.assertThat().checkElementsContainText([
+			{
+				locator: this.gamdomPage.map.placeBetBtn,
+				expectedText: "Stop Autobet",
+			},
+		]);
+		await this.gamdomPage
+			.assertThat()
+			.checkElementsAreDisabled([
+				this.gamdomPage.map.stopBetIfMoreThanField,
+			]);
+	}
+
+	@step("Stop autobet")
+	public async stopAutobet(): Promise<void> {
+		await this.gamdomPage.map.placeBetBtn.click();
+		await this.gamdomPage.assertThat().checkElementsContainText([
+			{
+				locator: this.gamdomPage.map.placeBetBtn,
+				expectedText: "Start Autobet",
+			},
+		]);
+		await this.gamdomPage
+			.assertThat()
+			.checkElementsAreEnabled([
+				this.gamdomPage.map.stopBetIfMoreThanField,
+			]);
+	}
+
 	@step("Execute actions")
 	private async executeActions(
 		actions: (() => Promise<void>)[],

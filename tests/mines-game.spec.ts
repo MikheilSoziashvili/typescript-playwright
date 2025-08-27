@@ -38,7 +38,7 @@ test.describe("Mines tests", () => {
 	test(
 		`[ENG-6486] Mines - place a bet and try to win - Pick random tiles`,
 		testDetails()
-			.withTags(TestTag.ORIGINALS, JiraComponent.MINES)
+			.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.MINES)
 			.withAuthor(JiraUser.RALUCA_ARITON)
 			.apply(),
 		async ({ minesGamePage, userBalanceHandler }, testInfo) => {
@@ -75,7 +75,11 @@ test.describe("Mines tests", () => {
 	test(
 		`[ENG-6927] Mines - Play until catch a bomb`,
 		testDetails()
-			.withTags(TestTag.SMOKE, TestTag.ORIGINALS, JiraComponent.MINES)
+			.withTags(
+				TestTag.SMOKE,
+				JiraComponent.GAMDOM_ORIGINALS,
+				JiraComponent.MINES,
+			)
 			.withAuthor(JiraUser.RALUCA_ARITON)
 			.apply(),
 		async ({ minesGamePage, userBalanceHandler }) => {
@@ -106,7 +110,7 @@ test.describe("Mines tests", () => {
 	test(
 		`[ENG-5729] Mines - Verify Game History`,
 		testDetails()
-			.withTags(TestTag.ORIGINALS, JiraComponent.MINES)
+			.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.MINES)
 			.withAuthor(JiraUser.RALUCA_ARITON)
 			.apply(),
 		async ({ minesGamePage }) => {
@@ -139,7 +143,7 @@ test.describe("Mines tests", () => {
 	test(
 		`[ENG-6143] Mines - Autobet Increase By`,
 		testDetails()
-			.withTags(TestTag.ORIGINALS, JiraComponent.MINES)
+			.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.MINES)
 			.withAuthor(JiraUser.NIKOLAY_GENOV)
 			.apply(),
 		async ({ minesGamePage }) => {
@@ -180,6 +184,48 @@ test.describe("Mines tests", () => {
 				);
 		},
 	);
+
+	test(
+		`[ENG-5847] Mines - Stop Autobet actuates immediately`,
+		testDetails()
+			.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.MINES)
+			.withAuthor(JiraUser.NIKOLAY_GENOV)
+			.apply(),
+		async ({ minesGamePage, userBalanceHandler }) => {
+			const minesBetDataForAutobet = new MinesBetTestData({
+				betAmount: 10,
+				minesNumber: 0,
+				cashoutMultiplier: calculateMinesMultiplier({
+					stepNumber: 1,
+					mines: 1,
+					houseEdge: 0.01,
+				}),
+			});
+
+			const minesAutobetData = new MinesAutobetTestData({
+				numberOfAutobetRounds: 0,
+			});
+
+			await minesGamePage.navigateAndWaitForGameToLoad();
+
+			await minesGamePage
+				.steps()
+				.openAndConfigureAutobet(
+					minesBetDataForAutobet,
+					minesAutobetData.numberOfAutobetRounds,
+				);
+
+			const initialAccountBalance =
+				await userBalanceHandler.walletBalanceInFiatRounded();
+
+			await minesGamePage.steps().startAutobet();
+			await minesGamePage.steps().stopAutobet();
+
+			await minesGamePage.authenticatedHeader
+				.assertThat()
+				.accountBalanceHasChanged(initialAccountBalance);
+		},
+	);
 });
 
 test.describe.serial(
@@ -208,7 +254,7 @@ test.describe.serial(
 		test(
 			"[ENG-5532] Mines game can be launched when Plinko is unavailable",
 			testDetails()
-				.withTags(TestTag.ORIGINALS, JiraComponent.MINES)
+				.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.MINES)
 				.withAuthor(JiraUser.RALUCA_ARITON)
 				.apply(),
 			async ({ minesGamePage, plinkoGamePage }) => {

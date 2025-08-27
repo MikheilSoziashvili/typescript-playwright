@@ -127,12 +127,12 @@ export class MinesAutobetTestData {
 
 	constructor(options: {
 		numberOfAutobetRounds: number;
-		onWinIncreaseByPercent: number;
-		onLossIncreaseByPercent: number;
+		onWinIncreaseByPercent?: number;
+		onLossIncreaseByPercent?: number;
 	}) {
 		this.numberOfAutobetRounds = options.numberOfAutobetRounds;
-		this.onWinIncreaseByPercent = options.onWinIncreaseByPercent;
-		this.onLossIncreaseByPercent = options.onLossIncreaseByPercent;
+		this.onWinIncreaseByPercent = options.onWinIncreaseByPercent ?? 0;
+		this.onLossIncreaseByPercent = options.onLossIncreaseByPercent ?? 0;
 	}
 }
 

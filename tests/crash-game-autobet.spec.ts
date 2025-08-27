@@ -9,7 +9,7 @@ import {
 } from "@enums/crash-autobet-section";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { testDetails } from "@core/helpers/test-details-helper";
-import { TestTag } from "@enums/test-tags";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 
 const crashIncreaseBy = parse_csv(
@@ -25,7 +25,9 @@ const crashIncreaseBy = parse_csv(
 
 test.describe(
 	"Crash autobet tests",
-	testDetails().withTags(TestTag.ORIGINALS).apply(),
+	testDetails()
+		.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.CRASH)
+		.apply(),
 	() => {
 		test.use(storageStateNewUserDB());
 		test.slow();
@@ -104,6 +106,27 @@ test.describe(
 				await crashGamePage
 					.steps()
 					.enableAutobetAndFillAmount(betTestData.betAmount);
+			},
+		);
+
+		test(
+			"[ENG-5847] Crash - Stop Autobet actuates immediately",
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			async ({ crashGamePage }, testInfo) => {
+				const newUserDetails = getUserDetailsByTestTitle(
+					testInfo.title,
+					testInfo.workerIndex,
+				);
+				const betTestData: BetTestData = new BetTestData(
+					newUserDetails.username,
+					10,
+					Number("1.5"),
+				);
+
+				await crashGamePage.navigate();
+
+				await crashGamePage.steps().startAutobet(betTestData.betAmount);
+				await crashGamePage.steps().stopAutobet();
 			},
 		);
 

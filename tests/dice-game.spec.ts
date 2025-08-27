@@ -5,13 +5,14 @@ import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { TestTag } from "@enums/test-tags";
 import { JiraUser } from "@enums/jira/jira-users";
+import { JiraComponent } from "@enums/jira/jira-components";
 
 test.describe("Dice tests", () => {
 	test.use(storageStateNewUserDB());
 	test(
 		"[ENG-299] Place a single bet on Dice and try to win",
 		testDetails()
-			.withTags(TestTag.SMOKE, TestTag.ORIGINALS)
+			.withTags(TestTag.SMOKE, JiraComponent.GAMDOM_ORIGINALS)
 			.withAuthor(JiraUser.NIKOLAY_GENOV)
 			.apply(),
 		async ({ diceGamePage }) => {

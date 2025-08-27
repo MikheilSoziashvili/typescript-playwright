@@ -25,4 +25,20 @@ export class KenoGamePageMap extends BaseMap {
 	public get doubleButton(): Locator {
 		return this.page.getByTestId("originals-bet-double");
 	}
+
+	public get autobetSection(): Locator {
+		return this.page.getByTestId("originals-mode-autobet");
+	}
+
+	public get pickRandomTilesButton(): Locator {
+		return this.page.getByTestId("originals-keno-random");
+	}
+
+	public get startPlayingButton(): Locator {
+		return this.page.getByTestId("originals-bet-submit");
+	}
+
+	public get stopPlayingButton(): Locator {
+		return this.page.getByTestId("originals-bet-stop");
+	}
 }

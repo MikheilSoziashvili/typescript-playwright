@@ -235,4 +235,18 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 
 		expect(actualValue).toBe(expectedValue);
 	}
+
+	@step("Start autobet button is visible")
+	public async startAutobetButtonIsVisible(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.startAutobetButton,
+		]);
+	}
+
+	@step("Stop autobet button is visible")
+	public async stopAutobetButtonIsVisible(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.stopAutobetButton,
+		]);
+	}
 }

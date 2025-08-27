@@ -7,13 +7,14 @@ import { getUserDetailsByTestTitle } from "@core/utils/utils";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { TestTag } from "@enums/test-tags";
 import { JiraUser } from "@enums/jira/jira-users";
+import { JiraComponent } from "@enums/jira/jira-components";
 
 test.describe("Roulette tests", () => {
 	test.use(storageStateNewUserDB());
 	test(
 		"[ENG-264] Place a single bet on Roulette and try to win",
 		testDetails()
-			.withTags(TestTag.SMOKE, TestTag.ORIGINALS)
+			.withTags(TestTag.SMOKE, JiraComponent.GAMDOM_ORIGINALS)
 			.withAuthor(JiraUser.NIKOLAY_GENOV)
 			.apply(),
 		async ({ rouletteGamePage }, testInfo) => {
@@ -96,6 +97,33 @@ test.describe("Roulette tests", () => {
 			await rouletteGamePage
 				.assertThat()
 				.previousRollsHistoryUpdated(rouletteResultNumber);
+		},
+	);
+
+	test(
+		"[ENG-5847] Roulette - Stop Autobet actuates immediately",
+		testDetails()
+			.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.ROULETTE)
+			.apply(),
+		async ({ rouletteGamePage }, testInfo) => {
+			const newUserDetails = getUserDetailsByTestTitle(
+				testInfo.title,
+				testInfo.workerIndex,
+			);
+			const betTestData: BetTestData = new BetTestData(
+				newUserDetails.username,
+				100,
+				1,
+			);
+			const stopIfBalanceIsOver = 1000000;
+
+			await rouletteGamePage.navigate();
+			await rouletteGamePage.waitBettingWindowAvailable();
+			await rouletteGamePage.insertBet(betTestData.betAmount);
+
+			await rouletteGamePage.expandAutobetSection();
+			await rouletteGamePage.steps().startAutobet(stopIfBalanceIsOver);
+			await rouletteGamePage.steps().stopAutobet();
 		},
 	);
 });

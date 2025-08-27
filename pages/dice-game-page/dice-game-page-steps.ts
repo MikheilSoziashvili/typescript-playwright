@@ -198,6 +198,42 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 			.accountBalanceHasChanged(accountBalanceBeforeBet);
 	}
 
+	@step("Start and stop autobet manually")
+	public async startAndStopAutobetManually(
+		diceBetData: DiceAutobetTestData,
+	): Promise<void> {
+		await this.gamdomPage.switchToAutobetSection();
+		await this.gamdomPage.fillInAutobetBetData(diceBetData);
+		await this.gamdomPage.startAutobet();
+		await expect(
+			this.gamdomPage.isAutoBetInputFieldDisabled(),
+		).resolves.toBe(true);
+		const initialBetsCount =
+			await this.gamdomPage.map.diceAllLastResultsNumber.count();
+
+		await this.gamdomPage.assertThat().stopAutobetButtonIsVisible();
+
+		await waitUntil(
+			async () => {
+				const currentBetsCount =
+					await this.gamdomPage.map.diceAllLastResultsNumber.count();
+				const newBetsCount = currentBetsCount - initialBetsCount;
+				return newBetsCount >= 5;
+			},
+			{
+				errorMessage:
+					"Autobet did not complete 5 bets within the timeout.",
+				intervalSeconds: TimeoutSeconds.HALF,
+				timeoutSeconds: TimeoutSeconds.TEN,
+			},
+		);
+		await this.gamdomPage.stopAutobet();
+		await expect(
+			this.gamdomPage.isAutoBetInputFieldDisabled(),
+		).resolves.toBe(false);
+		await this.gamdomPage.assertThat().startAutobetButtonIsVisible();
+	}
+
 	@step("Autobet with increase by condition")
 	public async autobetIncreaseBy(
 		gameResultMessage: DiceGameResultMessage,

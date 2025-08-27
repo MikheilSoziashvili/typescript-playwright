@@ -229,4 +229,20 @@ export class RouletteGamePageMap extends BaseMap {
 				hasText: "Stop",
 			});
 	}
+
+	public get stopIfBalanceIsOver(): Locator {
+		return this.page.getByLabel("Stop if balance is over");
+	}
+
+	public get startAutobetButton(): Locator {
+		return this.page.getByRole("button").filter({
+			hasText: "Start Autobet",
+		});
+	}
+
+	public get stopAutobetButton(): Locator {
+		return this.page.getByRole("button").filter({
+			hasText: "Stop",
+		});
+	}
 }

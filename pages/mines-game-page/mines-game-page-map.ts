@@ -129,4 +129,8 @@ export class MinesGamePageMap extends BaseMap {
 			.getByTestId("page-container-animate")
 			.filter({ hasText: "This game is currently disabled." });
 	}
+
+	public get stopAutobetButton(): Locator {
+		return this.page.getByTestId("mines-stop-autobet");
+	}
 }

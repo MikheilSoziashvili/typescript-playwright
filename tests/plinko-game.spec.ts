@@ -37,7 +37,7 @@ test.describe(
 	"Plinko tests",
 	testDetails()
 		.withTags(
-			TestTag.ORIGINALS,
+			JiraComponent.SOK_GAMES,
 			JiraComponent.PLINKO,
 			JiraComponent.SOK_GAMES,
 		)

@@ -134,4 +134,9 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 	public async isManualBetInputFieldDisabled(): Promise<boolean> {
 		return this.map.manualBetField.isDisabled();
 	}
+
+	@step("Check if auto bet input field is disabled")
+	public async isAutoBetInputFieldDisabled(): Promise<boolean> {
+		return this.map.autobetYourBetInput.isDisabled();
+	}
 }

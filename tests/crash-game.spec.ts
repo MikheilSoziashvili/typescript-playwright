@@ -11,6 +11,7 @@ import { WalletType } from "@enums/wallet-types";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { TestTag } from "@enums/test-tags";
 import { JiraUser } from "@enums/jira/jira-users";
+import { JiraComponent } from "@enums/jira/jira-components";
 
 const crashAutoCashout = parse_csv(
 	DATASETS_DIR,
@@ -23,7 +24,9 @@ const crashAutoCashout = parse_csv(
 
 test.describe(
 	"Crash tests",
-	testDetails().withTags(TestTag.ORIGINALS).apply(),
+	testDetails()
+		.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.CRASH)
+		.apply(),
 	() => {
 		test.use(storageStateNewUserDB({ amount: SUPER_HIGH_USER_AMOUNT }));
 		test.slow();

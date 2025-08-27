@@ -99,9 +99,7 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 			.betTotalBetsCount(betSection)
 			.innerText();
 
-		logger.info(
-			`Total bets count for color ${betColor}: ${countText}`,	
-		);
+		logger.info(`Total bets count for color ${betColor}: ${countText}`);
 		return parseInt(countText, 10);
 	}
 

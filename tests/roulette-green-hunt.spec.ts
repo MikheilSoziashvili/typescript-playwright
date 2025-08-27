@@ -6,7 +6,7 @@ import { GreenHuntTypeOption } from "@enums/roulette-autobet-section";
 import { calculateGreenHuntAmountByPercentage } from "@formulas/roulette";
 import { getUserDetailsByTestTitle } from "@core/utils/utils";
 import { testDetails } from "@core/helpers/test-details-helper";
-import { TestTag } from "@enums/test-tags";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 
 test.describe("Green hunt", () => {
@@ -14,7 +14,7 @@ test.describe("Green hunt", () => {
 	test(
 		"[ENG-1090] Roulette - green hunt",
 		testDetails()
-			.withTags(TestTag.ORIGINALS)
+			.withTags(JiraComponent.GAMDOM_ORIGINALS)
 			.withAuthor(JiraUser.NIKOLAY_GENOV)
 			.apply(),
 		async ({ rouletteGamePage, userBalanceHandler }, testInfo) => {

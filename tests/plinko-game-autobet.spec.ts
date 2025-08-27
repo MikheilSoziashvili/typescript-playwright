@@ -1,7 +1,6 @@
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
-import { TestTag } from "@enums/test-tags";
 import { Timeout } from "@enums/timeout";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
@@ -9,11 +8,7 @@ import { test } from "@fixtures/fixtures";
 test.describe(
 	"Plinko autobet tests",
 	testDetails()
-		.withTags(
-			TestTag.ORIGINALS,
-			JiraComponent.PLINKO,
-			JiraComponent.SOK_GAMES,
-		)
+		.withTags(JiraComponent.PLINKO, JiraComponent.SOK_GAMES)
 		.apply(),
 	() => {
 		test.use(storageStateNewUserDB());

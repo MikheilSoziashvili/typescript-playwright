@@ -76,16 +76,16 @@ export class MinesGamePageSteps extends BasePageStep<MinesGamePage> {
 	public async openAndConfigureAutobet(
 		minesBetData: MinesBetTestData,
 		autobetsNumber: number,
-		onWinPercentage: number,
-		onLossPercentage: number,
+		onWinPercentage?: number,
+		onLossPercentage?: number,
 	): Promise<void> {
 		await this.gamdomPage.openAutobetTab();
 		await this.gamdomPage.insertBet(minesBetData.betAmount);
 		await this.gamdomPage.chooseMinesNumber(minesBetData.minesNumber);
 		await this.gamdomPage.configureAutobetIncreaseBy(
 			autobetsNumber,
-			onWinPercentage,
-			onLossPercentage,
+			onWinPercentage ?? 0,
+			onLossPercentage ?? 0,
 		);
 		await this.gamdomPage.map.autoBetRandomTileButton.click();
 	}
@@ -265,5 +265,27 @@ export class MinesGamePageSteps extends BasePageStep<MinesGamePage> {
 			hasWonAtLeastOnce: true,
 			currentBetAmount: nextBetAmount,
 		};
+	}
+
+	@step("Start autobet")
+	public async startAutobet(): Promise<void> {
+		await this.gamdomPage.map.startAutobetButton.click();
+		await this.gamdomPage
+			.assertThat()
+			.checkElementsAreVisible([this.gamdomPage.map.stopAutobetButton]);
+		await this.gamdomPage
+			.assertThat()
+			.checkElementsAreDisabled([this.gamdomPage.map.betField]);
+	}
+
+	@step("Stop autobet")
+	public async stopAutobet(): Promise<void> {
+		await this.gamdomPage.map.stopAutobetButton.click();
+		await this.gamdomPage
+			.assertThat()
+			.checkElementsAreEnabled([this.gamdomPage.map.betField]);
+		await this.gamdomPage
+			.assertThat()
+			.checkElementsAreVisible([this.gamdomPage.map.startAutobetButton]);
 	}
 }

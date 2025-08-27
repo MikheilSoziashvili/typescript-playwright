@@ -22,4 +22,24 @@ export class RouletteGamePageSteps extends BasePageStep<RouletteGamePage> {
 
 		await this.gamdomPage.assertThat().greenHuntIsActive();
 	}
+
+	@step("Start autobet")
+	public async startAutobet(stopAutobetValue: number): Promise<void> {
+		await this.gamdomPage.expandAutobetSection();
+		await this.gamdomPage.map.stopIfBalanceIsOver.fill(
+			stopAutobetValue.toString(),
+		);
+		await this.gamdomPage.map.startAutobetButton.click();
+		await this.gamdomPage
+			.assertThat()
+			.checkElementsAreVisible([this.gamdomPage.map.stopAutobetButton]);
+	}
+
+	@step("Stop autobet")
+	public async stopAutobet(): Promise<void> {
+		await this.gamdomPage.map.stopAutobetButton.click();
+		await this.gamdomPage
+			.assertThat()
+			.checkElementsAreVisible([this.gamdomPage.map.startAutobetButton]);
+	}
 }

@@ -1,11 +1,12 @@
 import { KENO_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { BasePage } from "@pages/base/base-page";
-import { Page } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
 import { step } from "decorators/step";
 import { KenoGamePageAsserter } from "./keno-game-page-asserter";
 import { KenoGamePageMap } from "./keno-game-page-map";
 import { KenoGamePageSteps } from "./keno-game-page-steps";
+import { Timeout } from "@enums/timeout";
 
 export class KenoGamePage extends BasePage<KenoGamePageMap> {
 	public constructor(page: Page) {
@@ -27,6 +28,14 @@ export class KenoGamePage extends BasePage<KenoGamePageMap> {
 
 	public steps(): KenoGamePageSteps {
 		return new KenoGamePageSteps(this);
+	}
+
+	@step("Navigate and wait for game to load")
+	public async navigateAndWaitForGameToLoad(): Promise<void> {
+		await this.navigate();
+		await expect(this.map.startPlayingButton).toBeVisible({
+			timeout: Timeout.MEDIUM,
+		});
 	}
 
 	@step("Insert bet amount")
