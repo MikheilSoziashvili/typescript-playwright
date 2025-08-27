@@ -8,6 +8,7 @@ import { Attributes } from "@enums/playwright/htmlAttributes";
 import { BetIncreaseCondition } from "@enums/crash-autobet-section";
 import { Locale } from "@enums/locale";
 import { Currency } from "@enums/currencies";
+import { IntervalMs } from "@enums/interval-millisecond";
 
 export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 	public constructor(page: CrashGamePage) {
@@ -122,7 +123,13 @@ export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 			expectedBetAmount = baseBetAmount;
 		}
 
-		expect(currentBetAmount).toEqual(expectedBetAmount);
+		await expect
+			.poll(() => this.gamdomPage.getCurrentBetAmount(), {
+				timeout: Timeout.SHORT,
+				intervals: [IntervalMs.SHORT],
+				message: `Bet amount should be ${expectedBetAmount}`,
+			})
+			.toEqual(expectedBetAmount);
 
 		return currentBetAmount;
 	}
