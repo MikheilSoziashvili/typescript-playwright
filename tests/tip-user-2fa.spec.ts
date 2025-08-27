@@ -117,14 +117,24 @@ test.describe("Tip user 2FA tests", () => {
 				.steps()
 				.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
 			await tipUserModal.tipUser(tipValue);
-			await chat.assertThat().isInfoMessageVisible(tipUserInfoMessage);
+			await chat
+				.assertThat()
+				.isInfoMessageVisible(
+					tipUserInfoMessage,
+					superAdminUserData.username,
+				);
 
 			await chat
 				.steps()
 				.verifyMessageAndOpenTipUserModal(chatUserMessageInfo, false);
 			await twoFactorAuthModal.assertThat().modal2FaNotDisplayed();
 			await tipUserModal.tipUser(tipValue);
-			await chat.assertThat().isInfoMessageVisible(tipUserInfoMessage);
+			await chat
+				.assertThat()
+				.isInfoMessageVisible(
+					tipUserInfoMessage,
+					superAdminUserData.username,
+				);
 
 			await initializePageObjectsWithCookies(
 				await context.cookies(),
@@ -145,7 +155,12 @@ test.describe("Tip user 2FA tests", () => {
 				.steps()
 				.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
 			await tipUserModal.tipUser(tipValue);
-			await chat.assertThat().isInfoMessageVisible(tipUserInfoMessage);
+			await chat
+				.assertThat()
+				.isInfoMessageVisible(
+					tipUserInfoMessage,
+					superAdminUserData.username,
+				);
 		},
 	);
 });

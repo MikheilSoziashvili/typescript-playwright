@@ -109,11 +109,16 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 	@step("Check info message is visible")
 	public async isInfoMessageVisible(
 		infoMessage: string,
+		username?: string,
 		index?: number,
 	): Promise<void> {
-		await expect(this.gamdomPage.map.infoMessageLocator(index)).toHaveText(
-			infoMessage,
-		);
+		let locator = this.gamdomPage.map.infoMessageLocator(index);
+
+		if (username) {
+			locator = locator.filter({ hasText: username });
+		}
+
+		await expect(locator.last()).toHaveText(infoMessage);
 	}
 
 	@step("Check info message is visible by text")

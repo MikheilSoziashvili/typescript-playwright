@@ -103,7 +103,7 @@ export class ChatMap extends BaseMap {
 		if (index) {
 			return infoLocator.nth(index - 1);
 		}
-		return infoLocator.last();
+		return infoLocator;
 	}
 
 	/**

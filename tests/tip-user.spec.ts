@@ -133,6 +133,7 @@ test.describe("Tip user tests", () => {
 					receiverUsername: user2.username,
 					tipAmount: tipValue,
 				}),
+				user1.username,
 			);
 
 			//Verify User 1's account balance

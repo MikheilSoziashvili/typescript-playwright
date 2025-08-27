@@ -68,7 +68,10 @@ test.describe(`[ENG-1334] "Ignore" user from the chat`, () => {
 				await user2Chat.steps().ignoreUserFromChat(pair1.info);
 				await user2Chat
 					.assertThat()
-					.isInfoMessageVisible(tipUserInfoMessage);
+					.isInfoMessageVisible(
+						tipUserInfoMessage,
+						userData.username,
+					);
 				await user2Chat.assertThat().messageIsNotVisible(pair1.info);
 
 				// Send a new message as user1
