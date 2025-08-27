@@ -45,4 +45,12 @@ export class CasinoPageAsserter extends BaseAsserter<CasinoPage> {
 			BooleanValueString.TRUE,
 		);
 	}
+
+	@step("Game is added to favorites")
+	public async gameIsAddedToFavorites(gameName: string): Promise<void> {
+		const gameInFavorites = this.gamdomPage.map.favoritedGamesList.filter({
+			hasText: gameName,
+		});
+		await this.checkElementsAreVisible([gameInFavorites]);
+	}
 }
