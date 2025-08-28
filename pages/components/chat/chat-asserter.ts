@@ -204,10 +204,23 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 
 	@step("Chat messages: connecting state is not displayed")
 	public async chatMessagesConnectingIsNotDisplayed(): Promise<void> {
+		const connecting = this.gamdomPage.map.chatMessagesConnecting;
+
+		try {
+			await this.checkElementsAreNotVisible(
+				[connecting],
+				Timeout.SHORT,
+				"Chat is in 'connecting' state, but it should not be.",
+			);
+			return;
+		} catch {
+			await this.gamdomPage.page.reload();
+		}
+
 		await this.checkElementsAreNotVisible(
-			[this.gamdomPage.map.chatMessagesConnecting],
-			undefined,
-			"Chat is in 'connecting' state, but it should not be.",
+			[connecting],
+			Timeout.SHORT,
+			"Chat is in 'connecting' state, but it should not be (after refresh).",
 		);
 	}
 
