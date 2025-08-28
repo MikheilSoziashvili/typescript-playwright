@@ -18,6 +18,9 @@ import { test } from "@fixtures/fixtures";
 import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
 import { testData } from "test-data/test-data-manager";
 import { JiraUser } from "@enums/jira/jira-users";
+import { TestTag } from "@enums/test-tags";
+import { AnnotationType } from "@enums/playwright/annotationsTypes";
+import { isCI } from "configuration";
 
 interface StaffRoleCsvRecord {
 	staffRoleTag: keyof typeof UserTags;
@@ -51,6 +54,11 @@ test.describe(
 				test(
 					`[ENG-5543] Edit Info - Selecting '${record.staffRoleTag}' checks its related tags`,
 					testDetails()
+						.withTags(TestTag.LOCAL)
+						.withArbitraryAnnotations({
+							type: AnnotationType.INFRASTRUCTURE,
+							description: `Skip on CI due to OBT error - server is not started when the nightly runs`,
+						})
 						.withJiraBugTickets("8283")
 						.withAuthor(JiraUser.ANGEL_PETROV)
 						.apply(),
@@ -60,6 +68,7 @@ test.describe(
 						userInfoEditInfoAdminPage,
 						toast,
 					}) => {
+						test.fixme(isCI);
 						const superAdminUserData = new RegisterTestData();
 						await gamdomDb.createNewUser({
 							username: superAdminUserData.username,
