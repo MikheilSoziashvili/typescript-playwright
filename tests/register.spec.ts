@@ -4,6 +4,7 @@ import { ToastTitle } from "@enums/toast-titles";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { TestTag } from "@enums/test-tags";
 import { JiraUser } from "@enums/jira/jira-users";
+import { JiraComponent } from "@enums/jira/jira-components";
 
 test.describe("Register tests", () => {
 	test.use({ storageState: { cookies: [], origins: [] } });
@@ -12,7 +13,7 @@ test.describe("Register tests", () => {
 		"[ENG-296] Register with email",
 		testDetails()
 			.withTags(TestTag.SMOKE)
-			.withJiraBugTickets("7309")
+			.withTags(JiraComponent.ACCOUNT_CREATION)
 			.withAuthor(JiraUser.RALUCA_ARITON)
 			.apply(),
 		async ({ homePage }) => {
@@ -24,10 +25,10 @@ test.describe("Register tests", () => {
 				acceptTermsOfService: true,
 				acceptNewsOffers: true,
 			});
-			await Promise.all([
-				homePage.steps().verifyToastMessage(ToastTitle.SUCCESS),
-				homePage.registerModal.clickStartPlayingBtn(),
-			]);
+
+			await homePage.registerModal.clickStartPlayingBtn();
+			await homePage.steps().verifyToastMessage(ToastTitle.SUCCESS);
+
 			await homePage
 				.assertThat()
 				.userIsRegistered(registeredData.username);

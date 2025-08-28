@@ -34,6 +34,7 @@ export class UserInfoEditInfoAdminPageSteps extends BasePageStep<UserInfoEditInf
 			await this.gamdomPage.clickSaveButton();
 			await toast.titleIs(step.expectedTitle);
 			await toast.subTitleIs(step.expectedMsg);
+			await toast.isNotDisplayed();
 		}
 	}
 }

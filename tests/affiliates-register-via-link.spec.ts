@@ -1,6 +1,7 @@
 import { testDetails } from "@core/helpers/test-details-helper";
 import { generateRandomString } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { ToastTitle } from "@enums/toast-titles";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
@@ -24,7 +25,7 @@ test.describe("Register with affiliate link", () => {
 	test(
 		"[ENG-1136] Register via affiliate link",
 		testDetails()
-			.withJiraBugTickets("7309")
+			.withTags(JiraComponent.ACCOUNT_CREATION)
 			.withAuthor(JiraUser.RALUCA_ARITON)
 			.apply(),
 		async ({ homePage, faqPage }) => {
