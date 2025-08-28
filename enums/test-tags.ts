@@ -16,4 +16,5 @@ export enum TestTag {
 	PLINKO = "@plinko",
 	KENO = "@keno",
 	USER_INFO = "@user-info",
+	PROMO_CODES = "@promo-codes",
 }

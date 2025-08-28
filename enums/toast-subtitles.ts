@@ -14,6 +14,8 @@ export enum ToastSubTitle {
 	CHANGE_CAMPAIGN_STATUS = "Successfully changed status for campaign",
 	PROMO_CODE_REDEEMED = "Promo code has been redeemed.",
 	PROMO_CODE_ERROR_MESSAGE = "Promo has ended or is inactive.",
+	PROMO_CODE_ALREADY_CLAIMED = "You already claimed this promo code.",
+	PROMO_CODE_NOT_ELIGIBLE = "Unfortunately, you don't meet the requirements for this promotion. Please review the promotion T&Cs.",
 	SUCCESSFULLY_FETCHED_TRANSACTIONS = "Successfully fetched transactions.",
 	PROMOCODE_NOT_FOUND = "Nothing found!",
 	PROMOTION_CREATED_SUCCESSFULLY = "Promotion created successfully",
@@ -25,5 +27,5 @@ export enum ToastSubTitle {
 	FREE_SPINS_REVOKED = "Successfully revoked specified free spin.",
 	NO_CHANGES_WERE_MADE = "No changes were made.",
 	SUCCESSFUL_EDIT = "Edit successful!",
-	ONLY_DECREASE_WALLET_AMOUNT = "Sorry, You only can decrease the wallet amount!"
+	ONLY_DECREASE_WALLET_AMOUNT = "Sorry, You only can decrease the wallet amount!",
 }

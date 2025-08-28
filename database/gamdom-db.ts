@@ -20,6 +20,12 @@ import { AmlStatusColumns } from "@enums/db/aml-status-columns";
 import { AmlVerificationLevel } from "@enums/db/aml-verification-level";
 import { AmlVerificationStatus } from "@enums/db/aml-verification-status";
 import { CampaignsColumns } from "@enums/db/campaigns-columns";
+import { CampaignRulesColumns } from "@enums/db/campaign-rules-columns";
+import { CampaignRedemptionsColumns } from "@enums/db/campaign-redemptions-columns";
+import { CampaignRuleType } from "@enums/db/campaign-rule-type";
+import { PromoCampaignStatuses } from "@enums/campaign-statuses";
+import { CampaignPromoType } from "@enums/db/campaign-promo-type";
+import { Currency } from "@enums/currencies";
 import { DbTables } from "@enums/db/db-tables";
 import { KothEventColumns } from "@enums/db/koth-event-columns";
 import { KothEventName, KothEventType } from "@enums/db/koth-event-types";
@@ -213,6 +219,309 @@ export class GamdomDb extends BaseDB {
 			`${CampaignsColumns.Name} = '${campaignName}'`,
 			true,
 		);
+	}
+
+	public async createPromoCampaign(
+		name: string,
+		promoCode: string,
+		promoType: CampaignPromoType,
+		rewardAmount: number,
+		adminId: number,
+		status: PromoCampaignStatuses = PromoCampaignStatuses.ACTIVE,
+		rewardCurrency: Currency = Currency.USD,
+		expirationDate: NullableDateString = null,
+		maxRedemptions?: number,
+		redemptionsCount?: number,
+		gameCode?: string,
+		prepaidUuid?: string,
+		freeSpinsRounds?: number,
+		reloadDays?: number,
+		created: NullableDateString = null,
+		modifiedDate: NullableDateString = null,
+		hasLogMessage = true,
+	): Promise<QueryResultRow> {
+		const now = getISODate();
+		const createdDefault = getISODate({ daysOffset: -5 });
+
+		const baseData = {
+			[CampaignsColumns.Name]: name,
+			[CampaignsColumns.Status]: status,
+			[CampaignsColumns.PromoCode]: promoCode,
+			[CampaignsColumns.PromoType]: promoType,
+			[CampaignsColumns.RewardAmount]: rewardAmount,
+			[CampaignsColumns.RewardCurrency]: rewardCurrency,
+			[CampaignsColumns.AdminId]: adminId,
+			[CampaignsColumns.ExpirationDate]: expirationDate || null,
+			[CampaignsColumns.MaxRedemptions]: maxRedemptions ?? 5,
+			[CampaignsColumns.RedemptionsCount]: redemptionsCount ?? null,
+			[CampaignsColumns.GameCode]: gameCode ?? null,
+			[CampaignsColumns.PrepaidUuid]: prepaidUuid ?? null,
+			[CampaignsColumns.FreeSpinsRounds]: freeSpinsRounds ?? null,
+			[CampaignsColumns.ReloadDays]: reloadDays ?? null,
+			[CampaignsColumns.Created]: created || createdDefault,
+			[CampaignsColumns.ModifiedDate]: modifiedDate || now,
+		};
+
+		const data = Object.fromEntries(
+			Object.entries(baseData).filter(([, value]) => value !== null),
+		);
+
+		return this.insert(DbTables.Campaigns, data, hasLogMessage);
+	}
+
+	public async createExpiredPromoCampaign(
+		name: string,
+		promoCode: string,
+		promoType: CampaignPromoType,
+		rewardAmount: number,
+		adminId: number,
+		rewardCurrency: Currency = Currency.USD,
+		status: PromoCampaignStatuses = PromoCampaignStatuses.ACTIVE,
+		other?: {
+			maxRedemptions?: number;
+			redemptionsCount?: number;
+			gameCode?: string;
+			prepaidUuid?: string;
+			freeSpinsRounds?: number;
+			reloadDays?: number;
+			created?: NullableDateString;
+			modifiedDate?: NullableDateString;
+		},
+		hasLogMessage = true,
+	): Promise<QueryResultRow> {
+		const expired = getISODate({ daysOffset: -1 });
+		return this.createPromoCampaign(
+			name,
+			promoCode,
+			promoType,
+			rewardAmount,
+			adminId,
+			status,
+			rewardCurrency,
+			expired,
+			other?.maxRedemptions,
+			other?.redemptionsCount,
+			other?.gameCode,
+			other?.prepaidUuid,
+			other?.freeSpinsRounds,
+			other?.reloadDays,
+			other?.created || null,
+			other?.modifiedDate || null,
+			hasLogMessage,
+		);
+	}
+
+	public async createRedeemedPromoCampaign(
+		name: string,
+		promoCode: string,
+		promoType: CampaignPromoType,
+		rewardAmount: number,
+		adminId: number,
+		userId: number,
+		rewardCurrency: Currency = Currency.USD,
+		status: PromoCampaignStatuses = PromoCampaignStatuses.ACTIVE,
+		other?: {
+			expirationDate?: NullableDateString;
+			maxRedemptions?: number;
+			redemptionsCount?: number;
+			gameCode?: string;
+			prepaidUuid?: string;
+			freeSpinsRounds?: number;
+			reloadDays?: number;
+			created?: NullableDateString;
+			modifiedDate?: NullableDateString;
+		},
+		hasLogMessage = true,
+	): Promise<QueryResultRow> {
+		const now = getISODate();
+		const expirationDate = getISODate({ yearsOffset: +5 });
+		const campaign = await this.createPromoCampaign(
+			name,
+			promoCode,
+			promoType,
+			rewardAmount,
+			adminId,
+			status,
+			rewardCurrency,
+			other?.expirationDate || expirationDate,
+			other?.maxRedemptions,
+			other?.redemptionsCount,
+			other?.gameCode,
+			other?.prepaidUuid,
+			other?.freeSpinsRounds,
+			other?.reloadDays,
+			other?.created || null,
+			other?.modifiedDate || null,
+			hasLogMessage,
+		);
+		await this.redeemPromoCampaign(
+			userId,
+			campaign.id as number,
+			now,
+			now,
+			hasLogMessage,
+		);
+		return campaign;
+	}
+
+	public async createVipOpalRulesPromoCampaign(
+		name: string,
+		promoCode: string,
+		promoType: CampaignPromoType,
+		rewardAmount: number,
+		adminId: number,
+		rewardCurrency: Currency = Currency.USD,
+		status: PromoCampaignStatuses = PromoCampaignStatuses.ACTIVE,
+		other?: {
+			expirationDate?: NullableDateString;
+			maxRedemptions?: number;
+			redemptionsCount?: number;
+			gameCode?: string;
+			prepaidUuid?: string;
+			freeSpinsRounds?: number;
+			reloadDays?: number;
+			created?: NullableDateString;
+			modifiedDate?: NullableDateString;
+		},
+		hasLogMessage = true,
+	): Promise<QueryResultRow> {
+		const now = getISODate();
+		const expirationDate = getISODate({ yearsOffset: +5 });
+		const campaign = await this.createPromoCampaign(
+			name,
+			promoCode,
+			promoType,
+			rewardAmount,
+			adminId,
+			status,
+			rewardCurrency,
+			other?.expirationDate || expirationDate,
+			other?.maxRedemptions,
+			other?.redemptionsCount,
+			other?.gameCode,
+			other?.prepaidUuid,
+			other?.freeSpinsRounds,
+			other?.reloadDays,
+			other?.created || null,
+			other?.modifiedDate || null,
+			hasLogMessage,
+		);
+		const ruleData = {
+			vipPreferences: {
+				GOLD_VIP: false,
+				OPAL_VIP: true,
+				BASIC_VIP: false,
+				BRONZE_VIP: false,
+				SILVER_VIP: false,
+				DIAMOND_VIP: false,
+			},
+		};
+		await this.createPromoCampaignRules(
+			campaign.id as number,
+			CampaignRuleType.Vip,
+			ruleData,
+			now,
+			now,
+			hasLogMessage,
+		);
+		return campaign;
+	}
+
+	public async redeemPromoCampaign(
+		userId: number,
+		campaignId: number,
+		redeemedAt: NullableDateString = null,
+		created: NullableDateString = null,
+		hasLogMessage = true,
+	): Promise<QueryResultRow> {
+		const now = getISODate();
+		const baseData = {
+			[CampaignRedemptionsColumns.UserId]: userId,
+			[CampaignRedemptionsColumns.CampaignId]: campaignId,
+			[CampaignRedemptionsColumns.RedeemedAt]: redeemedAt || now,
+			[CampaignRedemptionsColumns.Created]: created || now,
+		};
+		return this.insert(
+			DbTables.CampaignRedemptions,
+			baseData,
+			hasLogMessage,
+		);
+	}
+
+	public async createPromoCampaignRules(
+		campaignId: number,
+		ruleType: CampaignRuleType | string,
+		ruleData: Record<string, unknown>,
+		created: NullableDateString = null,
+		modifiedDate: NullableDateString = null,
+		hasLogMessage = true,
+	): Promise<QueryResultRow> {
+		const now = getISODate();
+		const baseData = {
+			[CampaignRulesColumns.CampaignId]: campaignId,
+			[CampaignRulesColumns.RuleType]: ruleType,
+			[CampaignRulesColumns.RuleData]: ruleData,
+			[CampaignRulesColumns.Created]: created || now,
+			[CampaignRulesColumns.ModifiedDate]: modifiedDate || now,
+		};
+		return this.insert(DbTables.CampaignRules, baseData, hasLogMessage);
+	}
+
+	private async deletePromoCampaignById(
+		campaignId: number,
+		hasLogMessage = true,
+	): Promise<void> {
+		await this.delete(
+			DbTables.CampaignRules,
+			`${CampaignRulesColumns.CampaignId} = ${campaignId}`,
+			hasLogMessage,
+		);
+		await this.delete(
+			DbTables.CampaignRedemptions,
+			`${CampaignRedemptionsColumns.CampaignId} = ${campaignId}`,
+			hasLogMessage,
+		);
+		await this.delete(
+			DbTables.Campaigns,
+			`${CampaignsColumns.Id} = ${campaignId}`,
+			hasLogMessage,
+		);
+	}
+
+	public async deletePromoCampaignByPromoCode(
+		promoCode: string,
+		hasLogMessage = true,
+	): Promise<void> {
+		const rows = await this.query(
+			DbTables.Campaigns,
+			[CampaignsColumns.Id],
+			`${CampaignsColumns.PromoCode} = $1`,
+			[promoCode],
+			hasLogMessage,
+		);
+		if (!rows.length) return;
+		const id = (rows[0] as Record<string, unknown>)[
+			CampaignsColumns.Id
+		] as number;
+		await this.deletePromoCampaignById(id, hasLogMessage);
+	}
+
+	public async deletePromoCampaignByName(
+		campaignName: string,
+		hasLogMessage = true,
+	): Promise<void> {
+		const rows = await this.query(
+			DbTables.Campaigns,
+			[CampaignsColumns.Id],
+			`${CampaignsColumns.Name} = $1`,
+			[campaignName],
+			hasLogMessage,
+		);
+		if (!rows.length) return;
+		const id = (rows[0] as Record<string, unknown>)[
+			CampaignsColumns.Id
+		] as number;
+		await this.deletePromoCampaignById(id, hasLogMessage);
 	}
 
 	public async insertWithdrawLimitInSetting(

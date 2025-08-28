@@ -44,4 +44,5 @@ export enum CsvFilesName {
 	USER_INFO_SEND_NOTIFICATION = "ENG-2808-UserInfo-tab-verify-the-Send-notification-function.csv",
 	KOTH_CURRENCIES_SYMBOLS = "ENG-4484-koth-currencies-symbols.csv",
 	EDIT_INFO_ADJUSTING_WALLETS = "ENG-6392-edit-info-adjusting-wallets.csv",
+	PROMO_CODE_FAILED_REDEMPTION = "ENG-3979-error-messages-failed-redemption.csv",
 }

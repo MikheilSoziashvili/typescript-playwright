@@ -2,6 +2,8 @@ export enum DbTables {
 	Users = "Users",
 	Wallets = "Public.Wallets",
 	Campaigns = "Promo_codes.Campaigns",
+	CampaignRedemptions = "Promo_codes.Campaign_redemptions",
+	CampaignRules = "Promo_codes.Campaign_rules",
 	Settings = "Public.Settings",
 	AmlInfo = "aml.info",
 	AmlStatus = "aml.status",

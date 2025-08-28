@@ -1,0 +1,10 @@
+promo_code_type,promo_code_status,error
+cash,redeemed promo code,You already claimed this promo code
+cash,promo code for which user doesn't meet requirements,"Unfortunately, you don't meet the requirements for this promotion. Please review the promotion T&Cs"
+cash,not active promo code,Promo has ended or is inactive.
+free_spins,redeemed promo code,You already claimed this promo code
+free_spins,promo code for which user doesn't meet requirements,"Unfortunately, you don't meet the requirements for this promotion. Please review the promotion T&Cs"
+free_spins,not active promo code,Promo has ended or is inactive.
+cash_reload,redeemed promo code,You already claimed this promo code
+cash_reload,promo code for which user doesn't meet requirements,"Unfortunately, you don't meet the requirements for this promotion. Please review the promotion T&Cs"
+cash_reload,not active promo code,Promo has ended or is inactive.

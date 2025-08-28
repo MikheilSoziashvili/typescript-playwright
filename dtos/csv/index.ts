@@ -8,3 +8,4 @@ export * from "./kyc-users-level-verification-page-csv";
 export * from "./user-profile-items-links-accessibility-csv";
 export * from "./plinko-bets-across-multiple-wallets-csv";
 export * from "./chatrooms-successfully-selected-csv";
+export * from "./promo-code-failed-redemption-csv";
