@@ -242,7 +242,9 @@ export class BlogPostTestData {
 export type QuickSelectScenario = {
 	buttonType: OriginalsQuickSelectButtons;
 	game: OriginalGame;
+	currency: string;
 	initialBetAmount: number;
+	minOrMaxAmount: number;
 	expectedAfterFirstClick: number;
 	expectedAfterSecondClick: number;
 };

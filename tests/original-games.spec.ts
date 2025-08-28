@@ -13,7 +13,6 @@ import {
 	OriginalGame,
 	OriginalsQuickSelectButtons,
 } from "@enums/original-games";
-import { TestTag } from "@enums/test-tags";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import { HIGH_USER_AMOUNT } from "database/constants/user-amounts";
@@ -45,11 +44,21 @@ test.describe("Quick Select Buttons", () => {
 	);
 
 	test.describe("MIN button", () => {
-		for (const { game, initialBetAmount } of minScenario) {
+		for (const {
+			game,
+			initialBetAmount,
+			currency: betCurrency,
+			minOrMaxAmount: minAmount,
+		} of minScenario) {
 			test(
-				`[ENG-5455] should set min amount for ${game}`,
+				`[ENG-5455] should set min amount for ${game} and ${betCurrency}`,
 				testDetails()
-					.withTags(TestTag.ORIGINALS)
+					.withTags(
+						JiraComponent.GAMDOM_ORIGINALS,
+						JiraComponent[
+							game.toUpperCase() as keyof typeof JiraComponent
+						],
+					)
 					.withAuthor(JiraUser.RALUCA_ARITON)
 					.apply(),
 				async ({ originalsPage }) => {
@@ -57,14 +66,21 @@ test.describe("Quick Select Buttons", () => {
 					await originalsPage.authenticatedHeader
 						.assertThat()
 						.loggedInUserElementsAreVisible();
+					await originalsPage.authenticatedHeader.changeCurrency(
+						betCurrency,
+					);
 					await originalsPage
 						.steps()
 						.setBetAmount(game, initialBetAmount);
 					await originalsPage.steps().pressMinButton(game);
-					await originalsPage.assertThat().betAmountIsMin(game);
+					await originalsPage
+						.assertThat()
+						.betAmountIsCorrect(game, minAmount);
 					await originalsPage.steps().pressMinButton(game);
 					await originalsPage.steps().pressHalfButton(game);
-					await originalsPage.assertThat().betAmountIsMin(game);
+					await originalsPage
+						.assertThat()
+						.betAmountIsCorrect(game, minAmount);
 				},
 			);
 		}
@@ -74,13 +90,20 @@ test.describe("Quick Select Buttons", () => {
 		for (const {
 			game,
 			initialBetAmount,
+			currency: betCurrency,
+			minOrMaxAmount: minAmount,
 			expectedAfterFirstClick,
 			expectedAfterSecondClick,
 		} of halfScenario) {
 			test(
-				`[ENG-5454] should halve bet for ${game} with initial bet ${initialBetAmount}`,
+				`[ENG-5454] should halve bet for ${game} and ${betCurrency} with initial bet ${initialBetAmount}`,
 				testDetails()
-					.withTags(TestTag.ORIGINALS)
+					.withTags(
+						JiraComponent.GAMDOM_ORIGINALS,
+						JiraComponent[
+							game.toUpperCase() as keyof typeof JiraComponent
+						],
+					)
 					.withAuthor(JiraUser.RALUCA_ARITON)
 					.apply(),
 				async ({ originalsPage }) => {
@@ -88,7 +111,9 @@ test.describe("Quick Select Buttons", () => {
 					await originalsPage.authenticatedHeader
 						.assertThat()
 						.loggedInUserElementsAreVisible();
-
+					await originalsPage.authenticatedHeader.changeCurrency(
+						betCurrency,
+					);
 					await originalsPage
 						.steps()
 						.setBetAmount(game, initialBetAmount);
@@ -110,7 +135,9 @@ test.describe("Quick Select Buttons", () => {
 						);
 
 					await originalsPage.steps().pressHalfButton(game);
-					await originalsPage.assertThat().betAmountIsMin(game);
+					await originalsPage
+						.assertThat()
+						.betAmountIsCorrect(game, minAmount);
 				},
 			);
 		}
@@ -119,11 +146,21 @@ test.describe("Quick Select Buttons", () => {
 	test.describe("MAX button", () => {
 		test.use(storageStateNewUserDB({ amount: HIGH_USER_AMOUNT }));
 
-		for (const { game, initialBetAmount } of maxScenario) {
+		for (const {
+			game,
+			initialBetAmount,
+			currency: betCurrency,
+			minOrMaxAmount: maxAmount,
+		} of maxScenario) {
 			test(
-				`[ENG-5053] should set max amount for ${game}`,
+				`[ENG-5053] should set max amount for ${game} and ${betCurrency}`,
 				testDetails()
-					.withTags(TestTag.ORIGINALS)
+					.withTags(
+						JiraComponent.GAMDOM_ORIGINALS,
+						JiraComponent[
+							game.toUpperCase() as keyof typeof JiraComponent
+						],
+					)
 					.withAuthor(JiraUser.RALUCA_ARITON)
 					.apply(),
 				async ({ originalsPage }) => {
@@ -131,14 +168,21 @@ test.describe("Quick Select Buttons", () => {
 					await originalsPage.authenticatedHeader
 						.assertThat()
 						.loggedInUserElementsAreVisible();
+					await originalsPage.authenticatedHeader.changeCurrency(
+						betCurrency,
+					);
 					await originalsPage
 						.steps()
 						.setBetAmount(game, initialBetAmount);
 					await originalsPage.steps().pressMaxButton(game);
-					await originalsPage.assertThat().betAmountIsMax(game);
+					await originalsPage
+						.assertThat()
+						.betAmountIsCorrect(game, maxAmount);
 					await originalsPage.steps().pressMaxButton(game);
 					await originalsPage.steps().pressDoubleButton(game);
-					await originalsPage.assertThat().betAmountIsMax(game);
+					await originalsPage
+						.assertThat()
+						.betAmountIsCorrect(game, maxAmount);
 				},
 			);
 		}
@@ -150,13 +194,20 @@ test.describe("Quick Select Buttons", () => {
 		for (const {
 			game,
 			initialBetAmount,
+			currency: betCurrency,
+			minOrMaxAmount: maxAmount,
 			expectedAfterFirstClick,
 			expectedAfterSecondClick,
 		} of doubleScenario) {
 			test(
-				`[ENG-5456] should double bet for ${game} with initial bet ${initialBetAmount}`,
+				`[ENG-5456] should double bet for ${game} and ${betCurrency} with initial bet ${initialBetAmount}`,
 				testDetails()
-					.withTags(TestTag.ORIGINALS)
+					.withTags(
+						JiraComponent.GAMDOM_ORIGINALS,
+						JiraComponent[
+							game.toUpperCase() as keyof typeof JiraComponent
+						],
+					)
 					.withAuthor(JiraUser.RALUCA_ARITON)
 					.apply(),
 				async ({ originalsPage }) => {
@@ -164,6 +215,9 @@ test.describe("Quick Select Buttons", () => {
 					await originalsPage.authenticatedHeader
 						.assertThat()
 						.loggedInUserElementsAreVisible();
+					await originalsPage.authenticatedHeader.changeCurrency(
+						betCurrency,
+					);
 
 					await originalsPage
 						.steps()
@@ -186,7 +240,9 @@ test.describe("Quick Select Buttons", () => {
 						);
 
 					await originalsPage.steps().pressDoubleButton(game);
-					await originalsPage.assertThat().betAmountIsMax(game);
+					await originalsPage
+						.assertThat()
+						.betAmountIsCorrect(game, maxAmount);
 				},
 			);
 		}
@@ -216,10 +272,10 @@ test.describe("Quick Select Buttons", () => {
 				`[ENG-6968] should not accept negative bet amount ${negativeBetAmount} for ${game}`,
 				testDetails()
 					.withTags(
-						TestTag.ORIGINALS,
-						JiraComponent.MINES,
-						JiraComponent.PLINKO,
-						JiraComponent.KENO,
+						JiraComponent.GAMDOM_ORIGINALS,
+						JiraComponent[
+							game.toUpperCase() as keyof typeof JiraComponent
+						],
 					)
 					.withAuthor(JiraUser.RALUCA_ARITON)
 					.apply(),
