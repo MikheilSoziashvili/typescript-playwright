@@ -28,7 +28,6 @@ export class GamdomApiDbFacade {
 	 * @param options - Configuration object
 	 * @param options.usersCount - Number of users to create
 	 * @param options.emailVerified - Whether to create the user with email verified
-	 * @param options.updateUserEmailVerification - Whether to additionaly verify email
 	 * @param options.useGamdomEmailDomain - User's email to be of gamdom domain
 	 * @param options.email - Use custom provided email
 	 * @param options.tags - User tags
@@ -38,7 +37,7 @@ export class GamdomApiDbFacade {
 	public async createUsersDb(options: {
 		usersCount: number;
 		emailVerified?: boolean;
-		updateUserEmailVerification?: boolean;
+		useGamdomEmailDomain?: boolean;
 		email?: string | string[];
 		wagered?: number;
 		image?: string;
@@ -51,7 +50,7 @@ export class GamdomApiDbFacade {
 		const {
 			usersCount,
 			emailVerified = true,
-			updateUserEmailVerification = false,
+			useGamdomEmailDomain = false,
 			email,
 			wagered = DEFAULT_WAGERED,
 			image = DEFAULT_IMAGE,
@@ -64,7 +63,10 @@ export class GamdomApiDbFacade {
 		const testUsers = Array.from({ length: usersCount }, (_, i) => {
 			const overrideEmail =
 				email !== undefined && Array.isArray(email) ? email[i] : email;
-			return new RegisterTestData({ email: overrideEmail });
+			return new RegisterTestData({
+				email: overrideEmail,
+				useGamdomEmailDomain: useGamdomEmailDomain,
+			});
 		});
 
 		const userData: UserData[] = await Promise.all(
@@ -92,14 +94,6 @@ export class GamdomApiDbFacade {
 			}),
 		);
 
-		if (updateUserEmailVerification) {
-			await Promise.all(
-				userData.map((user) =>
-					this.gamdomDb.updateUserEmailVerification(user.userId),
-				),
-			);
-		}
-
 		return userData;
 	}
 
@@ -117,7 +111,7 @@ export class GamdomApiDbFacade {
 
 		const createdUsers = await this.createUsersDb({
 			usersCount: usersCount,
-			updateUserEmailVerification: true,
+			emailVerified: true,
 		});
 
 		const usersWithLevels = createdUsers.map((user, index) => ({
@@ -189,7 +183,7 @@ export class GamdomApiDbFacade {
 
 		const [user] = await this.createUsersDb({
 			usersCount: 1,
-			updateUserEmailVerification: verifyEmail,
+			emailVerified: verifyEmail,
 		});
 
 		await this.upsertUserWalletsDb(user.userId, walletUnits, amount);
@@ -207,7 +201,6 @@ export class GamdomApiDbFacade {
 	 *
 	 * @param options - Operation options.
 	 * @param options.emailVerified - Whether to create the user with email verified
-	 * @param options.updateUserEmailVerification - Whether to additionaly verify email
 	 * @param options.useGamdomEmailDomain - User's email to be of gamdom domain
 	 * @param options.email - Use custom provided email
 	 * @param options.tags - User tags
@@ -219,7 +212,6 @@ export class GamdomApiDbFacade {
 	 */
 	public async createSingleUserDbAndAuth(options?: {
 		emailVerified?: boolean;
-		updateUserEmailVerification?: boolean;
 		useGamdomEmailDomain?: boolean;
 		email?: string;
 		wagered?: number;
@@ -231,14 +223,12 @@ export class GamdomApiDbFacade {
 		userClass?: UserClasses;
 	}): Promise<AuthenticatedUser> {
 		const emailVerified = options?.emailVerified ?? true;
-		const updateUserEmailVerification =
-			options?.updateUserEmailVerification ?? false;
 		const customEmail = options?.email ?? undefined;
 
 		const [user] = await this.createUsersDb({
 			usersCount: 1,
 			emailVerified: emailVerified,
-			updateUserEmailVerification: updateUserEmailVerification,
+			useGamdomEmailDomain: options?.useGamdomEmailDomain,
 			email: customEmail,
 			wagered: options?.wagered,
 			image: options?.image,
