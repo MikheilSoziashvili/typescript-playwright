@@ -41,4 +41,40 @@ export class TransactionsSteps extends BasePageStep<TransactionsPage> {
 
 		await this.gamdomPage.assertThat().assertTransactionStatusIs(status);
 	}
+
+	@step("Verify tip sent transaction details")
+	public async verifyTipSentTransactionDetails(
+		tipValue: number,
+		userName: string,
+	): Promise<void> {
+		await this.gamdomPage.assertThat().tipSentValueIsCaptured(tipValue);
+		await this.gamdomPage.assertThat().tipSentAndSuccessStatusAreVisible();
+
+		await this.gamdomPage.map.arrowButtonTransactionDetails.click();
+		await this.gamdomPage.assertThat().receivedTipUserIsDisplayed(userName);
+		await this.gamdomPage.assertThat().sentTipAmountIsDisplayed(tipValue);
+		await this.gamdomPage
+			.assertThat()
+			.contactSupportAndGotItButtonsAreVisible();
+	}
+
+	@step("Verify tip received transaction details")
+	public async verifyTipReceivedTransactionDetails(
+		tipValue: number,
+		userName: string,
+	): Promise<void> {
+		await this.gamdomPage.assertThat().tipReceivedValueIsCaptured(tipValue);
+		await this.gamdomPage
+			.assertThat()
+			.tipReceivedAndSuccessStatusAreVisible();
+
+		await this.gamdomPage.map.arrowButtonTransactionDetails.click();
+		await this.gamdomPage.assertThat().sentTipUserIsDisplayed(userName);
+		await this.gamdomPage
+			.assertThat()
+			.receivedTipAmountIsDisplayed(tipValue);
+		await this.gamdomPage
+			.assertThat()
+			.contactSupportAndGotItButtonsAreVisible();
+	}
 }

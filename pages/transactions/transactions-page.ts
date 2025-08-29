@@ -76,4 +76,14 @@ export class TransactionsPage extends BasePage<TransactionsMap> {
 
 		return finalStatus;
 	}
+
+	@step("Open tips tab")
+	public async openTipsTab(): Promise<void> {
+		await this.map.tipsTab.click();
+	}
+
+	@step("Expand tip transaction details")
+	public async expandTipTransactionDetails(): Promise<void> {
+		await this.map.arrowButtonTransactionDetails.click();
+	}
 }

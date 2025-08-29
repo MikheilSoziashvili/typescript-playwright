@@ -4,6 +4,7 @@ import { TipUserModalMap } from "./tip-user-modal-map";
 import { TipUserModalAsserter } from "./tip-user-modal-asserter";
 import { parseToFloat } from "@core/utils/utils";
 import { step } from "decorators/step";
+import { TipUserModalSteps } from "./tip-user-modal-steps";
 
 export class TipUserModal extends BaseModal<TipUserModalMap> {
 	constructor(page: Page) {
@@ -12,6 +13,10 @@ export class TipUserModal extends BaseModal<TipUserModalMap> {
 
 	public assertThat(): TipUserModalAsserter {
 		return new TipUserModalAsserter(this);
+	}
+
+	public steps(): TipUserModalSteps {
+		return new TipUserModalSteps(this);
 	}
 
 	@step("Insert tip value")

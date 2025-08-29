@@ -208,4 +208,12 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		await this.component.selectChatroom(chatroomName.toLocaleLowerCase());
 		await this.component.assertThat().chatroomIsSelected(chatroomName);
 	}
+
+	@step("Verify chat is displayed and message is visible")
+	public async verifyChatIsDisplayedAndMessageIsVisible(
+		chatMessage: ChatMessageOptions,
+	): Promise<void> {
+		await this.component.assertThat().chatIsDisplayed();
+		await this.component.assertThat().isMessageVisible(chatMessage);
+	}
 }

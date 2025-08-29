@@ -198,4 +198,10 @@ export class HomePage extends BasePage<HomePageMap> {
 	public getNotification(): Notification {
 		return this.notification;
 	}
+
+	@step("Navigate and expand chat")
+	public async navigateAndExpandChat(): Promise<void> {
+		await this.navigate();
+		await this.authenticatedHeader.expandChatIfNotVisible();
+	}
 }

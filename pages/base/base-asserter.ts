@@ -149,6 +149,16 @@ export class BaseAsserter<
 		);
 	}
 
+	@step("Check that elements have expected values")
+	public async checkElementsHaveValue(
+		pairs: { locator: Locator; expectedValue: string }[],
+		timeout?: number,
+	): Promise<void> {
+		await this.assertOnValues(pairs, async ({ locator, expectedValue }) => {
+			await expect(locator).toHaveValue(expectedValue, { timeout });
+		});
+	}
+
 	@step("Check that elements have expected text")
 	public async checkElementsHaveText(
 		pairs: { locator: Locator; expectedText: string }[],
