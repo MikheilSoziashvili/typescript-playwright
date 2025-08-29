@@ -155,6 +155,7 @@ export type BitcoinRpcParams = (string | number | boolean | undefined)[];
 export type AcceptDialogOptions = {
 	expectedMessage?: string;
 	inputText?: string;
+	times?: number;
 };
 
 export type CryptoOperationOptions = {

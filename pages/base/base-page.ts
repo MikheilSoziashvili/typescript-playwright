@@ -205,23 +205,24 @@ export abstract class BasePage<T extends BaseMap> {
 	}
 
 	public acceptDialog(options: AcceptDialogOptions = {}): void {
-		const dialogHandler = async (dialog: Dialog) => {
-			const { expectedMessage, inputText } = options;
+		const { expectedMessage, inputText, times = 1 } = options;
+		let remaining = Math.max(1, times);
 
-			this.page.off("dialog", dialogHandler);
-
+		const handler = async (dialog: Dialog) => {
 			if (
 				expectedMessage !== undefined &&
 				dialog.message().includes(expectedMessage)
 			) {
 				await dialog.accept(inputText);
-				return;
+			} else {
+				await dialog.accept();
 			}
 
-			await dialog.accept();
+			remaining -= 1;
+			if (remaining <= 0) this.page.off("dialog", handler);
 		};
 
-		this.page.on("dialog", dialogHandler);
+		this.page.on("dialog", handler);
 	}
 
 	/**

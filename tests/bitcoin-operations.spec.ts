@@ -43,10 +43,6 @@ test.describe("Bitcoin tests", () => {
 				);
 			await setAuthenticationCookies(page, superadminCookie);
 			await cryptoAdminPage.navigate();
-			cryptoAdminPage.acceptDialog({
-				expectedMessage: "Enter new minimum",
-				inputText: "0.00001",
-			});
 			await cryptoAdminPage.toggleCryptoOperations({
 				cryptoName: Cryptocurrency.Bitcoin,
 				deposit: true,
@@ -73,7 +69,18 @@ test.describe("Bitcoin tests", () => {
 				},
 			);
 
+			cryptoAdminPage.acceptDialog({
+				expectedMessage: "Enter new minimum",
+				inputText: "0.00001",
+				times: 2,
+			});
 			await cryptoAdminPage.clickMinDepositButton(CryptoNode.nodeBTC1);
+
+			cryptoAdminPage.acceptDialog({
+				expectedMessage: "Enter new minimum",
+				inputText: "0.00001",
+				times: 2,
+			});
 			await cryptoAdminPage.clickMinWithdrawButton(CryptoNode.nodeBTC1);
 		},
 	);
