@@ -31,21 +31,19 @@ export class CrashGamePageMap extends BaseMap {
 	}
 
 	public get yourBetContainer(): Locator {
-		return this.betOptions.getByTestId("crashYourBetContainer");
+		return this.page.getByTestId("crashYourBetContainer");
 	}
 
 	public get betField(): Locator {
-		return this.yourBetContainer.locator("input[class*='AdornedStart']");
+		return this.yourBetContainer.getByLabel("Your bet");
 	}
 
 	public get autoCashoutContainer(): Locator {
-		return this.betOptions.getByTestId("crashAutoCashoutContainer");
+		return this.page.getByTestId("crashAutoCashoutContainer");
 	}
 
 	public get autoCashOutField(): Locator {
-		return this.autoCashoutContainer.locator(
-			"input[placeholder='Auto Cashout']",
-		);
+		return this.autoCashoutContainer.getByLabel("Auto Cashout");
 	}
 
 	public get placeBetBtn(): Locator {

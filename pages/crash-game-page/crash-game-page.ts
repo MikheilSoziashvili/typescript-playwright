@@ -123,6 +123,13 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 		return crashedMultiplierText;
 	}
 
+	@step("Get countdown timer")
+	public async getCountdownTimer(): Promise<string> {
+		const countdownTimerText =
+			await this.map.spinningCountdownCounter.innerText();
+		return countdownTimerText;
+	}
+
 	@step("Place bet")
 	public async placeBet(
 		betAmount: number,

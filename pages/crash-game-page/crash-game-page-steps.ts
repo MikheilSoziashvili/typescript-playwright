@@ -171,6 +171,16 @@ export class CrashGamePageSteps extends BasePageStep<CrashGamePage> {
 	): Promise<void> {
 		const autoCashoutMultiplier = betTestData.autoCashoutMultiplier;
 
+		const timerValueString = await this.gamdomPage.getCountdownTimer();
+		const timerValueAsNumber = parseFloat(timerValueString);
+
+		if (timerValueAsNumber <= 4) {
+			logger.warn(
+				`Timer is too low: (${timerValueAsNumber}s). Skipping autobet execution.`,
+			);
+			return;
+		}
+
 		await this.executeActions(actions);
 
 		await this.startAutobetSession(
