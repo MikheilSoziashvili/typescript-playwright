@@ -20,6 +20,7 @@ import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { AnnotationType } from "@enums/playwright/annotationsTypes";
 import { JiraUser } from "@enums/jira/jira-users";
+import { TransactionType } from "@enums/transaction-types";
 
 test.describe("Bitcoin tests", () => {
 	test.slow();
@@ -68,20 +69,21 @@ test.describe("Bitcoin tests", () => {
 					timeoutSeconds: TimeoutSeconds.ONE_TWENTY,
 				},
 			);
+			await cryptoAdminPage
+				.steps()
+				.setDepositOrWithdrawMin(
+					TransactionType.DEPOSIT,
+					CryptoNode.nodeBTC1,
+					"0.00001",
+				);
 
-			cryptoAdminPage.acceptDialog({
-				expectedMessage: "Enter new minimum",
-				inputText: "0.00001",
-				times: 2,
-			});
-			await cryptoAdminPage.clickMinDepositButton(CryptoNode.nodeBTC1);
-
-			cryptoAdminPage.acceptDialog({
-				expectedMessage: "Enter new minimum",
-				inputText: "0.00001",
-				times: 2,
-			});
-			await cryptoAdminPage.clickMinWithdrawButton(CryptoNode.nodeBTC1);
+			await cryptoAdminPage
+				.steps()
+				.setDepositOrWithdrawMin(
+					TransactionType.WITHDRAWAL,
+					CryptoNode.nodeBTC1,
+					"0.00001",
+				);
 		},
 	);
 
