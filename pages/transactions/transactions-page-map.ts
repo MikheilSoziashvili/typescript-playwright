@@ -32,8 +32,12 @@ export class TransactionsMap extends BaseMap {
 		return this.page.locator("p[status]");
 	}
 
+	public get userProfileWrapper(): Locator {
+		return this.page.locator("div[class*='UserProfileWrapper-styled']");
+	}
+
 	public get tipAmount(): Locator {
-		return this.page.locator(".currency-amount");
+		return this.userProfileWrapper.locator(".currency-amount");
 	}
 
 	public get tipSentText(): Locator {
