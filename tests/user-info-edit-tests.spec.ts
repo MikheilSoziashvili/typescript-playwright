@@ -20,7 +20,7 @@ import { testData } from "test-data/test-data-manager";
 import { JiraUser } from "@enums/jira/jira-users";
 import { TestTag } from "@enums/test-tags";
 import { AnnotationType } from "@enums/playwright/annotationsTypes";
-import { isCI } from "configuration";
+import { isScheduledRun } from "configuration";
 
 interface StaffRoleCsvRecord {
 	staffRoleTag: keyof typeof UserTags;
@@ -68,7 +68,7 @@ test.describe(
 						userInfoEditInfoAdminPage,
 						toast,
 					}) => {
-						test.fixme(isCI);
+						test.fixme(isScheduledRun);
 						const superAdminUserData = new RegisterTestData();
 						await gamdomDb.createNewUser({
 							username: superAdminUserData.username,
