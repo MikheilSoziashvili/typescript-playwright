@@ -16,12 +16,6 @@ export class UserInfoKycAdminPageMap extends BaseMap {
 		);
 	}
 
-	public viewSubmissionButton(userName: string): Locator {
-		return this.rowContainer(userName).locator("button", {
-			hasText: "VIEW SUBMISION",
-		});
-	}
-
 	public get approveButton(): Locator {
 		return this.page.locator("button", {
 			hasText: "Approve",

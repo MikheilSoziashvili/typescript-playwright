@@ -18,11 +18,6 @@ export class UserInfoKycAdminPage extends BasePage<UserInfoKycAdminPageMap> {
 		return new UserInfoKycAdminPageSteps(this);
 	}
 
-	@step("Click view submission button for user")
-	public async clickViewSubmissionButton(userName: string): Promise<void> {
-		await this.map.viewSubmissionButton(userName).click();
-	}
-
 	@step("Approve KYC submission")
 	public async clickApproveButton(): Promise<void> {
 		await this.map.approveButton.click();

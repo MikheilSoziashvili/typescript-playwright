@@ -657,9 +657,6 @@ test.describe(
 
 				await userInfoAdminPage.clickUserInfoTab(UserInfoTabs.KYC);
 
-				await userInfoKycAdminPage.clickViewSubmissionButton(
-					newUserData.username,
-				);
 				// Approve the KYC submission
 				await userInfoKycAdminPage.clickApproveButton();
 
