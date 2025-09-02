@@ -131,3 +131,16 @@ export function generateAmlVerificationStatusReasonText(
 ): string {
 	return `Reason for level ${levelNum} - ${status}`;
 }
+
+export function buildFreeSpinsPromoCodeNotificationSubTitle(
+	freeSpinsAmount: number,
+	freeSpinValue: number,
+	expirationDate: string,
+	gameName: string,
+): string {
+	return `Congratulations! You have redeemed ${freeSpinsAmount} Free Spins ($${freeSpinValue} each) free bets for ${gameName}! This promo will expire at ${expirationDate} if you don't use it.`;
+}
+
+export function buildCashPromoCodeNotificationSubTitle(amount: number): string {
+	return `Congratulations! You have redeemed $${amount}.`;
+}

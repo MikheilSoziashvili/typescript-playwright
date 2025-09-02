@@ -427,6 +427,83 @@ export class GamdomDb extends BaseDB {
 		return campaign;
 	}
 
+	public async createCashPromoCampaign(
+		name: string,
+		promoCode: string,
+		adminId: number,
+		rewardAmount: number,
+		maxRedemptions = 1,
+	): Promise<QueryResultRow> {
+		const expirationDate = getISODate({ yearsOffset: +5 });
+		return this.createPromoCampaign(
+			name,
+			promoCode,
+			CampaignPromoType.CASH,
+			rewardAmount,
+			adminId,
+			PromoCampaignStatuses.ACTIVE,
+			Currency.USD,
+			expirationDate,
+			maxRedemptions,
+		);
+	}
+
+	public async createFreeSpinsPromoCampaign(
+		name: string,
+		promoCode: string,
+		adminId: number,
+		gameCode: string,
+		freeSpinsAmount: number,
+		rewardAmount: number,
+		reloadDays: number,
+		maxRedemptions = 1,
+	): Promise<QueryResultRow> {
+		const expirationDate = getISODate({ yearsOffset: +5 });
+		return this.createPromoCampaign(
+			name,
+			promoCode,
+			CampaignPromoType.FREE_SPINS,
+			rewardAmount,
+			adminId,
+			PromoCampaignStatuses.ACTIVE,
+			Currency.USD,
+			expirationDate,
+			maxRedemptions,
+			0,
+			gameCode,
+			undefined,
+			freeSpinsAmount,
+			reloadDays,
+		);
+	}
+
+	public async createCashReloadPromoCampaign(
+		name: string,
+		promoCode: string,
+		adminId: number,
+		rewardAmount: number,
+		maxRedemptions = 1,
+	): Promise<QueryResultRow> {
+		const expirationDate = getISODate({ yearsOffset: +5 });
+		const defaultReloadDays = 7;
+		return this.createPromoCampaign(
+			name,
+			promoCode,
+			CampaignPromoType.CASH_RELOAD,
+			rewardAmount,
+			adminId,
+			PromoCampaignStatuses.ACTIVE,
+			Currency.USD,
+			expirationDate,
+			maxRedemptions,
+			undefined,
+			undefined,
+			undefined,
+			undefined,
+			defaultReloadDays,
+		);
+	}
+
 	public async redeemPromoCampaign(
 		userId: number,
 		campaignId: number,

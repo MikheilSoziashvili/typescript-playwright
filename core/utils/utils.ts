@@ -1221,6 +1221,75 @@ export function getCurrentDate(dateFormat = "yyyy-MM-dd"): string {
 }
 
 /**
+ * Returns a localized date string, optionally including time, matching UI formats like
+ * "9/2/2025, 12:00:00 AM" (en-US).
+ *
+ * - Uses the current date with optional offsets
+ * - When includeTime is true, returns date + time; otherwise, date only
+ * - Use atMidnight to normalize time to 00:00:00 before formatting
+ *
+ * @param options Optional configuration
+ * @param options.daysOffset Days to add/subtract from today (default: 0)
+ * @param options.monthsOffset Months to add/subtract from today (default: 0)
+ * @param options.yearsOffset Years to add/subtract from today (default: 0)
+ * @param options.includeTime Include time in the output (default: false)
+ * @param options.atMidnight Set time to 00:00:00 before formatting (default: false)
+ * @param options.locale Locale to use for formatting (default: Locale.EN_US)
+ * @returns Localized date string (e.g., "9/2/2025" or "9/2/2025, 12:00:00 AM")
+ *
+ * @example
+ * // Date only (US locale)
+ * const d1 = formatLocalizedDate(); // e.g., "9/2/2025"
+ *
+ * @example
+ * // Date with time at midnight in 7 days
+ * const d2 = formatLocalizedDate({ daysOffset: 7, includeTime: true, atMidnight: true });
+ */
+export function formatLocalizedDate({
+	daysOffset = 0,
+	monthsOffset = 0,
+	yearsOffset = 0,
+	includeTime = false,
+	atMidnight = false,
+	locale = Locale.EN_US,
+}: {
+	daysOffset?: number;
+	monthsOffset?: number;
+	yearsOffset?: number;
+	includeTime?: boolean;
+	atMidnight?: boolean;
+	locale?: Locale | string;
+} = {}): string {
+	const d = new Date();
+	d.setDate(d.getDate() + daysOffset);
+	d.setMonth(d.getMonth() + monthsOffset);
+	d.setFullYear(d.getFullYear() + yearsOffset);
+
+	if (atMidnight) {
+		d.setHours(0, 0, 0, 0);
+	}
+
+	if (includeTime) {
+		return d.toLocaleString(locale, {
+			year: "numeric",
+			month: "numeric",
+			day: "numeric",
+			hour: "numeric",
+			minute: "numeric",
+			second: "numeric",
+			hour12: true,
+		});
+	}
+
+	return d.toLocaleDateString(locale, {
+		year: "numeric",
+		month: "numeric",
+		day: "numeric",
+	});
+}
+
+
+/**
  * Converts currency text (e.g., "$123.00", "€45.50") to a numeric value.
  *
  * @param currencyText - The currency string to convert (e.g., "$123.00")

@@ -1,5 +1,8 @@
+import type { Notification } from "@components/notification/notification";
 import {
+	buildCashPromoCodeNotificationSubTitle,
 	buildCashPromoCodeTransactionsDetailsValue,
+	buildFreeSpinsPromoCodeNotificationSubTitle,
 	buildFreeSpinsPromoCodeTransactionsDetailsValue,
 	buildInformationalCashPromoCodeTransactionsDetailsValue,
 } from "@core/helpers/asserter-helpers/text-asserters";
@@ -7,16 +10,22 @@ import { testDetails } from "@core/helpers/test-details-helper";
 import {
 	createPngImagePath,
 	deleteFilesWithFilePaths,
+	formatLocalizedDate,
 	generate2FACodeFromQRCodeImage,
 	generateRandomString,
 	setAuthenticationCookies,
 } from "@core/utils/utils";
+import { CasinoGameCode } from "@enums/casino-game-code";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { PromoCodeStatusValue } from "@enums/db/campaign-promo-sattus-value";
 import { CampaignPromoType } from "@enums/db/campaign-promo-type";
 import { JiraUser } from "@enums/jira/jira-users";
 import { LogType } from "@enums/log-types";
+import { NotificationButton } from "@enums/notification-buttons";
+import { NotificationSubTitle } from "@enums/notification-subtitles";
+import { NotificationTitle } from "@enums/notification-titles";
 import { TestTag } from "@enums/test-tags";
+import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { test } from "@fixtures/fixtures";
 import { GamdomDb } from "database/gamdom-db";
@@ -86,6 +95,125 @@ const promoCampaignTestData: Record<
 			),
 	},
 };
+
+const freeSpinsAmount = 10;
+const rewardAmount = 100;
+const reloadDays = 7;
+
+const promoCampaignMatrix = {
+	CASH: {
+		name: "promo code campaign with cash bonus",
+		create: ({
+			gamdomDb,
+			promoCodeName,
+			promoCodeValue,
+			adminUserId,
+		}: {
+			gamdomDb: GamdomDb;
+			promoCodeName: string;
+			promoCodeValue: string;
+			adminUserId: number;
+		}) =>
+			gamdomDb.createCashPromoCampaign(
+				promoCodeName,
+				promoCodeValue,
+				adminUserId,
+				100,
+			),
+		assert: async ({ notifications }: { notifications: Notification }) => {
+			await notifications.assertThat().isDisplayed();
+			await notifications
+				.assertThat()
+				.titleIs(NotificationTitle.PROMO_CODE_BONUS);
+			await notifications
+				.assertThat()
+				.subTitleIs(
+					buildCashPromoCodeNotificationSubTitle(rewardAmount),
+				);
+			await notifications
+				.assertThat()
+				.buttonTextIs(NotificationButton.OPEN);
+		},
+	},
+	FREE_SPINS: {
+		name: "promo code campaign with free spins",
+		create: ({
+			gamdomDb,
+			promoCodeName,
+			promoCodeValue,
+			adminUserId,
+		}: {
+			gamdomDb: GamdomDb;
+			promoCodeName: string;
+			promoCodeValue: string;
+			adminUserId: number;
+		}) =>
+			gamdomDb.createFreeSpinsPromoCampaign(
+				promoCodeName,
+				promoCodeValue,
+				adminUserId,
+				CasinoGameCode.MYSTIC_CHIEF.code,
+				freeSpinsAmount,
+				rewardAmount,
+				reloadDays,
+			),
+		assert: async ({ notifications }: { notifications: Notification }) => {
+			await notifications.assertThat().isDisplayed();
+			await notifications
+				.assertThat()
+				.titleIs(NotificationTitle.PROMO_CODE_BONUS);
+			await notifications.assertThat().subTitleIs(
+				buildFreeSpinsPromoCodeNotificationSubTitle(
+					freeSpinsAmount,
+					rewardAmount,
+					formatLocalizedDate({
+						daysOffset: reloadDays,
+						includeTime: true,
+						atMidnight: true,
+					}),
+					CasinoGameCode.MYSTIC_CHIEF.name,
+				),
+			);
+			await notifications
+				.assertThat()
+				.buttonTextIs(NotificationButton.PLAY);
+		},
+	},
+	CASH_RELOAD: {
+		name: "promo code campaign with cash reload",
+		create: ({
+			gamdomDb,
+			promoCodeName,
+			promoCodeValue,
+			adminUserId,
+		}: {
+			gamdomDb: GamdomDb;
+			promoCodeName: string;
+			promoCodeValue: string;
+			adminUserId: number;
+		}) =>
+			gamdomDb.createCashReloadPromoCampaign(
+				promoCodeName,
+				promoCodeValue,
+				adminUserId,
+				rewardAmount,
+			),
+		assert: async ({ notifications }: { notifications: Notification }) => {
+			await notifications.assertThat().isDisplayed();
+			await notifications
+				.assertThat()
+				.titleIs(NotificationTitle.PROMO_CODE_BONUS);
+			await notifications
+				.assertThat()
+				.subTitleIs(NotificationSubTitle.RELOAD_REWARD);
+			await notifications
+				.assertThat()
+				.buttonTextIs(NotificationButton.OPEN);
+		},
+	},
+} as const;
+
+const promoCampaignVariants = Object.values(promoCampaignMatrix);
 
 test.describe(
 	"Promo code tests",
@@ -242,6 +370,7 @@ test.describe(
 
 		test.describe("Promo codes - redemption tests", () => {
 			let promoCodeValue: string;
+			let promoCodeName: string;
 			let adminUserId: number;
 
 			test.beforeAll(async ({ gamdomApiDbFacade }) => {
@@ -255,10 +384,51 @@ test.describe(
 
 			test.beforeEach(async () => {
 				promoCodeValue = generateRandomString({ length: 7 });
+				promoCodeName = generateRandomString({
+					length: 5,
+				});
 			});
 
 			test.afterEach(async ({ gamdomDb }) => {
 				await gamdomDb.deletePromoCampaignByPromoCode(promoCodeValue);
+			});
+
+			promoCampaignVariants.forEach((promoCampaign) => {
+				test(
+					`[ENG-2862] Redeem a promo code - ${promoCampaign.name} - shows correct notification`,
+					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+					async ({
+						walletModal,
+						homePage,
+						gamdomApiDbFacade,
+						page,
+						gamdomDb,
+						toast,
+						notifications,
+					}) => {
+						const { cookie } =
+							await gamdomApiDbFacade.createSingleUserDbAndAuth();
+
+						await promoCampaign.create({
+							gamdomDb,
+							promoCodeName,
+							promoCodeValue,
+							adminUserId,
+						});
+
+						await setAuthenticationCookies(page, cookie);
+						await homePage.navigateToWallet();
+						await walletModal
+							.steps()
+							.redeemPromoCodeSuccessfully(promoCodeValue);
+						await toast.assertThat().titleIs(ToastTitle.SUCCESS);
+						await toast
+							.assertThat()
+							.subTitleIs(ToastSubTitle.PROMO_CODE_REDEEMED);
+
+						await promoCampaign.assert({ notifications });
+					},
+				);
 			});
 
 			testData()
@@ -277,10 +447,6 @@ test.describe(
 							gamdomDb,
 							toast,
 						}) => {
-							const promoCodeName = generateRandomString({
-								length: 5,
-							});
-
 							const { user, cookie } =
 								await gamdomApiDbFacade.createSingleUserDbAndAuth();
 
