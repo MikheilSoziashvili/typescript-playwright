@@ -2,12 +2,14 @@ import { BasePageStep } from "@pages/base/base-page-step";
 import { CryptoAdminPage } from "./crypto-admin-page";
 import { TransactionType } from "@enums/transaction-types";
 import { CryptoNode } from "@enums/crypto-nodes";
+import { step } from "decorators/step";
 
 export class CryptoAdminSteps extends BasePageStep<CryptoAdminPage> {
 	public constructor(page: CryptoAdminPage) {
 		super(page);
 	}
 
+	@step("Set minimum deposit or withdraw")
 	async setDepositOrWithdrawMin(
 		action: TransactionType.DEPOSIT | TransactionType.WITHDRAWAL,
 		node: CryptoNode,
