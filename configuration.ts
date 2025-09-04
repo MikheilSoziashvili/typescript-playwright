@@ -13,6 +13,8 @@ import "dotenv/config";
 export const isScheduledRun = process.env.GITHUB_EVENT_NAME === "schedule";
 export const isCI = process.env.CI === "true";
 const shouldCreateExecution = process.env.CREATE_TEST_EXECUTION === "true";
+export const enableNewDesignV4Feature =
+	process.env.ENABLE_NEW_DESIGN_V4 === "true";
 
 export const environment_url = process.env.CI
 	? asString(process.env.ENVIRONMENT_URL)

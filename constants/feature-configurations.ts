@@ -5,3 +5,9 @@ export const ALL_USER_TYPES_ENABLED: Partial<Record<UserType, boolean>> = {
 	[UserType.BETA]: true,
 	[UserType.QA_USER]: true,
 };
+
+export const ALL_USER_TYPES_DISABLED: Partial<Record<UserType, boolean>> = {
+	[UserType.REGULAR]: false,
+	[UserType.BETA]: false,
+	[UserType.QA_USER]: false,
+};

@@ -11,19 +11,19 @@ const createProxyCredentials = (
 	password,
 });
 
-// USA server
+// USA server - blocked
 export const US_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8001");
 
-// United Kingdom server
+// United Kingdom server - soft blocked - removed from the e2e-staging config as the CI servers are in the UK
 export const UK_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8002");
 
-// Germany server
+// Germany server - soft blocked
 export const DE_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8003");
 
-// Netherlands server
+// Netherlands server - blocked
 export const NL_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8004");
 
@@ -31,27 +31,27 @@ export const NL_PROXY_CREDENTIALS =
 export const JP_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8005");
 
-// Belgium server
+// Belgium server - blocked
 export const BE_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8006");
 
-// Spain server
+// Spain server - soft blocked
 export const ES_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8007");
 
-// Australia server
+// Australia server - soft blocked
 export const AU_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8008");
 
-// Denmark server
+// Denmark server - soft blocked
 export const DK_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8009");
 
-// Portugal server
+// Portugal server - soft blocked
 export const PT_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8010");
 
-//France server
+// France server - soft blocked
 export const FR_PROXY_CREDENTIALS = createProxyCredentials(
 	"fr.oxylabs.io:    ", //TBD
 );
