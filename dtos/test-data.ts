@@ -98,9 +98,19 @@ export class BetTestData {
 
 export class PlinkoBetTestData {
 	public betAmount: number;
+	public rowsNumber?: number;
+	public riskValue?: number;
 
-	constructor(options: { betAmount?: number } = {}) {
+	constructor(
+		options: {
+			betAmount?: number;
+			rowsNumber?: number;
+			riskValue?: number;
+		} = {},
+	) {
 		this.betAmount = options.betAmount ?? 0.1;
+		this.rowsNumber = options.rowsNumber;
+		this.riskValue = options.riskValue;
 	}
 }
 

@@ -16,6 +16,8 @@ import { BasePageStep } from "@pages/base/base-page-step";
 import { expect, Locator } from "@playwright/test";
 import { step } from "decorators/step";
 import { PlinkoGamePage } from "./plinko-game-page";
+import { logger } from "@logger/logger";
+import { calculateExpectedBalanceForPlinko } from "@formulas/betting-calculations";
 
 export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 	public constructor(gamdomPage: PlinkoGamePage) {
@@ -228,5 +230,155 @@ export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 		}
 
 		return balances;
+	}
+
+	@step("Play Plinko until win")
+	public async playPlinkoUntilWin(
+		betAmount: number,
+		options?: {
+			rowsValue?: number;
+			riskValue?: number;
+		},
+	): Promise<void> {
+		let multiplier = 0;
+		const maxRounds = 50;
+		let historyResultsCount = 0;
+
+		await this.gamdomPage.fillInBetAmount(betAmount.toString());
+		await this.gamdomPage.defineSliderValues(options);
+
+		let previousHistoryCount = await this.getHistoryButtonsCount();
+
+		while (historyResultsCount < maxRounds) {
+			historyResultsCount++;
+
+			if (previousHistoryCount === 10) {
+				logger.info(
+					"Maximum history count reached (10), refreshing page...",
+				);
+				await this.refreshPageAndSetupBet(betAmount, options);
+				previousHistoryCount = 0;
+			}
+
+			const accountBalanceBeforeBet =
+				await this.userBalanceHandler.walletBalanceInFiatRounded();
+
+			const newHistoryResult = await this.waitForNewPlinkoResult(
+				previousHistoryCount,
+			);
+
+			previousHistoryCount = await this.getHistoryButtonsCount();
+
+			const isWin = newHistoryResult > 1.0;
+
+			const expectedBalance = calculateExpectedBalanceForPlinko(
+				accountBalanceBeforeBet,
+				betAmount,
+				newHistoryResult,
+			);
+
+			logger.info(
+				`Balance before: ${accountBalanceBeforeBet}, Expected after: ${expectedBalance}`,
+			);
+
+			await this.gamdomPage.authenticatedHeader
+				.assertThat()
+				.accountBalanceIs(expectedBalance);
+
+			if (isWin) {
+				multiplier = newHistoryResult;
+				logger.info(`Win detected with multiplier: ${multiplier}x`);
+				break;
+			} else {
+				logger.info(
+					`Loss detected with multiplier: ${multiplier}x - continuing...`,
+				);
+			}
+		}
+	}
+
+	@step("Wait for new Plinko result")
+	public async waitForNewPlinkoResult(
+		previousHistoryCount: number,
+	): Promise<number> {
+		logger.info(
+			`Waiting for history count to increase from ${previousHistoryCount}`,
+		);
+
+		await this.gamdomPage.map.dropBallButton.click();
+		await waitUntil(
+			async () => {
+				const currentCount = await this.getHistoryButtonsCount();
+				logger.info(
+					`Waiting for count increase: ${currentCount} > ${previousHistoryCount}`,
+				);
+				return currentCount > previousHistoryCount;
+			},
+			{
+				errorMessage: `History count did not increase from ${previousHistoryCount} after dropping ball.`,
+				intervalSeconds: TimeoutSeconds.HALF,
+				timeoutSeconds: TimeoutSeconds.TEN,
+			},
+		);
+
+		const latestResult = await this.getParsedPlinkoResult();
+		logger.info(`New Plinko result found: ${latestResult}`);
+
+		return latestResult;
+	}
+
+	@step("Get history buttons count")
+	private async getHistoryButtonsCount(): Promise<number> {
+		try {
+			const count =
+				await this.gamdomPage.map.inGameChipsHistoryButton.count();
+			logger.info(`History buttons count: ${count}`);
+			return count;
+		} catch (error) {
+			throw new Error(`Failed to get history count: ${String(error)}`);
+		}
+	}
+
+	@step("Get parsed Plinko result")
+	private async getParsedPlinkoResult(): Promise<number> {
+		await this.gamdomPage.assertThat().verifyInGameHistoryIsDisplayed();
+		const latestResult = await this.gamdomPage.map.inGameChipsHistoryButton
+			.first()
+			.textContent();
+
+		if (!latestResult) {
+			throw new Error("Could not get result from history button");
+		}
+
+		const parsedHistoryResult = parseMultiplier(
+			latestResult.trim(),
+			getFormattedMultiplier({ isBig: true }),
+		);
+
+		logger.info(`Current Plinko history result: ${parsedHistoryResult}`);
+
+		return parsedHistoryResult;
+	}
+
+	@step("Refresh page and setup bet")
+	private async refreshPageAndSetupBet(
+		betAmount: number,
+		options?: {
+			rowsValue?: number;
+			riskValue?: number;
+		},
+	): Promise<void> {
+		try {
+			logger.info("Refreshing page to clear history...");
+
+			await this.gamdomPage.navigateAndWaitForGameToLoad();
+
+			await this.gamdomPage.fillInBetAmount(betAmount.toString());
+			await this.gamdomPage.defineSliderValues(options);
+		} catch (error) {
+			throw new Error(
+				`Failed to refresh page and setup bet: ${String(error)}`,
+			);
+		}
 	}
 }

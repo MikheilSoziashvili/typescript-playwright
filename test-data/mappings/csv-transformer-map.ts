@@ -3,6 +3,7 @@ import {
 	PlinkoBetsAcrossMultipleWalletsCsvRecord,
 	UserProfileItemsLinksAccessibilityCsvRecord,
 } from "@dtos/csv";
+import { PlinkoTestDataCsvRecord } from "@dtos/csv/plinko-test-data-csv";
 import { UserInfoSendNotificationCsvRecord } from "@dtos/csv/user-info-send-notification-csv";
 import { CsvFilesName } from "@enums/csv-file-name";
 import {
@@ -13,6 +14,10 @@ import {
 	parsePlinkoBetsAcrossMultipleWalletsCsvRow,
 	PlinkoBetsAcrossMultipleWalletsCsvParsedRecord,
 } from "test-data/parsers/plinko-bets-across-multiple-wallets-csv-parser";
+import {
+	parsePlinkoTestDataCsvRow,
+	PlinkoTestDataCsvParsedRecord,
+} from "test-data/parsers/plinko-test-data-csv-parser";
 import {
 	parseUserInfoSendNotificationCsvRow,
 	UserInfoSendNotificationCsvParsedRecord,
@@ -33,6 +38,10 @@ export type CsvTransformerExisting<T> = T extends keyof CsvTransformerMapType
 	? T
 	: never;
 
+export type CsvRowType<T extends keyof CsvTransformerMapType> = Parameters<
+	CsvTransformerMapType[T]
+>[0];
+
 export type CsvTransformerMapType = {
 	[CsvFilesName.ORIGINALS_QUICK_SELECT_BUTTONS]: (
 		row: OriginalsQuickSelectButtonsCsvRecord,
@@ -49,6 +58,10 @@ export type CsvTransformerMapType = {
 	[CsvFilesName.PLINKO_BETS_ACROSS_MULTIPLE_WALLETS]: (
 		row: PlinkoBetsAcrossMultipleWalletsCsvRecord,
 	) => PlinkoBetsAcrossMultipleWalletsCsvParsedRecord;
+
+	[CsvFilesName.PLINKO_TEST_DATA]: (
+		row: PlinkoTestDataCsvRecord,
+	) => PlinkoTestDataCsvParsedRecord;
 };
 
 export const CsvTransformerMap: CsvTransformerMapType = {
@@ -60,4 +73,5 @@ export const CsvTransformerMap: CsvTransformerMapType = {
 		parseUserProfileItemsLinksAccessibilityCsvRow,
 	[CsvFilesName.PLINKO_BETS_ACROSS_MULTIPLE_WALLETS]:
 		parsePlinkoBetsAcrossMultipleWalletsCsvRow,
+	[CsvFilesName.PLINKO_TEST_DATA]: parsePlinkoTestDataCsvRow,
 } as const;

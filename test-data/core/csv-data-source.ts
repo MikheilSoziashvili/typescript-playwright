@@ -5,6 +5,7 @@ import path from "path";
 import { parse } from "csv-parse/sync";
 import { CsvFileLoadError, CsvParseError } from "test-data/custom-exceptions";
 import {
+	CsvRowType,
 	CsvTransformerExistingReturnType,
 	CsvTransformerMapType,
 } from "test-data/mappings/csv-transformer-map";
@@ -50,7 +51,7 @@ export class CSVDataSource {
 	 * @throws {CsvParseError} If loading or transforming the CSV data fails.
 	 */
 	public loadParsed<T extends keyof CsvTransformerMapType>(params: {
-		transform: CsvTransformerMapType[T];
+		transform: (row: CsvRowType<T>) => CsvTransformerExistingReturnType<T>;
 	}): CsvTransformerExistingReturnType<T> {
 		try {
 			const csvRaw = this.loadRaw<CsvDtoMap[T]>();

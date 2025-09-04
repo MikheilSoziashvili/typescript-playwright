@@ -45,4 +45,5 @@ export enum CsvFilesName {
 	KOTH_CURRENCIES_SYMBOLS = "ENG-4484-koth-currencies-symbols.csv",
 	EDIT_INFO_ADJUSTING_WALLETS = "ENG-6392-edit-info-adjusting-wallets.csv",
 	PROMO_CODE_FAILED_REDEMPTION = "ENG-3979-error-messages-failed-redemption.csv",
+	PLINKO_TEST_DATA = "ENG-2844-plinko-test-data.csv",
 }

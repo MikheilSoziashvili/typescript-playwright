@@ -55,3 +55,9 @@ export const calculateBetAmountWithPercentage = (
 	betAmount: number,
 	percentage: number,
 ): number => parseFloat((betAmount * (1 + percentage / 100)).toFixed(2));
+
+export const calculateExpectedBalanceForPlinko = (
+	initialBalance: number,
+	betAmount: number,
+	multiplier: number,
+): number => initialBalance + betAmount * (multiplier - 1);

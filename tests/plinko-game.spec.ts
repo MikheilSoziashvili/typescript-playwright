@@ -81,6 +81,33 @@ test.describe(
 			test.use(storageStateNewUserDB());
 			test.slow();
 
+			testData()
+				.fromCsvParsed({
+					file: CsvFilesName.PLINKO_TEST_DATA,
+				})
+				.forEach((record) => {
+					test(
+						`[ENG-2844] Plinko - Play a game and try to win - Bet: ${record.betAmount}, Rows: ${record.rowsValue}, Risk: ${record.riskValue}`,
+						testDetails()
+							.withAuthor(JiraUser.NIKOLAY_GENOV)
+							.apply(),
+						async ({ plinkoGamePage }) => {
+							const plinkoBetData = new PlinkoBetTestData({
+								betAmount: record.betAmount,
+							});
+
+							await plinkoGamePage.navigateAndWaitForGameToLoad();
+
+							await plinkoGamePage
+								.steps()
+								.playPlinkoUntilWin(plinkoBetData.betAmount, {
+									rowsValue: record.rowsValue,
+									riskValue: record.riskValue,
+								});
+						},
+					);
+				});
+
 			test(
 				"[ENG-5164] Verify Plinko is displayed in statistics and in the Last 24 Hours Stats",
 				testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),

@@ -588,6 +588,8 @@ export abstract class BasePage<T extends BaseMap> {
 			throw new Error("Could not get slider bounding box");
 		}
 
+		await sliderThumb.focus();
+
 		const targetX = calculateCoordinate(sliderBox, percentage);
 		const currentPercentage = calculatePercentage(
 			currentValue,

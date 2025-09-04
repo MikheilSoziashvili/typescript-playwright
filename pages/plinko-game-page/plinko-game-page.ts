@@ -50,6 +50,26 @@ export class PlinkoGamePage extends BasePage<PlinkoGamePageMap> {
 		await this.map.betAmountInput.fill(betAmount.toString());
 	}
 
+	@step("Define slider values")
+	public async defineSliderValues(options?: {
+		rowsValue?: number;
+		riskValue?: number;
+	}): Promise<void> {
+		if (options?.rowsValue !== undefined) {
+			await this.adjustSliderValue(
+				this.map.betRowsSliderContainer,
+				options.rowsValue,
+			);
+		}
+
+		if (options?.riskValue !== undefined) {
+			await this.adjustSliderValue(
+				this.map.riskRowsSliderContainer,
+				options.riskValue,
+			);
+		}
+	}
+
 	@step("Drop ball")
 	public async dropBall(): Promise<void> {
 		await this.map.dropBallButton.click();
