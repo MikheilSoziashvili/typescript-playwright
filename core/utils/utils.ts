@@ -1378,3 +1378,24 @@ export function buildMessagePairs(
 		};
 	});
 }
+
+/**
+ * Parse CSV string of tags into array of UserTags
+ */
+export function parseExpectedTags(tagsString: string): UserTags[] {
+	return tagsString
+		.split(",")
+		.map((t) => t.trim())
+		.filter(Boolean)
+		.map((t) => UserTags[t as keyof typeof UserTags]);
+}
+
+/**
+ * Parse CSV string into array of strings
+ */
+export function parseExpectedAdditionalFields(fieldsString: string): string[] {
+	return fieldsString
+		.split(",")
+		.map((f) => f.trim())
+		.filter(Boolean);
+}

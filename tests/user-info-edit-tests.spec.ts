@@ -1,12 +1,19 @@
 import { DATASETS_DIR } from "@constants/file-paths";
-import { parse_csv } from "@core/utils/utils";
 import { testDetails } from "@core/helpers/test-details-helper";
+import {
+	parse_csv,
+	parseExpectedAdditionalFields,
+	parseExpectedTags,
+} from "@core/utils/utils";
 import { BalanceEditStep, RegisterTestData } from "@dtos/test-data";
 import { UserInfoTabs } from "@enums/admin/user-info-tabs";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
 import { JiraComponent } from "@enums/jira/jira-components";
+import { JiraUser } from "@enums/jira/jira-users";
+import { AnnotationType } from "@enums/playwright/annotationsTypes";
+import { TestTag } from "@enums/test-tags";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { Unit } from "@enums/units";
@@ -15,12 +22,9 @@ import {
 	storageStateNewUserDB,
 } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
+import { isScheduledRun } from "configuration";
 import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
 import { testData } from "test-data/test-data-manager";
-import { JiraUser } from "@enums/jira/jira-users";
-import { TestTag } from "@enums/test-tags";
-import { AnnotationType } from "@enums/playwright/annotationsTypes";
-import { isScheduledRun } from "configuration";
 
 interface StaffRoleCsvRecord {
 	staffRoleTag: keyof typeof UserTags;
@@ -39,6 +43,7 @@ const staffRoleVisibilityDataset = parse_csv(
 ) as {
 	adminStaffRole: string;
 	userTags: string;
+	additionalFields: string;
 }[];
 
 test.describe(
@@ -113,50 +118,66 @@ test.describe(
 
 		staffRoleVisibilityDataset.forEach((recordVisibility) => {
 			test.describe(`Edit Info - Tag visibility for role: ${recordVisibility.adminStaffRole}`, () => {
+				const __adminRoles = recordVisibility.adminStaffRole.split(
+					"|",
+				) as (keyof typeof UserTags)[];
+				const __adminTags = __adminRoles.map((role) => UserTags[role]);
+
 				test.use(
 					storageStateNewUserDB({
 						userClass: UserClasses.Admin,
-						tags: UserTags[
-							recordVisibility.adminStaffRole as keyof typeof UserTags
-						],
+						tags: __adminTags,
 					}),
 				);
 
 				test(
 					`[ENG-5552] Admin with '${recordVisibility.adminStaffRole}' can see assigned tags`,
-					testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+					testDetails()
+						.withTags(JiraComponent.EDIT_INFO)
+						.withAuthor(JiraUser.ANGEL_PETROV)
+						.apply(),
 					async ({
 						userInfoAdminPage,
-						gamdomDb,
 						userInfoEditInfoAdminPage,
+						gamdomApiDbFacade,
 					}) => {
-						const newUserData = new RegisterTestData();
-						await gamdomDb.createNewUser({
-							username: newUserData.username,
-							password: newUserData.password,
-							email: newUserData.email,
+						const [user] = await gamdomApiDbFacade.createUsersDb({
+							usersCount: 1,
 							emailVerified: true,
 							userClass: UserClasses.User,
 						});
 
-						const expectedTags = recordVisibility.userTags
-							.split(",")
-							.map((t) => t.trim())
-							.map((t) => {
-								const tag =
-									UserTags[t as keyof typeof UserTags];
-								return tag;
-							});
+						const cryptoUnits: Unit[] = Object.values(Unit);
+
+						await gamdomApiDbFacade.upsertUserWalletsDb(
+							user.userId,
+							cryptoUnits,
+							SUPER_HIGH_USER_AMOUNT,
+						);
+
+						const expectedTags = parseExpectedTags(
+							recordVisibility.userTags,
+						);
+						const expectedAdditionalFields =
+							parseExpectedAdditionalFields(
+								recordVisibility.additionalFields,
+							);
 
 						await userInfoAdminPage
 							.steps()
-							.navigateAndShowUserDetails(newUserData.username);
+							.navigateAndShowUserDetails(user.username);
 						await userInfoAdminPage.clickUserInfoTab(
 							UserInfoTabs.EditInfo,
 						);
 						await userInfoEditInfoAdminPage
 							.assertThat()
 							.verifyTagsAreVisible(expectedTags);
+
+						await userInfoEditInfoAdminPage
+							.assertThat()
+							.verifyAdditionalFieldsAreVisible(
+								expectedAdditionalFields,
+							);
 					},
 				);
 			});

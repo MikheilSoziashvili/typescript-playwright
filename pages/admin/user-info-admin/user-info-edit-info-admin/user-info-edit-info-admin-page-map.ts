@@ -1,6 +1,6 @@
-import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
 import { UserTags } from "@enums/db/user-tags";
+import { Locator, Page } from "@playwright/test";
 
 export class UserInfoEditInfoAdminPageMap extends BaseMap {
 	public constructor(page: Page) {
@@ -26,5 +26,11 @@ export class UserInfoEditInfoAdminPageMap extends BaseMap {
 
 	public rowInputByLabel(wallet: string): Locator {
 		return this.rowByLabel(wallet).getByTestId("Input");
+	}
+
+	public rowByKeyExact(key: string): Locator {
+		return this.page.locator("tr").filter({
+			has: this.page.locator("td").getByText(key, { exact: true }),
+		});
 	}
 }
