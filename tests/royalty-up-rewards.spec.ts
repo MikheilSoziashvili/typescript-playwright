@@ -3,38 +3,21 @@ import { ToastTitle } from "@enums/toast-titles";
 import { test } from "@fixtures/fixtures";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { RewardsRoyaltyUpRanks } from "@enums/rewards-royalty-up-ranks";
-import { generateEmailAndInbox } from "@core/utils/utils";
-import { MAILINATOR_DOMAIN } from "@constants/domains";
 import { OriginalGame, RouletteBetColor } from "@enums/original-games";
 import { HiloBetOption } from "@enums/hilo-bet-options";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraUser } from "@enums/jira/jira-users";
+import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
 
 // TODO: Add additional test data for different games and bet types when rewards calculation is defined.
 const rewardsInputData = [
 	{
-		tipUserAmount: 1500000000,
+		tipUserAmount: SUPER_HIGH_USER_AMOUNT,
 		game: OriginalGame.Dice,
-		betAmount: 400000,
-		betType: 1.1,
-		expectedRankToast: RewardsRoyaltyUpRanks.SILVER_1,
-		expectedClaimableRanks: [
-			RewardsRoyaltyUpRanks.BRONZE_1,
-			RewardsRoyaltyUpRanks.BRONZE_2,
-			RewardsRoyaltyUpRanks.BRONZE_3,
-			RewardsRoyaltyUpRanks.SILVER_1,
-		],
-		expectedInProgressRanks: RewardsRoyaltyUpRanks.SILVER_2,
-	},
-	{
-		tipUserAmount: 1500000000,
-		game: OriginalGame.Crash,
-		betAmount: 500000,
+		betAmount: 200000,
 		betType: 1.1,
 		expectedRankToast: RewardsRoyaltyUpRanks.GOLD_1,
 		expectedClaimableRanks: [
-			RewardsRoyaltyUpRanks.BRONZE_1,
-			RewardsRoyaltyUpRanks.BRONZE_2,
 			RewardsRoyaltyUpRanks.BRONZE_3,
 			RewardsRoyaltyUpRanks.SILVER_1,
 			RewardsRoyaltyUpRanks.SILVER_2,
@@ -44,14 +27,26 @@ const rewardsInputData = [
 		expectedInProgressRanks: RewardsRoyaltyUpRanks.GOLD_2,
 	},
 	{
-		tipUserAmount: 1500000000,
+		tipUserAmount: SUPER_HIGH_USER_AMOUNT,
+		game: OriginalGame.Crash,
+		betAmount: 50000,
+		betType: 1.1,
+		expectedRankToast: RewardsRoyaltyUpRanks.SILVER_3,
+		expectedClaimableRanks: [
+			RewardsRoyaltyUpRanks.BRONZE_3,
+			RewardsRoyaltyUpRanks.SILVER_1,
+			RewardsRoyaltyUpRanks.SILVER_2,
+			RewardsRoyaltyUpRanks.SILVER_3,
+		],
+		expectedInProgressRanks: RewardsRoyaltyUpRanks.GOLD_1,
+	},
+	{
+		tipUserAmount: SUPER_HIGH_USER_AMOUNT,
 		game: OriginalGame.Roulette,
-		betAmount: 600000,
+		betAmount: 70000,
 		betType: RouletteBetColor.BLACK,
 		expectedRankToast: RewardsRoyaltyUpRanks.GOLD_1,
 		expectedClaimableRanks: [
-			RewardsRoyaltyUpRanks.BRONZE_1,
-			RewardsRoyaltyUpRanks.BRONZE_2,
 			RewardsRoyaltyUpRanks.BRONZE_3,
 			RewardsRoyaltyUpRanks.SILVER_1,
 			RewardsRoyaltyUpRanks.SILVER_2,
@@ -61,14 +56,12 @@ const rewardsInputData = [
 		expectedInProgressRanks: RewardsRoyaltyUpRanks.GOLD_2,
 	},
 	{
-		tipUserAmount: 1500000000,
+		tipUserAmount: SUPER_HIGH_USER_AMOUNT,
 		game: OriginalGame.HiLo,
-		betAmount: 500000,
+		betAmount: 70000,
 		betType: HiloBetOption.BLACK,
 		expectedRankToast: RewardsRoyaltyUpRanks.GOLD_1,
 		expectedClaimableRanks: [
-			RewardsRoyaltyUpRanks.BRONZE_1,
-			RewardsRoyaltyUpRanks.BRONZE_2,
 			RewardsRoyaltyUpRanks.BRONZE_3,
 			RewardsRoyaltyUpRanks.SILVER_1,
 			RewardsRoyaltyUpRanks.SILVER_2,
@@ -81,39 +74,18 @@ const rewardsInputData = [
 
 rewardsInputData.forEach((inputData) => {
 	test.describe("Rewards - Royalty Up tests", () => {
-		test.fixme(
-			true,
-			`Skipped until rewards functionality is fully polished`,
+		test.use(
+			storageStateNewUserDB({
+				amount: inputData.tipUserAmount,
+				emailVerified: true,
+			}),
 		);
-
-		let email: string;
-		let inbox: string;
-
-		test.beforeEach(() => {
-			({ email, inbox } = generateEmailAndInbox());
-			test.use(
-				storageStateNewUserDB({
-					amount: inputData.tipUserAmount,
-					email: email,
-				}),
-			);
-		});
 
 		test(
 			`[ENG-3712] Verify in-progress rank gain for '${inputData.game}' Originals game with '${inputData.betAmount}' bet, expected rank '${inputData.expectedInProgressRanks}', and claim all Royalty-Up rewards`,
 			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
-			async ({
-				rewardsPage,
-				toast,
-				page,
-				profilePage,
-				mailinatorApi,
-				originalsPage,
-			}) => {
+			async ({ rewardsPage, toast, originalsPage }) => {
 				test.slow();
-				await profilePage
-					.steps()
-					.verifyEmail(mailinatorApi, MAILINATOR_DOMAIN, inbox, page);
 
 				await originalsPage.navigateToGame(inputData.game);
 				await originalsPage.placeBet(

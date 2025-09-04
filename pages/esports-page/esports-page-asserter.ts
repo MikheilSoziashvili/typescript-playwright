@@ -11,7 +11,11 @@ export class EsportsPageAsserter extends BaseAsserter<EsportsPage> {
 	@step("Check page elements are visible")
 	async pageElementsAreVisible(): Promise<void> {
 		await this.checkElementsAreVisible(
-			[this.gamdomPage.map.esportsPageTitle],
+			[
+				this.gamdomPage.map.esportsButton,
+				this.gamdomPage.map.featuredMatchesTitle,
+				this.gamdomPage.map.liveMatchesTitle,
+			],
 			Timeout.MAX,
 		);
 	}

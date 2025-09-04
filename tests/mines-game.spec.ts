@@ -8,7 +8,6 @@ import { MinesAutobetTestData, MinesBetTestData } from "@dtos/test-data";
 import { Feature } from "@enums/feature";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
-import { BrowserName } from "@enums/playwright/project-browser-names";
 import { TestTag } from "@enums/test-tags";
 import { UserType } from "@enums/user-types";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
@@ -42,10 +41,6 @@ test.describe("Mines tests", () => {
 			.withAuthor(JiraUser.RALUCA_ARITON)
 			.apply(),
 		async ({ minesGamePage, userBalanceHandler }, testInfo) => {
-			test.fixme(
-				testInfo.project.name === BrowserName.FIREFOX,
-				"https://gamdom.atlassian.net/browse/ENG-7162",
-			);
 			await minesGamePage.navigateAndWaitForGameToLoad();
 
 			await minesGamePage.steps().placeBetAndConfigureMines(minesBetData);

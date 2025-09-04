@@ -16,6 +16,7 @@ import { test } from "@fixtures/fixtures";
 import { CsvFilesName } from "../enums/csv-file-name";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraUser } from "@enums/jira/jira-users";
+import { AnnotationType } from "@enums/playwright/annotationsTypes";
 
 const postRecords = parse_csv(
 	DATASETS_DIR,
@@ -45,12 +46,12 @@ test.describe("Create article and posts tests", () => {
 	postRecords.forEach((postRecords) => {
 		test(
 			`[ENG-1057] Create new [${postRecords.category}] article and post it in [${postRecords.category_endpoint}] category`,
-			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			testDetails()
+				.withJiraBugTickets("2627")
+				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+				.apply(),
 			async ({ writerAdminPage, toast, blogCategoryPage }) => {
-				test.fixme(
-					true,
-					`[ENG-2627] Newly created post articles are not displayed in post category page`,
-				);
+				test.fixme(true);
 				const postArticleTestData = new BlogPostTestData({
 					paragraph: generateRandomString({
 						prefix: "automation_blog_paragraph_",

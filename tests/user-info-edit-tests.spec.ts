@@ -60,10 +60,6 @@ test.describe(
 					`[ENG-5543] Edit Info - Selecting '${record.staffRoleTag}' checks its related tags`,
 					testDetails()
 						.withTags(TestTag.LOCAL)
-						.withArbitraryAnnotations({
-							type: AnnotationType.INFRASTRUCTURE,
-							description: `Skip on CI due to OBT error - server is not started when the nightly runs`,
-						})
 						.withJiraBugTickets("8283")
 						.withAuthor(JiraUser.ANGEL_PETROV)
 						.apply(),

@@ -18,6 +18,7 @@ import {
 	SoftBlockedCountry,
 } from "@enums/geoblocked-countries";
 import { JiraUser } from "@enums/jira/jira-users";
+import { AnnotationType } from "@enums/playwright/annotationsTypes";
 import { test } from "@fixtures/fixtures";
 import * as Configuration from "configuration";
 
@@ -82,48 +83,55 @@ for (const baseURL of baseUrls) {
 
 /* Skipping softblocked countries due to current proxy limitations:
 - AU: too far, site not loading
-- DE, PT: fastly routes traffic through US and ZA
 - UK - Disabled from soft blocked countries as the CI runners are in the UK
 Unskip once proxies are stable or replaced.*/
 for (const country of softBlockedCountries) {
-	test.describe(`Soft blocked country: ${country}`, () => {
-		test.fixme(
-			country !== SoftBlockedCountry.DENMARK &&
-				country !== SoftBlockedCountry.SPAIN,
-			"Skip due to proxy limitations and issues",
-		);
-		test.use({
-			proxy: softBlockedCredentialsMap.get(country),
-		});
+	test.describe(
+		`Soft blocked country: ${country}`,
+		testDetails()
+			.withArbitraryAnnotations({
+				type: AnnotationType.INFRASTRUCTURE,
+				description: `Skipped softblocked countries (AU, UK) due to current proxy limitations.`,
+			})
+			.apply(),
+		() => {
+			test.fixme(
+				country === SoftBlockedCountry.UNITED_KINGDOM ||
+					country === SoftBlockedCountry.AUSTRALIA,
+			);
+			test.use({
+				proxy: softBlockedCredentialsMap.get(country),
+			});
 
-		test(
-			`[ENG-2621] Check the country-based access restrictions : Soft blocked in ${country}`,
-			testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
-			async ({ homePage, softblockModal }) => {
-				await homePage.navigate();
+			test(
+				`[ENG-2621] Check the country-based access restrictions : Soft blocked in ${country}`,
+				testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+				async ({ homePage, softblockModal }) => {
+					await homePage.navigate();
 
-				await softblockModal.assertThat().isDisplayed();
+					await softblockModal.assertThat().isDisplayed();
 
-				await softblockModal
-					.assertThat()
-					.hasCorrectTitle(SOFTBLOCK_MODAL_TITLE);
+					await softblockModal
+						.assertThat()
+						.hasCorrectTitle(SOFTBLOCK_MODAL_TITLE);
 
-				await softblockModal.steps().closeSoftblockModal();
-				await softblockModal.assertThat().isNotDisplayed();
+					await softblockModal.steps().closeSoftblockModal();
+					await softblockModal.assertThat().isNotDisplayed();
 
-				await homePage.unauthenticatedHeader
-					.assertThat()
-					.isCreateAccountButtonDisabled();
+					await homePage.unauthenticatedHeader
+						.assertThat()
+						.isCreateAccountButtonDisabled();
 
-				await homePage.assertThat().verifyTopBannerButtonsState();
+					await homePage.assertThat().verifyTopBannerButtonsState();
 
-				await homePage
-					.steps()
-					.loginUser(
-						USER_1_CREDENTIALS.username,
-						USER_1_CREDENTIALS.password,
-					);
-			},
-		);
-	});
+					await homePage
+						.steps()
+						.loginUser(
+							USER_1_CREDENTIALS.username,
+							USER_1_CREDENTIALS.password,
+						);
+				},
+			);
+		},
+	);
 }

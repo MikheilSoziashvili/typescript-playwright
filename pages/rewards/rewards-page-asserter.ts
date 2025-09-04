@@ -138,7 +138,7 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 			const expectedRewardValue = RewardsRoyaltyUpRanksValues[key];
 			await expect(
 				this.gamdomPage.map.royaltyUpItemClaimButton(reward),
-			).toHaveText(`Claim $${expectedRewardValue}`);
+			).toHaveText(`Claim $${expectedRewardValue.toFixed(2)}`);
 		}
 	}
 

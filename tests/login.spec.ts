@@ -3,9 +3,10 @@ import { testDetails } from "@core/helpers/test-details-helper";
 import { parse_csv, toJson } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { JiraUser } from "@enums/jira/jira-users";
+import { AnnotationType } from "@enums/playwright/annotationsTypes";
 import { TestTag } from "@enums/test-tags";
 import { test } from "@fixtures/fixtures";
-import { users } from "configuration";
+import { isCI, users } from "configuration";
 import { testData } from "test-data/test-data-manager";
 
 test.describe("Login tests", () => {
@@ -67,12 +68,18 @@ test.describe("Login tests", () => {
 
 		test(
 			`[ENG-294] Login using username - Login is rejected: [Username: ${record.username}] [Password: ${record.password}]`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			testDetails()
+				.withArbitraryAnnotations({
+					type: AnnotationType.BUG,
+					description:
+						"Missing field-level validation for excessively long usernames",
+				})
+				.withAuthor(JiraUser.NIKOLAY_GENOV)
+				.apply(),
 			async ({ homePage }) => {
 				test.fixme(
 					record.username ===
 						"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-					"Fix when bug [ENG-2397] is fixed",
 				);
 				await homePage.navigateAndCheckTitle();
 
@@ -165,12 +172,13 @@ test.describe("Login tests", () => {
 
 	test(
 		"[ENG-2722] Login with Google user through Google auth portal",
-		testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+		testDetails()
+			.withTags(TestTag.LOCAL)
+			.withJiraBugTickets("3177")
+			.withAuthor(JiraUser.NIKOLAY_GENOV)
+			.apply(),
 		async ({ homePage, googleAuthPage }) => {
-			test.fixme(
-				!!process.env.CI,
-				"ENG-3177 Additional captcha input field for text from picture is added for Google auth",
-			);
+			test.fixme(isCI);
 			await homePage.navigateAndCheckTitle();
 
 			await homePage.unauthenticatedHeader.openLoginModal();

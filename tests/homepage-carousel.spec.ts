@@ -42,10 +42,6 @@ test.describe("Homepage banner carousel", () => {
 		`[ENG-1158] - Homepage banner carousel - esports page`,
 		testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
 		async ({ homePage, esportsPage }) => {
-			test.fixme(
-				true,
-				"Slots battle page banner is not enabled on staging-for-e2e-tests environment",
-			);
 			await homePage.navigateAndCheckTitle();
 			await homePage.assertThat().isBannerCarouselDisplayed();
 			await homePage
@@ -62,10 +58,6 @@ test.describe("Homepage banner carousel", () => {
 		`[ENG-1158] - Homepage banner carousel - slots battle page`,
 		testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
 		async ({ homePage, slotsBattlePage }) => {
-			test.fixme(
-				true,
-				"Slots battle page banner is not enabled on staging-for-e2e-tests environment",
-			);
 			await homePage.navigateAndCheckTitle();
 			await homePage.assertThat().isBannerCarouselDisplayed();
 			await homePage

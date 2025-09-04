@@ -14,6 +14,7 @@ import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
+import { AnnotationType } from "@enums/playwright/annotationsTypes";
 import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { PromotionCategories } from "@enums/promotion-categories";
 import { PromotionIsVipCategories } from "@enums/promotion-is-vip-categories";
@@ -360,13 +361,11 @@ test.describe(
 					`[ENG-5576] Promotions - Create a new promotion - Promotion Category: ${combination.category} - Promotion Subcategory: ${combination.subCategory} - Is For VIP: ${combination.isForVip}`,
 					testDetails()
 						.withTags(TestTag.LOCAL)
+						.withJiraBugTickets("7501")
 						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 						.apply(),
 					async ({ promotionAdminPage, promotionsModal, toast }) => {
-						test.fixme(
-							isCI,
-							"Skip on CI due to https://gamdom.atlassian.net/browse/ENG-7501",
-						);
+						test.fixme(isCI);
 						promotionName = generateRandomString({
 							prefix: `new_promotion_${combination.category}_${combination.subCategory}_${combination.isForVip}_`,
 							length: 3,
@@ -455,6 +454,7 @@ test.describe(
 						`[ENG-5736] Promotions - Update '${promotionType.name}' active promotion. Promotion Category: ${combination.category} - Promotion Subcategory: ${combination.subCategory} - Is For VIP: ${combination.isForVip}`,
 						testDetails()
 							.withTags(TestTag.LOCAL)
+							.withJiraBugTickets("7501")
 							.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 							.apply(),
 						async ({
@@ -463,10 +463,7 @@ test.describe(
 							toast,
 							gamdomDb,
 						}) => {
-							test.fixme(
-								isCI,
-								"Skip on CI due to https://gamdom.atlassian.net/browse/ENG-7501",
-							);
+							test.fixme(isCI);
 							promotionName = generateRandomString({
 								prefix: `${promotionType.name.toLowerCase()}_promotion_`,
 								length: 5,
