@@ -6,6 +6,7 @@ import { handleError } from "@core/api/error-handler";
 import { PayloadType, RequestOptions } from "@core/types/types";
 import { KnownError } from "@core/types/error-types";
 import { HttpStatus } from "@enums/http-status";
+import { BaseApiOptions } from "@core/api/interfaces/base-api-options";
 
 /**
  * This BaseApi class serves as a foundation for managing HTTP requests.
@@ -14,19 +15,21 @@ export class BaseApi {
 	private context: Promise<APIRequestContext>;
 	private baseUrl: string;
 	private requestHeaders: Record<string, string> = {};
+	public apiOptions: Partial<BaseApiOptions> | undefined;
 
 	/**
 	 * Initializes the request context and sets the base URL and default headers.
 	 *
 	 * @param {string} baseUrl - The base URL for all requests made by this instance.
 	 */
-	constructor(baseUrl: string) {
+	constructor(baseUrl: string, options?: Partial<BaseApiOptions>) {
 		this.baseUrl = baseUrl;
 		this.context = request.newContext({
 			baseURL: this.baseUrl,
 			ignoreHTTPSErrors: true,
 		});
 		this.requestHeaders["Content-Type"] = "application/json";
+		this.apiOptions = options;
 	}
 
 	/**
@@ -247,8 +250,11 @@ export class BaseApi {
 
 			return response;
 		} catch (error) {
-			this.logRequestFailure(method, url, error, requestOptions);
-			handleError(error as KnownError);
+			if (!this.apiOptions?.suppressRequestFailureLogging) {
+				this.logRequestFailure(method, url, error, requestOptions);
+				handleError(error as KnownError);
+			}
+
 			throw error;
 		}
 	}

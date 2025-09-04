@@ -22,7 +22,9 @@ export class DbServiceManager {
 		this.timeoutMs = this.configuration.serviceManager.healthCheckTimeout;
 		this.pollIntervalMs =
 			this.configuration.serviceManager.healthCheckInterval;
-		this.dbPoolServiceApi = new DbPoolServiceApi();
+		this.dbPoolServiceApi = new DbPoolServiceApi({
+			options: { suppressRequestFailureLogging: true },
+		});
 		this.scriptPath = path.resolve(__dirname, "./db-pool-server.ts");
 
 		this.registerCleanupHandlers();

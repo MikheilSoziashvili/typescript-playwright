@@ -10,12 +10,20 @@ import {
 } from "services/db-pool-service/types";
 import { QueryResultRow } from "pg";
 import { buildBaseUrl } from "services/db-pool-service/utils";
+import { BaseApiOptions } from "@core/api/interfaces/base-api-options";
 
 export class DbPoolServiceApi extends BaseApi {
-	constructor(
-		private dbPoolServiceConfiguration: DbPoolServiceConfiguration = dbPoolServiceConfig,
-	) {
-		super(buildBaseUrl(dbPoolServiceConfiguration));
+	private dbPoolServiceConfiguration: DbPoolServiceConfiguration;
+
+	constructor({
+		dbPoolServiceConfiguration = dbPoolServiceConfig,
+		options,
+	}: {
+		dbPoolServiceConfiguration?: DbPoolServiceConfiguration;
+		options?: BaseApiOptions;
+	} = {}) {
+		super(buildBaseUrl(dbPoolServiceConfiguration), options);
+		this.dbPoolServiceConfiguration = dbPoolServiceConfiguration;
 	}
 
 	/**
