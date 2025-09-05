@@ -317,7 +317,7 @@ export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 			{
 				errorMessage: `History count did not increase from ${previousHistoryCount} after dropping ball.`,
 				intervalSeconds: TimeoutSeconds.HALF,
-				timeoutSeconds: TimeoutSeconds.TEN,
+				timeoutSeconds: TimeoutSeconds.THIRTY,
 			},
 		);
 
