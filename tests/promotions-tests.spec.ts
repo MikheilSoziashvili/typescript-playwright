@@ -14,7 +14,6 @@ import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
-import { AnnotationType } from "@enums/playwright/annotationsTypes";
 import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { PromotionCategories } from "@enums/promotion-categories";
 import { PromotionIsVipCategories } from "@enums/promotion-is-vip-categories";

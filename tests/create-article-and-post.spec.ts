@@ -16,7 +16,6 @@ import { test } from "@fixtures/fixtures";
 import { CsvFilesName } from "../enums/csv-file-name";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraUser } from "@enums/jira/jira-users";
-import { AnnotationType } from "@enums/playwright/annotationsTypes";
 
 const postRecords = parse_csv(
 	DATASETS_DIR,
