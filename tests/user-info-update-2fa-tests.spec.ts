@@ -1,5 +1,6 @@
 import { DATASETS_DIR } from "@constants/file-paths";
-import { PT_PROXY_CREDENTIALS } from "@constants/proxies";
+import { JP_PROXY_CREDENTIALS } from "@constants/proxies";
+import { testDetails } from "@core/helpers/test-details-helper";
 import {
 	createBrowserContextWithProxy,
 	createPngImagePath,
@@ -9,11 +10,10 @@ import {
 	parse_csv,
 } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
+import { JiraUser } from "@enums/jira/jira-users";
 import { ContactType } from "@enums/personal-info-types";
 import { test } from "@fixtures/fixtures";
 import { storageStateNewUserDB } from "../fixtures/auth-fixtures";
-import { testDetails } from "@core/helpers/test-details-helper";
-import { JiraUser } from "@enums/jira/jira-users";
 
 const contactInfoInputs = parse_csv(
 	DATASETS_DIR,
@@ -69,7 +69,7 @@ test.describe("User info update tests", () => {
 					initialPage,
 					await createBrowserContextWithProxy(
 						browser,
-						PT_PROXY_CREDENTIALS,
+						JP_PROXY_CREDENTIALS,
 					),
 					...Object.values(pages),
 				);

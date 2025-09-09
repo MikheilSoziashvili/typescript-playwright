@@ -1,4 +1,5 @@
-import { PT_PROXY_CREDENTIALS } from "@constants/proxies";
+import { JP_PROXY_CREDENTIALS } from "@constants/proxies";
+import { testDetails } from "@core/helpers/test-details-helper";
 import {
 	createBrowserContextWithProxy,
 	createPngImagePath,
@@ -6,10 +7,9 @@ import {
 	initializePageObjects,
 	initializePageObjectsWithCookies,
 } from "@core/utils/utils";
+import { JiraUser } from "@enums/jira/jira-users";
 import { test } from "@fixtures/fixtures";
 import { storageStateNewSuperAdminUserDB } from "../fixtures/auth-fixtures";
-import { testDetails } from "@core/helpers/test-details-helper";
-import { JiraUser } from "@enums/jira/jira-users";
 
 test.describe("Gift card generation tests", () => {
 	let qrCode2FAImagePath: string;
@@ -56,7 +56,7 @@ test.describe("Gift card generation tests", () => {
 				initialPage,
 				await createBrowserContextWithProxy(
 					browser,
-					PT_PROXY_CREDENTIALS,
+					JP_PROXY_CREDENTIALS,
 				),
 				...Object.values(pages),
 			);

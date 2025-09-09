@@ -1,6 +1,7 @@
 import { GAMDOM_EMAIL_DOMAIN } from "@constants/domains";
-import { PT_PROXY_CREDENTIALS } from "@constants/proxies";
+import { JP_PROXY_CREDENTIALS } from "@constants/proxies";
 import { buildTipUserSubTitle } from "@core/helpers/asserter-helpers/text-asserters";
+import { testDetails } from "@core/helpers/test-details-helper";
 import {
 	createBrowserContextWithProxy,
 	createPngImagePath,
@@ -9,11 +10,10 @@ import {
 	initializePageObjectsWithCookies,
 } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
+import { JiraUser } from "@enums/jira/jira-users";
 import { test } from "@fixtures/fixtures";
 import { emailDomainPattern } from "@support/regex-patterns";
 import { storageStateNewSuperAdminUserDB } from "../fixtures/auth-fixtures";
-import { testDetails } from "@core/helpers/test-details-helper";
-import { JiraUser } from "@enums/jira/jira-users";
 
 test.describe("Tip user through admin panel tests", () => {
 	let qrCode2FAImagePath: string;
@@ -94,7 +94,7 @@ test.describe("Tip user through admin panel tests", () => {
 				initialPage,
 				await createBrowserContextWithProxy(
 					browser,
-					PT_PROXY_CREDENTIALS,
+					JP_PROXY_CREDENTIALS,
 				),
 				...Object.values(pages),
 			);
