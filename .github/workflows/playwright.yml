@@ -339,7 +339,7 @@ jobs:
                   fi
 
             - name: Upload blob report to GitHub Actions Artifacts 2
-              if: always()
+              if: ${{ always() && (github.event_name == 'schedule' || inputs.run_sequential_tests == 'true') }}
               uses: actions/upload-artifact@v4
               with:
                   name: "all-blob-reports-2-${{ github.run_id }}-${{ matrix.shard }}"
