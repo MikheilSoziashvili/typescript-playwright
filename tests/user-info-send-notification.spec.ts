@@ -1,8 +1,13 @@
 import { testDetails } from "@core/helpers/test-details-helper";
-import { setAuthenticationCookies } from "@core/utils/utils";
+import {
+	generateRandomString,
+	setAuthenticationCookies,
+} from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { UserClasses } from "@enums/db/user-classes";
+import { UserTags } from "@enums/db/user-tags";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
@@ -102,4 +107,37 @@ test.describe("User info - send notification tests", () => {
 			);
 		});
 	}
+
+	test.describe("User info - send long notification", () => {
+		const title = generateRandomString({ length: 30 });
+
+		test(
+			`[ENG-4852] UserInfo tab - verify the "Send long notification" function`,
+			testDetails()
+				.withTags(JiraComponent.NOTIFICATIONS)
+				.withAuthor(JiraUser.RALUCA_ARITON)
+				.apply(),
+			async ({
+				userInfoAdminPage,
+				infoAdminPage,
+				gamdomApiDbFacade,
+				page,
+				notifications,
+			}) => {
+				const { user, cookie } =
+					await gamdomApiDbFacade.createSingleUserDbAndAuth({
+						userClass: UserClasses.Admin,
+						tags: UserTags.UserInfoAdmin,
+					});
+				await setAuthenticationCookies(page, cookie);
+
+				await userInfoAdminPage.navigate();
+				await userInfoAdminPage.searchForSteam64OrUserId(user.userId);
+				await infoAdminPage.steps().sendNotification(title);
+				await notifications
+					.assertThat()
+					.looksCorrectForLongMessage(title);
+			},
+		);
+	});
 });

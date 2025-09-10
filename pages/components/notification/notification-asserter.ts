@@ -68,4 +68,35 @@ export class NotificationAsserter extends BaseAsserter<Notification> {
 			this.gamdomPage.map.notificationGotItButtonLocator(options),
 		).toHaveText(buttonText);
 	}
+
+	@step("Open button is fully visible and inside the notification popup")
+	public async openButtonIsFullyVisibleAndInside(options?: {
+		index?: number;
+		title?: string;
+	}): Promise<void> {
+		const popup = this.gamdomPage.map.notificationContainer(options);
+		const button =
+			this.gamdomPage.map.notificationGotItButtonLocator(options);
+
+		await expect(button).toBeVisible();
+
+		await this.expectLocatorInside(button, popup);
+		await this.expectElementWithinViewport(button);
+	}
+
+	@step("Notification popup is correct for long message")
+	public async looksCorrectForLongMessage(
+		message: string,
+		options?: { index?: number; title?: string },
+	): Promise<void> {
+		await this.isDisplayed(options);
+		await this.gotItButtonIsDisplayed(options);
+		await this.buttonTextIs(NotificationButton.OPEN, options);
+
+		await expect(
+			this.gamdomPage.map.notificationTitleLocator(options),
+		).toContainText(message);
+
+		await this.openButtonIsFullyVisibleAndInside(options);
+	}
 }

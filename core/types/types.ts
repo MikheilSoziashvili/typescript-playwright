@@ -205,3 +205,5 @@ export type UserWithConfig = {
 };
 
 export type AnyTag = TestTag | JiraComponent;
+
+export type Viewport = { width: number; height: number };

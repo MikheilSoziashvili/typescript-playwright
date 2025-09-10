@@ -126,12 +126,12 @@ export class UserInfoInfoAdminPageSteps extends BasePageStep<UserInfoInfoAdminPa
 	@step("Send notification and assert toast is displayed")
 	public async sendNotification(
 		title: string,
-		description: string,
-		reason: string,
+		description?: string,
+		reason?: string,
 	): Promise<void> {
 		await this.gamdomPage.fillNotificationTitle(title);
-		await this.gamdomPage.fillNotificationDescription(description);
-		await this.gamdomPage.fillNotificationReason(reason);
+		await this.gamdomPage.fillNotificationDescription(description ?? "");
+		await this.gamdomPage.fillNotificationReason(reason ?? "");
 		await this.gamdomPage.clickSendNotificationButton();
 		await this.gamdomPage.assertThat().notificationSentToastIsDisplayed();
 	}

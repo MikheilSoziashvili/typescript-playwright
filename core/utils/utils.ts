@@ -1288,7 +1288,6 @@ export function formatLocalizedDate({
 	});
 }
 
-
 /**
  * Converts currency text (e.g., "$123.00", "€45.50") to a numeric value.
  *

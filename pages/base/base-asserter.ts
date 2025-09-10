@@ -21,6 +21,7 @@ import { BaseMap } from "./base-map";
 import { BaseModal } from "./base-modal";
 import { BasePage } from "./base-page";
 import { UserBalanceHandler } from "@core/handlers/user-balance-handler";
+import { Viewport } from "@core/types/types";
 
 export class BaseAsserter<
 	T extends BasePage<BaseMap> | BaseModal<BaseMap> | BaseComponent<BaseMap>,
@@ -619,5 +620,79 @@ export class BaseAsserter<
 				expect(resolved, message).toBeTruthy();
 			}),
 		);
+	}
+
+	/**
+	 * Assert that a rectangle (`inner`) is fully contained within another rectangle (`outer`).
+	 *
+	 * Performs a standard axis-aligned rectangle containment check using the four edges
+	 * (left, top, right, bottom) in **CSS pixels**. Designed for Playwright `boundingBox()` results
+	 * or any object with the shape `{ x: number; y: number; width: number; height: number }`.
+	 *
+	 * Typical use-case: verify a control (button, chip, icon) is fully inside a parent container
+	 * (toast/popup/card), preventing layout regressions where it overflows.
+	 *
+	 * @param inner - The inner rectangle, e.g. `await button.boundingBox()` (must not be `null`).
+	 * @param outer - The outer rectangle, e.g. `await popup.boundingBox()` (must not be `null`).
+	 *
+	 * @example
+	 * const popupBox = await popup.boundingBox();
+	 * const buttonBox = await button.boundingBox();
+	 * if (!popupBox || !buttonBox) throw new Error('Missing bounding boxes');
+	 * expectRectangleInside(buttonBox, popupBox);
+	 */
+	@step("Assert that an element is inside another element")
+	public async expectLocatorInside(
+		inner: Locator,
+		outer: Locator,
+	): Promise<void> {
+		const [outerBox, innerBox] = await Promise.all([
+			outer.boundingBox(),
+			inner.boundingBox(),
+		]);
+
+		if (!outerBox || !innerBox) {
+			throw new Error("Missing bounding boxes for containment check");
+		}
+
+		expect(innerBox.x).toBeGreaterThanOrEqual(outerBox.x);
+		expect(innerBox.y).toBeGreaterThanOrEqual(outerBox.y);
+		expect(innerBox.x + innerBox.width).toBeLessThanOrEqual(
+			outerBox.x + outerBox.width,
+		);
+		expect(innerBox.y + innerBox.height).toBeLessThanOrEqual(
+			outerBox.y + outerBox.height,
+		);
+	}
+
+	/**
+	 * Assert that an Element is fully inside the current browser viewport.
+	 *
+	 * Uses Playwright `boundingBox()` (CSS pixels) and compares the element's four edges
+	 * to the window's visible area (`window.innerWidth` / `window.innerHeight`).
+	 * Fails if any side of the element overflows off‑screen.
+	 *
+	 * @param el Element to validate
+	 *
+	 * @example
+	 * // Verify the notification action button is not clipped by the screen
+	 * await expectElementWithinViewport(notification.map.gotItButtonLocator());
+	 */
+	@step("Assert that an element is within the viewport")
+	public async expectElementWithinViewport(el: Locator): Promise<void> {
+		const box = await el.boundingBox();
+		if (!box) {
+			throw new Error("Missing bounding box for viewport check");
+		}
+
+		const viewport: Viewport = await el.evaluate<Viewport>(() => ({
+			width: window.innerWidth,
+			height: window.innerHeight,
+		}));
+
+		expect(box.x).toBeGreaterThanOrEqual(0);
+		expect(box.y).toBeGreaterThanOrEqual(0);
+		expect(box.x + box.width).toBeLessThanOrEqual(viewport.width);
+		expect(box.y + box.height).toBeLessThanOrEqual(viewport.height);
 	}
 }
