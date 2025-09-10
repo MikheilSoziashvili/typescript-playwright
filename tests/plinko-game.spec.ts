@@ -146,6 +146,7 @@ test.describe(
 						test(
 							`Place bet using ${record.Wallet} and verify display in ${record.BetCurrency}`,
 							testDetails()
+								.withJiraBugTickets("8564")
 								.withAuthor(JiraUser.RALUCA_ARITON)
 								.apply(),
 							async ({
