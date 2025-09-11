@@ -340,4 +340,14 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 	public getMaxBetAmount(game: OriginalGame): number {
 		return MaxBetAmount[game.toUpperCase() as keyof typeof MaxBetAmount];
 	}
+
+	@step("Open How to Play modal")
+	public async openHowToPlayModal(): Promise<void> {
+		await this.map.howToPlayTooltip.click();
+	}
+
+	@step("Click How to Play modal Next button")
+	public async clickHowToPlayModalNextButton(): Promise<void> {
+		await this.map.howToPlayModalNextButton.click();
+	}
 }

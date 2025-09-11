@@ -3,6 +3,7 @@ import { OriginalGame } from "@enums/original-games";
 import { BaseAsserter } from "@pages/base/base-asserter";
 import { step } from "decorators/step";
 import { OriginalsPage } from "./originals-page";
+import { StepsPerGame } from "@constants/how-to-play-modal-steps";
 
 export class OriginalsAsserter extends BaseAsserter<OriginalsPage> {
 	public constructor(page: OriginalsPage) {
@@ -50,5 +51,21 @@ export class OriginalsAsserter extends BaseAsserter<OriginalsPage> {
 	@step("Live bets section is visible")
 	public async liveBetsSectionIsVisible(): Promise<void> {
 		await this.checkElementsAreVisible([this.gamdomPage.map.liveBetsTable]);
+	}
+
+	@step("Assert that How to Play modal slider counter shows the correct step")
+	public async howToPlayModalSliderCounterShowsCorrectStep(
+		currentStep: number,
+		game: OriginalGames,
+	): Promise<void> {
+		const totalSteps = StepsPerGame[game];
+		const expectedText = `${currentStep}/${totalSteps}`;
+
+		await this.checkElementsHaveText([
+			{
+				locator: this.gamdomPage.map.howToPlayModalSliderCounter,
+				expectedText: expectedText,
+			},
+		]);
 	}
 }

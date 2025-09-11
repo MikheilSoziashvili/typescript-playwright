@@ -1,13 +1,14 @@
 import { OriginalGames } from "@core/types/types";
 import { OriginalGame, OriginalsHandlerMethods } from "@enums/original-games";
 import { BasePageStep } from "@pages/base/base-page-step";
-import { expect } from "@playwright/test";
+import { expect, TestInfo } from "@playwright/test";
 import { step } from "decorators/step";
 import { OriginalsPage } from "./originals-page";
 import { Timeout } from "@enums/timeout";
 import { logger } from "@logger/logger";
 import { currencyToNumberPattern } from "@support/regex-patterns";
 import { calculateRoundedExpectedProfit } from "@formulas/betting-calculations";
+import { StepsPerGame } from "@constants/how-to-play-modal-steps";
 
 export class OriginalsSteps extends BasePageStep<OriginalsPage> {
 	public constructor(
@@ -214,5 +215,37 @@ export class OriginalsSteps extends BasePageStep<OriginalsPage> {
 			`Game ${game} has negative payout on loss: ${hasNegativePayout}`,
 		);
 		return hasNegativePayout;
+	}
+
+	@step("Verify How to Play modal and its steps")
+	public async verifyHowToPlayModalAndItsSteps(
+		game: OriginalGames,
+		testInfo: TestInfo,
+	): Promise<void> {
+		const totalSteps = StepsPerGame[game];
+
+		if (!totalSteps) {
+			throw new Error(`No steps defined for game: ${game}`);
+		}
+
+		for (let currentStep = 1; currentStep <= totalSteps; currentStep++) {
+			await this.gamdomPage
+				.assertThat()
+				.howToPlayModalSliderCounterShowsCorrectStep(currentStep, game);
+
+			await this.gamdomPage
+				.assertThat()
+				.checkElementVisualCorrect(
+					testInfo,
+					this.gamdomPage.map.howToPlayModal,
+					{
+						screenshotName: `How-to-Play-Modal-${game}-Step-${currentStep}-${testInfo.title}.png`,
+					},
+				);
+
+			if (currentStep < totalSteps) {
+				await this.gamdomPage.clickHowToPlayModalNextButton();
+			}
+		}
 	}
 }

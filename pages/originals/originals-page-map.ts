@@ -51,4 +51,22 @@ export class OriginalsMap extends BaseMap {
 	public getPayoutCell(row: Locator): Locator {
 		return row.locator("td").nth(5);
 	}
+
+	public get howToPlayTooltip(): Locator {
+		return this.page.locator('button[data-tooltip="How to play?"]');
+	}
+
+	public get howToPlayModal(): Locator {
+		return this.page.locator('div[class*="Layoutstyled__Root"]');
+	}
+
+	public get howToPlayModalSliderCounter(): Locator {
+		return this.howToPlayModal.locator(
+			'span[class*="ModalHowstyled__SlidesCounter"]',
+		);
+	}
+
+	public get howToPlayModalNextButton(): Locator {
+		return this.howToPlayModal.getByRole("button", { name: "Next" });
+	}
 }
