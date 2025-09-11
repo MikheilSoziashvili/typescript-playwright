@@ -11,4 +11,5 @@ export enum UsersColumns {
 	PHONE_NUMBER = "phone_number",
 	PasswordHash = "password_hash",
 	Image = "image",
+	IsVip = "is_vip",
 }

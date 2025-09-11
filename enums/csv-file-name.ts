@@ -46,4 +46,5 @@ export enum CsvFilesName {
 	EDIT_INFO_ADJUSTING_WALLETS = "ENG-6392-edit-info-adjusting-wallets.csv",
 	PROMO_CODE_FAILED_REDEMPTION = "ENG-3979-error-messages-failed-redemption.csv",
 	PLINKO_TEST_DATA = "ENG-2844-plinko-test-data.csv",
+	VIP_USER_STATUS = "ENG-6827-chat-verify-diamond-icon-for-vip-users.csv",
 }

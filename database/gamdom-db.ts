@@ -51,6 +51,8 @@ import { AmlInfoOptions } from "./interfaces/aml-info-options";
 import { AmlStatusInsertOptions } from "./interfaces/aml-status-insert-options";
 import { PromotionInsertOptions } from "./interfaces/promotion-insert-options";
 import { NewUserOptions } from "./interfaces/storage-state-new-user-options";
+import { VipUsersColumns } from "@enums/db/vip-users-columns";
+import { VipUserStatus } from "@enums/vip-user-statuses";
 
 export class GamdomDb extends BaseDB {
 	constructor() {
@@ -1375,5 +1377,34 @@ export class GamdomDb extends BaseDB {
 			`${PromotionColumns.Title} = '${title}'`,
 			hasLogMessage,
 		);
+	}
+
+	public async insertVipUser(
+		userId: number,
+		managerUserId: number,
+		vipStatus: string,
+		hasLogMessage = false,
+	): Promise<QueryResultRow> {
+		return this.withClient(async () => {
+			const inserted = await this.insert(
+				DbTables.VipUsers,
+				{
+					[VipUsersColumns.UserId]: userId,
+					[VipUsersColumns.ManagerUserId]: managerUserId,
+					[VipUsersColumns.VipStatus]: vipStatus,
+				},
+				hasLogMessage,
+			);
+
+			const isVipFlag = vipStatus === VipUserStatus.PVIP ? false : true;
+			await this.update(
+				DbTables.Users,
+				{ [UsersColumns.IsVip]: isVipFlag },
+				`${UsersColumns.Id} = ${userId}`,
+				hasLogMessage,
+			);
+
+			return inserted;
+		});
 	}
 }

@@ -10,6 +10,7 @@ import {
 	ChatroomsSuccessfullySelectedCsv,
 	EditInfoAdjustingWalletsCsv,
 	PromoCodeFailedRedemptionCsv,
+	ChatDiamondIconForVipUsersCsv,
 } from "@dtos/csv";
 import { PlinkoTestDataCsv } from "@dtos/csv/plinko-test-data-csv";
 import { UserInfoSendNotificationCsv } from "@dtos/csv/user-info-send-notification-csv";
@@ -29,4 +30,5 @@ export type CsvDtoMap = {
 	[CsvFilesName.EDIT_INFO_ADJUSTING_WALLETS]: EditInfoAdjustingWalletsCsv;
 	[CsvFilesName.PROMO_CODE_FAILED_REDEMPTION]: PromoCodeFailedRedemptionCsv;
 	[CsvFilesName.PLINKO_TEST_DATA]: PlinkoTestDataCsv;
+	[CsvFilesName.VIP_USER_STATUS]: ChatDiamondIconForVipUsersCsv;
 };

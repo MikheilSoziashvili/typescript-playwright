@@ -8,6 +8,8 @@ import { step } from "decorators/step";
 import { Chat } from "./chat";
 import { ChatMessageOptions } from "./chat-map";
 import { Timeout } from "@enums/timeout";
+import { VipUserStatus } from "@enums/vip-user-statuses";
+import { TooltipText } from "@enums/tooltip-text";
 
 export class ChatAsserter extends BaseAsserter<Chat> {
 	public constructor(chat: Chat) {
@@ -89,6 +91,34 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 		await this.retryWithPageReload(
 			(_attempt) => this.checkElementsAreVisible([locator]),
 			`Message from "${messageInfo.username}" with text "${messageInfo.message}" is visible`,
+			retries,
+		);
+	}
+	@step("Verify VIP diamond icon is displayed for message author")
+	public async vipDiamondIsVisibleForMessageAuthor(
+		messageInfo: ChatMessageOptions,
+		vipStatus: string,
+		retries = 3,
+	): Promise<void> {
+		const message = this.gamdomPage.map.messageLocator(messageInfo);
+		const diamondIcon = this.gamdomPage.map.diamondIcon();
+		await this.retryWithPageReload(
+			async (_attempt) => {
+				await this.checkElementsAreVisible([message]);
+				if (vipStatus === VipUserStatus.PVIP) {
+					await this.checkElementsAreHidden([diamondIcon]);
+				} else {
+					await this.checkElementsAreVisible([diamondIcon]);
+					await diamondIcon.hover();
+					await this.checkElementsHaveText([
+						{
+							locator: this.gamdomPage.map.vipTooltip,
+							expectedText: TooltipText.VIP,
+						},
+					]);
+				}
+			},
+			`VIP diamond icon visibility matches expected state for "${messageInfo.username}" on message "${messageInfo.message}"`,
 			retries,
 		);
 	}

@@ -86,6 +86,16 @@ export class ChatMap extends BaseMap {
 		);
 	}
 
+	public diamondIcon(options?: ChatMessageOptions): Locator {
+		return this.messageLocator(options).locator(
+			`[data-testid*="messageSay-vipIcon"]`,
+		);
+	}
+
+	public get vipTooltip(): Locator {
+		return this.page.locator("role=tooltip >> p");
+	}
+
 	public get infoMessageContainer(): Locator {
 		return this.chatMessagesList.locator(
 			`li[data-testid*="messageClient-container"]`,

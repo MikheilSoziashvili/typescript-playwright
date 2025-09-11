@@ -9,4 +9,5 @@ export enum DbTables {
 	AmlStatus = "aml.status",
 	KothEvents = "koth.events",
 	Promotions = "promotions.promotions",
+	VipUsers = "public.vip_users",
 }

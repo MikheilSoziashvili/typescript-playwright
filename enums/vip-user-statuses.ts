@@ -1,0 +1,9 @@
+export enum VipUserStatus {
+	PVIP = "PVIP",
+	BASIC_VIP = "BASIC_VIP",
+	BRONZE_VIP = "BRONZE_VIP",
+	SILVER_VIP = "SILVER_VIP",
+	GOLD_VIP = "GOLD_VIP",
+	DIAMOND_VIP = "DIAMOND_VIP",
+	OPAL_VIP = "OPAL_VIP",
+}
