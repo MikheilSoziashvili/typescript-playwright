@@ -31,4 +31,31 @@ export class KenoGamePageSteps extends BasePageStep<KenoGamePage> {
 			.assertThat()
 			.checkElementsAreEnabled([this.gamdomPage.map.betAmountInput]);
 	}
+
+	@step("Start manual bet")
+	public async startManualBet(
+		betAmount: number | string,
+		options?: { riskValue?: number },
+	): Promise<void> {
+		await this.gamdomPage.map.betAmountInput.fill(betAmount.toString());
+
+		if (options?.riskValue !== undefined) {
+			await this.gamdomPage.adjustSliderValue(
+				this.gamdomPage.map.riskRowsSliderInput,
+				options.riskValue,
+			);
+		}
+
+		await this.gamdomPage.map.pickRandomTilesButton.click();
+
+		await this.gamdomPage
+			.assertThat()
+			.checkElementsAreEnabled([this.gamdomPage.map.startPlayingButton]);
+
+		await this.gamdomPage.map.startPlayingButton.click();
+
+		await this.gamdomPage
+			.assertThat()
+			.checkElementsAreDisabled([this.gamdomPage.map.startPlayingButton]);
+	}
 }

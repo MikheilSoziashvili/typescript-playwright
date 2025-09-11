@@ -1,6 +1,10 @@
 import { DATASETS_DIR } from "@constants/file-paths";
 import { testDetails } from "@core/helpers/test-details-helper";
-import { parse_csv, roundToDecimals } from "@core/utils/utils";
+import {
+	parse_csv,
+	roundToDecimals,
+	setAuthenticationCookies,
+} from "@core/utils/utils";
 import {
 	NegativeBetValidationScenario,
 	QuickSelectScenario,
@@ -299,4 +303,54 @@ test.describe("Quick Select Buttons", () => {
 			);
 		}
 	});
+});
+
+test.describe("Live Bets Section", () => {
+	const gamesToTest = Object.values(OriginalGame).filter(
+		(game) => game !== OriginalGame.Roulette,
+	);
+
+	for (const game of gamesToTest) {
+		test(
+			`[ENG-3157] Bets are displayed in the Live bets section for ${game}`,
+			testDetails()
+				.withTags(
+					JiraComponent.GAMDOM_ORIGINALS,
+					JiraComponent.SOK_GAMES,
+				)
+				.withJiraBugTickets("8569")
+				.withAuthor(JiraUser.NIKOLAY_GENOV)
+				.apply(),
+			async ({ originalsPage, gamdomApiDbFacade, page }) => {
+				const betAmount = 5;
+
+				const { user, cookie } =
+					await gamdomApiDbFacade.createSingleUserDbAndAuth({});
+
+				await setAuthenticationCookies(page, cookie);
+
+				const userName = user.username;
+
+				await originalsPage.navigateToGame(game);
+				await originalsPage.authenticatedHeader
+					.assertThat()
+					.loggedInUserElementsAreVisible();
+
+				await originalsPage.placeBet(game, betAmount);
+				await originalsPage.waitForGameRoundFinish(game);
+
+				const betData = await originalsPage
+					.steps()
+					.verifyBetIsDisplayedInLiveBetsSection(
+						game,
+						userName,
+						betAmount,
+					);
+
+				await originalsPage
+					.steps()
+					.verifyPayoutCalculationIsCorrect(betData, game);
+			},
+		);
+	}
 });

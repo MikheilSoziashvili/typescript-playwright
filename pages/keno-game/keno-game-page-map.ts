@@ -41,4 +41,12 @@ export class KenoGamePageMap extends BaseMap {
 	public get stopPlayingButton(): Locator {
 		return this.page.getByTestId("originals-bet-stop");
 	}
+
+	public get winImage(): Locator {
+		return this.page.getByTestId("win-banner");
+	}
+
+	public get riskRowsSliderInput(): Locator {
+		return this.page.getByTestId("originals-risk-slider");
+	}
 }

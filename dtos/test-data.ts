@@ -114,6 +114,21 @@ export class PlinkoBetTestData {
 	}
 }
 
+export class KenoBetTestData {
+	public betAmount: number;
+	public riskValue?: number;
+
+	constructor(
+		options: {
+			betAmount?: number;
+			riskValue?: number;
+		} = {},
+	) {
+		this.betAmount = options.betAmount ?? 0.1;
+		this.riskValue = options.riskValue;
+	}
+}
+
 export class MinesBetTestData {
 	public betAmount: number;
 	public minesNumber: number;

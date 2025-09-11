@@ -1,10 +1,13 @@
 import { OriginalGames } from "@core/types/types";
-import { OriginalsHandlerMethods } from "@enums/original-games";
+import { OriginalGame, OriginalsHandlerMethods } from "@enums/original-games";
 import { BasePageStep } from "@pages/base/base-page-step";
 import { expect } from "@playwright/test";
 import { step } from "decorators/step";
 import { OriginalsPage } from "./originals-page";
 import { Timeout } from "@enums/timeout";
+import { logger } from "@logger/logger";
+import { currencyToNumberPattern } from "@support/regex-patterns";
+import { calculateRoundedExpectedProfit } from "@formulas/betting-calculations";
 
 export class OriginalsSteps extends BasePageStep<OriginalsPage> {
 	public constructor(
@@ -89,5 +92,127 @@ export class OriginalsSteps extends BasePageStep<OriginalsPage> {
 			.toBe(expectedAmount.toFixed(2));
 
 		return parseFloat(await fetchedBetAmount());
+	}
+
+	@step("Verify bet is displayed in live bets section")
+	public async verifyBetIsDisplayedInLiveBetsSection(
+		game: OriginalGames,
+		username: string,
+		betAmount: number,
+	): Promise<{
+		betAmount: number;
+		multiplier: number;
+		payout: number;
+		game: OriginalGames;
+	}> {
+		await this.gamdomPage.assertThat().liveBetsSectionIsVisible();
+		await this.gamdomPage.map.liveBetsTable.scrollIntoViewIfNeeded();
+
+		await this.gamdomPage
+			.assertThat()
+			.checkElementsAreVisible(
+				[this.gamdomPage.map.getBetRowByUserAndGame(username, game)],
+				Timeout.MEDIUM,
+				`Bet for game ${game} and user ${username} is displayed in live bets section`,
+			);
+
+		const { multiplier, payout } = await this.getLiveBetsTableCellValues(
+			game,
+			username,
+			betAmount,
+		);
+
+		return {
+			betAmount,
+			multiplier,
+			payout,
+			game,
+		};
+	}
+
+	@step("Get Live bets table cell values")
+	public async getLiveBetsTableCellValues(
+		game: OriginalGames,
+		username: string,
+		betAmount: number,
+	): Promise<{
+		betAmount: number;
+		multiplier: number;
+		payout: number;
+	}> {
+		const row = this.gamdomPage.map.getBetRowByUserAndGame(username, game);
+
+		const betCell = await this.gamdomPage.map.getBetCell(row).innerText();
+		betAmount = parseFloat(betCell.replace(currencyToNumberPattern, ""));
+
+		const multiplierCell = await this.gamdomPage.map
+			.getMultiplierCell(row)
+			.innerText();
+		const multiplier =
+			multiplierCell === "-" || multiplierCell === "Crashed"
+				? 0
+				: parseFloat(
+						multiplierCell.replace(currencyToNumberPattern, ""),
+				  );
+
+		const payoutCell = await this.gamdomPage.map
+			.getPayoutCell(row)
+			.innerText();
+		const payout = parseFloat(
+			payoutCell.replace(currencyToNumberPattern, ""),
+		);
+
+		return { betAmount, multiplier, payout };
+	}
+
+	@step("Verify payout calculation is correct")
+	public async verifyPayoutCalculationIsCorrect(
+		betData: {
+			betAmount: number;
+			multiplier: number;
+			payout: number;
+		},
+		game: OriginalGames,
+	): Promise<void> {
+		const { betAmount, multiplier, payout } = betData;
+
+		let expectedPayout: number;
+
+		if (multiplier === 0) {
+			if (this.isGameWithNegativePayoutOnLoss(game)) {
+				expectedPayout = -betAmount;
+				logger.info(
+					`${game} loss calculation: Expected payout = -${betAmount} = ${expectedPayout}`,
+				);
+			} else {
+				expectedPayout = 0;
+				logger.info(
+					`${game} loss calculation: Expected payout = $0.00`,
+				);
+			}
+		} else {
+			expectedPayout = calculateRoundedExpectedProfit(
+				multiplier,
+				betAmount,
+			);
+			logger.info(
+				`${game} win calculation: Expected payout = ${expectedPayout}`,
+			);
+		}
+
+		logger.info(
+			`Comparing payout: Expected=${expectedPayout}, Actual=${payout}`,
+		);
+		expect(payout).toBeCloseTo(expectedPayout, 0);
+	}
+
+	private isGameWithNegativePayoutOnLoss(game: OriginalGames): boolean {
+		const gamesWithNegativePayout = [OriginalGame.HiLo, OriginalGame.Dice];
+
+		const hasNegativePayout = gamesWithNegativePayout.includes(game);
+		logger.info(
+			`Game ${game} has negative payout on loss: ${hasNegativePayout}`,
+		);
+		return hasNegativePayout;
 	}
 }

@@ -46,4 +46,9 @@ export class OriginalsAsserter extends BaseAsserter<OriginalsPage> {
 			.getBetAmountValue(game, expectedBetAmount);
 		this.expectRoundedToBe(currentBetAmount, expectedBetAmount);
 	}
+
+	@step("Live bets section is visible")
+	public async liveBetsSectionIsVisible(): Promise<void> {
+		await this.checkElementsAreVisible([this.gamdomPage.map.liveBetsTable]);
+	}
 }

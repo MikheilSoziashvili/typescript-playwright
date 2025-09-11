@@ -200,6 +200,15 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 					});
 				break;
 			}
+			case OriginalGame.Keno: {
+				await (gamePage as KenoGamePage)
+					.assertThat()
+					.startPlayingButtonIsDisplayed();
+				await (gamePage as KenoGamePage)
+					.steps()
+					.startManualBet(betAmount);
+				break;
+			}
 			default: {
 				throw new Error(`Unhandled game type: ${String(game)}`);
 			}
@@ -252,6 +261,12 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 				await (gamePage as PlinkoGamePage)
 					.steps()
 					.waitForSlidersToBeActive();
+				break;
+			}
+			case OriginalGame.Keno: {
+				await (gamePage as KenoGamePage)
+					.assertThat()
+					.verifyRiskSliderActive();
 				break;
 			}
 			case OriginalGame.Mines: {
