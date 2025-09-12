@@ -125,6 +125,10 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 
 	@step("Get countdown timer")
 	public async getCountdownTimer(): Promise<string> {
+		await this.assertThat().checkElementsAreVisible(
+			[this.map.spinningCountdownCounter],
+			Timeout.EXTRA_MAX / 2,
+		);
 		const countdownTimerText =
 			await this.map.spinningCountdownCounter.innerText();
 		return countdownTimerText;
