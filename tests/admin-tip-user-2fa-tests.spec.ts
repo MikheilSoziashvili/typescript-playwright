@@ -1,5 +1,5 @@
 import { GAMDOM_EMAIL_DOMAIN } from "@constants/domains";
-import { JP_PROXY_CREDENTIALS } from "@constants/proxies";
+import { PT_PROXY_CREDENTIALS } from "@constants/proxies";
 import { buildTipUserSubTitle } from "@core/helpers/asserter-helpers/text-asserters";
 import { testDetails } from "@core/helpers/test-details-helper";
 import {
@@ -94,7 +94,7 @@ test.describe("Tip user through admin panel tests", () => {
 				initialPage,
 				await createBrowserContextWithProxy(
 					browser,
-					JP_PROXY_CREDENTIALS,
+					PT_PROXY_CREDENTIALS,
 				),
 				...Object.values(pages),
 			);

@@ -84,6 +84,7 @@ for (const baseURL of baseUrls) {
 /* Skipping softblocked countries due to current proxy limitations:
 - AU: too far, site not loading
 - UK - Disabled from soft blocked countries as the CI runners are in the UK
+- PT - Disabled from soft blocked countries for e2e-stg env due to use the proxy for other test needs.
 Unskip once proxies are stable or replaced.*/
 for (const country of softBlockedCountries) {
 	test.describe(
@@ -91,13 +92,14 @@ for (const country of softBlockedCountries) {
 		testDetails()
 			.withArbitraryAnnotations({
 				type: AnnotationType.INFRASTRUCTURE,
-				description: `Skipped softblocked countries (AU, UK) due to current proxy limitations.`,
+				description: `Skipped softblocked countries (AU, UK, PT) due to current proxy limitations.`,
 			})
 			.apply(),
 		() => {
 			test.fixme(
 				country === SoftBlockedCountry.UNITED_KINGDOM ||
-					country === SoftBlockedCountry.AUSTRALIA,
+					country === SoftBlockedCountry.AUSTRALIA ||
+					country === SoftBlockedCountry.PORTUGAL,
 			);
 			test.use({
 				proxy: softBlockedCredentialsMap.get(country),

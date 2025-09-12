@@ -1,4 +1,4 @@
-import { JP_PROXY_CREDENTIALS } from "@constants/proxies";
+import { PT_PROXY_CREDENTIALS } from "@constants/proxies";
 import { testDetails } from "@core/helpers/test-details-helper";
 import {
 	createBrowserContextWithProxy,
@@ -59,7 +59,7 @@ test.describe("Promo Code tests", () => {
 				initialPage,
 				await createBrowserContextWithProxy(
 					browser,
-					JP_PROXY_CREDENTIALS,
+					PT_PROXY_CREDENTIALS,
 				),
 				...Object.values(pages),
 			);

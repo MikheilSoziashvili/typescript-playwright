@@ -1,4 +1,4 @@
-import { JP_PROXY_CREDENTIALS } from "@constants/proxies";
+import { PT_PROXY_CREDENTIALS } from "@constants/proxies";
 import { TIP_RAIN } from "@constants/tip-rain";
 import { buildTipRainUserMessageInfo } from "@core/helpers/asserter-helpers/text-asserters";
 import { testDetails } from "@core/helpers/test-details-helper";
@@ -163,7 +163,7 @@ test.describe("Rain tests", () => {
 					initialPage,
 					await createBrowserContextWithProxy(
 						browser,
-						JP_PROXY_CREDENTIALS,
+						PT_PROXY_CREDENTIALS,
 					),
 					...Object.values(pages),
 				);

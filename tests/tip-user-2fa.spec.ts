@@ -1,5 +1,5 @@
 import { ChatMessageOptions } from "@components/chat/chat-map";
-import { JP_PROXY_CREDENTIALS } from "@constants/proxies";
+import { PT_PROXY_CREDENTIALS } from "@constants/proxies";
 import { buildTipUserMessageInfo } from "@core/helpers/asserter-helpers/text-asserters";
 import { testDetails } from "@core/helpers/test-details-helper";
 import {
@@ -141,7 +141,7 @@ test.describe("Tip user 2FA tests", () => {
 				initialPage,
 				await createBrowserContextWithProxy(
 					browser,
-					JP_PROXY_CREDENTIALS,
+					PT_PROXY_CREDENTIALS,
 				),
 				...Object.values(pages),
 			);
