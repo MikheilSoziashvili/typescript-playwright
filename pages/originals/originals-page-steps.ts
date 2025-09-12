@@ -149,21 +149,75 @@ export class OriginalsSteps extends BasePageStep<OriginalsPage> {
 		const multiplierCell = await this.gamdomPage.map
 			.getMultiplierCell(row)
 			.innerText();
-		const multiplier =
-			multiplierCell === "-" || multiplierCell === "Crashed"
-				? 0
-				: parseFloat(
-						multiplierCell.replace(currencyToNumberPattern, ""),
-				  );
 
 		const payoutCell = await this.gamdomPage.map
 			.getPayoutCell(row)
 			.innerText();
-		const payout = parseFloat(
-			payoutCell.replace(currencyToNumberPattern, ""),
+
+		const { multiplier, payout } = this.parseMultiplierAndPayout(
+			game,
+			multiplierCell,
+			payoutCell,
+			betAmount,
 		);
 
 		return { betAmount, multiplier, payout };
+	}
+
+	private parseMultiplierAndPayout(
+		game: OriginalGames,
+		multiplierCell: string,
+		payoutCell: string,
+		betAmount: number,
+	): { multiplier: number; payout: number } {
+		if (this.isMultiplierNotNumber(game, multiplierCell)) {
+			return {
+				multiplier: 0,
+				payout: this.getLossPayoutAmount(game, betAmount),
+			};
+		}
+
+		return {
+			multiplier: parseFloat(
+				multiplierCell.replace(currencyToNumberPattern, ""),
+			),
+			payout: parseFloat(payoutCell.replace(currencyToNumberPattern, "")),
+		};
+	}
+
+	private isMultiplierNotNumber(
+		game: OriginalGames,
+		multiplierCell: string,
+	): boolean {
+		switch (game) {
+			case OriginalGame.Crash:
+				return multiplierCell === "Crashed";
+			case OriginalGame.Dice:
+			case OriginalGame.HiLo:
+			case OriginalGame.Mines:
+			case OriginalGame.Keno:
+				return multiplierCell === "-";
+			case OriginalGame.Plinko:
+			default:
+				return false;
+		}
+	}
+
+	private getLossPayoutAmount(
+		game: OriginalGames,
+		betAmount: number,
+	): number {
+		switch (game) {
+			case OriginalGame.Dice:
+			case OriginalGame.Crash:
+			case OriginalGame.HiLo:
+				return -betAmount;
+			case OriginalGame.Mines:
+			case OriginalGame.Keno:
+			case OriginalGame.Plinko:
+			default:
+				return 0;
+		}
 	}
 
 	@step("Verify payout calculation is correct")
@@ -180,41 +234,17 @@ export class OriginalsSteps extends BasePageStep<OriginalsPage> {
 		let expectedPayout: number;
 
 		if (multiplier === 0) {
-			if (this.isGameWithNegativePayoutOnLoss(game)) {
-				expectedPayout = -betAmount;
-				logger.info(
-					`${game} loss calculation: Expected payout = -${betAmount} = ${expectedPayout}`,
-				);
-			} else {
-				expectedPayout = 0;
-				logger.info(
-					`${game} loss calculation: Expected payout = $0.00`,
-				);
-			}
+			expectedPayout = this.getLossPayoutAmount(game, betAmount);
 		} else {
 			expectedPayout = calculateRoundedExpectedProfit(
 				multiplier,
 				betAmount,
 			);
-			logger.info(
-				`${game} win calculation: Expected payout = ${expectedPayout}`,
-			);
 		}
-
 		logger.info(
 			`Comparing payout: Expected=${expectedPayout}, Actual=${payout}`,
 		);
 		expect(payout).toBeCloseTo(expectedPayout, 0);
-	}
-
-	private isGameWithNegativePayoutOnLoss(game: OriginalGames): boolean {
-		const gamesWithNegativePayout = [OriginalGame.HiLo, OriginalGame.Dice];
-
-		const hasNegativePayout = gamesWithNegativePayout.includes(game);
-		logger.info(
-			`Game ${game} has negative payout on loss: ${hasNegativePayout}`,
-		);
-		return hasNegativePayout;
 	}
 
 	@step("Verify How to Play modal and its steps")
