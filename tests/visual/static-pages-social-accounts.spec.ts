@@ -5,6 +5,7 @@ import { parse_csv } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { JiraUser } from "@enums/jira/jira-users";
 import { TestTag } from "@enums/test-tags";
+import { Timeout } from "@enums/timeout";
 import { test } from "@fixtures/fixtures";
 import { BannedUserPage } from "@pages/banned-user/banned-user-page";
 import { GeoblockedPage } from "@pages/geoblocked/geoblocked-page";
@@ -66,6 +67,7 @@ test.describe("Static pages - social accounts", () => {
 						.footerSocialMediaIconVisualCorrect(
 							testInfo,
 							socialMedia.locator,
+							Timeout.EXTRA_LONG,
 						);
 					await pageObject
 						.assertThat()

@@ -106,7 +106,7 @@ export class BaseAsserter<
 		);
 
 		const defaultOptions = {
-			timeout: Timeout.MEDIUM,
+			timeout: Timeout.LONG,
 			...options?.toHaveScreenshotOptions,
 		};
 

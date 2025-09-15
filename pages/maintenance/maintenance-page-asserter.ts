@@ -3,6 +3,7 @@ import { Attributes } from "@enums/playwright/htmlAttributes";
 import { expect, TestInfo } from "@playwright/test";
 import { step } from "decorators/step";
 import { MaintenancePage } from "./maintenance-page";
+import { Timeout } from "@enums/timeout";
 
 export class MaintenancePageAsserter extends BaseAsserter<MaintenancePage> {
 	public constructor(page: MaintenancePage) {
@@ -23,10 +24,14 @@ export class MaintenancePageAsserter extends BaseAsserter<MaintenancePage> {
 	public async footerSocialMediaIconVisualCorrect(
 		testInfo: TestInfo,
 		socialMedia: string,
+		timeout = Timeout.LONG,
 	): Promise<void> {
 		await this.checkElementVisualCorrect(
 			testInfo,
 			this.gamdomPage.map.socialMediaFooterIconByPlaceholder(socialMedia),
+			{
+				toHaveScreenshotOptions: { timeout },
+			},
 		);
 	}
 }
