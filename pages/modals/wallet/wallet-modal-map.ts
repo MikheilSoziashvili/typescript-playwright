@@ -36,6 +36,10 @@ export class WalletModalMap extends BaseMap {
 		return this.page.getByTestId("redeemButton");
 	}
 
+	public get buyCryptoTabButton(): Locator {
+		return this.page.getByTestId("buyCryptoButton");
+	}
+
 	public get vaultButtonInWithdrawTab(): Locator {
 		return this.page.getByTestId("vaultPaymentMethodContainer");
 	}
@@ -146,5 +150,11 @@ export class WalletModalMap extends BaseMap {
 		return this.page
 			.locator('label:has-text("BTC to withdraw")')
 			.locator("~ div input");
+	}
+
+	public get depositDisabledText(): Locator {
+		return this.walletLeftPanel.locator("h5", {
+			hasText: "Deposits Disabled",
+		});
 	}
 }

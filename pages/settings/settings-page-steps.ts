@@ -5,6 +5,7 @@ import { Toast } from "@pages/components/toast/toast";
 import { expect } from "@playwright/test";
 import { SettingsPage } from "./settings-page";
 import { generate2FACodeFromQRCodeImage } from "@core/utils/utils";
+import { SelfExclusionDays } from "@enums/self-exlusion-days";
 
 export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 	public constructor(gamdomPage: SettingsPage) {
@@ -102,5 +103,18 @@ export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 		if (attempts >= 5) {
 			throw new Error("Maximum attempts to disable 2FA reached.");
 		}
+	}
+
+	@step("Enable self exclusion")
+	public async navigateAndEnableSelfExclusion(
+		days: SelfExclusionDays,
+	): Promise<void> {
+		await this.gamdomPage.navigate();
+		await this.gamdomPage.assertThat().selfExclusionTabsVisible();
+		await this.gamdomPage.map.selfExclusionTime(days).click();
+		await this.gamdomPage.assertThat().selfExclusionModalHeadingVisible();
+		await this.gamdomPage.map.confirmModalContinueButton.click();
+		await this.gamdomPage.assertThat().selfExclusionTabNotVisible();
+		await this.gamdomPage.assertThat().selfExclusionTimerDisplayed(days);
 	}
 }

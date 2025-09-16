@@ -69,4 +69,11 @@ export class OriginalsMap extends BaseMap {
 	public get howToPlayModalNextButton(): Locator {
 		return this.howToPlayModal.getByRole("button", { name: "Next" });
 	}
+
+	public get selfExclusionText(): Locator {
+		return this.page.getByText(
+			"You cannot bet when you are in self exclusion.",
+			{ exact: true },
+		);
+	}
 }

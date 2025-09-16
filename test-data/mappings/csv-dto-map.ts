@@ -12,6 +12,7 @@ import {
 	PromoCodeFailedRedemptionCsv,
 	ChatDiamondIconForVipUsersCsv,
 } from "@dtos/csv";
+import { OriginalsSelfExclusionCsv } from "@dtos/csv/originals-self-exclusion";
 import { PlinkoTestDataCsv } from "@dtos/csv/plinko-test-data-csv";
 import { UserInfoSendNotificationCsv } from "@dtos/csv/user-info-send-notification-csv";
 import { CsvFilesName } from "@enums/csv-file-name";
@@ -31,4 +32,5 @@ export type CsvDtoMap = {
 	[CsvFilesName.PROMO_CODE_FAILED_REDEMPTION]: PromoCodeFailedRedemptionCsv;
 	[CsvFilesName.PLINKO_TEST_DATA]: PlinkoTestDataCsv;
 	[CsvFilesName.VIP_USER_STATUS]: ChatDiamondIconForVipUsersCsv;
+	[CsvFilesName.ORIGINALS_SELF_EXCLUSION]: OriginalsSelfExclusionCsv;
 };

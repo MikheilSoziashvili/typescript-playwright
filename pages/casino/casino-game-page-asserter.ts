@@ -7,6 +7,8 @@ import { VisibilityOptions } from "@enums/visibility-options";
 import { step } from "decorators/step";
 import { Attributes } from "@enums/playwright/htmlAttributes";
 import { BooleanValueString } from "@enums/playwright/booleanValues";
+import { ToastSubTitle } from "@enums/toast-subtitles";
+import { ToastTitle } from "@enums/toast-titles";
 
 export class CasinoPageAsserter extends BaseAsserter<CasinoPage> {
 	public constructor(page: CasinoPage) {
@@ -52,5 +54,13 @@ export class CasinoPageAsserter extends BaseAsserter<CasinoPage> {
 			hasText: gameName,
 		});
 		await this.checkElementsAreVisible([gameInFavorites]);
+	}
+
+	@step("Self exclusion toast message is displayed")
+	public async selfExclusionToastMessageIsDisplayed(): Promise<void> {
+		await this.gamdomPage.toast.assertThat().titleIs(ToastTitle.FAILED);
+		await this.gamdomPage.toast
+			.assertThat()
+			.subTitleIs(ToastSubTitle.SELF_EXCLUSION);
 	}
 }

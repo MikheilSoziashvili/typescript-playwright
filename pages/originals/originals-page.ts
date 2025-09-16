@@ -23,12 +23,14 @@ import { Page } from "playwright";
 import { OriginalsAsserter } from "./originals-page-asserter";
 import { OriginalsMap } from "./originals-page-map";
 import { OriginalsSteps } from "./originals-page-steps";
+import { Toast } from "@pages/components/toast/toast";
 
 /**
  * The OriginalsPage class acts as a unified interface for interacting with all the "Originals" games.
  * It leverages individual game POMs (Dice, Crash, Hi-Lo, Roulette).
  */
 export class OriginalsPage extends BasePage<OriginalsMap> {
+	public readonly toast: Toast;
 	public handlers: typeof this._handlers;
 	/**
 	 * A map that associates each OriginalGame to its corresponding page object.
@@ -69,6 +71,7 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 			Keno: this.kenoGamePage,
 		};
 		this.handlers = this._handlers;
+		this.toast = new Toast(this.page);
 	}
 
 	/**
@@ -349,5 +352,25 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 	@step("Click How to Play modal Next button")
 	public async clickHowToPlayModalNextButton(): Promise<void> {
 		await this.map.howToPlayModalNextButton.click();
+	}
+
+	@step("Verify self-exclusion message is displayed")
+	public async verifySelfExclusionMessageIsDisplayed(
+		game: OriginalGames,
+		betAmount: number,
+	): Promise<void> {
+		const toastGames = [
+			OriginalGame.Dice,
+			OriginalGame.Roulette,
+			OriginalGame.HiLo,
+			OriginalGame.Crash,
+		];
+
+		if (toastGames.includes(game)) {
+			await this.placeBet(game, betAmount);
+			await this.assertThat().selfExclusionToastMessageIsDisplayed();
+		} else {
+			await this.assertThat().selfExclusionPageTextIsDisplayed();
+		}
 	}
 }

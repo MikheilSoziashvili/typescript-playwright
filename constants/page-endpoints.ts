@@ -44,3 +44,4 @@ export const MINES_GAME_PAGE_ENDPOINT = "/mines";
 export const KENO_GAME_PAGE_ENDPOINT = "/keno";
 export const EV_REWARDS_ADMIN_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/EVRewardsSystemAdmin`;
 export const PRIVACY_PAGE_ENDPOINT = "/privacy";
+export const SPORTS_PAGE_ENDPOINT = "/sports";

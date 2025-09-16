@@ -1,5 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
+import { SelfExclusionDays } from "@enums/self-exlusion-days";
 
 export class SettingsPageMap extends BaseMap {
 	public constructor(page: Page) {
@@ -68,5 +69,27 @@ export class SettingsPageMap extends BaseMap {
 		return this.disable2FaModalLocator.locator(
 			"//button[normalize-space()='Cancel']",
 		);
+	}
+
+	public get selfExclusionTabs(): Locator {
+		return this.settingsContainer.getByTestId("gam-tabs");
+	}
+
+	public selfExclusionTime(days: SelfExclusionDays): Locator {
+		return this.settingsContainer.getByRole("tab", { name: days });
+	}
+
+	public get confirmModalHeading(): Locator {
+		return this.page.getByTestId("confirmation-modal-heading");
+	}
+
+	public get confirmModalContinueButton(): Locator {
+		return this.page.getByTestId("confirmation-modal-continue-button");
+	}
+
+	public get selfExclusionTimer(): Locator {
+		return this.settingsContainer
+			.locator("h5", { hasText: "Self exclusion" })
+			.locator("+ div h4");
 	}
 }

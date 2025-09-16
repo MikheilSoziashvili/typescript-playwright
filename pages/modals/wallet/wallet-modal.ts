@@ -42,6 +42,11 @@ export class WalletModal extends BasePage<WalletModalMap> {
 		await this.map.redeemTabButton.click({ timeout: Timeout.LONG });
 	}
 
+	@step("Open Buy crypto tab")
+	public async openBuyCryptoTab(): Promise<void> {
+		await this.map.buyCryptoTabButton.click();
+	}
+
 	@step("Open withdraw tab in vault")
 	public async openWithdrawTabInVault(): Promise<void> {
 		await this.map.vaultWithdrawTab.click();

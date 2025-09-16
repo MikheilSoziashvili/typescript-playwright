@@ -25,6 +25,7 @@ import { PromotionsPage } from "@pages/promotions/promotions-page";
 import { PromotionPage } from "@pages/promotion/promotion-page";
 import { NotificationsPage } from "@pages/notifications/notifications-page";
 import { PrivacyPage } from "@pages/privacy/privacy-page";
+import { SportsPage } from "@pages/sports/sports-page";
 
 export type GamdomPages = {
 	homePage: HomePage;
@@ -53,6 +54,7 @@ export type GamdomPages = {
 	promotionPage: PromotionPage;
 	notificationsPage: NotificationsPage;
 	privacyPage: PrivacyPage;
+	sportsPage: SportsPage;
 };
 
 export const gamdomPagesFixtures = base.extend<GamdomPages>({
@@ -133,5 +135,8 @@ export const gamdomPagesFixtures = base.extend<GamdomPages>({
 	},
 	privacyPage: async ({ page }, use) => {
 		await use(new PrivacyPage(page));
+	},
+	sportsPage: async ({ page }, use) => {
+		await use(new SportsPage(page));
 	},
 });

@@ -4,6 +4,8 @@ import { BaseAsserter } from "@pages/base/base-asserter";
 import { step } from "decorators/step";
 import { OriginalsPage } from "./originals-page";
 import { StepsPerGame } from "@constants/how-to-play-modal-steps";
+import { ToastTitle } from "@enums/toast-titles";
+import { ToastSubTitle } from "@enums/toast-subtitles";
 
 export class OriginalsAsserter extends BaseAsserter<OriginalsPage> {
 	public constructor(page: OriginalsPage) {
@@ -66,6 +68,21 @@ export class OriginalsAsserter extends BaseAsserter<OriginalsPage> {
 				locator: this.gamdomPage.map.howToPlayModalSliderCounter,
 				expectedText: expectedText,
 			},
+		]);
+	}
+
+	@step("Self exclusion toast message is displayed")
+	public async selfExclusionToastMessageIsDisplayed(): Promise<void> {
+		await this.gamdomPage.toast.assertThat().titleIs(ToastTitle.FAILED);
+		await this.gamdomPage.toast
+			.assertThat()
+			.subTitleIs(ToastSubTitle.SELF_EXCLUSION);
+	}
+
+	@step("Verify self exclusion page text is displayed")
+	public async selfExclusionPageTextIsDisplayed(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.selfExclusionText,
 		]);
 	}
 }

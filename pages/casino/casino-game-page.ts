@@ -10,10 +10,13 @@ import { CasinoPageMap } from "./casino-game-page-map";
 import { CasinoPageAsserter } from "./casino-game-page-asserter";
 import { CasinoPageSteps } from "./casino-game-page-step";
 import { CasinoGameName } from "@enums/casino-game";
+import { Toast } from "@pages/components/toast/toast";
 
 export class CasinoPage extends BasePage<CasinoPageMap> {
+	public readonly toast: Toast;
 	public constructor(page: Page) {
 		super(page, new CasinoPageMap(page));
+		this.toast = new Toast(page);
 	}
 
 	public override async navigate(
