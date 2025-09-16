@@ -203,9 +203,9 @@ jobs:
             ENVIRONMENT_URL: >-
                 ${{ 
                   (inputs.environment || 'staging') == 'custom'
-                    && (inputs.env_url || github.event.client_payload.env_url)
+                    && (inputs.env_url || github.event.client_payload.environment_url)
                   || inputs.env_url
-                  || github.event.client_payload.env_url
+                  || github.event.client_payload.environment_url
                   || vars.ENVIRONMENT_URL
                 }}
             DB_HOST: >-
@@ -242,7 +242,7 @@ jobs:
             - name: Validate required inputs for custom environment
               if: ${{ (inputs.environment || 'staging') == 'custom' }}
               run: |
-                  if [ -z "${{ inputs.env_url }}" ] && [ -z "${{ github.event.client_payload.env_url }}" ]; then
+                  if [ -z "${{ inputs.env_url }}" ] && [ -z "${{ github.event.client_payload.environment_url }}" ]; then
                     echo "ERROR: You must provide env_url when using custom environment."
                     exit 1
                   fi
