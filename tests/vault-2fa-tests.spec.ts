@@ -9,10 +9,10 @@ import {
 } from "@core/utils/utils";
 import { JiraUser } from "@enums/jira/jira-users";
 import { Unit } from "@enums/units";
-import { Wallet } from "@enums/wallets";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import { MEDIUM_USER_AMOUNT } from "database/constants/user-amounts";
+import { testData } from "test-data/test-data-manager";
 
 test.describe(`Vault wallet - 2FA verifications`, () => {
 	let qrCode2FAImagePath: string;
@@ -28,9 +28,13 @@ test.describe(`Vault wallet - 2FA verifications`, () => {
 	});
 
 	test.use(storageStateNewUserDB({ amount: MEDIUM_USER_AMOUNT }));
-	const walletType = Wallet.USD;
-	const depositAmount = 3000;
-	const withdrawAmount = depositAmount / 3;
+	const testDataPredefined = testData()
+		.fromPredefined()
+		.pick({
+			walletType: (data) => data.wallets.walletType,
+			depositAmount: (data) => data.transactions.depositAmount,
+			withdrawAmount: (data) => data.transactions.depositAmount / 3,
+		});
 
 	test(
 		`[ENG-2566] Vault wallet - Require new 2FA code when IP of user changes`,
@@ -60,18 +64,21 @@ test.describe(`Vault wallet - 2FA verifications`, () => {
 			await walletModal
 				.steps()
 				.depositFromWalletAndVerify(
-					walletType,
+					testDataPredefined.walletType,
 					Unit.COINS,
-					depositAmount,
+					testDataPredefined.depositAmount,
 				);
 			await walletModal
 				.steps()
 				.withdrawInVaultWith2FaFlow(
-					walletType,
-					withdrawAmount,
+					testDataPredefined.walletType,
+					testDataPredefined.withdrawAmount,
 					qrCode2FAImagePath,
 				);
-			await walletModal.withdrawInVault(walletType, withdrawAmount);
+			await walletModal.withdrawInVault(
+				testDataPredefined.walletType,
+				testDataPredefined.withdrawAmount,
+			);
 			await twoFactorAuthModal.assertThat().modal2FaNotDisplayed();
 
 			await initializePageObjectsWithCookies(
@@ -89,8 +96,8 @@ test.describe(`Vault wallet - 2FA verifications`, () => {
 			await walletModal
 				.steps()
 				.withdrawInVaultWith2FaFlow(
-					walletType,
-					withdrawAmount,
+					testDataPredefined.walletType,
+					testDataPredefined.withdrawAmount,
 					qrCode2FAImagePath,
 				);
 		},

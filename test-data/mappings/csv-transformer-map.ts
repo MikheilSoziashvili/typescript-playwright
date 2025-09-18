@@ -47,6 +47,9 @@ export type CsvRowType<T extends keyof CsvTransformerMapType> = Parameters<
 	CsvTransformerMapType[T]
 >[0];
 
+export type CsvTransformerFunctionType<T extends keyof CsvTransformerMapType> =
+	(row: CsvRowType<T>) => CsvTransformerExistingReturnType<T>;
+
 export type CsvTransformerMapType = {
 	[CsvFilesName.ORIGINALS_QUICK_SELECT_BUTTONS]: (
 		row: OriginalsQuickSelectButtonsCsvRecord,

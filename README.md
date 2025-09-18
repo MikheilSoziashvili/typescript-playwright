@@ -113,8 +113,11 @@ Make sure you have the following installed:
 │   ├── core                                      # Test data core functionality
 │   ├── mappings                                  # Test data mappings for CSV file names and DTOs
 │   ├── parsers                                   # Test data file parsers
+│   ├── scenarios                                 # Test data predefined data bundles
+│   ├── sources                                   # Test data sources (predefined, randomized etc)
 │   ├── custom-exceptions.ts                      # Test data custom exceptions
 │   ├── test-data-manager.ts                      # Test data manager
+│   ├── types.ts                                  # Test data type definitions
 ├── tests                                         # Test suites
 │   ├── visual                                    # Visual test suites
 │   │   ├── homepage-visual.spec.ts               # Visual test suite (example)

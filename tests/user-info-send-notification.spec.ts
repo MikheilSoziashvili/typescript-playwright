@@ -1,8 +1,5 @@
 import { testDetails } from "@core/helpers/test-details-helper";
-import {
-	generateRandomString,
-	setAuthenticationCookies,
-} from "@core/utils/utils";
+import { setAuthenticationCookies } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { UserClasses } from "@enums/db/user-classes";
@@ -17,10 +14,6 @@ import { testData } from "test-data/test-data-manager";
 const userInfoSendNotificationScenarios = testData().fromCsvParsed({
 	file: CsvFilesName.USER_INFO_SEND_NOTIFICATION,
 });
-
-const title = "testTitle";
-const description = "testDescription";
-const reason = "testReason";
 
 test.describe("User info - send notification tests", () => {
 	for (const {
@@ -55,7 +48,10 @@ test.describe("User info - send notification tests", () => {
 					gamdomDb,
 					gamdomApi,
 					browser,
+					testDataScenarios,
 				}) => {
+					const testDataScenario =
+						testDataScenarios.notificationsTests;
 					const user2 = new RegisterTestData();
 					await gamdomDb.createNewUser({
 						username: user2.username,
@@ -86,22 +82,26 @@ test.describe("User info - send notification tests", () => {
 
 					await infoAdminPage
 						.steps()
-						.sendNotification(title, description, reason);
+						.sendNotification(
+							testDataScenario.title,
+							testDataScenario.description,
+							testDataScenario.reason,
+						);
 
 					await user2NotificationsPage
 						.getNotification()
 						.assertThat()
-						.titleIs(title);
+						.titleIs(testDataScenario.title);
 					await user2NotificationsPage
 						.getNotification()
 						.assertThat()
-						.subTitleIs(description);
+						.subTitleIs(testDataScenario.description);
 
 					await user2NotificationsPage
 						.assertThat()
 						.notificationVisibleAndHasTitleAndDescription(
-							title,
-							description,
+							testDataScenario.title,
+							testDataScenario.description,
 						);
 				},
 			);
@@ -109,8 +109,6 @@ test.describe("User info - send notification tests", () => {
 	}
 
 	test.describe("User info - send long notification", () => {
-		const title = generateRandomString({ length: 30 });
-
 		test(
 			`[ENG-4852] UserInfo tab - verify the "Send long notification" function`,
 			testDetails()
@@ -123,7 +121,10 @@ test.describe("User info - send notification tests", () => {
 				gamdomApiDbFacade,
 				page,
 				notifications,
+				testDataPredefinedRandom,
 			}) => {
+				const { longTitle } =
+					testDataPredefinedRandom.data.notifications;
 				const { user, cookie } =
 					await gamdomApiDbFacade.createSingleUserDbAndAuth({
 						userClass: UserClasses.Admin,
@@ -133,10 +134,10 @@ test.describe("User info - send notification tests", () => {
 
 				await userInfoAdminPage.navigate();
 				await userInfoAdminPage.searchForSteam64OrUserId(user.userId);
-				await infoAdminPage.steps().sendNotification(title);
+				await infoAdminPage.steps().sendNotification(longTitle);
 				await notifications
 					.assertThat()
-					.looksCorrectForLongMessage(title);
+					.looksCorrectForLongMessage(longTitle);
 			},
 		);
 	});
