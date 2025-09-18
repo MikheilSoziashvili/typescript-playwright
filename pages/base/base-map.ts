@@ -136,6 +136,34 @@ export class BaseMap {
 		);
 	}
 
+	protected getTableCellLabel(
+		labelText: string,
+		container?: Locator,
+	): Locator {
+		return (container || this.page).locator("td", { hasText: labelText });
+	}
+
+	protected getTableCellInput(
+		labelText: string,
+		inputSelector: string,
+		container?: Locator,
+	): Locator {
+		return this.getTableCellLabel(labelText, container).locator(
+			`+ td ${inputSelector}`,
+		);
+	}
+
+	protected getTableCellButton(
+		labelText: string,
+		buttonText: string,
+		container?: Locator,
+	): Locator {
+		return this.getTableCellLabel(labelText, container).locator(
+			"+ td button",
+			{ hasText: buttonText },
+		);
+	}
+
 	public getMetaOgPropertyByName(ogProperty: OgProperties): Locator {
 		return this.page
 			.locator("head")
@@ -170,6 +198,6 @@ export class BaseMap {
 	}
 
 	public getLoadingAnimationSelector(): string {
-	return 'img[alt="gamdom-loading"]';
-}
+		return 'img[alt="gamdom-loading"]';
+	}
 }

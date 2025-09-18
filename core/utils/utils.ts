@@ -974,16 +974,31 @@ export function getISODate({
 	daysOffset = 0,
 	monthsOffset = 0,
 	yearsOffset = 0,
+	hours = 12,
+	minutes = 0,
+	period = "AM",
 }: {
 	daysOffset?: number;
 	monthsOffset?: number;
 	yearsOffset?: number;
+	hours?: number;
+	minutes?: number;
+	period?: "AM" | "PM";
 } = {}): string {
 	const date = new Date();
 
 	date.setDate(date.getDate() + daysOffset);
 	date.setMonth(date.getMonth() + monthsOffset);
 	date.setFullYear(date.getFullYear() + yearsOffset);
+
+	let adjustedHours = hours;
+	if (period === "PM" && hours !== 12) {
+		adjustedHours += 12;
+	} else if (period === "AM" && hours === 12) {
+		adjustedHours = 0;
+	}
+
+	date.setHours(adjustedHours, minutes, 0, 0);
 
 	return date.toISOString();
 }

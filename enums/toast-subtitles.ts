@@ -29,4 +29,5 @@ export enum ToastSubTitle {
 	SUCCESSFUL_EDIT = "Edit successful!",
 	ONLY_DECREASE_WALLET_AMOUNT = "Sorry, You only can decrease the wallet amount!",
 	SELF_EXCLUSION = "You cannot bet when you are in self exclusion.",
+	KOTH_EVENT_CREATED = "Event started/scheduled successfully!",
 }
