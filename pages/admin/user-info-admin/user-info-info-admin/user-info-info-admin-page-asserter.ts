@@ -8,6 +8,7 @@ import { ToastTitle } from "@enums/toast-titles";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { CountryCodes } from "@enums/country-codes";
 import { quotesRemovalPattern } from "@support/regex-patterns";
+import { BanTypeOptions } from "@enums/admin/ban-type-options";
 
 export class UserInfoInfoAdminPageAsserter extends BaseAsserter<UserInfoInfoAdminPage> {
 	public constructor(page: UserInfoInfoAdminPage) {
@@ -33,9 +34,9 @@ export class UserInfoInfoAdminPageAsserter extends BaseAsserter<UserInfoInfoAdmi
 	}
 
 	@step("Check user is banned")
-	public async isUserBanned(): Promise<void> {
+	public async isUserBanned(type: BanTypeOptions): Promise<void> {
 		await this.checkElementsAreVisible([
-			this.gamdomPage.map.bannedUserInfo,
+			this.gamdomPage.map.bannedUserInfo(type),
 		]);
 	}
 

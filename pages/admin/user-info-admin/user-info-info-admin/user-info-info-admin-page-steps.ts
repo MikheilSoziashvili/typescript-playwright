@@ -4,6 +4,8 @@ import { generateRandomString } from "@core/utils/utils";
 import { BanReasonOptions } from "@enums/admin/ban-reason-options";
 import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { step } from "decorators/step";
+import { BanTypeOptions } from "@enums/admin/ban-type-options";
+import { BanDropdowns } from "@enums/admin/ban-dropdowns";
 
 export class UserInfoInfoAdminPageSteps extends BasePageStep<UserInfoInfoAdminPage> {
 	public constructor(gamdomPage: UserInfoInfoAdminPage) {
@@ -12,19 +14,24 @@ export class UserInfoInfoAdminPageSteps extends BasePageStep<UserInfoInfoAdminPa
 
 	@step("Ban user")
 	public async banUser(options?: { reason?: string }): Promise<void> {
-		await this.gamdomPage.map.waitForVisibility({
-			locator: this.gamdomPage.map.banUserContainer,
-		});
-		await this.gamdomPage.map.banReasonDropdown.click();
+		await this.gamdomPage.map.banUserButton.click();
 
+		await this.gamdomPage.map
+			.banModalDropdownByLabel(BanDropdowns.BAN_TYPE)
+			.click();
+		await this.gamdomPage.map.getBanTypeOption(BanTypeOptions.HARD).click();
+
+		await this.gamdomPage.map
+			.banModalDropdownByLabel(BanDropdowns.BAN_REASON)
+			.click();
 		await this.gamdomPage.map
 			.getBanReasonOption(BanReasonOptions.CUSTOM)
 			.click();
 		if (options?.reason) {
 			await this.gamdomPage.map.banUserInput.fill(options.reason);
 		}
-		await this.gamdomPage.map.banUserButton.click();
-		await this.gamdomPage.assertThat().isUserBanned();
+		await this.gamdomPage.map.confirmBanButton.click();
+		await this.gamdomPage.assertThat().isUserBanned(BanTypeOptions.HARD);
 		await this.gamdomPage.assertThat().isUnbanButtonDisplayed();
 	}
 

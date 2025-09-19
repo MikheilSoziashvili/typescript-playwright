@@ -6,5 +6,5 @@ export enum BanReasonOptions {
 	SPORTSBOOK_DECISION = "Sportsbook Decision",
 	RESTRICTED_COUNTRY = "Restricted Country",
 	ACCOUNT_CLOSED_DUE_TO_TERMS_VIOLATION = "Account Closed Due to Terms Violation",
-	CUSTOM = "Custom",
+	CUSTOM = "custom",
 }

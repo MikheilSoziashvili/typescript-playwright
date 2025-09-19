@@ -1,6 +1,8 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
 import { BanReasonOptions } from "@enums/admin/ban-reason-options";
+import { BanTypeOptions } from "@enums/admin/ban-type-options";
+import { BanDropdowns } from "@enums/admin/ban-dropdowns";
 
 export class UserInfoInfoAdminPageMap extends BaseMap {
 	public constructor(page: Page) {
@@ -22,8 +24,14 @@ export class UserInfoInfoAdminPageMap extends BaseMap {
 		return this.page.getByTestId("adminInfoSendNotificationContainer");
 	}
 
-	public get banReasonDropdown(): Locator {
-		return this.banUserContainer.getByTestId("Input");
+	public banModalDropdownByLabel(label: BanDropdowns): Locator {
+		return this.page.locator(
+			`div:has(> label:text-is("${label}")) [data-testid="Input"] [role="combobox"]`,
+		);
+	}
+
+	public getBanTypeOption(type: BanTypeOptions): Locator {
+		return this.page.locator(`[data-value="${type}"]`);
 	}
 
 	public getBanReasonOption(reason: BanReasonOptions): Locator {
@@ -31,23 +39,27 @@ export class UserInfoInfoAdminPageMap extends BaseMap {
 	}
 
 	public get banUserInput(): Locator {
-		return this.banUserContainer.getByTestId("adminInfoBanReasonInput");
+		return this.page.getByLabel("Custom Reason");
 	}
 
 	public get banUserButton(): Locator {
-		return this.banUserContainer.getByTestId("adminInfoBanButton");
+		return this.page.getByTestId("adminInfoBanButton");
+	}
+
+	public get confirmBanButton(): Locator {
+		return this.page.locator("button", { hasText: "Confirm Ban" });
 	}
 
 	public get softBanUserButton(): Locator {
 		return this.banUserContainer.getByTestId("adminInfoSoftBanButton");
 	}
 
-	public get bannedUserInfo(): Locator {
-		return this.page.getByTestId("adminInfoBanReason");
+	public bannedUserInfo(type: BanTypeOptions): Locator {
+		return this.page.locator("p", { hasText: `User is ${type} banned` });
 	}
 
 	public get unbanUserButton(): Locator {
-		return this.bannedUserInfo.getByTestId("adminInfoUnbanButton");
+		return this.page.locator("button", { hasText: "Unban" });
 	}
 
 	public get tipButton(): Locator {
