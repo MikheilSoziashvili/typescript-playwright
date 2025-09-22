@@ -1,9 +1,10 @@
 import { BaseAsserter } from "@base/base-asserter";
 import { UserInfoTransactionsAdminPage } from "./user-info-transactions-admin-page";
-import { expect } from "@playwright/test";
+import { expect, Locator } from "@playwright/test";
 import { step } from "decorators/step";
 import { waitUntil } from "@core/utils/utils";
 import { logger } from "@logger/logger";
+import { currencyToNumberPattern } from "@support/regex-patterns";
 
 export class UserInfoTransactionsAdminPageAsserter extends BaseAsserter<UserInfoTransactionsAdminPage> {
 	public constructor(page: UserInfoTransactionsAdminPage) {
@@ -45,10 +46,10 @@ export class UserInfoTransactionsAdminPageAsserter extends BaseAsserter<UserInfo
 			)}`,
 		).toHaveLength(0);
 	}
-	
+
 	/**
 	 * Extracts the "Balance After" values for all winning rounds from the transactions table.
-	 * 
+	 *
 	 * This method uses the transaction details column to find only rows marked as "WIN",
 	 * then maps those rows to the corresponding values in the Balance After column.
 	 * The returned list is reversed to ensure newest transactions appear first.
@@ -104,5 +105,38 @@ export class UserInfoTransactionsAdminPageAsserter extends BaseAsserter<UserInfo
 			await this.gamdomPage.map.plinkoWageredCell.innerText();
 		logger.info(`Plinko total wagered displayed: ${actualValue}`);
 		expect(actualValue.trim()).toBe(expectedValue);
+	}
+
+	@step("Verify stats value")
+	private async verifyStatsValue(
+		cell: Locator,
+		expectedValue: number,
+	): Promise<void> {
+		await this.gamdomPage.map.wageredStatsTable.scrollIntoViewIfNeeded();
+		const actualValue = await cell.innerText();
+		const parsedValue = parseFloat(
+			actualValue.replace(currencyToNumberPattern, ""),
+		);
+		expect(parsedValue).toBe(expectedValue);
+	}
+
+	@step("Verify total winnings stats")
+	public async totalWinningsStatsAreCorrect(
+		expectedWinnings: number,
+	): Promise<void> {
+		await this.verifyStatsValue(
+			this.gamdomPage.map.totalWinningsCell,
+			expectedWinnings,
+		);
+	}
+
+	@step("Verify total profit stats")
+	public async totalProfitStatsAreCorrect(
+		expectedProfit: number,
+	): Promise<void> {
+		await this.verifyStatsValue(
+			this.gamdomPage.map.totalProfitCell,
+			expectedProfit,
+		);
 	}
 }

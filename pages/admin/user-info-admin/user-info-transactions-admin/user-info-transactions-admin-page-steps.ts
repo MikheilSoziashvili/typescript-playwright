@@ -35,4 +35,10 @@ export class UserInfoTransactionsAdminPageSteps extends BasePageStep<UserInfoTra
 			await this.gamdomPage.selectLogTypesToFetch(logType);
 		}
 	}
+
+	@step("Select Stats calculations and fetch data")
+	public async fetchStatsCalculationsData(): Promise<void> {
+		await this.gamdomPage.checkStatsCalculationBox();
+		await this.gamdomPage.clickFetchData();
+	}
 }

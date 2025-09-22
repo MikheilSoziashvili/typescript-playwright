@@ -381,4 +381,34 @@ export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 			);
 		}
 	}
+
+	@step("Place bet and calculate profit")
+	public async placeBetAndCalculateProfit(
+		betAmount: number,
+	): Promise<{ winnings: number; profit: number }> {
+		await this.gamdomPage.fillInBetAmount(betAmount.toString());
+
+		const previousHistoryCount = await this.getHistoryButtonsCount();
+
+		await this.gamdomPage.dropBall();
+
+		await waitUntil(
+			async () => {
+				const currentCount = await this.getHistoryButtonsCount();
+				return currentCount > previousHistoryCount;
+			},
+			{
+				errorMessage: `History count did not increase from ${previousHistoryCount} after dropping ball.`,
+				intervalSeconds: TimeoutSeconds.HALF,
+				timeoutSeconds: TimeoutSeconds.THIRTY,
+			},
+		);
+
+		const result = await this.getParsedPlinkoResult();
+
+		const winnings = betAmount * result;
+		const profit = winnings - betAmount;
+
+		return { winnings, profit };
+	}
 }

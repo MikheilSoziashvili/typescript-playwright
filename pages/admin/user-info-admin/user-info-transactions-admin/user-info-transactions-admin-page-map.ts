@@ -79,4 +79,12 @@ export class UserInfoTransactionsAdminPageMap extends BaseMap {
 	public get plinkoWageredCell(): Locator {
 		return this.wageredStatsTable.getByTestId("plinko-wagered");
 	}
+
+	public get totalWinningsCell(): Locator {
+		return this.wageredStatsTable.getByTestId("total-winnings");
+	}
+
+	public get totalProfitCell(): Locator {
+		return this.wageredStatsTable.getByTestId("total-profit");
+	}
 }
