@@ -86,11 +86,6 @@ export class CasinoPage extends BasePage<CasinoPageMap> {
 		await this.map.favoritesTab.click();
 	}
 
-	@step("Open game")
-	public async openGame(): Promise<void> {
-		await this.map.secondTopGame().click();
-	}
-
 	@step("Open game from dropdown")
 	public async openGameFromDropdown(game: CasinoGameName): Promise<void> {
 		await this.map.casinoGameInDropdown(game).click();

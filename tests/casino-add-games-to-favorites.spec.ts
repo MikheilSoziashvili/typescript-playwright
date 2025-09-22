@@ -47,10 +47,9 @@ test.describe(
 			async ({ casinoPage }) => {
 				await casinoPage.navigate();
 
-				await casinoPage.searchForGame(CasinoGameName.BARREL_BONANZA);
-				await casinoPage.openGameFromDropdown(
-					CasinoGameName.BARREL_BONANZA,
-				);
+				await casinoPage
+					.steps()
+					.searchForGameAndOpen(CasinoGameName.BARREL_BONANZA);
 				await casinoPage.clickInGameHeartIcon();
 
 				await casinoPage.navigate();

@@ -2,7 +2,7 @@ import * as path from "path";
 import { format } from "date-fns";
 import { GamdomApi } from "@api/gamdom-api";
 import { DEFAULT_CURRENCY, DEFAULT_MULTIPLIER } from "@constants/defaults";
-import { MAILINATOR_DOMAIN } from "@constants/domains";
+import { MAILINATOR_DOMAIN, TEAMGAMDOM_DOMAIN } from "@constants/domains";
 import { AUTH_PATH } from "@constants/file-paths";
 import { JsonData, WaitUntilOptions } from "@core/interfaces";
 import {
@@ -1422,4 +1422,18 @@ export function parseRelativeDateRelation(v: string): RelativeDateRelation {
 	return v === RelativeDateRelation.FUTURE
 		? RelativeDateRelation.FUTURE
 		: RelativeDateRelation.PAST;
+}
+
+export async function stripAuthFromExternalRequests(page: Page): Promise<void> {
+	await page.route("**/*", async (route) => {
+		const url = new URL(route.request().url());
+		const headers = route.request().headers();
+
+		if (url.hostname.endsWith(TEAMGAMDOM_DOMAIN)) {
+			return route.continue();
+		}
+
+		const { authorization: _auth, cookie: _cookie, ...safe } = headers;
+		await route.continue({ headers: safe });
+	});
 }

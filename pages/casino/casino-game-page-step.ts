@@ -72,4 +72,10 @@ export class CasinoPageSteps extends BasePageStep<CasinoPage> {
 		await this.gamdomPage.openFavoritesTab();
 		await this.gamdomPage.assertThat().gameIsAddedToFavorites(game);
 	}
+
+	@step("Search for a casino game and open it")
+	public async searchForGameAndOpen(game: CasinoGameName): Promise<void> {
+		await this.gamdomPage.searchForGame(game);
+		await this.gamdomPage.openGameFromDropdown(game);
+	}
 }

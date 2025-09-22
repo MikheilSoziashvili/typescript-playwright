@@ -7,6 +7,7 @@ import { OriginalsPage } from "@pages/originals/originals-page";
 import { PlinkoGamePage } from "@pages/plinko-game-page/plinko-game-page";
 import { MinesGamePage } from "@pages/mines-game-page/mines-game-page";
 import { KenoGamePage } from "@pages/keno-game/keno-game-page";
+import { BookOfPyramidsPage } from "@pages/casino-games/bgaming/book-of-pyramids/book-of-pyramids-page";
 
 export type GamePages = {
 	originalsPage: OriginalsPage;
@@ -17,6 +18,7 @@ export type GamePages = {
 	plinkoGamePage: PlinkoGamePage;
 	minesGamePage: MinesGamePage;
 	kenoGamePage: KenoGamePage;
+	bookOfPyramidsPage: BookOfPyramidsPage;
 };
 
 export const gamePagesFixtures = base.extend<GamePages>({
@@ -40,6 +42,9 @@ export const gamePagesFixtures = base.extend<GamePages>({
 	},
 	kenoGamePage: async ({ page }, use) => {
 		await use(new KenoGamePage(page));
+	},
+	bookOfPyramidsPage: async ({ page }, use) => {
+		await use(new BookOfPyramidsPage(page));
 	},
 	originalsPage: async (
 		{
