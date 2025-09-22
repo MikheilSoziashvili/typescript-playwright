@@ -1,6 +1,10 @@
 import { DATASETS_DIR } from "@constants/file-paths";
 import { KOTH_ENDPOINT } from "@constants/page-endpoints";
-import { getCookieHeader, parse_csv } from "@core/utils/utils";
+import {
+	encodeCookieHeader,
+	getCookieHeader,
+	parse_csv,
+} from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { UserClasses } from "@enums/db/user-classes";
@@ -10,14 +14,15 @@ import { environment_url } from "configuration";
 import { storageStateNewUserDB } from "../fixtures/auth-fixtures";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraUser } from "@enums/jira/jira-users";
+import { testData } from "test-data/test-data-manager";
 
-const footerRecords = parse_csv(
-	DATASETS_DIR,
-	CsvFilesName.FOOTER_LINKS_AND_ENDPOINTS,
-) as {
-	linkName: string;
-	expectedURL: string;
-}[];
+const footerRecords = testData().fromCsvRaw({
+	file: CsvFilesName.FOOTER_LINKS_AND_ENDPOINTS,
+});
+
+const footerRecordsLoggedOut = testData().fromCsvParsed({
+	file: CsvFilesName.FOOTER_LINKS_AND_ENDPOINTS,
+});
 
 const helpPageRecords = parse_csv(
 	DATASETS_DIR,
@@ -56,7 +61,7 @@ const superAdminData = new RegisterTestData({
 	useGamdomEmailDomain: true,
 });
 
-test.describe("Footer redirects tests", () => {
+test.describe("Footer redirects tests - logged in flow", () => {
 	test.use(storageStateNewUserDB());
 
 	footerRecords.forEach((record) => {
@@ -183,4 +188,46 @@ test.describe("Footer redirects tests", () => {
 			},
 		);
 	});
+});
+
+test.describe("Footer redirects tests - logged out flow", () => {
+	footerRecordsLoggedOut.forEach((record) => {
+		test(
+			`[ENG-1977] Footer - Verify '${record.linkName}' redirection from Footer section redirects to its respective page`,
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			async ({ homePage, footer }) => {
+				await homePage.navigate();
+				await footer.openFooterLinkByPlaceholder(record.linkName);
+				await footer
+					.assertThat()
+					.waitForAndVerifyCurrentUrlIs(record.expectedURL);
+			},
+		);
+	});
+
+	test(
+		`[ENG-1977] Footer - Verify 'King Of The Hill' redirection from "Footer" section redirects to its respective page`,
+		testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+		async ({
+			homePage,
+			footer,
+			gamdomApi,
+			kothPage,
+			gamdomApiDbFacade,
+		}) => {
+			const { cookie } =
+				await gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
+
+			await homePage.navigate();
+			await footer.openFooterLinkByPlaceholder("King Of The Hill");
+
+			await kothPage
+				.assertThat()
+				.verifyKothUrlIs(
+					KOTH_ENDPOINT,
+					gamdomApi,
+					await encodeCookieHeader(cookie),
+				);
+		},
+	);
 });

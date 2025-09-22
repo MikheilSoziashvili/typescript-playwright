@@ -11,7 +11,7 @@ export class FooterMap extends BaseMap {
 	}
 
 	public footerLinkByPlaceholder(placeholderText: string): Locator {
-		return this.footerContainer.locator("a", {
+		return this.footerContainer.locator("a, button", {
 			hasText: placeholderText,
 		});
 	}

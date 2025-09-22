@@ -4,6 +4,7 @@ export enum Feature {
 	WELCOME_BONUS = "welcomeBonus",
 	FREE_REWARDS = "freerewards",
 	AFFILIATES = "affiliates",
+	AFFILIATES_INFO = "AFFILIATES_INFO",
 	EXTERNAL_GAMES = "external-games",
 	KOTH = "koth",
 	STEAM_LOGIN = "steamLogin",

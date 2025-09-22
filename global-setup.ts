@@ -77,6 +77,21 @@ async function enablePlinkoFeature(
 	});
 }
 
+async function enableAffiliatesInfoFeature(
+	gamdomApi: GamdomApi,
+	cookie: string,
+): Promise<void> {
+	const featureResponse = await gamdomApi.setFeatureState(
+		Feature.PLINKO,
+		ALL_USER_TYPES_ENABLED,
+		{ Cookie: cookie },
+	);
+
+	featureResponse.forEach((response) => {
+		expect(response.status()).toBe(HttpStatus.OK);
+	});
+}
+
 async function enableMinesFeature(
 	gamdomApi: GamdomApi,
 	cookie: string,
@@ -399,6 +414,7 @@ async function globalSetup(): Promise<void> {
 	await enablePromotionsFeature(gamdomApi, cookie);
 	await ensureKothEventsExist(gamdomApi, cookie);
 	await enableRecentWins(gamdomApi, cookie);
+	await enableAffiliatesInfoFeature(gamdomApi, cookie);
 
 	if (Configuration.enableNewDesignV4Feature) {
 		await enableNewDesignV4Feature(gamdomApi, cookie);

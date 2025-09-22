@@ -1,4 +1,5 @@
 import {
+	FooterLinksAndEndpointsCsvRecord,
 	OriginalsQuickSelectButtonsCsvRecord,
 	PlinkoBetsAcrossMultipleWalletsCsvRecord,
 	UserProfileItemsLinksAccessibilityCsvRecord,
@@ -7,6 +8,10 @@ import { OriginalsSelfExclusionCsvRecord } from "@dtos/csv/originals-self-exclus
 import { PlinkoTestDataCsvRecord } from "@dtos/csv/plinko-test-data-csv";
 import { UserInfoSendNotificationCsvRecord } from "@dtos/csv/user-info-send-notification-csv";
 import { CsvFilesName } from "@enums/csv-file-name";
+import {
+	FooterLinksAndEndpointsCsvParsedRecord,
+	parseFooterLinksAndEndpointsCsvRow,
+} from "test-data/parsers/footer-links-and-redirects-csv-parser";
 import {
 	OriginalsQuickSelectButtonsCsvParsedRecord,
 	parseOriginalsQuickSelectButtonsCsvRow,
@@ -74,6 +79,10 @@ export type CsvTransformerMapType = {
 	[CsvFilesName.ORIGINALS_SELF_EXCLUSION]: (
 		row: OriginalsSelfExclusionCsvRecord,
 	) => OriginalsSelfExclusionCsvParsedRecord;
+
+	[CsvFilesName.FOOTER_LINKS_AND_ENDPOINTS]: (
+		row: FooterLinksAndEndpointsCsvRecord,
+	) => FooterLinksAndEndpointsCsvParsedRecord;
 };
 
 export const CsvTransformerMap: CsvTransformerMapType = {
@@ -87,4 +96,6 @@ export const CsvTransformerMap: CsvTransformerMapType = {
 		parsePlinkoBetsAcrossMultipleWalletsCsvRow,
 	[CsvFilesName.PLINKO_TEST_DATA]: parsePlinkoTestDataCsvRow,
 	[CsvFilesName.ORIGINALS_SELF_EXCLUSION]: parseOriginalsSelfExclusionCsvRow,
+	[CsvFilesName.FOOTER_LINKS_AND_ENDPOINTS]:
+		parseFooterLinksAndEndpointsCsvRow,
 } as const;
