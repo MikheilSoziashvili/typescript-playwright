@@ -48,6 +48,7 @@ import sharp from "sharp";
 import xml2js from "xml2js";
 import { isFileNotFoundError } from "./error-utils";
 import { ChatMessageOptions } from "@pages/components/chat/chat-map";
+import { RelativeDateRelation } from "@enums/relative-date-relation";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -1412,4 +1413,13 @@ export function parseExpectedAdditionalFields(fieldsString: string): string[] {
 		.split(",")
 		.map((f) => f.trim())
 		.filter(Boolean);
+}
+
+/**
+ * converts a string from the CSV into the RelativeDateRelation enum
+ */
+export function parseRelativeDateRelation(v: string): RelativeDateRelation {
+	return v === RelativeDateRelation.FUTURE
+		? RelativeDateRelation.FUTURE
+		: RelativeDateRelation.PAST;
 }

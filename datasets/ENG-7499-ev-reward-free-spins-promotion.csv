@@ -1,0 +1,13 @@
+iterationName,startDate,endDate,fileKey,expectedResult,expectedLogs
+"1 past/past 1","past","past","one_pass","start_in_past","none"
+"2 past/past 300","past","past","threeHundred_fail","start_in_past","none"
+"3 past/past 1000","past","past","thousand_pass","start_in_past","none"
+"4 future/past 1","future","past","one_pass","expiry_before_start","none"
+"5 future/past 300","future","past","threeHundred_fail","expiry_before_start","none"
+"6 future/past 1000","future","past","thousand_pass","expiry_before_start","none"
+"7 past/future 1","past","future","one_pass","start_in_past","none"
+"8 past/future 300","past","future","threeHundred_fail","start_in_past","none"
+"9 past/future 1000","past","future","thousand_pass","start_in_past","none"
+"10 future/future 1","future","future","one_pass","processed_ok","success"
+"11 future/future 300","future","future","threeHundred_fail","processed_ok","success_and_error"
+"12 future/future 1000","future","future","thousand_pass","processed_ok","success"

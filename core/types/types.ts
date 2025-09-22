@@ -1,3 +1,4 @@
+import { EV_REWARD_FREE_SPINS_FILE_MAP } from "@constants/file-paths";
 import { RegisterTestData } from "@dtos/test-data";
 import { Protocol } from "@enums/api/protocols";
 import { BitcoinFeeEstimateMode } from "@enums/bitcoin";
@@ -207,3 +208,5 @@ export type UserWithConfig = {
 export type AnyTag = TestTag | JiraComponent;
 
 export type Viewport = { width: number; height: number };
+
+export type FileKey = keyof typeof EV_REWARD_FREE_SPINS_FILE_MAP;

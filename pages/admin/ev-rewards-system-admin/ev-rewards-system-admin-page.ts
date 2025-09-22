@@ -5,6 +5,7 @@ import { EvRewardsSystemAdminMap } from "./ev-rewards-system-admin-page-map";
 import { EvRewardsSystemAdminSteps } from "./ev-rewards-system-admin-page-steps";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { EV_REWARDS_ADMIN_PAGE_ENDPOINT } from "@constants/page-endpoints";
+import { step } from "decorators/step";
 
 export class EvRewardsSystemAdminPage extends BasePage<EvRewardsSystemAdminMap> {
 	public constructor(page: Page) {
@@ -26,5 +27,15 @@ export class EvRewardsSystemAdminPage extends BasePage<EvRewardsSystemAdminMap> 
 
 	public steps(): EvRewardsSystemAdminSteps {
 		return new EvRewardsSystemAdminSteps(this);
+	}
+
+	@step("Bulk reward file upload")
+	public async bulkRewardFileUpload(filePath: string): Promise<void> {
+		await this.map.inputBulkRewardFile.setInputFiles(filePath);
+	}
+
+	@step("Click reward users button")
+	public async clickRewardUsersButton(): Promise<void> {
+		await this.map.rewardUsersButton.click();
 	}
 }

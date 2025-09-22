@@ -30,4 +30,7 @@ export enum ToastSubTitle {
 	ONLY_DECREASE_WALLET_AMOUNT = "Sorry, You only can decrease the wallet amount!",
 	SELF_EXCLUSION = "You cannot bet when you are in self exclusion.",
 	KOTH_EVENT_CREATED = "Event started/scheduled successfully!",
+	START_IN_PAST = "Start date must not be in the past.",
+	EXPIRY_BEFORE_START = "Expiry date must be after start date",
+	PROCESSED_OK = "Rewards hand outs processed, please check the logs below!",
 }

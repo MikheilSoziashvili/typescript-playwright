@@ -180,6 +180,26 @@ export class BaseAsserter<
 		}
 	}
 
+	@step("Check that elements are empty")
+	public async checkElementsAreEmpty(
+		elements: Locator[],
+		timeout?: number,
+	): Promise<void> {
+		await this.assertOnElements(elements, (el) =>
+			expect(el).toBeEmpty({ timeout }),
+		);
+	}
+
+	@step("Check that elements are not empty")
+	public async checkElementsAreNotEmpty(
+		elements: Locator[],
+		timeout?: number,
+	): Promise<void> {
+		await this.assertOnElements(elements, (el) =>
+			expect(el).not.toBeEmpty({ timeout }),
+		);
+	}
+
 	@step("Assert on elements")
 	protected async assertOnElements(
 		elements: Locator[],

@@ -48,4 +48,5 @@ export enum CsvFilesName {
 	PLINKO_TEST_DATA = "ENG-2844-plinko-test-data.csv",
 	VIP_USER_STATUS = "ENG-6827-chat-verify-diamond-icon-for-vip-users.csv",
 	ORIGINALS_SELF_EXCLUSION = "ENG-4422-originals-selfexclusion.csv",
+	EV_REWARD_FREE_SPINS_PROMOTION = "ENG-7499-ev-reward-free-spins-promotion.csv",
 }

@@ -37,3 +37,22 @@ export const BATCH_FREE_SPINS_FILE_PATH = path.resolve(
 	__dirname,
 	`../${TEST_FILES_DIR}/ENG-5008-batch-free-spins-upload.csv`,
 );
+
+export const EV_REWARD_FREE_SPINS_FILE_MAP = {
+	one_pass: path.resolve(
+		__dirname,
+		`../${TEST_FILES_DIR}/ENG-7499-users-1-pass.csv`,
+	),
+	threeHundred_fail: path.resolve(
+		__dirname,
+		`../${TEST_FILES_DIR}/ENG-7499-users-300-fail.csv`,
+	),
+	thousand_pass: path.resolve(
+		__dirname,
+		`../${TEST_FILES_DIR}/ENG-7499-users-1k-pass.csv`,
+	),
+} as const;
+
+export const CSV_OUT_DIR = path.dirname(
+	EV_REWARD_FREE_SPINS_FILE_MAP.thousand_pass,
+);
