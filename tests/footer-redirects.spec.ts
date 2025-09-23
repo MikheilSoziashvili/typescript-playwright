@@ -1,17 +1,16 @@
 import { DATASETS_DIR } from "@constants/file-paths";
 import { KOTH_ENDPOINT } from "@constants/page-endpoints";
-import {
-	encodeCookieHeader,
-	getCookieHeader,
-	parse_csv,
-} from "@core/utils/utils";
+import { getCookieHeader, parse_csv } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
 import { test } from "@fixtures/fixtures";
 import { environment_url } from "configuration";
-import { storageStateNewUserDB } from "../fixtures/auth-fixtures";
+import {
+	storageStateUnauthenticatedUser,
+	storageStateNewUserDB,
+} from "../fixtures/auth-fixtures";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraUser } from "@enums/jira/jira-users";
 import { testData } from "test-data/test-data-manager";
@@ -61,173 +60,150 @@ const superAdminData = new RegisterTestData({
 	useGamdomEmailDomain: true,
 });
 
-test.describe("Footer redirects tests - logged in flow", () => {
-	test.use(storageStateNewUserDB());
-
-	footerRecords.forEach((record) => {
-		test(
-			`[ENG-1977] Footer - Verify '${record.linkName}' redirection from Footer section redirects to its respective page`,
-			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
-			async ({ homePage, footer }) => {
-				await homePage.navigate();
-				await footer.openFooterLinkByPlaceholder(record.linkName);
-				await footer
-					.assertThat()
-					.waitForAndVerifyCurrentUrlIs(record.expectedURL);
-			},
-		);
-	});
-
-	test(
-		`[ENG-1977] Footer - Verify 'King Of The Hill' redirection from "Footer" section redirects to its respective page`,
-		testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
-		async ({ homePage, footer, gamdomApi, kothPage, gamdomDb }) => {
-			await gamdomDb.createNewUser({
-				username: superAdminData.username,
-				password: superAdminData.password,
-				email: superAdminData.email,
-				tags: UserTags.SuperAdmin,
-				userClass: UserClasses.Admin,
-				emailVerified: true,
-			});
-			const superAdminCookie = getCookieHeader(
-				await gamdomApi.authenticateWithExistingUser(
-					superAdminData.username,
-					superAdminData.password,
-				),
+const loggedState = [
+	{
+		state: "User logged in flow",
+		user: storageStateNewUserDB(),
+		csv: footerRecords,
+	},
+	{
+		state: "User logged out flow",
+		user: storageStateUnauthenticatedUser(),
+		csv: footerRecordsLoggedOut,
+	},
+];
+loggedState.forEach(({ state, user, csv }) => {
+	test.describe(`Footer redirects tests - ${state}`, () => {
+		test.use(user);
+		csv.forEach((record) => {
+			test(
+				`[ENG-1977] Footer - Verify '${record.linkName}' redirection from Footer section redirects to its respective page - ${state}`,
+				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+				async ({ homePage, footer }) => {
+					await homePage.navigate();
+					await footer.openFooterLinkByPlaceholder(record.linkName);
+					await footer
+						.assertThat()
+						.waitForAndVerifyCurrentUrlIs(record.expectedURL);
+				},
 			);
-			await homePage.navigate();
-			await footer.openFooterLinkByPlaceholder("King Of The Hill");
+		});
 
-			await kothPage
-				.assertThat()
-				.verifyKothUrlIs(KOTH_ENDPOINT, gamdomApi, superAdminCookie);
-		},
-	);
-
-	helpPageRecords.forEach((record) => {
 		test(
-			`[ENG-1980] Footer - Verify correct page and tab selection is displayed after '${record.infoPage}' redirection from 'Info' and 'Support' sections footer links`,
+			`[ENG-1977] Footer - Verify 'King Of The Hill' redirection from "Footer" section redirects to its respective page - ${state}`,
 			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
-			async ({ homePage, footer, helpPage }) => {
-				await homePage.navigate();
-				await footer.openFooterLinkByPlaceholder(record.infoPage);
-				await helpPage
-					.assertThat()
-					.isHelpPageTitleVisible(record.tabSelection);
-				await helpPage
-					.assertThat()
-					.isHelpPageTabSelected(record.tabSelection);
-			},
-		);
-	});
-
-	socialMediaRecords.forEach((record) => {
-		test(
-			`[ENG-1981] Footer - Verify Redirection from Footer to '${record.socialMedia}' Social Applications`,
-			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
-			async ({ homePage, footer }) => {
-				await homePage.navigate();
-				await footer.openSocialMediaFooterLinkByPlaceholder(
-					record.socialMedia,
+			async ({ homePage, footer, gamdomApi, kothPage, gamdomDb }) => {
+				await gamdomDb.createNewUser({
+					username: superAdminData.username,
+					password: superAdminData.password,
+					email: superAdminData.email,
+					tags: UserTags.SuperAdmin,
+					userClass: UserClasses.Admin,
+					emailVerified: true,
+				});
+				const superAdminCookie = getCookieHeader(
+					await gamdomApi.authenticateWithExistingUser(
+						superAdminData.username,
+						superAdminData.password,
+					),
 				);
-				await footer
+				await homePage.navigate();
+				await footer.openFooterLinkByPlaceholder("King Of The Hill");
+
+				await kothPage
 					.assertThat()
-					.waitForAndVerifyCurrentUrlIs(`${environment_url}/`);
-				await homePage
-					.assertThat()
-					.verifyNewTabUrlParts([
-						`${record.socialMediaUrlPart}`,
-						`${record.gamdomUrlPart}`,
-					]);
+					.verifyKothUrlIs(
+						KOTH_ENDPOINT,
+						gamdomApi,
+						superAdminCookie,
+					);
 			},
 		);
-	});
 
-	test(
-		`[ENG-2826] Footer - Verify the Live Support modal is launched after redirection from Footer`,
-		testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
-		async ({ homePage, footer, liveSupportModal }) => {
-			await homePage.navigate();
-			await footer.openLiveSupport();
-			await liveSupportModal.assertThat().isDisplayed();
-		},
-	);
+		helpPageRecords.forEach((record) => {
+			test(
+				`[ENG-1980] Footer - Verify correct page and tab selection is displayed after '${record.infoPage}' redirection from 'Info' and 'Support' sections footer links - ${state}`,
+				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+				async ({ homePage, footer, helpPage }) => {
+					await homePage.navigate();
+					await footer.openFooterLinkByPlaceholder(record.infoPage);
+					await helpPage
+						.assertThat()
+						.isHelpPageTitleVisible(record.tabSelection);
+					await helpPage
+						.assertThat()
+						.isHelpPageTabSelected(record.tabSelection);
+				},
+			);
+		});
 
-	officialSiteRecords.forEach((record) => {
+		socialMediaRecords.forEach((record) => {
+			test(
+				`[ENG-1981] Footer - Verify Redirection from Footer to '${record.socialMedia}' Social Applications - ${state}`,
+				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+				async ({ homePage, footer }) => {
+					await homePage.navigate();
+					await footer.openSocialMediaFooterLinkByPlaceholder(
+						record.socialMedia,
+					);
+					await footer
+						.assertThat()
+						.waitForAndVerifyCurrentUrlIs(`${environment_url}/`);
+					await homePage
+						.assertThat()
+						.verifyNewTabUrlParts([
+							`${record.socialMediaUrlPart}`,
+							`${record.gamdomUrlPart}`,
+						]);
+				},
+			);
+		});
+
 		test(
-			`[ENG-1979] Footer - Verify '${record.footerLink}' link redirection from Footer`,
+			`[ENG-2826] Footer - Verify the Live Support modal is launched after redirection from Footer - ${state}`,
 			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
-			async ({ homePage, footer }) => {
+			async ({ homePage, footer, liveSupportModal }) => {
 				await homePage.navigate();
-				await footer.openFooterLinkByPlaceholder(record.footerLink);
-				await footer
-					.assertThat()
-					.waitForAndVerifyCurrentUrlIs(`${environment_url}/`);
-				await homePage.assertThat().verifyNewTabUrl(record.expectedUrl);
+				await footer.openLiveSupport();
+				await liveSupportModal.assertThat().isDisplayed();
 			},
 		);
+
+		officialSiteRecords.forEach((record) => {
+			test(
+				`[ENG-1979] Footer - Verify '${record.footerLink}' link redirection from Footer - ${state}`,
+				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+				async ({ homePage, footer }) => {
+					await homePage.navigate();
+					await footer.openFooterLinkByPlaceholder(record.footerLink);
+					await footer
+						.assertThat()
+						.waitForAndVerifyCurrentUrlIs(`${environment_url}/`);
+					await homePage
+						.assertThat()
+						.verifyNewTabUrl(record.expectedUrl);
+				},
+			);
+		});
+
+		termsOfServiceRecords.forEach((record) => {
+			test(
+				`[ENG-2557] Footer - Verify 'Terms of Service' text removal  - ${state}`,
+				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+				async ({ homePage, helpPage, footer }) => {
+					await homePage.navigate();
+					await footer.openFooterLinkByPlaceholder("TOS");
+					await helpPage
+						.assertThat()
+						.isHelpPageTitleVisible("Terms Of Service");
+					await helpPage
+						.assertThat()
+						.isHelpPageTabSelected("Terms Of Service");
+					await helpPage
+						.assertThat()
+						.isTextMissingInTermsOfServiceBlock(record.missingText);
+				},
+			);
+		});
 	});
-
-	termsOfServiceRecords.forEach((record) => {
-		test(
-			`[ENG-2557] Footer - Verify 'Terms of Service' text removal`,
-			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
-			async ({ homePage, helpPage, footer }) => {
-				await homePage.navigate();
-				await footer.openFooterLinkByPlaceholder("TOS");
-				await helpPage
-					.assertThat()
-					.isHelpPageTitleVisible("Terms Of Service");
-				await helpPage
-					.assertThat()
-					.isHelpPageTabSelected("Terms Of Service");
-				await helpPage
-					.assertThat()
-					.isTextMissingInTermsOfServiceBlock(record.missingText);
-			},
-		);
-	});
-});
-
-test.describe("Footer redirects tests - logged out flow", () => {
-	footerRecordsLoggedOut.forEach((record) => {
-		test(
-			`[ENG-1977] Footer - Verify '${record.linkName}' redirection from Footer section redirects to its respective page`,
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
-			async ({ homePage, footer }) => {
-				await homePage.navigate();
-				await footer.openFooterLinkByPlaceholder(record.linkName);
-				await footer
-					.assertThat()
-					.waitForAndVerifyCurrentUrlIs(record.expectedURL);
-			},
-		);
-	});
-
-	test(
-		`[ENG-1977] Footer - Verify 'King Of The Hill' redirection from "Footer" section redirects to its respective page`,
-		testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
-		async ({
-			homePage,
-			footer,
-			gamdomApi,
-			kothPage,
-			gamdomApiDbFacade,
-		}) => {
-			const { cookie } =
-				await gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
-
-			await homePage.navigate();
-			await footer.openFooterLinkByPlaceholder("King Of The Hill");
-
-			await kothPage
-				.assertThat()
-				.verifyKothUrlIs(
-					KOTH_ENDPOINT,
-					gamdomApi,
-					await encodeCookieHeader(cookie),
-				);
-		},
-	);
 });

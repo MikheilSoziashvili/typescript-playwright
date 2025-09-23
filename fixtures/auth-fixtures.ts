@@ -311,6 +311,17 @@ export const storageStateNewUserDB: (
 	},
 });
 
+export const storageStateUnauthenticatedUser: () => Fixtures<
+	{},
+	{},
+	PlaywrightTestArgs & PlaywrightTestOptions,
+	PlaywrightWorkerArgs & PlaywrightWorkerOptions
+> = () => ({
+	storageState: async ({}, use) => {
+		await use({ cookies: [], origins: [] });
+	},
+});
+
 export const storageStateNewSuperAdminUserDB: (
 	options?: NewUserOptions,
 ) => Fixtures<
