@@ -168,7 +168,8 @@ concurrency:
 jobs:
     tests:
         timeout-minutes: 600
-        runs-on: self-hosted-dind-playwright
+        runs-on: >-
+            ${{ github.event_name == 'repository_dispatch' && 'self-hosted-dind-playwright' || 'self-hosted-dind-fulltest' }}
         environment: ${{ ((inputs.environment || 'staging') == 'custom' && null) || (inputs.environment || 'staging') }}
         permissions:
             pull-requests: write
