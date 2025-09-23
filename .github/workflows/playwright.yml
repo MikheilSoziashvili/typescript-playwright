@@ -212,9 +212,9 @@ jobs:
             DB_HOST: >-
                 ${{ 
                   (inputs.environment || 'staging') == 'custom'
-                    && (inputs.db_host || github.event.client_payload.db_host)
+                    && (inputs.db_host || github.event.client_payload.db-host)
                   || inputs.db_host
-                  || github.event.client_payload.db_host
+                  || github.event.client_payload.db-host
                   || secrets.DB_HOST
                 }}
             DB_USER: ${{ secrets.DB_USER }}
