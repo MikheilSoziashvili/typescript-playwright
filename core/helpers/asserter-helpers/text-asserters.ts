@@ -144,3 +144,28 @@ export function buildFreeSpinsPromoCodeNotificationSubTitle(
 export function buildCashPromoCodeNotificationSubTitle(amount: number): string {
 	return `Congratulations! You have redeemed $${amount}.`;
 }
+
+export function buildSendingOutFreeSpinsToastSubTitle(userId: number): string {
+	return `Started sending out freespins for user: ${userId}`;
+}
+
+export function buildSendingOutFreeSpinsBatchToastSubTitle(
+	totalUsers: number,
+	totalBatches: number,
+): string {
+	return `Started sending out freespins in batches of 50. Total users: ${totalUsers}, total batches: ${totalBatches}`;
+}
+
+export function buildFreeSpinsBatchProcessedToastSubTitle(
+	successUsers: number,
+	totalBatches: number,
+): string {
+	return `Successfully processed ${totalBatches} batches. Success users: ${successUsers}`;
+}
+
+export function buildFreeSpinsBatchProcessedWithErrorsToastSubTitle(
+	totalBatches: number,
+	successUsers = 100,
+): string {
+	return `Processed ${successUsers} users. ${totalBatches} batches remaining.`;
+}

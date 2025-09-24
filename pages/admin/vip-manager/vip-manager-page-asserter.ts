@@ -64,4 +64,17 @@ export class VipManagerAdminPageAsserter extends BaseAsserter<VipManagerAdminPag
 			this.gamdomPage.map.uploadBatchUpdateVipPlayersStatusFileButton,
 		).toBeDisabled();
 	}
+
+	@step("Assert 'Error Logs' textarea is not empty and expected error")
+	public async errorLogsTextIs(expectedErrorText: string): Promise<void> {
+		await this.checkElementsAreNotEmpty([
+			this.gamdomPage.map.batchVipStatusErrorLogsTextarea,
+		]);
+		await this.checkElementsHaveText([
+			{
+				locator: this.gamdomPage.map.batchVipStatusErrorLogsTextarea,
+				expectedText: expectedErrorText,
+			},
+		]);
+	}
 }

@@ -3,12 +3,14 @@ import {
 	SUPER_ADMIN_VIP_MANAGER_NO_BULK,
 } from "@constants/credentials";
 import { TEST_FILES_DIR } from "@constants/file-paths";
+import { buildFreeSpinsBatchProcessedWithErrorsToastSubTitle } from "@core/helpers/asserter-helpers/text-asserters";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { parse_csv } from "@core/utils/utils";
 import { BulkActions } from "@enums/bulk-actions";
 import { JiraUser } from "@enums/jira/jira-users";
-import { ToastSubTitleDynamic } from "@enums/toast-subtitles-dynamic";
+import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
+import { VipManagerDynamicErrorMessages } from "database/constants/vip-manager-errors-dynamic";
 import { storageStateUserAPI } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 
@@ -178,18 +180,33 @@ test.describe("VIP Manager admin tests", () => {
 
 			const expectedErrorMessage =
 				bulkAction === BulkActions.UPLOAD
-					? ToastSubTitleDynamic.INVALID_USER_ID(
-							incorrectUserIdFromCsv[0][0],
+					? VipManagerDynamicErrorMessages.FAILED_TO_UPDATE_VIP_STATUS(
+							incorrectUserIdFromCsv[1][0],
 					  )
-					: ToastSubTitleDynamic.INVALID_USER_WITH_ID(
-							incorrectUserIdFromCsv[0][0],
+					: VipManagerDynamicErrorMessages.FAILED_TO_REMOVE_VIP_STATUS(
+							incorrectUserIdFromCsv[1][0],
 					  );
 
-			return { filePath, bulkAction, expectedErrorMessage };
+			const expectedSuccessToastMessage =
+				bulkAction === BulkActions.UPLOAD
+					? ToastSubTitle.SUCCESSFULLY_ATTACHED
+					: ToastSubTitle.SUCCESSFULLY_REMOVED_VIP_STATUSES;
+
+			return {
+				filePath,
+				bulkAction,
+				expectedSuccessToastMessage,
+				expectedErrorMessage,
+			};
 		});
 
 		bulkActionFiles.forEach(
-			({ filePath, bulkAction, expectedErrorMessage }) => {
+			({
+				filePath,
+				bulkAction,
+				expectedSuccessToastMessage,
+				expectedErrorMessage,
+			}) => {
 				test(
 					`[ENG-2332] Vip Manager Bulk Admin - Verify error received when upload .csv file containing incorrect userID for bulk '${bulkAction}' process`,
 					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
@@ -216,10 +233,24 @@ test.describe("VIP Manager admin tests", () => {
 							filePath,
 						);
 						await vipManagerAdminPage.uploadUpdateRemoveBatchVipPlayersFile();
-						await toast.assertThat().titleIs(ToastTitle.FAILED);
-						await toast
+
+						await toast.assertThat().titlesAre([
+							{
+								title: ToastTitle.SYSTEM,
+								subTitle:
+									buildFreeSpinsBatchProcessedWithErrorsToastSubTitle(
+										0,
+									),
+							},
+							{
+								title: ToastTitle.SUCCESS,
+								subTitle: expectedSuccessToastMessage,
+							},
+						]);
+
+						await vipManagerAdminPage
 							.assertThat()
-							.subTitleIs(expectedErrorMessage);
+							.errorLogsTextIs(expectedErrorMessage);
 					},
 				);
 			},

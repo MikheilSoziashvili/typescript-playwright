@@ -33,4 +33,6 @@ export enum ToastSubTitle {
 	START_IN_PAST = "Start date must not be in the past.",
 	EXPIRY_BEFORE_START = "Expiry date must be after start date",
 	PROCESSED_OK = "Rewards hand outs processed, please check the logs below!",
+	SUCCESSFULLY_ATTACHED = "Successfully attached!",
+	SUCCESSFULLY_REMOVED_VIP_STATUSES = "Successfully removed VIP statuses!",
 }

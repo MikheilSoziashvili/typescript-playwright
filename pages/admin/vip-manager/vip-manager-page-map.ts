@@ -94,6 +94,12 @@ export class VipManagerAdminPageMap extends BaseMap {
 		return this.updateBachVipStatusDialogContent.locator(`input`);
 	}
 
+	public get batchVipStatusErrorLogsTextarea(): Locator {
+		return this.updateBachVipStatusDialogContent.locator(
+			`//span[contains(., "Error Logs")]//parent::div//following-sibling::div//textarea[not(@aria-hidden='true')]`,
+		);
+	}
+
 	public get batchVipPlayersStatusButtonsContainer(): Locator {
 		return this.batchUpdateVipPlayersStatusBlock.getByTestId(
 			`batch-vip-status-update-mode-toggle`,

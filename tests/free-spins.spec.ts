@@ -1,4 +1,9 @@
 import { BATCH_FREE_SPINS_FILE_PATH } from "@constants/file-paths";
+import {
+	buildFreeSpinsBatchProcessedToastSubTitle,
+	buildSendingOutFreeSpinsBatchToastSubTitle,
+	buildSendingOutFreeSpinsToastSubTitle,
+} from "@core/helpers/asserter-helpers/text-asserters";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { setAuthenticationCookies } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
@@ -19,7 +24,6 @@ import { FreeSpinsAdminPage } from "@pages/admin/free-spins-admin/free-spins-adm
 import { HomePage } from "@pages/home-page/home-page";
 import { NotificationsPage } from "@pages/notifications/notifications-page";
 import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
-import { USER_1_ID } from "database/constants/user-ids";
 
 test.describe("Free spins tests", () => {
 	test.describe(
@@ -37,11 +41,17 @@ test.describe("Free spins tests", () => {
 					.withTags(JiraComponent.FREE_SPINS)
 					.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 					.apply(),
-				async ({ freeSpinsAdminPage, toast }) => {
+				async ({ freeSpinsAdminPage, toast, gamdomApiDbFacade }) => {
+					const [newUserData] = await gamdomApiDbFacade.createUsersDb(
+						{
+							usersCount: 1,
+						},
+					);
+					const newUserId = newUserData.userId;
 					await freeSpinsAdminPage.navigate();
 
 					await freeSpinsAdminPage.steps().getFreeSpins({
-						userId: USER_1_ID,
+						userId: newUserId,
 						gameName: CasinoGameName.BARREL_BONANZA,
 						betAmount: 100,
 					});
@@ -49,7 +59,10 @@ test.describe("Free spins tests", () => {
 					await toast.assertThat().titlesAre([
 						{
 							title: ToastTitle.SUCCESS,
-							subTitle: ToastSubTitle.SENDING_OUT_FREESPINS,
+							subTitle:
+								buildSendingOutFreeSpinsToastSubTitle(
+									newUserId,
+								),
 						},
 						{
 							title: ToastTitle.SUCCESS,
@@ -80,11 +93,18 @@ test.describe("Free spins tests", () => {
 					await toast.assertThat().titlesAre([
 						{
 							title: ToastTitle.SUCCESS,
-							subTitle: ToastSubTitle.SENDING_OUT_FREESPINS,
+							subTitle:
+								buildSendingOutFreeSpinsBatchToastSubTitle(
+									19,
+									1,
+								),
 						},
 						{
 							title: ToastTitle.SUCCESS,
-							subTitle: ToastSubTitle.CASINO_REWARD_GIVEN,
+							subTitle: buildFreeSpinsBatchProcessedToastSubTitle(
+								19,
+								1,
+							),
 						},
 					]);
 				},
@@ -188,11 +208,17 @@ test.describe("Free spins tests", () => {
 			test(
 				"[ENG-3474] Verify free spins cannot be sent when admin wallet is 0",
 				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
-				async ({ freeSpinsAdminPage, toast }) => {
+				async ({ freeSpinsAdminPage, toast, gamdomApiDbFacade }) => {
+					const [newUserData] = await gamdomApiDbFacade.createUsersDb(
+						{
+							usersCount: 1,
+						},
+					);
+					const newUserId = newUserData.userId;
 					await freeSpinsAdminPage.navigate();
 
 					await freeSpinsAdminPage.steps().getFreeSpins({
-						userId: USER_1_ID,
+						userId: newUserId,
 						gameName: CasinoGameName.MYSTIC_CHIEF,
 						betAmount: 200,
 					});
@@ -200,7 +226,10 @@ test.describe("Free spins tests", () => {
 					await toast.assertThat().titlesAre([
 						{
 							title: ToastTitle.SUCCESS,
-							subTitle: ToastSubTitle.SENDING_OUT_FREESPINS,
+							subTitle:
+								buildSendingOutFreeSpinsToastSubTitle(
+									newUserId,
+								),
 						},
 						{
 							title: ToastTitle.FAILED,
