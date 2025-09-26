@@ -7,13 +7,15 @@ import {
 	getRandomNumber,
 	parse_csv,
 	parseToBoolean,
+	setAuthenticationCookies,
 } from "@core/utils/utils";
-import { PromotionTestData, RegisterTestData } from "@dtos/test-data";
+import { PromotionTestData } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
+import { AnnotationType } from "@enums/playwright/annotationsTypes";
 import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { PromotionCategories } from "@enums/promotion-categories";
 import { PromotionIsVipCategories } from "@enums/promotion-is-vip-categories";
@@ -23,7 +25,6 @@ import { PromotionType } from "@enums/promotion-types";
 import { TestTag } from "@enums/test-tags";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
-import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import { PromotionsPage } from "@pages/promotions/promotions-page";
 import { isCI } from "configuration";
@@ -236,37 +237,19 @@ test.describe(
 	() => {
 		let promotionName: string;
 		let promotionNewName: string;
-		let userId: number;
 
 		test.slow();
-		test.use(
-			storageStateNewUserDB({
-				tags: UserTags.PromotionAdmin,
-				userClass: UserClasses.Admin,
-				emailVerified: true,
-				isEmailWithGamdomDomain: true,
-			}),
-		);
 
-		test.beforeEach(async ({ gamdomApi, gamdomDb }) => {
-			const promotionAdminUserData = new RegisterTestData({
-				useGamdomEmailDomain: true,
-			});
-			await gamdomDb.createNewUser({
-				username: promotionAdminUserData.username,
-				password: promotionAdminUserData.password,
-				email: promotionAdminUserData.email,
-				tags: UserTags.SuperAdmin,
-				userClass: UserClasses.Admin,
-				emailVerified: true,
-			});
+		test.beforeEach(async ({ page, gamdomApiDbFacade }) => {
+			const { cookie } =
+				await gamdomApiDbFacade.createSingleUserDbAndAuth({
+					tags: UserTags.PromotionAdmin,
+					userClass: UserClasses.Admin,
+					emailVerified: true,
+					useGamdomEmailDomain: true,
+				});
 
-			userId = (
-				await gamdomApi.getBasicInfo(
-					promotionAdminUserData.username,
-					promotionAdminUserData.password,
-				)
-			).user.id;
+			await setAuthenticationCookies(page, cookie);
 		});
 
 		test.afterEach(async ({ gamdomDb }) => {
@@ -276,83 +259,96 @@ test.describe(
 			]);
 		});
 
-		test.describe("Promotion expiration tests", () => {
-			promotionTypes.forEach((promotionType) => {
-				Object.values(testScenarios).forEach((scenario) => {
-					test(
-						`[${scenario.testId}] Promotions - '${promotionType.name}' ${scenario.description}`,
-						testDetails()
-							.withAuthor(JiraUser.IVAYLO_STOYCHEV)
-							.apply(),
-						async ({
-							gamdomDb,
-							promotionsPage,
-							promotionAdminPage,
-						}) => {
-							promotionName = generateRandomString({
-								prefix: "promotion_",
-								length: 5,
-							});
-
-							await scenario.createPromotion(
-								promotionType.insertMethod,
+		test.describe(
+			"Promotion expiration tests",
+			testDetails()
+				.withArbitraryAnnotations({
+					type: AnnotationType.BUG,
+					description:
+						"'Rows per page' table dropdown is causing a refresh loop issue",
+				})
+				.apply(),
+			() => {
+				promotionTypes.forEach((promotionType) => {
+					Object.values(testScenarios).forEach((scenario) => {
+						test(
+							`[${scenario.testId}] Promotions - '${promotionType.name}' ${scenario.description}`,
+							testDetails()
+								.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+								.apply(),
+							async ({
 								gamdomDb,
-								promotionName,
-								userId,
-							);
-
-							await promotionAdminPage.navigate();
-							await promotionAdminPage
-								.assertThat()
-								.promotionIsDisplayedInPromotionsTable(
-									promotionName,
-								);
-							await promotionAdminPage
-								.assertThat()
-								.promotionStatusMatches(
-									promotionName,
-									scenario.initialStatus,
-								);
-
-							await promotionsPage.navigate();
-							await promotionsPage
-								.assertThat()
-								.promotionsPageIsLoaded();
-
-							await scenario.initialVisibilityAssertion(
 								promotionsPage,
-								promotionName,
-							);
+								promotionAdminPage,
+								gamdomApiDbFacade,
+							}) => {
+								const { user: superAdmin } =
+									await gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
+								promotionName = generateRandomString({
+									prefix: "promotion_",
+									length: 5,
+								});
 
-							await scenario.action(gamdomDb, promotionName);
+								await scenario.createPromotion(
+									promotionType.insertMethod,
+									gamdomDb,
+									promotionName,
+									superAdmin.userId,
+								);
 
-							await promotionAdminPage.navigate();
-							await promotionAdminPage
-								.assertThat()
-								.promotionIsDisplayedInPromotionsTable(
+								await promotionAdminPage.navigate();
+								await promotionAdminPage
+									.steps()
+									.checkPromotionIsDisplayedInPromotionsTable(
+										promotionName,
+									);
+								await promotionAdminPage
+									.assertThat()
+									.promotionStatusMatches(
+										promotionName,
+										scenario.initialStatus,
+									);
+
+								await promotionsPage.navigate();
+								await promotionsPage
+									.assertThat()
+									.promotionsPageIsLoaded();
+
+								await scenario.initialVisibilityAssertion(
+									promotionsPage,
 									promotionName,
 								);
-							await promotionAdminPage
-								.assertThat()
-								.promotionStatusMatches(
+
+								await scenario.action(gamdomDb, promotionName);
+
+								await promotionAdminPage.navigate();
+								await promotionAdminPage
+									.steps()
+									.checkPromotionIsDisplayedInPromotionsTable(
+										promotionName,
+									);
+								await promotionAdminPage
+									.assertThat()
+									.promotionStatusMatches(
+										promotionName,
+										scenario.finalStatus,
+									);
+
+								await promotionsPage.navigate();
+								await promotionsPage
+									.assertThat()
+									.promotionsPageIsLoaded();
+
+								await scenario.finalVisibilityAssertion(
+									promotionsPage,
 									promotionName,
-									scenario.finalStatus,
 								);
-
-							await promotionsPage.navigate();
-							await promotionsPage
-								.assertThat()
-								.promotionsPageIsLoaded();
-
-							await scenario.finalVisibilityAssertion(
-								promotionsPage,
-								promotionName,
-							);
-						},
-					);
+							},
+						);
+					});
 				});
-			});
-		});
+			},
+		);
 
 		test.describe("Promotion CRUD tests", () => {
 			promotionCombinations.forEach((combination) => {
@@ -363,8 +359,26 @@ test.describe(
 						.withJiraBugTickets("7501")
 						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 						.apply(),
-					async ({ promotionAdminPage, promotionsModal, toast }) => {
+					async ({
+						promotionAdminPage,
+						promotionsModal,
+						toast,
+						gamdomApiDbFacade,
+					}) => {
 						test.fixme(isCI);
+
+						const { cookie } =
+							await gamdomApiDbFacade.createSingleUserDbAndAuth({
+								tags: UserTags.PromotionAdmin,
+								userClass: UserClasses.Admin,
+								emailVerified: true,
+								useGamdomEmailDomain: true,
+							});
+
+						await setAuthenticationCookies(
+							promotionAdminPage.page,
+							cookie,
+						);
 						promotionName = generateRandomString({
 							prefix: `new_promotion_${combination.category}_${combination.subCategory}_${combination.isForVip}_`,
 							length: 3,
@@ -392,8 +406,8 @@ test.describe(
 								ToastSubTitle.PROMOTION_CREATED_SUCCESSFULLY,
 							);
 						await promotionAdminPage
-							.assertThat()
-							.promotionIsDisplayedInPromotionsTable(
+							.steps()
+							.checkPromotionIsDisplayedInPromotionsTable(
 								promotionTestData.title,
 							);
 					},
@@ -409,7 +423,10 @@ test.describe(
 						promotionsModal,
 						toast,
 						gamdomDb,
+						gamdomApiDbFacade,
 					}) => {
+						const { user: superAdmin } =
+							await gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
 						promotionName = generateRandomString({
 							prefix: `${promotionType.name.toLowerCase()}_promotion_`,
 							length: 5,
@@ -418,13 +435,13 @@ test.describe(
 						await promotionType.insertMethod(
 							gamdomDb,
 							promotionName,
-							userId,
+							superAdmin.userId,
 						);
 
 						await promotionAdminPage.navigate();
 						await promotionAdminPage
-							.assertThat()
-							.promotionIsDisplayedInPromotionsTable(
+							.steps()
+							.checkPromotionIsDisplayedInPromotionsTable(
 								promotionName,
 							);
 						await promotionAdminPage.clickDeletePromotionButton(
@@ -461,18 +478,19 @@ test.describe(
 							promotionsModal,
 							toast,
 							gamdomDb,
+							gamdomApiDbFacade,
 						}) => {
 							test.fixme(isCI);
+							const { user: superAdmin } =
+								await gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
 							promotionName = generateRandomString({
 								prefix: `${promotionType.name.toLowerCase()}_promotion_`,
 								length: 5,
 							});
-
 							promotionNewName = generateRandomString({
 								prefix: `new_${promotionType.name.toLowerCase()}_promotion_`,
 								length: 5,
 							});
-
 							const randomPromotionPriority = getRandomNumber(2);
 							const promotionTestData = new PromotionTestData({
 								title: promotionNewName,
@@ -485,20 +503,17 @@ test.describe(
 								promotionSubCategory: PromotionSubStatuses.NONE,
 								priority: randomPromotionPriority,
 							});
-
 							await promotionType.insertMethod(
 								gamdomDb,
 								promotionName,
-								userId,
+								superAdmin.userId,
 							);
-
 							await promotionAdminPage.navigate();
 							await promotionAdminPage
-								.assertThat()
-								.promotionIsDisplayedInPromotionsTable(
+								.steps()
+								.checkPromotionIsDisplayedInPromotionsTable(
 									promotionName,
 								);
-
 							await promotionAdminPage.clickEditPromotionButton(
 								promotionName,
 							);
@@ -513,7 +528,6 @@ test.describe(
 								.subTitleIs(
 									ToastSubTitle.PROMOTION_UPDATED_SUCCESSFULLY,
 								);
-
 							await promotionAdminPage
 								.assertThat()
 								.promotionDataMatches(
@@ -559,7 +573,13 @@ test.describe(
 						testDetails()
 							.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 							.apply(),
-						async ({ gamdomDb, promotionPage }) => {
+						async ({
+							gamdomDb,
+							promotionPage,
+							gamdomApiDbFacade,
+						}) => {
+							const { user: superAdmin } =
+								await gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
 							promotionName = generateRandomString({
 								prefix: `${promotionType.name.toLowerCase()}_promotion_`,
 								length: 5,
@@ -570,7 +590,7 @@ test.describe(
 							await promotionType.insertMethod(
 								gamdomDb,
 								promotionName,
-								userId,
+								superAdmin.userId,
 								getISODate({ daysOffset: -1 }),
 								customButtonText,
 								customUrl,

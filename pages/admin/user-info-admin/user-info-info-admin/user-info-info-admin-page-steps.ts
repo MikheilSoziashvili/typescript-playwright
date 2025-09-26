@@ -7,6 +7,7 @@ import { step } from "decorators/step";
 import { BanTypeOptions } from "@enums/admin/ban-type-options";
 import { BanDropdowns } from "@enums/admin/ban-dropdowns";
 import { BanCategories } from "@enums/admin/ban-categories";
+import { Delay } from "@enums/delay";
 
 export class UserInfoInfoAdminPageSteps extends BasePageStep<UserInfoInfoAdminPage> {
 	public constructor(gamdomPage: UserInfoInfoAdminPage) {
@@ -24,10 +25,10 @@ export class UserInfoInfoAdminPageSteps extends BasePageStep<UserInfoInfoAdminPa
 
 		await this.gamdomPage.map
 			.banModalDropdownByLabel(BanDropdowns.BAN_REASON)
-			.click();
+			.click({ delay: Delay.MAX_SHORT });
 		await this.gamdomPage.map
 			.getBanReasonOption(BanReasonOptions.CUSTOM)
-			.click();
+			.click({ delay: Delay.MAX_SHORT });
 		if (options?.reason) {
 			await this.gamdomPage.map.banUserInput.fill(options.reason);
 		}

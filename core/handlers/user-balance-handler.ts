@@ -29,11 +29,12 @@ const ATOMIC_DIVISOR: Record<Unit, number> = {
  */
 export class UserBalanceHandler extends BaseComponent<BaseMap> {
 	private readonly header: AuthenticatedHeader;
-	private readonly currencyApi = new CurrencyApi();
+	private readonly currencyApi: CurrencyApi;
 
 	constructor(page: Page) {
 		super(page, {} as BaseMap);
 		this.header = new AuthenticatedHeader(page);
+		this.currencyApi = new CurrencyApi(undefined, page);
 	}
 
 	/** Not implemented for this handler. */
@@ -113,6 +114,7 @@ export class UserBalanceHandler extends BaseComponent<BaseMap> {
 		type: WalletType,
 		headers?: Record<string, string>,
 	): Promise<GetWalletsResponse[number]> {
+		await this.currencyApi.sharePageStorageState();
 		const wallets: GetWalletsResponse = await this.currencyApi.getWallets(
 			headers,
 		);
@@ -137,6 +139,7 @@ export class UserBalanceHandler extends BaseComponent<BaseMap> {
 		currency: Currency,
 		headers?: Record<string, string>,
 	): Promise<number> {
+		await this.currencyApi.sharePageStorageState();
 		const res: GetCurrencyResponse | GetCurrencyResponse[] =
 			await this.currencyApi.getCurrency(currency, Unit.COINS, headers);
 		const rateObj = Array.isArray(res) ? res[0] : res;

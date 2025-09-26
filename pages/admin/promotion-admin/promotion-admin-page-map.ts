@@ -14,6 +14,14 @@ export class PromotionAdminMap extends BaseMap {
 		return this.promotionsTable.locator(`tbody`);
 	}
 
+	public get promotionsTableRowsPaginationDropdown(): Locator {
+		return this.page.locator(".MuiTablePagination-input");
+	}
+
+	public get promotionsTableRowsPaginationDropdownMaxOption(): Locator {
+		return this.page.locator("[data-value='50']");
+	}
+
 	public tableRowByPromotionTitle(promotionTitle: string): Locator {
 		return this.promotionsTableBody.locator("tr").filter({
 			has: this.page.locator("td:nth-child(2)", {

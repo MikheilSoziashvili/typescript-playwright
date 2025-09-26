@@ -23,6 +23,7 @@ const contactInfoInputs = parse_csv(
 }[];
 
 test.describe("User info update tests", () => {
+	test.describe.configure({ mode: "default" });
 	let qrCode2FAImagePath: string;
 
 	test.beforeEach(async ({ settingsPage }) => {

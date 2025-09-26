@@ -1,16 +1,16 @@
 import { DATASETS_DIR } from "@constants/file-paths";
 import { KOTH_ENDPOINT } from "@constants/page-endpoints";
-import { getCookieHeader, parse_csv } from "@core/utils/utils";
+import {
+	getCookieHeader,
+	parse_csv,
+	setAuthenticationCookies,
+} from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
 import { test } from "@fixtures/fixtures";
 import { environment_url } from "configuration";
-import {
-	storageStateUnauthenticatedUser,
-	storageStateNewUserDB,
-} from "../fixtures/auth-fixtures";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraUser } from "@enums/jira/jira-users";
 import { testData } from "test-data/test-data-manager";
@@ -63,18 +63,24 @@ const superAdminData = new RegisterTestData({
 const loggedState = [
 	{
 		state: "User logged in flow",
-		user: storageStateNewUserDB(),
+		user: true,
 		csv: footerRecords,
 	},
 	{
 		state: "User logged out flow",
-		user: storageStateUnauthenticatedUser(),
+		user: false,
 		csv: footerRecordsLoggedOut,
 	},
 ];
 loggedState.forEach(({ state, user, csv }) => {
 	test.describe(`Footer redirects tests - ${state}`, () => {
-		test.use(user);
+		test.beforeEach(async ({ page, gamdomApiDbFacade }) => {
+			if (user) {
+				const { cookie } =
+					await gamdomApiDbFacade.createSingleUserDbAndAuth();
+				await setAuthenticationCookies(page, cookie);
+			}
+		});
 		csv.forEach((record) => {
 			test(
 				`[ENG-1977] Footer - Verify '${record.linkName}' redirection from Footer section redirects to its respective page - ${state}`,

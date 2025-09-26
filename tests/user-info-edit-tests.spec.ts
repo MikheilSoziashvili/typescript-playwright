@@ -2,6 +2,7 @@ import { DATASETS_DIR } from "@constants/file-paths";
 import { testDetails } from "@core/helpers/test-details-helper";
 import {
 	parse_csv,
+	setAuthenticationCookies,
 	parseExpectedAdditionalFields,
 	parseExpectedTags,
 } from "@core/utils/utils";
@@ -16,10 +17,7 @@ import { TestTag } from "@enums/test-tags";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { Unit } from "@enums/units";
-import {
-	storageStateNewSuperAdminUserDB,
-	storageStateNewUserDB,
-} from "@fixtures/auth-fixtures";
+import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import { isScheduledRun } from "configuration";
 import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
@@ -52,7 +50,12 @@ test.describe(
 		.apply(),
 	() => {
 		test.describe("Edit Info - Verify tags selection", () => {
-			test.use(storageStateNewSuperAdminUserDB());
+			test.beforeEach(async ({ page, gamdomApiDbFacade }) => {
+				const { cookie } =
+					await gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
+
+				await setAuthenticationCookies(page, cookie);
+			});
 
 			staffRoleDataset.forEach((record) => {
 				test(
@@ -182,14 +185,16 @@ test.describe(
 			"Edit info - Verify Edit Balance",
 			testDetails().withTags(JiraComponent.EDIT_INFO).apply(),
 			() => {
-				test.use(
-					storageStateNewUserDB({
-						userClass: UserClasses.Admin,
-						tags: UserTags.SupportStaff,
-					}),
-				);
+				test.beforeEach(async ({ page, gamdomApiDbFacade }) => {
+					const { cookie } =
+						await gamdomApiDbFacade.createSingleUserDbAndAuth({
+							tags: UserTags.SupportStaff,
+							userClass: UserClasses.Admin,
+						});
 
-				const newUserData = new RegisterTestData();
+					await setAuthenticationCookies(page, cookie);
+				});
+
 				const walletUnits = Object.values(Unit);
 
 				const wagerEditSteps: BalanceEditStep[] = [
@@ -242,30 +247,6 @@ test.describe(
 					},
 				];
 
-				test.beforeAll(async ({ gamdomApi, gamdomDb }) => {
-					await gamdomDb.createNewUser({
-						username: newUserData.username,
-						password: newUserData.password,
-						email: newUserData.email,
-					});
-					const userId = (
-						await gamdomApi.getBasicInfo(
-							newUserData.username,
-							newUserData.password,
-						)
-					).user.id;
-
-					await Promise.all(
-						walletUnits.map((unit) =>
-							gamdomDb.upsertUserWallet(
-								userId,
-								unit,
-								SUPER_HIGH_USER_AMOUNT,
-							),
-						),
-					);
-				});
-
 				test(
 					"[ENG-6392] Edit info - wager_req_end flow",
 					testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
@@ -274,10 +255,19 @@ test.describe(
 						userInfoEditInfoAdminPage,
 						toast,
 						page,
+						gamdomApiDbFacade,
 					}) => {
+						const { user } =
+							await gamdomApiDbFacade.createUserWithWalletsAndAuth(
+								{
+									walletUnits: walletUnits,
+									amount: SUPER_HIGH_USER_AMOUNT,
+								},
+							);
+
 						await userInfoAdminPage
 							.steps()
-							.navigateAndShowUserDetails(newUserData.username);
+							.navigateAndShowUserDetails(user.username);
 						await userInfoAdminPage.clickUserInfoTab(
 							UserInfoTabs.EditInfo,
 						);
@@ -308,12 +298,19 @@ test.describe(
 								userInfoEditInfoAdminPage,
 								toast,
 								page,
+								gamdomApiDbFacade,
 							}) => {
+								const { user } =
+									await gamdomApiDbFacade.createUserWithWalletsAndAuth(
+										{
+											walletUnits: walletUnits,
+											amount: SUPER_HIGH_USER_AMOUNT,
+										},
+									);
+
 								await userInfoAdminPage
 									.steps()
-									.navigateAndShowUserDetails(
-										newUserData.username,
-									);
+									.navigateAndShowUserDetails(user.username);
 								await userInfoAdminPage.clickUserInfoTab(
 									UserInfoTabs.EditInfo,
 								);

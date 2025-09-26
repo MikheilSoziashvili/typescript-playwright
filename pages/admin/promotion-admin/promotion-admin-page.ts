@@ -52,4 +52,10 @@ export class PromotionAdminPage extends BasePage<PromotionAdminMap> {
 			.promotionStatusTableEditButtonByPromotionTitle(promotionTitle)
 			.click();
 	}
+
+	@step("Choose table rows to be maximum pagination")
+	public async choosePromotionsTableRowsMaxPagination(): Promise<void> {
+		await this.map.promotionsTableRowsPaginationDropdown.click();
+		await this.map.promotionsTableRowsPaginationDropdownMaxOption.click();
+	}
 }

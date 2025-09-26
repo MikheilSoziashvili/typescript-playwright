@@ -4,8 +4,6 @@ import {
 	generateRandomString,
 	setAuthenticationCookies,
 } from "@core/utils/utils";
-import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
-import { RegisterTestData } from "@dtos/test-data";
 import { HomePage } from "@pages/home-page/home-page";
 import { Chat } from "@pages/components/chat/chat";
 import { buildIgnoreUserMessageInfo } from "@core/helpers/asserter-helpers/text-asserters";
@@ -33,27 +31,21 @@ test.describe(`[ENG-1334] "Ignore" user from the chat`, () => {
 	});
 
 	test.describe("Ignoring a user", () => {
-		const userData = new RegisterTestData();
-		test.use(
-			storageStateNewUserDB(
-				{
-					username: userData.username,
-					password: userData.password,
-					email: userData.email,
-					emailVerified: true,
-					startingXp: 10000000,
-				},
-				userData,
-			),
-		);
 		test(
 			`Ignoring an user`,
 			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
-			async ({ homePage, chat }) => {
-				const [pair1, pair2] = buildMessagePairs(userData.username);
+			async ({ homePage, chat, gamdomApiDbFacade }) => {
+				const { user, cookie } =
+					await gamdomApiDbFacade.createSingleUserDbAndAuth({
+						emailVerified: true,
+						startingXp: 10000000,
+					});
+				await setAuthenticationCookies(homePage.page, cookie);
+
+				const [pair1, pair2] = buildMessagePairs(user.username);
 
 				const tipUserInfoMessage = buildIgnoreUserMessageInfo({
-					ignoredUser: userData.username,
+					ignoredUser: user.username,
 				});
 
 				// Send message as user1
@@ -68,10 +60,7 @@ test.describe(`[ENG-1334] "Ignore" user from the chat`, () => {
 				await user2Chat.steps().ignoreUserFromChat(pair1.info);
 				await user2Chat
 					.assertThat()
-					.isInfoMessageVisible(
-						tipUserInfoMessage,
-						userData.username,
-					);
+					.isInfoMessageVisible(tipUserInfoMessage, user.username);
 				await user2Chat.assertThat().messageIsNotVisible(pair1.info);
 
 				// Send a new message as user1
@@ -84,32 +73,23 @@ test.describe(`[ENG-1334] "Ignore" user from the chat`, () => {
 
 				// Navigate with user2 to the privacy page
 				await user2Privacy.navigate();
-				await user2Privacy
-					.assertThat()
-					.userIsIgnored(userData.username);
+				await user2Privacy.assertThat().userIsIgnored(user.username);
 			},
 		);
 	});
 
 	test.describe(`Changing an ignored user's username`, () => {
-		const userData = new RegisterTestData();
-		test.use(
-			storageStateNewUserDB(
-				{
-					username: userData.username,
-					password: userData.password,
-					email: userData.email,
-					emailVerified: true,
-					startingXp: 10000000,
-				},
-				userData,
-			),
-		);
 		test(
 			`Changing an ignored user's username`,
 			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
-			async ({ homePage, chat, profilePage }) => {
-				const [pair1, pair2] = buildMessagePairs(userData.username);
+			async ({ homePage, chat, profilePage, gamdomApiDbFacade }) => {
+				const { user, cookie } =
+					await gamdomApiDbFacade.createSingleUserDbAndAuth({
+						emailVerified: true,
+						startingXp: 10000000,
+					});
+				await setAuthenticationCookies(homePage.page, cookie);
+				const [pair1, pair2] = buildMessagePairs(user.username);
 
 				// Send message as user1
 				await homePage.steps().navigateAndExpandChat();
@@ -140,24 +120,17 @@ test.describe(`[ENG-1334] "Ignore" user from the chat`, () => {
 	});
 
 	test.describe(`Unignoring an ignored user`, () => {
-		const userData = new RegisterTestData();
-		test.use(
-			storageStateNewUserDB(
-				{
-					username: userData.username,
-					password: userData.password,
-					email: userData.email,
-					emailVerified: true,
-					startingXp: 10000000,
-				},
-				userData,
-			),
-		);
 		test(
 			`Unignoring an ignored user`,
 			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
-			async ({ homePage, chat }) => {
-				const [pair1, pair2] = buildMessagePairs(userData.username);
+			async ({ homePage, chat, gamdomApiDbFacade }) => {
+				const { user, cookie } =
+					await gamdomApiDbFacade.createSingleUserDbAndAuth({
+						emailVerified: true,
+						startingXp: 10000000,
+					});
+				await setAuthenticationCookies(homePage.page, cookie);
+				const [pair1, pair2] = buildMessagePairs(user.username);
 
 				// Send message as user1
 				await homePage.steps().navigateAndExpandChat();
@@ -170,7 +143,7 @@ test.describe(`[ENG-1334] "Ignore" user from the chat`, () => {
 
 				// As user2 unignore user1
 				await user2Privacy.navigate();
-				await user2Privacy.unignoreUser(userData.username);
+				await user2Privacy.unignoreUser(user.username);
 				await user2Chat.assertThat().isMessageVisible(pair1.info);
 
 				// Send a new message as user1

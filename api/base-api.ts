@@ -33,6 +33,41 @@ export class BaseApi {
 	}
 
 	/**
+	 * Recreates the API request context using a provided storage state.
+	 *
+	 * @param storageState - An object containing the serialized state of cookies
+	 * and origins, matching the shape returned by
+	 * {@link BrowserContext.storageState}.
+	 *
+	 * @returns A promise that resolves once the new API request context has been created.
+	 */
+	public async addContextStorageState(storageState: {
+		cookies: {
+			name: string;
+			value: string;
+			domain: string;
+			path: string;
+			expires: number;
+			httpOnly: boolean;
+			secure: boolean;
+			sameSite: "Strict" | "Lax" | "None";
+		}[];
+		origins: {
+			origin: string;
+			localStorage: {
+				name: string;
+				value: string;
+			}[];
+		}[];
+	}): Promise<void> {
+		this.context = request.newContext({
+			baseURL: this.baseUrl,
+			ignoreHTTPSErrors: true,
+			storageState: storageState,
+		});
+	}
+
+	/**
 	 * Provides access to the request context.
 	 *
 	 * @returns {Promise<APIRequestContext>} The API request context.

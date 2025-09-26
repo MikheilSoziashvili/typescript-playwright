@@ -7,6 +7,7 @@ import {
 import { asString, getFilePath } from "@core/utils/utils";
 import { Protocol } from "@enums/api/protocols";
 import { ConfiguraitonUrl } from "@enums/configuration-urls";
+import { LogLevel } from "@enums/log-levels";
 import { Timeout } from "@enums/timeout";
 import "dotenv/config";
 
@@ -19,7 +20,7 @@ export const enableNewDesignV4Feature =
 export const environment_url = process.env.CI
 	? asString(process.env.ENVIRONMENT_URL)
 	: "https://staging-for-e2e-tests.teamgamdom.com";
-export const logLevel = "info";
+export const logLevel = isCI ? LogLevel.WARN : LogLevel.INFO;
 export const createExecution: boolean =
 	isScheduledRun || (isCI && shouldCreateExecution);
 // Disable here to keep the legacy slack reporter implementation

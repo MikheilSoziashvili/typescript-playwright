@@ -124,22 +124,6 @@ test.describe("KoTH game tests", () => {
 });
 
 test.describe("KoTH - currency & amount format across badges", () => {
-	const newUserData = new RegisterTestData();
-	let newUserCookie: string;
-
-	test.beforeAll(async ({ gamdomDb, gamdomApi }) => {
-		await gamdomDb.createNewUser({
-			username: newUserData.username,
-			password: newUserData.password,
-			email: newUserData.email,
-		});
-
-		newUserCookie = await gamdomApi.authenticateWithExistingUser(
-			newUserData.username,
-			newUserData.password,
-		);
-	});
-
 	testData()
 		.fromCsvRaw({
 			file: CsvFilesName.KOTH_CURRENCIES_SYMBOLS,
@@ -151,8 +135,10 @@ test.describe("KoTH - currency & amount format across badges", () => {
 					.withTags(JiraComponent.KOTH)
 					.withAuthor(JiraUser.RALUCA_ARITON)
 					.apply(),
-				async ({ homePage, page }) => {
-					await setAuthenticationCookies(page, newUserCookie);
+				async ({ homePage, page, gamdomApiDbFacade }) => {
+					const { cookie } =
+						await gamdomApiDbFacade.createSingleUserDbAndAuth();
+					await setAuthenticationCookies(page, cookie);
 
 					await homePage.navigate();
 					await homePage.authenticatedHeader.changeCurrency(

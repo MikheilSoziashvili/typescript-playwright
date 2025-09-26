@@ -22,10 +22,7 @@ import { Unit } from "@enums/units";
 import { UserMenuOption } from "@enums/user-menu-options";
 import { UserType } from "@enums/user-types";
 import { WalletType } from "@enums/wallet-types";
-import {
-	storageStateNewSuperAdminUserDB,
-	storageStateNewUserDB,
-} from "@fixtures/auth-fixtures";
+import { storageStateNewSuperAdminUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import { logger } from "@logger/logger";
 import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
@@ -78,7 +75,6 @@ test.describe(
 		});
 
 		test.describe("Plinko game tests", () => {
-			test.use(storageStateNewUserDB());
 			test.slow();
 
 			testData()
@@ -91,7 +87,13 @@ test.describe(
 						testDetails()
 							.withAuthor(JiraUser.NIKOLAY_GENOV)
 							.apply(),
-						async ({ plinkoGamePage }) => {
+						async ({ plinkoGamePage, gamdomApiDbFacade }) => {
+							const { cookie } =
+								await gamdomApiDbFacade.createSingleUserDbAndAuth();
+							await setAuthenticationCookies(
+								plinkoGamePage.page,
+								cookie,
+							);
 							const plinkoBetData = new PlinkoBetTestData({
 								betAmount: record.betAmount,
 							});
