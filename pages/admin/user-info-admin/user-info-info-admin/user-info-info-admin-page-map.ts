@@ -3,6 +3,7 @@ import { BaseMap } from "@base/base-map";
 import { BanReasonOptions } from "@enums/admin/ban-reason-options";
 import { BanTypeOptions } from "@enums/admin/ban-type-options";
 import { BanDropdowns } from "@enums/admin/ban-dropdowns";
+import { BanCategories } from "@enums/admin/ban-categories";
 
 export class UserInfoInfoAdminPageMap extends BaseMap {
 	public constructor(page: Page) {
@@ -32,6 +33,12 @@ export class UserInfoInfoAdminPageMap extends BaseMap {
 
 	public getBanTypeOption(type: BanTypeOptions): Locator {
 		return this.page.locator(`[data-value="${type}"]`);
+	}
+
+	public getBanCategoryOption(category: BanCategories): Locator {
+		return this.page
+			.locator("p", { hasText: category })
+			.locator('xpath=following-sibling::span//input[@type="checkbox"]');
 	}
 
 	public getBanReasonOption(reason: BanReasonOptions): Locator {

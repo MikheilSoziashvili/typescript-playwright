@@ -9,6 +9,7 @@ import { ToastSubTitle } from "@enums/toast-subtitles";
 import { CountryCodes } from "@enums/country-codes";
 import { quotesRemovalPattern } from "@support/regex-patterns";
 import { BanTypeOptions } from "@enums/admin/ban-type-options";
+import { BanCategories } from "@enums/admin/ban-categories";
 
 export class UserInfoInfoAdminPageAsserter extends BaseAsserter<UserInfoInfoAdminPage> {
 	public constructor(page: UserInfoInfoAdminPage) {
@@ -44,6 +45,28 @@ export class UserInfoInfoAdminPageAsserter extends BaseAsserter<UserInfoInfoAdmi
 	public async isUnbanButtonDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.unbanUserButton,
+		]);
+	}
+
+	@step("Check category ban options are displayed")
+	public async categoryBanOptionsDisplayed(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.getBanCategoryOption(BanCategories.CASINO),
+			this.gamdomPage.map.getBanCategoryOption(BanCategories.SPORTSBOOK),
+		]);
+	}
+
+	@step("Confirm ban button is disabled")
+	public async isConfirmBanButtonDisabled(): Promise<void> {
+		await this.checkElementsAreDisabled([
+			this.gamdomPage.map.confirmBanButton,
+		]);
+	}
+
+	@step("Confirm ban button is enabled")
+	public async isConfirmBanButtonEnabled(): Promise<void> {
+		await this.checkElementsAreEnabled([
+			this.gamdomPage.map.confirmBanButton,
 		]);
 	}
 

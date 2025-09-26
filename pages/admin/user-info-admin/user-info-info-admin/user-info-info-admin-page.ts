@@ -9,6 +9,7 @@ import { TwoFactorAuthModal } from "@pages/modals/two-factor-authentication-moda
 import { Toast } from "@pages/components/toast/toast";
 import { step } from "decorators/step";
 import { Delay } from "@enums/delay";
+import { BanCategories } from "@enums/admin/ban-categories";
 
 export class UserInfoInfoAdminPage extends BasePage<UserInfoInfoAdminPageMap> {
 	public readonly toast: Toast;
@@ -66,5 +67,17 @@ export class UserInfoInfoAdminPage extends BasePage<UserInfoInfoAdminPageMap> {
 	@step("Click send notification button")
 	public async clickSendNotificationButton(): Promise<void> {
 		await this.map.sendNotificationButton.click();
+	}
+
+	@step("Click ban user button")
+	public async clickBanUserButton(): Promise<void> {
+		await this.map.banUserButton.click();
+	}
+
+	@step("Toggle ban category options")
+	public async toggleBanCategoryOptions(
+		category: BanCategories,
+	): Promise<void> {
+		await this.map.getBanCategoryOption(category).click();
 	}
 }

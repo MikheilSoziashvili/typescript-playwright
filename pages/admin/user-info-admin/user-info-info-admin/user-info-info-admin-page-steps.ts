@@ -6,6 +6,7 @@ import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { step } from "decorators/step";
 import { BanTypeOptions } from "@enums/admin/ban-type-options";
 import { BanDropdowns } from "@enums/admin/ban-dropdowns";
+import { BanCategories } from "@enums/admin/ban-categories";
 
 export class UserInfoInfoAdminPageSteps extends BasePageStep<UserInfoInfoAdminPage> {
 	public constructor(gamdomPage: UserInfoInfoAdminPage) {
@@ -14,7 +15,7 @@ export class UserInfoInfoAdminPageSteps extends BasePageStep<UserInfoInfoAdminPa
 
 	@step("Ban user")
 	public async banUser(options?: { reason?: string }): Promise<void> {
-		await this.gamdomPage.map.banUserButton.click();
+		await this.gamdomPage.clickBanUserButton();
 
 		await this.gamdomPage.map
 			.banModalDropdownByLabel(BanDropdowns.BAN_TYPE)
@@ -33,6 +34,27 @@ export class UserInfoInfoAdminPageSteps extends BasePageStep<UserInfoInfoAdminPa
 		await this.gamdomPage.map.confirmBanButton.click();
 		await this.gamdomPage.assertThat().isUserBanned(BanTypeOptions.HARD);
 		await this.gamdomPage.assertThat().isUnbanButtonDisplayed();
+	}
+
+	@step("Ban user - verify category options")
+	public async verifyBanUserCategoryOptions(): Promise<void> {
+		await this.gamdomPage.clickBanUserButton();
+
+		await this.gamdomPage.map
+			.banModalDropdownByLabel(BanDropdowns.BAN_TYPE)
+			.click();
+		await this.gamdomPage.map
+			.getBanTypeOption(BanTypeOptions.CATEGORY)
+			.click();
+
+		await this.gamdomPage.assertThat().categoryBanOptionsDisplayed();
+		await this.gamdomPage.assertThat().isConfirmBanButtonEnabled();
+
+		await this.gamdomPage.toggleBanCategoryOptions(BanCategories.CASINO);
+		await this.gamdomPage.toggleBanCategoryOptions(
+			BanCategories.SPORTSBOOK,
+		);
+		await this.gamdomPage.assertThat().isConfirmBanButtonDisabled();
 	}
 
 	@step("Tip user")
