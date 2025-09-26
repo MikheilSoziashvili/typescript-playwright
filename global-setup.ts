@@ -82,7 +82,7 @@ async function enableAffiliatesInfoFeature(
 	cookie: string,
 ): Promise<void> {
 	const featureResponse = await gamdomApi.setFeatureState(
-		Feature.PLINKO,
+		Feature.AFFILIATES_INFO,
 		ALL_USER_TYPES_ENABLED,
 		{ Cookie: cookie },
 	);
