@@ -23,4 +23,23 @@ export class UserInfoRewardsAdminPageAsserter extends BaseAsserter<UserInfoRewar
 			this.gamdomPage.map.tileWithHeadingAndValue(section, reward, value),
 		]);
 	}
+
+	@step("Reward is visible in section {section} without value")
+	public async rewardVisibleInSectionWithoutValue(
+		section: string,
+		reward: string,
+	): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.tileWithHeading(section, reward),
+		]);
+	}
+
+	@step("No active rewards are visible in section {section}")
+	public async noActiveRewardsVisible(section: string): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map
+				.pendingRewardsSection(section)
+				.locator("p", { hasText: "No active rewards" }),
+		]);
+	}
 }

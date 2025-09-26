@@ -10,4 +10,5 @@ export enum DbTables {
 	KothEvents = "koth.events",
 	Promotions = "promotions.promotions",
 	VipUsers = "public.vip_users",
+	Rewards = "rewards.rewards",
 }

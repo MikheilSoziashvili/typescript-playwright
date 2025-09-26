@@ -54,6 +54,12 @@ export class UserInfoRewardsAdminPageMap extends BaseMap {
 		);
 	}
 
+	public tileWithHeading(section: string, reward: string): Locator {
+		return this.pendingRewardTiles(section).filter({
+			has: this.page.locator("p", { hasText: reward }),
+		});
+	}
+
 	public tileWithHeadingAndValue(
 		section: string,
 		reward: string,

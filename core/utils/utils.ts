@@ -8,6 +8,7 @@ import { JsonData, WaitUntilOptions } from "@core/interfaces";
 import {
 	CalculateMinesMultiplierArgs,
 	CredentialsType,
+	HostMatcher,
 	ProxyCredentialsType,
 	TestUserConfigurationObject,
 } from "@core/types/types";
@@ -49,6 +50,7 @@ import xml2js from "xml2js";
 import { isFileNotFoundError } from "./error-utils";
 import { ChatMessageOptions } from "@pages/components/chat/chat-map";
 import { RelativeDateRelation } from "@enums/relative-date-relation";
+import { WICKED_GAMES_AUTH } from "@constants/auth-casino-game-providers";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -1435,5 +1437,101 @@ export async function stripAuthFromExternalRequests(page: Page): Promise<void> {
 
 		const { authorization: _auth, cookie: _cookie, ...safe } = headers;
 		await route.continue({ headers: safe });
+	});
+}
+
+/**
+ * Returns true if the given hostname matches the provided matcher.
+ * Accepts exact string match, RegExp or a custom predicate function.
+ */
+export function matchesHost(hostname: string, host: HostMatcher): boolean {
+	if (typeof host === "string") return hostname === host;
+	if (host instanceof RegExp) return host.test(hostname);
+	return host(hostname);
+}
+
+/**
+ * Returns true if the given pathname matches the provided pattern (string equality or RegExp).
+ */
+export function matchesPath(
+	pathname: string,
+	pattern: string | RegExp,
+): boolean {
+	return typeof pattern === "string"
+		? pathname === pattern
+		: pattern.test(pathname);
+}
+
+export function attachAuthResponseListener(
+	page: Page,
+	host: HostMatcher,
+	authPath: string | RegExp,
+	tokenJsonKey: string,
+	setBearer: (token: string) => void,
+): void {
+	page.on("response", async (response) => {
+		try {
+			const url = new URL(response.url());
+			if (
+				matchesHost(url.hostname, host) &&
+				matchesPath(url.pathname, authPath)
+			) {
+				const text = await response.text();
+				const json = JSON.parse(text) as unknown;
+				if (
+					typeof json === "object" &&
+					json !== null &&
+					tokenJsonKey in json
+				) {
+					const value = (json as Record<string, unknown>)[
+						tokenJsonKey
+					];
+					const token = typeof value === "string" ? value : null;
+					if (token) {
+						setBearer(
+							token.startsWith("Bearer ")
+								? token
+								: `Bearer ${token}`,
+						);
+					}
+				}
+			}
+		} catch {
+			// ignore parsing or network errors
+		}
+	});
+}
+
+export async function useProviderBearerFromAuthenticate(
+	page: Page,
+	options: {
+		host: HostMatcher;
+		authPath?: string | RegExp;
+		tokenJsonKey?: string;
+	},
+): Promise<void> {
+	const {
+		host,
+		authPath = WICKED_GAMES_AUTH.AUTH_PATH,
+		tokenJsonKey = WICKED_GAMES_AUTH.TOKEN_KEY,
+	} = options;
+	let providerBearer: string | null = null;
+
+	attachAuthResponseListener(page, host, authPath, tokenJsonKey, (token) => {
+		providerBearer = token;
+	});
+
+	await page.route("**/*", async (route) => {
+		const url = new URL(route.request().url());
+		if (!matchesHost(url.hostname, host)) {
+			return route.continue();
+		}
+		if (matchesPath(url.pathname, authPath)) {
+			return route.continue();
+		}
+		const headers = providerBearer
+			? { ...route.request().headers(), authorization: providerBearer }
+			: route.request().headers();
+		await route.continue({ headers });
 	});
 }

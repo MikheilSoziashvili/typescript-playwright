@@ -42,3 +42,6 @@ export const plainAmount = /^\d+(\.\d{2})?$/;
 export const shortScaled = /^\d+(\.\d{1,2})?[kmbKMB]$/;
 export const nonAlphanumSpacePattern = /[^a-zA-Z0-9 ]/g;
 export const rewardedUserIdPattern = /Successfully rewarded user\s*#(\d+)/g;
+
+export const wickedGamesHostPattern = /tequity\.staging\.wicked\.games$/i;
+export const wickedGamesAuthPathPattern = /\/authenticate(?:\?.*)?$/i;

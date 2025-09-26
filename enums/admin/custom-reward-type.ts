@@ -18,4 +18,5 @@ export enum CustomRewardType {
 	EV_REWARD_LABEL = "ev reward",
 	WEEKLY = "weekly",
 	MONTHLY = "monthly",
+	FREE_SPINS_PROMOTION = "Free_spins_promotion",
 }

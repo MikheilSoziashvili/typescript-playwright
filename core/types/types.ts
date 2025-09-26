@@ -210,3 +210,5 @@ export type AnyTag = TestTag | JiraComponent;
 export type Viewport = { width: number; height: number };
 
 export type FileKey = keyof typeof EV_REWARD_FREE_SPINS_FILE_MAP;
+
+export type HostMatcher = string | RegExp | ((hostname: string) => boolean);

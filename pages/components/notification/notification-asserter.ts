@@ -1,8 +1,9 @@
+import { BaseAsserter } from "@base/base-asserter";
+import { NotificationButton } from "@enums/notification-buttons";
 import { expect } from "@playwright/test";
 import { step } from "decorators/step";
-import { BaseAsserter } from "@base/base-asserter";
 import { Notification } from "./notification";
-import { NotificationButton } from "@enums/notification-buttons";
+import { Timeout } from "@enums/timeout";
 
 export class NotificationAsserter extends BaseAsserter<Notification> {
 	public constructor(page: Notification) {
@@ -98,5 +99,16 @@ export class NotificationAsserter extends BaseAsserter<Notification> {
 		).toContainText(message);
 
 		await this.openButtonIsFullyVisibleAndInside(options);
+	}
+
+	@step("Wait for notification")
+	public async waitForNotification(options?: {
+		index?: number;
+		timeout?: number;
+	}): Promise<void> {
+		const { index, timeout = Timeout.SHORT } = options ?? {};
+		const container = this.gamdomPage.map.notificationContainer({ index });
+
+		await expect(container).toBeVisible({ timeout });
 	}
 }

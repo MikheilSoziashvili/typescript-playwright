@@ -169,3 +169,12 @@ export function buildFreeSpinsBatchProcessedWithErrorsToastSubTitle(
 ): string {
 	return `Processed ${successUsers} users. ${totalBatches} batches remaining.`;
 }
+
+export function buildFreeSpinsRewardNotificationSubTitle(
+	freeSpinsAmount: number,
+	freeSpinValue: number,
+	expirationDate: string,
+	gameName: string,
+): string {
+	return `You have redeemed ${freeSpinsAmount} Free Spins ($${freeSpinValue} each) for ${gameName}! This promo will expire at ${expirationDate} if you don't use it.`;
+}

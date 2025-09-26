@@ -53,6 +53,7 @@ import { PromotionInsertOptions } from "./interfaces/promotion-insert-options";
 import { NewUserOptions } from "./interfaces/storage-state-new-user-options";
 import { VipUsersColumns } from "@enums/db/vip-users-columns";
 import { VipUserStatus } from "@enums/vip-user-statuses";
+import { RewardsColumns } from "@enums/db/rewards-columns";
 
 export class GamdomDb extends BaseDB {
 	constructor() {
@@ -1406,5 +1407,25 @@ export class GamdomDb extends BaseDB {
 
 			return inserted;
 		});
+	}
+
+	public async updateRewardStatus(
+		userId: number,
+		status: string,
+		hasLogMessage = true,
+	): Promise<QueryResultRow> {
+		const startDate = getISODate({ daysOffset: -2 });
+
+		const updateData = {
+			[RewardsColumns.StartDate]: startDate,
+			[RewardsColumns.Status]: status,
+		};
+
+		return this.update(
+			DbTables.Rewards,
+			updateData,
+			`${RewardsColumns.UserId} = ${userId}`,
+			hasLogMessage,
+		);
 	}
 }

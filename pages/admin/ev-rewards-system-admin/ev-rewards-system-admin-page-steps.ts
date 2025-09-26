@@ -11,6 +11,7 @@ import { EvRewardsSystemAdminPage } from "./ev-rewards-system-admin-page";
 import { ExpectedResultToastKey } from "@enums/expected-reward-toast-keys";
 import { EvRewardTypes } from "@enums/ev-reward-types";
 import { RelativeDateRelation } from "@enums/relative-date-relation";
+import { getISODate } from "@core/utils/utils";
 
 export class EvRewardsSystemAdminSteps extends BasePageStep<EvRewardsSystemAdminPage> {
 	private static readonly DEFAULT_RELATIVE_DAYS = 2;
@@ -35,14 +36,21 @@ export class EvRewardsSystemAdminSteps extends BasePageStep<EvRewardsSystemAdmin
 	): Promise<void> {
 		await input.click();
 
-		const todayAttr = await this.gamdomPage.map.todayCell.getAttribute(
-			"data-value",
-		);
+		const iso = getISODate({
+			daysOffset: offset,
+			hours: 0,
+			minutes: 0,
+		});
+		const d = new Date(iso);
 
-		const today = Number(todayAttr);
-		const target = today + offset;
+		const targetDay = d.getDate();
+		const targetMonth = d.getMonth();
+		const targetYear = d.getFullYear();
 
-		await this.gamdomPage.map.dayCellByValue(target).click();
+		// The calendar grid may display the same day twice (end of month and next month).
+		// Select by day + month + year
+		const cellSelector = `.rdtPicker:visible td.rdtDay[data-value="${targetDay}"][data-month="${targetMonth}"][data-year="${targetYear}"]`;
+		await this.gamdomPage.page.locator(cellSelector).click();
 		await this.gamdomPage.page
 			.locator("body")
 			.click({ position: { x: 0, y: 0 } });
