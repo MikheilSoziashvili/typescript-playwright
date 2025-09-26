@@ -1,4 +1,3 @@
-import { DATASETS_DIR } from "@constants/file-paths";
 import { testDetails } from "@core/helpers/test-details-helper";
 import {
 	toCurrencyEnum,
@@ -7,7 +6,6 @@ import {
 import {
 	encodeCookieHeader,
 	getCookieHeader,
-	parse_csv,
 	setAuthenticationCookies,
 } from "@core/utils/utils";
 import { PlinkoBetTestData, RegisterTestData } from "@dtos/test-data";
@@ -33,22 +31,13 @@ const walletUnits = Object.values(Unit);
 test.describe(
 	"Plinko tests",
 	testDetails()
-		.withTags(
-			JiraComponent.SOK_GAMES,
-			JiraComponent.PLINKO,
-			JiraComponent.SOK_GAMES,
-		)
+		.withTags(JiraComponent.SOK_GAMES, JiraComponent.PLINKO)
 		.apply(),
 	() => {
 		test.describe("Plinko Sign-In feature tests", () => {
-			test.beforeEach(async ({}) => {
-				for (const record of parse_csv(
-					DATASETS_DIR,
-					CsvFilesName.LOGIN_SUCCESSFUL,
-				) as {
-					username: string;
-					password: string;
-				}[]) {
+			testData()
+				.fromCsvRaw({ file: CsvFilesName.LOGIN_SUCCESSFUL })
+				.forEach((record) => {
 					test(
 						`[ENG-5128] Sign In feature on Plinko - Login successful: [Username: ${record.username}] [Password: ${record.password}]`,
 						testDetails()
@@ -70,9 +59,10 @@ test.describe(
 								.dropBallButtonIsDisplayed();
 						},
 					);
-				}
-			});
+				});
 		});
+	},
+);
 
 		test.describe("Plinko game tests", () => {
 			test.slow();
@@ -98,230 +88,221 @@ test.describe(
 								betAmount: record.betAmount,
 							});
 
-							await plinkoGamePage.navigateAndWaitForGameToLoad();
+					await plinkoGamePage.navigateAndWaitForGameToLoad();
 
-							await plinkoGamePage
-								.steps()
-								.playPlinkoUntilWin(plinkoBetData.betAmount, {
-									rowsValue: record.rowsValue,
-									riskValue: record.riskValue,
-								});
-						},
-					);
-				});
-
-			test(
-				"[ENG-5164] Verify Plinko is displayed in statistics and in the Last 24 Hours Stats",
-				testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
-				async ({ plinkoGamePage, homePage, statisticsPage }) => {
-					const betAmount = 100;
-					await plinkoGamePage.navigate();
-					await plinkoGamePage.startManualBet(betAmount.toString());
-					await plinkoGamePage.steps().waitForSlidersToBeActive();
-					const betWinMultiplier = await plinkoGamePage
+					await plinkoGamePage
 						.steps()
-						.getInGameChipsHistoryButtonValue();
-					await homePage.authenticatedHeader.navigateToUserMenuOption(
-						UserMenuOption.STATISTICS,
-					);
-
-					await statisticsPage
-						.assertThat()
-						.last24HoursGameLargestProfitIs(
-							OriginalGame.Plinko,
-							betWinMultiplier,
-							betAmount,
-						);
+						.playPlinkoUntilWin(plinkoBetData.betAmount, {
+							rowsValue: record.rowsValue,
+							riskValue: record.riskValue,
+						});
 				},
 			);
 		});
 
-		test.describe("Plinko game - User Balance tests", () => {
-			test.slow();
-
-			test.describe("[ENG-5415] Place bets across multiple wallets", () => {
-				testData()
-					.fromCsvParsed({
-						file: CsvFilesName.PLINKO_BETS_ACROSS_MULTIPLE_WALLETS,
-					})
-					.forEach((record) => {
-						test(
-							`Place bet using ${record.Wallet} and verify display in ${record.BetCurrency}`,
-							testDetails()
-								.withJiraBugTickets("8564")
-								.withAuthor(JiraUser.RALUCA_ARITON)
-								.apply(),
-							async ({
-								gamdomApiDbFacade,
-								plinkoGamePage,
-								homePage,
-								userBalanceHandler,
-								page,
-							}) => {
-								const { cookie } =
-									await gamdomApiDbFacade.createUserWithWalletsAndAuth(
-										{
-											walletUnits: walletUnits,
-											amount: SUPER_HIGH_USER_AMOUNT,
-										},
-									);
-
-								await setAuthenticationCookies(page, cookie);
-
-								await plinkoGamePage.navigate();
-
-								const headers = {
-									Cookie: await encodeCookieHeader(cookie),
-								};
-
-								await homePage.authenticatedHeader.changeWalletAndCurrency(
-									record.Wallet,
-									record.BetCurrency,
-								);
-
-								const walletUnit = toWalletUnit(record.Wallet);
-								const betCurrency = toCurrencyEnum(
-									record.BetCurrency,
-								);
-
-								await plinkoGamePage
-									.assertThat()
-									.betAmountCurrencyChanged(betCurrency);
-
-								const coinsBefore =
-									await userBalanceHandler.walletBalanceInCoins(
-										walletUnit,
-										WalletType.DEFAULT,
-										headers,
-									);
-
-								await plinkoGamePage.startManualBet(
-									record.BetAmount.toString(),
-								);
-
-								await plinkoGamePage
-									.steps()
-									.waitForSlidersToBeActive();
-
-								const betWinMultiplier = await plinkoGamePage
-									.steps()
-									.getInGameChipsHistoryButtonValue();
-
-								const stakeCoins =
-									await userBalanceHandler.convertDisplayCurrencyToCoins(
-										Number(record.BetAmount),
-										betCurrency,
-										headers,
-									);
-
-								const payoutCoins =
-									userBalanceHandler.calculatePayoutCoins(
-										stakeCoins,
-										betWinMultiplier,
-									);
-
-								const expectedCoinsAfter = await plinkoGamePage
-									.steps()
-									.calculateExpectedBalance(
-										coinsBefore,
-										stakeCoins,
-										payoutCoins,
-									);
-
-								await homePage.map.waitForStableXPosition({
-									locator:
-										await homePage.authenticatedHeader.map.getLoadedAccountBalance(),
-								});
-
-								const coinsAfter =
-									await userBalanceHandler.walletBalanceInCoins(
-										walletUnit,
-										WalletType.DEFAULT,
-										headers,
-									);
-
-								await plinkoGamePage
-									.assertThat()
-									.verifyBalanceWithTolerance(
-										coinsAfter,
-										expectedCoinsAfter,
-									);
-							},
-						);
-					});
-			});
-		});
-
-		test.describe("Plinko transactions", () => {
-			const superAdminData = new RegisterTestData({
-				useGamdomEmailDomain: true,
-			});
-			test.use(
-				storageStateNewSuperAdminUserDB({
-					username: superAdminData.username,
-					password: superAdminData.password,
-				}),
+	test(
+		"[ENG-5164] Verify Plinko is displayed in statistics and in the Last 24 Hours Stats",
+		testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+		async ({ plinkoGamePage, homePage, statisticsPage }) => {
+			const betAmount = 100;
+			await plinkoGamePage.navigate();
+			await plinkoGamePage.startManualBet(betAmount.toString());
+			await plinkoGamePage.steps().waitForSlidersToBeActive();
+			const betWinMultiplier = await plinkoGamePage
+				.steps()
+				.getInGameChipsHistoryButtonValue();
+			await homePage.authenticatedHeader.navigateToUserMenuOption(
+				UserMenuOption.STATISTICS,
 			);
 
-			test(
-				"[ENG-5472] Verify Plinko is displayed in transactions tab",
-				testDetails()
-					.withTags(JiraComponent.TRANSACTIONS)
-					.withAuthor(JiraUser.RALUCA_ARITON)
-					.apply(),
-				async ({
-					plinkoGamePage,
-					userInfoAdminPage,
-					transactionsAdminPage,
-				}) => {
-					const plinkoBetData = new PlinkoBetTestData({
-						betAmount: 10,
-					});
-					const numberOfGames = 5;
-					await plinkoGamePage.navigate();
+			await statisticsPage
+				.assertThat()
+				.last24HoursGameLargestProfitIs(
+					OriginalGame.Plinko,
+					betWinMultiplier,
+					betAmount,
+				);
+		},
+	);
+});
 
-					const balances = await plinkoGamePage
-						.steps()
-						.playMultipleGamesAndGetBalances(
-							plinkoBetData.betAmount,
-							numberOfGames,
+test.describe("Plinko game - User Balance tests", () => {
+	test.slow();
+
+	test.describe("[ENG-5415] Place bets across multiple wallets", () => {
+		testData()
+			.fromCsvParsed({
+				file: CsvFilesName.PLINKO_BETS_ACROSS_MULTIPLE_WALLETS,
+			})
+			.forEach((record) => {
+				test(
+					`Place bet using ${record.Wallet} and verify display in ${record.BetCurrency}`,
+					testDetails()
+						.withJiraBugTickets("8564")
+						.withAuthor(JiraUser.RALUCA_ARITON)
+						.apply(),
+					async ({
+						gamdomApiDbFacade,
+						plinkoGamePage,
+						homePage,
+						userBalanceHandler,
+						page,
+					}) => {
+						const { cookie } =
+							await gamdomApiDbFacade.createUserWithWalletsAndAuth(
+								{
+									walletUnits: walletUnits,
+									amount: SUPER_HIGH_USER_AMOUNT,
+								},
+							);
+
+						await setAuthenticationCookies(page, cookie);
+
+						await plinkoGamePage.navigate();
+
+						const headers = {
+							Cookie: await encodeCookieHeader(cookie),
+						};
+
+						await homePage.authenticatedHeader.changeWalletAndCurrency(
+							record.Wallet,
+							record.BetCurrency,
 						);
 
-					logger.info(
-						`Balances array after playing: ${JSON.stringify(
-							balances,
-						)}`,
-					);
+						const walletUnit = toWalletUnit(record.Wallet);
+						const betCurrency = toCurrencyEnum(record.BetCurrency);
 
-					const totalWagered = `$${(
-						plinkoBetData.betAmount * numberOfGames
-					).toFixed(2)}`;
-					logger.info(`Total wagered in Plinko: ${totalWagered}`);
+						await plinkoGamePage
+							.assertThat()
+							.betAmountCurrencyChanged(betCurrency);
 
-					await userInfoAdminPage.navigate();
-					await userInfoAdminPage
-						.steps()
-						.showUserDetails(superAdminData.username);
-					await transactionsAdminPage.navigateToAdminUserTransactionsPage();
-					await transactionsAdminPage.checkStatsCalculationBox();
+						const coinsBefore =
+							await userBalanceHandler.walletBalanceInCoins(
+								walletUnit,
+								WalletType.DEFAULT,
+								headers,
+							);
 
-					await transactionsAdminPage
-						.steps()
-						.selectLogTypesOnly([LogType.BET, LogType.BET_WIN]);
+						await plinkoGamePage.startManualBet(
+							record.BetAmount.toString(),
+						);
 
-					await transactionsAdminPage.clickFetchData();
+						await plinkoGamePage.steps().waitForSlidersToBeActive();
 
-					await transactionsAdminPage
-						.assertThat()
-						.verifyLogsTableBalanceAfterColumnValues(balances);
-					await transactionsAdminPage
-						.assertThat()
-						.verifyPlinkoTotalWagered(totalWagered);
-				},
+						const betWinMultiplier = await plinkoGamePage
+							.steps()
+							.getInGameChipsHistoryButtonValue();
+
+						const stakeCoins =
+							await userBalanceHandler.convertDisplayCurrencyToCoins(
+								Number(record.BetAmount),
+								betCurrency,
+								headers,
+							);
+
+						const payoutCoins =
+							userBalanceHandler.calculatePayoutCoins(
+								stakeCoins,
+								betWinMultiplier,
+							);
+
+						const expectedCoinsAfter = await plinkoGamePage
+							.steps()
+							.calculateExpectedBalance(
+								coinsBefore,
+								stakeCoins,
+								payoutCoins,
+							);
+
+						await homePage.map.waitForStableXPosition({
+							locator:
+								await homePage.authenticatedHeader.map.getLoadedAccountBalance(),
+						});
+
+						const coinsAfter =
+							await userBalanceHandler.walletBalanceInCoins(
+								walletUnit,
+								WalletType.DEFAULT,
+								headers,
+							);
+
+						await plinkoGamePage
+							.assertThat()
+							.verifyBalanceWithTolerance(
+								coinsAfter,
+								expectedCoinsAfter,
+							);
+					},
+				);
+			});
+	});
+});
+
+test.describe("Plinko transactions", () => {
+	const superAdminData = new RegisterTestData({
+		useGamdomEmailDomain: true,
+	});
+	test.use(
+		storageStateNewSuperAdminUserDB({
+			username: superAdminData.username,
+			password: superAdminData.password,
+		}),
+	);
+
+	test(
+		"[ENG-5472] Verify Plinko is displayed in transactions tab",
+		testDetails()
+			.withTags(JiraComponent.TRANSACTIONS)
+			.withAuthor(JiraUser.RALUCA_ARITON)
+			.apply(),
+		async ({
+			plinkoGamePage,
+			userInfoAdminPage,
+			transactionsAdminPage,
+		}) => {
+			const plinkoBetData = new PlinkoBetTestData({
+				betAmount: 10,
+			});
+			const numberOfGames = 5;
+			await plinkoGamePage.navigate();
+
+			const balances = await plinkoGamePage
+				.steps()
+				.playMultipleGamesAndGetBalances(
+					plinkoBetData.betAmount,
+					numberOfGames,
+				);
+
+			logger.info(
+				`Balances array after playing: ${JSON.stringify(balances)}`,
 			);
-		});
-	},
-);
+
+			const totalWagered = `$${(
+				plinkoBetData.betAmount * numberOfGames
+			).toFixed(2)}`;
+			logger.info(`Total wagered in Plinko: ${totalWagered}`);
+
+			await userInfoAdminPage
+				.steps()
+				.navigateAndShowUserDetails(superAdminData.username);
+			await transactionsAdminPage.navigateToAdminUserTransactionsPage();
+			await transactionsAdminPage.checkStatsCalculationBox();
+
+			await transactionsAdminPage
+				.steps()
+				.selectLogTypesOnly([LogType.BET, LogType.BET_WIN]);
+
+			await transactionsAdminPage.clickFetchData();
+
+			await transactionsAdminPage
+				.assertThat()
+				.verifyLogsTableBalanceAfterColumnValues(balances);
+			await transactionsAdminPage
+				.assertThat()
+				.verifyPlinkoTotalWagered(totalWagered);
+		},
+	);
+});
 
 test.describe.serial(
 	"Plinko - feature",

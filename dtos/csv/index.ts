@@ -12,3 +12,4 @@ export * from "./promo-code-failed-redemption-csv";
 export * from "./chat-diamond-icon-for-vip-users-csv";
 export * from "./ev-reward-free-spins-promotion-csv";
 export * from "./footer-links-and-endpoints-csv";
+export * from "./login-successful-csv";
