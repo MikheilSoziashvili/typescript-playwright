@@ -64,29 +64,24 @@ test.describe(
 	},
 );
 
-		test.describe("Plinko game tests", () => {
-			test.slow();
+test.describe("Plinko game tests", () => {
+	test.slow();
 
-			testData()
-				.fromCsvParsed({
-					file: CsvFilesName.PLINKO_TEST_DATA,
-				})
-				.forEach((record) => {
-					test(
-						`[ENG-2844] Plinko - Play a game and try to win - Bet: ${record.betAmount}, Rows: ${record.rowsValue}, Risk: ${record.riskValue}`,
-						testDetails()
-							.withAuthor(JiraUser.NIKOLAY_GENOV)
-							.apply(),
-						async ({ plinkoGamePage, gamdomApiDbFacade }) => {
-							const { cookie } =
-								await gamdomApiDbFacade.createSingleUserDbAndAuth();
-							await setAuthenticationCookies(
-								plinkoGamePage.page,
-								cookie,
-							);
-							const plinkoBetData = new PlinkoBetTestData({
-								betAmount: record.betAmount,
-							});
+	testData()
+		.fromCsvParsed({
+			file: CsvFilesName.PLINKO_TEST_DATA,
+		})
+		.forEach((record) => {
+			test(
+				`[ENG-2844] Plinko - Play a game and try to win - Bet: ${record.betAmount}, Rows: ${record.rowsValue}, Risk: ${record.riskValue}`,
+				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+				async ({ plinkoGamePage, gamdomApiDbFacade }) => {
+					const { cookie } =
+						await gamdomApiDbFacade.createSingleUserDbAndAuth();
+					await setAuthenticationCookies(plinkoGamePage.page, cookie);
+					const plinkoBetData = new PlinkoBetTestData({
+						betAmount: record.betAmount,
+					});
 
 					await plinkoGamePage.navigateAndWaitForGameToLoad();
 
@@ -103,8 +98,16 @@ test.describe(
 	test(
 		"[ENG-5164] Verify Plinko is displayed in statistics and in the Last 24 Hours Stats",
 		testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
-		async ({ plinkoGamePage, homePage, statisticsPage }) => {
+		async ({
+			plinkoGamePage,
+			homePage,
+			statisticsPage,
+			gamdomApiDbFacade,
+		}) => {
 			const betAmount = 100;
+			const { cookie } =
+				await gamdomApiDbFacade.createSingleUserDbAndAuth();
+			await setAuthenticationCookies(plinkoGamePage.page, cookie);
 			await plinkoGamePage.navigate();
 			await plinkoGamePage.startManualBet(betAmount.toString());
 			await plinkoGamePage.steps().waitForSlidersToBeActive();
