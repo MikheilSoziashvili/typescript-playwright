@@ -16,6 +16,7 @@ export class UserInfoInfoAdminPageSteps extends BasePageStep<UserInfoInfoAdminPa
 
 	@step("Ban user")
 	public async banUser(options?: { reason?: string }): Promise<void> {
+		await this.gamdomPage.assertThat().pageElementsAreVisible();
 		await this.gamdomPage.clickBanUserButton();
 
 		await this.gamdomPage.map
@@ -39,6 +40,7 @@ export class UserInfoInfoAdminPageSteps extends BasePageStep<UserInfoInfoAdminPa
 
 	@step("Ban user - verify category options")
 	public async verifyBanUserCategoryOptions(): Promise<void> {
+		await this.gamdomPage.assertThat().pageElementsAreVisible();
 		await this.gamdomPage.clickBanUserButton();
 
 		await this.gamdomPage.map
