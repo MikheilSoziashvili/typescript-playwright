@@ -101,9 +101,13 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 	@step("Go to carousel slide")
 	public async goToCarouselSlide(
 		slideName: HomePageBannerCarouselSlideTitle,
+		srcPartial: string,
 	): Promise<void> {
-		await this.gamdomPage.waitCarouselSlideToBeActive(slideName);
-		await this.gamdomPage.clickCarouselSlide(slideName);
+		await this.gamdomPage.waitCarouselSlideToBeActive(
+			slideName,
+			srcPartial,
+		);
+		await this.gamdomPage.clickCarouselSlide(slideName, srcPartial);
 	}
 
 	@step("Find provider in casino hover")

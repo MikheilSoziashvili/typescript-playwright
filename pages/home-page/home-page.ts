@@ -87,14 +87,17 @@ export class HomePage extends BasePage<HomePageMap> {
 	@step("Wait carousel slide to be active")
 	public async waitCarouselSlideToBeActive(
 		slideName: HomePageBannerCarouselSlideTitle,
+		srcPartial: string,
 		timeout = Timeout.LONG,
 	): Promise<void> {
 		const timeBetweenIterations = 500;
 		let isSlideActive = false;
 
 		while (timeout > 0 && isSlideActive === false) {
-			const slideLocator =
-				this.map.getBannerCarouselSlideByName(slideName);
+			const slideLocator = this.map.getBannerCarouselSlideByName(
+				slideName,
+				srcPartial,
+			);
 			const slideClassAttribute = await slideLocator.getAttribute(
 				Attributes.CLASS,
 			);
@@ -116,8 +119,9 @@ export class HomePage extends BasePage<HomePageMap> {
 	@step("Click carousel slide")
 	public async clickCarouselSlide(
 		slideName: HomePageBannerCarouselSlideTitle,
+		srcPartial: string,
 	): Promise<void> {
-		await this.map.getSlideNavigateButton(slideName).click();
+		await this.map.getSlideNavigateButton(slideName, srcPartial).click();
 	}
 
 	@step("Click wallet button")

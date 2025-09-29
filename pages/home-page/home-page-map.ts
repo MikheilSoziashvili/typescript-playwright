@@ -42,18 +42,22 @@ export class HomePageMap extends BaseMap {
 
 	public getBannerCarouselSlideByName(
 		slideName: HomePageBannerCarouselSlideTitle,
+		srcPartial: string,
 	): Locator {
 		return this.bannerCarousel
 			.locator(`div[class*="swiper-slide"]`)
 			.filter({
-				has: this.page.locator(`img[alt="${slideName}"]`),
+				has: this.page.locator(
+					`img[alt="${slideName}"][src*="${srcPartial}"]`,
+				),
 			});
 	}
 
 	public getSlideNavigateButton(
 		slideName: HomePageBannerCarouselSlideTitle,
+		srcPartial: string,
 	): Locator {
-		return this.getBannerCarouselSlideByName(slideName).locator(
+		return this.getBannerCarouselSlideByName(slideName, srcPartial).locator(
 			"button[class*=ArrowButton]",
 		);
 	}

@@ -15,6 +15,7 @@ import {
 	FooterLinksAndEndpointsCsv,
 	LoginSuccessfulCsv,
 } from "@dtos/csv";
+import { HomePageBannerCarouselCsv } from "@dtos/csv/home-page-banner-carousel-csv";
 import { OriginalsSelfExclusionCsv } from "@dtos/csv/originals-self-exclusion";
 import { PlinkoTestDataCsv } from "@dtos/csv/plinko-test-data-csv";
 import { UserInfoSendNotificationCsv } from "@dtos/csv/user-info-send-notification-csv";
@@ -39,4 +40,5 @@ export type CsvDtoMap = {
 	[CsvFilesName.EV_REWARD_FREE_SPINS_PROMOTION]: EvRewardFreeSpinsPromotionCsv;
 	[CsvFilesName.FOOTER_LINKS_AND_ENDPOINTS]: FooterLinksAndEndpointsCsv;
 	[CsvFilesName.LOGIN_SUCCESSFUL]: LoginSuccessfulCsv;
+	[CsvFilesName.HOME_PAGE_BANNER_CAROUSEL]: HomePageBannerCarouselCsv;
 };
