@@ -17,18 +17,16 @@ export class VerificationPageMap extends BaseMap {
 	}
 
 	public get countryDropdownContainer(): Locator {
-		return this.page.getByTestId("countryDropdownContainer");
+		return this.page.getByLabel("Country of Residence");
 	}
 
 	public get countryDropdown(): Locator {
-		return this.countryDropdownContainer
-			.getByTestId("countryDropdownInput")
-			.getByRole("combobox");
+		return this.page
+			.locator('input[role="combobox"][aria-autocomplete="list"]');
 	}
 
 	public get countryDropdownValuesContainer(): Locator {
 		return this.page
-			.getByTestId("countryDropdownListContainer")
 			.getByRole("listbox");
 	}
 
@@ -38,26 +36,12 @@ export class VerificationPageMap extends BaseMap {
 			.getByRole("option");
 	}
 
-	public get titleDropdown(): Locator {
-		return this.page
-			.getByTestId("titleDropdownInput")
-			.getByRole("combobox");
-	}
-
-	public get selectTitleOption(): Locator {
-		return this.page.getByRole("option", { name: "Mr." });
-	}
-
-	public get firstNameInput(): Locator {
-		return this.page.getByLabel("First Name");
-	}
-
-	public get lastNameInput(): Locator {
-		return this.page.getByLabel("Last Name");
+	public get firstAndLastNameInput(): Locator {
+		return this.page.locator("input[name='fullName']");
 	}
 
 	public get dateOfBirthInput(): Locator {
-		return this.page.getByLabel("Birth date");
+		return this.page.getByLabel("Date of Birth");
 	}
 
 	public get addressInput(): Locator {
@@ -89,6 +73,6 @@ export class VerificationPageMap extends BaseMap {
 	}
 
 	public get submitButton(): Locator {
-		return this.page.locator("button", { hasText: "Submit Information" });
+		return this.page.locator("button", { hasText: "Submit" });
 	}
 }

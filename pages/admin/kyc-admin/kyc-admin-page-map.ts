@@ -7,6 +7,6 @@ export class KycAdminMap extends BaseMap {
 	}
 
 	public get searchByUserIdInput(): Locator {
-		return this.page.getByTestId("searchByUserIdInput");
+		return this.page.getByPlaceholder("Search by name or ID");
 	}
 }

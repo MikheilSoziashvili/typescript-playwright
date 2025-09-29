@@ -26,9 +26,9 @@ Notifications,/notifications
 Statistics,/statistics
 Affiliates,/affiliates
 Privacy,/privacy
-Aml-Level 1,/aml/level/1
-Aml-Level 2,/aml/level/2
-Aml-Level 3,/aml/level/3
+Aml-Level 1,/aml
+Aml-Level 2,/aml
+Aml-Level 3,/aml
 Settings,/settings
 Transactions,/transactions
 Connections,/connections

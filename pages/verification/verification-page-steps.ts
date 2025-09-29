@@ -25,7 +25,7 @@ export class VerificationPageSteps extends BasePageStep<VerificationPage> {
 	public async fillInKycLevel1Form(): Promise<void> {
 		const formData = this.generateKycLevel1Data();
 		await this.fillFormFields(formData);
-		await this.gamdomPage.map.countryDropdownInput.click();
+		await this.gamdomPage.map.countryDropdownContainer.click();
 		await this.gamdomPage.selectRandomCountry();
 		await this.gamdomPage.map.verifyCheckbox.click();
 		await this.gamdomPage.map.submitButton.click();
@@ -33,13 +33,8 @@ export class VerificationPageSteps extends BasePageStep<VerificationPage> {
 
 	private generateKycLevel1Data() {
 		return {
-			firstName: faker.person.firstName(),
-			lastName: faker.person.lastName(),
+			firsAndLasttName: faker.person.fullName(),
 			dateOfBirth: faker.date.birthdate().toISOString().split("T")[0],
-			address: faker.location.streetAddress(),
-			city: faker.location.city(),
-			postalCode: faker.location.zipCode(),
-			stateProvince: faker.location.state(),
 		};
 	}
 
@@ -47,17 +42,9 @@ export class VerificationPageSteps extends BasePageStep<VerificationPage> {
 	private async fillFormFields(
 		formData: Record<string, string>,
 	): Promise<void> {
-		await this.gamdomPage.map.titleDropdown.click();
-		await this.gamdomPage.map.selectTitleOption.click();
-
 		const fieldMappings = {
-			firstName: this.gamdomPage.map.firstNameInput,
-			lastName: this.gamdomPage.map.lastNameInput,
+			firsAndLasttName: this.gamdomPage.map.firstAndLastNameInput,
 			dateOfBirth: this.gamdomPage.map.dateOfBirthInput,
-			address: this.gamdomPage.map.addressInput,
-			city: this.gamdomPage.map.cityInput,
-			postalCode: this.gamdomPage.map.postalCodeInput,
-			stateProvince: this.gamdomPage.map.stateProvinceInput,
 		};
 
 		for (const [fieldName, element] of Object.entries(fieldMappings)) {

@@ -14,9 +14,9 @@ Affiliates,Level3,/affiliates
 Privacy,Level1,/privacy
 Privacy,Level2,/privacy
 Privacy,Level3,/privacy
-Verification,Level1,/aml/level/1
-Verification,Level2,/aml/level/2
-Verification,Level3,/aml/level/3
+Verification,Level1,/aml
+Verification,Level2,/aml
+Verification,Level3,/aml
 Settings,Level1,/settings
 Settings,Level2,/settings
 Settings,Level3,/settings
