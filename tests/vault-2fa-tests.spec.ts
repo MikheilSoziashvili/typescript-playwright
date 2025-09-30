@@ -11,6 +11,7 @@ import { JiraUser } from "@enums/jira/jira-users";
 import { Unit } from "@enums/units";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
+import { isScheduledRun } from "configuration";
 import { MEDIUM_USER_AMOUNT } from "database/constants/user-amounts";
 import { testData } from "test-data/test-data-manager";
 
@@ -27,6 +28,7 @@ test.describe(`Vault wallet - 2FA verifications`, () => {
 		await deleteFilesWithFilePaths([qrCode2FAImagePath]);
 	});
 
+	test.fixme(isScheduledRun);
 	test.use(storageStateNewUserDB({ amount: MEDIUM_USER_AMOUNT }));
 	const testDataPredefined = testData()
 		.fromPredefined()

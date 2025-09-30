@@ -27,7 +27,7 @@ import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { test } from "@fixtures/fixtures";
 import { PromotionsPage } from "@pages/promotions/promotions-page";
-import { isCI } from "configuration";
+import { isCI, isScheduledRun } from "configuration";
 import { GamdomDb } from "database/gamdom-db";
 
 type PromotionInsertMethod = (
@@ -238,6 +238,7 @@ test.describe(
 		let promotionName: string;
 		let promotionNewName: string;
 
+		test.fixme(isScheduledRun);
 		test.slow();
 
 		test.beforeEach(async ({ page, gamdomApiDbFacade }) => {

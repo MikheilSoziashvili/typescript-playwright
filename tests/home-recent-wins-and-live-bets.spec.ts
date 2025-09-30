@@ -5,8 +5,10 @@ import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
+import { isScheduledRun } from "configuration";
 
 test.describe("Recent Wins and Live Bets sections", () => {
+	test.fixme(isScheduledRun);
 	test.use(storageStateNewUserDB());
 	test(
 		"[ENG-4570] Verify the Total Bets in Recent Wins and Live Bets",

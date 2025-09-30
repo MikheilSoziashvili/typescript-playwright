@@ -8,6 +8,7 @@ import { OriginalGame } from "@enums/original-games";
 import { TestTag } from "@enums/test-tags";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
+import { isScheduledRun } from "configuration";
 
 const lastRoundsInputs = parse_csv(
 	DATASETS_DIR,
@@ -23,6 +24,7 @@ test.describe(
 		test.use(storageStateNewUserDB());
 		test.slow();
 
+		test.fixme(isScheduledRun);
 		lastRoundsInputs.forEach((input) => {
 			test(
 				`[ENG-2138] Verify last '${input.lastRounds}' rounds Red/Black percentage history statistics`,

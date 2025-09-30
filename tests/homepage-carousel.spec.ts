@@ -3,6 +3,7 @@ import { CsvFilesName } from "@enums/csv-file-name";
 import { JiraUser } from "@enums/jira/jira-users";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
+import { isScheduledRun } from "configuration";
 import { testData } from "test-data/test-data-manager";
 
 test.describe("Homepage banner carousel", () => {
@@ -10,6 +11,7 @@ test.describe("Homepage banner carousel", () => {
 		file: CsvFilesName.HOME_PAGE_BANNER_CAROUSEL,
 	});
 
+	test.fixme(isScheduledRun);
 	test.describe("Homepage banner carousel - logged in user", () => {
 		test.use(storageStateNewUserDB());
 		carouselBanners.forEach((record) => {

@@ -19,6 +19,7 @@ import {
 } from "@enums/original-games";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
+import { isScheduledRun } from "configuration";
 import { HIGH_USER_AMOUNT } from "database/constants/user-amounts";
 import { testData } from "test-data/test-data-manager";
 
@@ -310,6 +311,7 @@ test.describe("Live Bets Section", () => {
 		(game) => game !== OriginalGame.Roulette,
 	);
 
+	test.fixme(isScheduledRun);
 	for (const game of gamesToTest) {
 		test(
 			`[ENG-3157] Bets are displayed in the Live bets section for ${game}`,
