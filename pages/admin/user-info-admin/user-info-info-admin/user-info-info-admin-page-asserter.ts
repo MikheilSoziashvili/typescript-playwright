@@ -29,6 +29,17 @@ export class UserInfoInfoAdminPageAsserter extends BaseAsserter<UserInfoInfoAdmi
 		);
 	}
 
+	@step("Check if admin info table is visible by scrolling to it")
+	async adminInfoTableVisibleScrolled(): Promise<void> {
+		await this.gamdomPage.map.scrollIntoView(
+			this.gamdomPage.map.adminInfoTable,
+		);
+		await this.checkElementsAreVisible(
+			[this.gamdomPage.map.adminInfoTable],
+			Timeout.MAX,
+		);
+	}
+
 	@step("Check username is displayed in title")
 	public async isUsernameDisplayedInTitle(username: string): Promise<void> {
 		await expect(this.gamdomPage.map.adminTitle).toHaveText(username);

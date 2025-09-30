@@ -1,4 +1,7 @@
 import { waitForSeconds } from "@core/utils/utils";
+import { ScrollBehavior } from "@enums/dom/scroll-behaviors";
+import { ScrollBlock } from "@enums/dom/scroll-blocks";
+import { ScrollInline } from "@enums/dom/scroll-inlines";
 import { Attributes } from "@enums/playwright/htmlAttributes";
 import { OgProperties } from "@enums/playwright/htmlOgProperties";
 import { VisibilityState } from "@enums/playwright/visibility-states";
@@ -108,6 +111,27 @@ export class BaseMap {
 		await expect(locator).toHaveAttribute(attribute, expectedValue, {
 			timeout,
 		});
+	}
+
+	async scrollIntoView(
+		locator: Locator,
+		options: {
+			behavior?: ScrollBehavior;
+			block?: ScrollBlock;
+			inline?: ScrollInline;
+		} = {},
+	): Promise<void> {
+		const {
+			behavior = ScrollBehavior.SMOOTH,
+			block = ScrollBlock.START,
+			inline,
+		} = options;
+		await locator.evaluate(
+			(el, { behavior, block, inline }) => {
+				el.scrollIntoView({ behavior, block, inline });
+			},
+			{ behavior, block, inline },
+		);
 	}
 
 	protected getDropdownOptionSelector(
