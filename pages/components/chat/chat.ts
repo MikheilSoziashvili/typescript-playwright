@@ -2,7 +2,7 @@ import { Page } from "@playwright/test";
 import { step } from "decorators/step";
 import { BaseComponent } from "../../base/base-component";
 import { ChatAsserter } from "./chat-asserter";
-import { ChatMap } from "./chat-map";
+import { ChatMap, ChatMessageOptions } from "./chat-map";
 import { ChatSteps } from "./chat-steps";
 
 export class Chat extends BaseComponent<ChatMap> {
@@ -43,5 +43,19 @@ export class Chat extends BaseComponent<ChatMap> {
 	public async selectChatroom(chatroomName: string): Promise<void> {
 		await this.map.chatroomsDropdownSelectedValue.click();
 		await this.map.chatroomDropdownOption(chatroomName).click();
+	}
+
+	@step("Close a specific pinned message")
+	public async closePinnedMessage(
+		options?: ChatMessageOptions,
+	): Promise<void> {
+		await this.map.pinnedMessageCloseButton(options).click();
+	}
+
+	@step("Close all pinned messages")
+	public async closeAllPinnedMessages(): Promise<void> {
+		await Promise.all(
+			(await this.map.allPinnedCloseButtons.all()).map((b) => b.click()),
+		);
 	}
 }

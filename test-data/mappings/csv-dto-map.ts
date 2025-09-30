@@ -14,6 +14,7 @@ import {
 	EvRewardFreeSpinsPromotionCsv,
 	FooterLinksAndEndpointsCsv,
 	LoginSuccessfulCsv,
+	ChatPinMessagePermissionsCsv,
 } from "@dtos/csv";
 import { HomePageBannerCarouselCsv } from "@dtos/csv/home-page-banner-carousel-csv";
 import { OriginalsSelfExclusionCsv } from "@dtos/csv/originals-self-exclusion";
@@ -41,4 +42,5 @@ export type CsvDtoMap = {
 	[CsvFilesName.FOOTER_LINKS_AND_ENDPOINTS]: FooterLinksAndEndpointsCsv;
 	[CsvFilesName.LOGIN_SUCCESSFUL]: LoginSuccessfulCsv;
 	[CsvFilesName.HOME_PAGE_BANNER_CAROUSEL]: HomePageBannerCarouselCsv;
+	[CsvFilesName.CHAT_PIN_UNPIN]: ChatPinMessagePermissionsCsv;
 };

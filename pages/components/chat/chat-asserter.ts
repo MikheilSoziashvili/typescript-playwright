@@ -93,7 +93,23 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 			`Message from "${messageInfo.username}" with text "${messageInfo.message}" is visible`,
 			retries,
 		);
+		await expect(locator).toBeAttached();
 	}
+
+	@step("Check message is pinned and is visible")
+	public async isPinnedMessageVisible(
+		messageInfo: ChatMessageOptions,
+		retries = 3,
+	): Promise<void> {
+		const locator = this.gamdomPage.map.pinnedMessageLocator(messageInfo);
+		await this.retryWithPageReload(
+			(_attempt) => this.checkElementsAreVisible([locator]),
+			`Pinned message from "${messageInfo.username}" with text "${messageInfo.message}" is visible`,
+			retries,
+		);
+		await expect(locator).toBeAttached();
+	}
+
 	@step("Verify VIP diamond icon is displayed for message author")
 	public async vipDiamondIsVisibleForMessageAuthor(
 		messageInfo: ChatMessageOptions,
@@ -270,5 +286,11 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 			undefined,
 			"Chat is in 'disconnected' state, but it should not be.",
 		);
+	}
+
+	@step("Assert that message is unpinned")
+	public async messageIsUnpinned(options: ChatMessageOptions): Promise<void> {
+		const pinned = this.gamdomPage.map.pinnedMessageLocator(options);
+		await expect(pinned).toHaveCount(0);
 	}
 }

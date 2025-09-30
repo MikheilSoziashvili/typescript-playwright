@@ -60,6 +60,12 @@ export class ChatMap extends BaseMap {
 		return this.chatLocator.getByTestId("chatMessages-empty");
 	}
 
+	public get pinnedLocator(): Locator {
+		return this.chatMessagesList.locator(
+			`li[data-testid*="messagePinned-container-"]`,
+		);
+	}
+
 	public messageLocator(options?: ChatMessageOptions): Locator {
 		const messageLocator = this.chatMessagesList.locator(
 			`li[data-testid*="messageSay-container-"]`,
@@ -80,9 +86,44 @@ export class ChatMap extends BaseMap {
 		}
 	}
 
+	public pinnedMessageLocator(options?: ChatMessageOptions): Locator {
+		if (options?.index) {
+			return this.pinnedLocator.nth(options.index - 1);
+		} else if (options?.username && options.message) {
+			return this.pinnedLocator
+				.filter({ hasText: options.username })
+				.filter({ hasText: options.message })
+				.last();
+		} else {
+			return this.pinnedLocator.last();
+		}
+	}
+
+	public get pinnedMessagesContainer(): Locator {
+		return this.page.locator('ul[class*="PinnedChatMessageContainer"]');
+	}
+
 	public messageUserAvatar(options?: ChatMessageOptions): Locator {
 		return this.messageLocator(options).locator(
 			`[data-testid*="messageSay-userProfile"]`,
+		);
+	}
+
+	public pinnedMessageAvatar(options?: ChatMessageOptions): Locator {
+		return this.pinnedMessageLocator(options).locator(
+			'[data-testid*="messagePinned-userProfile"]',
+		);
+	}
+
+	public pinnedMessageCloseButton(options?: ChatMessageOptions): Locator {
+		return this.pinnedMessageLocator(options).locator(
+			'[data-testid*="messagePinned-closeButton-"]',
+		);
+	}
+
+	public get allPinnedCloseButtons(): Locator {
+		return this.pinnedLocator.locator(
+			'[data-testid*="messagePinned-closeButton-"]',
 		);
 	}
 

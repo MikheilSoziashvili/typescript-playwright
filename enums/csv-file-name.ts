@@ -50,4 +50,5 @@ export enum CsvFilesName {
 	ORIGINALS_SELF_EXCLUSION = "ENG-4422-originals-selfexclusion.csv",
 	EV_REWARD_FREE_SPINS_PROMOTION = "ENG-7499-ev-reward-free-spins-promotion.csv",
 	HOME_PAGE_BANNER_CAROUSEL = "ENG-1158-homepage-banner-carousel.csv",
+	CHAT_PIN_UNPIN = "ENG-7196-chat-pin-message-permissions.csv",
 }
