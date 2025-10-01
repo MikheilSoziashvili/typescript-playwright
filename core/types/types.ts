@@ -20,7 +20,7 @@ import { KenoGamePage } from "@pages/keno-game/keno-game-page";
 import { MinesGamePage } from "@pages/mines-game-page/mines-game-page";
 import { PlinkoGamePage } from "@pages/plinko-game-page/plinko-game-page";
 import { RouletteGamePage } from "@pages/roulette-game-page/roulette-game-page";
-import { APIRequestContext, APIResponse } from "@playwright/test";
+import { APIRequestContext, APIResponse, TestInfo } from "@playwright/test";
 
 export type TestUserConfigurationObject = {
 	username: string;
@@ -212,3 +212,10 @@ export type Viewport = { width: number; height: number };
 export type FileKey = keyof typeof EV_REWARD_FREE_SPINS_FILE_MAP;
 
 export type HostMatcher = string | RegExp | ((hostname: string) => boolean);
+
+export type PollOrSkipOptions = {
+	timeout: number;
+	interval: number;
+	reason: string;
+	testInfo: TestInfo;
+};

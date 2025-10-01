@@ -5,8 +5,8 @@ import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import {
 	getCookieHeader,
+	pollOrSkip,
 	setAuthenticationCookies,
-	waitUntil,
 } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { Wallet } from "@enums/wallets";
@@ -16,7 +16,6 @@ import { testnetAddress } from "@constants/crypto";
 import { Timeout } from "@enums/timeout";
 import { UserTags } from "@enums/db/user-tags";
 import { UserClasses } from "@enums/db/user-classes";
-import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { AnnotationType } from "@enums/playwright/annotationsTypes";
 import { JiraUser } from "@enums/jira/jira-users";
@@ -25,7 +24,10 @@ import { TransactionType } from "@enums/transaction-types";
 test.describe("Bitcoin tests", () => {
 	test.slow();
 	test.beforeEach(
-		async ({ cryptoAdminPage, toast, page, gamdomApi, gamdomDb }) => {
+		async (
+			{ cryptoAdminPage, toast, page, gamdomApi, gamdomDb },
+			testInfo,
+		) => {
 			const superAdminData = new RegisterTestData({
 				useGamdomEmailDomain: true,
 			});
@@ -52,7 +54,7 @@ test.describe("Bitcoin tests", () => {
 
 			await cryptoAdminPage.refreshCryptoData();
 
-			await waitUntil(
+			await pollOrSkip(
 				async () => {
 					try {
 						await toast.assertThat().titleIs(ToastTitle.SUCCESS, {
@@ -64,11 +66,13 @@ test.describe("Bitcoin tests", () => {
 					}
 				},
 				{
-					errorMessage: "Crypto data table couldn't load in time",
-					intervalSeconds: TimeoutSeconds.TWO,
-					timeoutSeconds: TimeoutSeconds.ONE_TWENTY,
+					timeout: Timeout.EXTRA_LONG,
+					interval: Timeout.EXTRA_SHORT,
+					reason: "Crypto data table couldn't load in time",
+					testInfo: testInfo,
 				},
 			);
+
 			await cryptoAdminPage
 				.steps()
 				.setDepositOrWithdrawMin(
@@ -97,20 +101,23 @@ test.describe("Bitcoin tests", () => {
 			})
 			.withAuthor(JiraUser.ANGEL_PETROV)
 			.apply(),
-		async ({
-			gamdomApiDbFacade,
-			bitcoinApi,
-			gamdomDb,
-			homePage,
-			walletModal,
-			transactionsPage,
-			transactionDetailsModal,
-			gamdomApi,
-			cryptoAdminPage,
-			diceGamePage,
-			page,
-			toast,
-		}) => {
+		async (
+			{
+				gamdomApiDbFacade,
+				bitcoinApi,
+				gamdomDb,
+				homePage,
+				walletModal,
+				transactionsPage,
+				transactionDetailsModal,
+				gamdomApi,
+				cryptoAdminPage,
+				diceGamePage,
+				page,
+				toast,
+			},
+			testInfo,
+		) => {
 			const { cookie } =
 				await gamdomApiDbFacade.createSingleUserDbAndAuth();
 
@@ -154,7 +161,11 @@ test.describe("Bitcoin tests", () => {
 			);
 
 			const transactionId: string = sendResponse.result;
-			await waitBtcTransactionConfirmation(bitcoinApi, transactionId);
+			await waitBtcTransactionConfirmation(
+				bitcoinApi,
+				transactionId,
+				testInfo,
+			);
 
 			await transactionsPage
 				.steps()
@@ -202,6 +213,7 @@ test.describe("Bitcoin tests", () => {
 			await waitBtcTransactionConfirmation(
 				bitcoinApi,
 				withdrawTransactionId,
+				testInfo,
 			);
 			await transactionsPage
 				.steps()

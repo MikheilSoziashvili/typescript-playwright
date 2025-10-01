@@ -54,8 +54,8 @@ export class Chat extends BaseComponent<ChatMap> {
 
 	@step("Close all pinned messages")
 	public async closeAllPinnedMessages(): Promise<void> {
-		await Promise.all(
-			(await this.map.allPinnedCloseButtons.all()).map((b) => b.click()),
-		);
+		while ((await this.map.allPinnedCloseButtons.count()) > 0) {
+			await this.map.allPinnedCloseButtons.first().click();
+		}
 	}
 }

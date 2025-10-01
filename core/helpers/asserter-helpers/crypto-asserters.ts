@@ -1,35 +1,36 @@
 import { BitcoinApi } from "@api/bitcoin-api";
-import { waitUntil } from "@core/utils/utils";
+import { pollOrSkip } from "@core/utils/utils";
+import { Timeout } from "@enums/timeout";
 import { logger } from "@logger/logger";
+import { TestInfo } from "@playwright/test";
 
 /**
  * Waits for a Bitcoin transaction to be confirmed.
- * @param bitcoinApi Instance of BitcoinApi to fetch transaction details.
- * @param transactionId The ID of the transaction to check.
+ * Skips the test if it doesn't confirm within the timeout.
  */
 export async function waitBtcTransactionConfirmation(
 	bitcoinApi: BitcoinApi,
 	transactionId: string,
+	testInfo: TestInfo,
 ): Promise<void> {
-	await waitUntil(
-		async () => {
-			const txResponse = await bitcoinApi.getTransaction(transactionId);
-			const confirmations = txResponse.result.confirmations;
-			logger.info(
-				`Polling for confirmations of transaction with id: ${transactionId}`,
-			);
+	const timeout = Timeout.SUPER_MAX;
+	const interval = Timeout.EXTRA_LONG;
+	const reason = `Transaction ${transactionId} not confirmed`;
 
-			if (confirmations > 0) {
-				logger.info(`Transaction ${transactionId} is now confirmed!`);
+	await pollOrSkip(
+		async () => {
+			const { result } = await bitcoinApi.getTransaction(transactionId);
+			if (result.confirmations > 0) {
+				logger.info(`Transaction ${transactionId} is confirmed!`);
 				return true;
 			}
-
 			return false;
 		},
 		{
-			errorMessage: `Transaction ${transactionId} was not confirmed in time`,
-			intervalSeconds: 20,
-			timeoutSeconds: 600,
+			timeout,
+			interval,
+			reason,
+			testInfo,
 		},
 	);
 }

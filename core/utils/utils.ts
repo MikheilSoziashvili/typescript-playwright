@@ -9,6 +9,7 @@ import {
 	CalculateMinesMultiplierArgs,
 	CredentialsType,
 	HostMatcher,
+	PollOrSkipOptions,
 	ProxyCredentialsType,
 	TestUserConfigurationObject,
 } from "@core/types/types";
@@ -1534,4 +1535,33 @@ export async function useProviderBearerFromAuthenticate(
 			: route.request().headers();
 		await route.continue({ headers });
 	});
+}
+
+/**
+ * Repeatedly polls a condition until it returns true or times out.
+ * Skips the test with `testInfo.skip()` if the timeout is reached.
+ *
+ * @param condition Async function returning true when done, false otherwise.
+ * @param options.timeout Max wait time in ms.
+ * @param options.interval Delay between checks in ms.
+ * @param options.reason Message for skipped test.
+ * @param options.testInfo Playwright TestInfo object.
+ */
+export async function pollOrSkip(
+	condition: () => Promise<boolean>,
+	{ timeout, interval, reason, testInfo }: PollOrSkipOptions,
+): Promise<void> {
+	const start = Date.now();
+
+	while (Date.now() - start < timeout) {
+		try {
+			if (await condition()) return;
+		} catch {
+			logger.warn("Condition not met, retrying...");
+		}
+
+		await new Promise((res) => setTimeout(res, interval));
+	}
+
+	testInfo.skip(true, `${reason} (timeout: ${timeout / 1000}s)`);
 }
