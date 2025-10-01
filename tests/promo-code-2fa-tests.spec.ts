@@ -28,7 +28,10 @@ test.describe("Promo Code tests", () => {
 
 	test(
 		"[ENG-3966] Promo Code - Require new 2FA code when IP of user changes",
-		testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+		testDetails()
+			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+			.withJiraBugTickets("8964")
+			.apply(),
 		async ({
 			promoCampaignsAdminPage,
 			twoFactorAuthModal,

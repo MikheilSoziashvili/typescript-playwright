@@ -65,7 +65,10 @@ test.describe("Promo Campaign with duplicate codes of finished campaigns tests",
 	promoCampaignStatuses.forEach((promoCampaignStatus) => {
 		test(
 			`[ENG-4935] Promo Codes - Verify duplicate codes of ${promoCampaignStatus.status} campaigns still work`,
-			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			testDetails()
+				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+				.withJiraBugTickets("8964")
+				.apply(),
 			async ({
 				promoCampaignsAdminPage,
 				promoCodeModal,
@@ -95,7 +98,10 @@ test.describe("Promo Campaign with duplicate codes of finished campaigns tests",
 
 	test(
 		`[ENG-4935] Promo Codes - Verify duplicate codes of expired campaigns still work`,
-		testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+		testDetails()
+			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+			.withJiraBugTickets("8964")
+			.apply(),
 		async ({
 			promoCampaignsAdminPage,
 			promoCodeModal,

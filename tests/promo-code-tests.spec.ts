@@ -232,7 +232,10 @@ test.describe(
 
 			test(
 				`[ENG-4833] Promo Codes - Verify that Promo Win Cash & Promo Win Free Spins log filters are working`,
-				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+				testDetails()
+					.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+					.withJiraBugTickets("8964")
+					.apply(),
 				async ({
 					promoCampaignsAdminPage,
 					promoCodeModal,
