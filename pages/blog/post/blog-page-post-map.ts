@@ -27,4 +27,10 @@ export class BlogPostPageMap extends BaseMap {
 			"p[class*='ArticleSubtitle-sc']",
 		);
 	}
+
+	public socialShareButtonByAlt(alt: string): Locator {
+		return this.blogPostSectionContainer.locator(
+			`a:has(img[alt="${alt}"])`,
+		);
+	}
 }

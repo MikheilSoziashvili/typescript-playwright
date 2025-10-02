@@ -1,4 +1,5 @@
 import {
+	BlogVerifySocialShareLinksCsvRecord,
 	ChatPinMessagePermissionsCsvRecord,
 	FooterLinksAndEndpointsCsvRecord,
 	OriginalsQuickSelectButtonsCsvRecord,
@@ -9,6 +10,10 @@ import { OriginalsSelfExclusionCsvRecord } from "@dtos/csv/originals-self-exclus
 import { PlinkoTestDataCsvRecord } from "@dtos/csv/plinko-test-data-csv";
 import { UserInfoSendNotificationCsvRecord } from "@dtos/csv/user-info-send-notification-csv";
 import { CsvFilesName } from "@enums/csv-file-name";
+import {
+	BlogVerifySocialShareLinksCsvParsedRecord,
+	parseBlogVerifySocialShareLinksCsvRow,
+} from "test-data/parsers/blog-verify-social-share-links-csv-parser";
 import {
 	ChatPinMessagePermissionsCsvParsedRecord,
 	parseChatPinMessagePermissionsCsvRow,
@@ -92,6 +97,10 @@ export type CsvTransformerMapType = {
 	[CsvFilesName.CHAT_PIN_UNPIN]: (
 		row: ChatPinMessagePermissionsCsvRecord,
 	) => ChatPinMessagePermissionsCsvParsedRecord;
+
+	[CsvFilesName.BLOG_VERIFY_SOCIAL_SHARE_LINKS]: (
+		row: BlogVerifySocialShareLinksCsvRecord,
+	) => BlogVerifySocialShareLinksCsvParsedRecord;
 };
 
 export const CsvTransformerMap: CsvTransformerMapType = {
@@ -108,4 +117,6 @@ export const CsvTransformerMap: CsvTransformerMapType = {
 	[CsvFilesName.FOOTER_LINKS_AND_ENDPOINTS]:
 		parseFooterLinksAndEndpointsCsvRow,
 	[CsvFilesName.CHAT_PIN_UNPIN]: parseChatPinMessagePermissionsCsvRow,
+	[CsvFilesName.BLOG_VERIFY_SOCIAL_SHARE_LINKS]:
+		parseBlogVerifySocialShareLinksCsvRow,
 } as const;
