@@ -5,10 +5,7 @@ import {
 	parse_csv,
 	setAuthenticationCookies,
 } from "@core/utils/utils";
-import { RegisterTestData } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
-import { UserClasses } from "@enums/db/user-classes";
-import { UserTags } from "@enums/db/user-tags";
 import { test } from "@fixtures/fixtures";
 import { environment_url } from "configuration";
 import { testDetails } from "@core/helpers/test-details-helper";
@@ -56,10 +53,6 @@ const termsOfServiceRecords = parse_csv(
 	missingText: string;
 }[];
 
-const superAdminData = new RegisterTestData({
-	useGamdomEmailDomain: true,
-});
-
 const loggedState = [
 	{
 		state: "User logged in flow",
@@ -98,21 +91,17 @@ loggedState.forEach(({ state, user, csv }) => {
 		test(
 			`[ENG-1977] Footer - Verify 'King Of The Hill' redirection from "Footer" section redirects to its respective page - ${state}`,
 			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
-			async ({ homePage, footer, gamdomApi, kothPage, gamdomDb }) => {
-				await gamdomDb.createNewUser({
-					username: superAdminData.username,
-					password: superAdminData.password,
-					email: superAdminData.email,
-					tags: UserTags.SuperAdmin,
-					userClass: UserClasses.Admin,
-					emailVerified: true,
-				});
-				const superAdminCookie = getCookieHeader(
-					await gamdomApi.authenticateWithExistingUser(
-						superAdminData.username,
-						superAdminData.password,
-					),
-				);
+			async ({
+				homePage,
+				footer,
+				gamdomApi,
+				kothPage,
+				gamdomApiDbFacade,
+			}) => {
+				const { cookie } =
+					await gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
+				const superAdminCookie = getCookieHeader(cookie);
+
 				await homePage.navigate();
 				await footer.openFooterLinkByPlaceholder("King Of The Hill");
 
