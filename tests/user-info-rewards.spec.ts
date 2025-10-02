@@ -18,11 +18,10 @@ import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
-import { ToastSubTitle } from "@enums/toast-subtitles";
-import { ToastTitle } from "@enums/toast-titles";
+import { NotificationSubTitle } from "@enums/notification-subtitles";
+import { NotificationTitle } from "@enums/notification-titles";
 import { storageStateNewSuperAdminUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
-import { Toast } from "@pages/components/toast/toast";
 import { DiceGamePage } from "@pages/dice-game-page/dice-game-page";
 import { HomePage } from "@pages/home-page/home-page";
 import { WalletModal } from "@pages/modals/wallet/wallet-modal";
@@ -568,7 +567,6 @@ test.describe(
 				userInfoAdminPage,
 				userInfoRewardsAdminPage,
 				userInfoRewardsHistoryAdminPage,
-				userInfoKycAdminPage,
 			}) => {
 				const newUserData = new RegisterTestData();
 				await gamdomDb.createNewUser(newUserData);
@@ -646,19 +644,14 @@ test.describe(
 				// Fill in the KYC Level 1 form
 				await verificationPage.steps().fillInKycLevel1Form();
 
-				const toast = new Toast(userPage);
+				const notification = userHomePage.getNotification();
+				await notification
+					.assertThat()
+					.titleIs(NotificationTitle.KYC_VERIFIED);
 
-				await toast.assertThat().titlesAre([
-					{
-						title: ToastTitle.PENDING,
-						subTitle: ToastSubTitle.VERIFICATION_PENDING,
-					},
-				]);
-
-				await userInfoAdminPage.clickUserInfoTab(UserInfoTabs.KYC);
-
-				// Approve the KYC submission
-				await userInfoKycAdminPage.clickApproveButton();
+				await notification
+					.assertThat()
+					.subTitleIs(NotificationSubTitle.KYC_LEVEL_ONE_VERIFIED);
 
 				await rewardsPage.navigate();
 
@@ -677,9 +670,7 @@ test.describe(
 					RewardButton.CLAIM,
 				);
 
-				await userInfoAdminPage.clickUserInfoTab(
-					UserInfoTabs.RewardHistory,
-				);
+				await userInfoRewardsHistoryAdminPage.refresh();
 
 				// Assert that the reward status is Claimed after claiming
 				await userInfoRewardsHistoryAdminPage

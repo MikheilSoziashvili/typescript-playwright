@@ -37,7 +37,7 @@ export class VerificationPageMap extends BaseMap {
 	}
 
 	public get firstAndLastNameInput(): Locator {
-		return this.page.locator("input[name='fullName']");
+		return this.page.getByLabel("Full name");
 	}
 
 	public get dateOfBirthInput(): Locator {
