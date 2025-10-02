@@ -28,6 +28,7 @@ test.describe(
 						chat,
 						page,
 						testDataPredefinedRandom,
+						toast,
 					}) => {
 						const {
 							user: superAdminUser,
@@ -78,7 +79,14 @@ test.describe(
 						await userInfoEditInfoAdminPage.toggleTag(
 							UserTags.ChatUnpinMessage,
 						);
+						await userInfoEditInfoAdminPage
+							.assertThat()
+							.verifyTagsAreChecked(
+								[UserTags.ChatUnpinMessage],
+								true,
+							);
 						await userInfoEditInfoAdminPage.clickSaveButton();
+						await toast.assertThat().titleIs(record.Message);
 
 						await homePage.navigate({
 							cookies: { clearCookies: true },
