@@ -175,6 +175,25 @@ async function enableRecentWins(
 	logger.info("Recent Wins have been successfully enabled.");
 }
 
+async function enablePlinkoBanner(
+	gamdomApi: GamdomApi,
+	cookie: string,
+): Promise<void> {
+	logger.info("Enabling Plinko banner...");
+
+	const featureResponse = await gamdomApi.setFeatureState(
+		Feature.PLINKO_BANNER,
+		ALL_USER_TYPES_ENABLED,
+		{ Cookie: cookie },
+	);
+
+	featureResponse.forEach((response) => {
+		expect(response.status()).toBe(HttpStatus.OK);
+	});
+
+	logger.info("Plinko banner has been successfully enabled.");
+}
+
 async function createKothEvent(
 	gamdomApi: GamdomApi,
 	event_name: string,
@@ -415,6 +434,7 @@ async function globalSetup(): Promise<void> {
 	await ensureKothEventsExist(gamdomApi, cookie);
 	await enableRecentWins(gamdomApi, cookie);
 	await enableAffiliatesInfoFeature(gamdomApi, cookie);
+	await enablePlinkoBanner(gamdomApi, cookie);
 
 	if (Configuration.enableNewDesignV4Feature) {
 		await enableNewDesignV4Feature(gamdomApi, cookie);
