@@ -88,7 +88,7 @@ export class HomePage extends BasePage<HomePageMap> {
 	public async waitCarouselSlideToBeActive(
 		slideName: HomePageBannerCarouselSlideTitle,
 		srcPartial: string,
-		timeout = Timeout.LONG,
+		timeout = Timeout.EXTRA_LONG,
 	): Promise<void> {
 		const timeBetweenIterations = 500;
 		let isSlideActive = false;

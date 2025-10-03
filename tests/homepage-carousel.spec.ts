@@ -20,6 +20,10 @@ test.describe(
 					`[ENG-1158] - Homepage banner carousel - logged in user - ${record.bannerName} page contains src '${record.srcPartial}'`,
 					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
 					async ({ homePage, gamdomApiDbFacade, page }) => {
+						test.fixme(
+							record.bannerName === "Drop & Wins Tournament",
+							"Blog post is missing on e2e environment.",
+						);
 						const { cookie } =
 							await gamdomApiDbFacade.createSingleUserDbAndAuth();
 						await setAuthenticationCookies(page, cookie);
