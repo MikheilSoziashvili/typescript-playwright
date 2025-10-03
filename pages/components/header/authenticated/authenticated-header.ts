@@ -8,6 +8,7 @@ import { AuthenticatedHeaderAsserter } from "./authenticated-header-asserter";
 import { AuthenticatedHeaderMap } from "./authenticated-header-map";
 import { step } from "decorators/step";
 import { UserMenuOption } from "@enums/user-menu-options";
+import accounting from "accounting";
 
 export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 	constructor(page: Page) {
@@ -109,5 +110,11 @@ export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 			throw new Error(`Balance not found for ${cryptoCurrency}`);
 		}
 		return text;
+	}
+
+	@step("Get account balance while in a casino game")
+	public async getAccountBalanceInCasinoGame(): Promise<number> {
+		const raw = await this.map.accountBalanceValueInCasinoGame.innerText();
+		return accounting.unformat(raw);
 	}
 }

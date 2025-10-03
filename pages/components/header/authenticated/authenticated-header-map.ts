@@ -156,4 +156,8 @@ export class AuthenticatedHeaderMap extends BaseMap {
 			.locator("div", { hasText: new RegExp(`^${cryptoCurrency}$`) })
 			.locator("~ div span.animation-finished");
 	}
+
+	public get accountBalanceValueInCasinoGame(): Locator {
+		return this.page.getByTestId("balanceAmoutLabel");
+	}
 }

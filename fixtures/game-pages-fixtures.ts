@@ -8,6 +8,7 @@ import { PlinkoGamePage } from "@pages/plinko-game-page/plinko-game-page";
 import { MinesGamePage } from "@pages/mines-game-page/mines-game-page";
 import { KenoGamePage } from "@pages/keno-game/keno-game-page";
 import { BookOfPyramidsPage } from "@pages/casino-games/bgaming/book-of-pyramids/book-of-pyramids-page";
+import { CashVaultIPage } from "@pages/casino-games/hacksaw-gaming/cash-vault-i/cash-vault-i-page";
 
 export type GamePages = {
 	originalsPage: OriginalsPage;
@@ -19,6 +20,7 @@ export type GamePages = {
 	minesGamePage: MinesGamePage;
 	kenoGamePage: KenoGamePage;
 	bookOfPyramidsPage: BookOfPyramidsPage;
+	bubblesBonanzaPage: CashVaultIPage;
 };
 
 export const gamePagesFixtures = base.extend<GamePages>({
@@ -45,6 +47,9 @@ export const gamePagesFixtures = base.extend<GamePages>({
 	},
 	bookOfPyramidsPage: async ({ page }, use) => {
 		await use(new BookOfPyramidsPage(page));
+	},
+	bubblesBonanzaPage: async ({ page }, use) => {
+		await use(new CashVaultIPage(page));
 	},
 	originalsPage: async (
 		{

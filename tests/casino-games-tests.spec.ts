@@ -1,18 +1,30 @@
 import { test } from "@fixtures/fixtures";
-import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraUser } from "@enums/jira/jira-users";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { CasinoGameName } from "@enums/casino-game";
-import { stripAuthFromExternalRequests } from "@core/utils/utils";
+import {
+	setAuthenticationCookies,
+	stripAuthFromExternalRequests,
+} from "@core/utils/utils";
 import { Currency } from "@enums/currencies";
+import { Wallet } from "@enums/wallets";
+import { Unit } from "@enums/units";
+test.use({ launchOptions: { slowMo: 1000 } });
 
 test.describe("Casino games tests", () => {
-	test.beforeEach(async ({ page }) => {
+	test.beforeEach(async ({ page, gamdomApiDbFacade, casinoPage }) => {
 		await stripAuthFromExternalRequests(page);
-	});
 
-	test.use(storageStateNewUserDB());
+		const { cookie } = await gamdomApiDbFacade.createUserWithWalletsAndAuth(
+			{
+				walletUnits: [Unit.BTC_SATOSHI, Unit.XRP_DROP],
+				amount: 100000,
+			},
+		);
+		await setAuthenticationCookies(page, cookie);
+		await casinoPage.navigate();
+	});
 
 	test(
 		"[ENG-2845][Casino] Search for any game and play",
@@ -21,8 +33,6 @@ test.describe("Casino games tests", () => {
 			.withAuthor(JiraUser.ANGEL_PETROV)
 			.apply(),
 		async ({ casinoPage, bookOfPyramidsPage, userBalanceHandler }) => {
-			await casinoPage.navigate();
-
 			await casinoPage
 				.steps()
 				.searchForGameAndOpen(CasinoGameName.BOOK_OF_PYRAMIDS);
@@ -59,6 +69,58 @@ test.describe("Casino games tests", () => {
 					betCoins,
 					won,
 					winCoins,
+				);
+		},
+	);
+	test(
+		"[ENG-7244]Casino - Verify in-game balance reflects selected crypto wallet balance",
+		testDetails()
+			.withTags(JiraComponent.CASINO)
+			.withAuthor(JiraUser.ANGEL_PETROV)
+			.apply(),
+		async ({ casinoPage, bubblesBonanzaPage }) => {
+			await casinoPage.authenticatedHeader.changeWallet(Wallet.BTC);
+			await casinoPage
+				.steps()
+				.searchForGameAndOpen(CasinoGameName.CASH_VAULT_I);
+
+			const headerBalance =
+				await bubblesBonanzaPage.authenticatedHeader.getAccountBalanceInCasinoGame();
+			const gameBalance = await bubblesBonanzaPage.getGameBalance();
+
+			await bubblesBonanzaPage
+				.assertThat()
+				.verifyBalanceWithTolerance(gameBalance, headerBalance, 0.01);
+
+			await bubblesBonanzaPage.refreshUntilGameIsLoaded();
+
+			const headerBalanceAfterRefresh =
+				await bubblesBonanzaPage.authenticatedHeader.getAccountBalanceInCasinoGame();
+			const gameBalanceAfterRefresh =
+				await bubblesBonanzaPage.getGameBalance();
+
+			await bubblesBonanzaPage
+				.assertThat()
+				.verifyBalanceWithTolerance(
+					gameBalanceAfterRefresh,
+					headerBalanceAfterRefresh,
+					0.01,
+				);
+
+			await bubblesBonanzaPage.authenticatedHeader.changeWallet(
+				Wallet.XRP,
+			);
+
+			const headerBalanceEth =
+				await bubblesBonanzaPage.authenticatedHeader.getAccountBalanceInCasinoGame();
+			const gameBalanceEth = await bubblesBonanzaPage.getGameBalance();
+
+			await bubblesBonanzaPage
+				.assertThat()
+				.verifyBalanceWithTolerance(
+					gameBalanceEth,
+					headerBalanceEth,
+					0.01,
 				);
 		},
 	);
