@@ -15,6 +15,7 @@ import {
 	generateRandomString,
 	setAuthenticationCookies,
 } from "@core/utils/utils";
+import { PromoCampaignStatuses } from "@enums/campaign-statuses";
 import { CasinoGameCode } from "@enums/casino-game-code";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { PromoCodeStatusValue } from "@enums/db/campaign-promo-sattus-value";
@@ -375,14 +376,16 @@ test.describe(
 			let promoCodeValue: string;
 			let promoCodeName: string;
 			let adminUserId: number;
+			let adminUserCookie: string;
 
 			test.beforeAll(async ({ gamdomApiDbFacade }) => {
-				const { user: adminUserData } =
+				const { user: adminUserData, cookie: adminUserCookieData } =
 					await gamdomApiDbFacade.createSuperAdminUserDbAndAuth({
 						emailVerified: true,
 						useGamdomEmailDomain: true,
 					});
 				adminUserId = adminUserData.userId;
+				adminUserCookie = adminUserCookieData;
 			});
 
 			test.beforeEach(async () => {
@@ -473,6 +476,87 @@ test.describe(
 						},
 					);
 				});
+
+			promoCampaignVariants.forEach((promoCampaign) => {
+				test(
+					`[ENG-3739] Redeem a promo code - ${promoCampaign.name} and verify promo codes table is updated`,
+					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+					async ({
+						walletModal,
+						homePage,
+						gamdomApiDbFacade,
+						page,
+						gamdomDb,
+						toast,
+						notifications,
+						promoCampaignsAdminPage,
+					}) => {
+						await promoCampaign.create({
+							gamdomDb,
+							promoCodeName,
+							promoCodeValue,
+							adminUserId,
+						});
+
+						await setAuthenticationCookies(page, adminUserCookie);
+						await promoCampaignsAdminPage.navigate();
+						await promoCampaignsAdminPage
+							.steps()
+							.searchPromoCode(promoCodeValue, promoCodeName, 1);
+						await promoCampaignsAdminPage
+							.assertThat()
+							.verifyPromoCodeExactMatch(promoCodeValue);
+						await promoCampaignsAdminPage
+							.assertThat()
+							.verifyPromoCampaignStatus(
+								promoCodeName,
+								PromoCampaignStatuses.ACTIVE,
+							);
+						await homePage.navigate({
+							cookies: { clearCookies: true },
+						});
+
+						const { cookie } =
+							await gamdomApiDbFacade.createSingleUserDbAndAuth();
+
+						await setAuthenticationCookies(page, cookie);
+
+						await homePage.navigateToWallet();
+
+						await walletModal
+							.steps()
+							.redeemPromoCodeSuccessfully(promoCodeValue);
+
+						await toast.assertThat().titleIs(ToastTitle.SUCCESS);
+						await toast
+							.assertThat()
+							.subTitleIs(ToastSubTitle.PROMO_CODE_REDEEMED);
+
+						await promoCampaign.assert({
+							notifications,
+						});
+
+						await homePage.navigate({
+							cookies: { clearCookies: true },
+						});
+						await setAuthenticationCookies(page, adminUserCookie);
+						await promoCampaignsAdminPage.navigate();
+
+						await promoCampaignsAdminPage
+							.steps()
+							.searchPromoCode(promoCodeValue, promoCodeName, 1);
+						await promoCampaignsAdminPage
+							.assertThat()
+							.verifyPromoCodeExactMatch(promoCodeValue);
+						await promoCampaignsAdminPage
+							.assertThat()
+							.verifyPromoCampaignStatus(
+								promoCodeName,
+								PromoCampaignStatuses.FINISHED,
+							);
+					},
+				);
+			});
 		});
 	},
 );

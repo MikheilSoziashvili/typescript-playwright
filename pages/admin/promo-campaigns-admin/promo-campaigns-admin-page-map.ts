@@ -16,39 +16,49 @@ export class PromoCampaignsAdminMap extends BaseMap {
 	}
 
 	public get searchPromoCodeInputField(): Locator {
-		return this.promoCampaignsContainer.getByPlaceholder("Search Promo Code");
+		return this.promoCampaignsContainer.getByPlaceholder(
+			"Search Promo Code",
+		);
 	}
 
 	public get searchButton(): Locator {
-		return this.promoCampaignsContainer.locator("button", { hasText: "Search" });
+		return this.promoCampaignsContainer.locator("button", {
+			hasText: "Search",
+		});
 	}
 
 	public get clearButton(): Locator {
-		return this.promoCampaignsContainer.locator("button", { hasText: "Clear" });
+		return this.promoCampaignsContainer.locator("button", {
+			hasText: "Clear",
+		});
 	}
 
 	public get promoCampaignsTable(): Locator {
-		return this.promoCampaignsContainer.locator(`table`);
+		return this.promoCampaignsContainer.getByTestId("promoCampaignsTable");
 	}
 
 	public get promoCampaignsTableBody(): Locator {
-		return this.promoCampaignsTable.locator(`tbody`);
+		return this.promoCampaignsTable.getByTestId("promoCampaignsTableBody");
 	}
 
 	public get promoCampaignsTableRows(): Locator {
-		return this.promoCampaignsTableBody.locator(`tr`);
+		return this.promoCampaignsTableBody.locator(
+			'[data-testid^="promoCampaignsTableRow"]',
+		);
 	}
 
 	public tableRowByCampaignName(campaignName: string): Locator {
-		return this.promoCampaignsTableBody.locator(
-			`//tr[td[1][normalize-space()= '${campaignName}']]`,
-		);
+		return this.promoCampaignsTableBody
+			.locator('[data-testid^="promoCampaignsTableRow"]')
+			.filter({ hasText: campaignName });
 	}
 
 	public campaignStatusTableLabelByCampaignName(
 		campaignName: string,
 	): Locator {
-		return this.tableRowByCampaignName(campaignName).locator(`//td[4]//p`);
+		return this.tableRowByCampaignName(campaignName).locator(
+			'[data-testid^="status-text"]',
+		);
 	}
 
 	public promoCodeTableText(): Locator {
@@ -56,14 +66,16 @@ export class PromoCampaignsAdminMap extends BaseMap {
 	}
 
 	public campaignNameTableTextByCampaignName(campaignName: string): Locator {
-		return this.tableRowByCampaignName(campaignName).locator(`//td[1]//p`);
+		return this.tableRowByCampaignName(campaignName).locator(
+			'[data-testid^="campaign-name-text"]',
+		);
 	}
 
 	public campaignActionsButtonTableCellByCampaignName(
 		campaignName: string,
 	): Locator {
 		return this.tableRowByCampaignName(campaignName).locator(
-			`//td//div[contains(@class,'list_settings')]//div[contains(@class,'StyledStatusActionIconContainer-sc')]`,
+			`[data-testid^="pause-action-row"]`,
 		);
 	}
 
