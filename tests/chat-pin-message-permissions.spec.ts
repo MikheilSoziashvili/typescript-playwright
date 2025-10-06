@@ -9,6 +9,8 @@ import { UserTags } from "@enums/db/user-tags";
 import { UserInfoTabs } from "@enums/admin/user-info-tabs";
 import { ChatMessageOptions } from "@pages/components/chat/chat-map";
 import { TestTag } from "@enums/test-tags";
+import { Chatroom } from "@enums/chatrooms";
+import { isScheduledRun } from "configuration";
 
 test.describe(
 	"Chat - pin, unpin and check permissions",
@@ -19,7 +21,10 @@ test.describe(
 			.forEach((record) => {
 				test(
 					`[ENG-7196] [Chat] Check unpin pinned message permission changes with class ${record.Userclass} and tag ${record.Usertag}`,
-					testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+					testDetails()
+						.withJiraBugTickets("8283")
+						.withAuthor(JiraUser.ANGEL_PETROV)
+						.apply(),
 					async ({
 						gamdomApiDbFacade,
 						userInfoAdminPage,
@@ -30,6 +35,8 @@ test.describe(
 						testDataPredefinedRandom,
 						toast,
 					}) => {
+						test.fixme(isScheduledRun);
+
 						const {
 							user: superAdminUser,
 							cookie: superAdminCookie,
@@ -51,6 +58,9 @@ test.describe(
 						};
 
 						await homePage.navigateAndExpandChat();
+						await chat
+							.steps()
+							.selectChatroomSuccessfully(Chatroom.Hindi);
 						await chat
 							.steps()
 							.sendMessageAndVerifyItsVisible(
