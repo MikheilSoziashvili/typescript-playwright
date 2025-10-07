@@ -38,6 +38,10 @@ export class UserInfoInfoAdminPageAsserter extends BaseAsserter<UserInfoInfoAdmi
 			[this.gamdomPage.map.adminInfoTable],
 			Timeout.MAX,
 		);
+		await this.gamdomPage.map.waitForStableXPosition({
+			locator: this.gamdomPage.map.adminInfoTable,
+			delayMs: Timeout.EXTRA_SHORT,
+		});
 	}
 
 	@step("Check username is displayed in title")
