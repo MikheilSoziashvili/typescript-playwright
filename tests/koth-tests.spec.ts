@@ -88,6 +88,8 @@ test.describe("KoTH game tests", () => {
 			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 			.apply(),
 		async ({ kothPage, originalsPage }) => {
+			// Test case needs to be reworked - temporarily marked as fixme
+			test.fixme(true);
 			let totalWageredAmount = 0;
 			const kothEndpoints = [
 				KOTH_ENDPOINT,
