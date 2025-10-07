@@ -3,6 +3,7 @@ import { BaseComponent } from "@base/base-component";
 import { UnauthenticatedHeaderMap } from "./unauthenticated-header-map";
 import { UnauthenticatedHeaderAsserter } from "./unauthenticated-header-asserter";
 import { step } from "decorators/step";
+import { UnauthenticatedHeaderSteps } from "./unauthenticated-header-steps";
 
 export class UnauthenticatedHeader extends BaseComponent<UnauthenticatedHeaderMap> {
 	constructor(page: Page) {
@@ -11,6 +12,10 @@ export class UnauthenticatedHeader extends BaseComponent<UnauthenticatedHeaderMa
 
 	public assertThat(): UnauthenticatedHeaderAsserter {
 		return new UnauthenticatedHeaderAsserter(this);
+	}
+
+	public steps(): UnauthenticatedHeaderSteps {
+		return new UnauthenticatedHeaderSteps(this);
 	}
 
 	@step("Open login modal")

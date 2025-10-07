@@ -1,6 +1,7 @@
 import { DATASETS_DIR } from "@constants/file-paths";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { parse_csv, toJson } from "@core/utils/utils";
+import { AuthenticationAction } from "@enums/authentication-actions";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { JiraUser } from "@enums/jira/jira-users";
 import { AnnotationType } from "@enums/playwright/annotationsTypes";
@@ -190,4 +191,18 @@ test.describe("Login tests", () => {
 				.loggedInUserElementsAreVisible();
 		},
 	);
+
+	Object.values(AuthenticationAction).forEach((method) => {
+		test(
+			`[ENG-4841] Verify social login options are visible from ${method} modal`,
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			async ({ homePage }) => {
+				await homePage.navigateAndCheckTitle();
+
+				await homePage.unauthenticatedHeader
+					.steps()
+					.verifySocialLoginOptionsVisible(method);
+			},
+		);
+	});
 });

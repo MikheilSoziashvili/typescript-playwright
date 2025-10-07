@@ -13,4 +13,16 @@ export class UnauthenticatedHeaderMap extends BaseMap {
 	public get signUpBtn(): Locator {
 		return this.page.getByTestId("signup-nav");
 	}
+
+	public get steamSignInButton(): Locator {
+		return this.page.getByTestId("steamSignInButton");
+	}
+
+	public get googleSignInButton(): Locator {
+		return this.page.getByTestId("googleSignInButton");
+	}
+
+	public get telegramSignInButton(): Locator {
+		return this.page.getByTestId("telegramSignInButton");
+	}
 }

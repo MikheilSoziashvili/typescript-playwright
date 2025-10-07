@@ -20,4 +20,13 @@ export class UnauthenticatedHeaderAsserter extends BaseAsserter<UnauthenticatedH
 	async isCreateAccountButtonDisabled(): Promise<void> {
 		await this.checkElementsAreDisabled([this.gamdomPage.map.signUpBtn]);
 	}
+
+	@step("Check social login options are visible")
+	async socialLoginOptionsAreVisible(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.steamSignInButton,
+			this.gamdomPage.map.googleSignInButton,
+			this.gamdomPage.map.telegramSignInButton,
+		]);
+	}
 }
