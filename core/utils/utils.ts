@@ -32,6 +32,7 @@ import {
 	otpAuthSecretPattern,
 	pageUrl,
 	sanitizeTitlePattern,
+	sessionIdPattern,
 	urlLeadingTrailingHyphensPattern,
 	urlMultipleHyphensPattern,
 	urlSpacesAndUnderscoresPattern,
@@ -1564,4 +1565,18 @@ export async function pollOrSkip(
 	}
 
 	testInfo.skip(true, `${reason} (timeout: ${timeout / 1000}s)`);
+}
+
+/**
+ * Extracts the short session ID  from a cookie string.
+ * @param cookieString The full cookie string.
+ * @returns The  session ID.
+ * @throws Error if no session ID is found.
+ */
+export function getSessionIdFromCookie(cookieString: string): string {
+	const match = cookieString.match(sessionIdPattern);
+	if (!match) {
+		throw new Error("Session ID not found in cookie string");
+	}
+	return match[1];
 }

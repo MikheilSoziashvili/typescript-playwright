@@ -45,6 +45,7 @@ import { UserInfoRewardsAdminPage } from "@pages/admin/user-info-admin/user-info
 import { UserInfoRewardsHistoryAdminPage } from "@pages/admin/user-info-admin/user-info-rewards-history-admin/user-info-rewards-history-admin-page";
 import { UserInfoKycAdminPage } from "@pages/admin/user-info-admin/user-info-kyc-admin/user-info-kyc-admin-page";
 import { BulkActionsAdminPage } from "@pages/admin/bulk-actions-admin/bulk-actions-admin-page";
+import { UserInfoSessionsAdminPage } from "@pages/admin/user-info-admin/user-info-sessions-admin/user-info-sessions-admin-page";
 
 export type AdminPages = {
 	baseAdminPage: BaseAdminPage;
@@ -93,6 +94,7 @@ export type AdminPages = {
 	userInfoRewardsHistoryAdminPage: UserInfoRewardsHistoryAdminPage;
 	userInfoKycAdminPage: UserInfoKycAdminPage;
 	bulkActionsAdminPage: BulkActionsAdminPage;
+	userInfoSessionsAdminPage: UserInfoSessionsAdminPage;
 };
 
 export const adminPagesFixtures = base.extend<AdminPages>({
@@ -233,5 +235,8 @@ export const adminPagesFixtures = base.extend<AdminPages>({
 	},
 	bulkActionsAdminPage: async ({ page }, use) => {
 		await use(new BulkActionsAdminPage(page));
+	},
+	userInfoSessionsAdminPage: async ({ page }, use) => {
+		await use(new UserInfoSessionsAdminPage(page));
 	},
 });

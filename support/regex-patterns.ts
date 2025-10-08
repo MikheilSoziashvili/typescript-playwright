@@ -45,3 +45,4 @@ export const rewardedUserIdPattern = /Successfully rewarded user\s*#(\d+)/g;
 
 export const wickedGamesHostPattern = /tequity\.staging\.wicked\.games$/i;
 export const wickedGamesAuthPathPattern = /\/authenticate(?:\?.*)?$/i;
+export const sessionIdPattern = /\.([a-z0-9]{8})-/i;

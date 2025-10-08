@@ -36,4 +36,5 @@ export enum ToastSubTitle {
 	SUCCESSFULLY_ATTACHED = "Successfully attached!",
 	SUCCESSFULLY_REMOVED_VIP_STATUSES = "Successfully removed VIP statuses!",
 	LEVEL_ONE_VERIFICATION_SUBMITTED = "LEVEL1\n data submitted successfully",
+	SESSION_ENDED = "Session ended successfully",
 }
