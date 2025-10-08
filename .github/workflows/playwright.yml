@@ -321,6 +321,7 @@ jobs:
                   else
                     $TEST_COMMAND $INVERT_SEQUENTIAL_TESTS $WORKERS $SHARD_OPTION
                   fi
+
             - name: Upload blob report to GitHub Actions Artifacts
               if: always()
               uses: actions/upload-artifact@v4
@@ -328,6 +329,18 @@ jobs:
                   name: "all-blob-reports-1-${{ github.run_id }}-${{ matrix.shard }}"
                   path: ./blob-report
                   retention-days: 1
+
+            - name: Move blob report files into all-blob-report (main)
+              if: always()
+              run: |
+                  echo "Listing contents of blob-report before moving (main run):"
+                  ls -la ./blob-report || true
+
+                  mkdir -p ./all-blob-report
+                  find ./blob-report -mindepth 1 -maxdepth 1 -exec mv {} ./all-blob-report/ \;
+
+                  echo "all-blob-report contents:"
+                  ls -la ./all-blob-report || true
 
             - name: Sequential Tests (Global Settings)
               if: always()
@@ -347,17 +360,32 @@ jobs:
                   path: ./blob-report
                   retention-days: 1
 
-            - name: Download blob reports from GitHub Actions Artifacts
-              if: always()
-              uses: actions/download-artifact@v4
-              with:
-                  path: ./blob-report
-                  pattern: all-blob-reports-*
-                  merge-multiple: true
+            - name: Move blob report files into all-blob-report (sequential)
+              if: ${{ always() && (github.event_name == 'schedule' || inputs.run_sequential_tests == 'true') }}
+              run: |
+                  echo "Listing contents of blob-report before moving (sequential run):"
+                  ls -la ./blob-report || true
+
+                  mkdir -p ./all-blob-report
+                  find ./blob-report -mindepth 1 -maxdepth 1 -exec mv {} ./all-blob-report/ \;
+
+                  echo "all-blob-report contents:"
+                  ls -la ./all-blob-report || true
 
             - name: Merge all blob reports into HTML and json
               if: always()
-              run: npx playwright merge-reports --reporter json,html ./blob-report > e2e-results.json
+              run: |
+                  echo "Checking for Playwright blob data in ./all-blob-report..."
+                  ls -la ./all-blob-report || true
+
+                  if [ ! -d "./all-blob-report" ] || [ -z "$(ls -A ./all-blob-report)" ]; then
+                    echo "ERROR: No blob report data found in ./all-blob-report."
+                    echo "This means Playwright did not produce any reports."
+                    exit 1
+                  fi
+
+                  echo "Merging all blob reports into HTML and JSON..."
+                  npx playwright merge-reports --reporter json,html ./all-blob-report > e2e-results.json
 
             - name: Upload Playwright report to S3 and generate report url
               if: always()
