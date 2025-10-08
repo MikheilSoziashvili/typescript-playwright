@@ -75,7 +75,7 @@ export class PromoCampaignsAdminMap extends BaseMap {
 		campaignName: string,
 	): Locator {
 		return this.tableRowByCampaignName(campaignName).locator(
-			`[data-testid^="pause-action-row"]`,
+			`[data-testid^="actions-row"]`,
 		);
 	}
 
@@ -85,7 +85,7 @@ export class PromoCampaignsAdminMap extends BaseMap {
 	): Locator {
 		return this.campaignActionsButtonTableCellByCampaignName(
 			campaignName,
-		).locator(`img[alt='${action}']`);
+		).locator(`[data-testid*='${action}-action-row']`);
 	}
 
 	public activateCampaignButtonTableByCampaignName(
