@@ -4,6 +4,8 @@ import { Timeout } from "@enums/timeout";
 import { logger } from "@logger/logger";
 import { expect, Locator } from "@playwright/test";
 import { Toast } from "./toast";
+import { ToastSubTitle } from "@enums/toast-subtitles";
+import { ToastTitle } from "@enums/toast-titles";
 
 export class ToastAsserter extends BaseAsserter<Toast> {
 	public constructor(page: Toast) {
@@ -167,5 +169,14 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 		subTitle?: string;
 	}): Promise<void> {
 		await expect(this.gamdomPage.map.toastContainer(options)).toBeHidden();
+	}
+
+	@step("Toast message is")
+	public async toastMessageIs(
+		title: ToastTitle,
+		subtitle: ToastSubTitle,
+	): Promise<void> {
+		await this.titleIs(title);
+		await this.subTitleIs(subtitle);
 	}
 }

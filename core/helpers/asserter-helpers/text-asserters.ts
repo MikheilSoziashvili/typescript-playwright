@@ -178,3 +178,10 @@ export function buildFreeSpinsRewardNotificationSubTitle(
 ): string {
 	return `You have redeemed ${freeSpinsAmount} Free Spins ($${freeSpinValue} each) for ${gameName}! This promo will expire at ${expirationDate} if you don't use it.`;
 }
+
+export function buildTransactionTypeAndValueNotFoundMessage(
+	type: string,
+	formattedValue: string,
+): string {
+	return `Transaction with type='${type}' and value='${formattedValue}' not found`;
+}

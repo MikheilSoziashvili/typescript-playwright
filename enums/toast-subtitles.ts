@@ -37,4 +37,5 @@ export enum ToastSubTitle {
 	SUCCESSFULLY_REMOVED_VIP_STATUSES = "Successfully removed VIP statuses!",
 	LEVEL_ONE_VERIFICATION_SUBMITTED = "LEVEL1\n data submitted successfully",
 	SESSION_ENDED = "Session ended successfully",
+	TIPS_PROCESSED_SUCCESSFULLY = "Tips processed successfully! Please check the logs below.",
 }

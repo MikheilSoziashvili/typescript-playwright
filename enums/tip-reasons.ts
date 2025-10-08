@@ -1,0 +1,17 @@
+export enum TipReason {
+	STAFF_FILLS = "staff fills",
+	STREAM_BONUS = "stream bonus",
+	VIP_BONUS = "VIP bonus",
+	VIP_SPECIAL_BONUS = "VIP special bonus",
+	COMPENSATION = "compensation",
+	GIVEAWAY = "giveaway",
+	PROMOTION_OFFER = "promotion offer",
+	DEPOSIT_BONUS = "deposit bonus",
+	EARNLAB_DEPOSITS = "earnlab deposits",
+	OTHER = "other",
+	TELEGRAM_SPORTS_WINS = "telegram sports wins",
+	DEPOSIT = "deposit",
+	REFUND = "refund",
+	DEPOSIT_REFUND = "deposit refund",
+	BET_REFUND = "bet refund",
+}

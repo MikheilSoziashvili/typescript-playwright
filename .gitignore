@@ -146,7 +146,7 @@ playwright-report.zip
 
 # test data
 /testImages/
-/test-files/TEMP_users_*.csv
+/test-files/TEMP_*.csv
 
 # auth
 /core/.auth

@@ -1,8 +1,9 @@
 import { BaseAsserter } from "@base/base-asserter";
 import { UserInfoTransactionsAdminPage } from "./user-info-transactions-admin-page";
 import { expect, Locator } from "@playwright/test";
+import { buildTransactionTypeAndValueNotFoundMessage } from "@core/helpers/asserter-helpers/text-asserters";
 import { step } from "decorators/step";
-import { waitUntil } from "@core/utils/utils";
+import { parseToFloat, waitUntil } from "@core/utils/utils";
 import { logger } from "@logger/logger";
 import { currencyToNumberPattern } from "@support/regex-patterns";
 
@@ -138,5 +139,24 @@ export class UserInfoTransactionsAdminPageAsserter extends BaseAsserter<UserInfo
 			this.gamdomPage.map.totalProfitCell,
 			expectedProfit,
 		);
+	}
+
+	@step("Verify transaction exists with given type and value")
+	public async hasTransactionWithTypeAndValue(
+		type: string,
+		valueUsd: number,
+	): Promise<void> {
+		const rows = this.gamdomPage.map.getTableRows(this.gamdomPage.map.logsTableBody);
+		const formattedValue = parseToFloat(valueUsd, 2);
+
+		const found = await rows
+			.filter({ hasText: type })
+			.filter({ hasText: formattedValue })
+			.count();
+
+		expect(
+			found,
+			buildTransactionTypeAndValueNotFoundMessage(type, formattedValue),
+		).toBeGreaterThan(0);
 	}
 }

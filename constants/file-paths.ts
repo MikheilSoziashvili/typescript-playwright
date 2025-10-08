@@ -1,10 +1,10 @@
 import { getFilePath } from "@core/utils/utils";
+import path from "path";
 import {
 	GOOGLE_AUTH_CREDENTIALS,
 	SUPER_ADMIN_CREDENTIALS,
 	USER_1_CREDENTIALS,
 } from "./credentials";
-import path from "path";
 
 export const storageStateDir: string = getFilePath(
 	".auth",
@@ -53,6 +53,11 @@ export const EV_REWARD_FREE_SPINS_FILE_MAP = {
 	),
 } as const;
 
-export const CSV_OUT_DIR = path.dirname(
+export const CSV_OUT_DIR_EV_REWARDS = path.dirname(
 	EV_REWARD_FREE_SPINS_FILE_MAP.thousand_pass,
+);
+
+export const BULK_TIP_FILE_PATH = path.resolve(
+	__dirname,
+	`../${TEST_FILES_DIR}/ENG-7780-bulk-tip-upload.csv`,
 );

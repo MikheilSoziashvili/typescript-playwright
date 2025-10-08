@@ -5,7 +5,7 @@ import { FileKey } from "@core/types/types";
 import {
 	buildRewardCsvVariants,
 	readFsAndDenomFromCsv,
-} from "@core/utils/generating-reward-csv-utils";
+} from "@core/utils/csv-utils/generating-reward-csv-utils";
 import {
 	formatLocalizedDate,
 	parseRelativeDateRelation,

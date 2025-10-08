@@ -62,4 +62,32 @@ export class BulkActionsAdminPage extends BasePage<BulkActionsAdminMap> {
 	public async clickProcessNotificationsButton(): Promise<void> {
 		await this.map.processNotificationsButton.click();
 	}
+
+	@step("Go to Tip tab")
+	public async goToTipTab(): Promise<void> {
+		await this.map.tipTab.click();
+	}
+
+	@step("Navigate and go to Tip tab")
+	public async navigateAndGoToTipTab(): Promise<void> {
+		await this.navigate();
+		await this.goToTipTab();
+	}
+
+	@step("Bulk tip file upload")
+	public async bulkTipFileUpload(filePath: string): Promise<void> {
+		await this.map.inputBulkTipFile.setInputFiles(filePath);
+	}
+
+	@step("Select tip reason")
+	public async selectTipReason(optionLabel: string): Promise<void> {
+		await this.map.tipReasonDropdown.click();
+		await this.map.tipReasonOption(optionLabel).click();
+	}
+
+	@step("Click Process Tips button")
+	public async clickProcessTipsButton(): Promise<void> {
+		this.acceptDialog();
+		await this.map.processTipsButton.click();
+	}
 }

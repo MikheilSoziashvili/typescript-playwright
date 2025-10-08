@@ -3,7 +3,7 @@ import { FileKey } from "@core/types/types";
 import {
 	computePayoutFromCsv,
 	parseUserIdsFromSuccessLogs,
-} from "@core/utils/generating-reward-csv-utils";
+} from "@core/utils/csv-utils/generating-reward-csv-utils";
 import { BasePageStep } from "@pages/base/base-page-step";
 import { Locator } from "@playwright/test";
 import { step } from "decorators/step";

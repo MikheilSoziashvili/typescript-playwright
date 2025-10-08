@@ -1,7 +1,7 @@
 import { BaseAsserter } from "@pages/base/base-asserter";
-import { BulkActionsAdminPage } from "./bulk-actions-admin-page";
-import { step } from "decorators/step";
 import { Locator } from "@playwright/test";
+import { step } from "decorators/step";
+import { BulkActionsAdminPage } from "./bulk-actions-admin-page";
 
 export class BulkActionsAdminAsserter extends BaseAsserter<BulkActionsAdminPage> {
 	public constructor(page: BulkActionsAdminPage) {
@@ -35,6 +35,20 @@ export class BulkActionsAdminAsserter extends BaseAsserter<BulkActionsAdminPage>
 			userIds,
 			this.gamdomPage.map.errorLogs,
 		);
+	}
+
+	@step("Verify that summary matches total amount and total users")
+	public async summaryIs(summary: { totalUsd: number; totalUsers: number }): Promise<void> {
+		await this.checkElementsContainText([
+			{
+				locator: this.gamdomPage.map.summaryTotalUsd,
+				expectedText: summary.totalUsd.toString(),
+			},
+			{
+				locator: this.gamdomPage.map.summaryTotalUsers,
+				expectedText: summary.totalUsers.toString(),
+			},
+		]);
 	}
 
 	@step("Verify that logs contain specified user IDs")

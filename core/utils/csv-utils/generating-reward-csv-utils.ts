@@ -1,12 +1,12 @@
 import {
-	CSV_OUT_DIR,
+	CSV_OUT_DIR_EV_REWARDS,
 	EV_REWARD_FREE_SPINS_FILE_MAP,
 } from "@constants/file-paths";
 import { FileKey } from "@core/types/types";
+import { rewardedUserIdPattern } from "@support/regex-patterns";
+import { parse } from "csv-parse/sync";
 import * as fs from "fs";
 import * as path from "path";
-import { parse } from "csv-parse/sync";
-import { rewardedUserIdPattern } from "@support/regex-patterns";
 
 /**
  * CSV column model used across EV Reward CSVs:
@@ -20,9 +20,9 @@ import { rewardedUserIdPattern } from "@support/regex-patterns";
  *   (userId, gameCode), so tier i starts at index BASE_AFTER_FIXED + (i-1) * COLS_PER_TIER.
  * 	 the CSV files will need to contain minimum 3 tiers
  */
-const BASE_AFTER_FIXED = 2;         // userId, gameCode
-const COLS_PER_TIER = 3;            // [wager_i, fs_i, denom_i]
-const FS_OFFSET_WITHIN_TIER = 1;    // wager_i + 1 => fs_i
+const BASE_AFTER_FIXED = 2; // userId, gameCode
+const COLS_PER_TIER = 3; // [wager_i, fs_i, denom_i]
+const FS_OFFSET_WITHIN_TIER = 1; // wager_i + 1 => fs_i
 const DENOM_OFFSET_WITHIN_TIER = 2; // wager_i + 2 => denom_i
 
 /**
@@ -39,7 +39,10 @@ const DENOM_OFFSET_WITHIN_TIER = 2; // wager_i + 2 => denom_i
  * @param tier - The reward tier number (1-based, from 1 to 5).
  * @returns An object containing the zero-based column indices: { fsIdx, denomIdx }.
  */
-export function getFsAndDenomIndices(tier: number): { fsIdx: number; denomIdx: number } {
+export function getFsAndDenomIndices(tier: number): {
+	fsIdx: number;
+	denomIdx: number;
+} {
 	const tierBase = BASE_AFTER_FIXED + (tier - 1) * COLS_PER_TIER;
 	return {
 		fsIdx: tierBase + FS_OFFSET_WITHIN_TIER,
@@ -102,11 +105,14 @@ export function buildRewardCsvVariants(spec: {
 	ids: string[];
 }): Record<FileKey, string> {
 	const { ids } = spec;
-	ensureCsvOutDirExists(CSV_OUT_DIR);
+	ensureCsvOutDirExists(CSV_OUT_DIR_EV_REWARDS);
 
-	const oneOut = path.join(CSV_OUT_DIR, "TEMP_users_1.csv");
-	const threeHundredOut = path.join(CSV_OUT_DIR, "TEMP_users_300.csv");
-	const thousandOut = path.join(CSV_OUT_DIR, "TEMP_users_1k.csv");
+	const oneOut = path.join(CSV_OUT_DIR_EV_REWARDS, "TEMP_users_1.csv");
+	const threeHundredOut = path.join(
+		CSV_OUT_DIR_EV_REWARDS,
+		"TEMP_users_300.csv",
+	);
+	const thousandOut = path.join(CSV_OUT_DIR_EV_REWARDS, "TEMP_users_1k.csv");
 
 	writeCsvReplacingUserIdsFromTemplate(
 		EV_REWARD_FREE_SPINS_FILE_MAP.one_pass,
@@ -196,14 +202,14 @@ export function parseUserIdsFromSuccessLogs(logs: string): string[] {
 
 /**
  * Read free spins (fs) and denomination (denom) values from a CSV file for a given tier.
- * 
+ *
  * The CSV format has fixed columns: userId (index 0) and gameCode (index 1),
  * followed by 5 reward tiers, each contributing exactly three columns:
  * [wager_i, fs_i, denom_i] for tier i ∈ {1..5}.
- * 
+ *
  * This function uses constants BASE_AFTER_FIXED and COLS_PER_TIER to calculate
  * the correct indices for fs and denom within the row.
- * 
+ *
  * @param csvPath - Path to the CSV file.
  * @param tier - The reward tier (1–5) determining which fs/denom columns to read.
  * @param rowIndex - The row index to read (defaults to 1, skipping the header).

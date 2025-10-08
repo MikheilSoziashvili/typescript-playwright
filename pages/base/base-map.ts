@@ -188,6 +188,10 @@ export class BaseMap {
 		);
 	}
 
+	public getTableRows(tableBody: Locator): Locator {
+		return tableBody.locator("tr");
+	}
+
 	public getMetaOgPropertyByName(ogProperty: OgProperties): Locator {
 		return this.page
 			.locator("head")
