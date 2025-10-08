@@ -41,4 +41,8 @@ export class FooterMap extends BaseMap {
 	public get liveSupportButton(): Locator {
 		return this.page.getByTestId("footerLinkLiveSupport");
 	}
+
+	public get affiliatesFooterButton(): Locator {
+		return this.page.getByTestId("footerLinkAffiliates");
+	}
 }

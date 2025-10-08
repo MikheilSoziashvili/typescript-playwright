@@ -224,6 +224,35 @@ export class GamdomApi extends BaseApi {
 		);
 	}
 
+	/**
+	 * Enable / disable multiple features with their respective states.
+	 * Validates all responses have OK status.
+	 *
+	 * Example:
+	 *   await client.setMultipleFeatureStates([
+	 *     { feature: Feature.AFFILIATES, states: ALL_USER_TYPES_DISABLED },
+	 *     { feature: Feature.AFFILIATES_INFO, states: ALL_USER_TYPES_DISABLED }
+	 *   ], { Cookie: superAdminCookie });
+	 */
+	public async setMultipleFeatureStates(
+		featureConfigs: {
+			feature: Feature;
+			states: Partial<Record<UserType, boolean>>;
+		}[],
+		_headers: Record<string, string> = {},
+	): Promise<void> {
+		const allResponses = await Promise.all(
+			featureConfigs.map(({ feature, states }) =>
+				this.setFeatureState(feature, states, _headers),
+			),
+		);
+
+		const flatResponses = allResponses.flat();
+		flatResponses.forEach((response) => {
+			expect(response.status()).toBe(HttpStatus.OK);
+		});
+	}
+
 	public async setProviderState(
 		id: number,
 		provider_name: string,

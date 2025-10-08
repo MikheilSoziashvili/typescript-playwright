@@ -17,6 +17,7 @@ import { step } from "decorators/step";
 import { HomePage } from "./home-page";
 import { CasinoGameUrl } from "@enums/casino-game";
 import * as Configuration from "configuration";
+import { Footer } from "@pages/components/footer/footer";
 
 export class HomePageAsserter extends BaseAsserter<HomePage> {
 	public fromCsv: boolean;
@@ -341,5 +342,32 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 				},
 			]);
 		}
+	}
+
+	@step("Verify redirect with simple retry mechanism")
+	public async verifyAffiliatesRedirectWithRetry(
+		footer: Footer,
+		expectedUrl: string,
+		maxRetries = 3,
+	): Promise<void> {
+		for (let attempt = 1; attempt <= maxRetries; attempt++) {
+			await footer.openAffiliatesPage();
+
+			try {
+				await this.waitForAndVerifyCurrentUrlIs(expectedUrl);
+				return;
+			} catch {
+				logger.info(
+					`Attempt ${attempt}: URL is ${this.gamdomPage.page.url()}, expected ${expectedUrl}. Retrying...`,
+				);
+
+				if (attempt < maxRetries) {
+					await this.gamdomPage.navigate();
+				}
+			}
+		}
+		throw new Error(
+			`Failed to redirect to ${expectedUrl} after ${maxRetries} attempts. Feature disabling may not have taken effect.`,
+		);
 	}
 }

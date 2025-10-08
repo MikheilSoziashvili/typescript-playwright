@@ -44,4 +44,9 @@ export class Footer extends BaseComponent<FooterMap> {
 		);
 		await this.map.liveSupportButton.click();
 	}
+
+	@step("Open affiliates page")
+	public async openAffiliatesPage(): Promise<void> {
+		await this.map.affiliatesFooterButton.click();
+	}
 }

@@ -24,23 +24,35 @@ import * as fs from "fs";
 import { KOTH_NAME_PREFIX } from "@constants/koth";
 import { DbServiceManager } from "services/db-pool-service/db-pool-service-manager";
 
-async function enableHiloFeature(
+async function enableCoreFeatures(
 	gamdomApi: GamdomApi,
 	cookie: string,
 ): Promise<void> {
-	logger.info("Enabling HILO...");
+	logger.info("Enabling core features...");
 
-	const featureResponse = await gamdomApi.setFeatureState(
-		Feature.HILO,
-		ALL_USER_TYPES_ENABLED,
+	await gamdomApi.setMultipleFeatureStates(
+		[
+			{ feature: Feature.HILO, states: ALL_USER_TYPES_ENABLED },
+			{
+				feature: Feature.EV_BASED_REWARDS,
+				states: ALL_USER_TYPES_ENABLED,
+			},
+			{ feature: Feature.VAULT, states: ALL_USER_TYPES_ENABLED },
+			{ feature: Feature.PLINKO, states: ALL_USER_TYPES_ENABLED },
+			{ feature: Feature.MINES, states: ALL_USER_TYPES_ENABLED },
+			{ feature: Feature.KENO, states: ALL_USER_TYPES_ENABLED },
+			{ feature: Feature.PROMOTIONS, states: ALL_USER_TYPES_ENABLED },
+			{ feature: Feature.RECENT_WINS, states: ALL_USER_TYPES_ENABLED },
+			{
+				feature: Feature.AFFILIATES_INFO,
+				states: ALL_USER_TYPES_ENABLED,
+			},
+			{ feature: Feature.PLINKO_BANNER, states: ALL_USER_TYPES_ENABLED },
+		],
 		{ Cookie: cookie },
 	);
 
-	featureResponse.forEach((response) => {
-		expect(response.status()).toBe(HttpStatus.OK);
-	});
-
-	logger.info("HILO has been successfully enabled.");
+	logger.info("Core features have been successfully enabled.");
 }
 
 async function enableNewDesignV4Feature(
@@ -62,138 +74,6 @@ async function enableNewDesignV4Feature(
 	logger.info("New Design V4 has been successfully enabled.");
 }
 
-async function enablePlinkoFeature(
-	gamdomApi: GamdomApi,
-	cookie: string,
-): Promise<void> {
-	const featureResponse = await gamdomApi.setFeatureState(
-		Feature.PLINKO,
-		ALL_USER_TYPES_ENABLED,
-		{ Cookie: cookie },
-	);
-
-	featureResponse.forEach((response) => {
-		expect(response.status()).toBe(HttpStatus.OK);
-	});
-}
-
-async function enableAffiliatesInfoFeature(
-	gamdomApi: GamdomApi,
-	cookie: string,
-): Promise<void> {
-	const featureResponse = await gamdomApi.setFeatureState(
-		Feature.AFFILIATES_INFO,
-		ALL_USER_TYPES_ENABLED,
-		{ Cookie: cookie },
-	);
-
-	featureResponse.forEach((response) => {
-		expect(response.status()).toBe(HttpStatus.OK);
-	});
-}
-
-async function enableMinesFeature(
-	gamdomApi: GamdomApi,
-	cookie: string,
-): Promise<void> {
-	const featureResponse = await gamdomApi.setFeatureState(
-		Feature.MINES,
-		ALL_USER_TYPES_ENABLED,
-		{ Cookie: cookie },
-	);
-
-	featureResponse.forEach((response) => {
-		expect(response.status()).toBe(HttpStatus.OK);
-	});
-}
-
-async function enableKenoFeature(
-	gamdomApi: GamdomApi,
-	cookie: string,
-): Promise<void> {
-	const featureResponse = await gamdomApi.setFeatureState(
-		Feature.KENO,
-		ALL_USER_TYPES_ENABLED,
-		{ Cookie: cookie },
-	);
-
-	featureResponse.forEach((response) => {
-		expect(response.status()).toBe(HttpStatus.OK);
-	});
-}
-
-async function enableVaultFeature(
-	gamdomApi: GamdomApi,
-	cookie: string,
-): Promise<void> {
-	const featureResponse = await gamdomApi.setFeatureState(
-		Feature.VAULT,
-		ALL_USER_TYPES_ENABLED,
-		{ Cookie: cookie },
-	);
-
-	featureResponse.forEach((response) => {
-		expect(response.status()).toBe(HttpStatus.OK);
-	});
-}
-
-async function enableEvBasedRewards(
-	gamdomApi: GamdomApi,
-	cookie: string,
-): Promise<void> {
-	logger.info("Enabling Rewards...");
-
-	const featureResponse = await gamdomApi.setFeatureState(
-		Feature.EV_BASED_REWARDS,
-		ALL_USER_TYPES_ENABLED,
-		{ Cookie: cookie },
-	);
-
-	featureResponse.forEach((response) => {
-		expect(response.status()).toBe(HttpStatus.OK);
-	});
-
-	logger.info("Rewards have been successfully enabled.");
-}
-
-async function enableRecentWins(
-	gamdomApi: GamdomApi,
-	cookie: string,
-): Promise<void> {
-	logger.info("Enabling Recent Wins...");
-
-	const featureResponse = await gamdomApi.setFeatureState(
-		Feature.RECENT_WINS,
-		ALL_USER_TYPES_ENABLED,
-		{ Cookie: cookie },
-	);
-
-	featureResponse.forEach((response) => {
-		expect(response.status()).toBe(HttpStatus.OK);
-	});
-
-	logger.info("Recent Wins have been successfully enabled.");
-}
-
-async function enablePlinkoBanner(
-	gamdomApi: GamdomApi,
-	cookie: string,
-): Promise<void> {
-	logger.info("Enabling Plinko banner...");
-
-	const featureResponse = await gamdomApi.setFeatureState(
-		Feature.PLINKO_BANNER,
-		ALL_USER_TYPES_ENABLED,
-		{ Cookie: cookie },
-	);
-
-	featureResponse.forEach((response) => {
-		expect(response.status()).toBe(HttpStatus.OK);
-	});
-
-	logger.info("Plinko banner has been successfully enabled.");
-}
-
 async function createKothEvent(
 	gamdomApi: GamdomApi,
 	event_name: string,
@@ -211,22 +91,6 @@ async function createKothEvent(
 
 	expect(createKothEventResponse.status()).toBe(HttpStatus.OK);
 	logger.info("New KOTH Event created");
-}
-
-async function enablePromotionsFeature(
-	gamdomApi: GamdomApi,
-	cookie: string,
-): Promise<void> {
-	const featureResponse = await gamdomApi.setFeatureState(
-		Feature.PROMOTIONS,
-		ALL_USER_TYPES_ENABLED,
-		{ Cookie: cookie },
-	);
-
-	featureResponse.forEach((response) => {
-		expect(response.status()).toBe(HttpStatus.OK);
-	});
-	logger.info("Promotions have been successfully enabled.");
 }
 
 async function updateWithdrawLimits(): Promise<void> {
@@ -424,17 +288,8 @@ async function globalSetup(): Promise<void> {
 	);
 	await updateWithdrawLimits();
 	await configureRain();
-	await enableHiloFeature(gamdomApi, cookie);
-	await enableEvBasedRewards(gamdomApi, cookie);
-	await enableVaultFeature(gamdomApi, cookie);
-	await enablePlinkoFeature(gamdomApi, cookie);
-	await enableMinesFeature(gamdomApi, cookie);
-	await enableKenoFeature(gamdomApi, cookie);
-	await enablePromotionsFeature(gamdomApi, cookie);
+	await enableCoreFeatures(gamdomApi, cookie);
 	await ensureKothEventsExist(gamdomApi, cookie);
-	await enableRecentWins(gamdomApi, cookie);
-	await enableAffiliatesInfoFeature(gamdomApi, cookie);
-	await enablePlinkoBanner(gamdomApi, cookie);
 
 	if (Configuration.enableNewDesignV4Feature) {
 		await enableNewDesignV4Feature(gamdomApi, cookie);
