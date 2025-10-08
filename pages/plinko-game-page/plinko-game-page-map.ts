@@ -147,7 +147,7 @@ export class PlinkoGamePageMap extends BaseMap {
 
 	public get inGameChipsHistoryButton(): Locator {
 		return this.inGameHistoryContainer.locator(
-			"[class*='Chipstyled__Chip']",
+			"[class*='Historystyled__HistoryChip']",
 		);
 	}
 
@@ -157,20 +157,24 @@ export class PlinkoGamePageMap extends BaseMap {
 		});
 	}
 
+	public get quickButtonsContainer(): Locator {
+		return this.page.locator("div[class*='Formstyled__Options']");
+	}
+
 	public get minButton(): Locator {
-		return this.getButtonByText("Min");
+		return this.quickButtonsContainer.locator("button", { hasText: "Min" });
 	}
 
 	public get halfButton(): Locator {
-		return this.getButtonByText("1/2");
+		return this.quickButtonsContainer.locator("button", { hasText: "1/2" });
 	}
 
 	public get maxButton(): Locator {
-		return this.getButtonByText("Max");
+		return this.quickButtonsContainer.locator("button", { hasText: "Max" });
 	}
 
 	public get doubleButton(): Locator {
-		return this.getButtonByText("x2");
+		return this.quickButtonsContainer.locator("button", { hasText: "x2" });
 	}
 
 	public get yourBetValue(): Locator {

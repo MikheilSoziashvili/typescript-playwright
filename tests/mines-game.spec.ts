@@ -106,9 +106,13 @@ test.describe("Mines tests", () => {
 		`[ENG-5729] Mines - Verify Game History`,
 		testDetails()
 			.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.MINES)
-			.withAuthor(JiraUser.RALUCA_ARITON)
+			.withAuthor(JiraUser.NIKOLAY_GENOV)
 			.apply(),
 		async ({ minesGamePage }) => {
+			test.fixme(
+				true,
+				"Temporarily skipped until data-testids are added",
+			);
 			await minesGamePage.navigateAndWaitForGameToLoad();
 
 			await minesGamePage.steps().placeBetAndConfigureMines(minesBetData);

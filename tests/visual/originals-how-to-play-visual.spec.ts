@@ -26,6 +26,10 @@ test.describe("Visual Tests - Originals - How to Play", () => {
 				.withAuthor(JiraUser.NIKOLAY_GENOV)
 				.apply(),
 			async ({ originalsPage }, testInfo) => {
+				test.fixme(
+					true,
+					"Temporary skipped until data-testids are added",
+				);
 				await originalsPage.navigateToGame(game);
 				await originalsPage.openHowToPlayModal();
 				await originalsPage

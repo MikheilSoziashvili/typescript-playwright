@@ -196,13 +196,13 @@ export class BaseMap {
 
 	public getSliderThumb(container?: Locator): Locator {
 		return (container || this.page).locator(
-			`span[${Attributes.ROLE}="slider"][class*="RangeSliderstyled__Thumb"]`,
+			`span[${Attributes.ROLE}="slider"][aria-valuemin][aria-valuemax]`,
 		);
 	}
 
 	public getSliderTrack(container?: Locator): Locator {
 		return (container || this.page).locator(
-			'span[class*="RangeSliderstyled__Track"]',
+			'span[data-orientation="horizontal"][class*="Formstyled__RangeInput"]',
 		);
 	}
 
