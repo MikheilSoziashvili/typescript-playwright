@@ -1,51 +1,24 @@
 import { testDetails } from "@core/helpers/test-details-helper";
 import { setAuthenticationCookies } from "@core/utils/utils";
-import { RegisterTestData } from "@dtos/test-data";
-import { UserClasses } from "@enums/db/user-classes";
-import { UserTags } from "@enums/db/user-tags";
 import { JiraUser } from "@enums/jira/jira-users";
-import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 
 test.describe("User info - notes", () => {
-	const userData = new RegisterTestData();
+	test.beforeEach(async ({ page, gamdomApiDbFacade, userInfoAdminPage }) => {
+		const { cookie } =
+			await gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
+		await setAuthenticationCookies(page, cookie);
 
-	test.use(
-		storageStateNewUserDB({
-			username: userData.username,
-			password: userData.password,
-			email: userData.email,
-		}),
-	);
+		const { user } = await gamdomApiDbFacade.createSingleUserDbAndAuth();
+
+		await userInfoAdminPage.navigate();
+		await userInfoAdminPage.steps().showUserDetails(user.username);
+	});
 
 	test(
-		"[ENG-6271] User info - notes",
+		"[ENG-6271] [UserInfo] Check that a Pinned note is still pinned after deleting a note and refreshing the page",
 		testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
-		async ({
-			gamdomApi,
-			page,
-			userInfoAdminPage,
-			infoAdminPage,
-			gamdomDb,
-		}) => {
-			const superAdminUserData = new RegisterTestData();
-			await gamdomDb.createNewUser({
-				username: superAdminUserData.username,
-				password: superAdminUserData.password,
-				email: superAdminUserData.email,
-				tags: UserTags.SuperAdmin,
-				userClass: UserClasses.Admin,
-			});
-			const superAdminCookie =
-				await gamdomApi.authenticateWithExistingUser(
-					superAdminUserData.username,
-					superAdminUserData.password,
-				);
-			await setAuthenticationCookies(page, superAdminCookie);
-
-			await userInfoAdminPage.navigate();
-			await userInfoAdminPage.steps().showUserDetails(userData.username);
-
+		async ({ infoAdminPage }) => {
 			const [, noteToPin, noteToSetInactive] = await infoAdminPage
 				.steps()
 				.createNote(3);
@@ -60,6 +33,15 @@ test.describe("User info - notes", () => {
 			await infoAdminPage.refresh();
 
 			await infoAdminPage.assertThat().noteIsPinned(noteToPin);
+		},
+	);
+
+	test(
+		"[ENG-3025] [Notes] Adding multiple notes to a user",
+		testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+		async ({ infoAdminPage }) => {
+			await infoAdminPage.steps().createNote(3);
+			await infoAdminPage.assertThat().notesSortedByCreationTime();
 		},
 	);
 });

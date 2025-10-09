@@ -10,6 +10,7 @@ import { CountryCodes } from "@enums/country-codes";
 import { quotesRemovalPattern } from "@support/regex-patterns";
 import { BanTypeOptions } from "@enums/admin/ban-type-options";
 import { BanCategories } from "@enums/admin/ban-categories";
+import { getItemsInnerText } from "@core/utils/utils";
 
 export class UserInfoInfoAdminPageAsserter extends BaseAsserter<UserInfoInfoAdminPage> {
 	public constructor(page: UserInfoInfoAdminPage) {
@@ -206,5 +207,19 @@ export class UserInfoInfoAdminPageAsserter extends BaseAsserter<UserInfoInfoAdmi
 		const cleanedText = cellText?.replace(quotesRemovalPattern, "") || "";
 
 		await this.checkStringElementsAreEqual([countryCode], [cleanedText]);
+	}
+
+	@step("Notes are sorted by creation time (newest first)")
+	public async notesSortedByCreationTime(): Promise<void> {
+		const texts = await getItemsInnerText(
+			this.gamdomPage.map.noteCreatedCells,
+		);
+		const dates = texts.map((t) => new Date(t.replace(",", "")));
+
+		for (let i = 0; i < dates.length - 1; i++) {
+			expect(dates[i].getTime()).toBeGreaterThanOrEqual(
+				dates[i + 1].getTime(),
+			);
+		}
 	}
 }

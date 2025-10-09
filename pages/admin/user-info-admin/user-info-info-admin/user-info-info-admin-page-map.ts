@@ -223,4 +223,8 @@ export class UserInfoInfoAdminPageMap extends BaseMap {
 	public get lastCountryTableCell(): Locator {
 		return this.getTableCellByHeaderText("last_country");
 	}
+
+	public get noteCreatedCells(): Locator {
+		return this.notesTable.getByTestId(/^adminNoteCreated-/);
+	}
 }

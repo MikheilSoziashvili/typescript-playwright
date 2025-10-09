@@ -1580,3 +1580,14 @@ export function getSessionIdFromCookie(cookieString: string): string {
 	}
 	return match[1];
 }
+
+export async function getItemsInnerText(locator: Locator): Promise<string[]> {
+	const count = await locator.count();
+	const texts: string[] = [];
+
+	for (let i = 0; i < count; i++) {
+		texts.push((await locator.nth(i).innerText()).trim());
+	}
+
+	return texts;
+}

@@ -136,7 +136,9 @@ export class UserInfoInfoAdminPageSteps extends BasePageStep<UserInfoInfoAdminPa
 		for (let i = 0; i < count; i++) {
 			const randomNoteText = generateRandomString({ length: 10 });
 			await this.gamdomPage.map.noteInput.fill(randomNoteText);
-			await this.gamdomPage.map.saveNoteButton.click();
+			await this.gamdomPage.map.saveNoteButton.click({
+				delay: Delay.EXTRA_SHORT,
+			});
 			await this.gamdomPage.assertThat().noteIsCreated(randomNoteText);
 			createdNotes.push(randomNoteText);
 		}
