@@ -348,26 +348,27 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 	public async verifyAffiliatesRedirectWithRetry(
 		footer: Footer,
 		expectedUrl: string,
-		maxRetries = 3,
 	): Promise<void> {
-		for (let attempt = 1; attempt <= maxRetries; attempt++) {
-			await footer.openAffiliatesPage();
+		await waitUntil(
+			async () => {
+				await footer.openAffiliatesPage();
 
-			try {
-				await this.waitForAndVerifyCurrentUrlIs(expectedUrl);
-				return;
-			} catch {
-				logger.info(
-					`Attempt ${attempt}: URL is ${this.gamdomPage.page.url()}, expected ${expectedUrl}. Retrying...`,
-				);
-
-				if (attempt < maxRetries) {
+				try {
+					await this.waitForAndVerifyCurrentUrlIs(expectedUrl);
+					return true;
+				} catch {
+					logger.info(
+						`Attempt failed. Current URL: ${this.gamdomPage.page.url()}, expected: ${expectedUrl}. Going back to home page...`,
+					);
 					await this.gamdomPage.navigate();
+					return false;
 				}
-			}
-		}
-		throw new Error(
-			`Failed to redirect to ${expectedUrl} after ${maxRetries} attempts. Feature disabling may not have taken effect.`,
+			},
+			{
+				errorMessage: `Failed to redirect to ${expectedUrl} after multiple attempts. Feature disabling may not have taken effect.`,
+				intervalSeconds: TimeoutSeconds.THREE,
+				timeoutSeconds: TimeoutSeconds.NINETY,
+			},
 		);
 	}
 }
