@@ -30,7 +30,7 @@ async function enableCoreFeatures(
 ): Promise<void> {
 	logger.info("Enabling core features...");
 
-	await gamdomApi.setMultipleFeatureStates(
+	await gamdomApi.setAndVerifyFeatureStates(
 		[
 			{ feature: Feature.HILO, states: ALL_USER_TYPES_ENABLED },
 			{
@@ -45,6 +45,10 @@ async function enableCoreFeatures(
 			{ feature: Feature.RECENT_WINS, states: ALL_USER_TYPES_ENABLED },
 			{
 				feature: Feature.AFFILIATES_INFO,
+				states: ALL_USER_TYPES_ENABLED,
+			},
+			{
+				feature: Feature.AFFILIATES,
 				states: ALL_USER_TYPES_ENABLED,
 			},
 			{ feature: Feature.PLINKO_BANNER, states: ALL_USER_TYPES_ENABLED },

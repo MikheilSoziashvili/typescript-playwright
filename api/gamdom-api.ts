@@ -1,4 +1,4 @@
-import { formatDate, getCookieHeader } from "@core/utils/utils";
+import { formatDate, getCookieHeader, waitUntil } from "@core/utils/utils";
 import { EnableRainRequest } from "@dtos/requests/enable-rain-request";
 import { CreateKothEventRequest } from "@dtos/requests/gamdom-api/create-koth-event-request";
 import {
@@ -8,10 +8,12 @@ import {
 import { LoginRequest } from "@dtos/requests/gamdom-api/login-request";
 import { RegisterRequest } from "@dtos/requests/gamdom-api/register-request";
 import { SetFeatureStateRequest } from "@dtos/requests/gamdom-api/set-feature-state-request";
+import { GetFeaturesStateRequest } from "@dtos/requests/gamdom-api/get-features-state-request";
 import { SetProviderStateRequest } from "@dtos/requests/gamdom-api/set-provider-state-request";
 import { TipUserRequest } from "@dtos/requests/gamdom-api/tip-user-request";
 import { BasicInfoResponse } from "@dtos/responses/gamdom-api/basic-info-response";
 import { GetProvidersResponse } from "@dtos/responses/gamdom-api/get-providers-response";
+import { GetFeaturesStateResponse } from "@dtos/responses/gamdom-api/get-features-state-response";
 import { RegisterTestData } from "@dtos/test-data";
 import { ApiEndpoints } from "@enums/api-endpoints";
 import { Feature } from "@enums/feature";
@@ -31,6 +33,7 @@ import { UserType } from "@enums/user-types";
 import { GetAllRedirectsResponse } from "@dtos/responses/gamdom-api/get-all-redirects-response";
 import { CreateRedirectRequest } from "@dtos/requests/gamdom-api/create-redirect-request";
 import { BulkRewardRequest } from "@dtos/requests/gamdom-api/bulk-reward-request";
+import { TimeoutSeconds } from "@enums/timeout-seconds";
 
 export class GamdomApi extends BaseApi {
 	private gamdomDb: GamdomDb;
@@ -241,16 +244,137 @@ export class GamdomApi extends BaseApi {
 		}[],
 		_headers: Record<string, string> = {},
 	): Promise<void> {
-		const allResponses = await Promise.all(
-			featureConfigs.map(({ feature, states }) =>
-				this.setFeatureState(feature, states, _headers),
-			),
+		for (const { feature, states } of featureConfigs) {
+			const responses = await this.setFeatureState(
+				feature,
+				states,
+				_headers,
+			);
+
+			for (const response of responses) {
+				expect(response.status()).toBe(HttpStatus.OK);
+			}
+		}
+	}
+
+	/**
+	 * Get features state for a specific user type.
+	 *
+	 * @param userType - The user type to get features for
+	 * @param _headers - Optional headers for the API request
+	 * @returns Promise<string[]> - Array of enabled feature names
+	 */
+	public async getFeaturesState(
+		userType: UserType,
+		_headers: Record<string, string> = {},
+	): Promise<GetFeaturesStateResponse> {
+		const payload: GetFeaturesStateRequest = {
+			userType: userType,
+		};
+
+		const parameters = this.buildParameters(
+			ApiEndpoints.GET_FEATURES_STATE,
+			payload,
+			_headers,
 		);
 
-		const flatResponses = allResponses.flat();
-		flatResponses.forEach((response) => {
-			expect(response.status()).toBe(HttpStatus.OK);
-		});
+		const response = await this.post(parameters);
+
+		if (response.status() !== HttpStatus.OK) {
+			logger.error(
+				`getFeaturesState failed with status ${response.status()}`,
+			);
+			logger.error(`Request payload: ${JSON.stringify(payload)}`);
+			try {
+				const responseText = await response.text();
+				logger.error(`Response: ${responseText}`);
+			} catch (e) {
+				logger.error(`Could not read response text: ${String(e)}`);
+			}
+		}
+
+		expect(response.status()).toBe(HttpStatus.OK);
+
+		return (await response.json()) as GetFeaturesStateResponse;
+	}
+
+	/**
+	 * Set multiple features and verify they are properly enabled.
+	 * Automatically retries if features are missing.
+	 *
+	 * @param featureConfigs - The features to set and verify
+	 * @param _headers - Optional headers for the API request
+	 * @param maxRetries - Maximum number of retries (default: 3)
+	 */
+	public async setAndVerifyFeatureStates(
+		featureConfigs: {
+			feature: Feature;
+			states: Partial<Record<UserType, boolean>>;
+		}[],
+		_headers: Record<string, string> = {},
+	): Promise<void> {
+		await waitUntil(
+			async () => {
+				logger.info("Setting features and verifying...");
+
+				await this.setMultipleFeatureStates(featureConfigs, _headers);
+
+				const allValid = await this.verifyFeatures(
+					featureConfigs,
+					_headers,
+				);
+
+				if (allValid) {
+					logger.info(
+						"All features successfully enabled and verified",
+					);
+					return true;
+				}
+
+				logger.warn("Some features missing, retrying...");
+				return false;
+			},
+			{
+				errorMessage: "Failed to enable all features",
+				intervalSeconds: TimeoutSeconds.TWO,
+				timeoutSeconds: TimeoutSeconds.THIRTY,
+			},
+		);
+	}
+
+	/**
+	 * Verify that expected features are enabled for their user types.
+	 *
+	 * @param featureConfigs - The features to verify
+	 * @param _headers - Optional headers for the API request
+	 * @returns Promise<boolean> - True if all features are enabled
+	 */
+	private async verifyFeatures(
+		featureConfigs: {
+			feature: Feature;
+			states: Partial<Record<UserType, boolean>>;
+		}[],
+		_headers: Record<string, string> = {},
+	): Promise<boolean> {
+		for (const { feature, states } of featureConfigs) {
+			for (const [userType, enabled] of Object.entries(states)) {
+				if (enabled) {
+					const enabledFeatures = await this.getFeaturesState(
+						userType as UserType,
+						_headers,
+					);
+
+					if (!enabledFeatures.includes(feature)) {
+						logger.warn(
+							`Feature ${feature} not enabled for ${userType}`,
+						);
+						return false;
+					}
+				}
+			}
+		}
+
+		return true;
 	}
 
 	public async setProviderState(

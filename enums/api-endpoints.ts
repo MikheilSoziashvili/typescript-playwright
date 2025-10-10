@@ -4,6 +4,7 @@ export enum ApiEndpoints {
 	BASIC_INFO = "/client-api/profile/basic-info",
 	TIP_USER = "/stream/chat/rpc/tipUser",
 	SET_FEATURE_STATE = "/client-api/admin/feature/setFeatureState",
+	GET_FEATURES_STATE = "/client-api/admin/feature/getFeaturesState",
 	SET_PROVIDER_STATE = "/client-api/admin/providers/saveExtProvidersList",
 	GET_PROVIDERS = "/client-api/admin/providers/getSlotsProviders",
 	EDIT_USER_INFO = "/client-api/admin/user/editUserInfo",
