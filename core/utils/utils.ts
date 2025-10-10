@@ -53,6 +53,7 @@ import { isFileNotFoundError } from "./error-utils";
 import { ChatMessageOptions } from "@pages/components/chat/chat-map";
 import { RelativeDateRelation } from "@enums/relative-date-relation";
 import { WICKED_GAMES_AUTH } from "@constants/auth-casino-game-providers";
+import { jiraUserMap } from "@core/reporters/jira-failed-tests-reporter/user-map";
 import { PRODUCTION_BASE_URL } from "@constants/page-urls";
 
 export function encodeCredentials(username: string, password: string): string {
@@ -1582,6 +1583,9 @@ export function getSessionIdFromCookie(cookieString: string): string {
 	return match[1];
 }
 
+export function getJiraAccountIdByUsername(email: string): string | undefined {
+	return jiraUserMap[email.toLowerCase()];
+}
 export async function getItemsInnerText(locator: Locator): Promise<string[]> {
 	const count = await locator.count();
 	const texts: string[] = [];

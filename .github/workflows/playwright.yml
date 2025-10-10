@@ -451,6 +451,15 @@ jobs:
                   PULL_REQUEST_URL: ${{ github.event_name == 'schedule' && 'No PR created' || github.event.pull_request.html_url || 'No PR created' }}
               run: npx playwright-slack-report --config="${GITHUB_WORKSPACE}/core/reporters/slack-reporter-cli/slack-message-config-cli.json" --json-results="${GITHUB_WORKSPACE}/e2e-results.json"
 
+            - name: Report failed tests to JIRA
+              if: always()
+              run: |
+                  npx ts-node -r tsconfig-paths/register core/reporters/jira-failed-tests-reporter/jira-failed-tests-reporter.ts
+              env:
+                  REPORT_URL: ${{ env.REPORT_URL }}
+                  JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
+                  JIRA_USERNAME: ${{ secrets.JIRA_USERNAME }}
+
             - name: Create PR comment with report url
               if: ${{ always() && github.event_name == 'pull_request' }}
               run: |

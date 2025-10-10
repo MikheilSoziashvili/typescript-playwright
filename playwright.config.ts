@@ -1,3 +1,8 @@
+import {
+	REPORT_FORMATS,
+	HTML_REPORTER_OPTIONS,
+	REPORTERS,
+} from "@constants/reporter-constants";
 import { slackReporterConfig } from "@core/reporters/slack-reporter/slack-reporter";
 import { ReporterDescription, defineConfig } from "@playwright/test";
 import * as Configuration from "configuration";
@@ -7,27 +12,48 @@ import * as Configuration from "configuration";
 
 /** See https://playwright.dev/docs/test-configuration. */
 
-// When tests are aligned with CI/CD workflow, a more comprehensive report will be selected instead of HTML
+/**
+ * Configures and returns the list of Playwright reporters based on environment and configuration.
+ * Reporters are selected dynamically based on CI environment and feature flags.
+ *
+ * @returns Array of reporter configurations for Playwright
+ */
 function getReporter(): ReporterDescription[] {
 	const reporters: ReporterDescription[] = [
-		["list"],
-		["html", { open: "never" }],
+		[REPORT_FORMATS.LIST],
+		[REPORT_FORMATS.HTML, HTML_REPORTER_OPTIONS],
 	];
 
+	// Enable blob reporter in CI for report merging
 	if (process.env.CI) {
-		reporters.unshift(["blob"]);
+		reporters.unshift([REPORT_FORMATS.BLOB]);
 	}
 
+	// Enable JIRA/XRay test execution reporter
 	if (Configuration.createExecution) {
-		//Enable Jira Custom Reporter
 		reporters.push(
-			["junit", { outputFile: Configuration.reportName }],
-			["./core/reporters/jira-reporter/jira-reporter.ts"], // Custom reporter for XRay/JIRA integration);
+			[REPORT_FORMATS.JUNIT, { outputFile: Configuration.reportName }],
+			[REPORTERS.JIRA],
 		);
 	}
 
+	// Enable local JIRA failed tests reporter for debugging
+	// This is intentionally controlled by a configuration flag (not an environment variable)
+	// to avoid accidental activation in CI/CD.
+	// To test JIRA reporting locally, set `enableLocalJiraFailedTestsReporter` to true in your configuration.
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	if (Configuration.enableLocalJiraFailedTestsReporter) {
+		reporters.push(
+			[
+				REPORT_FORMATS.JSON,
+				{ outputFile: Configuration.jiraFailedTestsReportName },
+			],
+			[REPORTERS.LOCAL_JIRA_FAILED],
+		);
+	}
+
+	// Enable Slack reporter
 	if (Configuration.slackReporter) {
-		//Enable Slack Reporter
 		reporters.push(slackReporterConfig(Configuration.slack));
 	}
 

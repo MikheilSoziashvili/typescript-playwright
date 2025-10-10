@@ -46,3 +46,15 @@ export const rewardedUserIdPattern = /Successfully rewarded user\s*#(\d+)/g;
 export const wickedGamesHostPattern = /tequity\.staging\.wicked\.games$/i;
 export const wickedGamesAuthPathPattern = /\/authenticate(?:\?.*)?$/i;
 export const sessionIdPattern = /\.([a-z0-9]{8})-/i;
+/* eslint-disable no-control-regex */
+// Added regex to avoid external library dependency
+export const ansiEscapePattern = /\x1b\[[0-9;]*m/g;
+export const newlinePattern = /\n/g;
+export const carriageReturnPattern = /\r/g;
+export const multipleSpacesPattern = /\s+/g;
+export const nonPrintableCharsPattern = /[^\x20-\x7E]/g;
+export const backslashPattern = /\\/g;
+export const doubleQuotePattern = /"/g;
+export const windowsLineEndingPattern = /\r\n/g;
+export const trailingHashPattern = /#$/;
+export const testTimeoutPattern = /Test timeout of (\d+)ms exceeded/;

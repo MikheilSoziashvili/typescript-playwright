@@ -23,9 +23,14 @@ export const environment_url = process.env.CI
 export const logLevel = isCI ? LogLevel.WARN : LogLevel.INFO;
 export const createExecution: boolean =
 	isScheduledRun || (isCI && shouldCreateExecution);
+export const enableLocalJiraFailedTestsReporter = false;
 // Disable here to keep the legacy slack reporter implementation
 export const slackReporter: boolean = process.env.CI ? false : false;
 export const reportName: string = getFilePath("results.xml", "./");
+export const jiraFailedTestsReportName: string = getFilePath(
+	"e2e-results.json",
+	"./",
+);
 export const keystore: string = getFilePath("keystore.json", "./");
 
 export const slack: Record<string, string | string[]> = {
