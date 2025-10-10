@@ -9,4 +9,10 @@ export const predefinedRandom = {
 			prefix: "chat_pin_test_",
 		}),
 	},
+	promoCodes: {
+		campaignName: generateRandomString({ prefix: "name_value_" }),
+		campaignCode: generateRandomString({
+			prefix: "code_value_",
+		}),
+	},
 };

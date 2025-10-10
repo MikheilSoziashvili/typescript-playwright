@@ -37,11 +37,25 @@ export class PromoCampaignsAdminPage extends BasePage<PromoCampaignsAdminMap> {
 
 	@step("Search for a promo code")
 	public async searchPromoCode(): Promise<void> {
-		await this.map.searchButton.click()
+		await this.map.searchButton.click();
 	}
 
 	@step("Clear search input field")
 	public async clearSearchInputField(): Promise<void> {
 		await this.map.clearButton.click();
+	}
+
+	@step("Click copy code button by the campaign name")
+	public async clickCopyCodeButtonByName(
+		campaignName: string,
+	): Promise<void> {
+		await this.map.copyCodeButtonInRow(campaignName).click();
+	}
+
+	@step("Click copy link button by the campaign name")
+	public async clickCopyLinkButtonByName(
+		campaignName: string,
+	): Promise<void> {
+		await this.map.copyLinkButtonInRow(campaignName).click();
 	}
 }

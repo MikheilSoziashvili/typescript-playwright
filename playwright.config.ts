@@ -84,6 +84,7 @@ export default defineConfig({
 			size: { width: 1920, height: 1080 },
 		},
 		screenshot: "only-on-failure",
+		permissions: ["clipboard-read"],
 	},
 
 	/* Configure projects for major browsers */

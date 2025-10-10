@@ -123,4 +123,24 @@ export class PromoCampaignsAdminMap extends BaseMap {
 			PromoCampaignStatusActions.PAUSE,
 		);
 	}
+
+	public copyActionsContainerByName(campaignName: string): Locator {
+		return this.tableRowByCampaignName(campaignName).locator(
+			'div[class*="PromoCampaigns-styled__CopyActionsContainer"]',
+		);
+	}
+
+	private getCopyActionButton(campaignName: string, index: number): Locator {
+		return this.copyActionsContainerByName(campaignName)
+			.locator('div[class*="StyledIcon"]')
+			.nth(index);
+	}
+
+	public copyCodeButtonInRow(campaignName: string): Locator {
+		return this.getCopyActionButton(campaignName, 0);
+	}
+
+	public copyLinkButtonInRow(campaignName: string): Locator {
+		return this.getCopyActionButton(campaignName, 1);
+	}
 }

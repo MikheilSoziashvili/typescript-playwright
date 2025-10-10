@@ -38,4 +38,5 @@ export enum ToastSubTitle {
 	LEVEL_ONE_VERIFICATION_SUBMITTED = "LEVEL1\n data submitted successfully",
 	SESSION_ENDED = "Session ended successfully",
 	TIPS_PROCESSED_SUCCESSFULLY = "Tips processed successfully! Please check the logs below.",
+	COPIED_SHARABLE_LINK = "Copied sharable link",
 }

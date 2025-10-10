@@ -53,6 +53,7 @@ import { isFileNotFoundError } from "./error-utils";
 import { ChatMessageOptions } from "@pages/components/chat/chat-map";
 import { RelativeDateRelation } from "@enums/relative-date-relation";
 import { WICKED_GAMES_AUTH } from "@constants/auth-casino-game-providers";
+import { PRODUCTION_BASE_URL } from "@constants/page-urls";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;
@@ -1590,4 +1591,14 @@ export async function getItemsInnerText(locator: Locator): Promise<string[]> {
 	}
 
 	return texts;
+}
+
+export function replaceProdUrl(
+	copiedLink: string,
+	currentOrigin: string,
+): string {
+	return normalizeUrl(copiedLink).replace(
+		normalizeUrl(PRODUCTION_BASE_URL),
+		currentOrigin,
+	);
 }

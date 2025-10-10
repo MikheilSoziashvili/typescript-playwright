@@ -13,6 +13,7 @@ import {
 	formatLocalizedDate,
 	generate2FACodeFromQRCodeImage,
 	generateRandomString,
+	replaceProdUrl,
 	setAuthenticationCookies,
 } from "@core/utils/utils";
 import { PromoCampaignStatuses } from "@enums/campaign-statuses";
@@ -553,6 +554,94 @@ test.describe(
 							.verifyPromoCampaignStatus(
 								promoCodeName,
 								PromoCampaignStatuses.FINISHED,
+							);
+					},
+				);
+			});
+		});
+
+		test.describe("Promo code - copy functionality tests", () => {
+			promoCampaignVariants.forEach((promoCampaign) => {
+				test(
+					`[ENG-6530] [Promo Codes] Verify "Copy Link" button functionality '${promoCampaign.name}'`,
+					testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+					async ({
+						gamdomApiDbFacade,
+						page,
+						testDataPredefinedRandom,
+						gamdomDb,
+						promoCampaignsAdminPage,
+						walletModal,
+						homePage,
+						toast,
+					}) => {
+						const promoCodeName =
+							testDataPredefinedRandom.data.promoCodes
+								.campaignName +
+							generateRandomString({ length: 3 });
+						const promoCodeValue =
+							testDataPredefinedRandom.data.promoCodes
+								.campaignCode +
+							generateRandomString({ length: 3 });
+
+						const {
+							user: adminUserData,
+							cookie: adminUserCookieData,
+						} =
+							await gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
+						await setAuthenticationCookies(
+							page,
+							adminUserCookieData,
+						);
+						const adminUserId = adminUserData.userId;
+
+						await promoCampaign.create({
+							gamdomDb,
+							promoCodeName,
+							promoCodeValue,
+							adminUserId,
+						});
+
+						await promoCampaignsAdminPage.navigate();
+						await promoCampaignsAdminPage
+							.steps()
+							.searchPromoCode(promoCodeValue, promoCodeName, 1);
+
+						await promoCampaignsAdminPage.clickCopyLinkButtonByName(
+							promoCodeName,
+						);
+						await toast
+							.assertThat()
+							.toastMessageIs(
+								ToastTitle.SUCCESS,
+								ToastSubTitle.COPIED_SHARABLE_LINK,
+							);
+
+						const copiedLink = await page.evaluate(() =>
+							navigator.clipboard.readText(),
+						);
+						const currentOrigin = new URL(page.url()).origin;
+						const newLink = replaceProdUrl(
+							copiedLink,
+							currentOrigin,
+						);
+
+						await homePage.navigate({ link: newLink });
+						await toast
+							.assertThat()
+							.toastMessageIs(
+								ToastTitle.SUCCESS,
+								ToastSubTitle.PROMO_CODE_REDEEMED,
+							);
+
+						await walletModal
+							.steps()
+							.redeemPromoCode(promoCodeValue);
+						await toast
+							.assertThat()
+							.toastMessageIs(
+								ToastTitle.FAILED,
+								ToastSubTitle.PROMO_CODE_ERROR_MESSAGE,
 							);
 					},
 				);
