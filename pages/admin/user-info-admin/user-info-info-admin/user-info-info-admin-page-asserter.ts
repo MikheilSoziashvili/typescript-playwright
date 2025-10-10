@@ -222,4 +222,13 @@ export class UserInfoInfoAdminPageAsserter extends BaseAsserter<UserInfoInfoAdmi
 			);
 		}
 	}
+
+	@step("Verify pinned note is at the top")
+	public async pinnedNoteIsAtTop(noteText: string): Promise<void> {
+		expect(
+			await this.gamdomPage.map
+				.noteTextCellInRow(this.gamdomPage.map.firstNoteRow)
+				.innerText(),
+		).toContain(noteText);
+	}
 }

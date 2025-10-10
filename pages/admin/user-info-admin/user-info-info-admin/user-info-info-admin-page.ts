@@ -80,4 +80,22 @@ export class UserInfoInfoAdminPage extends BasePage<UserInfoInfoAdminPageMap> {
 	): Promise<void> {
 		await this.map.getBanCategoryOption(category).click();
 	}
+
+	@step("Set note inactive by text")
+	public async setNoteInactiveByText(noteText: string): Promise<void> {
+		const inactiveNoteRow = this.map.noteRowByText(noteText);
+		await this.map.setInactiveButtonInRow(inactiveNoteRow).click();
+	}
+
+	@step("Pin note by text")
+	public async pinNoteByText(noteText: string): Promise<void> {
+		const noteRow = this.map.noteRowByText(noteText);
+		await this.map.pinButtonInRow(noteRow).click();
+	}
+
+	@step("Unpin a note by text")
+	public async unpinNoteByText(noteText: string): Promise<void> {
+		const noteRow = this.map.noteRowByText(noteText);
+		await this.map.unpinButtonInRow(noteRow).click();
+	}
 }

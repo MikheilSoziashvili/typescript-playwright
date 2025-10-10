@@ -78,4 +78,5 @@ export enum JiraComponent {
 	WEBSITE_ACCESS = "Website Access",
 	WITHDRAWAL = "Withdrawal",
 	WRITER = "Writer",
+	NOTES = "Notes",
 }

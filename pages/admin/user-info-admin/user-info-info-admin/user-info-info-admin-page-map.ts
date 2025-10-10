@@ -227,4 +227,8 @@ export class UserInfoInfoAdminPageMap extends BaseMap {
 	public get noteCreatedCells(): Locator {
 		return this.notesTable.getByTestId(/^adminNoteCreated-/);
 	}
+
+	public unpinButtonInRow(row: Locator): Locator {
+		return row.locator("button", { hasText: "Unpin" });
+	}
 }

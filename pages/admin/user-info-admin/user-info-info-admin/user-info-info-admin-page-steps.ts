@@ -146,20 +146,6 @@ export class UserInfoInfoAdminPageSteps extends BasePageStep<UserInfoInfoAdminPa
 		return createdNotes;
 	}
 
-	@step("Pin note by text")
-	public async pinNoteByText(noteText: string): Promise<void> {
-		const noteRow = this.gamdomPage.map.noteRowByText(noteText);
-		await this.gamdomPage.map.pinButtonInRow(noteRow).click();
-	}
-
-	@step("Set note inactive by text")
-	public async setNoteInactiveByText(noteText: string): Promise<void> {
-		const inactiveNoteRow = this.gamdomPage.map.noteRowByText(noteText);
-		await this.gamdomPage.map
-			.setInactiveButtonInRow(inactiveNoteRow)
-			.click();
-	}
-
 	@step("Send notification and assert toast is displayed")
 	public async sendNotification(
 		title: string,
@@ -171,5 +157,11 @@ export class UserInfoInfoAdminPageSteps extends BasePageStep<UserInfoInfoAdminPa
 		await this.gamdomPage.fillNotificationReason(reason ?? "");
 		await this.gamdomPage.clickSendNotificationButton();
 		await this.gamdomPage.assertThat().notificationSentToastIsDisplayed();
+	}
+
+	@step("Pin a note by its text and assert it is pinned")
+	public async pinNoteAndAssertItsPinned(noteText: string): Promise<void> {
+		await this.gamdomPage.pinNoteByText(noteText);
+		await this.gamdomPage.assertThat().noteIsPinned(noteText);
 	}
 }
