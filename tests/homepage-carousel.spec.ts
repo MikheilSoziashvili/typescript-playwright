@@ -18,10 +18,15 @@ test.describe(
 			carouselBanners.forEach((record) => {
 				test(
 					`[ENG-1158] - Homepage banner carousel - logged in user - ${record.bannerName} page contains src '${record.srcPartial}'`,
-					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+					testDetails()
+						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+						.withJiraBugTickets("8283")
+						.apply(),
 					async ({ homePage, gamdomApiDbFacade, page }) => {
 						test.fixme(
-							record.bannerName === "Drop & Wins Tournament",
+							record.bannerName === "Drop & Wins Tournament" ||
+								record.bannerName ===
+									"Next-Gen Esports Betting",
 							"Blog post is missing on e2e environment.",
 						);
 						const { cookie } =

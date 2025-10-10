@@ -2,6 +2,7 @@ import { BasePageStep } from "@pages/base/base-page-step";
 import { step } from "decorators/step";
 import { PromoCodeModal } from "./promo-code-modal";
 import { CasinoGameName } from "@enums/casino-game";
+import { Delay } from "@enums/delay";
 
 export class PromoCodeModalSteps extends BasePageStep<PromoCodeModal> {
 	public constructor(page: PromoCodeModal) {
@@ -23,7 +24,9 @@ export class PromoCodeModalSteps extends BasePageStep<PromoCodeModal> {
 		await this.gamdomPage.map.freeSpinsAmountInput.fill(
 			freeSpinsAmount.toString(),
 		);
-		await this.gamdomPage.map.createPromoCodeButton.click();
+		await this.gamdomPage.map.createPromoCodeButton.click({
+			delay: Delay.EXTRA_SHORT,
+		});
 		await this.gamdomPage
 			.assertThat()
 			.verifyPromoCodeCreationToast(campaignName);
@@ -39,7 +42,9 @@ export class PromoCodeModalSteps extends BasePageStep<PromoCodeModal> {
 		await this.gamdomPage.map.promoCodeTypeDropdown.click();
 		await this.gamdomPage.map.promoCodeCashType.click();
 		await this.gamdomPage.fillPromoCodeFields(campaignName, campaignCode);
-		await this.gamdomPage.map.createPromoCodeButton.click();
+		await this.gamdomPage.map.createPromoCodeButton.click({
+			delay: Delay.EXTRA_SHORT,
+		});
 		await this.gamdomPage
 			.assertThat()
 			.verifyPromoCodeCreationToast(campaignName);
