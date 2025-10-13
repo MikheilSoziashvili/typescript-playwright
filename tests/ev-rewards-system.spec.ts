@@ -1,7 +1,9 @@
 import { WICKED_GAMES_AUTH } from "@constants/auth-casino-game-providers";
+import { REVOKE_FREE_SPINS_FILE_PATH } from "@constants/file-paths";
 import { buildFreeSpinsRewardNotificationSubTitle } from "@core/helpers/asserter-helpers/text-asserters";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { FileKey } from "@core/types/types";
+import { buildCsvFromTemplate } from "@core/utils/csv-utils/csv-generator-utils";
 import {
 	buildRewardCsvVariants,
 	readFsAndDenomFromCsv,
@@ -196,6 +198,11 @@ test.describe(
 							emailVerified: true,
 						});
 
+					const { outAbsPath: csvPath } = buildCsvFromTemplate(
+						REVOKE_FREE_SPINS_FILE_PATH,
+						[String(userData.userId)],
+					);
+
 					const userContext = await browser.newContext();
 
 					const userPage = await userContext.newPage();
@@ -220,21 +227,11 @@ test.describe(
 						.steps()
 						.pickEndDate(endDateOffset);
 
-					const dynamicFileMap = buildRewardCsvVariants({
-						ids: [String(userData.userId)],
-					});
-					const uploadPath = await evRewardsSystemAdminPage
-						.steps()
-						.resolveUploadPath(
-							Object.keys(dynamicFileMap)[0] as FileKey,
-							dynamicFileMap,
-						);
-
 					const { fs: freeSpinsAmount, denom: rewardAmount } =
-						readFsAndDenomFromCsv(uploadPath, 1);
+						readFsAndDenomFromCsv(csvPath, 1);
 
 					await evRewardsSystemAdminPage.bulkRewardFileUpload(
-						uploadPath,
+						csvPath,
 					);
 					await evRewardsSystemAdminPage.clickRewardUsersButton();
 					await toast.assertThat().titleIs(ToastTitle.SUCCESS);

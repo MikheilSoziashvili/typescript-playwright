@@ -61,3 +61,8 @@ export const BULK_TIP_FILE_PATH = path.resolve(
 	__dirname,
 	`../${TEST_FILES_DIR}/ENG-7780-bulk-tip-upload.csv`,
 );
+
+export const REVOKE_FREE_SPINS_FILE_PATH = path.resolve(
+	__dirname,
+	`../${TEST_FILES_DIR}/ENG-7506-revoke-free-spins.csv`,
+);
