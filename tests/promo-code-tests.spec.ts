@@ -561,12 +561,24 @@ test.describe(
 		});
 
 		test.describe("Promo code - copy functionality tests", () => {
+			let adminUserId: number;
+			let adminUserCookie: string;
+
+			test.beforeEach(async ({ gamdomApiDbFacade, page }) => {
+				const { user: adminUserData, cookie: adminUserCookieData } =
+					await gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
+
+				adminUserId = adminUserData.userId;
+				adminUserCookie = adminUserCookieData;
+
+				await setAuthenticationCookies(page, adminUserCookie);
+			});
+
 			promoCampaignVariants.forEach((promoCampaign) => {
 				test(
 					`[ENG-6530] [Promo Codes] Verify "Copy Link" button functionality '${promoCampaign.name}'`,
 					testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
 					async ({
-						gamdomApiDbFacade,
 						page,
 						testDataPredefinedRandom,
 						gamdomDb,
@@ -583,17 +595,6 @@ test.describe(
 							testDataPredefinedRandom.data.promoCodes
 								.campaignCode +
 							generateRandomString({ length: 3 });
-
-						const {
-							user: adminUserData,
-							cookie: adminUserCookieData,
-						} =
-							await gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
-						await setAuthenticationCookies(
-							page,
-							adminUserCookieData,
-						);
-						const adminUserId = adminUserData.userId;
 
 						await promoCampaign.create({
 							gamdomDb,
@@ -643,6 +644,63 @@ test.describe(
 								ToastTitle.FAILED,
 								ToastSubTitle.PROMO_CODE_ERROR_MESSAGE,
 							);
+					},
+				);
+			});
+
+			promoCampaignVariants.forEach((promoCampaign) => {
+				test(
+					`[ENG-6527] [Promo Codes] Verify "Copy code" button functionality '${promoCampaign.name}'`,
+					testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+					async ({
+						page,
+						gamdomDb,
+						promoCampaignsAdminPage,
+						walletModal,
+						toast,
+						homePage,
+						notifications,
+						testDataPredefinedRandom,
+					}) => {
+						const promoCodeName =
+							testDataPredefinedRandom.data.promoCodes
+								.campaignName +
+							generateRandomString({ length: 3 });
+						const promoCodeValue =
+							testDataPredefinedRandom.data.promoCodes
+								.campaignCode +
+							generateRandomString({ length: 3 });
+
+						await promoCampaign.create({
+							gamdomDb,
+							promoCodeName,
+							promoCodeValue,
+							adminUserId,
+						});
+
+						await promoCampaignsAdminPage.navigate();
+						await promoCampaignsAdminPage
+							.steps()
+							.searchPromoCode(promoCodeValue, promoCodeName, 1);
+						await promoCampaignsAdminPage.clickCopyCodeButtonByName(
+							promoCodeName,
+						);
+						await toast
+							.assertThat()
+							.toastMessageIs(
+								ToastTitle.SUCCESS,
+								ToastSubTitle.COPIED_CODE,
+							);
+
+						const copiedLink = await page.evaluate(() =>
+							navigator.clipboard.readText(),
+						);
+
+						await homePage.navigateToWallet();
+						await walletModal
+							.steps()
+							.redeemPromoCodeSuccessfully(copiedLink);
+						await promoCampaign.assert({ notifications });
 					},
 				);
 			});

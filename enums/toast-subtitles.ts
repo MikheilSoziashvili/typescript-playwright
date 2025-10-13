@@ -39,4 +39,5 @@ export enum ToastSubTitle {
 	SESSION_ENDED = "Session ended successfully",
 	TIPS_PROCESSED_SUCCESSFULLY = "Tips processed successfully! Please check the logs below.",
 	COPIED_SHARABLE_LINK = "Copied sharable link",
+	COPIED_CODE = "Copied code",
 }
