@@ -37,9 +37,7 @@ export class PromotionsModalSteps extends BasePageStep<PromotionsModal> {
 	public async fillPromotionSuccessfully(
 		promotionTestData: PromotionTestData,
 	): Promise<void> {
-		await this.gamdomPage.assertThat().modalIsDisplayed();
 		await this.gamdomPage.fillPromotionsModalFields(promotionTestData);
 		await this.gamdomPage.clickSaveButton();
-		await this.gamdomPage.assertThat().modalIsNotDisplayed();
 	}
 }

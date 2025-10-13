@@ -6,32 +6,20 @@ export class PromotionsModalMap extends BaseMap {
 		super(page);
 	}
 
-	public get promotionsModalContainer(): Locator {
-		return this.page.getByTestId(`modalContainer`);
-	}
-
-	public get promotionsModalHeader(): Locator {
-		return this.promotionsModalContainer.getByTestId(`modalHeader`);
-	}
-
-	public get promotionsModalBody(): Locator {
-		return this.promotionsModalContainer.getByTestId(`modalBody`);
-	}
-
 	public get promotionsModalTitleInput(): Locator {
-		return this.getInputField("title", this.promotionsModalBody);
+		return this.getInputField("title");
 	}
 
 	public get promotionsModalCustomUrlInput(): Locator {
-		return this.getInputField("customUrl", this.promotionsModalBody);
+		return this.getInputField("customUrl");
 	}
 
 	public get promotionsModalPriorityInput(): Locator {
-		return this.getInputField("priority", this.promotionsModalBody);
+		return this.getInputField("priority");
 	}
 
 	public get promotionsModalShortDescriptionInput(): Locator {
-		return this.getInputField("subtitle", this.promotionsModalBody);
+		return this.getInputField("subtitle");
 	}
 
 	public promotionsModalRichTextInputByLabelName(labelName: string): Locator {
@@ -68,7 +56,7 @@ export class PromotionsModalMap extends BaseMap {
 	public promotionsModalDropdownContainerByLabelName(
 		labelName: string,
 	): Locator {
-		return this.promotionsModalBody
+		return this.page
 			.locator(
 				'xpath=//*[contains(@class, "PromotionForm")]/following-sibling::*[contains(@class, "StyledDropdown-sc-")]',
 			)
@@ -109,7 +97,7 @@ export class PromotionsModalMap extends BaseMap {
 	}
 
 	public get promotionsModalButtonTextInput(): Locator {
-		return this.getInputField("buttonText", this.promotionsModalBody);
+		return this.getInputField("buttonText");
 	}
 
 	public get promotionsModalButtonTextInputContainer(): Locator {
@@ -119,7 +107,7 @@ export class PromotionsModalMap extends BaseMap {
 	}
 
 	public get promotionsModalButtonLinkInput(): Locator {
-		return this.getInputField("buttonLink", this.promotionsModalBody);
+		return this.getInputField("buttonLink");
 	}
 
 	public get promotionsModalIsForVipDropdown(): Locator {
@@ -129,12 +117,9 @@ export class PromotionsModalMap extends BaseMap {
 	public promotionsModalImageUploaderContainerByLabelName(
 		labelName: string,
 	): Locator {
-		return this.promotionsModalBody.locator(
-			`[class*='UploadFileWrapper-sc-']`,
-			{
-				hasText: labelName,
-			},
-		);
+		return this.page.locator(`[class*='UploadFileWrapper-sc-']`, {
+			hasText: labelName,
+		});
 	}
 
 	public promotionsModalCoverImageUploader(): Locator {
@@ -152,7 +137,7 @@ export class PromotionsModalMap extends BaseMap {
 	}
 
 	public get promotionsModalSaveButton(): Locator {
-		return this.promotionsModalBody.locator(`button[type="submit"]`, {
+		return this.page.locator(`button[type="submit"]`, {
 			hasText: "Save",
 		});
 	}

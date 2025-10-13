@@ -104,7 +104,9 @@ export class PromotionAdminAsserter extends BaseAsserter<PromotionAdminPage> {
 		);
 	}
 
-	@step("Promotion play now link matches expected value in the promotions table")
+	@step(
+		"Promotion play now link matches expected value in the promotions table",
+	)
 	public async promotionPlayNowLinkMatches(
 		promotionTitle: string,
 		expectedPromotionPlayNowLink: string,

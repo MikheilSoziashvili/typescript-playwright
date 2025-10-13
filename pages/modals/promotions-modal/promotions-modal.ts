@@ -6,6 +6,7 @@ import { PromotionsModalAsserter } from "./promotions-modal-asserter";
 import { PromotionTestData } from "@dtos/test-data";
 import { step } from "decorators/step";
 
+// TODO: Technically, this is no longer a modal, but a form. Consider renaming/moving steps, map and asserter.
 export class PromotionsModal extends BasePage<PromotionsModalMap> {
 	constructor(page: Page) {
 		super(page, new PromotionsModalMap(page));

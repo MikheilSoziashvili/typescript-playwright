@@ -10,20 +10,6 @@ export class PromotionsModalAsserter extends BaseAsserter<PromotionsModal> {
 		super(page);
 	}
 
-	@step("Promotions modal is displayed")
-	public async modalIsDisplayed(): Promise<void> {
-		await this.checkElementsAreVisible([
-			this.gamdomPage.map.promotionsModalContainer,
-		]);
-	}
-
-	@step("Promotions modal is not displayed")
-	public async modalIsNotDisplayed(): Promise<void> {
-		await this.checkElementsAreNotVisible([
-			this.gamdomPage.map.promotionsModalContainer,
-		]);
-	}
-
 	@step("Verify promotion button text input error message presence")
 	public async promotionButtonTextInputErrorMessagePresence(
 		expectedPresence: boolean,
@@ -32,9 +18,8 @@ export class PromotionsModalAsserter extends BaseAsserter<PromotionsModal> {
 			await this.gamdomPage.map.promotionsModalButtonTextInputContainer.getAttribute(
 				Attributes.CLASS,
 			);
-		const isErrorMessagePresent = buttonClassAttribute?.includes(
-			AttributesValues.ERROR,
-		) ?? false;
+		const isErrorMessagePresent =
+			buttonClassAttribute?.includes(AttributesValues.ERROR) ?? false;
 		expect(isErrorMessagePresent).toBe(expectedPresence);
 	}
 
@@ -49,6 +34,16 @@ export class PromotionsModalAsserter extends BaseAsserter<PromotionsModal> {
 	public async promotionDeleteConfirmationModalIsNotDisplayed(): Promise<void> {
 		await this.checkElementsAreNotVisible([
 			this.gamdomPage.map.confirmDeletePromotionModal,
+		]);
+	}
+
+	@step("Promotion has loaded")
+	public async promotionHasLoaded(promotionTitle: string): Promise<void> {
+		await this.checkElementsHaveValue([
+			{
+				locator: this.gamdomPage.map.promotionsModalTitleInput,
+				expectedValue: promotionTitle,
+			},
 		]);
 	}
 }
