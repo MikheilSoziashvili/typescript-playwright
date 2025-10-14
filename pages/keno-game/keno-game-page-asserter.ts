@@ -9,25 +9,47 @@ export class KenoGamePageAsserter extends BaseAsserter<KenoGamePage> {
 	}
 
 	@step("Start playing button is displayed")
-	async startPlayingButtonIsDisplayed(): Promise<void> {
+	public async startPlayingButtonIsDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.startPlayingButton,
 		]);
 	}
 
 	@step("Start playing button is enabled")
-	async startPlayingButtonIsEnabled(): Promise<void> {
+	public async startPlayingButtonIsEnabled(): Promise<void> {
 		await this.checkElementsAreEnabled([
 			this.gamdomPage.map.startPlayingButton,
 		]);
 	}
 
 	@step("Verify risk slider active")
-	async verifyRiskSliderActive(timeout?: number): Promise<void> {
+	public async verifyRiskSliderActive(timeout?: number): Promise<void> {
 		await this.verifySliderState(
 			this.gamdomPage.map.riskRowsSliderInput,
 			BooleanValueString.FALSE,
 			timeout,
 		);
+	}
+
+	@step("Start playing button is disabled")
+	public async startPlayingButtonIsDisabled(): Promise<void> {
+		await this.checkElementsAreDisabled([
+			this.gamdomPage.map.startPlayingButton,
+		]);
+	}
+
+	@step("Win image is displayed")
+	public async winImageIsDisplayed(): Promise<void> {
+		await this.checkElementsAreVisible([this.gamdomPage.map.winImage]);
+	}
+
+	@step("Check if win occurred")
+	public async isWinDetected(): Promise<boolean> {
+		const element = this.gamdomPage.map.winImage;
+		if (await element.isVisible()) {
+			const text = await element.textContent();
+			return !!text?.trim();
+		}
+		return false;
 	}
 }

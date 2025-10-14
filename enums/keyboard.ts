@@ -1,0 +1,16 @@
+export enum KeyboardKey {
+	ARROW_LEFT = "ArrowLeft",
+	ARROW_RIGHT = "ArrowRight",
+	ARROW_UP = "ArrowUp",
+	ARROW_DOWN = "ArrowDown",
+	ENTER = "Enter",
+	ESCAPE = "Escape",
+	TAB = "Tab",
+	BACKSPACE = "Backspace",
+	DELETE = "Delete",
+	SPACE = " ",
+	CONTROL = "Control",
+	SHIFT = "Shift",
+	ALT = "Alt",
+	HOME = "Home",
+}

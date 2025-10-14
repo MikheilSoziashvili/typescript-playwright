@@ -7,6 +7,7 @@ import { KenoGamePageAsserter } from "./keno-game-page-asserter";
 import { KenoGamePageMap } from "./keno-game-page-map";
 import { KenoGamePageSteps } from "./keno-game-page-steps";
 import { Timeout } from "@enums/timeout";
+import { KeyboardKey } from "@enums/keyboard";
 
 export class KenoGamePage extends BasePage<KenoGamePageMap> {
 	public constructor(page: Page) {
@@ -34,7 +35,7 @@ export class KenoGamePage extends BasePage<KenoGamePageMap> {
 	public async navigateAndWaitForGameToLoad(): Promise<void> {
 		await this.navigate();
 		await expect(this.map.startPlayingButton).toBeVisible({
-			timeout: Timeout.MEDIUM,
+			timeout: Timeout.LONG,
 		});
 	}
 
@@ -69,5 +70,46 @@ export class KenoGamePage extends BasePage<KenoGamePageMap> {
 	@step("Get bet amount value")
 	public async getBetAmountValue(): Promise<string> {
 		return this.map.betAmountInput.inputValue();
+	}
+
+	@step("Define slider values")
+	public async defineSliderValues(riskValue: number): Promise<void> {
+		const slider = this.map.riskRowsSliderInput;
+		await slider.focus();
+		await slider.press(KeyboardKey.HOME);
+		for (let i = 0; i < riskValue; i++) {
+			await slider.press(KeyboardKey.ARROW_RIGHT);
+		}
+	}
+
+	@step("Select random Keno tiles")
+	public async selectManuallyRandomKenoTiles(
+		numberOfTiles = 10,
+	): Promise<number[]> {
+		const KENO_MAX_TILES = 40;
+		const selectedTiles = new Set<number>();
+
+		while (selectedTiles.size < numberOfTiles) {
+			const tileNumber = Math.floor(Math.random() * KENO_MAX_TILES) + 1;
+
+			if (!selectedTiles.has(tileNumber)) {
+				selectedTiles.add(tileNumber);
+				await this.map.kenoGameTile(tileNumber).click();
+			}
+		}
+
+		return Array.from(selectedTiles);
+	}
+
+	@step("Clear selected tiles")
+	public async clearSelectedTiles(): Promise<void> {
+		if (await this.map.clearTilesButton.isEnabled()) {
+			await this.map.clearTilesButton.click();
+		}
+	}
+
+	@step("Pick random tiles")
+	public async pickRandomTiles(): Promise<void> {
+		await this.map.pickRandomTilesButton.click();
 	}
 }

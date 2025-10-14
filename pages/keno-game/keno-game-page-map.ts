@@ -34,6 +34,10 @@ export class KenoGamePageMap extends BaseMap {
 		return this.page.getByTestId("originals-keno-random");
 	}
 
+	public get clearTilesButton(): Locator {
+		return this.page.getByTestId("originals-keno-clear");
+	}
+
 	public get startPlayingButton(): Locator {
 		return this.page.getByTestId("originals-bet-submit");
 	}
@@ -46,7 +50,21 @@ export class KenoGamePageMap extends BaseMap {
 		return this.page.getByTestId("win-banner");
 	}
 
-	public get riskRowsSliderInput(): Locator {
+	public get winMultiplier(): Locator {
+		return this.page.getByTestId("win-banner-multiplier");
+	}
+
+	public get riskRowsSliderContainer(): Locator {
 		return this.page.getByTestId("originals-risk-slider");
+	}
+
+	public get riskRowsSliderInput(): Locator {
+		return this.page
+			.getByTestId("originals-risk-slider")
+			.getByRole("slider");
+	}
+
+	public kenoGameTile(index: number): Locator {
+		return this.page.getByTestId(`originals-keno-cell-${index}`);
 	}
 }

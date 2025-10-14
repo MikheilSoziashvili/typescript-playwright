@@ -1,6 +1,10 @@
 import { BasePageStep } from "@pages/base/base-page-step";
 import { KenoGamePage } from "./keno-game-page";
 import { step } from "decorators/step";
+import { logger } from "@logger/logger";
+import { getFormattedMultiplier, parseMultiplier } from "@core/utils/utils";
+import { calculateBalanceAfterProfit } from "@formulas/betting-calculations";
+import { expect } from "@playwright/test";
 
 export class KenoGamePageSteps extends BasePageStep<KenoGamePage> {
 	public constructor(gamdomPage: KenoGamePage) {
@@ -41,7 +45,7 @@ export class KenoGamePageSteps extends BasePageStep<KenoGamePage> {
 
 		if (options?.riskValue !== undefined) {
 			await this.gamdomPage.adjustSliderValue(
-				this.gamdomPage.map.riskRowsSliderInput,
+				this.gamdomPage.map.riskRowsSliderContainer,
 				options.riskValue,
 			);
 		}
@@ -57,5 +61,140 @@ export class KenoGamePageSteps extends BasePageStep<KenoGamePage> {
 		await this.gamdomPage
 			.assertThat()
 			.checkElementsAreDisabled([this.gamdomPage.map.startPlayingButton]);
+	}
+
+	@step("Configure bet amount and risk slider")
+	public async configureBetAmountAndRiskSlider(
+		betAmount: number,
+		options?: { riskValue?: number },
+	): Promise<void> {
+		await this.gamdomPage.insertBet(betAmount);
+
+		if (options?.riskValue) {
+			await this.gamdomPage.defineSliderValues(options.riskValue);
+		}
+	}
+
+	@step("Play Keno and try to win")
+	public async playKenoUntilWin(
+		betAmount: number,
+		options?: {
+			riskValue?: number;
+			useAutoTileSelection?: boolean;
+			numberOfTiles?: number;
+		},
+	): Promise<void> {
+		await this.configureBetAmountAndRiskSlider(betAmount, {
+			riskValue: options?.riskValue,
+		});
+
+		let isWin = false;
+		while (!isWin) {
+			const balanceBeforeBet = await this.prepareSingleKenoRound(
+				options?.useAutoTileSelection,
+				options?.numberOfTiles,
+			);
+			await this.executeSingleKenoRound();
+			isWin = await this.handleKenoRoundResult(
+				betAmount,
+				balanceBeforeBet,
+			);
+		}
+	}
+
+	@step("Prepare single Keno round")
+	private async prepareSingleKenoRound(
+		useAutoTileSelection = false,
+		numberOfTiles = 10,
+	): Promise<number> {
+		await this.gamdomPage.clearSelectedTiles();
+
+		await this.gamdomPage
+			.assertThat()
+			.checkElementsAreDisabled([this.gamdomPage.map.startPlayingButton]);
+
+		const balanceBeforeBet =
+			await this.userBalanceHandler.walletBalanceInFiatRounded();
+
+		if (useAutoTileSelection) {
+			await this.gamdomPage.pickRandomTiles();
+		} else {
+			await this.gamdomPage.selectManuallyRandomKenoTiles(numberOfTiles);
+		}
+
+		await this.gamdomPage
+			.assertThat()
+			.checkElementsAreEnabled([this.gamdomPage.map.startPlayingButton]);
+
+		return balanceBeforeBet;
+	}
+
+	@step("Execute single Keno round")
+	private async executeSingleKenoRound(): Promise<void> {
+		await this.gamdomPage.map.startPlayingButton.click();
+		await this.gamdomPage
+			.assertThat()
+			.checkElementsAreEnabled([this.gamdomPage.map.startPlayingButton]);
+	}
+
+	@step("Handle Keno round result")
+	private async handleKenoRoundResult(
+		betAmount: number,
+		balanceBeforeBet: number,
+	): Promise<boolean> {
+		const isWin = await this.gamdomPage.assertThat().isWinDetected();
+
+		if (isWin) {
+			await this.handleWinResult(betAmount, balanceBeforeBet);
+			return true;
+		} else {
+			await this.handleLossResult(betAmount, balanceBeforeBet);
+			return false;
+		}
+	}
+
+	@step("Handle win result")
+	private async handleWinResult(
+		betAmount: number,
+		balanceBeforeBet: number,
+	): Promise<void> {
+		logger.info(`Win detected!`);
+		const multiplier = await this.getWinMultiplier();
+		const expectedBalance = calculateBalanceAfterProfit(
+			balanceBeforeBet,
+			betAmount,
+			multiplier,
+		);
+
+		await this.gamdomPage.authenticatedHeader
+			.assertThat()
+			.accountBalanceIs(expectedBalance);
+	}
+
+	@step("Handle loss result")
+	private async handleLossResult(
+		betAmount: number,
+		balanceBeforeBet: number,
+	): Promise<void> {
+		const expectedBalance = balanceBeforeBet - betAmount;
+		await this.gamdomPage.authenticatedHeader
+			.assertThat()
+			.accountBalanceIs(expectedBalance);
+		logger.info(`Loss detected, trying again...`);
+	}
+
+	@step("Get multiplier from win banner")
+	private async getWinMultiplier(): Promise<number> {
+		const multiplierText =
+			await this.gamdomPage.map.winMultiplier.textContent();
+
+		expect(multiplierText).not.toBeNull();
+
+		const multiplier = parseMultiplier(
+			(multiplierText as string).trim(),
+			getFormattedMultiplier({ isBig: true }),
+		);
+
+		return multiplier;
 	}
 }

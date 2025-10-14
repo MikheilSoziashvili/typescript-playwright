@@ -17,7 +17,7 @@ import { expect, Locator } from "@playwright/test";
 import { step } from "decorators/step";
 import { PlinkoGamePage } from "./plinko-game-page";
 import { logger } from "@logger/logger";
-import { calculateExpectedBalanceForPlinko } from "@formulas/betting-calculations";
+import { calculateBalanceAfterProfit } from "@formulas/betting-calculations";
 
 export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 	public constructor(gamdomPage: PlinkoGamePage) {
@@ -271,7 +271,7 @@ export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 
 			const isWin = newHistoryResult > 1.0;
 
-			const expectedBalance = calculateExpectedBalanceForPlinko(
+			const expectedBalance = calculateBalanceAfterProfit(
 				accountBalanceBeforeBet,
 				betAmount,
 				newHistoryResult,
