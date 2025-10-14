@@ -1,11 +1,15 @@
+import { StepsPerGame } from "@constants/how-to-play-modal-steps";
+import { ClientApiInitListener } from "@core/api/network-listeners/client-api-token-listener";
 import { OriginalGames } from "@core/types/types";
+import { Currency } from "@enums/currencies";
 import { OriginalGame } from "@enums/original-games";
+import { Timeout } from "@enums/timeout";
+import { ToastSubTitle } from "@enums/toast-subtitles";
+import { ToastTitle } from "@enums/toast-titles";
 import { BaseAsserter } from "@pages/base/base-asserter";
+import { expect } from "@playwright/test";
 import { step } from "decorators/step";
 import { OriginalsPage } from "./originals-page";
-import { StepsPerGame } from "@constants/how-to-play-modal-steps";
-import { ToastTitle } from "@enums/toast-titles";
-import { ToastSubTitle } from "@enums/toast-subtitles";
 
 export class OriginalsAsserter extends BaseAsserter<OriginalsPage> {
 	public constructor(page: OriginalsPage) {
@@ -84,5 +88,32 @@ export class OriginalsAsserter extends BaseAsserter<OriginalsPage> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.selfExclusionText,
 		]);
+	}
+
+	@step(
+		"Final init responses contain and end with the final currency selection",
+	)
+	public async finalInitResponsesEndWithCurrency(
+		listener: ClientApiInitListener,
+		sequence: Currency[],
+	): Promise<void> {
+		if (sequence.length === 0) {
+			throw new Error("Currency sequence is empty.");
+		}
+		const finalCurrency: Currency = sequence[sequence.length - 1];
+
+		await expect
+			.poll(() => listener.getLastDisplayCurrency(), {
+				timeout: Timeout.EXTRA_SHORT,
+				message: `Waiting for last init to reflect final currency ${finalCurrency}.`,
+			})
+			.toBe(finalCurrency);
+
+		const seen = await listener.getLastDisplayCurrency();
+
+		expect(
+			seen,
+			`Final currency ${finalCurrency} not present in init responses.`,
+		).toContain(finalCurrency);
 	}
 }

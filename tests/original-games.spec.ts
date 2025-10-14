@@ -11,6 +11,8 @@ import {
 	RawNegativeBetValidationScenario,
 } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
+import { Currency } from "@enums/currencies";
+import { Delay } from "@enums/delay";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import {
@@ -352,6 +354,69 @@ test.describe("Live Bets Section", () => {
 				await originalsPage
 					.steps()
 					.verifyPayoutCalculationIsCorrect(betData, game);
+			},
+		);
+	}
+});
+
+test.describe("Displayed currency behavior", () => {
+	const gamesToTest = [
+		OriginalGame.Plinko,
+		OriginalGame.Mines,
+		OriginalGame.Keno,
+	];
+
+	for (const game of gamesToTest) {
+		test(
+			`[ENG-8024] 'displayCurrency' is correct after quickly changing currencies on ${game}`,
+			testDetails()
+				.withTags(
+					JiraComponent.SOK_GAMES,
+					JiraComponent[
+						game.toUpperCase() as keyof typeof JiraComponent
+					],
+				)
+				.withAuthor(JiraUser.RALUCA_ARITON)
+				.apply(),
+			async ({
+				gamdomApiDbFacade,
+				originalsPage,
+				page,
+				clientApiInitListener,
+			}) => {
+				clientApiInitListener.setGame(game);
+				const { cookie } =
+					await gamdomApiDbFacade.createSingleUserDbAndAuth();
+				await setAuthenticationCookies(page, cookie);
+
+				await originalsPage.navigateToGame(game);
+				await originalsPage.authenticatedHeader
+					.assertThat()
+					.loggedInUserElementsAreVisible();
+
+				clientApiInitListener.startListening();
+
+				const currencySequence: Currency[] = [
+					Currency.EUR,
+					Currency.RUB,
+					Currency.KRW,
+					Currency.TRY,
+					Currency.NGN,
+				];
+
+				clientApiInitListener.clearResponses();
+
+				await originalsPage.authenticatedHeader.changeMultipleCurrencies(
+					currencySequence,
+					Delay.MAX_SHORT / 2,
+				);
+
+				await originalsPage
+					.assertThat()
+					.finalInitResponsesEndWithCurrency(
+						clientApiInitListener,
+						currencySequence,
+					);
 			},
 		);
 	}

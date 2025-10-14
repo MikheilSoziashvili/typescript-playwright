@@ -1,14 +1,14 @@
 import { BaseComponent } from "@base/base-component";
 import { parseBalance } from "@core/utils/utils";
 import { Timeout } from "@enums/timeout";
+import { UserMenuOption } from "@enums/user-menu-options";
 import { logger } from "@logger/logger";
 import { Page } from "@playwright/test";
+import accounting from "accounting";
+import { step } from "decorators/step";
 import { Chat } from "../../chat/chat";
 import { AuthenticatedHeaderAsserter } from "./authenticated-header-asserter";
 import { AuthenticatedHeaderMap } from "./authenticated-header-map";
-import { step } from "decorators/step";
-import { UserMenuOption } from "@enums/user-menu-options";
-import accounting from "accounting";
 
 export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 	constructor(page: Page) {
@@ -82,6 +82,20 @@ export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 		await this.clickBalanceDropdown();
 		await this.map.selectCurrencyOption(currency).click();
 		await this.clickBalanceDropdown();
+	}
+
+	@step("Change multiple currencies rapidly")
+	public async changeMultipleCurrencies(
+		currencies: string[],
+		intervalMs: number,
+	): Promise<void> {
+		await this.clickBalanceDropdown();
+
+		for (const currency of currencies) {
+			await this.map
+				.selectCurrencyOption(currency)
+				.click({ delay: intervalMs });
+		}
 	}
 
 	@step("Change wallet")

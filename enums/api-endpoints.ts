@@ -20,4 +20,6 @@ export enum ApiEndpoints {
 	GET_CURRENCY = "/client-api/currency/getCurrency",
 	GET_WALLETS = "/client-api/profile/get-wallets",
 	BULK_REWARD = "/client-api/admin/rewards/bulkReward",
+	CLIENT_API = "/client-api",
+	INIT_TOKEN = "/init?token=",
 }

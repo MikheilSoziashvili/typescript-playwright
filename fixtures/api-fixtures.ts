@@ -1,10 +1,10 @@
-import { test as base } from "@playwright/test";
-import { MailinatorApi } from "@api/mailinator-api";
-import * as Configuration from "../configuration";
-import { GamdomApi } from "@api/gamdom-api";
-import { CoinGeckoApi } from "@api/coingecko-api";
 import { BitcoinApi } from "@api/bitcoin-api";
+import { CoinGeckoApi } from "@api/coingecko-api";
+import { GamdomApi } from "@api/gamdom-api";
+import { MailinatorApi } from "@api/mailinator-api";
 import { GamdomApiAsserter } from "@core/api/asserters/gamdom-api-asserter";
+import { test as base } from "@playwright/test";
+import * as Configuration from "../configuration";
 
 export type Apis = {
 	mailinatorApi: MailinatorApi;
