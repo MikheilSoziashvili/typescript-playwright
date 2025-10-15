@@ -3,6 +3,7 @@ import {
 	PromotionTestDataParams,
 	RegisterTestDataParams,
 } from "@core/interfaces";
+import { generateRandomString } from "@core/utils/utils";
 import { HiloBetOption } from "@enums/hilo-bet-options";
 import {
 	HiloBetMultiplierByBetOption,
@@ -45,7 +46,10 @@ export class RegisterTestData {
 		const baseEmail = email || faker.internet.email();
 
 		const [localPart, domainPart] = baseEmail.split("@");
-		const suffixedLocalPart = localPart + workerSuffix;
+		const suffixedLocalPart =
+			localPart +
+			generateRandomString({ prefix: "_", length: 5 }) +
+			workerSuffix;
 
 		let emailWithWorker = `${suffixedLocalPart}@${domainPart}`;
 
