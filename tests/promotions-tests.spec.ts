@@ -263,6 +263,7 @@ test.describe(
 					test(
 						`[${scenario.testId}] Promotions - '${promotionType.name}' ${scenario.description}`,
 						testDetails()
+							.withJiraBugTickets("8897")
 							.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 							.apply(),
 						async ({
@@ -531,79 +532,91 @@ test.describe(
 				});
 			});
 
-			test.describe("Promotion verifications tests", () => {
-				promotionButtonTextInputValidations.forEach((validation) => {
-					test(
-						`[ENG-6121] Promotions - Promotion modal - Verify 'Play Now' button input text field validation - ${validation.buttonText}`,
-						testDetails()
-							.withAuthor(JiraUser.IVAYLO_STOYCHEV)
-							.apply(),
-						async ({ promotionAdminPage, promotionsModal }) => {
-							await promotionAdminPage.navigate();
-							await promotionAdminPage.clickCreateNewPromotionButton();
-							await promotionsModal
-								.steps()
-								.fillPromotionButtonTextInputAndVerifyErrorMessagePresence(
-									validation.buttonText,
-									parseToBoolean(
-										validation.errorMessagePresence,
-									),
-								);
-						},
-					);
-				});
-
-				promotionTypes.forEach((promotionType) => {
-					test(
-						`[ENG-6121] Promotions - Promotion button text verification - ${promotionType.name}`,
-						testDetails()
-							.withAuthor(JiraUser.IVAYLO_STOYCHEV)
-							.apply(),
-						async ({
-							gamdomDb,
-							promotionPage,
-							gamdomApiDbFacade,
-						}) => {
-							const { user: promotionAdmin } =
-								await gamdomApiDbFacade.createSingleUserDbAndAuth(
-									{
-										tags: UserTags.PromotionAdmin,
-										userClass: UserClasses.Admin,
-										emailVerified: true,
-										useGamdomEmailDomain: true,
-									},
-								);
-							promotionName = generateRandomString({
-								prefix: `${promotionType.name.toLowerCase()}_promotion_`,
-								length: 5,
-							});
-							const customButtonText = `${promotionType.name} Button`;
-							const customUrl = generateCustomUrl(promotionName);
-
-							await promotionType.insertMethod(
-								gamdomDb,
-								promotionName,
-								promotionAdmin.userId,
-								getISODate({ daysOffset: -1 }),
-								customButtonText,
-								customUrl,
+			test.describe(
+				"Promotion verifications tests",
+				testDetails().withJiraBugTickets("8964").apply(),
+				() => {
+					promotionButtonTextInputValidations.forEach(
+						(validation) => {
+							test(
+								`[ENG-6121] Promotions - Promotion modal - Verify 'Play Now' button input text field validation - ${validation.buttonText}`,
+								testDetails()
+									.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+									.apply(),
+								async ({
+									promotionAdminPage,
+									promotionsModal,
+								}) => {
+									await promotionAdminPage.navigate();
+									await promotionAdminPage.clickCreateNewPromotionButton();
+									await promotionsModal
+										.steps()
+										.fillPromotionButtonTextInputAndVerifyErrorMessagePresence(
+											validation.buttonText,
+											parseToBoolean(
+												validation.errorMessagePresence,
+											),
+										);
+								},
 							);
-
-							await promotionPage.navigateToPromotion(customUrl);
-							await promotionPage
-								.assertThat()
-								.promotionRewardsButtonHasText(
-									customButtonText,
-								);
-							await promotionPage
-								.assertThat()
-								.promotionHowToParticipateButtonHasText(
-									customButtonText,
-								);
 						},
 					);
-				});
-			});
+
+					promotionTypes.forEach((promotionType) => {
+						test(
+							`[ENG-6121] Promotions - Promotion button text verification - ${promotionType.name}`,
+							testDetails()
+								.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+								.apply(),
+							async ({
+								gamdomDb,
+								promotionPage,
+								gamdomApiDbFacade,
+							}) => {
+								const { user: promotionAdmin } =
+									await gamdomApiDbFacade.createSingleUserDbAndAuth(
+										{
+											tags: UserTags.PromotionAdmin,
+											userClass: UserClasses.Admin,
+											emailVerified: true,
+											useGamdomEmailDomain: true,
+										},
+									);
+								promotionName = generateRandomString({
+									prefix: `${promotionType.name.toLowerCase()}_promotion_`,
+									length: 5,
+								});
+								const customButtonText = `${promotionType.name} Button`;
+								const customUrl =
+									generateCustomUrl(promotionName);
+
+								await promotionType.insertMethod(
+									gamdomDb,
+									promotionName,
+									promotionAdmin.userId,
+									getISODate({ daysOffset: -1 }),
+									customButtonText,
+									customUrl,
+								);
+
+								await promotionPage.navigateToPromotion(
+									customUrl,
+								);
+								await promotionPage
+									.assertThat()
+									.promotionRewardsButtonHasText(
+										customButtonText,
+									);
+								await promotionPage
+									.assertThat()
+									.promotionHowToParticipateButtonHasText(
+										customButtonText,
+									);
+							},
+						);
+					});
+				},
+			);
 		});
 	},
 );
