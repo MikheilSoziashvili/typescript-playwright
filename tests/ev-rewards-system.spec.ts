@@ -38,6 +38,7 @@ import { logger } from "@logger/logger";
 import { BookOfArabiaPage } from "@pages/casino-games/wickedgames/book-of-arabia/book-of-arabia-page";
 import { CasinoPage } from "@pages/casino/casino-game-page";
 import { HomePage } from "@pages/home-page/home-page";
+import { NotificationsPage } from "@pages/notifications/notifications-page";
 import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
 import { testData } from "test-data/test-data-manager";
 
@@ -234,10 +235,13 @@ test.describe(
 						csvPath,
 					);
 					await evRewardsSystemAdminPage.clickRewardUsersButton();
-					await toast.assertThat().titleIs(ToastTitle.SUCCESS);
+
 					await toast
 						.assertThat()
-						.subTitleIs(ToastSubTitle.PROCESSED_OK);
+						.toastMessageIs(
+							ToastTitle.SUCCESS,
+							ToastSubTitle.PROCESSED_OK,
+						);
 
 					await gamdomDb.updateRewardStatus(
 						userData.userId,
@@ -263,10 +267,8 @@ test.describe(
 					await notification.assertThat().waitForNotification({
 						timeout: Timeout.MAX,
 					});
-					await notification
-						.assertThat()
-						.titleIs(NotificationTitle.FREE_SPINS_PROMOTION_BONUS);
-					await notification.assertThat().subTitleIs(
+
+					const expectedDescription =
 						buildFreeSpinsRewardNotificationSubTitle(
 							freeSpinsAmount,
 							rewardAmount,
@@ -276,11 +278,28 @@ test.describe(
 								atMidnight: true,
 							}),
 							CasinoGameName.BOOK_OF_ARABIA,
-						),
-					);
+						);
+
+					await notification
+						.assertThat()
+						.notificationMessageIs(
+							NotificationTitle.FREE_SPINS_PROMOTION_BONUS,
+							expectedDescription,
+						);
 					await notification
 						.assertThat()
 						.buttonTextIs(NotificationButton.PLAY);
+
+					const userNotificationPage = new NotificationsPage(
+						userPage,
+					);
+					await userNotificationPage.navigate();
+					await userNotificationPage
+						.assertThat()
+						.notificationVisibleAndHasTitleAndDescription(
+							NotificationTitle.FREE_SPINS_PROMOTION_BONUS,
+							expectedDescription,
+						);
 
 					await userInfoAdminPage.navigate();
 

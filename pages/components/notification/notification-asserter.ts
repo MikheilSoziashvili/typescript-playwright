@@ -1,9 +1,9 @@
 import { BaseAsserter } from "@base/base-asserter";
 import { NotificationButton } from "@enums/notification-buttons";
+import { Timeout } from "@enums/timeout";
 import { expect } from "@playwright/test";
 import { step } from "decorators/step";
 import { Notification } from "./notification";
-import { Timeout } from "@enums/timeout";
 
 export class NotificationAsserter extends BaseAsserter<Notification> {
 	public constructor(page: Notification) {
@@ -28,6 +28,15 @@ export class NotificationAsserter extends BaseAsserter<Notification> {
 		await expect(
 			this.gamdomPage.map.notificationSubTitleLocator(options),
 		).toHaveText(subTitle);
+	}
+
+	@step("Notification message is")
+	public async notificationMessageIs(
+		title: string,
+		subTitle: string,
+	): Promise<void> {
+		await this.titleIs(title);
+		await this.subTitleIs(subTitle);
 	}
 
 	@step("Check notification is displayed")
