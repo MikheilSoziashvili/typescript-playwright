@@ -7,14 +7,20 @@ import { OgPropertiesValues } from "@enums/playwright/htmlOgPropertiesValues";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import * as Configuration from "configuration";
+import { isScheduledRun } from "configuration";
 
 test.describe("Blog article - SEO meta tests", () => {
 	test.use(storageStateNewUserDB());
 
 	test(
 		`[ENG-5680] Verify SEO meta information for Blog article`,
-		testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+		testDetails()
+			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+			.withJiraBugTickets("9597")
+			.apply(),
 		async ({ blogPage, blogPostPage }) => {
+			test.fixme(isScheduledRun);
+
 			await blogPage.navigate();
 			await blogPage.clickViewArticleButton();
 			await blogPostPage.refresh();

@@ -180,7 +180,7 @@ test.describe.serial(
 			 */
 			test(
 				`[ENG-2745] Admin - enable a game provider only for qa users, test number: [${record.case}`,
-				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+				testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
 				async ({
 					gamdomApi,
 					gamdomDb,
