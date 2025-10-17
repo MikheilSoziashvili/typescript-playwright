@@ -21,20 +21,20 @@ export class KothAdminMap extends BaseMap {
 
 	public get startEventDateInput(): Locator {
 		return this.getTableCellInput(
-			"Start Date (local time)",
+			"Start Date (UTC)",
 			'input[type="text"][class="form-control"]',
 		);
 	}
 
 	public get endEventDateInput(): Locator {
 		return this.getTableCellInput(
-			"End Date (local time)",
+			"End Date (UTC)",
 			'input[type="text"][class="form-control"]',
 		);
 	}
 
 	public endEventDateButton(days: KothEventDuration): Locator {
-		return this.getTableCellButton("End Date (local time)", days);
+		return this.getTableCellButton("End Date (UTC)", days);
 	}
 
 	public get maxUsersInput(): Locator {
