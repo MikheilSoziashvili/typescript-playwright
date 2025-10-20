@@ -15,4 +15,7 @@ export const predefined = {
 	betsNumberPlinkoCannon: {
 		numberOfBets: "500",
 	},
+	vault: {
+		amountToWithdraw: 5,
+	},
 };
