@@ -11,7 +11,7 @@ import { dbsFixtures } from "./db-fixtures";
 import { gamdomHandlersFixtures } from "./handlers-fixtures";
 import { facadesFixtures } from "./facade-fixtures";
 import { testDataFixtures } from "./test-data-fixtures";
-import { apiNetworkListenersFixtures } from "./api-network-listeners-fixtures";
+import { listenersFixtures } from "./listeners-fixtures";
 
 export const test = mergeTests(
 	gamdomPagesFixtures,
@@ -25,5 +25,5 @@ export const test = mergeTests(
 	dbsFixtures,
 	facadesFixtures,
 	testDataFixtures,
-	apiNetworkListenersFixtures,
+	listenersFixtures,
 );

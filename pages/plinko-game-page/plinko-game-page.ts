@@ -1,7 +1,7 @@
 import { BasePage } from "@base/base-page";
 import { PLINKO_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
-import { parseBalance } from "@core/utils/utils";
+import { parseBalance, waitUntil } from "@core/utils/utils";
 import { Attributes } from "@enums/playwright/htmlAttributes";
 import { expect, Page } from "@playwright/test";
 import { step } from "decorators/step";
@@ -9,6 +9,7 @@ import { PlinkoGamePageAsserter } from "./plinko-game-page-asserter";
 import { PlinkoGamePageMap } from "./plinko-game-page-map";
 import { PlinkoGamePageSteps } from "./plinko-game-page-steps";
 import { Timeout } from "@enums/timeout";
+import { TimeoutSeconds } from "@enums/timeout-seconds";
 
 export class PlinkoGamePage extends BasePage<PlinkoGamePageMap> {
 	public constructor(page: Page) {
@@ -165,5 +166,24 @@ export class PlinkoGamePage extends BasePage<PlinkoGamePageMap> {
 		await expect(this.map.dropBallButton).toBeVisible({
 			timeout: Timeout.MEDIUM,
 		});
+	}
+
+	@step("Wait until autobet is finished")
+	public async waitUntilAutobetIsFinished(
+		initialNumberOfBets: string,
+	): Promise<void> {
+		await waitUntil(
+			async () => {
+				const remainingText =
+					await this.map.remainingBetsBalanceLabel.textContent();
+				return remainingText === initialNumberOfBets;
+			},
+			{
+				errorMessage:
+					"Autobet did not finish (remaining bets did not reset)",
+				intervalSeconds: TimeoutSeconds.TEN,
+				timeoutSeconds: TimeoutSeconds.TWO_FORTY,
+			},
+		);
 	}
 }

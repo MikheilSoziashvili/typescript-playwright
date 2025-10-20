@@ -12,4 +12,7 @@ export const predefined = {
 		description: "testNotificationDescription",
 		reason: "testNotificationReason",
 	},
+	betsNumberPlinkoCannon: {
+		numberOfBets: "500",
+	},
 };

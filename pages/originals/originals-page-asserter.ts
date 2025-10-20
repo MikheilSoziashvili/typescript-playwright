@@ -1,5 +1,5 @@
 import { StepsPerGame } from "@constants/how-to-play-modal-steps";
-import { ClientApiInitListener } from "@core/api/network-listeners/client-api-token-listener";
+import { ClientApiInitListener } from "@core/listeners/network-listener/client-api-token-listener";
 import { OriginalGames } from "@core/types/types";
 import { Currency } from "@enums/currencies";
 import { OriginalGame } from "@enums/original-games";

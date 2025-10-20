@@ -92,5 +92,22 @@ test.describe(
 					);
 			},
 		);
+
+		test(
+			`[ENG-5187] [Plinko] Cannonballs fall in the correct cannons`,
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			async ({
+				plinkoGamePage,
+				errorConsoleAsserter,
+				testDataPredefined,
+			}) => {
+				const betsNumber =
+					testDataPredefined.data.betsNumberPlinkoCannon.numberOfBets;
+				await plinkoGamePage.steps().enterNumberOfBets(betsNumber);
+				await plinkoGamePage.steps().startAutobetSuccessfully();
+				await plinkoGamePage.waitUntilAutobetIsFinished(betsNumber);
+				errorConsoleAsserter.assertNoMissingBallErrorPresent();
+			},
+		);
 	},
 );
