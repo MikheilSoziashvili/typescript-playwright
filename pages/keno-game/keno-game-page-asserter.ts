@@ -25,7 +25,7 @@ export class KenoGamePageAsserter extends BaseAsserter<KenoGamePage> {
 	@step("Verify risk slider active")
 	public async verifyRiskSliderActive(timeout?: number): Promise<void> {
 		await this.verifySliderState(
-			this.gamdomPage.map.riskRowsSliderInput,
+			this.gamdomPage.map.riskRowsSlider,
 			BooleanValueString.FALSE,
 			timeout,
 		);

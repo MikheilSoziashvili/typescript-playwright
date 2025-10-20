@@ -45,7 +45,7 @@ export class KenoGamePageSteps extends BasePageStep<KenoGamePage> {
 
 		if (options?.riskValue !== undefined) {
 			await this.gamdomPage.adjustSliderValue(
-				this.gamdomPage.map.riskRowsSliderContainer,
+				this.gamdomPage.map.riskRowsSlider,
 				options.riskValue,
 			);
 		}

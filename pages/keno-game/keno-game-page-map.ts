@@ -54,14 +54,8 @@ export class KenoGamePageMap extends BaseMap {
 		return this.page.getByTestId("win-banner-multiplier");
 	}
 
-	public get riskRowsSliderContainer(): Locator {
+	public get riskRowsSlider(): Locator {
 		return this.page.getByTestId("originals-risk-slider");
-	}
-
-	public get riskRowsSliderInput(): Locator {
-		return this.page
-			.getByTestId("originals-risk-slider")
-			.getByRole("slider");
 	}
 
 	public kenoGameTile(index: number): Locator {

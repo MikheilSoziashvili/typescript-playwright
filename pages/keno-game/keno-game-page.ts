@@ -74,7 +74,7 @@ export class KenoGamePage extends BasePage<KenoGamePageMap> {
 
 	@step("Define slider values")
 	public async defineSliderValues(riskValue: number): Promise<void> {
-		const slider = this.map.riskRowsSliderInput;
+		const slider = this.map.riskRowsSlider;
 		await slider.focus();
 		await slider.press(KeyboardKey.HOME);
 		for (let i = 0; i < riskValue; i++) {
