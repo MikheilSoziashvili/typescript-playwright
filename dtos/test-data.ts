@@ -312,6 +312,10 @@ export class PromotionTestData {
 	public isForVip: string;
 	public promotionCategory: string;
 	public promotionSubCategory: string;
+	public promotionStartDate?: string;
+	public promotionEndDate?: string;
+	public promotionStartTime?: string;
+	public promotionEndTime?: string;
 	public coverImage: string;
 	public thumbnailImage: string;
 
@@ -321,6 +325,10 @@ export class PromotionTestData {
 		this.isForVip = data.isForVip;
 		this.promotionCategory = data.promotionCategory;
 		this.promotionSubCategory = data.promotionSubCategory;
+		this.promotionStartDate = data.promotionStartDate;
+		this.promotionEndDate = data.promotionEndDate;
+		this.promotionStartTime = data.promotionStartTime;
+		this.promotionEndTime = data.promotionEndTime;
 		this.coverImage =
 			data.coverImage ??
 			"./test-files/ENG-5576-promotion-cover-image.jpg";

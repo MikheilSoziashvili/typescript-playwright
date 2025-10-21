@@ -1,6 +1,7 @@
 import { DATASETS_DIR } from "@constants/file-paths";
 import { testDetails } from "@core/helpers/test-details-helper";
 import {
+	formatDate,
 	generateCustomUrl,
 	generateRandomString,
 	getISODate,
@@ -20,6 +21,7 @@ import { PromotionCategories } from "@enums/promotion-categories";
 import { PromotionIsVipCategories } from "@enums/promotion-is-vip-categories";
 import { PromotionStatuses } from "@enums/promotion-statuses";
 import { PromotionSubStatuses } from "@enums/promotion-sub-categories";
+import { PromotionTime } from "@enums/promotion-time";
 import { PromotionType } from "@enums/promotion-types";
 import { TestTag } from "@enums/test-tags";
 import { ToastSubTitle } from "@enums/toast-subtitles";
@@ -235,6 +237,7 @@ test.describe(
 	() => {
 		let promotionName: string;
 		let promotionNewName: string;
+		let promotionsToDelete: string[] = [];
 
 		test.slow();
 
@@ -251,10 +254,8 @@ test.describe(
 		});
 
 		test.afterEach(async ({ gamdomDb }) => {
-			await gamdomDb.deletePromotionByTitle([
-				promotionName,
-				promotionNewName,
-			]);
+			await gamdomDb.deletePromotionByTitle(promotionsToDelete);
+			promotionsToDelete = [];
 		});
 
 		test.describe("Promotion expiration tests", () => {
@@ -285,6 +286,7 @@ test.describe(
 								prefix: "promotion_",
 								length: 5,
 							});
+							promotionsToDelete.push(promotionName);
 
 							await scenario.createPromotion(
 								promotionType.insertMethod,
@@ -356,6 +358,8 @@ test.describe(
 							prefix: `new_promotion_${combination.category}_${combination.subCategory}_${combination.isForVip}_`,
 							length: 3,
 						});
+						promotionsToDelete.push(promotionName);
+
 						const promotionTestData = new PromotionTestData({
 							title: promotionName,
 							customUrl: generateCustomUrl(promotionName),
@@ -409,6 +413,7 @@ test.describe(
 							prefix: `${promotionType.name.toLowerCase()}_promotion_`,
 							length: 5,
 						});
+						promotionsToDelete.push(promotionName);
 
 						await promotionType.insertMethod(
 							gamdomDb,
@@ -437,6 +442,125 @@ test.describe(
 							.assertThat()
 							.promotionIsNotDisplayedInPromotionsTable(
 								promotionName,
+							);
+					},
+				);
+			});
+
+			promotionTypes.forEach((promotionType) => {
+				test(
+					`[ENG-7398] Promotions - Duplicate '${promotionType.name}' existing promotion`,
+					testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+					async ({
+						promotionAdminPage,
+						promotionsModal,
+						gamdomApiDbFacade,
+						promotionsPage,
+					}) => {
+						await gamdomApiDbFacade.createSingleUserDbAndAuth({
+							tags: UserTags.PromotionAdmin,
+							userClass: UserClasses.Admin,
+							emailVerified: true,
+							useGamdomEmailDomain: true,
+						});
+						promotionName = generateRandomString({
+							prefix: `${promotionType.name.toLowerCase()}_promotion_`,
+							length: 5,
+						});
+						promotionsToDelete.push(promotionName);
+
+						const promotionTestData = new PromotionTestData({
+							title: promotionName,
+							customUrl: generateCustomUrl(promotionName),
+							isForVip: PromotionIsVipCategories.ALL,
+							promotionCategory: PromotionCategories.CASINO,
+							promotionSubCategory: PromotionSubStatuses.CASINO,
+							promotionStartDate: formatDate(1),
+							promotionEndDate: formatDate(3),
+							promotionStartTime: PromotionTime.START_TIME,
+							promotionEndTime: PromotionTime.END_TIME,
+						});
+
+						await promotionAdminPage.navigate();
+						await promotionAdminPage.clickCreateNewPromotionButton();
+						await promotionsModal
+							.steps()
+							.fillPromotionSuccessfully(promotionTestData);
+
+						const expectedPromotionData = {
+							...promotionTestData,
+							promotionStartTime: PromotionTime.DEFAULT_TIME,
+							promotionEndTime: PromotionTime.DEFAULT_TIME,
+						};
+
+						const duplicatedPromotionTitle = `${expectedPromotionData.title} (Copy)`;
+						const duplicatedPromotionTitleSecond = `${duplicatedPromotionTitle} (Copy)`;
+						promotionsToDelete.push(
+							duplicatedPromotionTitle,
+							duplicatedPromotionTitleSecond,
+						);
+
+						const cleanedCustomUrl =
+							expectedPromotionData.customUrl.replaceAll("-", "");
+						const duplicatedPromotionUrl = `${cleanedCustomUrl}-copy`;
+						const duplicatedPromotionUrlSecond = `${duplicatedPromotionUrl}-copy`;
+
+						await promotionAdminPage
+							.steps()
+							.checkPromotionIsDisplayedInPromotionsTable(
+								promotionName,
+							);
+
+						await promotionAdminPage.clickDuplicatePromotionButton(
+							promotionName,
+						);
+						await promotionsModal
+							.assertThat()
+							.duplicatePromotionHasLoaded(
+								duplicatedPromotionTitle,
+								duplicatedPromotionUrl,
+								PromotionTime.DEFAULT_TIME,
+								expectedPromotionData,
+							);
+						await promotionsModal.clickSaveButton();
+
+						await promotionAdminPage
+							.steps()
+							.checkPromotionIsDisplayedInPromotionsTable(
+								duplicatedPromotionTitle,
+							);
+
+						await promotionAdminPage.clickDuplicatePromotionButton(
+							duplicatedPromotionTitle,
+						);
+
+						await promotionsModal
+							.assertThat()
+							.duplicatePromotionHasLoaded(
+								duplicatedPromotionTitleSecond,
+								duplicatedPromotionUrlSecond,
+								PromotionTime.DEFAULT_TIME,
+								expectedPromotionData,
+							);
+						await promotionsModal.clickSaveButton();
+
+						await promotionsPage
+							.steps()
+							.activateAndSetVisibleDuplicatedPromotions(
+								duplicatedPromotionTitle,
+								duplicatedPromotionTitleSecond,
+							);
+
+						await promotionsPage.navigate();
+						await promotionsPage
+							.assertThat()
+							.promotionsPageIsLoaded();
+
+						await promotionsPage
+							.steps()
+							.verifyDuplicatedPromotionsAreDisplayed(
+								duplicatedPromotionTitle,
+								duplicatedPromotionTitleSecond,
 							);
 					},
 				);
@@ -475,6 +599,10 @@ test.describe(
 								prefix: `new_${promotionType.name.toLowerCase()}_promotion_`,
 								length: 5,
 							});
+							promotionsToDelete.push(
+								promotionName,
+								promotionNewName,
+							);
 							const randomPromotionPriority = getRandomNumber(2);
 							const promotionTestData = new PromotionTestData({
 								title: promotionNewName,
@@ -586,6 +714,7 @@ test.describe(
 									prefix: `${promotionType.name.toLowerCase()}_promotion_`,
 									length: 5,
 								});
+								promotionsToDelete.push(promotionName);
 								const customButtonText = `${promotionType.name} Button`;
 								const customUrl =
 									generateCustomUrl(promotionName);

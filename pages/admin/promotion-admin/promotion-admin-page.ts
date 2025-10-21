@@ -44,6 +44,15 @@ export class PromotionAdminPage extends BasePage<PromotionAdminMap> {
 			.click();
 	}
 
+	@step("Click duplicate promotion button")
+	public async clickDuplicatePromotionButton(
+		promotionTitle: string,
+	): Promise<void> {
+		await this.map
+			.promotionStatusTableDuplicateButtonByPromotionTitle(promotionTitle)
+			.click();
+	}
+
 	@step("Click edit promotion button")
 	public async clickEditPromotionButton(
 		promotionTitle: string,

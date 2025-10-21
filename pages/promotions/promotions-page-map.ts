@@ -27,9 +27,9 @@ export class PromotionsPageMap extends BaseMap {
 	}
 
 	public promotionCardTitleByPromotionTitle(promotionTitle: string): Locator {
-		return this.promotionsContainer.locator(
-			"h2[class*='PromoDetails-styled__Title-sc-']",
-			{ hasText: promotionTitle },
-		);
+		return this.promotionsContainer
+			.locator("h2[class*='PromoDetails-styled__Title-sc-']")
+			.filter({ hasText: promotionTitle })
+			.filter({ has: this.page.locator(`text="${promotionTitle}"`) });
 	}
 }

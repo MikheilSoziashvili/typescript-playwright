@@ -62,6 +62,15 @@ export class PromotionAdminMap extends BaseMap {
 		);
 	}
 
+	public promotionStatusTableDuplicateButtonByPromotionTitle(
+		promotionTitle: string,
+	): Locator {
+		return this.promotionStatusTableActionButtonByPromotionTitle(
+			promotionTitle,
+			"Duplicate this promotion",
+		);
+	}
+
 	public promotionStatusTableEditButtonByPromotionTitle(
 		promotionTitle: string,
 	): Locator {

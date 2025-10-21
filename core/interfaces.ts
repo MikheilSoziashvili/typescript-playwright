@@ -15,6 +15,10 @@ export interface PromotionTestDataParams {
 	isForVip: string;
 	promotionCategory: string;
 	promotionSubCategory: string;
+	promotionStartDate?: string;
+	promotionEndDate?: string;
+	promotionStartTime?: string;
+	promotionEndTime?: string;
 	coverImage?: string;
 	thumbnailImage?: string;
 	priority?: number;

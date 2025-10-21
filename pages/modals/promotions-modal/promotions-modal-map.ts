@@ -96,6 +96,29 @@ export class PromotionsModalMap extends BaseMap {
 		);
 	}
 
+	private promotionsModalInputByLabelAndType(label: string, type: "date" | "time"): Locator {
+		return this.page
+			.locator(`label:has-text("${label}")`)
+			.locator("..")
+			.locator(`input[type="${type}"]`);
+	}
+
+	public get promotionsModalStartDateInput(): Locator {
+		return this.promotionsModalInputByLabelAndType("Start Date", "date");
+	}
+
+	public get promotionsModalEndDateInput(): Locator {
+		return this.promotionsModalInputByLabelAndType("End Date", "date");
+	}
+
+	public get promotionsModalStartTimeInput(): Locator {
+		return this.promotionsModalInputByLabelAndType("Start Time", "time");
+	}
+
+	public get promotionsModalEndTimeInput(): Locator {
+		return this.promotionsModalInputByLabelAndType("End Time", "time");
+	}
+
 	public get promotionsModalButtonTextInput(): Locator {
 		return this.getInputField("buttonText");
 	}

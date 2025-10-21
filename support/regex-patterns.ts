@@ -58,3 +58,6 @@ export const doubleQuotePattern = /"/g;
 export const windowsLineEndingPattern = /\r\n/g;
 export const trailingHashPattern = /#$/;
 export const testTimeoutPattern = /Test timeout of (\d+)ms exceeded/;
+
+export const dropdownValuePattern = (value: string): RegExp =>
+	new RegExp(`^\\s*${value}\\s*$`, "i");

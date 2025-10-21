@@ -1380,6 +1380,18 @@ export class GamdomDb extends BaseDB {
 		);
 	}
 
+	public async setPromotionVisibleByTitle(
+		title: string,
+		isVisible: boolean,
+	): Promise<QueryResultRow> {
+		return this.update(
+			DbTables.Promotions,
+			{ [PromotionColumns.IsVisible]: isVisible },
+			`${PromotionColumns.Title} = '${title}'`,
+			true,
+		);
+	}
+
 	public async insertVipUser(
 		userId: number,
 		managerUserId: number,

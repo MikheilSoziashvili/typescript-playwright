@@ -1,10 +1,10 @@
+import { PromotionTestData } from "@dtos/test-data";
 import { BasePage } from "@pages/base/base-page";
 import { Page } from "@playwright/test";
+import { step } from "decorators/step";
+import { PromotionsModalAsserter } from "./promotions-modal-asserter";
 import { PromotionsModalMap } from "./promotions-modal-map";
 import { PromotionsModalSteps } from "./promotions-modal-steps";
-import { PromotionsModalAsserter } from "./promotions-modal-asserter";
-import { PromotionTestData } from "@dtos/test-data";
-import { step } from "decorators/step";
 
 // TODO: Technically, this is no longer a modal, but a form. Consider renaming/moving steps, map and asserter.
 export class PromotionsModal extends BasePage<PromotionsModalMap> {
@@ -56,6 +56,12 @@ export class PromotionsModal extends BasePage<PromotionsModalMap> {
 		await this.selectPromotionSubCategory(
 			promotionTestData.promotionSubCategory,
 		);
+		await this.selectStartAndEndDateAndTime(
+			promotionTestData.promotionStartDate,
+			promotionTestData.promotionEndDate,
+			promotionTestData.promotionStartTime,
+			promotionTestData.promotionEndTime,
+		);
 		await this.selectIsForVip(promotionTestData.isForVip);
 		await this.uploadCoverImage(promotionTestData.coverImage);
 		await this.uploadThumbnailImage(promotionTestData.thumbnailImage);
@@ -73,6 +79,26 @@ export class PromotionsModal extends BasePage<PromotionsModalMap> {
 	): Promise<void> {
 		await this.map.promotionsModalPromotionSubCategoryDropdown.click();
 		await this.map.promotionDropdownItemByPlaceholder(subCategory).click();
+	}
+
+	@step("Select start and end date and time")
+	public async selectStartAndEndDateAndTime(
+		startDate?: string,
+		endDate?: string,
+		startTime?: string,
+		endTime?: string,
+	): Promise<void> {
+		const fields: [string | undefined, { fill: (value: string) => Promise<void> }][] = [
+			[startDate, this.map.promotionsModalStartDateInput],
+			[startTime, this.map.promotionsModalStartTimeInput],
+			[endDate, this.map.promotionsModalEndDateInput],
+			[endTime, this.map.promotionsModalEndTimeInput],
+		];
+		for (const [value, locator] of fields) {
+			if (value !== undefined) {
+				await locator.fill(value);
+			}
+		}
 	}
 
 	@step("Select is for VIP")
