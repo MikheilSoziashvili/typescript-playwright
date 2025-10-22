@@ -22,6 +22,9 @@ import { test } from "@fixtures/fixtures";
 import { isScheduledRun } from "configuration";
 import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
 import { testData } from "test-data/test-data-manager";
+import { ApiEndpoints } from "@enums/api-endpoints";
+import { Timeout } from "@enums/timeout";
+import { delayRoute } from "@core/helpers/network-helpers";
 
 interface StaffRoleCsvRecord {
 	staffRoleTag: keyof typeof UserTags;
@@ -328,5 +331,56 @@ test.describe(
 					});
 			},
 		);
+
+		test.describe("Edit info - Verify Save button", () => {
+			test(
+				`[ENG-7558] UserInfo - EditInfo tab - verify Save button states`,
+				testDetails()
+					.withTags(JiraComponent.EDIT_INFO)
+					.withAuthor(JiraUser.RALUCA_ARITON)
+					.apply(),
+				async ({
+					gamdomApiDbFacade,
+					userInfoAdminPage,
+					userInfoEditInfoAdminPage,
+				}) => {
+					const { cookie: superAdminCookie } =
+						await gamdomApiDbFacade.createSingleUserDbAndAuth({
+							userClass: UserClasses.Admin,
+							tags: UserTags.SupportStaff,
+						});
+
+					await setAuthenticationCookies(
+						userInfoAdminPage.page,
+						superAdminCookie,
+					);
+
+					const [user] = await gamdomApiDbFacade.createUsersDb({
+						usersCount: 1,
+					});
+
+					await userInfoAdminPage.navigate();
+					await userInfoAdminPage.searchForSteam64OrUserId(
+						user.userId,
+					);
+					await userInfoAdminPage.clickUserInfoTab(
+						UserInfoTabs.EditInfo,
+					);
+
+					const throttleEditInfo = delayRoute(
+						ApiEndpoints.EDIT_USER_INFO,
+						Timeout.ULTRA_SHORT,
+					);
+
+					await throttleEditInfo(userInfoEditInfoAdminPage.page);
+					await userInfoEditInfoAdminPage
+						.assertThat()
+						.clickSaveAndAssertTransitionToSaving();
+					await userInfoEditInfoAdminPage
+						.assertThat()
+						.saveButtonIsEnabledWithSaveText();
+				},
+			);
+		});
 	},
 );

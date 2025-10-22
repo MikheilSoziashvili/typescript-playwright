@@ -43,4 +43,27 @@ export class UserInfoEditInfoAdminPageAsserter extends BaseAsserter<UserInfoEdit
 			}),
 		);
 	}
+
+	/**
+	 * Starts observing the Save button state before triggering a click,
+	 * then verifies that it transitions to 'SAVING...' and becomes disabled.
+	 * This method must own the click to reliably catch the transient state.
+	 */
+	@step("Assert button becomes disabled and shows 'SAVING...'")
+	public async clickSaveAndAssertTransitionToSaving(): Promise<void> {
+		const savingButton = this.gamdomPage.map.savingButton;
+
+		await Promise.all([
+			expect(savingButton).toHaveText("SAVING..."),
+			expect(savingButton).toBeDisabled(),
+			this.gamdomPage.map.saveButton.click(),
+		]);
+	}
+
+	@step("Assert button is enabled and shows 'SAVE'")
+	public async saveButtonIsEnabledWithSaveText(): Promise<void> {
+		const saveButton = this.gamdomPage.map.saveButton;
+		await expect(saveButton).toBeEnabled();
+		await expect(saveButton).toHaveText("SAVE");
+	}
 }

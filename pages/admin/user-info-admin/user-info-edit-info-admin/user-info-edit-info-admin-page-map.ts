@@ -18,6 +18,10 @@ export class UserInfoEditInfoAdminPageMap extends BaseMap {
 		return this.page.locator("button", { hasText: "SAVE" });
 	}
 
+	public get savingButton(): Locator {
+		return this.page.locator("button", { hasText: "SAVING" });
+	}
+
 	public rowByLabel(wallet: string): Locator {
 		return this.page.locator("tr", {
 			has: this.page.locator("td", { hasText: wallet }),
