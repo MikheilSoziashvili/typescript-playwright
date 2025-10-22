@@ -10,6 +10,14 @@ export class FreeSpinsAdminPageMap extends BaseMap {
 		return this.page.getByTestId("findGameToGiveFreeSpinsContainer");
 	}
 
+	public get getTopPlayedSlotsContainer(): Locator {
+		return this.page.getByTestId("getTopPlayedSlotsContainer");
+	}
+
+	public get topPlayedSlotsContainer(): Locator {
+		return this.page.getByTestId("topPlayedSlotsContainer");
+	}
+
 	public get findGameToGiveFreeSpinsCardGameField(): Locator {
 		return this.findGameToGiveFreeSpinsCard.locator(
 			"div.MuiAutocomplete-inputRoot",
@@ -85,5 +93,27 @@ export class FreeSpinsAdminPageMap extends BaseMap {
 
 	public get freeSpinsActionButton(): Locator {
 		return this.page.locator("td.clickable").locator("button");
+	}
+
+	public get getTopPlayedSlotsInputField(): Locator {
+		return this.getTopPlayedSlotsContainer.getByTestId("inputField");
+	}
+
+	public get getTopPlayedSlotsGetButton(): Locator {
+		return this.getTopPlayedSlotsContainer.getByTestId("getButton");
+	}
+
+	public get topPlayedSlotsTable(): Locator {
+		return this.topPlayedSlotsContainer.locator("div.table table");
+	}
+
+	public get topPlayedSlotsVisibleRows(): Locator {
+		return this.topPlayedSlotsTable.locator("tbody tr:visible");
+	}
+
+	public getTopPlayedSlotsRowByGameName(gameName: string): Locator {
+		return this.topPlayedSlotsVisibleRows.filter({
+			has: this.page.locator("td:nth-child(2)", { hasText: gameName }),
+		});
 	}
 }

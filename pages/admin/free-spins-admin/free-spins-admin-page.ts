@@ -75,4 +75,14 @@ export class FreeSpinsAdminPage extends BasePage<FreeSpinsAdminPageMap> {
 	public async getActivatedFreeSpins(): Promise<void> {
 		await this.map.getFreeSpinsOfUser.click();
 	}
+
+	@step("Get activated free spins")
+	public async fillGetTopPlayedSlotsUserId(userId: number): Promise<void> {
+		await this.map.getTopPlayedSlotsInputField.fill(userId.toString());
+	}
+
+	@step("Get activated top played slots")
+	public async clickGetTopPlayedSlotsButton(): Promise<void> {
+		await this.map.getTopPlayedSlotsGetButton.click();
+	}
 }

@@ -5,7 +5,10 @@ import {
 	buildSendingOutFreeSpinsToastSubTitle,
 } from "@core/helpers/asserter-helpers/text-asserters";
 import { testDetails } from "@core/helpers/test-details-helper";
-import { setAuthenticationCookies } from "@core/utils/utils";
+import {
+	setAuthenticationCookies,
+	stripAuthFromExternalRequests,
+} from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { DialogInput } from "@enums/admin/dialog-input";
 import { CasinoGameName } from "@enums/casino-game";
@@ -236,6 +239,60 @@ test.describe("Free spins tests", () => {
 							subTitle: ToastSubTitle.BALANCE_TOO_LOW,
 						},
 					]);
+				},
+			);
+		},
+	);
+
+	test.describe(
+		"Top played slots tests",
+		testDetails().withTags(JiraComponent.FREE_SPINS).apply(),
+		() => {
+			test(
+				"[ENG-4860] Verify that the TOP PLAYED SLOTS table is displayed only after the GET button from the Get top played slots panel is clicked",
+				testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+				async ({
+					freeSpinsAdminPage,
+					gamdomApiDbFacade,
+					page,
+					casinoPage,
+					bookOfPyramidsPage,
+					homePage,
+				}) => {
+					await stripAuthFromExternalRequests(page);
+					const { user, cookie } =
+						await gamdomApiDbFacade.createSingleUserDbAndAuth();
+
+					const { cookie: superAdminCookie } =
+						await gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
+
+					await setAuthenticationCookies(page, cookie);
+					await casinoPage.navigate();
+					await casinoPage
+						.steps()
+						.searchForGameAndOpen(CasinoGameName.BOOK_OF_PYRAMIDS);
+					await bookOfPyramidsPage.steps().spinOnceAndGetResult();
+
+					await homePage.navigate({
+						cookies: { clearCookies: true },
+					});
+					await setAuthenticationCookies(page, superAdminCookie);
+					await freeSpinsAdminPage.navigate();
+					await freeSpinsAdminPage.fillGetTopPlayedSlotsUserId(
+						user.userId,
+					);
+
+					await freeSpinsAdminPage
+						.assertThat()
+						.topPlayedSlotsContainerIsNotDisplayed();
+					await freeSpinsAdminPage.clickGetTopPlayedSlotsButton();
+
+					await freeSpinsAdminPage
+						.assertThat()
+						.verifyTopPlayedSlotsTableShowsCorrectGameAndRowCount(
+							1,
+							CasinoGameName.BOOK_OF_PYRAMIDS,
+						);
 				},
 			);
 		},
