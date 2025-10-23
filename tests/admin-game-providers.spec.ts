@@ -58,120 +58,106 @@ const providerEnumMap: Record<string, ProviderDetails> = {
 	Pragmatic: Providers.pragmaticPlay,
 };
 
-let initialProvidersState: Provider[] = [];
+/**
+ * Iterate over each test case record parsed from the CSV file.
+ * Each test case is wrapped in its own describe block to ensure proper isolation.
+ * Determine the feature and provider states based on the test case configuration.
+ */
+adminEnableGames.forEach((record) => {
+	const featureStates = configToStates[record.featuresConfiguration];
+	const providerStates = configToStates[record.providersConfiguration];
+	const providerEnum = providerEnumMap[record.provider];
+	const providerToFeature = providerToFeatureMap[record.provider];
+	const regularEnabled = Boolean(providerStates[UserType.REGULAR]);
+	const qaEnabled = Boolean(providerStates[UserType.QA_USER]);
 
-test.describe.serial(
-	"Admin Enable Game Provider tests",
-	testDetails().withTags(TestTag.SEQUENTIAL, TestTag.GAME_PROVIDERS).apply(),
-	() => {
-		test.slow();
+	test.describe(
+		`Admin Enable Game Provider - Case ${record.case}`,
+		testDetails()
+			.withTags(TestTag.SEQUENTIAL, TestTag.GAME_PROVIDERS)
+			.apply(),
+		() => {
+			test.slow();
 
-		/**
-		 * Before all tests, authenticate as super admin and capture the initial state of all providers.
-		 * This ensures we can reset the providers to their original state after tests have run.
-		 */
-		test.beforeAll(async ({ gamdomApi, gamdomDb }) => {
-			const superAdminData = new RegisterTestData({
-				useGamdomEmailDomain: true,
-			});
-			await gamdomDb.createNewUser({
-				username: superAdminData.username,
-				password: superAdminData.password,
-				email: superAdminData.email,
-				tags: UserTags.SuperAdmin,
-				userClass: UserClasses.Admin,
-				emailVerified: true,
-			});
-			const superAdminCookie = getCookieHeader(
-				await gamdomApi.authenticateWithExistingUser(
-					superAdminData.username,
-					superAdminData.password,
-				),
-			);
+			let superAdminCookie: string;
+			let initialProvidersState: Provider[];
 
-			// Retrieve and store the initial state of all providers
-			initialProvidersState = await gamdomApi.getProviders({
-				Cookie: superAdminCookie,
-			});
+			/**
+			 * Before each test, authenticate as super admin and capture the initial state of all providers.
+			 * This ensures we can reset the providers to their original state after each test.
+			 */
+			test.beforeEach(async ({ gamdomApi, gamdomDb }) => {
+				const superAdminData = new RegisterTestData({
+					useGamdomEmailDomain: true,
+				});
+				await gamdomDb.createNewUser({
+					username: superAdminData.username,
+					password: superAdminData.password,
+					email: superAdminData.email,
+					tags: UserTags.SuperAdmin,
+					userClass: UserClasses.Admin,
+					emailVerified: true,
+				});
+				superAdminCookie = getCookieHeader(
+					await gamdomApi.authenticateWithExistingUser(
+						superAdminData.username,
+						superAdminData.password,
+					),
+				);
 
-			// Temporary fix until we have control over imported Casino Providers upon redeploy so none have duplicated names
-			const hacksawHub = initialProvidersState.find(
-				(provider) => provider.producer_id === "Hacksaw Gaming",
-			) as Provider;
+				// Retrieve and store the initial state of all providers
+				initialProvidersState = await gamdomApi.getProviders({
+					Cookie: superAdminCookie,
+				});
 
-			await gamdomApi.setProviderState(
-				hacksawHub.id,
-				"Hacksaw Gaming hub",
-				hacksawHub.disabled,
-				hacksawHub.qa_users_only,
-				hacksawHub.provider_id,
-				hacksawHub.imported_from,
-				{ Cookie: superAdminCookie },
-			);
-		});
+				// Temporary fix until we have control over imported Casino Providers upon redeploy so none have duplicated names
+				const hacksawHub = initialProvidersState.find(
+					(provider) => provider.producer_id === "Hacksaw Gaming",
+				) as Provider;
 
-		/**
-		 * After all tests have completed, reset the providers to their initial state.
-		 * This cleanup step ensures that the tests do not leave side effects.
-		 */
-		test.afterAll(async ({ gamdomApi, gamdomDb }) => {
-			const superAdminData = new RegisterTestData({
-				useGamdomEmailDomain: true,
-			});
-			await gamdomDb.createNewUser({
-				username: superAdminData.username,
-				password: superAdminData.password,
-				email: superAdminData.email,
-				tags: UserTags.SuperAdmin,
-				userClass: UserClasses.Admin,
-				emailVerified: true,
-			});
-			const superAdminCookie = getCookieHeader(
-				await gamdomApi.authenticateWithExistingUser(
-					superAdminData.username,
-					superAdminData.password,
-				),
-			);
-
-			// Reset each provider to its original state
-			for (const provider of initialProvidersState) {
 				await gamdomApi.setProviderState(
-					provider.id,
-					provider.provider_name,
-					provider.disabled,
-					provider.qa_users_only,
-					provider.provider_id,
-					provider.imported_from,
+					hacksawHub.id,
+					"Hacksaw Gaming hub",
+					hacksawHub.disabled,
+					hacksawHub.qa_users_only,
+					hacksawHub.provider_id,
+					hacksawHub.imported_from,
 					{ Cookie: superAdminCookie },
 				);
-			}
+			});
 
-			// Set the specified features to enabled for both regular and qa users
-			const featuresToEnable: Feature[] = [
-				Feature.HUB88_INTEGRATION,
-				Feature.HACKSAW_INTEGRATION,
-				Feature.PRAGMATIC_PLAY_INTEGRATION,
-			];
+			/**
+			 * After each test, reset the providers to their initial state.
+			 * This cleanup step ensures that each test starts with a clean slate.
+			 */
+			test.afterEach(async ({ gamdomApi }) => {
+				for (const provider of initialProvidersState) {
+					await gamdomApi.setProviderState(
+						provider.id,
+						provider.provider_name,
+						provider.disabled,
+						provider.qa_users_only,
+						provider.provider_id,
+						provider.imported_from,
+						{ Cookie: superAdminCookie },
+					);
+				}
 
-			for (const feature of featuresToEnable) {
-				await gamdomApi.setFeatureState(
-					feature,
-					{ [UserType.REGULAR]: true, [UserType.QA_USER]: true },
-					{ Cookie: superAdminCookie },
-				);
-			}
-		});
+				// Set the specified features to enabled for both regular and qa users
+				const featuresToEnable: Feature[] = [
+					Feature.HUB88_INTEGRATION,
+					Feature.HACKSAW_INTEGRATION,
+					Feature.PRAGMATIC_PLAY_INTEGRATION,
+				];
 
-		// Iterate over each test case record parsed from the CSV file
-		adminEnableGames.forEach((record) => {
-			// Determine the feature and provider states based on the test case configuration
-			const featureStates = configToStates[record.featuresConfiguration];
-			const providerStates =
-				configToStates[record.providersConfiguration];
-			const providerEnum = providerEnumMap[record.provider];
-			const providerToFeature = providerToFeatureMap[record.provider];
-			const regularEnabled = Boolean(providerStates[UserType.REGULAR]);
-			const qaEnabled = Boolean(providerStates[UserType.QA_USER]);
+				for (const feature of featuresToEnable) {
+					await gamdomApi.setFeatureState(
+						feature,
+						{ [UserType.REGULAR]: true, [UserType.QA_USER]: true },
+						{ Cookie: superAdminCookie },
+					);
+				}
+			});
 
 			/**
 			 * Define a test for each record.
@@ -179,7 +165,7 @@ test.describe.serial(
 			 * based on the configured states.
 			 */
 			test(
-				`[ENG-2745] Admin - enable a game provider only for qa users, test number: [${record.case}`,
+				`[ENG-2745] Admin - enable a game provider only for qa users, test number: [${record.case}]`,
 				testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
 				async ({
 					gamdomApi,
@@ -189,25 +175,6 @@ test.describe.serial(
 					providersPage,
 					page,
 				}) => {
-					// Authenticate as super admin to perform administrative actions
-					const superAdminData = new RegisterTestData({
-						useGamdomEmailDomain: true,
-					});
-					await gamdomDb.createNewUser({
-						username: superAdminData.username,
-						password: superAdminData.password,
-						email: superAdminData.email,
-						tags: UserTags.SuperAdmin,
-						userClass: UserClasses.Admin,
-						emailVerified: true,
-					});
-					const superAdminCookie = getCookieHeader(
-						await gamdomApi.authenticateWithExistingUser(
-							superAdminData.username,
-							superAdminData.password,
-						),
-					);
-
 					// Set the feature state (enable/disable) for both regular and qa users
 					await gamdomApi.setFeatureState(
 						providerToFeature,
@@ -376,6 +343,6 @@ test.describe.serial(
 						);
 				},
 			);
-		});
-	},
-);
+		},
+	);
+});

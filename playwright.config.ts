@@ -119,5 +119,12 @@ export default defineConfig({
 			name: "chromium",
 			use: { browserName: "chromium" },
 		},
+		{
+			name: "chromium-sequential",
+			use: { browserName: "chromium" },
+			grep: /@SEQUENTIAL/i,
+			fullyParallel: false,
+			workers: 1,
+		},
 	],
 });

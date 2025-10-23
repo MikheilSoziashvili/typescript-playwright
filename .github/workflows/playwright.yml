@@ -347,7 +347,7 @@ jobs:
               run: |
                   if [ ${{ github.event_name }} == 'schedule' ] || [ "${{ inputs.run_sequential_tests }}" == "true" ]; then
                     echo "Running sequential tests that modify global platform settings..."
-                    $PLAYWRIGHT_TEST $GREP_SEQUENTIAL_TESTS
+                    $PLAYWRIGHT_TEST $GREP_SEQUENTIAL_TESTS --project=chromium-sequential
                   else
                     echo "Sequential tests are disabled for this run."
                   fi
