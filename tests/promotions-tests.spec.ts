@@ -28,6 +28,7 @@ import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { test } from "@fixtures/fixtures";
 import { PromotionsPage } from "@pages/promotions/promotions-page";
+import { isScheduledRun } from "configuration";
 import { GamdomDb } from "database/gamdom-db";
 
 type PromotionInsertMethod = (
@@ -235,6 +236,8 @@ test.describe(
 		.withTags(JiraComponent.PROMOTIONS, JiraComponent.ADMIN_PANEL)
 		.apply(),
 	() => {
+		test.describe.configure({ mode: "default" });
+
 		let promotionName: string;
 		let promotionNewName: string;
 		let promotionsToDelete: string[] = [];
@@ -264,7 +267,7 @@ test.describe(
 					test(
 						`[${scenario.testId}] Promotions - '${promotionType.name}' ${scenario.description}`,
 						testDetails()
-							.withJiraBugTickets("8897")
+							.withJiraBugTickets("8897", "8964")
 							.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 							.apply(),
 						async ({
@@ -450,13 +453,18 @@ test.describe(
 			promotionTypes.forEach((promotionType) => {
 				test(
 					`[ENG-7398] Promotions - Duplicate '${promotionType.name}' existing promotion`,
-					testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+					testDetails()
+						.withAuthor(JiraUser.RALUCA_ARITON)
+						.withJiraBugTickets("8964")
+						.apply(),
 					async ({
 						promotionAdminPage,
 						promotionsModal,
 						gamdomApiDbFacade,
 						promotionsPage,
 					}) => {
+						test.fixme(isScheduledRun);
+
 						await gamdomApiDbFacade.createSingleUserDbAndAuth({
 							tags: UserTags.PromotionAdmin,
 							userClass: UserClasses.Admin,

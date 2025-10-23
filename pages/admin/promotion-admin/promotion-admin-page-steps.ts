@@ -15,7 +15,6 @@ export class PromotionAdminSteps extends BasePageStep<PromotionAdminPage> {
 	public async checkPromotionIsDisplayedInPromotionsTable(
 		promotionName: string,
 	): Promise<void> {
-		await this.gamdomPage.choosePromotionsTableRowsMaxPagination();
 		await this.gamdomPage
 			.assertThat()
 			.promotionIsDisplayedInPromotionsTable(promotionName);
@@ -31,7 +30,6 @@ export class PromotionAdminSteps extends BasePageStep<PromotionAdminPage> {
 		expectedPromotionCategory: PromotionCategories,
 		expectedPromotionPlayNowLink: string,
 	): Promise<void> {
-		await this.gamdomPage.choosePromotionsTableRowsMaxPagination();
 		await this.gamdomPage
 			.assertThat()
 			.promotionDataMatches(
