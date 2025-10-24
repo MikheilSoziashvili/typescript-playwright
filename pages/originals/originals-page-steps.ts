@@ -9,6 +9,7 @@ import { logger } from "@logger/logger";
 import { currencyToNumberPattern } from "@support/regex-patterns";
 import { calculateRoundedExpectedProfit } from "@formulas/betting-calculations";
 import { StepsPerGame } from "@constants/how-to-play-modal-steps";
+import { Currency } from "@enums/currencies";
 
 export class OriginalsSteps extends BasePageStep<OriginalsPage> {
 	public constructor(
@@ -275,6 +276,38 @@ export class OriginalsSteps extends BasePageStep<OriginalsPage> {
 
 			if (currentStep < totalSteps) {
 				await this.gamdomPage.clickHowToPlayModalNextButton();
+			}
+		}
+	}
+
+	@step("Handle wallet switch during gameplay")
+	public async handleWalletSwitchDuringGameplay(
+		game: OriginalGame,
+		wallet: string,
+	): Promise<void> {
+		switch (game) {
+			case OriginalGame.Mines: {
+				await this.gamdomPage
+					.assertThat()
+					.checkElementsAreVisible([
+						this.gamdomPage.map
+							.minesUnfinishedGamePopupContinueButton,
+					]);
+				await this.gamdomPage.map.minesUnfinishedGamePopupContinueButton.click();
+				await this.gamdomPage.waitForGameRoundFinish(game);
+				await this.gamdomPage.authenticatedHeader.changeWalletAndCurrency(
+					wallet,
+					Currency.USD,
+				);
+				break;
+			}
+			case OriginalGame.Plinko:
+			case OriginalGame.Keno: {
+				await this.gamdomPage.waitForGameRoundFinish(game);
+				break;
+			}
+			default: {
+				throw new Error(`Unhandled game type: ${String(game)}`);
 			}
 		}
 	}

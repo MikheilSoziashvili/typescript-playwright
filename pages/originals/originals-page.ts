@@ -344,6 +344,23 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 		return MaxBetAmount[game.toUpperCase() as keyof typeof MaxBetAmount];
 	}
 
+	@step("Get 'Your Bet' value for game")
+	public async getYourBetValueForGame(game: OriginalGame): Promise<number> {
+		const gamePage = this.gamesMap[game];
+		switch (game) {
+			case OriginalGame.Plinko:
+				return (gamePage as PlinkoGamePage).getYourBetValue();
+			case OriginalGame.Keno:
+				return (gamePage as KenoGamePage).getYourBetValue();
+			case OriginalGame.Mines:
+				return (gamePage as MinesGamePage).getYourBetValue();
+			default:
+				throw new Error(
+					`Get your bet value method not implemented for ${game}`,
+				);
+		}
+	}
+
 	@step("Open How to Play modal")
 	public async openHowToPlayModal(): Promise<void> {
 		await this.map.howToPlayTooltip.click();

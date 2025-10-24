@@ -1,5 +1,6 @@
 import { KENO_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
+import { parseBalance } from "@core/utils/utils";
 import { BasePage } from "@pages/base/base-page";
 import { expect, Page } from "@playwright/test";
 import { step } from "decorators/step";
@@ -70,6 +71,11 @@ export class KenoGamePage extends BasePage<KenoGamePageMap> {
 	@step("Get bet amount value")
 	public async getBetAmountValue(): Promise<string> {
 		return this.map.betAmountInput.inputValue();
+	}
+
+	@step("Get 'Your Bet' value as number")
+	public async getYourBetValue(): Promise<number> {
+		return parseBalance(await this.map.yourBetValue.innerText());
 	}
 
 	@step("Define slider values")

@@ -3,6 +3,7 @@ import {
 	ChatPinMessagePermissionsCsvRecord,
 	FooterLinksAndEndpointsCsvRecord,
 	OriginalsQuickSelectButtonsCsvRecord,
+	OriginalsWalletSwitchingTestsCsvRecord,
 	PlinkoBetsAcrossMultipleWalletsCsvRecord,
 	UserProfileItemsLinksAccessibilityCsvRecord,
 } from "@dtos/csv";
@@ -30,6 +31,10 @@ import {
 	OriginalsSelfExclusionCsvParsedRecord,
 	parseOriginalsSelfExclusionCsvRow,
 } from "test-data/parsers/originals-self-exclusion-csv-parser";
+import {
+	OriginalsWalletSwitchingTestsCsvParsedRecord,
+	parseOriginalsWalletSwitchingTestsCsvRow,
+} from "test-data/parsers/originals-wallet-switching-tests-csv-parser";
 import {
 	parsePlinkoBetsAcrossMultipleWalletsCsvRow,
 	PlinkoBetsAcrossMultipleWalletsCsvParsedRecord,
@@ -82,6 +87,10 @@ export type CsvTransformerMapType = {
 		row: PlinkoBetsAcrossMultipleWalletsCsvRecord,
 	) => PlinkoBetsAcrossMultipleWalletsCsvParsedRecord;
 
+	[CsvFilesName.ORIGINALS_WALLET_SWITCHING_TESTS]: (
+		row: OriginalsWalletSwitchingTestsCsvRecord,
+	) => OriginalsWalletSwitchingTestsCsvParsedRecord;
+
 	[CsvFilesName.PLINKO_TEST_DATA]: (
 		row: PlinkoTestDataCsvRecord,
 	) => PlinkoTestDataCsvParsedRecord;
@@ -112,6 +121,8 @@ export const CsvTransformerMap: CsvTransformerMapType = {
 		parseUserProfileItemsLinksAccessibilityCsvRow,
 	[CsvFilesName.PLINKO_BETS_ACROSS_MULTIPLE_WALLETS]:
 		parsePlinkoBetsAcrossMultipleWalletsCsvRow,
+	[CsvFilesName.ORIGINALS_WALLET_SWITCHING_TESTS]:
+		parseOriginalsWalletSwitchingTestsCsvRow,
 	[CsvFilesName.PLINKO_TEST_DATA]: parsePlinkoTestDataCsvRow,
 	[CsvFilesName.ORIGINALS_SELF_EXCLUSION]: parseOriginalsSelfExclusionCsvRow,
 	[CsvFilesName.FOOTER_LINKS_AND_ENDPOINTS]:

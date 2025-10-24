@@ -1,7 +1,9 @@
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
+import { OriginalGame } from "@enums/original-games";
 import { Timeout } from "@enums/timeout";
+import { Unit } from "@enums/units";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 
@@ -13,10 +15,7 @@ test.describe(
 	() => {
 		test.use(storageStateNewUserDB());
 		test.slow();
-		test.fixme(
-			true,
-			"Temporarily skipped until locators for toeast message are fixed",
-		);
+
 		const numberOfAutoBets = "50";
 
 		test.beforeEach(async ({ plinkoGamePage }) => {
@@ -54,6 +53,10 @@ test.describe(
 			`[ENG-5048] Plinko - Autobet - Start-Stop`,
 			testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
 			async ({ plinkoGamePage }) => {
+				test.fixme(
+					true,
+					"Temporarily skipped until locators for toast message are fixed",
+				);
 				await plinkoGamePage.steps().startAutobetSuccessfully();
 				await plinkoGamePage
 					.assertThat()
@@ -76,7 +79,7 @@ test.describe(
 		test(
 			`[ENG-5789] Plinko - Autobet - Verify balance update`,
 			testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
-			async ({ plinkoGamePage, userBalanceHandler }) => {
+			async ({ plinkoGamePage, userBalanceHandler, originalsPage }) => {
 				const initialAccountBalance =
 					await userBalanceHandler.walletBalanceInFiatRounded();
 				const initialYourBetBalance =
@@ -84,11 +87,13 @@ test.describe(
 
 				await plinkoGamePage.steps().startAutobetSuccessfully();
 
-				await plinkoGamePage
+				await originalsPage
 					.assertThat()
 					.balanceAndYourBetUpdatedSimultaneosly(
+						Unit.COINS,
 						initialAccountBalance,
 						initialYourBetBalance,
+						OriginalGame.Plinko,
 					);
 			},
 		);

@@ -7,6 +7,7 @@ export * from "./koth-currencies-symbols-csv";
 export * from "./kyc-users-level-verification-page-csv";
 export * from "./user-profile-items-links-accessibility-csv";
 export * from "./plinko-bets-across-multiple-wallets-csv";
+export * from "./originals-wallet-switching-tests-csv";
 export * from "./chatrooms-successfully-selected-csv";
 export * from "./promo-code-failed-redemption-csv";
 export * from "./chat-diamond-icon-for-vip-users-csv";

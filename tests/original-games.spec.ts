@@ -1,5 +1,6 @@
 import { DATASETS_DIR } from "@constants/file-paths";
 import { testDetails } from "@core/helpers/test-details-helper";
+
 import {
 	parse_csv,
 	roundToDecimals,
@@ -19,10 +20,14 @@ import {
 	OriginalGame,
 	OriginalsQuickSelectButtons,
 } from "@enums/original-games";
+import { Unit } from "@enums/units";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import { isScheduledRun } from "configuration";
-import { HIGH_USER_AMOUNT } from "database/constants/user-amounts";
+import {
+	HIGH_USER_AMOUNT,
+	SUPER_HIGH_USER_AMOUNT,
+} from "database/constants/user-amounts";
 import { testData } from "test-data/test-data-manager";
 
 test.describe("Quick Select Buttons", () => {
@@ -421,3 +426,115 @@ test.describe("Displayed currency behavior", () => {
 		);
 	}
 });
+
+test.describe(
+	"Check amounts in 'Your Bet' & 'Wallet' are displayed correctly when switching wallets",
+	testDetails()
+		.withTags(
+			JiraComponent.SOK_GAMES,
+			JiraComponent.KENO,
+			JiraComponent.MINES,
+			JiraComponent.PLINKO,
+		)
+		.apply(),
+	() => {
+		testData()
+			.fromCsvParsed({
+				file: CsvFilesName.ORIGINALS_WALLET_SWITCHING_TESTS,
+			})
+			.forEach((record) => {
+				const game = record.game;
+
+				test(
+					`[ENG-6967] ${game} - Switch from USD to ${record.wallet} wallet and verify balance updates correctly`,
+					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+					async ({
+						originalsPage,
+						userBalanceHandler,
+						gamdomApiDbFacade,
+						page,
+						testDataPredefined,
+					}) => {
+						let accountBalance;
+						let yourBetBalance;
+						const walletUnits = Object.values(Unit);
+
+						const { cookie } =
+							await gamdomApiDbFacade.createUserWithWalletsAndAuth(
+								{
+									walletUnits: walletUnits,
+									amount: SUPER_HIGH_USER_AMOUNT,
+								},
+							);
+
+						await setAuthenticationCookies(page, cookie);
+						await originalsPage.navigateToGame(game);
+
+						accountBalance =
+							await userBalanceHandler.walletBalanceInFiatRounded();
+						yourBetBalance =
+							await originalsPage.getYourBetValueForGame(game);
+
+						await originalsPage.placeBet(
+							game,
+							testDataPredefined.data.bets.betAmountSmall,
+						);
+
+						await originalsPage.authenticatedHeader.changeWalletAndCurrency(
+							record.wallet,
+							Currency.USD,
+						);
+
+						await originalsPage
+							.steps()
+							.handleWalletSwitchDuringGameplay(
+								game,
+								record.wallet,
+							);
+
+						await originalsPage
+							.assertThat()
+							.balanceAndYourBetUpdatedSimultaneosly(
+								record.unit,
+								accountBalance,
+								yourBetBalance,
+								game,
+							);
+
+						accountBalance =
+							await userBalanceHandler.walletBalanceInFiatRounded(
+								record.unit,
+							);
+						yourBetBalance =
+							await originalsPage.getYourBetValueForGame(game);
+
+						await originalsPage.placeBet(
+							game,
+							testDataPredefined.data.bets.betAmountSmall,
+						);
+
+						await originalsPage.authenticatedHeader.changeWalletAndCurrency(
+							Currency.USD,
+							Currency.USD,
+						);
+
+						await originalsPage
+							.steps()
+							.handleWalletSwitchDuringGameplay(
+								game,
+								Currency.USD,
+							);
+
+						await originalsPage
+							.assertThat()
+							.balanceAndYourBetUpdatedSimultaneosly(
+								Unit.COINS,
+								accountBalance,
+								yourBetBalance,
+								game,
+							);
+					},
+				);
+			});
+	},
+);

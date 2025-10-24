@@ -7,6 +7,7 @@ import {
 	KycUsersLevelVerificationPageCsv,
 	UserProfileItemsLinksAccessibilityCsv,
 	PlinkoBetsAcrossMultipleWalletsCsv,
+	OriginalsWalletSwitchingTestsCsv,
 	ChatroomsSuccessfullySelectedCsv,
 	EditInfoAdjustingWalletsCsv,
 	PromoCodeFailedRedemptionCsv,
@@ -33,6 +34,7 @@ export type CsvDtoMap = {
 	[CsvFilesName.KYC_USERS_LEVEL_VERIFICATION_PAGE]: KycUsersLevelVerificationPageCsv;
 	[CsvFilesName.USER_PROFILE_ITEMS_LINKS_ACCESSIBILITY]: UserProfileItemsLinksAccessibilityCsv;
 	[CsvFilesName.PLINKO_BETS_ACROSS_MULTIPLE_WALLETS]: PlinkoBetsAcrossMultipleWalletsCsv;
+	[CsvFilesName.ORIGINALS_WALLET_SWITCHING_TESTS]: OriginalsWalletSwitchingTestsCsv;
 	[CsvFilesName.CHATROOM_SUCCESSFULLY_SELECTED]: ChatroomsSuccessfullySelectedCsv;
 	[CsvFilesName.EDIT_INFO_ADJUSTING_WALLETS]: EditInfoAdjustingWalletsCsv;
 	[CsvFilesName.PROMO_CODE_FAILED_REDEMPTION]: PromoCodeFailedRedemptionCsv;

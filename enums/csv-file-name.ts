@@ -39,6 +39,7 @@ export enum CsvFilesName {
 	STAFF_ROLE_TAGS_VISIBILITY = "ENG-5552-Edit-Info-Verify-that-admins-with-different-staff-roles-can-see-specific-tags-in-the-edit-info-page.csv",
 	ORIGINALS_NEGATIVE_BET_VALIDATION = "ENG-6968-originals-negative-bet-validation.csv",
 	PLINKO_BETS_ACROSS_MULTIPLE_WALLETS = "ENG-5415-Plinko-bets-across-multiple-wallets.csv",
+	ORIGINALS_WALLET_SWITCHING_TESTS = "ENG-9752-originals-wallet-switching-tests.csv",
 	HOMEPAGE_ORIGINALS_LAUNCH = "ENG-5798-originals-launch-from-homepage.csv",
 	HOMEPAGE_TOP_LINE_HEADER_LINKS = "ENG-5256-homepage-top-line-header-links.csv",
 	USER_INFO_SEND_NOTIFICATION = "ENG-2808-UserInfo-tab-verify-the-Send-notification-function.csv",

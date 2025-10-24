@@ -76,4 +76,8 @@ export class OriginalsMap extends BaseMap {
 			{ exact: true },
 		);
 	}
+
+	public get minesUnfinishedGamePopupContinueButton(): Locator {
+		return this.page.getByTestId("mines-unfinished-popup");
+	}
 }

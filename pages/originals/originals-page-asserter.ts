@@ -2,6 +2,7 @@ import { StepsPerGame } from "@constants/how-to-play-modal-steps";
 import { ClientApiInitListener } from "@core/listeners/network-listener/client-api-token-listener";
 import { OriginalGames } from "@core/types/types";
 import { Currency } from "@enums/currencies";
+import { IntervalMs } from "@enums/interval-millisecond";
 import { OriginalGame } from "@enums/original-games";
 import { Timeout } from "@enums/timeout";
 import { ToastSubTitle } from "@enums/toast-subtitles";
@@ -10,6 +11,7 @@ import { BaseAsserter } from "@pages/base/base-asserter";
 import { expect } from "@playwright/test";
 import { step } from "decorators/step";
 import { OriginalsPage } from "./originals-page";
+import { Unit } from "@enums/units";
 
 export class OriginalsAsserter extends BaseAsserter<OriginalsPage> {
 	public constructor(page: OriginalsPage) {
@@ -115,5 +117,43 @@ export class OriginalsAsserter extends BaseAsserter<OriginalsPage> {
 			seen,
 			`Final currency ${finalCurrency} not present in init responses.`,
 		).toContain(finalCurrency);
+	}
+
+	@step("Verify balance and 'Your Bet' updated simultaneously")
+	async balanceAndYourBetUpdatedSimultaneosly(
+		unit: Unit,
+		initialAccountBalance: number,
+		initialYourBetBalance: number,
+		game: OriginalGame,
+	): Promise<void> {
+		await expect
+			.poll(
+				async () => {
+					const currentAccountBalance =
+						await this.userBalanceHandler.walletBalanceInFiatRounded(
+							unit,
+						);
+					const currentYourBetBalance =
+						await this.gamdomPage.getYourBetValueForGame(game);
+
+					return {
+						balanceChanged:
+							currentAccountBalance !== initialAccountBalance,
+						yourBetChanged:
+							currentYourBetBalance !== initialYourBetBalance,
+						valuesMatch:
+							currentAccountBalance === currentYourBetBalance,
+					};
+				},
+				{
+					timeout: Timeout.MAX,
+					intervals: [IntervalMs.SHORT],
+				},
+			)
+			.toMatchObject({
+				balanceChanged: true,
+				yourBetChanged: true,
+				valuesMatch: true,
+			});
 	}
 }

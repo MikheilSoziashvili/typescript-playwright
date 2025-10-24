@@ -209,39 +209,6 @@ export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 		]);
 	}
 
-	@step("Verify balance and 'Your Bet' updated simultaneously")
-	async balanceAndYourBetUpdatedSimultaneosly(
-		initialAccountBalance: number,
-		initialYourBetBalance: number,
-	): Promise<void> {
-		await expect
-			.poll(
-				async () => {
-					const currentAccountBalance =
-						await this.userBalanceHandler.walletBalanceInFiatRounded();
-					const currentYourBetBalance =
-						await this.gamdomPage.getYourBetValue();
-
-					return {
-						balanceChanged:
-							currentAccountBalance !== initialAccountBalance,
-						yourBetChanged:
-							currentYourBetBalance !== initialYourBetBalance,
-						valuesMatch:
-							currentAccountBalance === currentYourBetBalance,
-					};
-				},
-				{
-					timeout: Timeout.MAX,
-					intervals: [IntervalMs.SHORT],
-				},
-			)
-			.toMatchObject({
-				balanceChanged: true,
-				yourBetChanged: true,
-				valuesMatch: true,
-			});
-	}
 	@step("Verify currency in bet amount field has changed")
 	public async betAmountCurrencyChanged(currency: Currency): Promise<void> {
 		await expect(this.gamdomPage.map.betAmountInput).toHaveAttribute(

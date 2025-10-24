@@ -1,6 +1,6 @@
 import { MINES_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
-import { roundToDecimals, waitUntil } from "@core/utils/utils";
+import { parseBalance, roundToDecimals, waitUntil } from "@core/utils/utils";
 import { Timeout } from "@enums/timeout";
 import { logger } from "@logger/logger";
 import { BasePage } from "@pages/base/base-page";
@@ -336,6 +336,11 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 	@step("Get bet amount value")
 	public async getBetAmountValue(): Promise<string> {
 		return this.map.betField.inputValue();
+	}
+
+	@step("Get 'Your Bet' value as number")
+	public async getYourBetValue(): Promise<number> {
+		return parseBalance(await this.map.yourBetValue.innerText());
 	}
 
 	@step("Open game history")

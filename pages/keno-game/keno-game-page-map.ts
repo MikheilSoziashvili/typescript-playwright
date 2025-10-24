@@ -58,6 +58,10 @@ export class KenoGamePageMap extends BaseMap {
 		return this.page.getByTestId("originals-risk-slider");
 	}
 
+	public get yourBetValue(): Locator {
+		return this.page.getByTestId("Keno-balance");
+	}
+
 	public kenoGameTile(index: number): Locator {
 		return this.page.getByTestId(`originals-keno-cell-${index}`);
 	}

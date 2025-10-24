@@ -18,4 +18,8 @@ export const predefined = {
 	vault: {
 		amountToWithdraw: 5,
 	},
+	bets: {
+		betAmountDDefault: 1,
+		betAmountSmall: 10,
+	},
 };

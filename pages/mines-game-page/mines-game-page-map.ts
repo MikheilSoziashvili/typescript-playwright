@@ -133,4 +133,8 @@ export class MinesGamePageMap extends BaseMap {
 	public get stopAutobetButton(): Locator {
 		return this.page.getByTestId("mines-stop-autobet");
 	}
+
+	public get yourBetValue(): Locator {
+		return this.page.getByTestId("Mines-balance");
+	}
 }
