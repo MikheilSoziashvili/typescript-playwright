@@ -113,6 +113,12 @@ export class PlinkoGamePageMap extends BaseMap {
 		);
 	}
 
+	public get plinkoAutobetFinishedToastMessage(): Locator {
+		return this.page.locator("[class='Toastify__toast-body']", {
+			hasText: "Autobet finished",
+		});
+	}
+
 	public get betRowsSliderContainer(): Locator {
 		return this.getSliderContainerByPlaceholder(
 			"Rows",

@@ -1,7 +1,5 @@
 import { BaseAsserter } from "@base/base-asserter";
 import { BooleanValueString } from "@enums/playwright/booleanValues";
-import { ToastSubTitle } from "@enums/toast-subtitles";
-import { ToastTitle } from "@enums/toast-titles";
 import { expect, Locator, TestInfo } from "@playwright/test";
 import { step } from "decorators/step";
 import { PlinkoGamePage } from "./plinko-game-page";
@@ -84,10 +82,22 @@ export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 		"Verify that the autobet finish in-game toast is displayed with correct title and subtitle",
 	)
 	async autobetFinishInGameToastIsDisplayed(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.plinkoAutobetFinishedToastMessage,
+		]);
+	}
+
+	/*
+	Commented out until data-testids for toast message are added
+	@step(
+		"Verify that the autobet finish in-game toast is displayed with correct title and subtitle",
+	)
+	async autobetFinishInGameToastIsDisplayed(): Promise<void> {
 		await this.inGameToastIsDisplayed();
 		await this.inGameToastTitleIs(ToastTitle.SUCCESS);
 		await this.inGameToastSubTitleIs(ToastSubTitle.AUTOBET_FINISHED);
 	}
+	*/
 
 	@step("Verify that the Stop Autobet button is displayed")
 	async stopAutobetButtonIsDisplayed(): Promise<void> {

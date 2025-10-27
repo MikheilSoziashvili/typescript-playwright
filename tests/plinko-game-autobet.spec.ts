@@ -53,10 +53,6 @@ test.describe(
 			`[ENG-5048] Plinko - Autobet - Start-Stop`,
 			testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
 			async ({ plinkoGamePage }) => {
-				test.fixme(
-					true,
-					"Temporarily skipped until locators for toast message are fixed",
-				);
 				await plinkoGamePage.steps().startAutobetSuccessfully();
 				await plinkoGamePage
 					.assertThat()

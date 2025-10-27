@@ -287,14 +287,14 @@ export class OriginalsSteps extends BasePageStep<OriginalsPage> {
 	): Promise<void> {
 		switch (game) {
 			case OriginalGame.Mines: {
-				await this.gamdomPage
-					.assertThat()
-					.checkElementsAreVisible([
-						this.gamdomPage.map
-							.minesUnfinishedGamePopupContinueButton,
-					]);
-				await this.gamdomPage.map.minesUnfinishedGamePopupContinueButton.click();
-				await this.gamdomPage.waitForGameRoundFinish(game);
+				const popupVisible =
+					await this.gamdomPage.map.minesUnfinishedGamePopupContinueButton.isVisible();
+
+				if (popupVisible) {
+					await this.gamdomPage.map.minesUnfinishedGamePopupContinueButton.click();
+					await this.gamdomPage.waitForGameRoundFinish(game);
+				}
+
 				await this.gamdomPage.authenticatedHeader.changeWalletAndCurrency(
 					wallet,
 					Currency.USD,

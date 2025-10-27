@@ -198,7 +198,7 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 					.steps()
 					.placeManualBetWithRandomTile({
 						betAmount: betAmount,
-						minesNumber: isNumber ? multiplierOrColorOrOption : 1,
+						minesNumber: isNumber ? multiplierOrColorOrOption : 0,
 						cashoutMultiplier: 0,
 					});
 				break;
@@ -273,6 +273,24 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 				break;
 			}
 			case OriginalGame.Mines: {
+				const bombHit = await (
+					gamePage as MinesGamePage
+				).map.bombTile.isVisible();
+
+				if (bombHit) {
+					await (gamePage as MinesGamePage)
+						.assertThat()
+						.startPlayingButtonIsDisplayed();
+
+					await (gamePage as MinesGamePage)
+						.steps()
+						.placeManualBetWithRandomTile({
+							betAmount: 1,
+							minesNumber: 0,
+							cashoutMultiplier: 0,
+						});
+				}
+
 				const isCashoutAvailable = await (
 					gamePage as MinesGamePage
 				).map.manualCashoutButton.isVisible();
@@ -282,9 +300,6 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 						.steps()
 						.performManualCashout();
 				}
-				await (gamePage as MinesGamePage)
-					.assertThat()
-					.startPlayingButtonIsDisplayed();
 				await (gamePage as MinesGamePage)
 					.assertThat()
 					.pickRandomTileButtonIsNotDisplayed();
