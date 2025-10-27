@@ -63,4 +63,23 @@ export class CasinoPageAsserter extends BaseAsserter<CasinoPage> {
 			.assertThat()
 			.subTitleIs(ToastSubTitle.SELF_EXCLUSION);
 	}
+
+	@step("Verify all visible games are from provider(s)")
+	public async verifyAllVisibleGamesAreFromProvider(
+		providers: GameProvider | GameProvider[],
+	): Promise<void> {
+		const allowedProviders = Array.isArray(providers)
+			? providers
+			: [providers];
+		const gameCards = await this.gamdomPage.map.allVisibleGameCards.all();
+
+		const providerLabels = gameCards.map((card) =>
+			this.gamdomPage.map.gameCardProviderLabel(card),
+		);
+
+		await this.checkEachElementTextIsInSet(
+			providerLabels,
+			allowedProviders,
+		);
+	}
 }

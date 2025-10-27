@@ -14,4 +14,5 @@ export enum GameProvider {
 	ODDIN = "oddin",
 	NO_LIMIT_CITY = "Nolimit City",
 	KALAMBA = "Kalamba",
+	WICKED_GAMES = "Wicked Games"
 }

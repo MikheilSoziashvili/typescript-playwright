@@ -1,11 +1,11 @@
-import { BasePageStep } from "@pages/base/base-page-step";
-import { CasinoPage } from "./casino-game-page";
-import { GameProvider } from "@enums/game-providers";
 import { OriginalGames, VisibilityResult } from "@core/types/types";
-import { step } from "decorators/step";
 import { waitUntil } from "@core/utils/utils";
-import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { CasinoGameName } from "@enums/casino-game";
+import { GameProvider } from "@enums/game-providers";
+import { TimeoutSeconds } from "@enums/timeout-seconds";
+import { BasePageStep } from "@pages/base/base-page-step";
+import { step } from "decorators/step";
+import { CasinoPage } from "./casino-game-page";
 
 export class CasinoPageSteps extends BasePageStep<CasinoPage> {
 	public constructor(gamdomPage: CasinoPage) {
@@ -77,5 +77,46 @@ export class CasinoPageSteps extends BasePageStep<CasinoPage> {
 	public async searchForGameAndOpen(game: CasinoGameName): Promise<void> {
 		await this.gamdomPage.searchForGame(game);
 		await this.gamdomPage.openGameFromDropdown(game);
+	}
+
+	@step("Select multiple providers from dropdown")
+	public async selectMultipleProvidersFromDropdown(
+		providers: GameProvider[],
+	): Promise<void> {
+		await this.gamdomPage.clickProvidersDropdown();
+		for (const provider of providers) {
+			await this.selectProviderFromDropdown(provider);
+		}
+	}
+
+	@step("Select provider from dropdown")
+	public async selectProviderFromDropdown(
+		provider: GameProvider,
+	): Promise<void> {
+		const providerOption =
+			this.gamdomPage.map.providerDropdownOption(provider);
+		await this.gamdomPage.map.toggleCheckboxSelection(providerOption, true);
+	}
+
+	@step("Deselect multiple providers from dropdown")
+	public async deselectMultipleProvidersFromDropdown(
+		providers: GameProvider[],
+	): Promise<void> {
+		await this.gamdomPage.clickProvidersDropdown();
+		for (const provider of providers) {
+			await this.deselectProviderFromDropdown(provider);
+		}
+	}
+
+	@step("Deselect provider from dropdown")
+	public async deselectProviderFromDropdown(
+		provider: GameProvider,
+	): Promise<void> {
+		const providerOption =
+			this.gamdomPage.map.providerDropdownOption(provider);
+		await this.gamdomPage.map.toggleCheckboxSelection(
+			providerOption,
+			false,
+		);
 	}
 }

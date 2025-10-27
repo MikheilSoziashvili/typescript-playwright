@@ -228,4 +228,18 @@ export class BaseMap {
 	public getLoadingAnimationSelector(): string {
 		return 'img[alt="gamdom-loading"]';
 	}
+
+	public async toggleCheckboxSelection(
+		option: Locator,
+		shouldBeSelected: boolean,
+	): Promise<void> {
+		const isSelected = await option.first().getAttribute("aria-selected");
+
+		if (
+			(shouldBeSelected && isSelected !== "true") ||
+			(!shouldBeSelected && isSelected === "true")
+		) {
+			await option.first().click();
+		}
+	}
 }

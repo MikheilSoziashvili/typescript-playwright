@@ -180,6 +180,17 @@ export class BaseAsserter<
 		}
 	}
 
+	@step("Check that each element text is in the allowed set")
+	public async checkEachElementTextIsInSet(
+		elements: Locator[],
+		allowedTexts: string[],
+		timeout?: number,
+	): Promise<void> {
+		for (const element of elements) {
+			await expect(element).toHaveText(allowedTexts, { timeout });
+		}
+	}
+
 	@step("Check that elements are empty")
 	public async checkElementsAreEmpty(
 		elements: Locator[],

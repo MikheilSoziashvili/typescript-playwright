@@ -135,4 +135,14 @@ export class CasinoPageMap extends BaseMap {
 	public get inGameHeartIcon(): Locator {
 		return this.page.locator("i[class*='icon-heart']");
 	}
+
+	public get allVisibleGameCards(): Locator {
+		return this.page.locator(
+			"div[class*='GameCard-styled__GameCardWrapper']",
+		);
+	}
+
+	public gameCardProviderLabel(gameCard: Locator): Locator {
+		return gameCard.locator("p[class*='GameCard-styled__GameProvider']");
+	}
 }
