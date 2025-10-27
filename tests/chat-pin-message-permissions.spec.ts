@@ -23,6 +23,7 @@ test.describe(
 					`[ENG-7196] [Chat] Check unpin pinned message permission changes with class ${record.Userclass} and tag ${record.Usertag}`,
 					testDetails()
 						.withJiraBugTickets("8283")
+						.withTags(TestTag.PLATFORM_BUG)
 						.withAuthor(JiraUser.ANGEL_PETROV)
 						.apply(),
 					async ({

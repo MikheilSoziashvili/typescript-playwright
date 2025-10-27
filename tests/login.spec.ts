@@ -174,7 +174,7 @@ test.describe("Login tests", () => {
 	test(
 		"[ENG-2722] Login with Google user through Google auth portal",
 		testDetails()
-			.withTags(TestTag.LOCAL)
+			.withTags(TestTag.PLATFORM_BUG)
 			.withJiraBugTickets("3177")
 			.withAuthor(JiraUser.NIKOLAY_GENOV)
 			.apply(),

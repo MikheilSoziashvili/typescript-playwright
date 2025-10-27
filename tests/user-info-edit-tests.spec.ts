@@ -64,7 +64,7 @@ test.describe(
 				test(
 					`[ENG-5543] Edit Info - Selecting '${record.staffRoleTag}' checks its related tags`,
 					testDetails()
-						.withTags(TestTag.LOCAL)
+						.withTags(TestTag.PLATFORM_BUG)
 						.withJiraBugTickets("8283")
 						.withAuthor(JiraUser.ANGEL_PETROV)
 						.apply(),

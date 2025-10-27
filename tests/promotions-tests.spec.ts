@@ -455,6 +455,7 @@ test.describe(
 					`[ENG-7398] Promotions - Duplicate '${promotionType.name}' existing promotion`,
 					testDetails()
 						.withAuthor(JiraUser.RALUCA_ARITON)
+						.withTags(TestTag.PLATFORM_BUG)
 						.withJiraBugTickets("8964")
 						.apply(),
 					async ({
@@ -579,8 +580,6 @@ test.describe(
 					test(
 						`[ENG-5736] Promotions - Update '${promotionType.name}' active promotion. Promotion Category: ${combination.category} - Promotion Subcategory: ${combination.subCategory} - Is For VIP: ${combination.isForVip}`,
 						testDetails()
-							.withTags(TestTag.LOCAL)
-							.withJiraBugTickets("7501")
 							.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 							.apply(),
 						async ({

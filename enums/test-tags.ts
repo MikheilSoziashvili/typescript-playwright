@@ -8,7 +8,6 @@ export enum TestTag {
 	FREE_SPINS = "@free-spins",
 	SEQUENTIAL = "@sequential",
 	HOMEPAGE = "@homepage",
-	LOCAL = "@local",
 	GAME_PROVIDERS = "@game-providers",
 	ADMIN_PANEL = "@admin-panel",
 	KOTH = "@koth",
@@ -17,4 +16,5 @@ export enum TestTag {
 	KENO = "@keno",
 	USER_INFO = "@user-info",
 	PROMO_CODES = "@promo-codes",
+	PLATFORM_BUG = "@platform-bug",
 }
