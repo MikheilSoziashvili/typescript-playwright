@@ -580,7 +580,7 @@ test.describe(
 					testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
 					async ({
 						page,
-						testDataPredefinedRandom,
+						testDataRandom,
 						gamdomDb,
 						promoCampaignsAdminPage,
 						walletModal,
@@ -588,13 +588,9 @@ test.describe(
 						toast,
 					}) => {
 						const promoCodeName =
-							testDataPredefinedRandom.data.promoCodes
-								.campaignName +
-							generateRandomString({ length: 3 });
+							testDataRandom.data.promoCodes.name();
 						const promoCodeValue =
-							testDataPredefinedRandom.data.promoCodes
-								.campaignCode +
-							generateRandomString({ length: 3 });
+							testDataRandom.data.promoCodes.codeValue();
 
 						await promoCampaign.create({
 							gamdomDb,
@@ -660,16 +656,12 @@ test.describe(
 						toast,
 						homePage,
 						notifications,
-						testDataPredefinedRandom,
+						testDataRandom,
 					}) => {
 						const promoCodeName =
-							testDataPredefinedRandom.data.promoCodes
-								.campaignName +
-							generateRandomString({ length: 3 });
+							testDataRandom.data.promoCodes.name();
 						const promoCodeValue =
-							testDataPredefinedRandom.data.promoCodes
-								.campaignCode +
-							generateRandomString({ length: 3 });
+							testDataRandom.data.promoCodes.codeValue();
 
 						await promoCampaign.create({
 							gamdomDb,

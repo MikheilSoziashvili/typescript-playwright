@@ -1,5 +1,4 @@
 import { test } from "@fixtures/fixtures";
-import { BetTestData } from "@dtos/test-data";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { getUserDetailsByTestTitle, parse_csv } from "@core/utils/utils";
 import { DATASETS_DIR } from "@constants/file-paths";
@@ -42,16 +41,17 @@ test.describe(
 				.withTags(TestTag.SMOKE)
 				.withAuthor(JiraUser.NIKOLAY_GENOV)
 				.apply(),
-			async ({ crashGamePage, userBalanceHandler }, testInfo) => {
+			async (
+				{ crashGamePage, userBalanceHandler, testDataObject },
+				testInfo,
+			) => {
 				const newUserDetails = getUserDetailsByTestTitle(
 					testInfo.title,
 					testInfo.workerIndex,
 				);
-				const betTestData: BetTestData = new BetTestData(
-					newUserDetails.username,
-					10,
-					Number("1.10"),
-				);
+				const betTestData = testDataObject.bet.preconfigured({
+					username: newUserDetails.username,
+				}).normalBetMinMultiplier;
 
 				await crashGamePage.navigate();
 
@@ -105,16 +105,18 @@ test.describe(
 			test(
 				`[ENG-1118] Crash - Auto Cashout with: [${record.your_bet}] value bets`,
 				testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
-				async ({ crashGamePage }, testInfo) => {
+				async ({ crashGamePage, testDataObject }, testInfo) => {
 					const newUserDetails = getUserDetailsByTestTitle(
 						testInfo.title,
 						testInfo.workerIndex,
 					);
 
-					const betTestData: BetTestData = new BetTestData(
-						newUserDetails.username,
-						Number(record.your_bet),
-						Number(record.auto_cashout),
+					const betTestData = testDataObject.bet.build(
+						{ username: newUserDetails.username },
+						{
+							betAmount: Number(record.your_bet),
+							autoCashoutMultiplier: Number(record.auto_cashout),
+						},
 					);
 
 					await crashGamePage.navigate();

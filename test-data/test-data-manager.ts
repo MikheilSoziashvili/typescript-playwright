@@ -1,6 +1,9 @@
 import { CSVDataSource } from "./core/csv-data-source";
+import { DomainDataSource } from "./core/domain-data-source";
+import { ObjectDataSource } from "./core/object-data-source";
 import { PredefinedDataSource } from "./core/predefined-data-source";
 import { PredefinedRandomDataSource } from "./core/predefined-random-data-source";
+import { RandomDataSource } from "./core/random-data-source";
 import { CsvDtoMap } from "./mappings/csv-dto-map";
 import {
 	CsvTransformerExistingReturnType,
@@ -48,6 +51,11 @@ export class TestDataManager {
 	/**
 	 * Creates a new data source for static predefined test data.
 	 *
+	 * This source exposes stable, non-randomized datasets defined in the
+	 * global `predefined` store. It is typically used when tests require
+	 * fixed and predictable values across runs (e.g. default wallets,
+	 * transaction amounts, or notification templates).
+	 *
 	 * @returns An instance of {@link PredefinedDataSource}.
 	 */
 	public fromPredefined(): PredefinedDataSource {
@@ -57,10 +65,56 @@ export class TestDataManager {
 	/**
 	 * Creates a new data source for randomized predefined test data.
 	 *
+	 * This source provides deterministic random values generated from
+	 * predefined templates (e.g. random strings, promo codes, messages).
+	 * Commonly used when stable yet variable data is needed across tests.
+	 *
 	 * @returns An instance of {@link PredefinedRandomDataSource}.
 	 */
 	public fromPredefinedRandom(): PredefinedRandomDataSource {
 		return new PredefinedRandomDataSource();
+	}
+
+	/**
+	 * Creates a new data source for fully dynamic random test data.
+	 *
+	 * This combines both predefined and predefined-random datasets,
+	 * enabling access to hybrid data — predefined structures populated
+	 * with randomized or dynamically generated values.
+	 *
+	 * @returns An instance of {@link RandomDataSource}.
+	 */
+	public fromRandom(): RandomDataSource {
+		return new RandomDataSource(
+			this.fromPredefined().data,
+			this.fromPredefinedRandom().data,
+		);
+	}
+
+	/**
+	 * Creates a new data source for domain-specific test datasets.
+	 *
+	 * Each domain represents a functional area (e.g. Originals, VIP Manager)
+	 * and exposes its own structured collections, utilities, and scenario data.
+	 * Useful for organizing test data around business domains.
+	 *
+	 * @returns An instance of {@link DomainDataSource}.
+	 */
+	public fromDomain(): DomainDataSource {
+		return new DomainDataSource();
+	}
+
+	/**
+	 * Creates a new data source for test data object factories.
+	 *
+	 * This source provides access to all strongly-typed object factories
+	 * (e.g. {@link BetTestDataObjectFactory}) used to generate structured,
+	 * composable test data objects for parameterized or API-based testing.
+	 *
+	 * @returns An instance of {@link ObjectDataSource}.
+	 */
+	public fromObject(): ObjectDataSource {
+		return new ObjectDataSource();
 	}
 }
 

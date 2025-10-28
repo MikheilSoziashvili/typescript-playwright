@@ -1,5 +1,4 @@
 import { test } from "@fixtures/fixtures";
-import { BetTestData } from "@dtos/test-data";
 import { parse_csv, setAuthenticationCookies } from "@core/utils/utils";
 import { DATASETS_DIR } from "@constants/file-paths";
 import {
@@ -32,16 +31,14 @@ test.describe(
 		test(
 			"[ENG-1416] Crash - Autobet",
 			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
-			async ({ crashGamePage, gamdomApiDbFacade }) => {
+			async ({ crashGamePage, gamdomApiDbFacade, testDataObject }) => {
 				const { user, cookie } =
 					await gamdomApiDbFacade.createSingleUserDbAndAuth();
 				await setAuthenticationCookies(crashGamePage.page, cookie);
 
-				const betTestData: BetTestData = new BetTestData(
-					user.username,
-					10,
-					Number("1.5"),
-				);
+				const betTestData = testDataObject.bet.preconfigured({
+					username: user.username,
+				}).normalBetMediumMultiplier;
 
 				await crashGamePage.navigate();
 
@@ -89,16 +86,14 @@ test.describe(
 		test(
 			"[ENG-2663] Crash - Start Autobet button is active",
 			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
-			async ({ crashGamePage, gamdomApiDbFacade }) => {
+			async ({ crashGamePage, gamdomApiDbFacade, testDataObject }) => {
 				const { user, cookie } =
 					await gamdomApiDbFacade.createSingleUserDbAndAuth();
 				await setAuthenticationCookies(crashGamePage.page, cookie);
 
-				const betTestData: BetTestData = new BetTestData(
-					user.username,
-					10,
-					Number("1.5"),
-				);
+				const betTestData = testDataObject.bet.preconfigured({
+					username: user.username,
+				}).normalBetMediumMultiplier;
 
 				await crashGamePage.navigate();
 				await crashGamePage
@@ -110,16 +105,14 @@ test.describe(
 		test(
 			"[ENG-5847] Crash - Stop Autobet actuates immediately",
 			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
-			async ({ crashGamePage, gamdomApiDbFacade }) => {
+			async ({ crashGamePage, gamdomApiDbFacade, testDataObject }) => {
 				const { user, cookie } =
 					await gamdomApiDbFacade.createSingleUserDbAndAuth();
 				await setAuthenticationCookies(crashGamePage.page, cookie);
 
-				const betTestData: BetTestData = new BetTestData(
-					user.username,
-					10,
-					Number("1.5"),
-				);
+				const betTestData = testDataObject.bet.preconfigured({
+					username: user.username,
+				}).normalBetMediumMultiplier;
 
 				await crashGamePage.navigate();
 
@@ -132,15 +125,21 @@ test.describe(
 			test(
 				`[ENG-2541] Crash - Autobet - Increase by [${record.increase_by}]`,
 				testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
-				async ({ crashGamePage, gamdomApiDbFacade }) => {
+				async ({
+					crashGamePage,
+					gamdomApiDbFacade,
+					testDataObject,
+				}) => {
 					const { user, cookie } =
 						await gamdomApiDbFacade.createSingleUserDbAndAuth();
 					await setAuthenticationCookies(crashGamePage.page, cookie);
 
-					const betTestData: BetTestData = new BetTestData(
-						user.username,
-						Number(record.your_bet),
-						Number(record.auto_cashout),
+					const betTestData = testDataObject.bet.build(
+						{ username: user.username },
+						{
+							betAmount: Number(record.your_bet),
+							autoCashoutMultiplier: Number(record.auto_cashout),
+						},
 					);
 
 					await crashGamePage.navigate();

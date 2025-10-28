@@ -1,36 +1,16 @@
-import {
-	SUPER_ADMIN_VIP_MANAGER_BULK,
-	SUPER_ADMIN_VIP_MANAGER_NO_BULK,
-} from "@constants/credentials";
-import { TEST_FILES_DIR } from "@constants/file-paths";
+import { SUPER_ADMIN_VIP_MANAGER_BULK } from "@constants/credentials";
 import { buildFreeSpinsBatchProcessedWithErrorsToastSubTitle } from "@core/helpers/asserter-helpers/text-asserters";
 import { testDetails } from "@core/helpers/test-details-helper";
-import { parse_csv } from "@core/utils/utils";
-import { BulkActions } from "@enums/bulk-actions";
 import { JiraUser } from "@enums/jira/jira-users";
-import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
-import { VipManagerDynamicErrorMessages } from "database/constants/vip-manager-errors-dynamic";
 import { storageStateUserAPI } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
-
-const testDataInput = [
-	{
-		userCredentials: SUPER_ADMIN_VIP_MANAGER_NO_BULK,
-		testDescriptionName: `[ENG-2330] Batch update VIP player status is absent for admin user with NO 'VipManagerBulkAdmin' tag assigned`,
-		expectedBatchUpdatePresence: false,
-		describeName: `Vip manager no bulk admin tests`,
-	},
-	{
-		userCredentials: SUPER_ADMIN_VIP_MANAGER_BULK,
-		testDescriptionName: `[ENG-2685] Batch update VIP player status is present for admin user with 'VipManagerBulkAdmin' tag assigned`,
-		expectedBatchUpdatePresence: true,
-		describeName: `Vip manager with bulk admin tests`,
-	},
-];
+import { testData } from "test-data/test-data-manager";
 
 test.describe("VIP Manager admin tests", () => {
-	testDataInput.forEach(
+	const vipManagerTestDataDomain = testData().fromDomain().vipManager;
+
+	vipManagerTestDataDomain.batchUpdateScenarios.forEach(
 		({
 			userCredentials,
 			testDescriptionName,
@@ -76,87 +56,84 @@ test.describe("VIP Manager admin tests", () => {
 			),
 		);
 
-		const fileFormats = ["txt", "pdf"];
+		vipManagerTestDataDomain.wrongFormatFilesScenarios.forEach(
+			({ filePath, fileFormatType }) => {
+				test(
+					`[ENG-2366] Vip Manager Bulk Admin - incorrect '${fileFormatType}' file format (different than .csv) can not be uploaded`,
+					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+					async ({ vipManagerAdminPage }) => {
+						await vipManagerAdminPage.navigate();
+						await vipManagerAdminPage
+							.assertThat()
+							.pageMainBlocksAreVisible();
 
-		const wrongFormatFiles = fileFormats.map((format) => ({
-			filePath: `./test-files/ENG-2366-vip-manager-${format}-wrong-file-format.${format}`,
-			fileFormatType: format,
-		}));
+						await vipManagerAdminPage
+							.steps()
+							.openBatchUpdateVipPlayersStatusModalSuccessfully();
+						await vipManagerAdminPage
+							.assertThat()
+							.verifyBatchUpdateVipPlayersStatusElements(true);
 
-		wrongFormatFiles.forEach(({ filePath, fileFormatType }) => {
-			test(
-				`[ENG-2366] Vip Manager Bulk Admin - incorrect '${fileFormatType}' file format (different than .csv) can not be uploaded`,
-				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
-				async ({ vipManagerAdminPage }) => {
-					await vipManagerAdminPage.navigate();
-					await vipManagerAdminPage
-						.assertThat()
-						.pageMainBlocksAreVisible();
-
-					await vipManagerAdminPage
-						.steps()
-						.openBatchUpdateVipPlayersStatusModalSuccessfully();
-					await vipManagerAdminPage
-						.assertThat()
-						.verifyBatchUpdateVipPlayersStatusElements(true);
-
-					await vipManagerAdminPage
-						.steps()
-						.toggleUpdateRemoveBatchVipPlayers(
-							vipManagerAdminPage.map
-								.updateBatchVipPlayersStatusButton,
+						await vipManagerAdminPage
+							.steps()
+							.toggleUpdateRemoveBatchVipPlayers(
+								vipManagerAdminPage.map
+									.updateBatchVipPlayersStatusButton,
+							);
+						await vipManagerAdminPage.updateRemoveBatchVipPlayersSendFile(
+							filePath,
 						);
-					await vipManagerAdminPage.updateRemoveBatchVipPlayersSendFile(
-						filePath,
-					);
 
-					await vipManagerAdminPage
-						.assertThat()
-						.verifyUploadFilesButtonIsDisabled();
+						await vipManagerAdminPage
+							.assertThat()
+							.verifyUploadFilesButtonIsDisabled();
 
-					await vipManagerAdminPage
-						.steps()
-						.toggleUpdateRemoveBatchVipPlayers(
-							vipManagerAdminPage.map
-								.removeBatchVipPlayersStatusButton,
+						await vipManagerAdminPage
+							.steps()
+							.toggleUpdateRemoveBatchVipPlayers(
+								vipManagerAdminPage.map
+									.removeBatchVipPlayersStatusButton,
+							);
+						await vipManagerAdminPage.updateRemoveBatchVipPlayersSendFile(
+							filePath,
 						);
-					await vipManagerAdminPage.updateRemoveBatchVipPlayersSendFile(
-						filePath,
-					);
 
-					await vipManagerAdminPage
-						.assertThat()
-						.verifyUploadFilesButtonIsDisabled();
-				},
-			);
-		});
+						await vipManagerAdminPage
+							.assertThat()
+							.verifyUploadFilesButtonIsDisabled();
+					},
+				);
+			},
+		);
 	});
 
-	testDataInput.forEach(({ userCredentials }) => {
-		test.describe(`Vip Manager - "Send notification" section`, () => {
-			test.use(
-				storageStateUserAPI(
-					userCredentials.username,
-					userCredentials.password,
-				),
-			);
+	vipManagerTestDataDomain.batchUpdateScenarios.forEach(
+		({ userCredentials }) => {
+			test.describe(`Vip Manager - "Send notification" section`, () => {
+				test.use(
+					storageStateUserAPI(
+						userCredentials.username,
+						userCredentials.password,
+					),
+				);
 
-			test(
-				`[ENG-2649] Vip Manager tab - verify that "Send notification" section is removed for '${userCredentials.username}' user`,
-				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
-				async ({ vipManagerAdminPage }) => {
-					await vipManagerAdminPage.navigate();
-					await vipManagerAdminPage
-						.assertThat()
-						.pageMainBlocksAreVisible();
+				test(
+					`[ENG-2649] Vip Manager tab - verify that "Send notification" section is removed for '${userCredentials.username}' user`,
+					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+					async ({ vipManagerAdminPage }) => {
+						await vipManagerAdminPage.navigate();
+						await vipManagerAdminPage
+							.assertThat()
+							.pageMainBlocksAreVisible();
 
-					await vipManagerAdminPage
-						.assertThat()
-						.checkSendNotificationSectionPresence(false);
-				},
-			);
-		});
-	});
+						await vipManagerAdminPage
+							.assertThat()
+							.checkSendNotificationSectionPresence(false);
+					},
+				);
+			});
+		},
+	);
 
 	test.describe(`Vip Manager - files with incorrect userIDs for bulk Update/Removal process`, () => {
 		test.use(
@@ -166,41 +143,7 @@ test.describe("VIP Manager admin tests", () => {
 			),
 		);
 
-		const bulkActions = [BulkActions.UPLOAD, BulkActions.REMOVE];
-
-		const bulkActionFiles = bulkActions.map((bulkAction) => {
-			const filePath = `./test-files/ENG-2332-batch-vip-status-incorrect-userId-${bulkAction}.csv`;
-			const incorrectUserIdFromCsv = parse_csv(
-				TEST_FILES_DIR,
-				`ENG-2332-batch-vip-status-incorrect-userId-${bulkAction}.csv`,
-				{
-					columns: false,
-				},
-			) as string[];
-
-			const expectedErrorMessage =
-				bulkAction === BulkActions.UPLOAD
-					? VipManagerDynamicErrorMessages.FAILED_TO_UPDATE_VIP_STATUS(
-							incorrectUserIdFromCsv[1][0],
-					  )
-					: VipManagerDynamicErrorMessages.FAILED_TO_REMOVE_VIP_STATUS(
-							incorrectUserIdFromCsv[1][0],
-					  );
-
-			const expectedSuccessToastMessage =
-				bulkAction === BulkActions.UPLOAD
-					? ToastSubTitle.SUCCESSFULLY_ATTACHED
-					: ToastSubTitle.SUCCESSFULLY_REMOVED_VIP_STATUSES;
-
-			return {
-				filePath,
-				bulkAction,
-				expectedSuccessToastMessage,
-				expectedErrorMessage,
-			};
-		});
-
-		bulkActionFiles.forEach(
+		vipManagerTestDataDomain.incorrectUserIdBulkFilesScenarios.forEach(
 			({
 				filePath,
 				bulkAction,

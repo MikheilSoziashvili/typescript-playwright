@@ -1,6 +1,5 @@
 import { RouletteBetColor } from "@enums/original-games";
 import { test } from "@fixtures/fixtures";
-import { BetTestData } from "@dtos/test-data";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { GreenHuntTypeOption } from "@enums/roulette-autobet-section";
 import { calculateGreenHuntAmountByPercentage } from "@formulas/roulette";
@@ -17,15 +16,18 @@ test.describe("Green hunt", () => {
 			.withTags(JiraComponent.GAMDOM_ORIGINALS)
 			.withAuthor(JiraUser.NIKOLAY_GENOV)
 			.apply(),
-		async ({ rouletteGamePage, userBalanceHandler }, testInfo) => {
+		async (
+			{ rouletteGamePage, userBalanceHandler, testDataObject },
+			testInfo,
+		) => {
 			const newUserDetails = getUserDetailsByTestTitle(
 				testInfo.title,
 				testInfo.workerIndex,
 			);
-			const betTestData: BetTestData = new BetTestData(
-				newUserDetails.username,
-				100,
-				1,
+
+			const betTestData = testDataObject.bet.build(
+				{ username: newUserDetails.username },
+				{ betAmount: 100 },
 			);
 			const greenHuntPercentage = 50;
 			await rouletteGamePage.navigate();

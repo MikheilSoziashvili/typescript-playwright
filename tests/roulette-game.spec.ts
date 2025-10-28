@@ -1,7 +1,6 @@
 import { RouletteBetColor, RouletteNumberColor } from "@enums/original-games";
 import { test } from "@fixtures/fixtures";
 import { logger } from "@logger/logger";
-import { BetTestData } from "@dtos/test-data";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { getUserDetailsByTestTitle } from "@core/utils/utils";
 import { testDetails } from "@core/helpers/test-details-helper";
@@ -17,17 +16,16 @@ test.describe("Roulette tests", () => {
 			.withTags(TestTag.SMOKE, JiraComponent.GAMDOM_ORIGINALS)
 			.withAuthor(JiraUser.NIKOLAY_GENOV)
 			.apply(),
-		async ({ rouletteGamePage }, testInfo) => {
+		async ({ rouletteGamePage, testDataObject }, testInfo) => {
 			test.slow(); // it takes some more time until a 'black' number is in
 			const newUserDetails = getUserDetailsByTestTitle(
 				testInfo.title,
 				testInfo.workerIndex,
 			);
-			const betTestData: BetTestData = new BetTestData(
-				newUserDetails.username,
-				1,
-				1,
-			);
+
+			const betTestData = testDataObject.bet.default({
+				username: newUserDetails.username,
+			});
 			await rouletteGamePage.navigate();
 
 			let isWin: RouletteNumberColor = RouletteNumberColor.BLACK;
@@ -105,15 +103,15 @@ test.describe("Roulette tests", () => {
 		testDetails()
 			.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.ROULETTE)
 			.apply(),
-		async ({ rouletteGamePage }, testInfo) => {
+		async ({ rouletteGamePage, testDataObject }, testInfo) => {
 			const newUserDetails = getUserDetailsByTestTitle(
 				testInfo.title,
 				testInfo.workerIndex,
 			);
-			const betTestData: BetTestData = new BetTestData(
-				newUserDetails.username,
-				100,
-				1,
+
+			const betTestData = testDataObject.bet.build(
+				{ username: newUserDetails.username },
+				{ betAmount: 100 },
 			);
 			const stopIfBalanceIsOver = 1000000;
 

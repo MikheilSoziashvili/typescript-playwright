@@ -110,8 +110,12 @@ Make sure you have the following installed:
 ├── support                                       # Support files
 │   ├── regex-patterns.ts                         # Regular expression patterns
 ├── test-data                                     # Test data management
+│   ├── base                                      # Test data abstract base classes and shared logic
 │   ├── core                                      # Test data core functionality
+│   ├── domains                                   # Test data domain-specific datasets
+│   ├── interfaces                                # Test data interfaces
 │   ├── mappings                                  # Test data mappings for CSV file names and DTOs
+│   ├── objects                                   # Test data object factories
 │   ├── parsers                                   # Test data file parsers
 │   ├── scenarios                                 # Test data predefined data bundles
 │   ├── sources                                   # Test data sources (predefined, randomized etc)
