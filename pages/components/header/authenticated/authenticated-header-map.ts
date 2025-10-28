@@ -160,4 +160,26 @@ export class AuthenticatedHeaderMap extends BaseMap {
 	public get accountBalanceValueInCasinoGame(): Locator {
 		return this.page.getByTestId("balanceAmoutLabel");
 	}
+
+	public get authenticatedHeaderContainerV4(): Locator {
+		return this.page.locator("header[class*=HeaderNavPanel]");
+	}
+
+	public get accountBalanceV4(): Locator {
+		return this.authenticatedHeaderContainerV4.getByTestId(
+			"headerUserBalance",
+		);
+	}
+
+	public get userAccountMenuButtonV4(): Locator {
+		return this.authenticatedHeaderContainerV4.getByTestId(
+			"account-menu-button",
+		);
+	}
+
+	public get walletButtonV4(): Locator {
+		return this.authenticatedHeaderContainerV4.getByTestId(
+			"nav-wallet-action-btn",
+		);
+	}
 }

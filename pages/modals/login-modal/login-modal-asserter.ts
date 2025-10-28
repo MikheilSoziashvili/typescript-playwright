@@ -56,4 +56,18 @@ export class LoginModalAsserter extends BaseAsserter<LoginModal> {
 			this.gamdomPage.map.passwordResetConfirmationText,
 		).toBeVisible();
 	}
+
+	@step("Check login modal elements are visible - v4")
+	async loginModalElementsAreVisibleV4(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.usernameContainerV4,
+			this.gamdomPage.map.passwordContainerV4,
+			this.gamdomPage.map.loginBtnV4,
+		]);
+	}
+
+	@step("Check login modal is displayed")
+	public async loginModalIsDisplayedV4(): Promise<void> {
+		await expect(this.gamdomPage.map.loginDialogV4).toBeVisible();
+	}
 }

@@ -25,4 +25,8 @@ export class UnauthenticatedHeaderMap extends BaseMap {
 	public get telegramSignInButton(): Locator {
 		return this.page.getByTestId("telegramSignInButton");
 	}
+
+	public get loginBtnV4(): Locator {
+		return this.page.getByTestId("signin-nav-btn");
+	}
 }

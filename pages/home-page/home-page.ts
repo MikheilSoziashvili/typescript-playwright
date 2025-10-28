@@ -68,6 +68,7 @@ export class HomePage extends BasePage<HomePageMap> {
 		return new HomePageSteps(this);
 	}
 
+	// Works for both new (v4) and old design
 	@step("Navigate and check title")
 	public async navigateAndCheckTitle(): Promise<void> {
 		await this.navigate();

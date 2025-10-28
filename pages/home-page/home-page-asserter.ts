@@ -371,4 +371,11 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 			},
 		);
 	}
+
+	@step("User is logged in - v4")
+	public async userIsLoggedInV4(): Promise<void> {
+		await this.gamdomPage.authenticatedHeader
+			.assertThat()
+			.loggedInUserElementsAreVisibleV4();
+	}
 }

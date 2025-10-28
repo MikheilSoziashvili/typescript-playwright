@@ -16,5 +16,7 @@ export enum TestTag {
 	KENO = "@keno",
 	USER_INFO = "@user-info",
 	PROMO_CODES = "@promo-codes",
+	V4 = "@v4",
+	LOGIN = "@login",
 	PLATFORM_BUG = "@platform-bug",
 }

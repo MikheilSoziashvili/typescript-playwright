@@ -124,4 +124,13 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 			this.gamdomPage.map.userAvatarDropdownMenuContainer,
 		]);
 	}
+
+	@step("Logged in user elements are visible - v4")
+	async loggedInUserElementsAreVisibleV4(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.walletButtonV4,
+			this.gamdomPage.map.accountBalanceV4,
+			this.gamdomPage.map.userAccountMenuButtonV4,
+		]);
+	}
 }

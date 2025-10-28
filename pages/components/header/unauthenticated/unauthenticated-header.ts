@@ -27,4 +27,9 @@ export class UnauthenticatedHeader extends BaseComponent<UnauthenticatedHeaderMa
 	public async openRegisterModal(): Promise<void> {
 		await this.map.signUpBtn.click();
 	}
+
+	@step("Open login modal")
+	public async openLoginModalV4(): Promise<void> {
+		await this.map.loginBtnV4.click();
+	}
 }

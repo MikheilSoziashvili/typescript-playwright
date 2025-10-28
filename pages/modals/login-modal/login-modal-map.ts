@@ -99,4 +99,28 @@ export class LoginModalMap extends BaseMap {
 	public get newPasswordInput(): Locator {
 		return this.page.locator('input[name="newPassword"]');
 	}
+
+	public get loginDialogV4(): Locator {
+		return this.page.getByTestId("auth-modal-dialog");
+	}
+
+	public get usernameContainerV4(): Locator {
+		return this.loginDialogV4.getByTestId("signin-username");
+	}
+
+	public get passwordContainerV4(): Locator {
+		return this.loginDialogV4.getByTestId("signin-password");
+	}
+
+	public get usernameFieldV4(): Locator {
+		return this.usernameContainerV4.getByTestId("signin-username-input");
+	}
+
+	public get passwordFieldV4(): Locator {
+		return this.passwordContainerV4.getByTestId("signin-password-input");
+	}
+
+	public get loginBtnV4(): Locator {
+		return this.loginDialogV4.getByTestId("signin-sbt-btn");
+	}
 }

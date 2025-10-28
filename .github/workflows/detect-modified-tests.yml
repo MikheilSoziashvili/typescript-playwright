@@ -173,7 +173,7 @@ jobs:
             - name: Run New or Modified Tests
               run: |
                   echo "Running tests: ${{ needs.detect-new-modified-tests.outputs.test_files }}"
-                  yarn playwright test ${{ needs.detect-new-modified-tests.outputs.test_files }} --repeat-each=5 --workers=10 --retries=0
+                  yarn playwright test ${{ needs.detect-new-modified-tests.outputs.test_files }} --repeat-each=5 --workers=10 --retries=0 --grep-invert @v4
 
             - name: Upload Playwright report to S3 and generate report url
               if: always()

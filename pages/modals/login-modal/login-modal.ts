@@ -93,4 +93,11 @@ export class LoginModal extends BaseModal<LoginModalMap> {
 		await this.map.newPasswordConfirmationInput.fill(password);
 		await this.map.setNewPasswordButton.click();
 	}
+
+	@step("Login with credentials - v4")
+	public async loginV4(username: string, password: string): Promise<void> {
+		await this.map.usernameFieldV4.fill(username);
+		await this.map.passwordFieldV4.fill(password);
+		await this.map.loginBtnV4.click();
+	}
 }

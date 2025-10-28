@@ -3,6 +3,7 @@ import { testDetails } from "@core/helpers/test-details-helper";
 import { parse_csv, toJson } from "@core/utils/utils";
 import { AuthenticationAction } from "@enums/authentication-actions";
 import { CsvFilesName } from "@enums/csv-file-name";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { AnnotationType } from "@enums/playwright/annotationsTypes";
 import { TestTag } from "@enums/test-tags";
@@ -206,3 +207,64 @@ test.describe("Login tests", () => {
 		);
 	});
 });
+
+test.describe(
+	"Login tests - v4",
+	testDetails().withTags(TestTag.V4, JiraComponent.LOGIN).apply(),
+	() => {
+		test(
+			`[ENG-7849] Verify correct display of "Sign In" modal window`,
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			async ({ homePage, loginModal }) => {
+				await homePage.navigateAndCheckTitle();
+				await homePage.unauthenticatedHeader.openLoginModalV4();
+				await loginModal.assertThat().loginModalIsDisplayedV4();
+				await loginModal.assertThat().loginModalElementsAreVisibleV4();
+			},
+		);
+
+		for (const user of users) {
+			test(
+				`[ENG-7849] Login with username using different user types: [${toJson(
+					user,
+				)}]`,
+				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+				async ({ homePage }) => {
+					await homePage.navigateAndCheckTitle();
+
+					await homePage.unauthenticatedHeader.openLoginModalV4();
+					await homePage.loginModal.loginV4(
+						user.username,
+						user.password,
+					);
+					await homePage.assertThat().userIsLoggedInV4();
+				},
+			);
+		}
+
+		testData()
+			.fromCsvRaw({ file: CsvFilesName.LOGIN_SUCCESSFUL })
+			.forEach((user) => {
+				test(
+					`[ENG-1070] Login with ${user.username}`,
+					testDetails()
+						.withTags(TestTag.SMOKE)
+						.withAuthor(JiraUser.NIKOLAY_GENOV)
+						.apply(),
+					async ({ homePage }) => {
+						await homePage.navigateAndCheckTitle();
+
+						await homePage.unauthenticatedHeader.openLoginModal();
+						await homePage.loginModal.login(
+							user.username,
+							user.password,
+						);
+
+						await homePage.authenticatedHeader
+							.assertThat()
+							.loggedInUserElementsAreVisible();
+					},
+				);
+			});
+	},
+);
