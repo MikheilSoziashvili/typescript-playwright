@@ -232,6 +232,8 @@ jobs:
             SHARD_OPTION: --shard ${{ matrix.shard }}/${{ strategy.job-total }}
             GREP_SEQUENTIAL_TESTS: --grep @sequential
             INVERT_SEQUENTIAL_TESTS: --grep-invert @sequential
+            GREP_V4_TESTS: --grep @v4
+            INVERT_V4_TESTS: --grep-invert @v4
             CUSTOM_OPTIONS: ${{ github.event.client_payload.custom_options || inputs.custom_options }}
             PLAYWRIGHT_TEST: yarn playwright test
             WORKERS: ${{ github.event_name == 'schedule' && '--workers=15' || format('--workers={0}', inputs.workers || '15')}}
@@ -304,22 +306,43 @@ jobs:
 
             - name: Run Playwright tests (Cron trigger)
               if: ${{ github.event_name == 'schedule' }}
-              run: $PLAYWRIGHT_TEST $INVERT_SEQUENTIAL_TESTS $WORKERS $SHARD_OPTION
+              run: |
+                  if [ "$ENABLE_NEW_DESIGN_V4" == "true" ]; then
+                    echo "Running only @v4 tests (enable_new_design_v4=true)"
+                    $PLAYWRIGHT_TEST $GREP_V4_TESTS $WORKERS $SHARD_OPTION
+                  else
+                    echo "Running all tests except @v4 tests (enable_new_design_v4=false)"
+                    $PLAYWRIGHT_TEST $INVERT_SEQUENTIAL_TESTS $INVERT_V4_TESTS $WORKERS $SHARD_OPTION
+                  fi
 
             - name: Run Playwright tests (Manual trigger)
               if: ${{ github.event_name != 'schedule' }}
               run: |
                   TEST_COMMAND=$PLAYWRIGHT_TEST
+
+                  # Handle tag filtering
                   if [ "$TAG" == "all" ]; then
                     echo "Running all tests ${CUSTOM_OPTIONS:+with custom options: $CUSTOM_OPTIONS}"
                   else
                     echo "Running tests with tag: "@$TAG" ${CUSTOM_OPTIONS:+and custom options: $CUSTOM_OPTIONS}"
                     TEST_COMMAND="$TEST_COMMAND --grep @${TAG}"
                   fi
-                  if [ -n "$CUSTOM_OPTIONS" ]; then
-                    $TEST_COMMAND $CUSTOM_OPTIONS $SHARD_OPTION
+
+                  # Handle v4 tests based on enable_new_design_v4 parameter
+                  V4_OPTION=""
+                  if [ "$ENABLE_NEW_DESIGN_V4" == "true" ]; then
+                    echo "V4 design enabled: Running only @v4 tests"
+                    V4_OPTION="$GREP_V4_TESTS"
                   else
-                    $TEST_COMMAND $INVERT_SEQUENTIAL_TESTS $WORKERS $SHARD_OPTION
+                    echo "V4 design disabled: Excluding @v4 tests"
+                    V4_OPTION="$INVERT_V4_TESTS"
+                  fi
+
+                  # Execute tests
+                  if [ -n "$CUSTOM_OPTIONS" ]; then
+                    $TEST_COMMAND $V4_OPTION $CUSTOM_OPTIONS $SHARD_OPTION
+                  else
+                    $TEST_COMMAND $INVERT_SEQUENTIAL_TESTS $V4_OPTION $WORKERS $SHARD_OPTION
                   fi
 
             - name: Upload blob report to GitHub Actions Artifacts

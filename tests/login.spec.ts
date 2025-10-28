@@ -246,23 +246,20 @@ test.describe(
 			.fromCsvRaw({ file: CsvFilesName.LOGIN_SUCCESSFUL })
 			.forEach((user) => {
 				test(
-					`[ENG-1070] Login with ${user.username}`,
-					testDetails()
-						.withTags(TestTag.SMOKE)
-						.withAuthor(JiraUser.NIKOLAY_GENOV)
-						.apply(),
+					`[ENG-7849] Login with ${user.username}`,
+					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
 					async ({ homePage }) => {
 						await homePage.navigateAndCheckTitle();
 
-						await homePage.unauthenticatedHeader.openLoginModal();
-						await homePage.loginModal.login(
+						await homePage.unauthenticatedHeader.openLoginModalV4();
+						await homePage.loginModal.loginV4(
 							user.username,
 							user.password,
 						);
 
 						await homePage.authenticatedHeader
 							.assertThat()
-							.loggedInUserElementsAreVisible();
+							.loggedInUserElementsAreVisibleV4();
 					},
 				);
 			});
