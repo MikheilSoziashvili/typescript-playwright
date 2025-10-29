@@ -43,7 +43,7 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 	public async waitBettingWindowAvailable(): Promise<void> {
 		const timeLeft = await this.getTimeLeftForBetting();
 
-		if (timeLeft < 2) {
+		if (timeLeft < 4) {
 			logger.info(
 				`Time left for betting is ${timeLeft} seconds. Waiting for the next round...`,
 			);
