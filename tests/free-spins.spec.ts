@@ -1,8 +1,5 @@
-import { BATCH_FREE_SPINS_FILE_PATH } from "@constants/file-paths";
 import {
-	buildFreeSpinsBatchProcessedToastSubTitle,
-	buildSendingOutFreeSpinsBatchToastSubTitle,
-	buildSendingOutFreeSpinsToastSubTitle,
+	buildSendingOutFreeSpinsToastSubTitle
 } from "@core/helpers/asserter-helpers/text-asserters";
 import { testDetails } from "@core/helpers/test-details-helper";
 import {
@@ -27,12 +24,15 @@ import { FreeSpinsAdminPage } from "@pages/admin/free-spins-admin/free-spins-adm
 import { HomePage } from "@pages/home-page/home-page";
 import { NotificationsPage } from "@pages/notifications/notifications-page";
 import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
+import { testData } from "test-data/test-data-manager";
 
 test.describe("Free spins tests", () => {
 	test.describe(
 		"Grant free spins",
 		testDetails().withTags(JiraComponent.REWARDS).apply(),
 		() => {
+			const freeSpinsTestDataDomain = testData().fromDomain().freeSpins;
+
 			test.use(
 				storageStateNewSuperAdminUserDB({
 					amount: SUPER_HIGH_USER_AMOUNT,
@@ -75,41 +75,26 @@ test.describe("Free spins tests", () => {
 				},
 			);
 
-			test(
-				"[ENG-5008] Granting free spins in batch",
-				testDetails()
-					.withTags(JiraComponent.FREE_SPINS)
-					.withAuthor(JiraUser.IVAYLO_STOYCHEV)
-					.apply(),
-				async ({ freeSpinsAdminPage, toast }) => {
-					await freeSpinsAdminPage.navigate();
-
-					await freeSpinsAdminPage
-						.steps()
-						.uploadBatchFreeSpinsFile(BATCH_FREE_SPINS_FILE_PATH);
-
-					await freeSpinsAdminPage.steps().getFreeSpins({
-						gameName: CasinoGameName.BARREL_BONANZA,
-						betAmount: 100,
-					});
-
-					await toast.assertThat().titlesAre([
-						{
-							title: ToastTitle.SUCCESS,
-							subTitle:
-								buildSendingOutFreeSpinsBatchToastSubTitle(
-									19,
-									1,
-								),
+			freeSpinsTestDataDomain.batchScenarios.forEach(
+				({ description, filePath, assertions }) => {
+					test(
+						`[ENG-5008] Granting free spins in batch - ${description}`,
+						testDetails()
+							.withTags(JiraComponent.FREE_SPINS)
+							.withAuthor(JiraUser.RALUCA_ARITON)
+							.apply(),
+						async ({ freeSpinsAdminPage }) => {
+							await freeSpinsAdminPage.navigate();
+							await freeSpinsAdminPage
+								.steps()
+								.uploadBatchFreeSpinsFile(filePath);
+							await freeSpinsAdminPage.steps().getFreeSpins({
+								gameName: CasinoGameName.BARREL_BONANZA,
+								betAmount: 100,
+							});
+							await assertions(freeSpinsAdminPage);
 						},
-						{
-							title: ToastTitle.SUCCESS,
-							subTitle: buildFreeSpinsBatchProcessedToastSubTitle(
-								19,
-								1,
-							),
-						},
-					]);
+					);
 				},
 			);
 		},

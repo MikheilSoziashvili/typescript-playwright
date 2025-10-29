@@ -33,9 +33,14 @@ export const USER_1_AUTH_STATE_FILE_PATH: string = getFilePath(
 	storageStateDir,
 );
 
-export const BATCH_FREE_SPINS_FILE_PATH = path.resolve(
+export const BATCH_FREE_SPINS_SUCCESS_FILE_PATH = path.resolve(
 	__dirname,
-	`../${TEST_FILES_DIR}/ENG-5008-batch-free-spins-upload.csv`,
+	`../${TEST_FILES_DIR}/ENG-5008-batch-free-spins-successful-upload.csv`,
+);
+
+export const BATCH_FREE_SPINS_PARTIAL_FAIL_FILE_PATH = path.resolve(
+	__dirname,
+	`../${TEST_FILES_DIR}/ENG-5008-batch-free-spins-partial-fail-upload.csv`,
 );
 
 export const EV_REWARD_FREE_SPINS_FILE_MAP = {

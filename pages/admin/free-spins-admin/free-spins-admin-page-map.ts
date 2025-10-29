@@ -1,5 +1,6 @@
 import { BaseMap } from "@base/base-map";
 import { Locator, Page } from "@playwright/test";
+import { digitsOnlyPattern } from "@support/regex-patterns";
 
 export class FreeSpinsAdminPageMap extends BaseMap {
 	public constructor(page: Page) {
@@ -115,5 +116,30 @@ export class FreeSpinsAdminPageMap extends BaseMap {
 		return this.topPlayedSlotsVisibleRows.filter({
 			has: this.page.locator("td:nth-child(2)", { hasText: gameName }),
 		});
+	}
+
+	public get batchFreeSpinsPopUpContainer(): Locator {
+		return this.page.getByTestId("modalContainer");
+	}
+
+	public async getBatchFreeSpinsPopUpSuccessfulUsersCount(): Promise<number> {
+		const text = await this.batchFreeSpinsPopUpContainer
+			.getByText("Successfully received:")
+			.innerText();
+		return Number(text.match(digitsOnlyPattern)?.[0]);
+	}
+
+	public async getBatchFreeSpinsPopUpFailedUsersCount(): Promise<number> {
+		const text = await this.batchFreeSpinsPopUpContainer
+			.getByText("Failed:")
+			.innerText();
+		return Number(text.match(digitsOnlyPattern)?.[0]);
+	}
+
+	public async getBatchFreeSpinsPopUpTotalProcessedUsersCount(): Promise<number> {
+		const text = await this.batchFreeSpinsPopUpContainer
+			.getByText("Total processed:")
+			.innerText();
+		return Number(text.match(digitsOnlyPattern)?.[0]);
 	}
 }
