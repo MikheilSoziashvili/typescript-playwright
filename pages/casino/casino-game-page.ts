@@ -95,4 +95,20 @@ export class CasinoPage extends BasePage<CasinoPageMap> {
 	public async clickInGameHeartIcon(): Promise<void> {
 		await this.map.inGameHeartIcon.click();
 	}
+
+	@step("Double click Save Settings button")
+	public async clickSaveSettingsRandomButton(): Promise<void> {
+		const button = this.map.saveSettingsRandomButton;
+
+		await button.evaluate((element) => {
+			const btn = element as HTMLElement;
+			btn.click();
+			btn.click();
+		});
+	}
+
+	@step("Click Pick random button")
+	public async clickPickRandomButton(): Promise<void> {
+		await this.map.pickRandomButton.click();
+	}
 }

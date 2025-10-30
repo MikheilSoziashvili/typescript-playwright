@@ -20,7 +20,7 @@ export class CasinoPageMap extends BaseMap {
 	}
 
 	public get settingsButton(): Locator {
-		return this.page.locator('button[aria-label="Settings"]');
+		return this.page.getByTestId("pickRandomSettings");
 	}
 
 	public get providersDropdownInSettingsModal(): Locator {
@@ -144,5 +144,28 @@ export class CasinoPageMap extends BaseMap {
 
 	public gameCardProviderLabel(gameCard: Locator): Locator {
 		return gameCard.locator("p[class*='GameCard-styled__GameProvider']");
+	}
+
+	public get saveSettingsRandomButton(): Locator {
+		return this.page.getByTestId("saveSettingsRandomButton");
+	}
+
+	public get showOnlyBonusBuyGamesToggle(): Locator {
+		return this.page.getByTestId("bonusBuyGamesSwitch");
+	}
+
+	public get disableLiveGamesToggle(): Locator {
+		return this.page.getByTestId("disableLiveGamesSwitch");
+	}
+
+	public get disableTableGamesToggle(): Locator {
+		return this.page.getByTestId("disableTableGamesSwitch");
+	}
+
+	public get pickRandomButton(): Locator {
+		return this.page.getByTestId("pickRandomButton");
+	}
+	public get gameProviderLabel(): Locator {
+		return this.page.getByTestId("game-provider");
 	}
 }

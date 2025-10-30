@@ -6,6 +6,7 @@ import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { BasePageStep } from "@pages/base/base-page-step";
 import { step } from "decorators/step";
 import { CasinoPage } from "./casino-game-page";
+import { Locator } from "@playwright/test";
 
 export class CasinoPageSteps extends BasePageStep<CasinoPage> {
 	public constructor(gamdomPage: CasinoPage) {
@@ -95,7 +96,7 @@ export class CasinoPageSteps extends BasePageStep<CasinoPage> {
 	): Promise<void> {
 		const providerOption =
 			this.gamdomPage.map.providerDropdownOption(provider);
-		await this.gamdomPage.map.toggleCheckboxSelection(providerOption, true);
+		await this.gamdomPage.map.checkboxSelection(providerOption, true);
 	}
 
 	@step("Deselect multiple providers from dropdown")
@@ -114,9 +115,56 @@ export class CasinoPageSteps extends BasePageStep<CasinoPage> {
 	): Promise<void> {
 		const providerOption =
 			this.gamdomPage.map.providerDropdownOption(provider);
-		await this.gamdomPage.map.toggleCheckboxSelection(
-			providerOption,
-			false,
+		await this.gamdomPage.map.checkboxSelection(providerOption, false);
+	}
+
+	@step("Select multiple providers from settings modal dropdown")
+	public async selectMultipleProvidersFromSettingsModalDropdown(
+		providers: GameProvider[],
+	): Promise<void> {
+		await this.gamdomPage.clickProvidersDropdownInSettingsModal();
+		for (const provider of providers) {
+			await this.selectProviderFromDropdown(provider);
+		}
+	}
+
+	@step("Configure random game settings")
+	public async configureRandomGameSettings({
+		providers = [],
+		showOnlyBonusBuy = false,
+		disableLiveGames = false,
+		disableTableGames = false,
+	}: {
+		providers: GameProvider[];
+		showOnlyBonusBuy?: boolean;
+		disableLiveGames?: boolean;
+		disableTableGames?: boolean;
+	}): Promise<void> {
+		await this.gamdomPage.clickSettingsButton();
+
+		await this.toggleSetting(
+			this.gamdomPage.map.showOnlyBonusBuyGamesToggle,
+			showOnlyBonusBuy,
 		);
+		await this.toggleSetting(
+			this.gamdomPage.map.disableLiveGamesToggle,
+			disableLiveGames,
+		);
+		await this.toggleSetting(
+			this.gamdomPage.map.disableTableGamesToggle,
+			disableTableGames,
+		);
+
+		await this.selectMultipleProvidersFromSettingsModalDropdown(providers);
+		await this.gamdomPage.clickSaveSettingsRandomButton();
+	}
+
+	@step("Toggle a setting")
+	public async toggleSetting(
+		toggle: Locator,
+		enable: boolean,
+	): Promise<void> {
+		const checkbox = this.gamdomPage.map.toggleCheckbox(toggle);
+		await this.gamdomPage.map.toggleState(checkbox, enable);
 	}
 }

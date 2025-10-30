@@ -82,4 +82,22 @@ export class CasinoPageAsserter extends BaseAsserter<CasinoPage> {
 			allowedProviders,
 		);
 	}
+
+	@step(
+		"Verify that the displayed game provider is one of the expected providers",
+	)
+	public async verifyGameProviderIsOneOf(
+		expectedProviders: GameProvider[],
+	): Promise<void> {
+		const label = this.gamdomPage.map.gameProviderLabel;
+		const text = (await label.textContent())?.trim() ?? "";
+		const allowed = expectedProviders.map(String);
+
+		expect(
+			allowed.includes(text),
+			`Expected displayed provider "${text}" to be one of: ${allowed.join(
+				", ",
+			)}`,
+		).toBeTruthy();
+	}
 }

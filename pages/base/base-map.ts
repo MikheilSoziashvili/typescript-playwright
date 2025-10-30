@@ -229,7 +229,7 @@ export class BaseMap {
 		return 'img[alt="gamdom-loading"]';
 	}
 
-	public async toggleCheckboxSelection(
+	public async checkboxSelection(
 		option: Locator,
 		shouldBeSelected: boolean,
 	): Promise<void> {
@@ -241,5 +241,20 @@ export class BaseMap {
 		) {
 			await option.first().click();
 		}
+	}
+
+	public async toggleState(
+		checkbox: Locator,
+		shouldBeChecked: boolean,
+	): Promise<void> {
+		const isChecked = await checkbox.isChecked();
+
+		if (isChecked !== shouldBeChecked) {
+			await checkbox.click();
+		}
+	}
+
+	public toggleCheckbox(toggle: Locator): Locator {
+		return toggle.locator('input[type="checkbox"]');
 	}
 }
