@@ -82,7 +82,7 @@ test.describe("User profile links accessibility", () => {
 							);
 						await verificationPage
 							.assertThat()
-							.verificationPageTitleIsVisible();
+							.verificationPageTitleAndTabsAreVisible();
 					},
 				);
 			});

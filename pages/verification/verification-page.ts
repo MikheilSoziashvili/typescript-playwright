@@ -32,6 +32,11 @@ export class VerificationPage extends BasePage<VerificationPageMap> {
 		return new VerificationPageSteps(this);
 	}
 
+	@step("Select Verify Business tab")
+	public async selectVerifyBusinessTab(): Promise<void> {
+		await this.map.verifyBusinessTab.click();
+	}
+
 	@step("Open country dropdown")
 	public async openCountryDropdown(): Promise<void> {
 		await this.map.countryDropdown.click();

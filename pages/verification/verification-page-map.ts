@@ -16,18 +16,26 @@ export class VerificationPageMap extends BaseMap {
 		});
 	}
 
+	public get verifyMeTab(): Locator {
+		return this.page.getByRole("tab", { name: "Verify me" });
+	}
+
+	public get verifyBusinessTab(): Locator {
+		return this.page.getByRole("tab", { name: "Verify Business" });
+	}
+
 	public get countryDropdownContainer(): Locator {
 		return this.page.getByLabel("Country of Residence");
 	}
 
 	public get countryDropdown(): Locator {
-		return this.page
-			.locator('input[role="combobox"][aria-autocomplete="list"]');
+		return this.page.locator(
+			'input[role="combobox"][aria-autocomplete="list"]',
+		);
 	}
 
 	public get countryDropdownValuesContainer(): Locator {
-		return this.page
-			.getByRole("listbox");
+		return this.page.getByRole("listbox");
 	}
 
 	public get countryDropdownValueItems(): Locator {
@@ -44,24 +52,16 @@ export class VerificationPageMap extends BaseMap {
 		return this.page.getByLabel("Date of Birth");
 	}
 
-	public get addressInput(): Locator {
-		return this.page.getByLabel("Address").first();
+	public get businessNameInput(): Locator {
+		return this.page.getByLabel("Business name");
 	}
 
-	public get cityInput(): Locator {
-		return this.page.getByLabel("City");
+	public get bbusinessAddressInput(): Locator {
+		return this.page.getByLabel("Business address");
 	}
 
-	public get postalCodeInput(): Locator {
-		return this.page.getByLabel("Zip / Postal Code");
-	}
-
-	public get stateProvinceInput(): Locator {
-		return this.page.getByLabel("State/Province");
-	}
-
-	public get countryDropdownInput(): Locator {
-		return this.page.getByTestId("countryDropdownPlaceholder");
+	public get businessRegistrationNumberInput(): Locator {
+		return this.page.getByLabel("Registration number");
 	}
 
 	public get verifyCheckbox(): Locator {

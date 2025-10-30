@@ -29,7 +29,11 @@ export class VerificationPageAsserter extends BaseAsserter<VerificationPage> {
 	}
 
 	@step("Verification page title is visible")
-	public async verificationPageTitleIsVisible(): Promise<void> {
-		await expect(this.gamdomPage.map.verificationPageTitle).toBeVisible();
+	public async verificationPageTitleAndTabsAreVisible(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.verificationPageTitle,
+			this.gamdomPage.map.verifyMeTab,
+			this.gamdomPage.map.verifyBusinessTab,
+		]);
 	}
 }

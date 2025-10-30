@@ -35,7 +35,7 @@ export enum ToastSubTitle {
 	PROCESSED_OK = "Rewards hand outs processed, please check the logs below!",
 	SUCCESSFULLY_ATTACHED = "Successfully attached!",
 	SUCCESSFULLY_REMOVED_VIP_STATUSES = "Successfully removed VIP statuses!",
-	LEVEL_ONE_VERIFICATION_SUBMITTED = "LEVEL1\n data submitted successfully",
+	LEVEL_ONE_VERIFICATION_SUBMITTED = "LEVEL1 data submitted successfully",
 	SESSION_ENDED = "Session ended successfully",
 	TIPS_PROCESSED_SUCCESSFULLY = "Tips processed successfully! Please check the logs below.",
 	COPIED_SHARABLE_LINK = "Copied sharable link",

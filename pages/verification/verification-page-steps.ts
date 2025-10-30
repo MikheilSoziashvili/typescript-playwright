@@ -21,34 +21,31 @@ export class VerificationPageSteps extends BasePageStep<VerificationPage> {
 			]);
 	}
 
-	@step("Fill in verification form for kyc level 1")
+	@step("Fill in verification form for KYC level 1")
 	public async fillInKycLevel1Form(): Promise<void> {
-		const formData = this.generateKycLevel1Data();
-		await this.fillFormFields(formData);
+		await this.gamdomPage.map.firstAndLastNameInput.fill(
+			faker.person.fullName(),
+		);
+		await this.gamdomPage.map.dateOfBirthInput.fill(
+			faker.date.birthdate().toISOString().split("T")[0],
+		);
 		await this.gamdomPage.map.countryDropdownContainer.click();
 		await this.gamdomPage.selectRandomCountry();
 		await this.gamdomPage.map.verifyCheckbox.click();
 		await this.gamdomPage.map.submitButton.click();
 	}
 
-	private generateKycLevel1Data() {
-		return {
-			firsAndLasttName: faker.person.fullName(),
-			dateOfBirth: faker.date.birthdate().toISOString().split("T")[0],
-		};
-	}
-
-	@step("Fill in KYC form fields")
-	private async fillFormFields(
-		formData: Record<string, string>,
-	): Promise<void> {
-		const fieldMappings = {
-			firsAndLasttName: this.gamdomPage.map.firstAndLastNameInput,
-			dateOfBirth: this.gamdomPage.map.dateOfBirthInput,
-		};
-
-		for (const [fieldName, element] of Object.entries(fieldMappings)) {
-			await element.fill(formData[fieldName]);
-		}
+	@step("Fill in verification form for KYB level 1")
+	public async fillInKybLevel1Form(): Promise<void> {
+		await this.gamdomPage.selectVerifyBusinessTab();
+		await this.gamdomPage.map.businessNameInput.fill(faker.company.name());
+		await this.gamdomPage.map.bbusinessAddressInput.fill(
+			faker.location.streetAddress(),
+		);
+		await this.gamdomPage.map.businessRegistrationNumberInput.fill(
+			faker.string.numeric(10),
+		);
+		await this.gamdomPage.map.verifyCheckbox.click();
+		await this.gamdomPage.map.submitButton.click();
 	}
 }
