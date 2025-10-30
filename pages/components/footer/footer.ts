@@ -42,6 +42,8 @@ export class Footer extends BaseComponent<FooterMap> {
 			Host.Intercom,
 			Header.Authorization,
 		);
+
+		await this.map.liveSupportButton.scrollIntoViewIfNeeded();
 		await this.map.liveSupportButton.click();
 	}
 

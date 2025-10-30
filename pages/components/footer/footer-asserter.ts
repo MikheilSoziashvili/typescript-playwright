@@ -28,4 +28,11 @@ export class FooterAsserter extends BaseAsserter<Footer> {
 			this.gamdomPage.map.socialMediaFooterIconsContainer,
 		);
 	}
+
+	@step("Footer is visible")
+	public async footerIsVisible(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.footerContainer,
+		]);
+	}
 }

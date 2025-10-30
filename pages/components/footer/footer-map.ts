@@ -7,7 +7,7 @@ export class FooterMap extends BaseMap {
 	}
 
 	public get footerContainer(): Locator {
-		return this.page.locator("//footer");
+		return this.page.getByTestId("footerContainer");
 	}
 
 	public footerLinkByPlaceholder(placeholderText: string): Locator {
@@ -39,10 +39,10 @@ export class FooterMap extends BaseMap {
 	}
 
 	public get liveSupportButton(): Locator {
-		return this.page.getByTestId("footerLinkLiveSupport");
+		return this.footerContainer.getByTestId("footerLinkLiveSupport");
 	}
 
 	public get affiliatesFooterButton(): Locator {
-		return this.page.getByTestId("footerLinkAffiliates");
+		return this.footerContainer.getByTestId("footerLinkAffiliates");
 	}
 }

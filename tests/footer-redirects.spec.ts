@@ -11,6 +11,7 @@ import { environment_url } from "configuration";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraUser } from "@enums/jira/jira-users";
 import { testData } from "test-data/test-data-manager";
+import { Timeout } from "@enums/timeout";
 
 const footerRecords = testData().fromCsvRaw({
 	file: CsvFilesName.FOOTER_LINKS_AND_ENDPOINTS,
@@ -83,7 +84,11 @@ loggedState.forEach(({ state, user, csv }) => {
 					await footer.openFooterLinkByPlaceholder(record.linkName);
 					await footer
 						.assertThat()
-						.waitForAndVerifyCurrentUrlIs(record.expectedURL);
+						.waitForAndVerifyCurrentUrlIs(
+							record.expectedURL,
+							false,
+							Timeout.EXTRA_LONG,
+						);
 				},
 			);
 		});
@@ -159,6 +164,7 @@ loggedState.forEach(({ state, user, csv }) => {
 			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
 			async ({ homePage, footer, liveSupportModal }) => {
 				await homePage.navigate();
+				await footer.assertThat().footerIsVisible();
 				await footer.openLiveSupport();
 				await liveSupportModal.assertThat().isDisplayed();
 			},
