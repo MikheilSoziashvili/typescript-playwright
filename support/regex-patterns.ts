@@ -1,4 +1,5 @@
 import { CurrencySymbol } from "@enums/currenciesSymbols";
+import { TestTag } from "@enums/test-tags";
 
 export const twoDigitDecimalWithX = /[0-9]{1,2}\.[0-9]{1,2}[x]/;
 export const twoDigitDecimalWithS = /[0-9]{1,2}\.[0-9]{1,2}[s]/;
@@ -61,3 +62,4 @@ export const testTimeoutPattern = /Test timeout of (\d+)ms exceeded/;
 
 export const dropdownValuePattern = (value: string): RegExp =>
 	new RegExp(`^\\s*${value}\\s*$`, "i");
+export const sequentialTestPattern = new RegExp(TestTag.SEQUENTIAL, "i");

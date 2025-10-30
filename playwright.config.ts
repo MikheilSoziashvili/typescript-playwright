@@ -5,6 +5,7 @@ import {
 } from "@constants/reporter-constants";
 import { slackReporterConfig } from "@core/reporters/slack-reporter/slack-reporter";
 import { ReporterDescription, defineConfig } from "@playwright/test";
+import { sequentialTestPattern } from "@support/regex-patterns";
 import * as Configuration from "configuration";
 
 /** Read environment variables from file. https://github.com/motdotla/dotenv */
@@ -118,11 +119,12 @@ export default defineConfig({
 		{
 			name: "chromium",
 			use: { browserName: "chromium" },
+			grepInvert: sequentialTestPattern,
 		},
 		{
 			name: "chromium-sequential",
 			use: { browserName: "chromium" },
-			grep: /@SEQUENTIAL/i,
+			grep: sequentialTestPattern,
 			fullyParallel: false,
 			workers: 1,
 		},
