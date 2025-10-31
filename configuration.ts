@@ -1,6 +1,7 @@
 import { DEFAULT_DB_PORT } from "@constants/defaults";
 import {
 	DbPoolServiceConfiguration,
+	FireblocksConfig,
 	PoolConfigurationType,
 	TestUserConfigurationObject,
 } from "@core/types/types";
@@ -102,6 +103,14 @@ export const BitcoinConfig = {
 	url: `http://${asString(process.env.BITCOIN_RPC_HOST)}:${asString(
 		process.env.BITCOIN_RPC_PORT,
 	)}`,
+};
+
+export const fireblocks: FireblocksConfig = {
+	apiKey: asString(process.env.FIREBLOCKS_API_KEY),
+	secretKeyPath: asString(process.env.FIREBLOCKS_SECRET_KEY_PATH),
+	baseUrl: asString(process.env.FIREBLOCKS_BASE_URL),
+	vaultId: asString(process.env.FIREBLOCKS_VAULT_ID),
+	usdtAssetId: asString(process.env.FIREBLOCKS_USDT_ASSET_ID),
 };
 
 export const users: TestUserConfigurationObject[] = [

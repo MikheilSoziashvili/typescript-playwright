@@ -219,3 +219,11 @@ export type PollOrSkipOptions = {
 	reason: string;
 	testInfo: TestInfo;
 };
+
+export type FireblocksConfig = {
+	apiKey: string;
+	secretKeyPath: string;
+	baseUrl: string;
+	vaultId: string;
+	usdtAssetId: string;
+};

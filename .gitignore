@@ -150,3 +150,9 @@ playwright-report.zip
 
 # auth
 /core/.auth
+
+# Fireblocks Private Keys
+*.pem
+*.key
+fireblocks_secret*.key
+/secrets/

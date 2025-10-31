@@ -12,6 +12,7 @@ import { gamdomHandlersFixtures } from "./handlers-fixtures";
 import { facadesFixtures } from "./facade-fixtures";
 import { testDataFixtures } from "./test-data-fixtures";
 import { listenersFixtures } from "./listeners-fixtures";
+import { fireblocksFixtures } from "./fireblocks-fixtures";
 
 export const test = mergeTests(
 	gamdomPagesFixtures,
@@ -26,4 +27,5 @@ export const test = mergeTests(
 	facadesFixtures,
 	testDataFixtures,
 	listenersFixtures,
+	fireblocksFixtures,
 );
