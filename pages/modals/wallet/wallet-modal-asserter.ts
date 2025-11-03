@@ -5,6 +5,7 @@ import { expect } from "playwright/test";
 import { step } from "decorators/step";
 import { Unit } from "@enums/units";
 import { WalletType } from "@enums/wallet-types";
+import { Currency } from "@enums/currencies";
 
 export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 	public constructor(page: WalletModal) {
@@ -24,10 +25,12 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 		expectedUsd: number,
 		unit: Unit,
 	): Promise<void> {
-		const backendUsd = await this.userBalanceHandler.walletBalanceInUsd(
-			unit,
-			WalletType.VAULT,
-		);
+		const backendUsd =
+			await this.userBalanceHandler.walletBalanceInFiatRounded(
+				unit,
+				Currency.USD,
+				WalletType.VAULT,
+			);
 
 		expect(backendUsd).toBeCloseTo(expectedUsd, 1);
 	}
