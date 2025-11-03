@@ -7,11 +7,12 @@ import {
 } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { test } from "@fixtures/fixtures";
-import { environment_url } from "configuration";
+import { environment_url, isScheduledRun } from "configuration";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraUser } from "@enums/jira/jira-users";
 import { testData } from "test-data/test-data-manager";
 import { Timeout } from "@enums/timeout";
+import { TestTag } from "@enums/test-tags";
 
 const footerRecords = testData().fromCsvRaw({
 	file: CsvFilesName.FOOTER_LINKS_AND_ENDPOINTS,
@@ -161,8 +162,12 @@ loggedState.forEach(({ state, user, csv }) => {
 
 		test(
 			`[ENG-2826] Footer - Verify the Live Support modal is launched after redirection from Footer - ${state}`,
-			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			testDetails()
+				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+				.withTags(TestTag.PLATFORM_BUG)
+				.apply(),
 			async ({ homePage, footer, liveSupportModal }) => {
+				test.fixme(isScheduledRun);
 				await homePage.navigate();
 				await footer.assertThat().footerIsVisible();
 				await footer.openLiveSupport();

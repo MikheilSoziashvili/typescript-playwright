@@ -123,13 +123,13 @@ on:
                 description: "Mailinator authentication"
             AWS_ACCESS_KEY_ID:
                 required: true
-                description: AWS Access key ID
+                description: "AWS Access key ID"
             AWS_SECRET_ACCESS_KEY:
                 required: true
-                description: AWS Secret Access key
+                description: "AWS Secret Access key"
             AWS_DEFAULT_REGION:
                 required: true
-                description: AWS Default region
+                description: "AWS Default region"
             OAUTH2_JWT:
                 required: true
                 description: "OAuth2 JWT"
@@ -369,10 +369,18 @@ jobs:
               if: always()
               run: |
                   if [ ${{ github.event_name }} == 'schedule' ] || [ "${{ inputs.run_sequential_tests }}" == "true" ]; then
-                    echo "Running sequential tests that modify global platform settings..."
-                    $PLAYWRIGHT_TEST $GREP_SEQUENTIAL_TESTS --project=chromium-sequential
+                      echo "Running sequential tests that modify global platform settings..."
+
+                      V4_OPTION=""
+                      if [ "$ENABLE_NEW_DESIGN_V4" == "true" ]; then
+                          V4_OPTION="$GREP_V4_TESTS"
+                      else
+                          V4_OPTION="$INVERT_V4_TESTS"
+                      fi
+
+                      $PLAYWRIGHT_TEST $GREP_SEQUENTIAL_TESTS $V4_OPTION --project=chromium-sequential
                   else
-                    echo "Sequential tests are disabled for this run."
+                      echo "Sequential tests are disabled for this run."
                   fi
 
             - name: Upload blob report to GitHub Actions Artifacts 2
