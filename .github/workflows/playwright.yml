@@ -234,6 +234,7 @@ jobs:
             INVERT_SEQUENTIAL_TESTS: --grep-invert @sequential
             GREP_V4_TESTS: --grep @v4
             INVERT_V4_TESTS: --grep-invert @v4
+            PROJECT_CHROMIUM: --project=chromium
             CUSTOM_OPTIONS: ${{ github.event.client_payload.custom_options || inputs.custom_options }}
             PLAYWRIGHT_TEST: yarn playwright test
             WORKERS: ${{ github.event_name == 'schedule' && '--workers=15' || format('--workers={0}', inputs.workers || '15')}}
@@ -340,9 +341,9 @@ jobs:
 
                   # Execute tests
                   if [ -n "$CUSTOM_OPTIONS" ]; then
-                    $TEST_COMMAND $V4_OPTION $CUSTOM_OPTIONS $SHARD_OPTION
+                    $TEST_COMMAND $V4_OPTION $CUSTOM_OPTIONS $SHARD_OPTION $PROJECT_CHROMIUM
                   else
-                    $TEST_COMMAND $INVERT_SEQUENTIAL_TESTS $V4_OPTION $WORKERS $SHARD_OPTION
+                    $TEST_COMMAND $INVERT_SEQUENTIAL_TESTS $V4_OPTION $WORKERS $SHARD_OPTION $PROJECT_CHROMIUM
                   fi
 
             - name: Upload blob report to GitHub Actions Artifacts
