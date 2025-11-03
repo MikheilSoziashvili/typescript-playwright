@@ -24,7 +24,7 @@ export class UserInfoRewardsAdminPageMap extends BaseMap {
 	}
 
 	public selectRewardType(reward: string): Locator {
-		return this.page.locator("h6", { hasText: reward });
+		return this.page.locator(`li[data-value="${reward}"]`);
 	}
 
 	public get setRewardAmountInput(): Locator {
