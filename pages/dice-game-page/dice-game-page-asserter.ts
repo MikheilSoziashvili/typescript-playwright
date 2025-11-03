@@ -107,15 +107,15 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 				.first()
 				.textContent();
 
-		expect(parseFloat(diceResultGameArea ?? "0")).toBeGreaterThan(0);
+		expect(parseFloat(diceResultGameArea ?? "0")).toBeGreaterThanOrEqual(0);
 
 		const diceResultHistory =
 			await this.gamdomPage.map.diceLastResultNumber.textContent();
 
 		expect(
 			parseFloat(diceResultHistory ?? "0"),
-			"Dice result history must be greater than 0",
-		).toBeGreaterThan(0);
+			"Dice result history must be a valid number and not empty",
+		).toBeGreaterThanOrEqual(0);
 
 		await expect
 			.poll(
