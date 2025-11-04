@@ -642,7 +642,7 @@ test.describe(
 
 				const verificationPage = new VerificationPage(userPage);
 				// Fill in the KYC Level 1 form
-				await verificationPage.steps().fillInKycLevel1Form();
+				await verificationPage.fillInKycLevel1Form();
 
 				const notification = userHomePage.getNotification();
 				await notification

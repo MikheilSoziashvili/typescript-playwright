@@ -55,6 +55,18 @@ on:
                 required: true
             BITCOIN_RPC_PASS:
                 required: true
+            FIREBLOCKS_API_KEY:
+                required: true
+            FIREBLOCKS_BASE_URL:
+                required: true
+            FIREBLOCKS_SECRET_KEY:
+                required: true
+            FIREBLOCKS_SECRET_KEY_PATH:
+                required: true
+            FIREBLOCKS_USDT_ASSET_ID:
+                required: true
+            FIREBLOCKS_VAULT_ID:
+                required: true
 
 env:
     CI: true

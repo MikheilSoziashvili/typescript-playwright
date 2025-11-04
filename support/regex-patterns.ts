@@ -63,3 +63,4 @@ export const testTimeoutPattern = /Test timeout of (\d+)ms exceeded/;
 export const dropdownValuePattern = (value: string): RegExp =>
 	new RegExp(`^\\s*${value}\\s*$`, "i");
 export const sequentialTestPattern = new RegExp(TestTag.SEQUENTIAL, "i");
+export const escapedNewlinePattern = /\\n/g;

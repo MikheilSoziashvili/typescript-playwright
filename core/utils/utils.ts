@@ -29,6 +29,7 @@ import { logger } from "@logger/logger";
 import { expect } from "@playwright/test";
 import {
 	currencyToNumberPattern,
+	escapedNewlinePattern,
 	otpAuthSecretPattern,
 	pageUrl,
 	sanitizeTitlePattern,
@@ -1605,4 +1606,38 @@ export function replaceProdUrl(
 		normalizeUrl(PRODUCTION_BASE_URL),
 		currentOrigin,
 	);
+}
+
+/**
+ * Creates a secret key file from environment variable content
+ * @param secretContent - The secret key content (including BEGIN/END markers)
+ * @param secretPath - The path where the secret file should be created
+ * @throws Error if the secret content is invalid or file creation fails
+ */
+export function createSecret(secretContent: string, secretPath: string): void {
+	if (!secretContent || secretContent.trim().length === 0) {
+		throw new Error("Secret content cannot be empty");
+	}
+
+	let normalizedContent = secretContent
+		.replace(escapedNewlinePattern, "\n")
+		.trim();
+
+	if (!normalizedContent.endsWith("\n")) {
+		normalizedContent += "\n";
+	}
+
+	const absolutePath = path.isAbsolute(secretPath)
+		? secretPath
+		: path.join(process.cwd(), secretPath);
+
+	const directory = path.dirname(absolutePath);
+	if (!fs.existsSync(directory)) {
+		fs.mkdirSync(directory, { recursive: true });
+	}
+
+	fs.writeFileSync(absolutePath, normalizedContent, {
+		encoding: "utf8",
+		mode: 0o600,
+	});
 }

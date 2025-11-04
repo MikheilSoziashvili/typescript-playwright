@@ -61,6 +61,12 @@ jobs:
             BITCOIN_RPC_PORT: ${{ secrets.BITCOIN_RPC_PORT }}
             BITCOIN_RPC_USER: ${{ secrets.BITCOIN_RPC_USER }}
             BITCOIN_RPC_PASS: ${{ secrets.BITCOIN_RPC_PASS }}
+            FIREBLOCKS_API_KEY: ${{ secrets.FIREBLOCKS_API_KEY }}
+            FIREBLOCKS_BASE_URL: ${{ secrets.FIREBLOCKS_BASE_URL }}
+            FIREBLOCKS_SECRET_KEY: ${{ secrets.FIREBLOCKS_SECRET_KEY }}
+            FIREBLOCKS_SECRET_KEY_PATH: ${{ secrets.FIREBLOCKS_SECRET_KEY_PATH }}
+            FIREBLOCKS_USDT_ASSET_ID: ${{ secrets.FIREBLOCKS_USDT_ASSET_ID }}
+            FIREBLOCKS_VAULT_ID: ${{ secrets.FIREBLOCKS_VAULT_ID }}
             TAG: ${{ inputs.tag == '' && 'visual' || inputs.tag }}
 
         steps:

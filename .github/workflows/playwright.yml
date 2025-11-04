@@ -160,6 +160,24 @@ on:
             BITCOIN_RPC_PASS:
                 required: true
                 description: "Bitcoin node RPC password"
+            FIREBLOCKS_API_KEY:
+                required: true
+                description: "Fireblocks API key"
+            FIREBLOCKS_BASE_URL:
+                required: true
+                description: "Fireblocks base URL"
+            FIREBLOCKS_SECRET_KEY:
+                required: true
+                description: "Fireblocks secret key"
+            FIREBLOCKS_SECRET_KEY_PATH:
+                required: true
+                description: "Fireblocks secret key path"
+            FIREBLOCKS_USDT_ASSET_ID:
+                required: true
+                description: "Fireblocks USDT asset ID"
+            FIREBLOCKS_VAULT_ID:
+                required: true
+                description: "Fireblocks Vault ID"
 
 concurrency:
     group: ${{ github.event_name == 'repository_dispatch' && format('auto-deploy-env-{0}', github.event.client_payload.pr_number) || format('playwright-e2e-{0}', github.ref) }}
@@ -228,6 +246,12 @@ jobs:
             BITCOIN_RPC_PORT: ${{ secrets.BITCOIN_RPC_PORT }}
             BITCOIN_RPC_USER: ${{ secrets.BITCOIN_RPC_USER }}
             BITCOIN_RPC_PASS: ${{ secrets.BITCOIN_RPC_PASS }}
+            FIREBLOCKS_API_KEY: ${{ secrets.FIREBLOCKS_API_KEY }}
+            FIREBLOCKS_BASE_URL: ${{ secrets.FIREBLOCKS_BASE_URL }}
+            FIREBLOCKS_SECRET_KEY: ${{ secrets.FIREBLOCKS_SECRET_KEY }}
+            FIREBLOCKS_SECRET_KEY_PATH: ${{ secrets.FIREBLOCKS_SECRET_KEY_PATH }}
+            FIREBLOCKS_USDT_ASSET_ID: ${{ secrets.FIREBLOCKS_USDT_ASSET_ID }}
+            FIREBLOCKS_VAULT_ID: ${{ secrets.FIREBLOCKS_VAULT_ID }}
             TAG: ${{ github.event.client_payload.tag || (inputs.tag == '' && 'smoke') || inputs.tag }}
             SHARD_OPTION: --shard ${{ matrix.shard }}/${{ strategy.job-total }}
             GREP_SEQUENTIAL_TESTS: --grep @sequential

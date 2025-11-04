@@ -4,13 +4,28 @@ import { FireblocksSDK } from "fireblocks-sdk";
 import { fireblocks as fireblocksConfig } from "configuration";
 import { FireblocksConfigError } from "@core/errors/fireblocks-errors";
 import { FireblocksClient } from "./fireblocks-client";
+import { createSecret } from "@core/utils/utils";
 
 function initializeFireblocksSDK(): FireblocksSDK {
-	const { apiKey, secretKeyPath, baseUrl } = fireblocksConfig;
+	const envKey = process.env.FIREBLOCKS_SECRET_KEY;
+	const envPath = process.env.FIREBLOCKS_SECRET_KEY_PATH;
 
-	const absolutePath = path.isAbsolute(secretKeyPath)
-		? secretKeyPath
-		: path.join(process.cwd(), secretKeyPath);
+	const { apiKey, secretKeyPath: configPath, baseUrl } = fireblocksConfig;
+
+	const effectivePath = envPath ?? configPath;
+	if (!effectivePath) {
+		throw new FireblocksConfigError(
+			"Missing Fireblocks private key path. Set FIREBLOCKS_SECRET_KEY_PATH or fireblocksConfig.secretKeyPath.",
+		);
+	}
+
+	if (envKey) {
+		createSecret(envKey, effectivePath);
+	}
+
+	const absolutePath = path.isAbsolute(effectivePath)
+		? effectivePath
+		: path.join(process.cwd(), effectivePath);
 
 	if (!fs.existsSync(absolutePath)) {
 		throw new FireblocksConfigError(
