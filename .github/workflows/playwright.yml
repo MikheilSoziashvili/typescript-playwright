@@ -310,10 +310,10 @@ jobs:
               run: |
                   if [ "$ENABLE_NEW_DESIGN_V4" == "true" ]; then
                     echo "Running only @v4 tests (enable_new_design_v4=true)"
-                    $PLAYWRIGHT_TEST $GREP_V4_TESTS $WORKERS $SHARD_OPTION
+                    $PLAYWRIGHT_TEST $GREP_V4_TESTS $WORKERS $SHARD_OPTION $PROJECT_CHROMIUM
                   else
                     echo "Running all tests except @v4 tests (enable_new_design_v4=false)"
-                    $PLAYWRIGHT_TEST $INVERT_SEQUENTIAL_TESTS $INVERT_V4_TESTS $WORKERS $SHARD_OPTION
+                    $PLAYWRIGHT_TEST $INVERT_SEQUENTIAL_TESTS $INVERT_V4_TESTS $WORKERS $SHARD_OPTION $PROJECT_CHROMIUM
                   fi
 
             - name: Run Playwright tests (Manual trigger)
