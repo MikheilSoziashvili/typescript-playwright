@@ -75,4 +75,25 @@ export class VerificationPageMap extends BaseMap {
 	public get submitButton(): Locator {
 		return this.page.locator("button", { hasText: "Submit" });
 	}
+
+	public getErrorMessageForField(fieldLabel: string): Locator {
+		return this.page
+			.getByLabel(fieldLabel)
+			.locator("..")
+			.locator("..")
+			.locator('p[class*="MuiFormHelperText-root"]');
+	}
+
+	public getClearButtonForField(fieldLabel: string): Locator {
+		return this.page
+			.getByLabel(fieldLabel)
+			.locator("..")
+			.getByTestId("clearInputButton");
+	}
+
+	public get checkboxValidationMessage(): Locator {
+		return this.page.locator('span[class*="MuiTypography-caption"]', {
+			hasText: "You must confirm that the information above is accurate.",
+		});
+	}
 }

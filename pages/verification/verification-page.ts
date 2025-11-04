@@ -9,6 +9,13 @@ import { getItemsAttribute, getRandomIndex } from "@core/utils/utils";
 import { Attributes } from "@enums/playwright/htmlAttributes";
 import { step } from "decorators/step";
 import { logger } from "@logger/logger";
+import { VerificationTabType } from "@enums/verification-enums";
+import { faker } from "@faker-js/faker";
+import {
+	KYC_FIELDS,
+	RANDOM_COUNTRY,
+} from "test-data/domains/verification-domain-data";
+import { FieldValidationScenario } from "test-data/interfaces";
 
 export class VerificationPage extends BasePage<VerificationPageMap> {
 	public constructor(page: Page) {
@@ -65,5 +72,91 @@ export class VerificationPage extends BasePage<VerificationPageMap> {
 
 		await options.nth(randomIndex).click();
 		logger.info(`Selected country: ${selected}`);
+	}
+
+	@step("Clear field using clear button")
+	public async clearFieldUsingClearButton(fieldLabel: string): Promise<void> {
+		const clearButton = this.map.getClearButtonForField(fieldLabel);
+		await clearButton.click();
+	}
+
+	@step("Toggle checkbox")
+	public async toggleCheckbox(
+		options: { count?: number } = {},
+	): Promise<void> {
+		const { count = 1 } = options;
+
+		for (let i = 0; i < count; i++) {
+			await this.map.verifyCheckbox.click();
+		}
+	}
+
+	@step("Select verification tab")
+	public async selectVerificationTab(
+		tabType: VerificationTabType,
+	): Promise<void> {
+		if (tabType === VerificationTabType.VERIFY_BUSINESS) {
+			await this.selectVerifyBusinessTab();
+		}
+	}
+
+	@step("Fill in verification form for KYC level 1")
+	public async fillInKycLevel1Form(): Promise<void> {
+		await this.map.firstAndLastNameInput.fill(faker.person.fullName());
+		await this.map.dateOfBirthInput.fill(
+			faker.date.birthdate().toISOString().split("T")[0],
+		);
+		await this.map.countryDropdownContainer.click();
+		await this.selectRandomCountry();
+		await this.map.verifyCheckbox.click();
+		await this.map.submitButton.click();
+	}
+
+	@step("Fill in verification form for KYB level 1")
+	public async fillInKybLevel1Form(): Promise<void> {
+		await this.selectVerifyBusinessTab();
+		await this.map.businessNameInput.fill(faker.company.name());
+		await this.map.bbusinessAddressInput.fill(
+			faker.location.streetAddress(),
+		);
+		await this.map.businessRegistrationNumberInput.fill(
+			faker.string.numeric(10),
+		);
+		await this.map.verifyCheckbox.click();
+		await this.map.submitButton.click();
+	}
+
+	@step("Fill input and trigger validation")
+	public async fillInputAndTriggerValidation(
+		fieldLabel: string,
+		value: string,
+	): Promise<void> {
+		if (fieldLabel === KYC_FIELDS.COUNTRY) {
+			if (value === RANDOM_COUNTRY) {
+				await this.map.countryDropdownContainer.click();
+				await this.selectRandomCountry();
+			} else {
+				await this.map.countryDropdown.click();
+				await this.map.countryDropdown.blur();
+			}
+			return;
+		}
+
+		const fieldLocator = this.page.getByLabel(fieldLabel);
+		await fieldLocator.click();
+		if (value) {
+			await fieldLocator.fill(value);
+		}
+		await fieldLocator.blur();
+	}
+
+	@step("Clear fields using clear button")
+	public async clearFieldsUsingClearButton(
+		validations: FieldValidationScenario[],
+	): Promise<void> {
+		for (const { inputField, input } of validations) {
+			await this.fillInputAndTriggerValidation(inputField, input);
+			await this.clearFieldUsingClearButton(inputField);
+		}
 	}
 }

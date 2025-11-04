@@ -2,10 +2,102 @@ import { NotificationSubTitle } from "@enums/notification-subtitles";
 import { NotificationTitle } from "@enums/notification-titles";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
-import type { VerificationPageSteps } from "@pages/verification/verification-page-steps";
-import { VerificationFormType } from "test-data/interfaces/domain";
+import {
+	VerificationFormType as VerificationFormTypeEnum,
+	VerificationTabType,
+} from "@enums/verification-enums";
+import { getISODate } from "@core/utils/utils";
+import {
+	FieldValidationScenario,
+	FieldValidationTestScenario,
+	VerificationFormType,
+} from "test-data/interfaces/domain";
+import { VerificationPage } from "@pages/verification/verification-page";
+import { faker } from "@faker-js/faker";
+
+/**
+ * KYC form field names
+ */
+export const KYC_FIELDS = {
+	FULL_NAME: "Full name",
+	DATE_OF_BIRTH: "Date of Birth",
+	COUNTRY: "Country of Residence",
+} as const;
+
+/**
+ * KYB form field names
+ */
+export const KYB_FIELDS = {
+	BUSINESS_NAME: "Business name",
+	BUSINESS_ADDRESS: "Business address",
+	REGISTRATION_NUMBER: "Registration number",
+} as const;
+
+/**
+ * Date input descriptions
+ */
+export const DATE_INPUT_DESCRIPTIONS = {
+	UNDER_18: "Under 18",
+	OVER_18: "Over 18",
+	OVER_100: "Over 100",
+} as const;
+
+/**
+ * Special input value to trigger random country selection
+ */
+export const RANDOM_COUNTRY = "Random Country";
+
+/**
+ * Valid input values for field validation
+ */
+export const VALID_INPUTS = {
+	SINGLE_CHAR: faker.string.alpha(1),
+	EXACTLY_100_CHARS: faker.string.alphanumeric(100),
+	VALID_NUMBER: faker.string.numeric(9),
+	SINGLE_DIGIT: faker.string.numeric(1),
+	EMPTY: "",
+} as const;
+
+/**
+ * Invalid input values for field validation (101 characters - exceeds max length)
+ */
+export const INVALID_INPUTS = {
+	NAME_TOO_LONG: faker.string.alphanumeric(101),
+	BUSINESS_TOO_LONG: faker.string.alphanumeric(101),
+	ADDRESS_TOO_LONG: faker.string.alphanumeric(101),
+	NUMBER_TOO_LONG: faker.string.numeric(101),
+} as const;
+
+/**
+ * Error messages
+ */
+export const ERROR_MESSAGES = {
+	FULL_NAME_REQUIRED: "Full name is required",
+	TOO_LONG: "At most 100 characters",
+	UNDER_18: "You must be at least 18 years old",
+	OVER_100: "You must be less than 100 years old",
+	BUSINESS_NAME_REQUIRED: "Business name is required",
+	BUSINESS_ADDRESS_REQUIRED: "Business address is required",
+	INVALID_REGISTRATION_NUMBER: "Please enter a valid registration number",
+	NO_ERROR: "",
+} as const;
 
 export class VerificationDomainData {
+	/**
+	 * Converts date description to actual ISO date string
+	 */
+	public convertDateInput(input: string): string {
+		if (input === DATE_INPUT_DESCRIPTIONS.UNDER_18) {
+			return getISODate({ yearsOffset: -17 }).split("T")[0];
+		}
+		if (input === DATE_INPUT_DESCRIPTIONS.OVER_18) {
+			return getISODate({ yearsOffset: -25 }).split("T")[0];
+		}
+		if (input === DATE_INPUT_DESCRIPTIONS.OVER_100) {
+			return getISODate({ yearsOffset: -101 }).split("T")[0];
+		}
+		return input;
+	}
 	/**
 	 * Test scenarios for KYC and KYB Level 1 verification flows.
 	 *
@@ -14,9 +106,9 @@ export class VerificationDomainData {
 	public readonly level1VerificationScenarios: VerificationFormType[] = [
 		{
 			testId: "ENG-8537",
-			formType: "KYC",
-			fillSubmissionForm: (steps: VerificationPageSteps) =>
-				steps.fillInKycLevel1Form(),
+			formType: VerificationFormTypeEnum.KYC,
+			fillSubmissionForm: (page: VerificationPage) =>
+				page.fillInKycLevel1Form(),
 			expectedNotificationTitle: NotificationTitle.KYC_VERIFIED,
 			expectedNotificationSubTitle:
 				NotificationSubTitle.KYC_LEVEL_ONE_VERIFIED,
@@ -26,9 +118,9 @@ export class VerificationDomainData {
 		},
 		{
 			testId: "ENG-8539",
-			formType: "KYB",
-			fillSubmissionForm: (steps: VerificationPageSteps) =>
-				steps.fillInKybLevel1Form(),
+			formType: VerificationFormTypeEnum.KYB,
+			fillSubmissionForm: (page: VerificationPage) =>
+				page.fillInKybLevel1Form(),
 			expectedNotificationTitle: NotificationTitle.KYC_VERIFIED,
 			expectedNotificationSubTitle:
 				NotificationSubTitle.KYC_LEVEL_ONE_VERIFIED,
@@ -37,4 +129,178 @@ export class VerificationDomainData {
 				ToastSubTitle.LEVEL_ONE_VERIFICATION_SUBMITTED,
 		},
 	];
+
+	/**
+	 * KYC Level 1 field validation scenarios
+	 */
+	private readonly kycLevel1FieldValidations: FieldValidationScenario[] = [
+		{
+			inputField: KYC_FIELDS.FULL_NAME,
+			input: VALID_INPUTS.EMPTY,
+			expectedErrorMessage: ERROR_MESSAGES.FULL_NAME_REQUIRED,
+		},
+		{
+			inputField: KYC_FIELDS.FULL_NAME,
+			input: VALID_INPUTS.SINGLE_CHAR,
+			expectedErrorMessage: ERROR_MESSAGES.NO_ERROR,
+		},
+		{
+			inputField: KYC_FIELDS.FULL_NAME,
+			input: VALID_INPUTS.EXACTLY_100_CHARS,
+			expectedErrorMessage: ERROR_MESSAGES.NO_ERROR,
+		},
+		{
+			inputField: KYC_FIELDS.FULL_NAME,
+			input: INVALID_INPUTS.NAME_TOO_LONG,
+			expectedErrorMessage: ERROR_MESSAGES.TOO_LONG,
+		},
+		{
+			inputField: KYC_FIELDS.DATE_OF_BIRTH,
+			input: DATE_INPUT_DESCRIPTIONS.UNDER_18,
+			expectedErrorMessage: ERROR_MESSAGES.UNDER_18,
+		},
+		{
+			inputField: KYC_FIELDS.DATE_OF_BIRTH,
+			input: DATE_INPUT_DESCRIPTIONS.OVER_18,
+			expectedErrorMessage: ERROR_MESSAGES.NO_ERROR,
+		},
+		{
+			inputField: KYC_FIELDS.DATE_OF_BIRTH,
+			input: DATE_INPUT_DESCRIPTIONS.OVER_100,
+			expectedErrorMessage: ERROR_MESSAGES.OVER_100,
+		},
+		{
+			inputField: KYC_FIELDS.COUNTRY,
+			input: VALID_INPUTS.EMPTY,
+			expectedErrorMessage: ERROR_MESSAGES.NO_ERROR,
+		},
+		{
+			inputField: KYC_FIELDS.COUNTRY,
+			input: RANDOM_COUNTRY,
+			expectedErrorMessage: ERROR_MESSAGES.NO_ERROR,
+		},
+	];
+
+	/**
+	 * KYC Level 1 clear field validation scenarios
+	 */
+	private readonly kycLevel1ClearFieldValidations: FieldValidationScenario[] =
+		[
+			{
+				inputField: KYC_FIELDS.FULL_NAME,
+				input: INVALID_INPUTS.NAME_TOO_LONG,
+				expectedErrorMessage: ERROR_MESSAGES.TOO_LONG,
+			},
+		];
+
+	/**
+	 * KYB Level 1 field validation scenarios
+	 */
+	private readonly kybLevel1FieldValidations: FieldValidationScenario[] = [
+		{
+			inputField: KYB_FIELDS.BUSINESS_NAME,
+			input: VALID_INPUTS.EMPTY,
+			expectedErrorMessage: ERROR_MESSAGES.BUSINESS_NAME_REQUIRED,
+		},
+		{
+			inputField: KYB_FIELDS.BUSINESS_ADDRESS,
+			input: VALID_INPUTS.EMPTY,
+			expectedErrorMessage: ERROR_MESSAGES.BUSINESS_ADDRESS_REQUIRED,
+		},
+		{
+			inputField: KYB_FIELDS.REGISTRATION_NUMBER,
+			input: VALID_INPUTS.EMPTY,
+			expectedErrorMessage: ERROR_MESSAGES.INVALID_REGISTRATION_NUMBER,
+		},
+		{
+			inputField: KYB_FIELDS.BUSINESS_NAME,
+			input: VALID_INPUTS.SINGLE_CHAR,
+			expectedErrorMessage: ERROR_MESSAGES.NO_ERROR,
+		},
+		{
+			inputField: KYB_FIELDS.BUSINESS_ADDRESS,
+			input: VALID_INPUTS.SINGLE_CHAR,
+			expectedErrorMessage: ERROR_MESSAGES.NO_ERROR,
+		},
+		{
+			inputField: KYB_FIELDS.REGISTRATION_NUMBER,
+			input: VALID_INPUTS.SINGLE_DIGIT,
+			expectedErrorMessage: ERROR_MESSAGES.NO_ERROR,
+		},
+		{
+			inputField: KYB_FIELDS.BUSINESS_NAME,
+			input: VALID_INPUTS.EXACTLY_100_CHARS,
+			expectedErrorMessage: ERROR_MESSAGES.NO_ERROR,
+		},
+		{
+			inputField: KYB_FIELDS.BUSINESS_ADDRESS,
+			input: VALID_INPUTS.EXACTLY_100_CHARS,
+			expectedErrorMessage: ERROR_MESSAGES.NO_ERROR,
+		},
+		{
+			inputField: KYB_FIELDS.REGISTRATION_NUMBER,
+			input: VALID_INPUTS.VALID_NUMBER,
+			expectedErrorMessage: ERROR_MESSAGES.NO_ERROR,
+		},
+		{
+			inputField: KYB_FIELDS.BUSINESS_NAME,
+			input: INVALID_INPUTS.BUSINESS_TOO_LONG,
+			expectedErrorMessage: ERROR_MESSAGES.TOO_LONG,
+		},
+		{
+			inputField: KYB_FIELDS.BUSINESS_ADDRESS,
+			input: INVALID_INPUTS.ADDRESS_TOO_LONG,
+			expectedErrorMessage: ERROR_MESSAGES.TOO_LONG,
+		},
+		{
+			inputField: KYB_FIELDS.REGISTRATION_NUMBER,
+			input: INVALID_INPUTS.NUMBER_TOO_LONG,
+			expectedErrorMessage: ERROR_MESSAGES.TOO_LONG,
+		},
+	];
+
+	/**
+	 * KYB Level 1 clear field validation scenarios
+	 */
+	private readonly kybLevel1ClearFieldValidations: FieldValidationScenario[] =
+		[
+			{
+				inputField: KYB_FIELDS.BUSINESS_NAME,
+				input: INVALID_INPUTS.BUSINESS_TOO_LONG,
+				expectedErrorMessage: ERROR_MESSAGES.TOO_LONG,
+			},
+			{
+				inputField: KYB_FIELDS.BUSINESS_ADDRESS,
+				input: INVALID_INPUTS.ADDRESS_TOO_LONG,
+				expectedErrorMessage: ERROR_MESSAGES.TOO_LONG,
+			},
+			{
+				inputField: KYB_FIELDS.REGISTRATION_NUMBER,
+				input: INVALID_INPUTS.NUMBER_TOO_LONG,
+				expectedErrorMessage: ERROR_MESSAGES.TOO_LONG,
+			},
+		];
+
+	/**
+	 * Combined field validation test scenarios for both KYC and KYB
+	 */
+	public readonly level1FieldValidationScenarios: FieldValidationTestScenario[] =
+		[
+			{
+				testId: "ENG-8542",
+				formType: VerificationFormTypeEnum.KYC,
+				fieldValidations: this.kycLevel1FieldValidations,
+				clearFieldValidations: this.kycLevel1ClearFieldValidations,
+				processInput: (input: string) => this.convertDateInput(input),
+				tabType: VerificationTabType.VERIFY_YOURSELF,
+			},
+			{
+				testId: "ENG-8563",
+				formType: VerificationFormTypeEnum.KYB,
+				fieldValidations: this.kybLevel1FieldValidations,
+				clearFieldValidations: this.kybLevel1ClearFieldValidations,
+				processInput: (input: string) => input,
+				tabType: VerificationTabType.VERIFY_BUSINESS,
+			},
+		];
 }

@@ -6,10 +6,23 @@ import { test } from "@fixtures/fixtures";
 import { testData } from "test-data/test-data-manager";
 
 test.describe(
-	"KYC Verification",
+	"KYC Level 1 Verification",
 	testDetails().withTags(JiraComponent.VERIFICATION).apply(),
 	() => {
 		const verificationTestData = testData().fromDomain().verification;
+
+		test.beforeEach(
+			async ({ page, gamdomApiDbFacade, verificationPage }) => {
+				const { cookie } =
+					await gamdomApiDbFacade.createSingleUserDbAndAuth();
+				await setAuthenticationCookies(page, cookie);
+
+				await verificationPage.navigate();
+				await verificationPage
+					.assertThat()
+					.verificationPageTitleAndTabsAreVisible();
+			},
+		);
 
 		verificationTestData.level1VerificationScenarios.forEach(
 			({
@@ -24,24 +37,8 @@ test.describe(
 				test(
 					`[${testId}] Submit ${formType} Level 1`,
 					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
-					async ({
-						page,
-						gamdomApiDbFacade,
-						homePage,
-						verificationPage,
-						toast,
-					}) => {
-						const { cookie } =
-							await gamdomApiDbFacade.createSingleUserDbAndAuth();
-						await setAuthenticationCookies(page, cookie);
-
-						await verificationPage.navigate();
-						await verificationPage
-							.assertThat()
-							.verificationPageTitleAndTabsAreVisible();
-
-						await fillSubmissionForm(verificationPage.steps());
-
+					async ({ homePage, verificationPage, toast }) => {
+						await fillSubmissionForm(verificationPage);
 						const notification = homePage.getNotification();
 						await notification
 							.assertThat()
@@ -54,6 +51,57 @@ test.describe(
 						await toast
 							.assertThat()
 							.subTitleIs(expectedToastSubTitle);
+					},
+				);
+			},
+		);
+
+		verificationTestData.level1FieldValidationScenarios.forEach(
+			({
+				testId,
+				formType,
+				fieldValidations,
+				clearFieldValidations,
+				processInput,
+				tabType,
+			}) => {
+				test(
+					`[${testId}] ${formType} Level 1 - Field validations`,
+					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+					async ({ verificationPage }) => {
+						await verificationPage.selectVerificationTab(tabType);
+
+						for (const {
+							inputField,
+							input,
+							expectedErrorMessage,
+						} of fieldValidations) {
+							const actualInput = processInput(input);
+
+							await verificationPage.fillInputAndTriggerValidation(
+								inputField,
+								actualInput,
+							);
+
+							await verificationPage
+								.assertThat()
+								.validateErrorMessageForField(
+									inputField,
+									expectedErrorMessage,
+								);
+						}
+
+						await verificationPage.clearFieldsUsingClearButton(
+							clearFieldValidations,
+						);
+						await verificationPage
+							.assertThat()
+							.fieldsAreCleared(clearFieldValidations);
+
+						await verificationPage.toggleCheckbox({ count: 2 });
+						await verificationPage
+							.assertThat()
+							.checkboxValidationMessageIsDisplayed();
 					},
 				);
 			},
