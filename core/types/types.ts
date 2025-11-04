@@ -2,7 +2,7 @@ import { EV_REWARD_FREE_SPINS_FILE_MAP } from "@constants/file-paths";
 import { RegisterTestData } from "@dtos/test-data";
 import { Protocol } from "@enums/api/protocols";
 import { BitcoinFeeEstimateMode } from "@enums/bitcoin";
-import { Cryptocurrency } from "@enums/cryptocurrencies";
+import { Cryptocurrency, CryptoTicker } from "@enums/cryptocurrencies";
 import { Currency } from "@enums/currencies";
 import { HouseEdgeValue } from "@enums/house-edge-values";
 import { JiraComponent } from "@enums/jira/jira-components";
@@ -160,7 +160,7 @@ export type AcceptDialogOptions = {
 };
 
 export type CryptoOperationOptions = {
-	cryptoName: Cryptocurrency;
+	cryptoName: Cryptocurrency | CryptoTicker;
 	deposit?: boolean;
 	withdraw?: boolean;
 };

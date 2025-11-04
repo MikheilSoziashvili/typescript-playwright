@@ -1,14 +1,17 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
+import { CryptoTicker } from "@enums/cryptocurrencies";
 
 export class TransactionDetailsModalMap extends BaseMap {
 	public constructor(page: Page) {
 		super(page);
 	}
 
-	public get depositAmountInBTC(): Locator {
+	public depositAmountIn(cryptoCurrency: CryptoTicker): Locator {
 		return this.page
-			.locator("label", { hasText: "Deposit Amount in BTC" })
+			.locator("label", {
+				hasText: `Deposit Amount in ${cryptoCurrency}`,
+			})
 			.locator("~ div input");
 	}
 

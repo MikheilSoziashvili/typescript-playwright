@@ -45,12 +45,14 @@ export class FireblocksClient {
 	 * This triggers a Fireblocks transaction of type `TRANSFER`. The transaction goes through Fireblocks
 	 * policy checks and may require approvals depending on workspace configuration.
 	 *
+	 * If Fireblocks rejects the transaction (invalid address, policy blocked, etc.),
+	 * a `FireblocksTransactionError` is thrown instead of leaking Axios errors.
+	 *
 	 * @param vaultAccountId - The source vault account ID holding the asset.
 	 * @param destinationAddress - The blockchain address to send funds to (one-time address).
 	 * @param amount - Amount to transfer (must be a string, not a number, per Fireblocks API).
 	 *
 	 * @returns A Promise resolving to a `CreateTransactionResponse`, containing the Fireblocks transaction ID.
-	 *
 	 */
 	public async sendToAddress(
 		vaultAccountId: string,
@@ -64,21 +66,23 @@ export class FireblocksClient {
 			to: destinationAddress,
 		});
 
-		return this.fireblocks.createTransaction({
-			operation: TransactionOperation.TRANSFER,
-			assetId: this.assetId,
-			amount: amount,
-			source: {
-				type: PeerType.VAULT_ACCOUNT,
-				id: vaultAccountId,
-			},
-			destination: {
-				type: PeerType.ONE_TIME_ADDRESS,
-				oneTimeAddress: {
-					address: destinationAddress,
+		return this.safeFireblocksCall(() =>
+			this.fireblocks.createTransaction({
+				operation: TransactionOperation.TRANSFER,
+				assetId: this.assetId,
+				amount: amount,
+				source: {
+					type: PeerType.VAULT_ACCOUNT,
+					id: vaultAccountId,
 				},
-			},
-		});
+				destination: {
+					type: PeerType.ONE_TIME_ADDRESS,
+					oneTimeAddress: {
+						address: destinationAddress,
+					},
+				},
+			}),
+		);
 	}
 
 	/**
@@ -128,7 +132,7 @@ export class FireblocksClient {
 			{
 				errorMessage: `Fireblocks tx ${txId} did not reach final state`,
 				intervalSeconds: TimeoutSeconds.TWO,
-				timeoutSeconds: TimeoutSeconds.SIXTY,
+				timeoutSeconds: TimeoutSeconds.FOUR_EIGHTY,
 			},
 		);
 
@@ -176,5 +180,15 @@ export class FireblocksClient {
 			status === TransactionStatus.FAILED ||
 			status === TransactionStatus.REJECTED
 		);
+	}
+
+	private async safeFireblocksCall<T>(fn: () => Promise<T>): Promise<T> {
+		try {
+			return await fn();
+		} catch {
+			throw new FireblocksTransactionError(
+				"Fireblocks rejected the transaction",
+			);
+		}
 	}
 }

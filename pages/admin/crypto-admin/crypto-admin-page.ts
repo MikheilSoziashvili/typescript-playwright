@@ -9,6 +9,7 @@ import {
 	CryptoOperationOptions,
 } from "@core/types/types";
 import { step } from "decorators/step";
+import { Delay } from "@enums/delay";
 
 export class CryptoAdminPage extends BasePage<CryptoAdminMap> {
 	public constructor(page: Page) {
@@ -38,13 +39,19 @@ export class CryptoAdminPage extends BasePage<CryptoAdminMap> {
 	}
 
 	@step("Click min deposit button")
-	public async clickMinDepositButton(nodeTitle: string): Promise<void> {
-		await this.map.minDepositButton(nodeTitle).click();
+	public async clickMinDepositButton(
+		nodeTitle: string,
+		currency?: string,
+	): Promise<void> {
+		await this.map.minDepositButton(nodeTitle, currency).click();
 	}
 
 	@step("Click min withdraw button")
-	public async clickMinWithdrawButton(nodeTitle: string): Promise<void> {
-		await this.map.minWithdrawButton(nodeTitle).click();
+	public async clickMinWithdrawButton(
+		nodeTitle: string,
+		currency?: string,
+	): Promise<void> {
+		await this.map.minWithdrawButton(nodeTitle, currency).click();
 	}
 
 	@step("Send queued withdrawals")
@@ -75,7 +82,7 @@ export class CryptoAdminPage extends BasePage<CryptoAdminMap> {
 				const isChecked = await locator.isChecked();
 				if (isChecked !== desiredState) {
 					this.acceptDialog();
-					await locator.click();
+					await locator.click({ delay: Delay.SHORT });
 				}
 			}
 		}

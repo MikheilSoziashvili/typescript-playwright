@@ -1,6 +1,6 @@
 import { test } from "@fixtures/fixtures";
 import { waitBtcTransactionConfirmation } from "@core/helpers/asserter-helpers/crypto-asserters";
-import { Cryptocurrency } from "@enums/cryptocurrencies";
+import { Cryptocurrency, CryptoTicker } from "@enums/cryptocurrencies";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import {
@@ -173,7 +173,7 @@ test.describe("Bitcoin tests", () => {
 			await transactionsPage.clickTransactionDetailsButton();
 			await transactionDetailsModal
 				.assertThat()
-				.assertDepositAmountInBTC(amountToDeposit);
+				.assertDepositAmountIn(CryptoTicker.BTC, amountToDeposit);
 
 			await homePage.navigate();
 			await homePage.authenticatedHeader.clickBalanceDropdown();

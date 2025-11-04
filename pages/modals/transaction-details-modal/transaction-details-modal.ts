@@ -5,6 +5,7 @@ import { TransactionDetailsModalSteps } from "./transaction-details-modal-steps"
 import { TransactionDetailsModalAsserter } from "./transaction-details-modal-asserter";
 import { step } from "decorators/step";
 import { Attributes } from "@enums/playwright/htmlAttributes";
+import { CryptoTicker } from "@enums/cryptocurrencies";
 
 export class TransactionDetailsModal extends BasePage<TransactionDetailsModalMap> {
 	constructor(page: Page) {
@@ -19,9 +20,11 @@ export class TransactionDetailsModal extends BasePage<TransactionDetailsModalMap
 		return new TransactionDetailsModalSteps(this);
 	}
 
-	@step("Get deposit amount in btcvalue")
-	public async getDepositAmountInBTCValue(): Promise<string> {
-		return this.map.depositAmountInBTC.inputValue();
+	@step("Get deposit amount in crypto value")
+	public async getDepositAmountInCryptoValue(
+		cryptoCurrency: CryptoTicker,
+	): Promise<string> {
+		return this.map.depositAmountIn(cryptoCurrency).inputValue();
 	}
 
 	@step("Get blockchain transaction id")

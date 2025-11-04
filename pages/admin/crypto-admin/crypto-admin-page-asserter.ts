@@ -20,10 +20,11 @@ export class CryptoAdminAsserter extends BaseAsserter<CryptoAdminPage> {
 			Cookie: adminCookie,
 		});
 
-		const cryptoAmount = parseFloat(
-			transactions.find((trx) => trx.txid.startsWith(transactionId))
-				?.amount_crypto || "0",
+		const matched = transactions.find((trx) =>
+			trx.txid.toLowerCase().startsWith(transactionId.toLowerCase()),
 		);
+
+		const cryptoAmount = parseFloat(matched?.amount_crypto ?? "0");
 
 		expect(cryptoAmount).toBeCloseTo(expectedAmount, 5);
 	}

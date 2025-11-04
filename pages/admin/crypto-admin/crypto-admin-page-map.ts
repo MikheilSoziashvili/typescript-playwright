@@ -22,18 +22,18 @@ export class CryptoAdminMap extends BaseMap {
 			.locator('span[class*="MuiTypography-body"]');
 	}
 
-	public minDepositButton(nodeTitle: string): Locator {
-		return this.page
-			.locator("tr", { hasText: nodeTitle })
-			.locator("td img")
-			.nth(0);
+	public minDepositButton(nodeTitle: string, currency?: string): Locator {
+		let row = this.page.locator("tr").filter({ hasText: nodeTitle });
+		if (currency) {
+			row = row.filter({ hasText: currency });
+		}
+		return row.locator("td img").first();
 	}
 
-	public minWithdrawButton(nodeTitle: string): Locator {
-		return this.page
-			.locator("tr", { hasText: nodeTitle })
-			.locator("td img")
-			.nth(2);
+	public minWithdrawButton(nodeTitle: string, currency?: string): Locator {
+		let row = this.page.locator("tr").filter({ hasText: nodeTitle });
+		if (currency) row = row.filter({ hasText: currency });
+		return row.locator("td img").first();
 	}
 
 	public get cryptoTableContainer(): Locator {

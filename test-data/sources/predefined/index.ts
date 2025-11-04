@@ -22,4 +22,7 @@ export const predefined = {
 		betAmountDDefault: 1,
 		betAmountSmall: 10,
 	},
+	usdtAmountToDeposit: {
+		amountToDeposit: "0.02"
+	}
 };
