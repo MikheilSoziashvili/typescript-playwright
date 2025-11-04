@@ -271,4 +271,33 @@ export class GamdomApiDbFacade {
 			userClass: UserClasses.Admin,
 		});
 	}
+
+	/**
+	 * Creates an admin user in the database based on tags and user class attributes and then authenticates it.
+	 *
+	 * @param options - Operation options.
+	 * @param options.emailVerified - Whether to create the user with email verified (default `true`)
+	 * @param options.useGamdomEmailDomain - User's email to be of gamdom domain (default `true`)
+	 * @param options.tags - User tags
+	 * @param options.userClass - User class
+	 * @returns An object containing:
+	 * - `user` — The created user with `userId`, `username`, `password`, `email`, and `emailVerified`.
+	 * - `cookie` — The authentication cookie/token returned by the API.
+	 */
+	public async createAdminUserDbAndAuth(options: {
+		emailVerified?: boolean;
+		useGamdomEmailDomain?: boolean;
+		tags: UserTags[] | UserTags;
+		userClass: UserClasses;
+	}): Promise<AuthenticatedUser> {
+		const emailVerified = options.emailVerified ?? true;
+		const useGamdomEmailDomain = options.useGamdomEmailDomain ?? true;
+
+		return this.createSingleUserDbAndAuth({
+			emailVerified: emailVerified,
+			useGamdomEmailDomain: useGamdomEmailDomain,
+			tags: options.tags,
+			userClass: options.userClass,
+		});
+	}
 }

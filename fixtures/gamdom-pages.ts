@@ -26,8 +26,13 @@ import { PromotionPage } from "@pages/promotion/promotion-page";
 import { NotificationsPage } from "@pages/notifications/notifications-page";
 import { PrivacyPage } from "@pages/privacy/privacy-page";
 import { SportsPage } from "@pages/sports/sports-page";
+import {
+	BrowserSessionManager,
+	sessionAwarePage,
+} from "@core/browser-session-mngmt";
 
 export type GamdomPages = {
+	browserSessionManager: BrowserSessionManager;
 	homePage: HomePage;
 	affiliatesPage: AffiliatesPage;
 	settingsPage: SettingsPage;
@@ -58,85 +63,36 @@ export type GamdomPages = {
 };
 
 export const gamdomPagesFixtures = base.extend<GamdomPages>({
-	homePage: async ({ page }, use) => {
-		await use(new HomePage(page));
+	browserSessionManager: async ({ browser, context, page }, use) => {
+		const manager = new BrowserSessionManager(browser, context, page);
+		await use(manager);
+		await manager.cleanup();
 	},
-	affiliatesPage: async ({ page }, use) => {
-		await use(new AffiliatesPage(page));
-	},
-	settingsPage: async ({ page }, use) => {
-		await use(new SettingsPage(page));
-	},
-	rewardsPage: async ({ page }, use) => {
-		await use(new RewardsPage(page));
-	},
-	rewardsExplorePage: async ({ page }, use) => {
-		await use(new RewardsExplorePage(page));
-	},
-	profilePage: async ({ page }, use) => {
-		await use(new ProfilePage(page));
-	},
-	verificationPage: async ({ page }, use) => {
-		await use(new VerificationPage(page));
-	},
-	faqPage: async ({ page }, use) => {
-		await use(new FaqPage(page));
-	},
-	geoblockedPage: async ({ page }, use) => {
-		await use(new GeoblockedPage(page));
-	},
-	bannedUserPage: async ({ page }, use) => {
-		await use(new BannedUserPage(page));
-	},
-	maintenancePage: async ({ page }, use) => {
-		await use(new MaintenancePage(page));
-	},
-	esportsPage: async ({ page }, use) => {
-		await use(new EsportsPage(page));
-	},
-	slotsBattlePage: async ({ page }, use) => {
-		await use(new SlotsBattlePage(page));
-	},
-	blogCategoryPage: async ({ page }, use) => {
-		await use(new BlogCategoryPage(page));
-	},
-	helpPage: async ({ page }, use) => {
-		await use(new HelpPage(page));
-	},
-	casinoPage: async ({ page }, use) => {
-		await use(new CasinoPage(page));
-	},
-	providersPage: async ({ page }, use) => {
-		await use(new ProvidersPage(page));
-	},
-	kothPage: async ({ page }, use) => {
-		await use(new KothPage(page));
-	},
-	transactionsPage: async ({ page }, use) => {
-		await use(new TransactionsPage(page));
-	},
-	blogPage: async ({ page }, use) => {
-		await use(new BlogPage(page));
-	},
-	blogPostPage: async ({ page }, use) => {
-		await use(new BlogPostPage(page));
-	},
-	statisticsPage: async ({ page }, use) => {
-		await use(new StatisticsPage(page));
-	},
-	promotionsPage: async ({ page }, use) => {
-		await use(new PromotionsPage(page));
-	},
-	promotionPage: async ({ page }, use) => {
-		await use(new PromotionPage(page));
-	},
-	notificationsPage: async ({ page }, use) => {
-		await use(new NotificationsPage(page));
-	},
-	privacyPage: async ({ page }, use) => {
-		await use(new PrivacyPage(page));
-	},
-	sportsPage: async ({ page }, use) => {
-		await use(new SportsPage(page));
-	},
+	homePage: sessionAwarePage(HomePage),
+	affiliatesPage: sessionAwarePage(AffiliatesPage),
+	settingsPage: sessionAwarePage(SettingsPage),
+	rewardsPage: sessionAwarePage(RewardsPage),
+	rewardsExplorePage: sessionAwarePage(RewardsExplorePage),
+	profilePage: sessionAwarePage(ProfilePage),
+	verificationPage: sessionAwarePage(VerificationPage),
+	faqPage: sessionAwarePage(FaqPage),
+	geoblockedPage: sessionAwarePage(GeoblockedPage),
+	bannedUserPage: sessionAwarePage(BannedUserPage),
+	maintenancePage: sessionAwarePage(MaintenancePage),
+	esportsPage: sessionAwarePage(EsportsPage),
+	slotsBattlePage: sessionAwarePage(SlotsBattlePage),
+	blogCategoryPage: sessionAwarePage(BlogCategoryPage),
+	helpPage: sessionAwarePage(HelpPage),
+	casinoPage: sessionAwarePage(CasinoPage),
+	providersPage: sessionAwarePage(ProvidersPage),
+	kothPage: sessionAwarePage(KothPage),
+	transactionsPage: sessionAwarePage(TransactionsPage),
+	blogPage: sessionAwarePage(BlogPage),
+	blogPostPage: sessionAwarePage(BlogPostPage),
+	statisticsPage: sessionAwarePage(StatisticsPage),
+	promotionsPage: sessionAwarePage(PromotionsPage),
+	promotionPage: sessionAwarePage(PromotionPage),
+	notificationsPage: sessionAwarePage(NotificationsPage),
+	privacyPage: sessionAwarePage(PrivacyPage),
+	sportsPage: sessionAwarePage(SportsPage),
 });

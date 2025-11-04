@@ -9,8 +9,13 @@ import { MinesGamePage } from "@pages/mines-game-page/mines-game-page";
 import { KenoGamePage } from "@pages/keno-game/keno-game-page";
 import { BookOfPyramidsPage } from "@pages/casino-games/bgaming/book-of-pyramids/book-of-pyramids-page";
 import { CashVaultIPage } from "@pages/casino-games/hacksaw-gaming/cash-vault-i/cash-vault-i-page";
+import {
+	BrowserSessionManager,
+	sessionAwarePage,
+} from "@core/browser-session-mngmt";
 
 export type GamePages = {
+	browserSessionManager: BrowserSessionManager;
 	originalsPage: OriginalsPage;
 	crashGamePage: CrashGamePage;
 	diceGamePage: DiceGamePage;
@@ -24,36 +29,24 @@ export type GamePages = {
 };
 
 export const gamePagesFixtures = base.extend<GamePages>({
-	crashGamePage: async ({ page }, use) => {
-		await use(new CrashGamePage(page));
+	browserSessionManager: async ({ browser, context, page }, use) => {
+		const manager = new BrowserSessionManager(browser, context, page);
+		await use(manager);
+		await manager.cleanup();
 	},
-	diceGamePage: async ({ page }, use) => {
-		await use(new DiceGamePage(page));
-	},
-	hiloGamePage: async ({ page }, use) => {
-		await use(new HiloGamePage(page));
-	},
-	rouletteGamePage: async ({ page }, use) => {
-		await use(new RouletteGamePage(page));
-	},
-	plinkoGamePage: async ({ page }, use) => {
-		await use(new PlinkoGamePage(page));
-	},
-	minesGamePage: async ({ page }, use) => {
-		await use(new MinesGamePage(page));
-	},
-	kenoGamePage: async ({ page }, use) => {
-		await use(new KenoGamePage(page));
-	},
-	bookOfPyramidsPage: async ({ page }, use) => {
-		await use(new BookOfPyramidsPage(page));
-	},
-	bubblesBonanzaPage: async ({ page }, use) => {
-		await use(new CashVaultIPage(page));
-	},
+	crashGamePage: sessionAwarePage(CrashGamePage),
+	diceGamePage: sessionAwarePage(DiceGamePage),
+	hiloGamePage: sessionAwarePage(HiloGamePage),
+	rouletteGamePage: sessionAwarePage(RouletteGamePage),
+	plinkoGamePage: sessionAwarePage(PlinkoGamePage),
+	minesGamePage: sessionAwarePage(MinesGamePage),
+	kenoGamePage: sessionAwarePage(KenoGamePage),
+	bookOfPyramidsPage: sessionAwarePage(BookOfPyramidsPage),
+	bubblesBonanzaPage: sessionAwarePage(CashVaultIPage),
+
 	originalsPage: async (
 		{
-			page,
+			browserSessionManager,
 			diceGamePage,
 			crashGamePage,
 			hiloGamePage,
@@ -64,17 +57,17 @@ export const gamePagesFixtures = base.extend<GamePages>({
 		},
 		use,
 	) => {
-		await use(
-			new OriginalsPage(
-				page,
-				diceGamePage,
-				crashGamePage,
-				hiloGamePage,
-				rouletteGamePage,
-				plinkoGamePage,
-				minesGamePage,
-				kenoGamePage,
-			),
+		const page = browserSessionManager.active.page;
+		const originals = new OriginalsPage(
+			page,
+			diceGamePage,
+			crashGamePage,
+			hiloGamePage,
+			rouletteGamePage,
+			plinkoGamePage,
+			minesGamePage,
+			kenoGamePage,
 		);
+		await use(originals);
 	},
 });

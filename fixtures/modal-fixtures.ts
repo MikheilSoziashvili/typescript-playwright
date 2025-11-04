@@ -11,8 +11,13 @@ import { SoftblockModalPage } from "@pages/modals/softblock-modal/softblock-moda
 import { test as base } from "@playwright/test";
 import { NewRedirectModal } from "@pages/modals/new-redirect-modal/new-redirect-modal";
 import { PromotionsModal } from "@pages/modals/promotions-modal/promotions-modal";
+import {
+	BrowserSessionManager,
+	sessionAwarePage,
+} from "@core/browser-session-mngmt";
 
 export type Modals = {
+	browserSessionManager: BrowserSessionManager;
 	tipUserModal: TipUserModal;
 	userProfileModal: UserProfileModal;
 	liveSupportModal: LiveSupportModal;
@@ -28,40 +33,21 @@ export type Modals = {
 };
 
 export const modalsFixtures = base.extend<Modals>({
-	tipUserModal: async ({ page }, use) => {
-		await use(new TipUserModal(page));
+	browserSessionManager: async ({ browser, context, page }, use) => {
+		const manager = new BrowserSessionManager(browser, context, page);
+		await use(manager);
+		await manager.cleanup();
 	},
-	userProfileModal: async ({ page }, use) => {
-		await use(new UserProfileModal(page));
-	},
-	liveSupportModal: async ({ page }, use) => {
-		await use(new LiveSupportModal(page));
-	},
-	walletModal: async ({ page }, use) => {
-		await use(new WalletModal(page));
-	},
-	twoFactorAuthModal: async ({ page }, use) => {
-		await use(new TwoFactorAuthModal(page));
-	},
-	tipRainModal: async ({ page }, use) => {
-		await use(new TipRainModal(page));
-	},
-	promoCodeModal: async ({ page }, use) => {
-		await use(new PromoCodeModal(page));
-	},
-	loginModal: async ({ page }, use) => {
-		await use(new LoginModal(page));
-	},
-	transactionDetailsModal: async ({ page }, use) => {
-		await use(new TransactionDetailsModal(page));
-	},
-	softblockModal: async ({ page }, use) => {
-		await use(new SoftblockModalPage(page));
-	},
-	newRedirectModal: async ({ page }, use) => {
-		await use(new NewRedirectModal(page));
-	},
-	promotionsModal: async ({ page }, use) => {
-		await use(new PromotionsModal(page));
-	},
+	tipUserModal: sessionAwarePage(TipUserModal),
+	userProfileModal: sessionAwarePage(UserProfileModal),
+	liveSupportModal: sessionAwarePage(LiveSupportModal),
+	walletModal: sessionAwarePage(WalletModal),
+	twoFactorAuthModal: sessionAwarePage(TwoFactorAuthModal),
+	promoCodeModal: sessionAwarePage(PromoCodeModal),
+	tipRainModal: sessionAwarePage(TipRainModal),
+	loginModal: sessionAwarePage(LoginModal),
+	transactionDetailsModal: sessionAwarePage(TransactionDetailsModal),
+	softblockModal: sessionAwarePage(SoftblockModalPage),
+	newRedirectModal: sessionAwarePage(NewRedirectModal),
+	promotionsModal: sessionAwarePage(PromotionsModal),
 });

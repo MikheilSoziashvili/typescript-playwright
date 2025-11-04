@@ -1,14 +1,12 @@
 import { test } from "@fixtures/fixtures";
-import {
-	generateRandomString,
-	setAuthenticationCookies,
-} from "@core/utils/utils";
+import { generateRandomString } from "@core/utils/utils";
 import { ChatMessageOptions } from "@pages/components/chat/chat-map";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { testData } from "test-data/test-data-manager";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
+import { TestUserRole } from "@enums/test-user-roles";
 
 test.describe(
 	"Chat - chatrooms tests",
@@ -27,21 +25,22 @@ test.describe(
 					`[ENG-2870] Chat - chatroom '${input.chatroom}' successfully selected with previous messages displayed`,
 					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
 					async ({
-						gamdomApiDbFacade,
+						browserSessionManager,
 						homePage,
 						profilePage,
 						chat,
 					}) => {
-						const { user, cookie } =
-							await gamdomApiDbFacade.createSingleUserDbAndAuth({
-								emailVerified: true,
-							});
+						const regularUserSession =
+							await browserSessionManager.loginAs(
+								TestUserRole.REGULAR,
+								{ reuseContext: true },
+							);
 						const messageInfo: ChatMessageOptions = {
-							username: user.username,
+							username:
+								regularUserSession.getAuthenticatedUser().user
+									.username,
 							message: message,
 						};
-
-						await setAuthenticationCookies(homePage.page, cookie);
 
 						await homePage.navigate();
 						await chat.steps().openChatAndVerify();

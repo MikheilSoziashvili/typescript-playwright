@@ -1,0 +1,6 @@
+export enum TestUserRole {
+	ANONYMOUS,
+	REGULAR,
+	SUPERADMIN,
+	ADMIN_USER_INFO_ADMIN,
+}

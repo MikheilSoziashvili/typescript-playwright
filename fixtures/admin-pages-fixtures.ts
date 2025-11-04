@@ -46,8 +46,13 @@ import { UserInfoRewardsHistoryAdminPage } from "@pages/admin/user-info-admin/us
 import { UserInfoKycAdminPage } from "@pages/admin/user-info-admin/user-info-kyc-admin/user-info-kyc-admin-page";
 import { BulkActionsAdminPage } from "@pages/admin/bulk-actions-admin/bulk-actions-admin-page";
 import { UserInfoSessionsAdminPage } from "@pages/admin/user-info-admin/user-info-sessions-admin/user-info-sessions-admin-page";
+import {
+	BrowserSessionManager,
+	sessionAwarePage,
+} from "@core/browser-session-mngmt";
 
 export type AdminPages = {
+	browserSessionManager: BrowserSessionManager;
 	baseAdminPage: BaseAdminPage;
 	userInfoAdminPage: UserInfoAdminPage;
 	infoAdminPage: UserInfoInfoAdminPage;
@@ -98,145 +103,58 @@ export type AdminPages = {
 };
 
 export const adminPagesFixtures = base.extend<AdminPages>({
-	baseAdminPage: async ({ page }, use) => {
-		await use(new BaseAdminPage(page));
+	browserSessionManager: async ({ browser, context, page }, use) => {
+		const manager = new BrowserSessionManager(browser, context, page);
+		await use(manager);
+		await manager.cleanup();
 	},
-	userInfoAdminPage: async ({ page }, use) => {
-		await use(new UserInfoAdminPage(page));
-	},
-	infoAdminPage: async ({ page }, use) => {
-		await use(new UserInfoInfoAdminPage(page));
-	},
-	transactionsAdminPage: async ({ page }, use) => {
-		await use(new UserInfoTransactionsAdminPage(page));
-	},
-	freeSpinsAdminPage: async ({ page }, use) => {
-		await use(new FreeSpinsAdminPage(page));
-	},
-	securityAdminPage: async ({ page }, use) => {
-		await use(new SecurityAdminPage(page));
-	},
-	writerAdminPage: async ({ page }, use) => {
-		await use(new WriterAdminPage(page));
-	},
-	vipManagerAdminPage: async ({ page }, use) => {
-		await use(new VipManagerAdminPage(page));
-	},
-	actionsAdminPage: async ({ page }, use) => {
-		await use(new ActionsAdminPage(page));
-	},
-	affiliatesAdminPage: async ({ page }, use) => {
-		await use(new AffiliatesAdminPage(page));
-	},
-	marketingAdminPage: async ({ page }, use) => {
-		await use(new MarketingAdminPage(page));
-	},
-	featuresAdminPage: async ({ page }, use) => {
-		await use(new FeaturesAdminPage(page));
-	},
-	testingAdminPage: async ({ page }, use) => {
-		await use(new TestingAdminPage(page));
-	},
-	kothAdminPage: async ({ page }, use) => {
-		await use(new KothAdminPage(page));
-	},
-	botsAdminPage: async ({ page }, use) => {
-		await use(new BotsAdminPage(page));
-	},
-	cryptoAdminPage: async ({ page }, use) => {
-		await use(new CryptoAdminPage(page));
-	},
-	jackpotAdminPage: async ({ page }, use) => {
-		await use(new JackpotAdminPage(page));
-	},
-	kycAdminPage: async ({ page }, use) => {
-		await use(new KycAdminPage(page));
-	},
-	priceWatchAdminPage: async ({ page }, use) => {
-		await use(new PriceWatchAdminPage(page));
-	},
-	systemAdminPage: async ({ page }, use) => {
-		await use(new SystemAdminPage(page));
-	},
-	rainAdminPage: async ({ page }, use) => {
-		await use(new RainAdminPage(page));
-	},
-	ipBlockAdminPage: async ({ page }, use) => {
-		await use(new IpBlockAdminPage(page));
-	},
-	paymentsAdminPage: async ({ page }, use) => {
-		await use(new PaymentsAdminPage(page));
-	},
-	newUsersAdminPage: async ({ page }, use) => {
-		await use(new NewUsersAdminPage(page));
-	},
-	modTipAdminPage: async ({ page }, use) => {
-		await use(new ModTipAdminPage(page));
-	},
-	communityConnectAdminPage: async ({ page }, use) => {
-		await use(new CommunityConnectAdminPage(page));
-	},
-	casinoProvidersAdminPage: async ({ page }, use) => {
-		await use(new CasinoProvidersAdminPage(page));
-	},
-	casinoGamesAdminPage: async ({ page }, use) => {
-		await use(new CasinoGamesAdminPage(page));
-	},
-	giftCardsAdminPage: async ({ page }, use) => {
-		await use(new GiftCardsAdminPage(page));
-	},
-	promoCampaignsAdminPage: async ({ page }, use) => {
-		await use(new PromoCampaignsAdminPage(page));
-	},
-	battlesAdminPage: async ({ page }, use) => {
-		await use(new BattlesAdminPage(page));
-	},
-	cdnUploadAdminPage: async ({ page }, use) => {
-		await use(new CdnUploadAdminPage(page));
-	},
-	eventsManagingAdminPage: async ({ page }, use) => {
-		await use(new EventsManagingAdminPage(page));
-	},
-	dynamicDomainsAdminPage: async ({ page }, use) => {
-		await use(new DynamicDomainsAdminPage(page));
-	},
-	evRewardsSystemAdminPage: async ({ page }, use) => {
-		await use(new EvRewardsSystemAdminPage(page));
-	},
-	openTradesAdminPage: async ({ page }, use) => {
-		await use(new OpenTradesAdminPage(page));
-	},
-	plainSqlAdminPage: async ({ page }, use) => {
-		await use(new PlainSqlAdminPage(page));
-	},
-	statsAdminPage: async ({ page }, use) => {
-		await use(new StatsAdminPage(page));
-	},
-	ourGamesAdminPage: async ({ page }, use) => {
-		await use(new OurGamesAdminPage(page));
-	},
-	seoRedirectsAdminPage: async ({ page }, use) => {
-		await use(new SeoRedirectsAdminPage(page));
-	},
-	promotionAdminPage: async ({ page }, use) => {
-		await use(new PromotionAdminPage(page));
-	},
-	userInfoEditInfoAdminPage: async ({ page }, use) => {
-		await use(new UserInfoEditInfoAdminPage(page));
-	},
-	userInfoRewardsAdminPage: async ({ page }, use) => {
-		await use(new UserInfoRewardsAdminPage(page));
-	},
-	userInfoRewardsHistoryAdminPage: async ({ page }, use) => {
-		await use(new UserInfoRewardsHistoryAdminPage(page));
-	},
-	userInfoKycAdminPage: async ({ page }, use) => {
-		await use(new UserInfoKycAdminPage(page));
-	},
-	bulkActionsAdminPage: async ({ page }, use) => {
-		await use(new BulkActionsAdminPage(page));
-	},
-	userInfoSessionsAdminPage: async ({ page }, use) => {
-		await use(new UserInfoSessionsAdminPage(page));
-	},
+	baseAdminPage: sessionAwarePage(BaseAdminPage),
+	userInfoAdminPage: sessionAwarePage(UserInfoAdminPage),
+	infoAdminPage: sessionAwarePage(UserInfoInfoAdminPage),
+	transactionsAdminPage: sessionAwarePage(UserInfoTransactionsAdminPage),
+	freeSpinsAdminPage: sessionAwarePage(FreeSpinsAdminPage),
+	securityAdminPage: sessionAwarePage(SecurityAdminPage),
+	writerAdminPage: sessionAwarePage(WriterAdminPage),
+	vipManagerAdminPage: sessionAwarePage(VipManagerAdminPage),
+	actionsAdminPage: sessionAwarePage(ActionsAdminPage),
+	affiliatesAdminPage: sessionAwarePage(AffiliatesAdminPage),
+	marketingAdminPage: sessionAwarePage(MarketingAdminPage),
+	featuresAdminPage: sessionAwarePage(FeaturesAdminPage),
+	testingAdminPage: sessionAwarePage(TestingAdminPage),
+	kothAdminPage: sessionAwarePage(KothAdminPage),
+	botsAdminPage: sessionAwarePage(BotsAdminPage),
+	cryptoAdminPage: sessionAwarePage(CryptoAdminPage),
+	jackpotAdminPage: sessionAwarePage(JackpotAdminPage),
+	kycAdminPage: sessionAwarePage(KycAdminPage),
+	priceWatchAdminPage: sessionAwarePage(PriceWatchAdminPage),
+	systemAdminPage: sessionAwarePage(SystemAdminPage),
+	rainAdminPage: sessionAwarePage(RainAdminPage),
+	ipBlockAdminPage: sessionAwarePage(IpBlockAdminPage),
+	paymentsAdminPage: sessionAwarePage(PaymentsAdminPage),
+	newUsersAdminPage: sessionAwarePage(NewUsersAdminPage),
+	modTipAdminPage: sessionAwarePage(ModTipAdminPage),
+	communityConnectAdminPage: sessionAwarePage(CommunityConnectAdminPage),
+	casinoProvidersAdminPage: sessionAwarePage(CasinoProvidersAdminPage),
+	casinoGamesAdminPage: sessionAwarePage(CasinoGamesAdminPage),
+	giftCardsAdminPage: sessionAwarePage(GiftCardsAdminPage),
+	promoCampaignsAdminPage: sessionAwarePage(PromoCampaignsAdminPage),
+	battlesAdminPage: sessionAwarePage(BattlesAdminPage),
+	cdnUploadAdminPage: sessionAwarePage(CdnUploadAdminPage),
+	eventsManagingAdminPage: sessionAwarePage(EventsManagingAdminPage),
+	dynamicDomainsAdminPage: sessionAwarePage(DynamicDomainsAdminPage),
+	evRewardsSystemAdminPage: sessionAwarePage(EvRewardsSystemAdminPage),
+	openTradesAdminPage: sessionAwarePage(OpenTradesAdminPage),
+	plainSqlAdminPage: sessionAwarePage(PlainSqlAdminPage),
+	statsAdminPage: sessionAwarePage(StatsAdminPage),
+	ourGamesAdminPage: sessionAwarePage(OurGamesAdminPage),
+	seoRedirectsAdminPage: sessionAwarePage(SeoRedirectsAdminPage),
+	promotionAdminPage: sessionAwarePage(PromotionAdminPage),
+	userInfoEditInfoAdminPage: sessionAwarePage(UserInfoEditInfoAdminPage),
+	userInfoRewardsAdminPage: sessionAwarePage(UserInfoRewardsAdminPage),
+	userInfoRewardsHistoryAdminPage: sessionAwarePage(
+		UserInfoRewardsHistoryAdminPage,
+	),
+	userInfoKycAdminPage: sessionAwarePage(UserInfoKycAdminPage),
+	bulkActionsAdminPage: sessionAwarePage(BulkActionsAdminPage),
+	userInfoSessionsAdminPage: sessionAwarePage(UserInfoSessionsAdminPage),
 });
