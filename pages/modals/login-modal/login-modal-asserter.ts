@@ -68,6 +68,43 @@ export class LoginModalAsserter extends BaseAsserter<LoginModal> {
 
 	@step("Check login modal is displayed")
 	public async loginModalIsDisplayedV4(): Promise<void> {
-		await expect(this.gamdomPage.map.loginDialogV4).toBeVisible();
+		await this.checkElementsAreVisible([this.gamdomPage.map.loginDialogV4]);
+	}
+
+	@step("Check login modal is not displayed")
+	public async loginModalIsNotDisplayedV4(): Promise<void> {
+		await this.checkElementsAreNotVisible([
+			this.gamdomPage.map.loginDialogV4,
+		]);
+	}
+
+	@step("Check forgot password form is visible")
+	async forgotPasswordFormIsVisibleV4(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.forgotPasswordFormV4,
+		]);
+	}
+
+	@step("Check forgot password form is not visible")
+	async forgotPasswordFormIsNotVisibleV4(): Promise<void> {
+		await this.checkElementsAreNotVisible([
+			this.gamdomPage.map.forgotPasswordFormV4,
+		]);
+	}
+
+	@step("Verify forgot password confirmation text and visibility")
+	async forgotPasswordConfirmationTextAndVisibilityV4(
+		expectedText: string,
+	): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.forgotPasswordConfirmationTextV4,
+		]);
+
+		await this.checkElementsHaveText([
+			{
+				locator: this.gamdomPage.map.forgotPasswordConfirmationTextV4,
+				expectedText: expectedText,
+			},
+		]);
 	}
 }

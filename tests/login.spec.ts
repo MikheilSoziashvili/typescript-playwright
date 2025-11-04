@@ -5,6 +5,7 @@ import { AuthenticationAction } from "@enums/authentication-actions";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
+import { MessageText } from "@enums/messages-texts";
 import { AnnotationType } from "@enums/playwright/annotationsTypes";
 import { TestTag } from "@enums/test-tags";
 import { test } from "@fixtures/fixtures";
@@ -263,5 +264,30 @@ test.describe(
 					},
 				);
 			});
+
+		test(
+			`[ENG-7856] Verify correct display of "Forgot Password " modal window`,
+			testDetails()
+				.withTags(
+					JiraComponent.FORGOT_PASSWORD,
+					JiraComponent.LOGIN_REGISTER,
+				)
+				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+				.apply(),
+			async ({ homePage, loginModal }) => {
+				const email =
+					testData().fromPredefinedRandom().data.emails
+						.forgotPassword;
+				await homePage.navigateAndCheckTitle();
+				await homePage.unauthenticatedHeader.openLoginModalV4();
+				await loginModal
+					.steps()
+					.sendForgotPasswordEmailSuccessfullyV4(
+						email,
+						MessageText.SUCCESSFULLY_SENT_EMAIL,
+					);
+				await loginModal.steps().closeForgotPasswordFormAndVerifyV4();
+			},
+		);
 	},
 );

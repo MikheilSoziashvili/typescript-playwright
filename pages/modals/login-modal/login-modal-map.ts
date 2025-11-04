@@ -104,12 +104,16 @@ export class LoginModalMap extends BaseMap {
 		return this.page.getByTestId("auth-modal-dialog");
 	}
 
+	public get loginFormV4(): Locator {
+		return this.loginDialogV4.getByTestId("signin-form");
+	}
+
 	public get usernameContainerV4(): Locator {
-		return this.loginDialogV4.getByTestId("signin-username");
+		return this.loginFormV4.getByTestId("signin-username");
 	}
 
 	public get passwordContainerV4(): Locator {
-		return this.loginDialogV4.getByTestId("signin-password");
+		return this.loginFormV4.getByTestId("signin-password");
 	}
 
 	public get usernameFieldV4(): Locator {
@@ -122,5 +126,37 @@ export class LoginModalMap extends BaseMap {
 
 	public get loginBtnV4(): Locator {
 		return this.loginDialogV4.getByTestId("signin-sbt-btn");
+	}
+
+	public get forgotPasswordButtonV4(): Locator {
+		return this.loginFormV4.getByTestId("forgot-pwd-link-btn");
+	}
+
+	public get forgotPasswordFormV4(): Locator {
+		return this.loginDialogV4.getByTestId("forgot-password-form");
+	}
+
+	public get forgotPasswordEmailContainerV4(): Locator {
+		return this.forgotPasswordFormV4.getByTestId("forgot-password-email");
+	}
+
+	public get forgotPasswordEmailFieldV4(): Locator {
+		return this.forgotPasswordEmailContainerV4.getByTestId(
+			"forgot-password-email-input",
+		);
+	}
+
+	public get forgotPasswordSendButtonV4(): Locator {
+		return this.forgotPasswordFormV4.getByTestId("forgot-pwd-sbt-btn");
+	}
+
+	public get forgotPasswordConfirmationTextV4(): Locator {
+		return this.forgotPasswordFormV4.getByTestId(
+			"forgot-password-success-message",
+		);
+	}
+
+	public get forgotPasswordCloseButtonV4(): Locator {
+		return this.forgotPasswordFormV4.getByTestId("forgot-pwd-close-btn");
 	}
 }

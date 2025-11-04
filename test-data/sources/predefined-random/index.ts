@@ -1,4 +1,4 @@
-import { generateRandomString } from "@core/utils/utils";
+import { generateRandomString, getRandomEmail } from "@core/utils/utils";
 
 export const predefinedRandom = {
 	notifications: {
@@ -14,5 +14,8 @@ export const predefinedRandom = {
 		campaignCode: generateRandomString({
 			prefix: "code_value_",
 		}),
+	},
+	emails: {
+		forgotPassword: getRandomEmail(),
 	},
 };

@@ -5,6 +5,7 @@ import { LoginModalMap } from "./login-modal-map";
 import { LoginModalAsserter } from "./login-modal-asserter";
 import { findUser } from "@core/utils/utils";
 import { TestUserConfigurationObject } from "@core/types/types";
+import { LoginModalSteps } from "./login-modal-steps";
 
 export class LoginModal extends BaseModal<LoginModalMap> {
 	constructor(page: Page) {
@@ -13,6 +14,10 @@ export class LoginModal extends BaseModal<LoginModalMap> {
 
 	public assertThat(fromCsv = false): LoginModalAsserter {
 		return new LoginModalAsserter(this, fromCsv);
+	}
+
+	public steps(): LoginModalSteps {
+		return new LoginModalSteps(this);
 	}
 
 	// TODO: Add test data in a separate class
@@ -99,5 +104,25 @@ export class LoginModal extends BaseModal<LoginModalMap> {
 		await this.map.usernameFieldV4.fill(username);
 		await this.map.passwordFieldV4.fill(password);
 		await this.map.loginBtnV4.click();
+	}
+
+	@step("Click forgot password button - v4")
+	public async clickForgotPasswordButtonV4(): Promise<void> {
+		await this.map.forgotPasswordButtonV4.click();
+	}
+
+	@step("Fill in email for forgot password - v4")
+	public async fillInEmailForForgotPasswordV4(email: string): Promise<void> {
+		await this.map.forgotPasswordEmailFieldV4.fill(email);
+	}
+
+	@step("Click send button for forgot password - v4")
+	public async clickSendButtonForForgotPasswordV4(): Promise<void> {
+		await this.map.forgotPasswordSendButtonV4.click();
+	}
+
+	@step("Close forgot password form - v4")
+	public async closeForgotPasswordFormV4(): Promise<void> {
+		await this.map.forgotPasswordCloseButtonV4.click();
 	}
 }
