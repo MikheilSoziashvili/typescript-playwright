@@ -5,6 +5,7 @@ import {
 	OriginalsQuickSelectButtonsCsvRecord,
 	OriginalsWalletSwitchingTestsCsvRecord,
 	PlinkoBetsAcrossMultipleWalletsCsvRecord,
+	PromoCampaignUpdateCsvRecord,
 	UserProfileItemsLinksAccessibilityCsvRecord,
 } from "@dtos/csv";
 import { OriginalsSelfExclusionCsvRecord } from "@dtos/csv/originals-self-exclusion";
@@ -43,6 +44,10 @@ import {
 	parsePlinkoTestDataCsvRow,
 	PlinkoTestDataCsvParsedRecord,
 } from "test-data/parsers/plinko-test-data-csv-parser";
+import {
+	parsePromoCampaignUpdateCsvRecord,
+	PromoCampaignUpdateCsvParsedRecord,
+} from "test-data/parsers/promo-campaign-update-csv-parser";
 import {
 	parseUserInfoSendNotificationCsvRow,
 	UserInfoSendNotificationCsvParsedRecord,
@@ -110,6 +115,10 @@ export type CsvTransformerMapType = {
 	[CsvFilesName.BLOG_VERIFY_SOCIAL_SHARE_LINKS]: (
 		row: BlogVerifySocialShareLinksCsvRecord,
 	) => BlogVerifySocialShareLinksCsvParsedRecord;
+
+	[CsvFilesName.PROMO_CAMPAIGN_UPDATE]: (
+		row: PromoCampaignUpdateCsvRecord,
+	) => PromoCampaignUpdateCsvParsedRecord;
 };
 
 export const CsvTransformerMap: CsvTransformerMapType = {
@@ -130,4 +139,5 @@ export const CsvTransformerMap: CsvTransformerMapType = {
 	[CsvFilesName.CHAT_PIN_UNPIN]: parseChatPinMessagePermissionsCsvRow,
 	[CsvFilesName.BLOG_VERIFY_SOCIAL_SHARE_LINKS]:
 		parseBlogVerifySocialShareLinksCsvRow,
+	[CsvFilesName.PROMO_CAMPAIGN_UPDATE]: parsePromoCampaignUpdateCsvRecord,
 } as const;

@@ -1,4 +1,4 @@
-import { PromoCodeStatusValue } from "@enums/db/campaign-promo-sattus-value";
+import { PromoCodeStatusValue } from "@enums/db/campaign-promo-status-value";
 import { CampaignPromoType } from "@enums/db/campaign-promo-type";
 
 export interface PromoCodeFailedRedemptionCsvRecord {

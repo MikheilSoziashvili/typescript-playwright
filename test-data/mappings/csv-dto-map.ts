@@ -17,6 +17,7 @@ import {
 	LoginSuccessfulCsv,
 	ChatPinMessagePermissionsCsv,
 	BlogVerifySocialShareLinksCsv,
+	PromoCampaignUpdateCsv,
 } from "@dtos/csv";
 import { HomePageBannerCarouselCsv } from "@dtos/csv/home-page-banner-carousel-csv";
 import { OriginalsSelfExclusionCsv } from "@dtos/csv/originals-self-exclusion";
@@ -47,4 +48,5 @@ export type CsvDtoMap = {
 	[CsvFilesName.HOME_PAGE_BANNER_CAROUSEL]: HomePageBannerCarouselCsv;
 	[CsvFilesName.CHAT_PIN_UNPIN]: ChatPinMessagePermissionsCsv;
 	[CsvFilesName.BLOG_VERIFY_SOCIAL_SHARE_LINKS]: BlogVerifySocialShareLinksCsv;
+	[CsvFilesName.PROMO_CAMPAIGN_UPDATE]: PromoCampaignUpdateCsv;
 };

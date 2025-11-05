@@ -53,4 +53,5 @@ export enum CsvFilesName {
 	HOME_PAGE_BANNER_CAROUSEL = "ENG-1158-homepage-banner-carousel.csv",
 	CHAT_PIN_UNPIN = "ENG-7196-chat-pin-message-permissions.csv",
 	BLOG_VERIFY_SOCIAL_SHARE_LINKS = "ENG-6374-blog-verify-social-share-links.csv",
+	PROMO_CAMPAIGN_UPDATE = "ENG-3334-promo-campaign-update.csv",
 }

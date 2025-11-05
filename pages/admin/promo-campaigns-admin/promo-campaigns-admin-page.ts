@@ -58,4 +58,14 @@ export class PromoCampaignsAdminPage extends BasePage<PromoCampaignsAdminMap> {
 	): Promise<void> {
 		await this.map.copyLinkButtonInRow(campaignName).click();
 	}
+
+	@step("Click action button by the campaign name")
+	public async clickActionButton(
+		campaignName: string,
+		action: string,
+	): Promise<void> {
+		await this.map
+			.campaignStatusActionButtonTableByCampaignName(campaignName, action)
+			.click();
+	}
 }

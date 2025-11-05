@@ -1,0 +1,10 @@
+promoType,initialStatus,firstAction,intermediateStatus,finalAction,finalStatus
+CASH,active,pause,paused,finish,finished
+CASH,active,pause,paused,cancel,canceled
+CASH,active,pause,paused,activate,active
+CASH_RELOAD,active,pause,paused,finish,finished
+CASH_RELOAD,active,pause,paused,cancel,canceled
+CASH_RELOAD,active,pause,paused,activate,active
+FREE_SPINS,active,pause,paused,finish,finished
+FREE_SPINS,active,pause,paused,cancel,canceled
+FREE_SPINS,active,pause,paused,activate,active

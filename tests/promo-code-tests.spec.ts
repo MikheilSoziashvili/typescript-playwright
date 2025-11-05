@@ -19,8 +19,10 @@ import {
 import { PromoCampaignStatuses } from "@enums/campaign-statuses";
 import { CasinoGameCode } from "@enums/casino-game-code";
 import { CsvFilesName } from "@enums/csv-file-name";
-import { PromoCodeStatusValue } from "@enums/db/campaign-promo-sattus-value";
+import { PromoCodeStatusValue } from "@enums/db/campaign-promo-status-value";
 import { CampaignPromoType } from "@enums/db/campaign-promo-type";
+import { UserClasses } from "@enums/db/user-classes";
+import { UserTags } from "@enums/db/user-tags";
 import { JiraUser } from "@enums/jira/jira-users";
 import { LogType } from "@enums/log-types";
 import { NotificationButton } from "@enums/notification-buttons";
@@ -696,6 +698,125 @@ test.describe(
 					},
 				);
 			});
+		});
+
+		test.describe("Promo codes - campaign management tests", () => {
+			const promoCodeTestDataDomain = testData().fromDomain().promoCodes;
+
+			let adminUserId: number;
+			let adminUserCookie: string;
+			let promoCodesToDelete: string[] = [];
+			let promoCodesMap: Record<string, { name: string; value: string }>;
+
+			test.beforeAll(
+				async ({ gamdomApiDbFacade, gamdomDb, testDataRandom }) => {
+					const { user: adminUserData, cookie: adminUserCookieData } =
+						await gamdomApiDbFacade.createSingleUserDbAndAuth({
+							userClass: UserClasses.Admin,
+							tags: [
+								UserTags.PromoCampaignsSuperAdmin,
+								UserTags.PromoCampaignsReadAdmin,
+							],
+							emailVerified: true,
+							useGamdomEmailDomain: true,
+						});
+					adminUserId = adminUserData.userId;
+					adminUserCookie = adminUserCookieData;
+
+					promoCodesMap =
+						promoCodeTestDataDomain.buildPromoCodesMap(
+							testDataRandom,
+						);
+
+					promoCodesToDelete = Object.values(promoCodesMap).map(
+						(c) => c.value,
+					);
+
+					for (const {
+						promoType,
+						status,
+					} of promoCodeTestDataDomain.campaignManagementScenarios) {
+						const { name, value } =
+							promoCodesMap[`${promoType}_${status}`];
+						await promoCampaignMatrix[
+							promoType as keyof typeof promoCampaignMatrix
+						].create({
+							gamdomDb: gamdomDb,
+							promoCodeName: name,
+							promoCodeValue: value,
+							adminUserId: adminUserId,
+						});
+					}
+				},
+			);
+
+			test.afterAll(async ({ gamdomDb }) => {
+				for (const promoCodeValue of promoCodesToDelete) {
+					await gamdomDb.deletePromoCampaignByPromoCode(
+						promoCodeValue,
+					);
+				}
+				promoCodesToDelete = [];
+			});
+
+			testData()
+				.fromCsvParsed({ file: CsvFilesName.PROMO_CAMPAIGN_UPDATE })
+				.forEach((input) => {
+					test(
+						`[ENG-3334] Manage promo campaign - ${input.promoType} - ${input.finalStatus}`,
+						testDetails()
+							.withAuthor(JiraUser.RALUCA_ARITON)
+							.apply(),
+						async ({ page, promoCampaignsAdminPage }) => {
+							const {
+								name: promoCodeName,
+								value: promoCodeValue,
+							} = promoCodeTestDataDomain.getPromoCode(
+								promoCodesMap,
+								input.promoType,
+								input.finalStatus,
+							);
+
+							await setAuthenticationCookies(
+								page,
+								adminUserCookie,
+							);
+							await promoCampaignsAdminPage.navigate();
+							await promoCampaignsAdminPage
+								.steps()
+								.searchPromoCode(
+									promoCodeValue,
+									promoCodeName,
+									1,
+								);
+							await promoCampaignsAdminPage.clickActionButton(
+								promoCodeName,
+								input.firstAction,
+							);
+							await promoCampaignsAdminPage.searchPromoCode();
+
+							await promoCampaignsAdminPage
+								.assertThat()
+								.verifyPromoCampaignStatus(
+									promoCodeName,
+									input.intermediateStatus,
+								);
+
+							await promoCampaignsAdminPage.clickActionButton(
+								promoCodeName,
+								input.finalAction,
+							);
+							await promoCampaignsAdminPage.searchPromoCode();
+
+							await promoCampaignsAdminPage
+								.assertThat()
+								.verifyPromoCampaignStatus(
+									promoCodeName,
+									input.finalStatus,
+								);
+						},
+					);
+				});
 		});
 	},
 );
