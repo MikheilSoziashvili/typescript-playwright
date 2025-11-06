@@ -32,7 +32,7 @@ export class UserInfoInfoAdminPageMap extends BaseMap {
 	}
 
 	public getBanTypeOption(type: BanTypeOptions): Locator {
-		return this.page.locator(`[data-value="${type}"]`);
+		return this.page.getByRole("option", { name: type });
 	}
 
 	public getBanCategoryOption(category: BanCategories): Locator {
