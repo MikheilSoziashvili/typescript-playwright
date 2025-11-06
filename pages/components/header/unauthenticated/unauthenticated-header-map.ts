@@ -29,4 +29,8 @@ export class UnauthenticatedHeaderMap extends BaseMap {
 	public get loginBtnV4(): Locator {
 		return this.page.getByTestId("signin-nav-btn");
 	}
+
+	public get signUpBtnV4(): Locator {
+		return this.page.getByTestId("signup-nav-btn");
+	}
 }

@@ -35,3 +35,26 @@ test.describe("Register tests", () => {
 		},
 	);
 });
+
+test.describe(
+	"Register tests - v4",
+	testDetails().withTags(TestTag.V4, JiraComponent.LOGIN_REGISTER).apply(),
+	() => {
+		test.use({ storageState: { cookies: [], origins: [] } });
+
+		test(
+			`[ENG-7853] Verify correct display of "Create Account" modal window`,
+			testDetails()
+				.withTags(JiraComponent.ACCOUNT_CREATION)
+				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+				.apply(),
+			async ({ homePage }) => {
+				await homePage.navigateAndCheckTitle();
+				await homePage.unauthenticatedHeader.openRegisterModalV4();
+				await homePage.registerModal
+					.assertThat()
+					.registerFormWithRegisterElementsAreDisplayedV4();
+			},
+		);
+	},
+);
