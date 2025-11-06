@@ -244,4 +244,18 @@ export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 			)
 			.toBe(true);
 	}
+	@step("Verify profit on win amount is correct")
+	public async verifyProfitOnWinAmountIsCorrect(
+		coefficient: Locator,
+	): Promise<void> {
+		const [tooltipValue, coeffNum, betNum] = await Promise.all([
+			this.gamdomPage.getProfitOnWinAmount(coefficient),
+			this.gamdomPage.getCoefficientValue(coefficient),
+			this.gamdomPage.getBetAmountNumeric(),
+		]);
+
+		const expected = parseFloat((betNum * coeffNum).toFixed(2));
+
+		expect(tooltipValue).toBe(expected);
+	}
 }

@@ -22,6 +22,7 @@ import {
 import { HomePageBannerCarouselCsv } from "@dtos/csv/home-page-banner-carousel-csv";
 import { OriginalsSelfExclusionCsv } from "@dtos/csv/originals-self-exclusion";
 import { PlinkoTestDataCsv } from "@dtos/csv/plinko-test-data-csv";
+import { PossibleWinPopUpCsv } from "@dtos/csv/possible-win-pop-up-csv";
 import { UserInfoSendNotificationCsv } from "@dtos/csv/user-info-send-notification-csv";
 import { CsvFilesName } from "@enums/csv-file-name";
 
@@ -49,4 +50,5 @@ export type CsvDtoMap = {
 	[CsvFilesName.CHAT_PIN_UNPIN]: ChatPinMessagePermissionsCsv;
 	[CsvFilesName.BLOG_VERIFY_SOCIAL_SHARE_LINKS]: BlogVerifySocialShareLinksCsv;
 	[CsvFilesName.PROMO_CAMPAIGN_UPDATE]: PromoCampaignUpdateCsv;
+	[CsvFilesName.POSSIBLE_WIN_POP_UP]: PossibleWinPopUpCsv;
 };

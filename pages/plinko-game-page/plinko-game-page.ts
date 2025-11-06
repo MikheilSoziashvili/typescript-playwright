@@ -3,7 +3,7 @@ import { PLINKO_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { parseBalance, waitUntil } from "@core/utils/utils";
 import { Attributes } from "@enums/playwright/htmlAttributes";
-import { expect, Page } from "@playwright/test";
+import { expect, Locator, Page } from "@playwright/test";
 import { step } from "decorators/step";
 import { PlinkoGamePageAsserter } from "./plinko-game-page-asserter";
 import { PlinkoGamePageMap } from "./plinko-game-page-map";
@@ -185,5 +185,31 @@ export class PlinkoGamePage extends BasePage<PlinkoGamePageMap> {
 				timeoutSeconds: TimeoutSeconds.TWO_FORTY,
 			},
 		);
+	}
+
+	@step("Get profit on win amount from tooltip")
+	public async getProfitOnWinAmount(coefficient: Locator): Promise<number> {
+		await coefficient.hover();
+
+		const tooltipAmount = this.map.tooltipAmountFor(coefficient);
+		const text = await tooltipAmount.innerText();
+		const normalizedText = text.replaceAll(",", "");
+		return parseFloat(normalizedText);
+	}
+
+	@step("Get coefficient value")
+	public async getCoefficientValue(coefficient: Locator): Promise<number> {
+		const coeffAttr = await coefficient.getAttribute("data-coeff");
+		if (!coeffAttr)
+			throw new Error(
+				"Missing data-coeff attribute on coefficient element",
+			);
+		return parseFloat(coeffAttr);
+	}
+
+	@step("Get bet amount value as number")
+	public async getBetAmountNumeric(): Promise<number> {
+		const betText = await this.getBetAmountValue();
+		return parseFloat(betText);
 	}
 }

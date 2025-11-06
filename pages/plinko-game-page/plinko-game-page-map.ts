@@ -192,4 +192,16 @@ export class PlinkoGamePageMap extends BaseMap {
 			.getByTestId("page-container-animate")
 			.filter({ hasText: "This game is currently disabled." });
 	}
+
+	public get plinkoCoefficientButtons(): Locator {
+		return this.page.getByTestId("plinko-coeff-btn");
+	}
+
+	public tooltipForCoefficient(coefficient: Locator): Locator {
+		return coefficient.getByTestId("plinko-tooltip");
+	}
+
+	public tooltipAmountFor(coefficient: Locator): Locator {
+		return coefficient.getByTestId("plinko-tooltip-amount");
+	}
 }

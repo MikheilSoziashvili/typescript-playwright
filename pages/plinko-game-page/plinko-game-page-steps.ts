@@ -213,6 +213,13 @@ export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 		return accountBalanceBeforeBet - betAmount + winnings;
 	}
 
+	@step("Calculate total wagered in Plinko")
+	public async calculateTotalWagered(betAmount: number, numberOfGames: number): Promise<string> {
+		const total = `$${(betAmount * numberOfGames).toFixed(2)}`;
+		logger.info(`Total wagered in Plinko: ${total}`);
+		return total;
+	}
+
 	@step("Play multiple Plinko games and get balances")
 	public async playMultipleGamesAndGetBalances(
 		betAmount: number,
