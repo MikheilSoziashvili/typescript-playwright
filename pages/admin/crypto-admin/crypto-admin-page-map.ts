@@ -32,8 +32,10 @@ export class CryptoAdminMap extends BaseMap {
 
 	public minWithdrawButton(nodeTitle: string, currency?: string): Locator {
 		let row = this.page.locator("tr").filter({ hasText: nodeTitle });
-		if (currency) row = row.filter({ hasText: currency });
-		return row.locator("td img").first();
+		if (currency) {
+			row = row.filter({ hasText: currency });
+		}
+		return row.locator("td img").nth(2);
 	}
 
 	public get cryptoTableContainer(): Locator {

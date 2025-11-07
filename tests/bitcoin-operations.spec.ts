@@ -1,13 +1,8 @@
 import { test } from "@fixtures/fixtures";
 import { waitBtcTransactionConfirmation } from "@core/helpers/asserter-helpers/crypto-asserters";
 import { Cryptocurrency, CryptoTicker } from "@enums/cryptocurrencies";
-import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
-import {
-	getCookieHeader,
-	pollOrSkip,
-	setAuthenticationCookies,
-} from "@core/utils/utils";
+import { getCookieHeader, setAuthenticationCookies } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
 import { Wallet } from "@enums/wallets";
 import { CryptoNode } from "@enums/crypto-nodes";
@@ -19,15 +14,11 @@ import { UserClasses } from "@enums/db/user-classes";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { AnnotationType } from "@enums/playwright/annotationsTypes";
 import { JiraUser } from "@enums/jira/jira-users";
-import { TransactionType } from "@enums/transaction-types";
 
 test.describe("Bitcoin tests", () => {
 	test.slow();
 	test.beforeEach(
-		async (
-			{ cryptoAdminPage, toast, page, gamdomApi, gamdomDb },
-			testInfo,
-		) => {
+		async ({ cryptoAdminPage, page, gamdomApi, gamdomDb }, testInfo) => {
 			const superAdminData = new RegisterTestData({
 				useGamdomEmailDomain: true,
 			});
@@ -54,39 +45,15 @@ test.describe("Bitcoin tests", () => {
 
 			await cryptoAdminPage.refreshCryptoData();
 
-			await pollOrSkip(
-				async () => {
-					try {
-						await toast.assertThat().titleIs(ToastTitle.SUCCESS, {
-							subTitle: ToastSubTitle.REFRESHED_STATE,
-						});
-						return true;
-					} catch {
-						return false;
-					}
-				},
-				{
-					timeout: Timeout.EXTRA_LONG,
-					interval: Timeout.EXTRA_SHORT,
-					reason: "Crypto data table couldn't load in time",
-					testInfo: testInfo,
-				},
-			);
+			await cryptoAdminPage
+				.steps()
+				.waitUntilCryptoDataRefreshed(testInfo);
 
 			await cryptoAdminPage
 				.steps()
-				.setDepositOrWithdrawMin(
-					TransactionType.DEPOSIT,
+				.setMinDepositAndWithdraw(
 					CryptoNode.nodeBTC1,
-					"0.00001",
-				);
-
-			await cryptoAdminPage
-				.steps()
-				.setDepositOrWithdrawMin(
-					TransactionType.WITHDRAWAL,
-					CryptoNode.nodeBTC1,
-					"0.00001",
+					CryptoTicker.BTC,
 				);
 		},
 	);
