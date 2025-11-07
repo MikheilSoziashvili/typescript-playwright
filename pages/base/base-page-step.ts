@@ -1,6 +1,6 @@
 import { BasePage } from "@base/base-page";
 import { BaseMap } from "./base-map";
-import { UserBalanceHandler } from "@core/handlers/user-balance-handler";
+import { UserBalanceHandler } from "@core/handlers/user-balance-handler/user-balance-handler";
 
 export class BasePageStep<T extends BasePage<U>, U extends BaseMap = BaseMap> {
 	readonly gamdomPage: T;

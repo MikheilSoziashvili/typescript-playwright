@@ -113,6 +113,12 @@ export const fireblocks: FireblocksConfig = {
 	usdtAssetId: asString(process.env.FIREBLOCKS_USDT_ASSET_ID),
 };
 
+export const xrpTestnet = {
+	walletSeed: asString(process.env.XRP_TESTNET_WALLET_SEED),
+	rpcUrl: asString(process.env.XRP_TESTNET_RPC_URL),
+	faucetUrl: asString(process.env.XRP_TESTNET_FAUCET_URL),
+};
+
 export const users: TestUserConfigurationObject[] = [
 	{
 		username: "superadmin",

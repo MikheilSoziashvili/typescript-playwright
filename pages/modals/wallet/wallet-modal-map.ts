@@ -157,4 +157,8 @@ export class WalletModalMap extends BaseMap {
 			hasText: "Deposits Disabled",
 		});
 	}
+
+	public get cryptoDestinationTag(): Locator {
+		return this.page.getByLabel("Your personal Destination Tag");
+	}
 }

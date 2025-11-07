@@ -23,6 +23,9 @@ export const predefined = {
 		betAmountSmall: 10,
 	},
 	usdtAmountToDeposit: {
-		amountToDeposit: "0.02"
-	}
+		amountToDeposit: "0.02",
+	},
+	xrpAmountToDeposit: {
+		amountToDeposit: "0.05",
+	},
 };

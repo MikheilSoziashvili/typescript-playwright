@@ -20,7 +20,7 @@ import { BaseComponent } from "./base-component";
 import { BaseMap } from "./base-map";
 import { BaseModal } from "./base-modal";
 import { BasePage } from "./base-page";
-import { UserBalanceHandler } from "@core/handlers/user-balance-handler";
+import { UserBalanceHandler } from "@core/handlers/user-balance-handler/user-balance-handler";
 import { Viewport } from "@core/types/types";
 
 export class BaseAsserter<

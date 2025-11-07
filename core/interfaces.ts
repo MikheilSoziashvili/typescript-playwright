@@ -46,3 +46,13 @@ export interface BitcoinRpcResponseBase {
 	error: null | BitcoinRpcError;
 	id: string;
 }
+
+export interface FaucetResponse {
+	amount: number;
+	balance: number;
+}
+
+export interface TransactionResult {
+	txHash: string;
+	validated: boolean;
+}

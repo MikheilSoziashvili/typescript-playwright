@@ -1,5 +1,5 @@
 import { test as base } from "@playwright/test";
-import { UserBalanceHandler } from "@core/handlers/user-balance-handler";
+import { UserBalanceHandler } from "@core/handlers/user-balance-handler/user-balance-handler";
 
 export type GamdomHandlers = {
 	userBalanceHandler: UserBalanceHandler;

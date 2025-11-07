@@ -18,7 +18,7 @@ import { Chat } from "@pages/components/chat/chat";
 import { UserData } from "@core/facades/gamdom-api-db/interfaces";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraUser } from "@enums/jira/jira-users";
-import { UserBalanceHandler } from "@core/handlers/user-balance-handler";
+import { UserBalanceHandler } from "@core/handlers/user-balance-handler/user-balance-handler";
 import { TransactionsPage } from "@pages/transactions/transactions-page";
 import { JiraComponent } from "@enums/jira/jira-components";
 

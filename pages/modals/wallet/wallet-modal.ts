@@ -7,7 +7,7 @@ import { sanitizeAmount } from "@support/regex-patterns";
 import { Timeout } from "@enums/timeout";
 import { TwoFactorAuthModal } from "../two-factor-authentication-modal/two-factor-auth-modal";
 import { step } from "decorators/step";
-import { Cryptocurrency } from "@enums/cryptocurrencies";
+import { Cryptocurrency, CryptoTicker } from "@enums/cryptocurrencies";
 import { expect } from "@playwright/test";
 
 export class WalletModal extends BasePage<WalletModalMap> {
@@ -120,10 +120,10 @@ export class WalletModal extends BasePage<WalletModalMap> {
 	@step("Get deposit address")
 	public async getDepositAddress(): Promise<string> {
 		await expect
-			.poll(() => this.map.cryptoDepositAddress.inputValue())
+			.poll(() => this.map.cryptoDepositAddress.first().inputValue())
 			.not.toContain("retrieving");
 
-		return this.map.cryptoDepositAddress.inputValue();
+		return this.map.cryptoDepositAddress.first().inputValue();
 	}
 
 	@step("Fill bitcoin address")
@@ -144,5 +144,40 @@ export class WalletModal extends BasePage<WalletModalMap> {
 		await this.fillBitcoinAddress(address);
 		await this.fillBitcoinWithdrawAmount(amount);
 		await this.clickCryptoWithdrawButton();
+	}
+
+	@step("Get destination tag")
+	public async getDestinationTag(): Promise<string> {
+		await expect
+			.poll(() => this.map.cryptoDestinationTag.inputValue())
+			.not.toContain("retrieving");
+
+		return this.map.cryptoDestinationTag.inputValue();
+	}
+
+	@step(`Selects a given crypto deposit method and returns the details`)
+	public async selectCryptoAndGetDepositDetails(
+		cryptoCurrency: Cryptocurrency | CryptoTicker,
+	): Promise<{
+		cryptoCurrency: Cryptocurrency | CryptoTicker;
+		address: string;
+	}> {
+		await this.selectPaymentMethod(cryptoCurrency);
+
+		const address = await this.getDepositAddress();
+
+		return { cryptoCurrency, address };
+	}
+
+	@step(`Selects XRP and returns deposit details with destination tag`)
+	public async selectXrpAndGetDepositDetails(): Promise<{
+		address: string;
+		destinationTag: string | number;
+	}> {
+		await this.selectPaymentMethod(Cryptocurrency.Ripple);
+		const address = await this.getDepositAddress();
+		const destinationTag = await this.getDestinationTag();
+
+		return { address, destinationTag };
 	}
 }

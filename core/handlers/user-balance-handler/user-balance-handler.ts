@@ -9,6 +9,7 @@ import { Unit } from "@enums/units";
 import { WalletType } from "@enums/wallet-types";
 import { Locator, Page } from "@playwright/test";
 import accounting from "accounting";
+import { UserBalanceHandlerSteps } from "./user-balance-handler-steps";
 
 const COINS_PER_USD = 1500;
 
@@ -40,6 +41,10 @@ export class UserBalanceHandler extends BaseComponent<BaseMap> {
 	/** Not implemented for this handler. */
 	public assertThat(): void {
 		throw new Error("assertThat not implemented for UserBalanceHandler");
+	}
+
+	public steps(): UserBalanceHandlerSteps {
+		return new UserBalanceHandlerSteps(this);
 	}
 
 	/**
@@ -393,5 +398,19 @@ export class UserBalanceHandler extends BaseComponent<BaseMap> {
 		multiplier: number,
 	): number {
 		return Math.trunc(stakeCoins * multiplier);
+	}
+
+	/**
+	 * Converts crypto whole units to smallest atomic units (e.g., XRP to drops, BTC to satoshi).
+	 * @param amount - Amount in whole crypto units (e.g., 1.5 XRP).
+	 * @param unit - Target wallet unit type.
+	 * @returns Amount in smallest atomic units (e.g., drops, satoshi).
+	 */
+	public cryptoWholeToSmallestUnit(amount: number, unit: Unit): number {
+		if (unit === Unit.COINS) {
+			return amount;
+		}
+		const divisor = ATOMIC_DIVISOR[unit];
+		return Math.round(amount * divisor);
 	}
 }
