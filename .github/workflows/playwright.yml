@@ -179,13 +179,13 @@ on:
                 required: true
                 description: "Fireblocks Vault ID"
             XRP_TESTNET_WALLET_SEED:
-                requred: true
+                required: true
                 description: "XRP Testnet Wallet Seed"
             XRP_TESTNET_RPC_URL:
-                requred: true
+                required: true
                 description: "XRP Testnet RPC URL"
             XRP_TESTNET_FAUCET_URL:
-                requred: true
+                required: true
                 description: "XRP Testnet Faucet URL"
 
 concurrency:
