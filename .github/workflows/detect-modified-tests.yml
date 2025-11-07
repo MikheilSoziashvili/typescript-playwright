@@ -68,11 +68,11 @@ on:
             FIREBLOCKS_VAULT_ID:
                 required: true
             XRP_TESTNET_WALLET_SEED:
-                requred: true
+                required: true
             XRP_TESTNET_RPC_URL:
-                requred: true
+                required: true
             XRP_TESTNET_FAUCET_URL:
-                requred: true
+                required: true
 
 env:
     CI: true

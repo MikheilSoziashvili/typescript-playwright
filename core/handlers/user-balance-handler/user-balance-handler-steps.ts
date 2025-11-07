@@ -1,6 +1,7 @@
 import { Unit } from "@enums/units";
 import { Currency } from "@enums/currencies";
 import { UserBalanceHandler } from "./user-balance-handler";
+import { step } from "decorators/step";
 
 export class UserBalanceHandlerSteps {
 	constructor(private readonly handler: UserBalanceHandler) {}
@@ -13,6 +14,7 @@ export class UserBalanceHandlerSteps {
 	 * @param cryptoUnit - Crypto unit type (e.g., Unit.XRP_DROP)
 	 * @returns Expected balance in USD after crypto deposit
 	 */
+	@step(`Calculate expected balance after crypto deposit`)
 	public async calculateExpectedBalanceAfterCryptoDeposit(
 		initialBalanceCoins: number,
 		cryptoDepositAmount: string,
