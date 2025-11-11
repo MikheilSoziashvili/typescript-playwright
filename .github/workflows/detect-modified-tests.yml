@@ -123,6 +123,7 @@ jobs:
     detect-new-modified-tests:
         runs-on: self-hosted-dind-fulltest
         timeout-minutes: 30
+        environment: staging
         outputs:
             run_tests: ${{ steps.detect.outputs.run_tests }}
             test_files: ${{ steps.detect.outputs.test_files }}
@@ -168,6 +169,7 @@ jobs:
         if: needs.detect-new-modified-tests.outputs.run_tests == 'true'
         runs-on: self-hosted-dind-playwright
         timeout-minutes: 60
+        environment: staging
 
         steps:
             - name: Checkout Repository
