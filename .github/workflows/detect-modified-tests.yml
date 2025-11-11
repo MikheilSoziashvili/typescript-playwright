@@ -78,6 +78,10 @@ on:
             FIREBLOCKS_ETH_ASSET_ID:
                 required: true
 
+concurrency:
+    group: detect-modified-tests-${{ github.ref }}
+    cancel-in-progress: true
+
 env:
     CI: true
     BUILD_NUMBER: ${{ github.run_number }}
