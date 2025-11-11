@@ -174,6 +174,7 @@ adminEnableGames.forEach((record) => {
 					casinoPage,
 					providersPage,
 					page,
+					testDataObject,
 				}) => {
 					// Set the feature state (enable/disable) for both regular and qa users
 					await gamdomApi.setFeatureState(
@@ -211,8 +212,8 @@ adminEnableGames.forEach((record) => {
 					);
 
 					// Create test data for a regular user and a qa user
-					const regularUserData = new RegisterTestData();
-					const qaUserData = new RegisterTestData();
+					const regularUserData = testDataObject.register.random();
+					const qaUserData = testDataObject.register.random();
 
 					// Register and authenticate the qa user
 					await gamdomDb.createNewUser({

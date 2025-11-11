@@ -26,4 +26,5 @@ export enum Attributes {
 	ARIA_VALUEMAX = "aria-valuemax",
 	ARIA_ORIENTATION = "aria-orientation",
 	SPAN = "span",
+	DATA_SELECTED = "data-selected",
 }

@@ -1,6 +1,5 @@
 import { testDetails } from "@core/helpers/test-details-helper";
 import { generateRandomString } from "@core/utils/utils";
-import { RegisterTestData } from "@dtos/test-data";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { ToastTitle } from "@enums/toast-titles";
@@ -28,13 +27,14 @@ test.describe("Register with affiliate link", () => {
 			.withTags(JiraComponent.ACCOUNT_CREATION)
 			.withAuthor(JiraUser.RALUCA_ARITON)
 			.apply(),
-		async ({ homePage, faqPage }) => {
+		async ({ homePage, faqPage, testDataObject }) => {
 			await homePage.navigate({
 				link: affiliateLink,
 				cookies: { clearCookies: true },
 			});
 
-			const affiliate_user_register_data = new RegisterTestData();
+			const affiliate_user_register_data =
+				testDataObject.register.random();
 			await homePage.registerModal.fillInCredentials(
 				affiliate_user_register_data,
 				{

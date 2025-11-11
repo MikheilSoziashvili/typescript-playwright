@@ -1,6 +1,4 @@
-import {
-	buildSendingOutFreeSpinsToastSubTitle
-} from "@core/helpers/asserter-helpers/text-asserters";
+import { buildSendingOutFreeSpinsToastSubTitle } from "@core/helpers/asserter-helpers/text-asserters";
 import { testDetails } from "@core/helpers/test-details-helper";
 import {
 	setAuthenticationCookies,
@@ -114,8 +112,8 @@ test.describe("Free spins tests", () => {
 			test(
 				"[ENG-4850] Free spins notification - Play button redirects user to game (via UI)",
 				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
-				async ({ browser, gamdomApi, gamdomDb }) => {
-					const userData = new RegisterTestData();
+				async ({ browser, gamdomApi, gamdomDb, testDataObject }) => {
+					const userData = testDataObject.register.random();
 					const superAdminData = new RegisterTestData({
 						useGamdomEmailDomain: true,
 					});
@@ -306,8 +304,9 @@ test.describe(
 				gamdomDb,
 				freeSpinsAdminPage,
 				toast,
+				testDataObject,
 			}) => {
-				const userData = new RegisterTestData();
+				const userData = testDataObject.register.random();
 
 				await gamdomDb.createNewUser({
 					username: userData.username,

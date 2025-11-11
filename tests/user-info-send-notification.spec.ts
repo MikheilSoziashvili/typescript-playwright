@@ -49,10 +49,11 @@ test.describe("User info - send notification tests", () => {
 					gamdomApi,
 					browser,
 					testDataScenarios,
+					testDataObject,
 				}) => {
 					const testDataScenario =
 						testDataScenarios.notificationsTests;
-					const user2 = new RegisterTestData();
+					const user2 = testDataObject.register.random();
 					await gamdomDb.createNewUser({
 						username: user2.username,
 						password: user2.password,

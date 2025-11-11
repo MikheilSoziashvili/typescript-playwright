@@ -133,4 +133,14 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 			this.gamdomPage.map.userAccountMenuButtonV4,
 		]);
 	}
+
+	@step("User is registered - v4")
+	public async userIsRegisteredV4(username: string): Promise<void> {
+		await this.loggedInUserElementsAreVisibleV4();
+
+		const receivedUsername =
+			await this.gamdomPage.map.userAccountUserNameV4.textContent();
+
+		expect(receivedUsername?.trim()).toBe(username);
+	}
 }

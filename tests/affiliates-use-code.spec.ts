@@ -3,7 +3,6 @@ import {
 	generateRandomString,
 	setAuthenticationCookies,
 } from "@core/utils/utils";
-import { RegisterTestData } from "@dtos/test-data";
 import { JiraUser } from "@enums/jira/jira-users";
 import { NotificationTitle } from "@enums/notification-titles";
 import { TestTag } from "@enums/test-tags";
@@ -35,13 +34,14 @@ test.describe("Use affiliate code", () => {
 			gamdomApi,
 			gamdomDb,
 			page,
+			testDataObject,
 		}) => {
 			await affiliatesPage.navigate();
 			await affiliatesPage.steps().addCode(AUTOMATION_AFFILIATES_CODE);
 
 			await homePage.navigate({ cookies: { clearCookies: true } });
 
-			const newUser = new RegisterTestData();
+			const newUser = testDataObject.register.random();
 
 			await gamdomDb.createNewUser(newUser);
 			const newCookie = await gamdomApi.authenticateWithExistingUser(

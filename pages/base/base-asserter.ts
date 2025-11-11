@@ -726,4 +726,12 @@ export class BaseAsserter<
 		expect(box.x + box.width).toBeLessThanOrEqual(viewport.width);
 		expect(box.y + box.height).toBeLessThanOrEqual(viewport.height);
 	}
+
+	@step("Wait until checked")
+	public async waitUntilChecked(locator: Locator): Promise<void> {
+		await expect(locator).toHaveAttribute(
+			Attributes.DATA_SELECTED,
+			BooleanValueString.TRUE,
+		);
+	}
 }

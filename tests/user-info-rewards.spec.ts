@@ -50,8 +50,9 @@ test.describe(
 				userInfoAdminPage,
 				userInfoRewardsAdminPage,
 				userInfoRewardsHistoryAdminPage,
+				testDataObject,
 			}) => {
-				const newUserData = new RegisterTestData();
+				const newUserData = testDataObject.register.random();
 				await gamdomDb.createNewUser(newUserData);
 				const userCookie = await gamdomApi.authenticateWithExistingUser(
 					newUserData.username,
@@ -213,8 +214,9 @@ test.describe(
 				userInfoAdminPage,
 				userInfoRewardsAdminPage,
 				userInfoRewardsHistoryAdminPage,
+				testDataObject,
 			}) => {
-				const newUserData = new RegisterTestData();
+				const newUserData = testDataObject.register.random();
 				await gamdomDb.createNewUser(newUserData);
 				const userCookie = await gamdomApi.authenticateWithExistingUser(
 					newUserData.username,
@@ -311,8 +313,9 @@ test.describe(
 				userInfoAdminPage,
 				userInfoRewardsAdminPage,
 				userInfoRewardsHistoryAdminPage,
+				testDataObject,
 			}) => {
-				const newUserData = new RegisterTestData();
+				const newUserData = testDataObject.register.random();
 				await gamdomDb.createNewUser(newUserData);
 
 				await userInfoAdminPage
@@ -377,8 +380,9 @@ test.describe(
 				userInfoAdminPage,
 				userInfoRewardsAdminPage,
 				userInfoRewardsHistoryAdminPage,
+				testDataObject,
 			}) => {
-				const newUserData = new RegisterTestData();
+				const newUserData = testDataObject.register.random();
 				await gamdomDb.createNewUser(newUserData);
 				const userCookie = await gamdomApi.authenticateWithExistingUser(
 					newUserData.username,
@@ -501,8 +505,9 @@ test.describe(
 				userInfoAdminPage,
 				userInfoRewardsAdminPage,
 				userInfoRewardsHistoryAdminPage,
+				testDataObject,
 			}) => {
-				const newUserData = new RegisterTestData();
+				const newUserData = testDataObject.register.random();
 				await gamdomDb.createNewUser(newUserData);
 
 				await userInfoAdminPage
@@ -567,8 +572,9 @@ test.describe(
 				userInfoAdminPage,
 				userInfoRewardsAdminPage,
 				userInfoRewardsHistoryAdminPage,
+				testDataObject,
 			}) => {
-				const newUserData = new RegisterTestData();
+				const newUserData = testDataObject.register.random();
 				await gamdomDb.createNewUser(newUserData);
 				const userCookie = await gamdomApi.authenticateWithExistingUser(
 					newUserData.username,
@@ -694,8 +700,9 @@ test.describe(
 				userInfoAdminPage,
 				userInfoRewardsAdminPage,
 				userInfoRewardsHistoryAdminPage,
+				testDataObject,
 			}) => {
-				const newUserData = new RegisterTestData();
+				const newUserData = testDataObject.register.random();
 				await gamdomDb.createNewUser(newUserData);
 
 				await userInfoAdminPage
@@ -785,8 +792,9 @@ test.describe(
 				promoCampaignsAdminPage,
 				promoCodeModal,
 				twoFactorAuthModal,
+				testDataObject,
 			}) => {
-				const newUserData = new RegisterTestData();
+				const newUserData = testDataObject.register.random();
 				qrCode2FAImagePath = createPngImagePath();
 				await gamdomDb.createNewUser(newUserData);
 				const userCookie = await gamdomApi.authenticateWithExistingUser(
@@ -866,8 +874,9 @@ test.describe(
 				promoCampaignsAdminPage,
 				promoCodeModal,
 				twoFactorAuthModal,
+				testDataObject,
 			}) => {
-				const newUserData = new RegisterTestData();
+				const newUserData = testDataObject.register.random();
 				qrCode2FAImagePath = createPngImagePath();
 				await gamdomDb.createNewUser(newUserData);
 				const userCookie = await gamdomApi.authenticateWithExistingUser(
@@ -974,8 +983,9 @@ test.describe(
 					toast,
 					settingsPage,
 					gamdomDb,
+					testDataObject,
 				}) => {
-					const newUserData = new RegisterTestData();
+					const newUserData = testDataObject.register.random();
 					await gamdomDb.createNewUser(newUserData);
 					qrCode2FAImagePath = createPngImagePath();
 
@@ -1043,8 +1053,9 @@ test.describe(
 				browser,
 				userInfoAdminPage,
 				userInfoRewardsHistoryAdminPage,
+				testDataObject,
 			}) => {
-				const newUserData = new RegisterTestData();
+				const newUserData = testDataObject.register.random();
 				await gamdomDb.createNewUser(newUserData);
 				const userCookie = await gamdomApi.authenticateWithExistingUser(
 					newUserData.username,
@@ -1139,8 +1150,9 @@ test.describe(
 				userInfoAdminPage,
 				userInfoRewardsHistoryAdminPage,
 				userInfoRewardsAdminPage,
+				testDataObject,
 			}) => {
-				const newUserData = new RegisterTestData();
+				const newUserData = testDataObject.register.random();
 				await gamdomDb.createNewUser(newUserData);
 				const userCookie = await gamdomApi.authenticateWithExistingUser(
 					newUserData.username,
@@ -1237,6 +1249,7 @@ test.describe(
 				browser,
 				userInfoAdminPage,
 				userInfoRewardsHistoryAdminPage,
+				testDataObject,
 			}) => {
 				const superAdminData = new RegisterTestData({
 					useGamdomEmailDomain: true,
@@ -1258,7 +1271,7 @@ test.describe(
 					),
 				);
 
-				const newUserData = new RegisterTestData();
+				const newUserData = testDataObject.register.random();
 
 				await gamdomDb.createNewUser(newUserData);
 
@@ -1360,6 +1373,7 @@ test.describe(
 				browser,
 				userInfoAdminPage,
 				userInfoRewardsHistoryAdminPage,
+				testDataObject,
 			}) => {
 				const superAdminData = new RegisterTestData({
 					useGamdomEmailDomain: true,
@@ -1382,7 +1396,7 @@ test.describe(
 					),
 				);
 
-				const newUserData = new RegisterTestData();
+				const newUserData = testDataObject.register.random();
 
 				await gamdomDb.createNewUser(newUserData);
 

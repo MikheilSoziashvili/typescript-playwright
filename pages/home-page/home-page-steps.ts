@@ -15,6 +15,7 @@ import { step } from "decorators/step";
 import { Locator, Page } from "playwright";
 import { HomePage } from "./home-page";
 import { logger } from "@logger/logger";
+import { RegisterTestDataObjectFactory } from "test-data/objects/factories/register-test-data-object-factory";
 
 export class HomePageSteps extends BasePageStep<HomePage> {
 	public toast: Toast;
@@ -82,7 +83,7 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 		await this.gamdomPage.navigateAndCheckTitle();
 		await this.gamdomPage.unauthenticatedHeader.openRegisterModal();
 
-		const registeredData = new RegisterTestData(params);
+		const registeredData = RegisterTestDataObjectFactory.build(params);
 		await this.gamdomPage.registerModal.fillInCredentials(registeredData, {
 			acceptTermsOfService: true,
 			acceptNewsOffers: true,

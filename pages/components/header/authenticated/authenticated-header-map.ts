@@ -177,6 +177,12 @@ export class AuthenticatedHeaderMap extends BaseMap {
 		);
 	}
 
+	public get userAccountUserNameV4(): Locator {
+		return this.userAccountMenuButtonV4.getByTestId(
+			"full-account-widget-username",
+		);
+	}
+
 	public get walletButtonV4(): Locator {
 		return this.authenticatedHeaderContainerV4.getByTestId(
 			"nav-wallet-action-btn",

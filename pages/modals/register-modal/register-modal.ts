@@ -5,6 +5,7 @@ import { RegisterTestData } from "@dtos/test-data";
 import { Delay } from "@enums/delay";
 import { step } from "decorators/step";
 import { RegisterModalAsserter } from "./register-modal-asserter";
+import { RegisterModalSteps } from "./register-modal-steps";
 
 export class RegisterModal extends BaseModal<RegisterModalMap> {
 	constructor(page: Page) {
@@ -13,6 +14,10 @@ export class RegisterModal extends BaseModal<RegisterModalMap> {
 
 	public assertThat(): RegisterModalAsserter {
 		return new RegisterModalAsserter(this);
+	}
+
+	public steps(): RegisterModalSteps {
+		return new RegisterModalSteps(this);
 	}
 
 	@step("Wait until checked")
@@ -59,5 +64,11 @@ export class RegisterModal extends BaseModal<RegisterModalMap> {
 	public async clickStartPlayingBtn(): Promise<void> {
 		await this.map.startPlayingBtn.focus();
 		await this.map.startPlayingBtn.click({ delay: Delay.SHORT });
+	}
+
+	@step("Click start playing button - v4")
+	public async clickStartPlayingBtnV4(): Promise<void> {
+		await this.map.startPlayingBtnV4.focus();
+		await this.map.startPlayingBtnV4.click({ delay: Delay.SHORT });
 	}
 }

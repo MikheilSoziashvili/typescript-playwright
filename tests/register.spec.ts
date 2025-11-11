@@ -1,10 +1,10 @@
 import { test } from "@fixtures/fixtures";
-import { RegisterTestData } from "@dtos/test-data";
 import { ToastTitle } from "@enums/toast-titles";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { TestTag } from "@enums/test-tags";
 import { JiraUser } from "@enums/jira/jira-users";
 import { JiraComponent } from "@enums/jira/jira-components";
+import { ToastSubTitle } from "@enums/toast-subtitles";
 
 test.describe("Register tests", () => {
 	test.use({ storageState: { cookies: [], origins: [] } });
@@ -16,11 +16,11 @@ test.describe("Register tests", () => {
 			.withTags(JiraComponent.ACCOUNT_CREATION)
 			.withAuthor(JiraUser.RALUCA_ARITON)
 			.apply(),
-		async ({ homePage }) => {
+		async ({ homePage, testDataObject }) => {
 			await homePage.navigateAndCheckTitle();
 			await homePage.unauthenticatedHeader.openRegisterModal();
 
-			const registeredData = new RegisterTestData();
+			const registeredData = testDataObject.register.random();
 			await homePage.registerModal.fillInCredentials(registeredData, {
 				acceptTermsOfService: true,
 				acceptNewsOffers: true,
@@ -54,6 +54,35 @@ test.describe(
 				await homePage.registerModal
 					.assertThat()
 					.registerFormWithRegisterElementsAreDisplayedV4();
+			},
+		);
+
+		test(
+			`[ENG-9512] Verify new account creation flow`,
+			testDetails()
+				.withTags(JiraComponent.ACCOUNT_CREATION)
+				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+				.apply(),
+			async ({ homePage, toastV4, testDataObject }) => {
+				const registerData = testDataObject.register.random();
+				await homePage.navigateAndCheckTitle();
+				await homePage.unauthenticatedHeader.openRegisterModalV4();
+				await homePage.registerModal
+					.steps()
+					.fillInCredentialsSuccessfullyV4(registerData, {
+						acceptTermsOfService: true,
+						acceptNewsOffers: true,
+					});
+				await homePage.registerModal.clickStartPlayingBtnV4();
+				await toastV4
+					.assertThat()
+					.toastMessageIsV4(
+						ToastTitle.SUCCESS_V4,
+						ToastSubTitle.RESEND_EMAIL,
+					);
+				await homePage.authenticatedHeader
+					.assertThat()
+					.userIsRegisteredV4(registerData.username);
 			},
 		);
 	},

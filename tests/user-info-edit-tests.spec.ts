@@ -1,19 +1,22 @@
 import { DATASETS_DIR } from "@constants/file-paths";
+import { delayRoute } from "@core/helpers/network-helpers";
 import { testDetails } from "@core/helpers/test-details-helper";
 import {
 	parse_csv,
-	setAuthenticationCookies,
 	parseExpectedAdditionalFields,
 	parseExpectedTags,
+	setAuthenticationCookies,
 } from "@core/utils/utils";
-import { BalanceEditStep, RegisterTestData } from "@dtos/test-data";
+import { BalanceEditStep } from "@dtos/test-data";
 import { UserInfoTabs } from "@enums/admin/user-info-tabs";
+import { ApiEndpoints } from "@enums/api-endpoints";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { TestTag } from "@enums/test-tags";
+import { Timeout } from "@enums/timeout";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { Unit } from "@enums/units";
@@ -22,9 +25,6 @@ import { test } from "@fixtures/fixtures";
 import { isScheduledRun } from "configuration";
 import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
 import { testData } from "test-data/test-data-manager";
-import { ApiEndpoints } from "@enums/api-endpoints";
-import { Timeout } from "@enums/timeout";
-import { delayRoute } from "@core/helpers/network-helpers";
 
 interface StaffRoleCsvRecord {
 	staffRoleTag: keyof typeof UserTags;
@@ -73,9 +73,11 @@ test.describe(
 						gamdomDb,
 						userInfoEditInfoAdminPage,
 						toast,
+						testDataObject,
 					}) => {
 						test.fixme(isScheduledRun);
-						const superAdminUserData = new RegisterTestData();
+						const superAdminUserData =
+							testDataObject.register.random();
 						await gamdomDb.createNewUser({
 							username: superAdminUserData.username,
 							password: superAdminUserData.password,

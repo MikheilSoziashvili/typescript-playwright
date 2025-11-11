@@ -78,12 +78,44 @@ export class RegisterModalMap extends BaseMap {
 		return this.emailContainerV4.getByTestId("sup-email-input");
 	}
 
-	public get termsOfServiceCheckboxV4(): Locator {
+	public get termsOfServiceCheckboxContainerV4(): Locator {
 		return this.registerFormV4.getByTestId("sup-age-consent-chk");
 	}
 
-	public get newsAndOffersCheckboxV4(): Locator {
+	public get newsAndOffersCheckboxContainerV4(): Locator {
 		return this.registerFormV4.getByTestId("sup-email-consent-chk");
+	}
+
+	public get termsOfServiceCheckboxV4(): Locator {
+		return this.termsOfServiceCheckboxContainerV4.getByTestId(
+			"sup-age-consent-chk-container",
+		);
+	}
+
+	public get newsAndOffersCheckboxV4(): Locator {
+		return this.newsAndOffersCheckboxContainerV4.getByTestId(
+			"sup-email-consent-chk-container",
+		);
+	}
+
+	public get termsOfServiceCheckboxInputV4(): Locator {
+		return this.toggleCheckbox(this.termsOfServiceCheckboxV4);
+	}
+
+	public get newsAndOffersCheckboxInputV4(): Locator {
+		return this.toggleCheckbox(this.newsAndOffersCheckboxV4);
+	}
+
+	public get termsOfServiceCheckboxVisualV4(): Locator {
+		return this.termsOfServiceCheckboxContainerV4.getByTestId(
+			"sup-age-consent-chk-visual",
+		);
+	}
+
+	public get newsAndOffersCheckboxVisualV4(): Locator {
+		return this.newsAndOffersCheckboxContainerV4.getByTestId(
+			"sup-email-consent-chk-visual",
+		);
 	}
 
 	public get startPlayingBtnV4(): Locator {

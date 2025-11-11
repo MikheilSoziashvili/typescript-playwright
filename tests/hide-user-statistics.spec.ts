@@ -49,9 +49,10 @@ test.describe("User statistics tests", () => {
 			chat,
 			userProfileModal,
 			page,
+			testDataObject,
 		}) => {
 			test.slow();
-			const newUser = new RegisterTestData();
+			const newUser = testDataObject.register.random();
 			await gamdomDb.createNewUser(newUser);
 			const cookie = await gamdomApi.authenticateWithExistingUser(
 				newUser.username,
