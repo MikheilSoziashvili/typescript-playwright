@@ -1,6 +1,6 @@
-import { BitcoinRpcResponseBase } from "@core/interfaces";
+import { UtxoRpcResponseBase } from "@core/interfaces";
 
-export type GetTransactionResponse = BitcoinRpcResponseBase & {
+export type GetTransactionResponse = UtxoRpcResponseBase & {
 	result: {
 		amount: number;
 		fee?: number;

@@ -1,6 +1,6 @@
 import { test } from "@fixtures/fixtures";
-import { waitBtcTransactionConfirmation } from "@core/helpers/asserter-helpers/crypto-asserters";
 import { Cryptocurrency, CryptoTicker } from "@enums/cryptocurrencies";
+import { waitUtxoTransactionConfirmation } from "@core/helpers/asserter-helpers/crypto-asserters";
 import { ToastTitle } from "@enums/toast-titles";
 import { getCookieHeader, setAuthenticationCookies } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
@@ -14,8 +14,9 @@ import { UserClasses } from "@enums/db/user-classes";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { AnnotationType } from "@enums/playwright/annotationsTypes";
 import { JiraUser } from "@enums/jira/jira-users";
+import { TestUserRole } from "@enums/test-user-roles";
 
-test.describe("Bitcoin tests", () => {
+test.describe("UTXO tests", () => {
 	test.slow();
 	test.beforeEach(
 		async ({ cryptoAdminPage, page, gamdomApi, gamdomDb }, testInfo) => {
@@ -37,11 +38,18 @@ test.describe("Bitcoin tests", () => {
 				);
 			await setAuthenticationCookies(page, superadminCookie);
 			await cryptoAdminPage.navigate();
-			await cryptoAdminPage.toggleCryptoOperations({
-				cryptoName: Cryptocurrency.Bitcoin,
-				deposit: true,
-				withdraw: true,
-			});
+			await cryptoAdminPage.toggleCryptoOperations([
+				{
+					cryptoName: Cryptocurrency.Bitcoin,
+					deposit: true,
+					withdraw: true,
+				},
+				{
+					cryptoName: Cryptocurrency.Litecoin,
+					deposit: true,
+					withdraw: true,
+				},
+			]);
 
 			await cryptoAdminPage.refreshCryptoData();
 
@@ -54,6 +62,12 @@ test.describe("Bitcoin tests", () => {
 				.setMinDepositAndWithdraw(
 					CryptoNode.nodeBTC1,
 					CryptoTicker.BTC,
+				);
+			await cryptoAdminPage
+				.steps()
+				.setMinDepositAndWithdraw(
+					CryptoNode.nodeLTC1,
+					CryptoTicker.LTC,
 				);
 		},
 	);
@@ -71,7 +85,7 @@ test.describe("Bitcoin tests", () => {
 		async (
 			{
 				gamdomApiDbFacade,
-				bitcoinApi,
+				btcClient,
 				gamdomDb,
 				homePage,
 				walletModal,
@@ -118,7 +132,7 @@ test.describe("Bitcoin tests", () => {
 			const amountToWithdraw = 0.00002;
 			const feeRate = 50;
 
-			const sendResponse = await bitcoinApi.sendBTC(
+			const sendResponse = await btcClient.sendToAddress(
 				userDepositAddress,
 				amountToDeposit,
 				{
@@ -128,8 +142,8 @@ test.describe("Bitcoin tests", () => {
 			);
 
 			const transactionId: string = sendResponse.result;
-			await waitBtcTransactionConfirmation(
-				bitcoinApi,
+			await waitUtxoTransactionConfirmation(
+				btcClient,
 				transactionId,
 				testInfo,
 			);
@@ -177,8 +191,8 @@ test.describe("Bitcoin tests", () => {
 			const withdrawTransactionId =
 				await transactionDetailsModal.getBlockchainTransactionId();
 
-			await waitBtcTransactionConfirmation(
-				bitcoinApi,
+			await waitUtxoTransactionConfirmation(
+				btcClient,
 				withdrawTransactionId,
 				testInfo,
 			);
@@ -203,6 +217,82 @@ test.describe("Bitcoin tests", () => {
 					adminApiCookie,
 					withdrawTransactionId,
 					amountToWithdraw,
+				);
+		},
+	);
+
+	test(
+		"[ENG-10267] LTC - deposit",
+		testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+		async (
+			{
+				gamdomApiDbFacade,
+				ltcClient,
+				homePage,
+				walletModal,
+				transactionsPage,
+				transactionDetailsModal,
+				gamdomApi,
+				cryptoAdminPage,
+				browserSessionManager,
+				testDataPredefined,
+			},
+			testInfo,
+		) => {
+			await browserSessionManager.loginAs(TestUserRole.REGULAR, {
+				reuseContext: true,
+			});
+			const { cookie } =
+				await gamdomApiDbFacade.createSuperAdminUserDbAndAuth({
+					emailVerified: true,
+				});
+
+			const superAdminCookie = getCookieHeader(cookie);
+
+			await homePage.navigateToWallet();
+			const addressDetails =
+				await walletModal.selectCryptoAndGetDepositDetails(
+					Cryptocurrency.Litecoin,
+				);
+			const amountToDeposit =
+				testDataPredefined.data.ltcAmountToDeposit.amountToDeposit;
+
+			const sendResponse = await ltcClient.sendToAddress(
+				addressDetails.address,
+				amountToDeposit,
+				{
+					replaceable: false,
+				},
+			);
+
+			const transactionId: string = sendResponse.result;
+			await waitUtxoTransactionConfirmation(
+				ltcClient,
+				transactionId,
+				testInfo,
+			);
+
+			await transactionsPage
+				.steps()
+				.verifyDepositTransactionStatusIs(TransactionState.COMPLETE);
+			await transactionsPage.clickTransactionDetailsButton();
+			await transactionDetailsModal
+				.assertThat()
+				.assertDepositAmountIn(CryptoTicker.LTC, amountToDeposit);
+
+			await homePage.navigate();
+			await homePage.authenticatedHeader.clickBalanceDropdown();
+			await homePage.authenticatedHeader
+				.assertThat()
+				.walletBalanceIs(Wallet.LTC, amountToDeposit);
+
+			await cryptoAdminPage
+				.assertThat()
+				.assertTransactionCryptoAmount(
+					gamdomApi,
+					superAdminCookie,
+					transactionId,
+					amountToDeposit,
 				);
 		},
 	);

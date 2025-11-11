@@ -1,6 +1,6 @@
-import { BitcoinRpcResponseBase } from "@core/interfaces";
+import { UtxoRpcResponseBase } from "@core/interfaces";
 
-export type GetBlockchainInfoResponse = BitcoinRpcResponseBase & {
+export type GetBlockchainInfoResponse = UtxoRpcResponseBase & {
 	result: {
 		chain: string;
 		blocks: number;

@@ -9,7 +9,6 @@ import {
 	CryptoOperationOptions,
 } from "@core/types/types";
 import { step } from "decorators/step";
-import { Delay } from "@enums/delay";
 
 export class CryptoAdminPage extends BasePage<CryptoAdminMap> {
 	public constructor(page: Page) {
@@ -61,28 +60,28 @@ export class CryptoAdminPage extends BasePage<CryptoAdminMap> {
 	}
 
 	@step("Toggle crypto operations")
-	public async toggleCryptoOperations({
-		cryptoName,
-		deposit,
-		withdraw,
-	}: CryptoOperationOptions): Promise<void> {
-		const toggles = [
-			{
-				desiredState: deposit,
-				locator: this.map.depositToggle(cryptoName),
-			},
-			{
-				desiredState: withdraw,
-				locator: this.map.withdrawToggle(cryptoName),
-			},
-		];
+	public async toggleCryptoOperations(
+		operations: CryptoOperationOptions[],
+	): Promise<void> {
+		for (const { cryptoName, deposit, withdraw } of operations) {
+			const toggles = [
+				{
+					desiredState: deposit,
+					locator: this.map.depositToggle(cryptoName),
+				},
+				{
+					desiredState: withdraw,
+					locator: this.map.withdrawToggle(cryptoName),
+				},
+			];
 
-		for (const { desiredState, locator } of toggles) {
-			if (typeof desiredState === "boolean") {
-				const isChecked = await locator.isChecked();
-				if (isChecked !== desiredState) {
-					this.acceptDialog();
-					await locator.click({ delay: Delay.SHORT });
+			for (const { desiredState, locator } of toggles) {
+				if (typeof desiredState === "boolean") {
+					const isChecked = await locator.isChecked();
+					if (isChecked !== desiredState) {
+						this.acceptDialog();
+						await locator.click();
+					}
 				}
 			}
 		}

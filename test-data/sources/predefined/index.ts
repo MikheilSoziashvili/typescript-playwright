@@ -28,4 +28,7 @@ export const predefined = {
 	xrpAmountToDeposit: {
 		amountToDeposit: "0.05",
 	},
+	ltcAmountToDeposit: {
+		amountToDeposit: 0.0004,
+	},
 };

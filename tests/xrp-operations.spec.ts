@@ -20,11 +20,13 @@ test.describe(
 					reuseContext: true,
 				});
 				await cryptoAdminPage.navigate();
-				await cryptoAdminPage.toggleCryptoOperations({
-					cryptoName: Cryptocurrency.Ripple,
-					deposit: true,
-					withdraw: true,
-				});
+				await cryptoAdminPage.toggleCryptoOperations([
+					{
+						cryptoName: Cryptocurrency.Ripple,
+						deposit: true,
+						withdraw: true,
+					},
+				]);
 
 				await cryptoAdminPage.refreshCryptoData();
 				await cryptoAdminPage

@@ -105,6 +105,16 @@ export const BitcoinConfig = {
 	)}`,
 };
 
+export const LitecoinConfig = {
+	host: asString(process.env.BITCOIN_RPC_HOST),
+	port: asString(process.env.LITECOIN_RPC_PORT),
+	user: asString(process.env.BITCOIN_RPC_USER),
+	pass: asString(process.env.BITCOIN_RPC_PASS),
+	url: `http://${asString(process.env.BITCOIN_RPC_HOST)}:${asString(
+		process.env.LITECOIN_RPC_PORT,
+	)}`,
+};
+
 export const fireblocks: FireblocksConfig = {
 	apiKey: asString(process.env.FIREBLOCKS_API_KEY),
 	secretKeyPath: asString(process.env.FIREBLOCKS_SECRET_KEY_PATH),

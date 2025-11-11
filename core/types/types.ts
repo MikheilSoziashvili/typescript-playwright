@@ -1,7 +1,7 @@
 import { EV_REWARD_FREE_SPINS_FILE_MAP } from "@constants/file-paths";
 import { RegisterTestData } from "@dtos/test-data";
 import { Protocol } from "@enums/api/protocols";
-import { BitcoinFeeEstimateMode } from "@enums/bitcoin";
+import { UtxoFeeEstimateMode } from "@enums/crypto/utxo";
 import { Cryptocurrency, CryptoTicker } from "@enums/cryptocurrencies";
 import { Currency } from "@enums/currencies";
 import { HouseEdgeValue } from "@enums/house-edge-values";
@@ -139,19 +139,19 @@ export type RainOptions = {
 	headers?: Record<string, string>;
 };
 
-export type SendBTCOptions = {
+export type SendOptions = {
 	comment?: string;
 	commentTo?: string;
 	subtractFee?: boolean;
 	replaceable?: boolean;
 	confTarget?: number;
-	estimateMode?: BitcoinFeeEstimateMode;
+	estimateMode?: UtxoFeeEstimateMode;
 	avoidReuse?: boolean;
 	feeRate?: number;
 	verbose?: boolean;
 };
 
-export type BitcoinRpcParams = (string | number | boolean | undefined)[];
+export type UtxoRpcParams = (string | number | boolean | undefined)[];
 
 export type AcceptDialogOptions = {
 	expectedMessage?: string;
@@ -226,4 +226,10 @@ export type FireblocksConfig = {
 	baseUrl: string;
 	vaultId: string;
 	usdtAssetId: string;
+};
+
+export type UtxoNodeConfig = {
+	url: string;
+	user: string;
+	pass: string;
 };

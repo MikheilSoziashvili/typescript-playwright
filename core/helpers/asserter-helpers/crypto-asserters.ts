@@ -1,15 +1,15 @@
-import { BitcoinApi } from "@api/bitcoin-api";
+import { UtxoNodeClient } from "@core/crypto/utxo/utxo-client";
 import { pollOrSkip } from "@core/utils/utils";
 import { Timeout } from "@enums/timeout";
 import { logger } from "@logger/logger";
 import { TestInfo } from "@playwright/test";
 
 /**
- * Waits for a Bitcoin transaction to be confirmed.
+ * Waits for a Utxo transaction to be confirmed.
  * Skips the test if it doesn't confirm within the timeout.
  */
-export async function waitBtcTransactionConfirmation(
-	bitcoinApi: BitcoinApi,
+export async function waitUtxoTransactionConfirmation(
+	utxoNodeApi: UtxoNodeClient,
 	transactionId: string,
 	testInfo: TestInfo,
 ): Promise<void> {
@@ -19,7 +19,7 @@ export async function waitBtcTransactionConfirmation(
 
 	await pollOrSkip(
 		async () => {
-			const { result } = await bitcoinApi.getTransaction(transactionId);
+			const { result } = await utxoNodeApi.getTransaction(transactionId);
 			if (result.confirmations > 0) {
 				logger.info(`Transaction ${transactionId} is confirmed!`);
 				return true;

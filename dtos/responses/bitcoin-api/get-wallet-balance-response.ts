@@ -1,5 +1,5 @@
-import { BitcoinRpcResponseBase } from "@core/interfaces";
+import { UtxoRpcResponseBase } from "@core/interfaces";
 
-export type GetWalletBalanceResponse = BitcoinRpcResponseBase & {
+export type GetWalletBalanceResponse = UtxoRpcResponseBase & {
 	result: number;
 };

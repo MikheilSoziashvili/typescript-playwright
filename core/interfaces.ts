@@ -37,13 +37,13 @@ export interface WaitUntilOptions {
 	timeoutSeconds?: number;
 }
 
-export interface BitcoinRpcError {
+export interface UtxoRpcError {
 	code: number;
 	message: string;
 }
 
-export interface BitcoinRpcResponseBase {
-	error: null | BitcoinRpcError;
+export interface UtxoRpcResponseBase {
+	error: null | UtxoRpcError;
 	id: string;
 }
 

@@ -3,4 +3,5 @@ export enum CryptoNode {
 	nodeBTC2 = "nodeBTC2",
 	nodeETH1 = "fireUSDT",
 	fireXRP = "fireXRP",
+	nodeLTC1 = "nodeLTC1",
 }

@@ -19,11 +19,13 @@ test.describe(
 					await gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
 				await setAuthenticationCookies(page, cookie);
 				await cryptoAdminPage.navigate();
-				await cryptoAdminPage.toggleCryptoOperations({
-					cryptoName: CryptoTicker.USDT,
-					deposit: true,
-					withdraw: true,
-				});
+				await cryptoAdminPage.toggleCryptoOperations([
+					{
+						cryptoName: CryptoTicker.USDT,
+						deposit: true,
+						withdraw: true,
+					},
+				]);
 
 				await cryptoAdminPage.refreshCryptoData();
 				await cryptoAdminPage
