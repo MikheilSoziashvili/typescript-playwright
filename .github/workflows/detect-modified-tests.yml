@@ -75,6 +75,8 @@ on:
                 required: true
             LITECOIN_RPC_PORT:
                 required: true
+            FIREBLOCKS_ETH_ASSET_ID:
+                required: true
 
 env:
     CI: true
@@ -117,7 +119,7 @@ env:
     XRP_TESTNET_RPC_URL: ${{ secrets.XRP_TESTNET_RPC_URL }}
     XRP_TESTNET_FAUCET_URL: ${{ secrets.XRP_TESTNET_FAUCET_URL }}
     LITECOIN_RPC_PORT: ${{ secrets.LITECOIN_RPC_PORT }}
-
+    FIREBLOCKS_ETH_ASSET_ID: ${{ secrets.FIREBLOCKS_ETH_ASSET_ID }}
 
 jobs:
     detect-new-modified-tests:

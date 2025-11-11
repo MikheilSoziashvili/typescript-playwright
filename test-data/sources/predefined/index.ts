@@ -31,4 +31,7 @@ export const predefined = {
 	ltcAmountToDeposit: {
 		amountToDeposit: 0.0004,
 	},
+	ethAmountToDeposit: {
+		amountToDeposit: "0.0002",
+	},
 };

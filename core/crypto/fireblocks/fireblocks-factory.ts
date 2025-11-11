@@ -45,3 +45,7 @@ export function createFireblocksClient(assetId: string): FireblocksClient {
 export function createUsdtClient(): FireblocksClient {
 	return createFireblocksClient(fireblocksConfig.usdtAssetId);
 }
+
+export function createEthClient(): FireblocksClient {
+	return createFireblocksClient(fireblocksConfig.ethAssetId);
+}

@@ -190,6 +190,9 @@ on:
             LITECOIN_RPC_PORT:
                 required: true
                 description: "Litecoin RPC Port"
+            FIREBLOCKS_ETH_ASSET_ID:
+                required: true
+                description: "Fireblocks ETH asset ID"
 
 concurrency:
     group: ${{ github.event_name == 'repository_dispatch' && format('auto-deploy-env-{0}', github.event.client_payload.pr_number) || format('playwright-e2e-{0}', github.ref) }}
@@ -268,6 +271,7 @@ jobs:
             XRP_TESTNET_RPC_URL: ${{ secrets.XRP_TESTNET_RPC_URL }}
             XRP_TESTNET_FAUCET_URL: ${{ secrets.XRP_TESTNET_FAUCET_URL }}
             LITECOIN_RPC_PORT: ${{ secrets.LITECOIN_RPC_PORT }}
+            FIREBLOCKS_ETH_ASSET_ID: ${{ secrets.FIREBLOCKS_ETH_ASSET_ID }}
             TAG: ${{ github.event.client_payload.tag || (inputs.tag == '' && 'smoke') || inputs.tag }}
             SHARD_OPTION: --shard ${{ matrix.shard }}/${{ strategy.job-total }}
             GREP_SEQUENTIAL_TESTS: --grep @sequential

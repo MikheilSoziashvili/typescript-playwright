@@ -226,6 +226,7 @@ export type FireblocksConfig = {
 	baseUrl: string;
 	vaultId: string;
 	usdtAssetId: string;
+	ethAssetId: string;
 };
 
 export type UtxoNodeConfig = {
