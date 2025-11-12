@@ -56,17 +56,10 @@ test.describe(
 				gamdomApi,
 				browserSessionManager,
 				testDataPredefined,
-				gamdomApiDbFacade,
 			}) => {
 				await browserSessionManager.loginAs(TestUserRole.REGULAR, {
 					reuseContext: true,
 				});
-				const { cookie } =
-					await gamdomApiDbFacade.createSuperAdminUserDbAndAuth({
-						emailVerified: true,
-					});
-
-				const superAdminCookie = getCookieHeader(cookie);
 
 				await homePage.navigateToWallet();
 
@@ -123,6 +116,14 @@ test.describe(
 
 				const fullTransactionId = await xrpTestnetClient.getTransaction(
 					depositTransaction.id,
+				);
+
+				const superAdmin = await browserSessionManager.loginAs(
+					TestUserRole.SUPERADMIN,
+				);
+
+				const superAdminCookie = getCookieHeader(
+					superAdmin.getAuthenticatedUser().cookie,
 				);
 
 				await cryptoAdminPage

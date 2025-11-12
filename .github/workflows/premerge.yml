@@ -85,6 +85,7 @@ jobs:
             LITECOIN_RPC_PORT: ${{ secrets.LITECOIN_RPC_PORT }}
             FIREBLOCKS_ETH_ASSET_ID: ${{ secrets.FIREBLOCKS_ETH_ASSET_ID }}
             FIREBLOCKS_SOL_ASSET_ID: ${{ secrets.FIREBLOCKS_SOL_ASSET_ID }}
+            FIREBLOCKS_TRX_ASSET_ID: ${{ secrets.FIREBLOCKS_TRX_ASSET_ID }}
             VERIFF_PUBLISHABLE_KEY: ${{ secrets.VERIFF_PUBLISHABLE_KEY }}
             VERIFF_PRIVATE_KEY: ${{ secrets.VERIFF_PRIVATE_KEY }}
             VERIFF_USERNAME: ${{ secrets.VERIFF_USERNAME }}
@@ -134,6 +135,7 @@ jobs:
             LITECOIN_RPC_PORT: ${{ secrets.LITECOIN_RPC_PORT }}
             FIREBLOCKS_ETH_ASSET_ID: ${{ secrets.FIREBLOCKS_ETH_ASSET_ID }}
             FIREBLOCKS_SOL_ASSET_ID: ${{ secrets.FIREBLOCKS_SOL_ASSET_ID }}
+            FIREBLOCKS_TRX_ASSET_ID: ${{ secrets.FIREBLOCKS_TRX_ASSET_ID }}
             VERIFF_PUBLISHABLE_KEY: ${{ secrets.VERIFF_PUBLISHABLE_KEY }}
             VERIFF_PRIVATE_KEY: ${{ secrets.VERIFF_PRIVATE_KEY }}
             VERIFF_USERNAME: ${{ secrets.VERIFF_USERNAME }}

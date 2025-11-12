@@ -1,6 +1,6 @@
 import { test } from "@fixtures/fixtures";
 import { Cryptocurrency, CryptoTicker } from "@enums/cryptocurrencies";
-import { getCookieHeader, setAuthenticationCookies } from "@core/utils/utils";
+import { getCookieHeader } from "@core/utils/utils";
 import { CryptoNode } from "@enums/crypto-nodes";
 import { TransactionState } from "@enums/transaction-states";
 import { testDetails } from "@core/helpers/test-details-helper";
@@ -16,10 +16,10 @@ test.describe(
 	() => {
 		test.slow();
 		test.beforeEach(
-			async ({ cryptoAdminPage, page, gamdomApiDbFacade }, testInfo) => {
-				const { cookie } =
-					await gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
-				await setAuthenticationCookies(page, cookie);
+			async ({ cryptoAdminPage, browserSessionManager }, testInfo) => {
+				await browserSessionManager.loginAs(TestUserRole.SUPERADMIN, {
+					reuseContext: true,
+				});
 				await cryptoAdminPage.navigate();
 				await cryptoAdminPage.toggleCryptoOperations([
 					{
@@ -48,7 +48,6 @@ test.describe(
 			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
 			async ({
 				ethClient,
-				gamdomApiDbFacade,
 				cryptoAdminPage,
 				homePage,
 				walletModal,
@@ -62,12 +61,6 @@ test.describe(
 				await browserSessionManager.loginAs(TestUserRole.REGULAR, {
 					reuseContext: true,
 				});
-				const { cookie } =
-					await gamdomApiDbFacade.createSuperAdminUserDbAndAuth({
-						emailVerified: true,
-					});
-
-				const superAdminCookie = getCookieHeader(cookie);
 
 				await homePage.navigateToWallet();
 
@@ -125,6 +118,14 @@ test.describe(
 
 				const fullTransactionId = await ethClient.getTransaction(
 					depositTransaction.id,
+				);
+
+				const superAdmin = await browserSessionManager.loginAs(
+					TestUserRole.SUPERADMIN,
+				);
+
+				const superAdminCookie = getCookieHeader(
+					superAdmin.getAuthenticatedUser().cookie,
 				);
 
 				await cryptoAdminPage

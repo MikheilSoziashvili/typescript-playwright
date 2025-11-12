@@ -46,4 +46,7 @@ export const predefined = {
 		startDateOffset: 1,
 		endDateOffset: 7,
 	},
+	trxAmountToDeposit: {
+		amountToDeposit: "1",
+	},
 };
