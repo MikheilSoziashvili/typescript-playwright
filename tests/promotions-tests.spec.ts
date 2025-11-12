@@ -484,8 +484,8 @@ test.describe(
 							isForVip: PromotionIsVipCategories.ALL,
 							promotionCategory: PromotionCategories.CASINO,
 							promotionSubCategory: PromotionSubStatuses.CASINO,
-							promotionStartDate: formatDate(1),
-							promotionEndDate: formatDate(3),
+							promotionStartDate: formatDate(3),
+							promotionEndDate: formatDate(5),
 							promotionStartTime: PromotionTime.START_TIME,
 							promotionEndTime: PromotionTime.END_TIME,
 						});
@@ -498,6 +498,8 @@ test.describe(
 
 						const expectedPromotionData = {
 							...promotionTestData,
+							promotionStartDate: formatDate(1),
+							promotionEndDate: formatDate(3),
 							promotionStartTime: PromotionTime.DEFAULT_TIME,
 							promotionEndTime: PromotionTime.DEFAULT_TIME,
 						};
