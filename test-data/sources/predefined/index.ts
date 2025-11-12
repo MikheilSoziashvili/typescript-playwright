@@ -34,4 +34,7 @@ export const predefined = {
 	ethAmountToDeposit: {
 		amountToDeposit: "0.0002",
 	},
+	solAmountToDeposit: {
+		amountToDeposit: "0.002",
+	},
 };

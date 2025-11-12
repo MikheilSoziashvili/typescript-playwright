@@ -1,6 +1,7 @@
 import { FireblocksClient } from "@core/crypto/fireblocks/fireblocks-client";
 import {
 	createEthClient,
+	createSolClient,
 	createUsdtClient,
 } from "@core/crypto/fireblocks/fireblocks-factory";
 import { UtxoNodeClient } from "@core/crypto/utxo/utxo-client";
@@ -14,6 +15,7 @@ export type CryptoClients = {
 	xrpTestnetClient: XrpTestnetClient;
 	btcClient: UtxoNodeClient;
 	ltcClient: UtxoNodeClient;
+	solClient: FireblocksClient;
 };
 
 export const cryptoFixtures = base.extend<CryptoClients>({
@@ -32,5 +34,8 @@ export const cryptoFixtures = base.extend<CryptoClients>({
 	},
 	ethClient: async ({}, use) => {
 		await use(createEthClient());
+	},
+	solClient: async ({}, use) => {
+		await use(createSolClient());
 	},
 });

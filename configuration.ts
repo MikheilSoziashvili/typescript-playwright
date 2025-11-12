@@ -122,6 +122,7 @@ export const fireblocks: FireblocksConfig = {
 	vaultId: asString(process.env.FIREBLOCKS_VAULT_ID),
 	usdtAssetId: asString(process.env.FIREBLOCKS_USDT_ASSET_ID),
 	ethAssetId: asString(process.env.FIREBLOCKS_ETH_ASSET_ID),
+	solAssetId: asString(process.env.FIREBLOCKS_SOL_ASSET_ID),
 };
 
 export const xrpTestnet = {

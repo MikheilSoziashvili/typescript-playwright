@@ -49,3 +49,7 @@ export function createUsdtClient(): FireblocksClient {
 export function createEthClient(): FireblocksClient {
 	return createFireblocksClient(fireblocksConfig.ethAssetId);
 }
+
+export function createSolClient(): FireblocksClient {
+	return createFireblocksClient(fireblocksConfig.solAssetId);
+}

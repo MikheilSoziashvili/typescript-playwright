@@ -84,6 +84,7 @@ jobs:
             XRP_TESTNET_FAUCET_URL: ${{ secrets.XRP_TESTNET_FAUCET_URL }}
             LITECOIN_RPC_PORT: ${{ secrets.LITECOIN_RPC_PORT }}
             FIREBLOCKS_ETH_ASSET_ID: ${{ secrets.FIREBLOCKS_ETH_ASSET_ID }}
+            FIREBLOCKS_SOL_ASSET_ID: ${{ secrets.FIREBLOCKS_SOL_ASSET_ID }}
 
     tests-run:
         needs: detect-tests
@@ -127,4 +128,4 @@ jobs:
             XRP_TESTNET_FAUCET_URL: ${{ secrets.XRP_TESTNET_FAUCET_URL }}
             LITECOIN_RPC_PORT: ${{ secrets.LITECOIN_RPC_PORT }}
             FIREBLOCKS_ETH_ASSET_ID: ${{ secrets.FIREBLOCKS_ETH_ASSET_ID }}
-
+            FIREBLOCKS_SOL_ASSET_ID: ${{ secrets.FIREBLOCKS_SOL_ASSET_ID }}
