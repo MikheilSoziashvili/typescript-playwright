@@ -18,6 +18,7 @@ import {
 	ChatPinMessagePermissionsCsv,
 	BlogVerifySocialShareLinksCsv,
 	PromoCampaignUpdateCsv,
+	KycLevel2SubmissionsCsv,
 } from "@dtos/csv";
 import { HomePageBannerCarouselCsv } from "@dtos/csv/home-page-banner-carousel-csv";
 import { OriginalsSelfExclusionCsv } from "@dtos/csv/originals-self-exclusion";
@@ -51,4 +52,5 @@ export type CsvDtoMap = {
 	[CsvFilesName.BLOG_VERIFY_SOCIAL_SHARE_LINKS]: BlogVerifySocialShareLinksCsv;
 	[CsvFilesName.PROMO_CAMPAIGN_UPDATE]: PromoCampaignUpdateCsv;
 	[CsvFilesName.POSSIBLE_WIN_POP_UP]: PossibleWinPopUpCsv;
+	[CsvFilesName.KYC_LEVEL2_SUBMISSIONS]: KycLevel2SubmissionsCsv;
 };

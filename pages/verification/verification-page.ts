@@ -16,6 +16,9 @@ import {
 	RANDOM_COUNTRY,
 } from "test-data/domains/verification-domain-data";
 import { FieldValidationScenario } from "test-data/interfaces";
+import { VeriffApi } from "@api/veriff-api";
+import * as Configuration from "../../configuration";
+import { testData } from "test-data/test-data-manager";
 
 export class VerificationPage extends BasePage<VerificationPageMap> {
 	public constructor(page: Page) {
@@ -158,5 +161,51 @@ export class VerificationPage extends BasePage<VerificationPageMap> {
 			await this.fillInputAndTriggerValidation(inputField, input);
 			await this.clearFieldUsingClearButton(inputField);
 		}
+	}
+
+	@step("Create session in Veriff API")
+	public async createSessionInVeriffApi(
+		veriffApi: VeriffApi,
+		userId: string,
+	): Promise<string> {
+		const createSessionResponse = await veriffApi.createSession(
+			Configuration.veriffConfig.callBackUrl,
+			userId,
+		);
+
+		const sessionId = veriffApi.getSessionIdFromResponse(
+			createSessionResponse,
+		);
+		return sessionId;
+	}
+
+	@step("Upload documents for verification")
+	public async uploadDocumentsForVerification(
+		veriffApi: VeriffApi,
+		sessionId: string,
+		documentContent: string,
+	): Promise<void> {
+		const testDataPredefined = testData()
+			.fromPredefined()
+			.pick({
+				documentTypes: (data) => data.veriff.documentTypes,
+			});
+		const documentTypes = testDataPredefined.documentTypes;
+
+		for (const documentType of documentTypes) {
+			await veriffApi.uploadMedia(
+				sessionId,
+				documentType,
+				documentContent,
+			);
+		}
+	}
+
+	@step("Submit verification session")
+	public async submitVerificationSession(
+		veriffApi: VeriffApi,
+		sessionId: string,
+	): Promise<void> {
+		await veriffApi.submitSession(sessionId);
 	}
 }

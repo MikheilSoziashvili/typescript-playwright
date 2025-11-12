@@ -22,4 +22,7 @@ export enum ApiEndpoints {
 	BULK_REWARD = "/client-api/admin/rewards/bulkReward",
 	CLIENT_API = "/client-api",
 	INIT_TOKEN = "/init?token=",
+	CREATE_SESSION = "/v1/sessions/",
+	SESSION_MEDIA = "/v1/sessions/{sessionId}/media",
+	SUBMIT_DECISION = "/v1/sessions/{sessionId}",
 }

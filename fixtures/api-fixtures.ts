@@ -4,12 +4,14 @@ import { MailinatorApi } from "@api/mailinator-api";
 import { GamdomApiAsserter } from "@core/api/asserters/gamdom-api-asserter";
 import { test as base } from "@playwright/test";
 import * as Configuration from "../configuration";
+import { VeriffApi } from "@api/veriff-api";
 
 export type Apis = {
 	mailinatorApi: MailinatorApi;
 	gamdomApi: GamdomApi;
 	coingeckoApi: CoinGeckoApi;
 	gamdomApiAsserter: GamdomApiAsserter;
+	veriffApi: VeriffApi;
 };
 
 export const apisFixtures = base.extend<Apis>({
@@ -24,5 +26,8 @@ export const apisFixtures = base.extend<Apis>({
 	},
 	gamdomApiAsserter: async ({}, use) => {
 		await use(new GamdomApiAsserter());
+	},
+	veriffApi: async ({}, use) => {
+		await use(new VeriffApi());
 	},
 });

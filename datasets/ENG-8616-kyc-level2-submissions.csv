@@ -1,0 +1,17 @@
+decision,reason
+Resubmission,"Document damaged"
+Resubmission,"Document expired"
+Resubmission,"Document type not supported"
+Resubmission,"Poor image quality"
+Resubmission,"Video and/or photos missing"
+Declined,"Known fraud"
+Declined,"Person showing the document does not appear to match document photo"
+Declined,"Restricted IP location"
+Declined,"Suspected document tampering"
+Declined,"Suspicious behaviour"
+Declined,"Suspicious behaviour - Identity Farming"
+Declined,"Velocity/abuse duplicated ID"
+Declined,"Velocity/abuse duplicated device"
+Declined,"Velocity/abuse duplicated user"
+Approved,
+

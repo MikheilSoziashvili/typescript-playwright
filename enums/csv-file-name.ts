@@ -55,4 +55,5 @@ export enum CsvFilesName {
 	BLOG_VERIFY_SOCIAL_SHARE_LINKS = "ENG-6374-blog-verify-social-share-links.csv",
 	PROMO_CAMPAIGN_UPDATE = "ENG-3334-promo-campaign-update.csv",
 	POSSIBLE_WIN_POP_UP = "ENG-5685-possible-win-pop-up.csv",
+	KYC_LEVEL2_SUBMISSIONS = "ENG-8616-kyc-level2-submissions.csv",
 }

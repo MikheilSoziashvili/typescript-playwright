@@ -1,5 +1,10 @@
 import { DEFAULT_DB_PORT } from "@constants/defaults";
 import {
+	veriffBaseUrl,
+	veriffCallbackUrl,
+	veriffPortalUrl,
+} from "@constants/veriff";
+import {
 	DbPoolServiceConfiguration,
 	FireblocksConfig,
 	PoolConfigurationType,
@@ -129,6 +134,15 @@ export const xrpTestnet = {
 	walletSeed: asString(process.env.XRP_TESTNET_WALLET_SEED),
 	rpcUrl: asString(process.env.XRP_TESTNET_RPC_URL),
 	faucetUrl: asString(process.env.XRP_TESTNET_FAUCET_URL),
+};
+
+export const veriffConfig = {
+	apiUrl: asString(veriffBaseUrl),
+	callBackUrl: asString(veriffCallbackUrl),
+	portalUrl: asString(veriffPortalUrl),
+	username: asString(process.env.VERIFF_USERNAME),
+	password: asString(process.env.VERIFF_PASSWORD),
+	secret2FA: asString(process.env.VERIFF_SECRET_2FA),
 };
 
 export const users: TestUserConfigurationObject[] = [

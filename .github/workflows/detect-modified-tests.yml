@@ -79,6 +79,16 @@ on:
                 required: true
             FIREBLOCKS_SOL_ASSET_ID:
                 required: true
+            VERIFF_PUBLISHABLE_KEY:
+                required: true
+            VERIFF_PRIVATE_KEY:
+                required: true
+            VERIFF_USERNAME:
+                required: true
+            VERIFF_PASSWORD:
+                required: true
+            VERIFF_SECRET_2FA:
+                required: true
 
 concurrency:
     group: detect-modified-tests-${{ github.ref }}
@@ -127,6 +137,11 @@ env:
     LITECOIN_RPC_PORT: ${{ secrets.LITECOIN_RPC_PORT }}
     FIREBLOCKS_ETH_ASSET_ID: ${{ secrets.FIREBLOCKS_ETH_ASSET_ID }}
     FIREBLOCKS_SOL_ASSET_ID: ${{ secrets.FIREBLOCKS_SOL_ASSET_ID }}
+    VERIFF_PUBLISHABLE_KEY: ${{ secrets.VERIFF_PUBLISHABLE_KEY }}
+    VERIFF_PRIVATE_KEY: ${{ secrets.VERIFF_PRIVATE_KEY }}
+    VERIFF_USERNAME: ${{ secrets.VERIFF_USERNAME }}
+    VERIFF_PASSWORD: ${{ secrets.VERIFF_PASSWORD }}
+    VERIFF_SECRET_2FA: ${{ secrets.VERIFF_SECRET_2FA }}
 
 jobs:
     detect-new-modified-tests:

@@ -22,6 +22,11 @@ export const predefined = {
 		betAmountDDefault: 1,
 		betAmountSmall: 10,
 	},
+	veriff: {
+		documentTypes: ["document-front", "document-back", "face"],
+		documentImage:
+			"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+	},
 	usdtAmountToDeposit: {
 		amountToDeposit: "0.02",
 	},

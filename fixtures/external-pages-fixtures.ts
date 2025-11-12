@@ -2,6 +2,7 @@ import { test as base } from "@playwright/test";
 import { SteamAuthPage } from "@pages/external/steam/steam-auth-page";
 import { SteamBlockedPage } from "@pages/external/steam/steam-blocked-page";
 import { GoogleAuthPage } from "@pages/external/google/google-auth-page";
+import { VeriffPortalPage } from "@pages/external/veriff-portal/veriff-portal-page";
 import {
 	BrowserSessionManager,
 	sessionAwarePage,
@@ -12,6 +13,7 @@ export type ExternalPages = {
 	steamAuthPage: SteamAuthPage;
 	steamBlockedPage: SteamBlockedPage;
 	googleAuthPage: GoogleAuthPage;
+	veriffPortalPage: VeriffPortalPage;
 };
 
 export const externalPagesFixtures = base.extend<ExternalPages>({
@@ -23,4 +25,5 @@ export const externalPagesFixtures = base.extend<ExternalPages>({
 	steamAuthPage: sessionAwarePage(SteamAuthPage),
 	steamBlockedPage: sessionAwarePage(SteamBlockedPage),
 	googleAuthPage: sessionAwarePage(GoogleAuthPage),
+	veriffPortalPage: sessionAwarePage(VeriffPortalPage),
 });
