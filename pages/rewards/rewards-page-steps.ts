@@ -25,4 +25,17 @@ export class RewardsPageSteps extends BasePageStep<RewardsPage> {
 			.assertThat()
 			.isSpecialOfferActivateButtonDisabled();
 	}
+
+	@step("Click a specific reward card's button by index")
+	public async clickRewardCardButtonByIndex(
+		reward: string,
+		buttonText: string,
+		index: number,
+	): Promise<void> {
+		const button = this.gamdomPage.map
+			.rewardCardButton(reward, buttonText)
+			.nth(index);
+		await button.scrollIntoViewIfNeeded();
+		await button.click();
+	}
 }

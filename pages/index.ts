@@ -101,6 +101,7 @@ import { SportsPage } from "./sports/sports-page";
 import { StatisticsPage } from "./statistics/statistics-page";
 import { TransactionsPage } from "./transactions/transactions-page";
 import { VerificationPage } from "./verification/verification-page";
+import { BookOfArabiaPage } from "./casino-games/wickedgames/book-of-arabia/book-of-arabia-page";
 
 export const GamdomPages = {
 	homePage: HomePage,
@@ -193,6 +194,7 @@ export const GamePages = {
 	kenoGamePage: KenoGamePage,
 	bookOfPyramidsPage: BookOfPyramidsPage,
 	bubblesBonanzaPage: CashVaultIPage,
+	bookOfArabiaPage: BookOfArabiaPage,
 } as const;
 
 export const Components = {

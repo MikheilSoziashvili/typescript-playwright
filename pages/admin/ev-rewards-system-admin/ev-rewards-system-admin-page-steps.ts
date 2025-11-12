@@ -161,4 +161,15 @@ export class EvRewardsSystemAdminSteps extends BasePageStep<EvRewardsSystemAdmin
 	): Promise<boolean> {
 		return resultKey === ExpectedResultToastKey.PROCESSED_OK;
 	}
+
+	@step("Set conditions for free spins reward")
+	public async setConditionsForFreeSpinsReward(
+		startDate: number,
+		endDate: number,
+	): Promise<void> {
+		await this.navigateAndCheckRewardTypeElements();
+		await this.selectFreeSpinsAndCheckElements();
+		await this.pickStartDate(startDate);
+		await this.pickEndDate(endDate);
+	}
 }

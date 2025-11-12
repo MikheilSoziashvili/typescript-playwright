@@ -1,15 +1,17 @@
-import { expect } from "@playwright/test";
 import { BaseAsserter } from "@base/base-asserter";
-import { RewardsPage } from "./rewards-page";
 import { DEFAULT_CURRENCY } from "@constants/defaults";
 import { parseToFloat } from "@core/utils/utils";
-import { Timeout } from "@enums/timeout";
+import { RewardType } from "@enums/admin/reward-type";
+import { OriginalGame } from "@enums/original-games";
 import { RewardsRoyaltyUpRanks } from "@enums/rewards-royalty-up-ranks";
+import { Timeout } from "@enums/timeout";
+import { calculateInstantReward } from "@formulas/instant-reward";
+import { expect } from "@playwright/test";
 import { step } from "decorators/step";
 import { RewardsRoyaltyUpRanksValues } from "../../constants/rewards-royalty-up-rank-values";
-import { OriginalGame } from "@enums/original-games";
-import { calculateInstantReward } from "@formulas/instant-reward";
-import { RewardType } from "@enums/admin/reward-type";
+import { RewardsPage } from "./rewards-page";
+import { RewardCardButton } from "@enums/reward-card-buttons";
+import { logger } from "@logger/logger";
 
 export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 	public constructor(page: RewardsPage) {
@@ -201,5 +203,60 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 			this.gamdomPage.map.getRewardAmount(RewardType.MONTHLY),
 			this.gamdomPage.map.getRewardClaimButton(RewardType.MONTHLY),
 		]);
+	}
+
+	@step("Verify special reward card details are correct")
+	async verifySpecialRewardCard(
+		gameName: string,
+		freeSpins: number,
+	): Promise<void> {
+		const card = this.gamdomPage.map.rewardCard(gameName);
+
+		await this.checkElementsAreVisible([
+			card,
+			card.getByText(gameName),
+			card.getByText(`${freeSpins}x free spin`, { exact: false }),
+			this.gamdomPage.map.rewardCardButton(
+				gameName,
+				RewardCardButton.GO_TO_GAME,
+			),
+		]);
+	}
+
+	@step("Verify number of free spin cards for a given game")
+	async verifyFreeSpinCardsCount(
+		gameName: string,
+		freeSpins: number,
+		expectedMaxCount: number,
+	): Promise<void> {
+		const cards = this.gamdomPage.map.rewardCard(gameName);
+
+		await expect(async () => {
+			const count = await cards.count();
+
+			expect(
+				count,
+				`Expected between 1 and ${expectedMaxCount} cards for ${gameName}, but found ${count}`,
+			).toBeGreaterThan(0);
+
+			expect(
+				count,
+				`Too many reward cards for ${gameName}: found ${count}, max allowed is ${expectedMaxCount}`,
+			).toBeLessThanOrEqual(expectedMaxCount);
+		}).toPass({ timeout: Timeout.MEDIUM });
+
+		logger.info(
+			`Found ${await cards.count()} free spin card(s) for ${gameName}`,
+		);
+
+		for (let i = 0; i < (await cards.count()); i++) {
+			const card = cards.nth(i);
+			await expect(card).toBeVisible();
+			await this.checkElementsAreVisible([
+				card,
+				card.getByText(`${freeSpins}x free spin`, { exact: false }),
+				card.getByText(gameName, { exact: false }),
+			]);
+		}
 	}
 }

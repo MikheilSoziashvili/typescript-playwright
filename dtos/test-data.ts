@@ -385,3 +385,31 @@ export class BulkRewardTestData {
 		this.startDate = startDate;
 	}
 }
+
+export class FreeSpinsPromotionTestData {
+	public rewardId: number;
+	public userId: number;
+	public gameCode: string;
+	public prepaidUuid: string;
+	public wagerThresholdCoins: number;
+	public freeSpinRounds: number;
+	public denominationCoins: number;
+
+	constructor(options: {
+		rewardId: number;
+		userId: number;
+		gameCode: string;
+		prepaidUuid: string;
+		wagerThresholdCoins: number;
+		freeSpinsRounds: number;
+		denominationCoins: number;
+	}) {
+		this.rewardId = options.rewardId;
+		this.userId = options.userId;
+		this.gameCode = options.gameCode;
+		this.prepaidUuid = options.prepaidUuid;
+		this.wagerThresholdCoins = options.wagerThresholdCoins;
+		this.freeSpinRounds = options.freeSpinsRounds;
+		this.denominationCoins = options.denominationCoins;
+	}
+}

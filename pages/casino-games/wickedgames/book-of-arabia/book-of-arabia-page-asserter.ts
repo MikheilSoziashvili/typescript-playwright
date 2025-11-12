@@ -1,8 +1,88 @@
 import { BaseAsserter } from "@base/base-asserter";
+import { PopUpButtons } from "@enums/popup-buttons";
+import { Timeout } from "@enums/timeout";
+import { expect } from "@playwright/test";
+import { step } from "decorators/step";
 import { BookOfArabiaPage } from "./book-of-arabia-page";
+import { logger } from "@logger/logger";
 
 export class BookOfArabiaPageAsserter extends BaseAsserter<BookOfArabiaPage> {
 	public constructor(page: BookOfArabiaPage) {
 		super(page);
+	}
+
+	@step("Verify free spins popup and start game (configurable)")
+	async verifyFreeSpinsPopupAndStart(
+		expectedSpins: number,
+		options?: { expectedBet?: number; skipContinue?: boolean },
+	): Promise<void> {
+		const { expectedBet, skipContinue = false } = options ?? {};
+
+		if (!skipContinue) {
+			await this.gamdomPage.clickContinueButton();
+		}
+
+		const popUp = this.gamdomPage.map.popUpContainer;
+		await expect(popUp).toBeVisible();
+
+		const popUpButton = this.gamdomPage.map.popUpButton(PopUpButtons.START);
+		const elementsToCheck = [
+			popUp,
+			popUp.getByText(`You have ${expectedSpins} spin`, { exact: false }),
+		];
+		if (expectedBet) {
+			elementsToCheck.push(
+				popUp.getByText(`$${expectedBet}`, { exact: false }),
+			);
+		}
+		await this.checkElementsAreVisible(elementsToCheck);
+		await popUpButton.click();
+	}
+
+	@step("Verify free spins result popup and click Continue")
+	async verifyFreeSpinsResultAndContinue(
+		expectedSpins: number,
+	): Promise<void> {
+		const resultPopup = this.gamdomPage.map.popUpContainer;
+
+		await this.checkElementsAreVisible([
+			resultPopup,
+			resultPopup.getByText(`You have played ${expectedSpins} spin`, {
+				exact: false,
+			}),
+		]);
+
+		const continueButton = this.gamdomPage.map.popUpButton(
+			PopUpButtons.CONTINUE,
+		);
+		await continueButton.click();
+	}
+
+	@step("Ensure game is loaded, retry up to 5 times if necessary")
+	async ensureGameLoaded(maxRetries = 5): Promise<void> {
+		const iframe = this.gamdomPage.map.outerFrameElement;
+		const continueButton = this.gamdomPage.map.continueButton;
+
+		for (let attempt = 1; attempt <= maxRetries; attempt++) {
+			try {
+				await this.checkElementsAreVisible(
+					[iframe, continueButton],
+					Timeout.MEDIUM,
+				);
+				return;
+			} catch {
+				if (attempt === maxRetries) {
+					logger.error("Game failed to load after maximum retries.");
+					throw new Error(
+						"Game failed to load after multiple refresh attempts.",
+					);
+				}
+
+				logger.warn(
+					`Game not loaded (attempt ${attempt}), refreshing page...`,
+				);
+				await this.gamdomPage.refresh();
+			}
+		}
 	}
 }

@@ -51,4 +51,23 @@ export class NotificationMap extends BaseMap {
 			"notificationGotItButton",
 		);
 	}
+
+	public toastifyNotificationsContainer(): Locator {
+		return this.page.locator(
+			"div.Toastify__toast.notification-message-body-desktop",
+		);
+	}
+
+	public toastifyNotification(): Locator {
+		return this.page.getByTestId("notificationContainer");
+	}
+
+	public toastifyNotificationTitle(options?: { hasText?: string }): Locator {
+		const { hasText } = options ?? {};
+		const locator =
+			this.toastifyNotificationsContainer().getByTestId(
+				"notificationTitle",
+			);
+		return hasText ? locator.filter({ hasText }) : locator;
+	}
 }

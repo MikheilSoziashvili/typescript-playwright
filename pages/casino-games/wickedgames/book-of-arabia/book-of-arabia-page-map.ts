@@ -11,6 +11,10 @@ export class BookOfArabiaPageMap extends BaseMap {
 		);
 	}
 
+	public get outerFrameElement(): Locator {
+		return this.page.locator('iframe[src*="wicked.games"][src*="/launch"]');
+	}
+
 	public get gameFrame(): FrameLocator {
 		return this.outerFrameLocator.frameLocator("#gameFrame");
 	}
@@ -35,5 +39,25 @@ export class BookOfArabiaPageMap extends BaseMap {
 
 	public get spinButton(): Locator {
 		return this.gameFrame.locator('div[role="presentation"].spin-button');
+	}
+
+	public get spinButtonText(): Locator {
+		return this.spinButton.locator("div.text");
+	}
+
+	public get popUpContainer(): Locator {
+		return this.outerFrameLocator.locator(
+			'div[class*="StyledLayer__StyledContainer"]',
+		);
+	}
+
+	public popUpButton(buttonText: string): Locator {
+		return this.popUpContainer.getByRole("button", { name: buttonText });
+	}
+
+	public popUpText(expectedSpins: number): Locator {
+		return this.popUpContainer.getByText(`You have ${expectedSpins} spin`, {
+			exact: false,
+		});
 	}
 }

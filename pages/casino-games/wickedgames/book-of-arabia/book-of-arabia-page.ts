@@ -22,4 +22,9 @@ export class BookOfArabiaPage extends BasePage<BookOfArabiaPageMap> {
 	public async clickContinueButton(): Promise<void> {
 		await this.map.continueButton.click();
 	}
+
+	@step("Click spin button")
+	public async clickSpinButton(): Promise<void> {
+		await this.map.spinButton.click();
+	}
 }

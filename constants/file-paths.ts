@@ -71,3 +71,8 @@ export const REVOKE_FREE_SPINS_FILE_PATH = path.resolve(
 	__dirname,
 	`../${TEST_FILES_DIR}/ENG-7506-revoke-free-spins.csv`,
 );
+
+export const FREE_SPINS_REWARD_MILESTONES = path.resolve(
+	__dirname,
+	`../${TEST_FILES_DIR}/ENG-7504-free-spins-reward-milestones.csv`,
+);

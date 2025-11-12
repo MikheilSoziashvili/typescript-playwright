@@ -1,4 +1,5 @@
 import { BaseAsserter } from "@base/base-asserter";
+import { IntervalMs } from "@enums/interval-millisecond";
 import { NotificationButton } from "@enums/notification-buttons";
 import { Timeout } from "@enums/timeout";
 import { expect } from "@playwright/test";
@@ -110,14 +111,70 @@ export class NotificationAsserter extends BaseAsserter<Notification> {
 		await this.openButtonIsFullyVisibleAndInside(options);
 	}
 
-	@step("Wait for notification")
+	@step("Wait for notification(s)")
 	public async waitForNotification(options?: {
 		index?: number;
+		expectedCount?: number;
 		timeout?: number;
+		notificationTitle?: string;
 	}): Promise<void> {
-		const { index, timeout = Timeout.SHORT } = options ?? {};
-		const container = this.gamdomPage.map.notificationContainer({ index });
+		const {
+			index,
+			expectedCount,
+			timeout = Timeout.MAX,
+			notificationTitle,
+		} = options ?? {};
 
-		await expect(container).toBeVisible({ timeout });
+		if (expectedCount) {
+			await this.pollNotificationsForExpectedCount({
+				expectedCount,
+				timeout,
+				notificationTitle,
+			});
+		} else {
+			const container = this.gamdomPage.map.notificationContainer({
+				index,
+			});
+			await expect(container).toBeVisible({ timeout });
+		}
+	}
+
+	@step("Poll for expected number of notifications")
+	private async pollNotificationsForExpectedCount({
+		expectedCount,
+		timeout,
+		notificationTitle,
+	}: {
+		expectedCount: number;
+		timeout: number;
+		notificationTitle?: string;
+	}): Promise<void> {
+		let lastCount = 0;
+
+		try {
+			await expect
+				.poll(
+					async () => {
+						const visibleNotificationCount =
+							await this.gamdomPage.map
+								.toastifyNotificationTitle({
+									hasText: notificationTitle,
+								})
+								.count();
+
+						lastCount = visibleNotificationCount;
+						return lastCount > 0 && lastCount <= expectedCount;
+					},
+					{
+						timeout: timeout,
+						intervals: [IntervalMs.SHORT],
+					},
+				)
+				.toBeTruthy();
+		} catch {
+			throw new Error(
+				`Number of notifications is out of range (either 0 or greater than ${expectedCount})`,
+			);
+		}
 	}
 }

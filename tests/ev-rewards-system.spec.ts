@@ -1,5 +1,8 @@
 import { WICKED_GAMES_AUTH } from "@constants/auth-casino-game-providers";
-import { REVOKE_FREE_SPINS_FILE_PATH } from "@constants/file-paths";
+import {
+	FREE_SPINS_REWARD_MILESTONES,
+	REVOKE_FREE_SPINS_FILE_PATH,
+} from "@constants/file-paths";
 import { buildFreeSpinsRewardNotificationSubTitle } from "@core/helpers/asserter-helpers/text-asserters";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { FileKey } from "@core/types/types";
@@ -10,6 +13,7 @@ import {
 } from "@core/utils/csv-utils/generating-reward-csv-utils";
 import {
 	formatLocalizedDate,
+	getISODate,
 	parseRelativeDateRelation,
 	setAuthenticationCookies,
 	useProviderBearerFromAuthenticate,
@@ -18,15 +22,19 @@ import { CustomRewardType } from "@enums/admin/custom-reward-type";
 import { RewardStatus } from "@enums/admin/reward-status";
 import { UserInfoTabs } from "@enums/admin/user-info-tabs";
 import { CasinoGameName } from "@enums/casino-game";
+import { CasinoGameCode } from "@enums/casino-game-code";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { Currency } from "@enums/currencies";
+import { EvRewardTypes } from "@enums/ev-reward-types";
 import { ExpectedResultLogsKey } from "@enums/expected-reward-logs";
 import { ExpectedResultToastKey } from "@enums/expected-reward-toast-keys";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { NotificationButton } from "@enums/notification-buttons";
 import { NotificationTitle } from "@enums/notification-titles";
+import { RewardCardButton } from "@enums/reward-card-buttons";
 import { TestTag } from "@enums/test-tags";
+import { TestUserRole } from "@enums/test-user-roles";
 import { Timeout } from "@enums/timeout";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
@@ -41,6 +49,7 @@ import { HomePage } from "@pages/home-page/home-page";
 import { NotificationsPage } from "@pages/notifications/notifications-page";
 import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
 import { testData } from "test-data/test-data-manager";
+import { predefined } from "test-data/sources/predefined/index";
 
 test.describe(
 	"EV Rewards system tests",
@@ -180,8 +189,6 @@ test.describe(
 		test.describe("Revoke free spins", () => {
 			const startDateOffset = 1;
 			const endDateOffset = 7;
-			const betAmount = 200;
-
 			test(
 				"[ENG-7506] Revoking free spins promotion reward",
 				testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
@@ -193,6 +200,7 @@ test.describe(
 					gamdomDb,
 					userInfoAdminPage,
 					userInfoRewardsAdminPage,
+					testDataObject,
 				}) => {
 					const { user: userData, cookie: userCookie } =
 						await gamdomApiDbFacade.createSingleUserDbAndAuth({
@@ -202,6 +210,13 @@ test.describe(
 					const { outAbsPath: csvPath } = buildCsvFromTemplate(
 						REVOKE_FREE_SPINS_FILE_PATH,
 						[String(userData.userId)],
+					);
+
+					const betTestData = testDataObject.bet.build(
+						{
+							username: userData.username,
+						},
+						{ betAmount: 100 },
 					);
 
 					const userContext = await browser.newContext();
@@ -217,16 +232,10 @@ test.describe(
 
 					await evRewardsSystemAdminPage
 						.steps()
-						.navigateAndCheckRewardTypeElements();
-					await evRewardsSystemAdminPage
-						.steps()
-						.selectFreeSpinsAndCheckElements();
-					await evRewardsSystemAdminPage
-						.steps()
-						.pickStartDate(startDateOffset);
-					await evRewardsSystemAdminPage
-						.steps()
-						.pickEndDate(endDateOffset);
+						.setConditionsForFreeSpinsReward(
+							startDateOffset,
+							endDateOffset,
+						);
 
 					const { fs: freeSpinsAmount, denom: rewardAmount } =
 						readFsAndDenomFromCsv(csvPath, 1);
@@ -255,9 +264,10 @@ test.describe(
 						.searchForGameAndOpen(CasinoGameName.BOOK_OF_ARABIA);
 
 					const userBookOfArabiaPage = new BookOfArabiaPage(userPage);
+					await userBookOfArabiaPage.assertThat().ensureGameLoaded();
 					await userBookOfArabiaPage
 						.steps()
-						.startGameAndSpin(betAmount);
+						.startGameAndSpin(betTestData.betAmount);
 
 					const userHomePage = new HomePage(userPage);
 					await userHomePage.navigate();
@@ -333,3 +343,155 @@ test.describe(
 		});
 	},
 );
+
+test.describe("Free spins promotion reward", () => {
+	test.slow();
+	test(
+		"[ENG-7504] Verify that users receive free spins according to configured milestones",
+		testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+		async ({ browserSessionManager, gamdomDb, testDataObject }) => {
+			const superAdmin = await browserSessionManager.loginAs(
+				TestUserRole.SUPERADMIN,
+			);
+			const regular = await browserSessionManager.loginAs(
+				TestUserRole.REGULAR,
+			);
+
+			const { outAbsPath: csvPath } = buildCsvFromTemplate(
+				FREE_SPINS_REWARD_MILESTONES,
+				[String(regular.getAuthenticatedUser().user.userId)],
+			);
+
+			await gamdomDb.createFreeSpinsPromotionReward({
+				userId: regular.getAuthenticatedUser().user.userId,
+				adminUserId: superAdmin.getAuthenticatedUser().user.userId,
+				gameCode: CasinoGameCode.BOOK_OF_ARABIA.code,
+				wagerThresholdCoins: 15000,
+				freeSpinRounds: 1,
+				denominationCoins: 1500,
+				status: RewardStatus.PENDING,
+				type: EvRewardTypes.FREE_SPINS_PROMOTION,
+				amountCoins: 0,
+				meta: JSON.stringify({
+					rewardType: EvRewardTypes.FREE_SPINS_PROMOTION,
+					start_wagered: 0,
+				}),
+				startDate: getISODate(),
+				endDate: getISODate({ daysOffset: 1 }),
+			});
+
+			await useProviderBearerFromAuthenticate(regular.page, {
+				host: WICKED_GAMES_AUTH.HOST,
+				authPath: WICKED_GAMES_AUTH.AUTH_PATH,
+				tokenJsonKey: WICKED_GAMES_AUTH.TOKEN_KEY,
+			});
+
+			const betTestData = testDataObject.bet.build(
+				{ username: regular.getAuthenticatedUser().user.username },
+				{ betAmount: 100 },
+			);
+
+			await regular.pages.casinoPage.navigate();
+			await regular.pages.casinoPage
+				.steps()
+				.searchForGameAndOpen(CasinoGameName.BOOK_OF_ARABIA);
+
+			await regular.pages.bookOfArabiaPage
+				.steps()
+				.ensureLoadedAndSpin(betTestData.betAmount);
+
+			await regular.pages.homePage.navigate();
+
+			const notification = regular.pages.homePage.getNotification();
+
+			await notification.assertThat().waitForNotification({
+				notificationTitle: NotificationTitle.FREE_SPINS_PROMOTION_BONUS,
+				timeout: Timeout.MAX,
+			});
+
+			await regular.pages.rewardsPage.navigate();
+			await regular.pages.rewardsPage
+				.assertThat()
+				.verifySpecialRewardCard(CasinoGameName.BOOK_OF_ARABIA, 1);
+
+			await regular.pages.rewardsPage.map
+				.rewardCardButton(
+					CasinoGameName.BOOK_OF_ARABIA,
+					RewardCardButton.GO_TO_GAME,
+				)
+				.click();
+
+			await regular.pages.bookOfArabiaPage
+				.assertThat()
+				.ensureGameLoaded();
+
+			await regular.pages.bookOfArabiaPage
+				.assertThat()
+				.verifyFreeSpinsPopupAndStart(1, { expectedBet: 1 });
+
+			await regular.pages.bookOfArabiaPage.clickSpinButton();
+
+			await regular.pages.bookOfArabiaPage
+				.assertThat()
+				.verifyFreeSpinsResultAndContinue(1);
+
+			await regular.pages.homePage.navigate();
+
+			await superAdmin.pages.evRewardsSystemAdminPage
+				.steps()
+				.setConditionsForFreeSpinsReward(
+					predefined.freeSpinsRewardConditions.startDateOffset,
+					predefined.freeSpinsRewardConditions.endDateOffset,
+				);
+			await superAdmin.pages.evRewardsSystemAdminPage.bulkRewardFileUpload(
+				csvPath,
+			);
+			await superAdmin.pages.evRewardsSystemAdminPage.clickRewardUsersButton();
+
+			await superAdmin.pages.toast
+				.assertThat()
+				.toastMessageIs(ToastTitle.SUCCESS, ToastSubTitle.PROCESSED_OK);
+
+			await gamdomDb.updateRewardStatus(
+				regular.getAuthenticatedUser().user.userId,
+				RewardStatus.ACTIVE,
+			);
+
+			await regular.pages.casinoPage.navigate();
+			await regular.pages.casinoPage
+				.steps()
+				.searchForGameAndOpen(CasinoGameName.BOOK_OF_ARABIA);
+
+			await regular.pages.bookOfArabiaPage
+				.steps()
+				.ensureLoadedAndSpin(betTestData.betAmount);
+			await regular.pages.homePage.navigate();
+			await notification.assertThat().waitForNotification({
+				expectedCount: 5,
+				notificationTitle: NotificationTitle.FREE_SPINS_PROMOTION_BONUS,
+				timeout: Timeout.MAX,
+			});
+
+			await regular.pages.rewardsPage.navigate();
+			await regular.pages.rewardsPage
+				.assertThat()
+				.verifyFreeSpinCardsCount(CasinoGameName.BOOK_OF_ARABIA, 1, 5);
+
+			await regular.pages.rewardsPage
+				.steps()
+				.clickRewardCardButtonByIndex(
+					CasinoGameName.BOOK_OF_ARABIA,
+					RewardCardButton.GO_TO_GAME,
+					0,
+				);
+
+			await regular.pages.bookOfArabiaPage
+				.assertThat()
+				.ensureGameLoaded();
+
+			await regular.pages.bookOfArabiaPage
+				.steps()
+				.playAllAvailableFreeSpins(1, 1);
+		},
+	);
+});

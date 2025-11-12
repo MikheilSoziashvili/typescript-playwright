@@ -37,4 +37,8 @@ export const predefined = {
 	solAmountToDeposit: {
 		amountToDeposit: "0.002",
 	},
+	freeSpinsRewardConditions: {
+		startDateOffset: 1,
+		endDateOffset: 7,
+	},
 };

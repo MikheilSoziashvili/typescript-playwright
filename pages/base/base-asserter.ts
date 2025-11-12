@@ -13,7 +13,7 @@ import { VisibilityState } from "@enums/playwright/visibility-states";
 import { Timeout } from "@enums/timeout";
 import { logger } from "@logger/logger";
 import { Locator, TestInfo, expect } from "@playwright/test";
-import { wwwPattern } from "@support/regex-patterns";
+import { classNamePattern, wwwPattern } from "@support/regex-patterns";
 
 import { step } from "decorators/step";
 import { BaseComponent } from "./base-component";
@@ -22,6 +22,7 @@ import { BaseModal } from "./base-modal";
 import { BasePage } from "./base-page";
 import { UserBalanceHandler } from "@core/handlers/user-balance-handler/user-balance-handler";
 import { Viewport } from "@core/types/types";
+import { AttributesValues } from "@enums/playwright/htmlAttributesValues";
 
 export class BaseAsserter<
 	T extends BasePage<BaseMap> | BaseModal<BaseMap> | BaseComponent<BaseMap>,
@@ -733,5 +734,16 @@ export class BaseAsserter<
 			Attributes.DATA_SELECTED,
 			BooleanValueString.TRUE,
 		);
+	}
+
+	@step("Verify element has class attribute")
+	public async expectElementToHaveClass(
+		locator: Locator,
+		attributeValue: AttributesValues,
+		timeout: number = Timeout.LONG,
+	): Promise<void> {
+		await expect(locator).toHaveClass(classNamePattern(attributeValue), {
+			timeout,
+		});
 	}
 }

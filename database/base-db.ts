@@ -22,7 +22,7 @@ export class BaseDB {
 		}
 	}
 
-	private async executeQuery<T extends QueryResultRow = QueryResultRow>(
+	protected async executeQuery<T extends QueryResultRow = QueryResultRow>(
 		sql: string,
 		params: unknown[] = [],
 		logContext: string,

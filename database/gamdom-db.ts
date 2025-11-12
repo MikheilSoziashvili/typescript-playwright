@@ -15,29 +15,32 @@ import {
 	getRandomNumber,
 	getRandomPhone,
 } from "@core/utils/utils";
+import { PromoCampaignStatuses } from "@enums/campaign-statuses";
+import { Currency } from "@enums/currencies";
 import { AmlInfoColumns } from "@enums/db/aml-info-columns";
 import { AmlStatusColumns } from "@enums/db/aml-status-columns";
 import { AmlVerificationLevel } from "@enums/db/aml-verification-level";
 import { AmlVerificationStatus } from "@enums/db/aml-verification-status";
-import { CampaignsColumns } from "@enums/db/campaigns-columns";
-import { CampaignRulesColumns } from "@enums/db/campaign-rules-columns";
+import { CampaignPromoType } from "@enums/db/campaign-promo-type";
 import { CampaignRedemptionsColumns } from "@enums/db/campaign-redemptions-columns";
 import { CampaignRuleType } from "@enums/db/campaign-rule-type";
-import { PromoCampaignStatuses } from "@enums/campaign-statuses";
-import { CampaignPromoType } from "@enums/db/campaign-promo-type";
-import { Currency } from "@enums/currencies";
+import { CampaignRulesColumns } from "@enums/db/campaign-rules-columns";
+import { CampaignsColumns } from "@enums/db/campaigns-columns";
 import { DbTables } from "@enums/db/db-tables";
 import { KothEventColumns } from "@enums/db/koth-event-columns";
 import { KothEventName, KothEventType } from "@enums/db/koth-event-types";
 import { PromotionColumns } from "@enums/db/promotion-columns";
+import { RewardsColumns } from "@enums/db/rewards-columns";
 import { SettingsColumns } from "@enums/db/settings-columns";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
 import { UsersColumns } from "@enums/db/users-columns";
+import { VipUsersColumns } from "@enums/db/vip-users-columns";
 import { WalletsColumns } from "@enums/db/wallets-columns";
 import { WithdrawLimitsSettingsValues } from "@enums/db/withdraw-settings-values";
 import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { Unit } from "@enums/units";
+import { VipUserStatus } from "@enums/vip-user-statuses";
 import { QueryResultRow } from "pg";
 import { BaseDB } from "./base-db";
 import {
@@ -51,9 +54,10 @@ import { AmlInfoOptions } from "./interfaces/aml-info-options";
 import { AmlStatusInsertOptions } from "./interfaces/aml-status-insert-options";
 import { PromotionInsertOptions } from "./interfaces/promotion-insert-options";
 import { NewUserOptions } from "./interfaces/storage-state-new-user-options";
-import { VipUsersColumns } from "@enums/db/vip-users-columns";
-import { VipUserStatus } from "@enums/vip-user-statuses";
-import { RewardsColumns } from "@enums/db/rewards-columns";
+import { FreeSpinsPromotionsEventData } from "@enums/db/free-spins-promotions-event-data";
+import { RewardStatus } from "@enums/admin/reward-status";
+import { EvRewardTypes } from "@enums/ev-reward-types";
+import { randomUUID } from "node:crypto";
 
 export class GamdomDb extends BaseDB {
 	constructor() {
@@ -1439,5 +1443,131 @@ export class GamdomDb extends BaseDB {
 			`${RewardsColumns.UserId} = ${userId}`,
 			hasLogMessage,
 		);
+	}
+
+	public async insertReward(
+		userId: number,
+		givenByUserId: number,
+		startDate: string,
+		endDate: string,
+		status: string,
+		type: string,
+		amountCoins: number,
+		meta: string,
+		hasLogMessage = true,
+	): Promise<QueryResultRow> {
+		const baseData = {
+			[RewardsColumns.UserId]: userId,
+			[RewardsColumns.GivenByUserId]: givenByUserId,
+			[RewardsColumns.AmountCoins]: amountCoins,
+			[RewardsColumns.Type]: type,
+			[RewardsColumns.Status]: status,
+			[RewardsColumns.Meta]: meta,
+			[RewardsColumns.StartDate]: startDate,
+			[RewardsColumns.EndDate]: endDate,
+		};
+
+		return this.insert(DbTables.Rewards, baseData, hasLogMessage);
+	}
+
+	public async insertFreeSpinsPromotionEventData(
+		eventData: {
+			rewardId: number;
+			userId: number;
+			gameCode: string;
+			prepaidUuid: string;
+			wagerThresholdCoins: number;
+			freeSpinRounds: number;
+			denominationCoins: number;
+		}[],
+		hasLogMessage = true,
+	): Promise<QueryResultRow[]> {
+		if (!eventData.length) {
+			throw new Error("eventData array cannot be empty");
+		}
+
+		//Dynamically builds parameterized SQL INSERT statement for multiple
+		// rows of free spins event data at once — instead of inserting each row separately,
+		// grouping 7 values per row (each row of event data has exactly 7 columns)
+		const values = eventData
+			.map(
+				(_, i) =>
+					`($${i * 7 + 1}, $${i * 7 + 2}, $${i * 7 + 3}, $${
+						i * 7 + 4
+					}, $${i * 7 + 5}, $${i * 7 + 6}, $${i * 7 + 7})`,
+			)
+			.join(", ");
+
+		const flatValues = eventData.flatMap((e) => [
+			e.rewardId,
+			e.userId,
+			e.gameCode,
+			e.prepaidUuid,
+			e.wagerThresholdCoins,
+			e.freeSpinRounds,
+			e.denominationCoins,
+		]);
+
+		const query = `
+			INSERT INTO ${DbTables.FreeSpinsPromotionsEventData} (
+				${FreeSpinsPromotionsEventData.RewardId},
+				${FreeSpinsPromotionsEventData.UserId},
+				${FreeSpinsPromotionsEventData.GameCode},
+				${FreeSpinsPromotionsEventData.PrepaidUuid},
+				${FreeSpinsPromotionsEventData.WagerThresholdCoins},
+				${FreeSpinsPromotionsEventData.FreeSpinsRounds},
+				${FreeSpinsPromotionsEventData.DenominationCoins}
+			)
+			VALUES ${values}
+			RETURNING id;
+		`;
+
+		return this.executeQuery(
+			query,
+			flatValues as unknown as string[],
+			hasLogMessage as unknown as string,
+		);
+	}
+
+	public async createFreeSpinsPromotionReward(data: {
+		userId: number;
+		adminUserId: number;
+		gameCode: string;
+		wagerThresholdCoins: number;
+		freeSpinRounds: number;
+		denominationCoins: number;
+		status: RewardStatus;
+		type: EvRewardTypes;
+		amountCoins: number;
+		meta: string;
+		startDate: string;
+		endDate: string;
+	}): Promise<QueryResultRow> {
+		const reward = await this.insertReward(
+			data.userId,
+			data.adminUserId,
+			data.startDate,
+			data.endDate,
+			data.status,
+			data.type,
+			data.amountCoins,
+			data.meta,
+		);
+
+		await this.insertFreeSpinsPromotionEventData([
+			{
+				rewardId: Number(reward.id),
+				userId: data.userId,
+				gameCode: data.gameCode,
+				prepaidUuid: randomUUID(),
+				wagerThresholdCoins: data.wagerThresholdCoins,
+				freeSpinRounds: data.freeSpinRounds,
+				denominationCoins: data.denominationCoins,
+			},
+		]);
+
+		await this.updateRewardStatus(data.userId, RewardStatus.ACTIVE);
+
+		return reward;
 	}
 }

@@ -5,4 +5,5 @@ export enum AttributesValues {
 	ERROR = "error",
 	OPEN = "open",
 	CLOSED = "closed",
+	IDLE = "idle",
 }
