@@ -1,7 +1,6 @@
 import { BasePageStep } from "@pages/base/base-page-step";
 import { WalletModal } from "./wallet-modal";
 import { step } from "decorators/step";
-import { parseToFloat } from "@core/utils/utils";
 import { Toast } from "@pages/components/toast/toast";
 import { ToastTitle } from "@enums/toast-titles";
 import { ToastSubTitle } from "@enums/toast-subtitles";
@@ -15,8 +14,8 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 	}
 
 	private formatAmount(amount: number): string {
-		const roundedAmount = parseToFloat(amount);
-		return `$${Number(roundedAmount).toLocaleString("en-US", {
+		const rounded = Number(amount.toFixed(2));
+		return `$${rounded.toLocaleString("en-US", {
 			minimumFractionDigits: 2,
 			maximumFractionDigits: 2,
 		})}`;
