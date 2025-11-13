@@ -23,4 +23,8 @@ export class BookOfPyramidsPageMap extends BaseMap {
 	public get totalBetValue(): Locator {
 		return this.gameFrame.locator("#total-bet-value");
 	}
+
+	public get skipButton(): Locator {
+		return this.gameFrame.locator("#btn-skipDesktop");
+	}
 }

@@ -9,6 +9,8 @@ import { MinesGamePage } from "@pages/mines-game-page/mines-game-page";
 import { KenoGamePage } from "@pages/keno-game/keno-game-page";
 import { BookOfPyramidsPage } from "@pages/casino-games/bgaming/book-of-pyramids/book-of-pyramids-page";
 import { CashVaultIPage } from "@pages/casino-games/hacksaw-gaming/cash-vault-i/cash-vault-i-page";
+import { BookOfArabiaPage } from "@pages/casino-games/wickedgames/book-of-arabia/book-of-arabia-page";
+import { CasinoGamesUnifiedPage } from "@pages/casino-games/casino-games-page";
 import {
 	BrowserSessionManager,
 	sessionAwarePage,
@@ -26,6 +28,8 @@ export type GamePages = {
 	kenoGamePage: KenoGamePage;
 	bookOfPyramidsPage: BookOfPyramidsPage;
 	bubblesBonanzaPage: CashVaultIPage;
+	bookOfArabiaPage: BookOfArabiaPage;
+	casinoGamesPage: CasinoGamesUnifiedPage;
 };
 
 export const gamePagesFixtures = base.extend<GamePages>({
@@ -43,6 +47,7 @@ export const gamePagesFixtures = base.extend<GamePages>({
 	kenoGamePage: sessionAwarePage(KenoGamePage),
 	bookOfPyramidsPage: sessionAwarePage(BookOfPyramidsPage),
 	bubblesBonanzaPage: sessionAwarePage(CashVaultIPage),
+	bookOfArabiaPage: sessionAwarePage(BookOfArabiaPage),
 
 	originalsPage: async (
 		{
@@ -69,5 +74,24 @@ export const gamePagesFixtures = base.extend<GamePages>({
 			kenoGamePage,
 		);
 		await use(originals);
+	},
+
+	casinoGamesPage: async (
+		{
+			browserSessionManager,
+			bookOfPyramidsPage,
+			bubblesBonanzaPage,
+			bookOfArabiaPage,
+		},
+		use,
+	) => {
+		const page = browserSessionManager.active.page;
+		const casinoGames = new CasinoGamesUnifiedPage(
+			page,
+			bookOfPyramidsPage,
+			bubblesBonanzaPage,
+			bookOfArabiaPage,
+		);
+		await use(casinoGames);
 	},
 });

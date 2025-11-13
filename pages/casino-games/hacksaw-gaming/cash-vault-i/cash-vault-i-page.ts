@@ -1,13 +1,10 @@
 import { BasePage } from "@pages/base/base-page";
 import { Page } from "@playwright/test";
-import { CashVaultIPageMap } from "./cash-vault-i-page-map";
-import { CashVaultIPageAsserter } from "./cash-vault-i-page-asserter";
-import { CashVaultIPageSteps } from "./cash-vault-i-page-step";
 import accounting from "accounting";
 import { step } from "decorators/step";
-import { waitUntil } from "@core/utils/utils";
-import { Timeout } from "@enums/timeout";
-import { TimeoutSeconds } from "@enums/timeout-seconds";
+import { CashVaultIPageAsserter } from "./cash-vault-i-page-asserter";
+import { CashVaultIPageMap } from "./cash-vault-i-page-map";
+import { CashVaultIPageSteps } from "./cash-vault-i-page-step";
 
 export class CashVaultIPage extends BasePage<CashVaultIPageMap> {
 	public constructor(page: Page) {
@@ -28,26 +25,13 @@ export class CashVaultIPage extends BasePage<CashVaultIPageMap> {
 		return accounting.unformat(text);
 	}
 
-	@step("Refresh until game is loaded")
-	public async refreshUntilGameIsLoaded(): Promise<void> {
-		await waitUntil(
-			async () => {
-				try {
-					await this.assertThat().checkElementsAreVisible(
-						[this.map.gameBalance],
-						Timeout.EXTRA_SHORT,
-					);
-					return true;
-				} catch {
-					await this.refresh();
-					return false;
-				}
-			},
-			{
-				errorMessage: "Casino game failed to load",
-				intervalSeconds: TimeoutSeconds.THREE,
-				timeoutSeconds: Timeout.MEDIUM,
-			},
-		);
+	@step("Click buy button")
+	public async clickBuyButton(): Promise<void> {
+		await this.map.buyButton.click();
+	}
+
+	@step("Click scratch all button")
+	public async clickScratchAllButton(): Promise<void> {
+		await this.map.scratchAllButton.click();
 	}
 }

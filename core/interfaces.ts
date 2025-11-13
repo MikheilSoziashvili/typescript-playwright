@@ -1,3 +1,5 @@
+import { CasinoGameName, GameProvider } from "@enums/casino-game";
+
 export interface JsonData {
 	[key: string]: string | number | boolean | JsonData | JsonData[];
 }
@@ -55,4 +57,9 @@ export interface FaucetResponse {
 export interface TransactionResult {
 	txHash: string;
 	validated: boolean;
+}
+
+export interface CasinoGameConfig {
+	gameName: CasinoGameName;
+	gameProvider: GameProvider;
 }

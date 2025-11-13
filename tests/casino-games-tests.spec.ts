@@ -92,7 +92,7 @@ test.describe("Casino games tests", () => {
 				.assertThat()
 				.verifyBalanceWithTolerance(gameBalance, headerBalance, 0.01);
 
-			await bubblesBonanzaPage.refreshUntilGameIsLoaded();
+			await bubblesBonanzaPage.steps().refreshUntilGameIsLoaded();
 
 			const headerBalanceAfterRefresh =
 				await bubblesBonanzaPage.authenticatedHeader.getAccountBalanceInCasinoGame();

@@ -41,6 +41,19 @@ export class BookOfArabiaPageMap extends BaseMap {
 		return this.gameFrame.locator('div[role="presentation"].spin-button');
 	}
 
+	public get spinButtonIdle(): Locator {
+		return this.spinButtonState("idle");
+	}
+
+	public get spinButtonSpinning(): Locator {
+		return this.spinButtonState("spinning");
+	}
+
+	public spinButtonState(spinningState: string): Locator {
+		return this.gameFrame.locator(
+			`//div[contains(@class,'${spinningState}')]//ancestor::div[@role="presentation" and contains(@class,"spin-button")]`,
+		);
+	}
 	public get spinButtonText(): Locator {
 		return this.spinButton.locator("div.text");
 	}

@@ -1,3 +1,9 @@
+export enum GameProvider {
+	BGAMING = "bgaming",
+	HACKSAW_GAMING = "hacksaw-gaming",
+	WICKED_GAMES = "wickedgames",
+}
+
 export enum CasinoGameName {
 	BARREL_BONANZA = "Barrel Bonanza",
 	MYSTIC_CHIEF = "Mystic Chief",

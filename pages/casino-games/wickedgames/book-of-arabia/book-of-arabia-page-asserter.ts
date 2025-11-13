@@ -11,6 +11,33 @@ export class BookOfArabiaPageAsserter extends BaseAsserter<BookOfArabiaPage> {
 		super(page);
 	}
 
+	@step("Check spin button is spinning")
+	public async spinButtonIsSpinning(): Promise<void> {
+		await this.checkElementsAreVisible(
+			[this.gamdomPage.map.spinButtonSpinning],
+			Timeout.LONG,
+			"Spin button is not spinning. Round is not yet started.",
+		);
+	}
+
+	@step("Check spin button is idle")
+	public async spinButtonIsIdle(): Promise<void> {
+		await this.checkElementsAreVisible(
+			[this.gamdomPage.map.spinButtonIdle],
+			Timeout.LONG,
+			"Spin button is not idle. Round is not yet finished.",
+		);
+	}
+
+	@step("Check continue button is visible")
+	public async continueButtonIsVisible(): Promise<void> {
+		await this.checkElementsAreVisible(
+			[this.gamdomPage.map.continueButton],
+			Timeout.LONG,
+			"Continue button is not visible.",
+		);
+	}
+
 	@step("Verify free spins popup and start game (configurable)")
 	async verifyFreeSpinsPopupAndStart(
 		expectedSpins: number,

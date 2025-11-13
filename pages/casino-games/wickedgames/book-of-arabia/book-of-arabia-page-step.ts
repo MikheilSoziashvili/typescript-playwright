@@ -1,8 +1,6 @@
-import { Timeout } from "@enums/timeout";
 import { BasePageStep } from "@pages/base/base-page-step";
 import { step } from "decorators/step";
 import { BookOfArabiaPage } from "./book-of-arabia-page";
-import { AttributesValues } from "@enums/playwright/htmlAttributesValues";
 
 export class BookOfArabiaPageSteps extends BasePageStep<BookOfArabiaPage> {
 	public constructor(gamdomPage: BookOfArabiaPage) {
@@ -27,14 +25,7 @@ export class BookOfArabiaPageSteps extends BasePageStep<BookOfArabiaPage> {
 	@step("Spin and wait for round to finish")
 	public async spinAndWait(): Promise<void> {
 		await this.gamdomPage.clickSpinButton();
-		const spinButtonText = this.gamdomPage.map.spinButtonText;
-		await this.gamdomPage
-			.assertThat()
-			.expectElementToHaveClass(
-				spinButtonText,
-				AttributesValues.IDLE,
-				Timeout.LONG,
-			);
+		await this.gamdomPage.assertThat().spinButtonIsIdle();
 	}
 
 	@step("Play all available free spins")

@@ -100,13 +100,16 @@ function checkFileForMissingStepDecorators(filePath) {
       }
       
       let hasStepDecorator = false;
-      for (let j = i - 1; j >= Math.max(0, i - 5); j--) {
+      for (let j = i - 1; j >= Math.max(0, i - 10); j--) {
         const prevLine = lines[j].trim();
         if (prevLine.includes('@step')) {
           hasStepDecorator = true;
           break;
         }
-        if (prevLine.includes('async ') || prevLine.includes('class ') || prevLine.includes('}')) {
+        // Stop searching if we hit another method or class definition
+        if ((prevLine.includes('async ') && !prevLine.includes('@step')) ||
+            prevLine.includes('class ') ||
+            (prevLine === '}' && j < i - 1)) {
           break;
         }
       }

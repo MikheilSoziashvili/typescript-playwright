@@ -14,4 +14,16 @@ export class CashVaultIPageMap extends BaseMap {
 	public get gameBalance(): Locator {
 		return this.gameFrame.locator("#BalanceValue");
 	}
+
+	public get actionsButtonContainer(): Locator {
+		return this.gameFrame.locator("#ActionPanel");
+	}
+
+	public get buyButton(): Locator {
+		return this.actionsButtonContainer.locator("#PlaceBetBtn");
+	}
+
+	public get scratchAllButton(): Locator {
+		return this.actionsButtonContainer.locator("#StopBtn");
+	}
 }
