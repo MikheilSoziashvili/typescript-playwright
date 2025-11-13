@@ -28,7 +28,7 @@ import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { test } from "@fixtures/fixtures";
 import { PromotionsPage } from "@pages/promotions/promotions-page";
-import { isScheduledRun } from "configuration";
+import { isCI } from "configuration";
 import { GamdomDb } from "database/gamdom-db";
 
 type PromotionInsertMethod = (
@@ -361,7 +361,7 @@ test.describe(
 						.withJiraBugTickets("8964")
 						.apply(),
 					async ({ promotionAdminPage, promotionsModal, toast }) => {
-						test.fixme(isScheduledRun);
+						test.fixme(isCI);
 						promotionName = generateRandomString({
 							prefix: `new_promotion_${combination.category}_${combination.subCategory}_${combination.isForVip}_`,
 							length: 3,
@@ -469,7 +469,7 @@ test.describe(
 						gamdomApiDbFacade,
 						promotionsPage,
 					}) => {
-						test.fixme(isScheduledRun);
+						test.fixme(isCI);
 
 						await gamdomApiDbFacade.createSingleUserDbAndAuth({
 							tags: UserTags.PromotionAdmin,
@@ -598,7 +598,7 @@ test.describe(
 							gamdomDb,
 							gamdomApiDbFacade,
 						}) => {
-							test.fixme(isScheduledRun);
+							test.fixme(isCI);
 							const { user: promotionAdmin } =
 								await gamdomApiDbFacade.createSingleUserDbAndAuth(
 									{
