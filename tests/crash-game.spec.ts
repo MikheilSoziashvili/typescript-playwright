@@ -105,7 +105,10 @@ test.describe(
 			test(
 				`[ENG-1118] Crash - Auto Cashout with: [${record.your_bet}] value bets`,
 				testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
-				async ({ crashGamePage, testDataObject }, testInfo) => {
+				async (
+					{ crashGamePage, testDataObject, userBalanceHandler },
+					testInfo,
+				) => {
 					const newUserDetails = getUserDetailsByTestTitle(
 						testInfo.title,
 						testInfo.workerIndex,
@@ -122,7 +125,7 @@ test.describe(
 					await crashGamePage.navigate();
 
 					const accountBalanceBeforeBet =
-						await crashGamePage.authenticatedHeader.getAccountBalance();
+						await userBalanceHandler.walletBalanceInFiatRounded();
 
 					let totalBetsPlaced = 0;
 					let winnings = 0;
