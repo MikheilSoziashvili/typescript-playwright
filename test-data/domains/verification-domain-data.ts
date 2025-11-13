@@ -3,6 +3,9 @@ import { NotificationTitle } from "@enums/notification-titles";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import {
+	KycAdminActions,
+	kycAdminStatus,
+	KycLevels,
 	VerificationFormType as VerificationFormTypeEnum,
 	VerificationTabType,
 } from "@enums/verification-enums";
@@ -10,10 +13,19 @@ import { getISODate } from "@core/utils/utils";
 import {
 	FieldValidationScenario,
 	FieldValidationTestScenario,
+	KycAdminActionConfig,
+	kycAdminActionsScenario,
 	VerificationFormType,
 } from "test-data/interfaces/domain";
 import { VerificationPage } from "@pages/verification/verification-page";
 import { faker } from "@faker-js/faker";
+import { Toast } from "@pages/components/toast/toast";
+import { WalletModal } from "@pages/modals/wallet/wallet-modal";
+import { WithdrawalStatus } from "@enums/admin/withdrawal-status";
+
+// ============================================================================
+// CONSTANTS - Form Field Names
+// ============================================================================
 
 /**
  * KYC form field names
@@ -33,8 +45,12 @@ export const KYB_FIELDS = {
 	REGISTRATION_NUMBER: "Registration number",
 } as const;
 
+// ============================================================================
+// CONSTANTS - Date Input Descriptions
+// ============================================================================
+
 /**
- * Date input descriptions
+ * Date input descriptions for test scenarios
  */
 export const DATE_INPUT_DESCRIPTIONS = {
 	UNDER_18: "Under 18",
@@ -46,6 +62,10 @@ export const DATE_INPUT_DESCRIPTIONS = {
  * Special input value to trigger random country selection
  */
 export const RANDOM_COUNTRY = "Random Country";
+
+// ============================================================================
+// CONSTANTS - Validation Inputs
+// ============================================================================
 
 /**
  * Valid input values for field validation
@@ -68,8 +88,12 @@ export const INVALID_INPUTS = {
 	NUMBER_TOO_LONG: faker.string.numeric(101),
 } as const;
 
+// ============================================================================
+// CONSTANTS - Error Messages
+// ============================================================================
+
 /**
- * Error messages
+ * Error messages for validation scenarios
  */
 export const ERROR_MESSAGES = {
 	FULL_NAME_REQUIRED: "Full name is required",
@@ -82,9 +106,19 @@ export const ERROR_MESSAGES = {
 	NO_ERROR: "",
 } as const;
 
+// ============================================================================
+// VERIFICATION DOMAIN DATA CLASS
+// ============================================================================
+
 export class VerificationDomainData {
+	// ========================================================================
+	// UTILITY METHODS
+	// ========================================================================
+
 	/**
 	 * Converts date description to actual ISO date string
+	 * @param input - Date description (e.g., "Under 18", "Over 18", "Over 100")
+	 * @returns ISO date string (YYYY-MM-DD format)
 	 */
 	public convertDateInput(input: string): string {
 		if (input === DATE_INPUT_DESCRIPTIONS.UNDER_18) {
@@ -98,6 +132,64 @@ export class VerificationDomainData {
 		}
 		return input;
 	}
+
+	// ========================================================================
+	// KYC ADMIN ACTIONS - HELPER METHODS
+	// ========================================================================
+
+	/**
+	 * Creates a standard trigger action configuration.
+	 * All trigger actions share: TRIGGER action, IN_PROGRESS status, DISABLED withdrawal status,
+	 * and trigger toast assertion with SUCCESS title and KYC_LEVEL_TRIGGERED subtitle.
+	 */
+	private createStandardTriggerAction(): Omit<
+		KycAdminActionConfig,
+		"assertVerificationPPage" | "assertWalletModal"
+	> {
+		return {
+			action: KycAdminActions.TRIGGER,
+			status: kycAdminStatus.IN_PROGRESS,
+			withdrawalStatusAfterAction: WithdrawalStatus.DISABLED,
+			assertToast: async (toast: Toast): Promise<void> => {
+				await toast.assertThat().titleIs(ToastTitle.SUCCESS);
+				await toast
+					.assertThat()
+					.subTitleIs(ToastSubTitle.KYC_LEVEL_TRIGGERED);
+			},
+		};
+	}
+
+	/**
+	 * Creates a standard revoke action configuration.
+	 * All revoke actions share: REVOKE_TRIGGER action, NOT_TRIGGERED status, ENABLED withdrawal status,
+	 * revoke toast assertion, standard verification page, and deposit address visibility.
+	 */
+	private createStandardRevokeAction(): KycAdminActionConfig {
+		return {
+			action: KycAdminActions.REVOKE_TRIGGER,
+			status: kycAdminStatus.NOT_TRIGGERED,
+			assertToast: async (toast: Toast): Promise<void> => {
+				await toast.assertThat().titleIs(ToastTitle.SUCCESS);
+				await toast
+					.assertThat()
+					.subTitleIs(ToastSubTitle.KYC_LEVEL_REVOKED);
+			},
+			withdrawalStatusAfterAction: WithdrawalStatus.ENABLED,
+			assertVerificationPPage: (
+				verificationPage: VerificationPage,
+			): Promise<void> =>
+				verificationPage
+					.assertThat()
+					.verificationPageTitleAndTabsAreVisible(),
+			assertWalletModal: (walletModal: WalletModal): Promise<void> =>
+				walletModal.assertThat().depositAddressInputFieldIsVisible(),
+		};
+	}
+
+	// ========================================================================
+	// LEVEL 1 VERIFICATION SCENARIOS
+	// ========================================================================
+
 	/**
 	 * Test scenarios for KYC and KYB Level 1 verification flows.
 	 *
@@ -129,6 +221,10 @@ export class VerificationDomainData {
 				ToastSubTitle.LEVEL_ONE_VERIFICATION_SUBMITTED,
 		},
 	];
+
+	// ========================================================================
+	// KYC LEVEL 1 - FIELD VALIDATION SCENARIOS DATASET
+	// ========================================================================
 
 	/**
 	 * KYC Level 1 field validation scenarios
@@ -192,6 +288,10 @@ export class VerificationDomainData {
 				expectedErrorMessage: ERROR_MESSAGES.TOO_LONG,
 			},
 		];
+
+	// ========================================================================
+	// KYB LEVEL 1 - FIELD VALIDATION SCENARIOS DATASET
+	// ========================================================================
 
 	/**
 	 * KYB Level 1 field validation scenarios
@@ -281,8 +381,12 @@ export class VerificationDomainData {
 			},
 		];
 
+	// ========================================================================
+	// COMBINED FIELD VALIDATION SCENARIOS
+	// ========================================================================
+
 	/**
-	 * Combined field validation test scenarios for both KYC and KYB
+	 * Combined field validation test scenarios for both KYC and KYB Level 1.
 	 */
 	public readonly level1FieldValidationScenarios: FieldValidationTestScenario[] =
 		[
@@ -303,4 +407,82 @@ export class VerificationDomainData {
 				tabType: VerificationTabType.VERIFY_BUSINESS,
 			},
 		];
+
+	// ========================================================================
+	// KYC ADMIN ACTIONS SCENARIOS
+	// ========================================================================
+
+	/**
+	 * KYC admin actions test scenarios for triggering and revoking KYC level requirements.
+	 */
+	public readonly kycAdminActionsScenarios: kycAdminActionsScenario[] = [
+		// ====================================================================
+		// LEVEL 1
+		// ====================================================================
+		{
+			kycLevel: KycLevels.LEVEL_1,
+			trigger: {
+				...this.createStandardTriggerAction(),
+				assertVerificationPPage: (verificationPage: VerificationPage) =>
+					verificationPage
+						.assertThat()
+						.verificationPageTitleAndTabsAreVisible(),
+				assertWalletModal: (walletModal: WalletModal) =>
+					walletModal.assertThat().kycLevelOneContainerIsVisible(),
+			},
+			revoke: this.createStandardRevokeAction(),
+		},
+		// ====================================================================
+		// LEVEL 2
+		// ====================================================================
+		{
+			kycLevel: KycLevels.LEVEL_2,
+			trigger: {
+				...this.createStandardTriggerAction(),
+				assertVerificationPPage: (verificationPage: VerificationPage) =>
+					verificationPage
+						.assertThat()
+						.verifyThatVeriffIFrameIsVisible(),
+				assertWalletModal: (walletModal: WalletModal) =>
+					walletModal.assertThat().verifyThatVeriffIFrameIsVisible(),
+			},
+			revoke: this.createStandardRevokeAction(),
+		},
+		// ====================================================================
+		// LEVEL 2.5
+		// ====================================================================
+		{
+			kycLevel: KycLevels.LEVEL_2_5,
+			trigger: {
+				...this.createStandardTriggerAction(),
+				assertVerificationPPage: (verificationPage: VerificationPage) =>
+					verificationPage
+						.assertThat()
+						.kycLevelTwoVerificationTitleIsVisible(),
+				assertWalletModal: (walletModal: WalletModal) =>
+					walletModal
+						.assertThat()
+						.kycLevelTwoVerificationTitleIsVisible(),
+			},
+			revoke: this.createStandardRevokeAction(),
+		},
+		// ====================================================================
+		// LEVEL 3
+		// ====================================================================
+		{
+			kycLevel: KycLevels.LEVEL_3,
+			trigger: {
+				...this.createStandardTriggerAction(),
+				assertVerificationPPage: (verificationPage: VerificationPage) =>
+					verificationPage
+						.assertThat()
+						.kycLevelThreeVerificationHeaderIsVisible(),
+				assertWalletModal: (walletModal: WalletModal) =>
+					walletModal
+						.assertThat()
+						.kycLevelThreeVerificationHeaderIsVisible(),
+			},
+			revoke: this.createStandardRevokeAction(),
+		},
+	];
 }

@@ -180,4 +180,12 @@ export class WalletModal extends BasePage<WalletModalMap> {
 
 		return { address, destinationTag };
 	}
+
+	@step("Open withdraw tab and select payment method")
+	public async openWithdrawTabAndSelectPaymentMethod(
+		paymentMethod: string,
+	): Promise<void> {
+		await this.openWithdrawTab();
+		await this.selectPaymentMethod(paymentMethod);
+	}
 }

@@ -63,4 +63,39 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 			this.gamdomPage.map.depositDisabledText,
 		]);
 	}
+
+	@step("Verify KYC Level One container is visible")
+	public async kycLevelOneContainerIsVisible(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.kycLevelOneCotainer,
+		]);
+	}
+
+	@step("Verify deposit address input field is visible")
+	public async depositAddressInputFieldIsVisible(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.bitcoinAddressInput,
+		]);
+	}
+
+	@step("Verify that Veriff iFrame is visible")
+	public async verifyThatVeriffIFrameIsVisible(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.veriffIFrameElement,
+		]);
+	}
+
+	@step("KYC Level Two Verification title is visible")
+	public async kycLevelTwoVerificationTitleIsVisible(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.kycLevelTwoHeader,
+		]);
+	}
+
+	@step("KYC Level Three Verification header is visible")
+	public async kycLevelThreeVerificationHeaderIsVisible(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.kycLevelThreeHeader,
+		]);
+	}
 }

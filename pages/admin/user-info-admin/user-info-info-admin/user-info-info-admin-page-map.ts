@@ -4,6 +4,7 @@ import { BanReasonOptions } from "@enums/admin/ban-reason-options";
 import { BanTypeOptions } from "@enums/admin/ban-type-options";
 import { BanDropdowns } from "@enums/admin/ban-dropdowns";
 import { BanCategories } from "@enums/admin/ban-categories";
+import { WithdrawalStatus } from "@enums/admin/withdrawal-status";
 
 export class UserInfoInfoAdminPageMap extends BaseMap {
 	public constructor(page: Page) {
@@ -230,5 +231,13 @@ export class UserInfoInfoAdminPageMap extends BaseMap {
 
 	public unpinButtonInRow(row: Locator): Locator {
 		return row.locator("button", { hasText: "Unpin" });
+	}
+
+	public userWithdrawalButton(status: WithdrawalStatus): Locator {
+		return this.page
+			.getByTestId("adminInfoWithdrawlContainer")
+			.locator("button", {
+				hasText: status,
+			});
 	}
 }

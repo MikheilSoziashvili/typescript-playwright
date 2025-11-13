@@ -89,4 +89,10 @@ export class UserInfoAdminPage extends BasePage<UserInfoAdminPageMap> {
 	public async clickUserInfoTab(tab: UserInfoTabs): Promise<void> {
 		await this.map.userInfoTab(tab).click();
 	}
+
+	@step("Click UserInfo Tab and refresh")
+	public async clickUserInfoTabAndRefresh(tab: UserInfoTabs): Promise<void> {
+		await this.map.userInfoTab(tab).click();
+		await this.refresh();
+	}
 }

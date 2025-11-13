@@ -73,4 +73,25 @@ export class VerificationPageAsserter extends BaseAsserter<VerificationPage> {
 		}));
 		await this.checkElementsHaveValue(fieldsToCheck);
 	}
+
+	@step("Verify that Veriff iFrame is visible")
+	public async verifyThatVeriffIFrameIsVisible(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.veriffIFrameElement,
+		]);
+	}
+
+	@step("KYC Level Two Verification title is visible")
+	public async kycLevelTwoVerificationTitleIsVisible(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.kycLevelTwoVerificationTitle,
+		]);
+	}
+
+	@step("KYC Level Three Verification header is visible")
+	public async kycLevelThreeVerificationHeaderIsVisible(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.levelThreeVerificationHeader,
+		]);
+	}
 }

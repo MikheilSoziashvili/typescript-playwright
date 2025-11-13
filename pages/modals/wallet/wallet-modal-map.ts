@@ -161,4 +161,20 @@ export class WalletModalMap extends BaseMap {
 	public get cryptoDestinationTag(): Locator {
 		return this.page.getByLabel("Your personal Destination Tag");
 	}
+
+	public get kycLevelOneCotainer(): Locator {
+		return this.page.getByTestId("levelLEVEL1KycLeftPanelContainer");
+	}
+
+	public get veriffIFrameElement(): Locator {
+		return this.page.locator("#veriffFrame");
+	}
+
+	public get kycLevelTwoHeader(): Locator {
+		return this.page.getByTestId("levelLEVEL25KycLeftPanelContainer");
+	}
+
+	public get kycLevelThreeHeader(): Locator {
+		return this.page.getByTestId("levelLEVEL3KycLeftPanelContainer");
+	}
 }

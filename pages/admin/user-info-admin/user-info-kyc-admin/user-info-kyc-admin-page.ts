@@ -4,6 +4,7 @@ import { UserInfoKycAdminPageAsserter } from "./user-info-kyc-admin-asserter";
 import { UserInfoKycAdminPageMap } from "./user-info-kyc-admin-map";
 import { step } from "decorators/step";
 import { UserInfoKycAdminPageSteps } from "./user-info-kyc-steps";
+import { KycAdminActions, KycLevels } from "@enums/verification-enums";
 
 export class UserInfoKycAdminPage extends BasePage<UserInfoKycAdminPageMap> {
 	public constructor(page: Page) {
@@ -18,8 +19,11 @@ export class UserInfoKycAdminPage extends BasePage<UserInfoKycAdminPageMap> {
 		return new UserInfoKycAdminPageSteps(this);
 	}
 
-	@step("Approve KYC submission")
-	public async clickApproveButton(): Promise<void> {
-		await this.map.approveButton.click();
+	@step("Select action for KYC verification")
+	public async selectKycAction(
+		level: KycLevels,
+		action: KycAdminActions,
+	): Promise<void> {
+		await this.map.kycActionButton(level, action).click();
 	}
 }

@@ -1,4 +1,5 @@
 import { BaseMap } from "@base/base-map";
+import { KycAdminActions, KycLevels } from "@enums/verification-enums";
 import { Locator, Page } from "@playwright/test";
 
 export class UserInfoKycAdminPageMap extends BaseMap {
@@ -6,19 +7,17 @@ export class UserInfoKycAdminPageMap extends BaseMap {
 		super(page);
 	}
 
-	public rowUserName(userName: string): Locator {
-		return this.page.locator("a", { hasText: userName });
+	public kycLevelCard(level: KycLevels): Locator {
+		return this.page.locator(`#kyc-card-${level}`);
 	}
 
-	public rowContainer(userName: string): Locator {
-		return this.rowUserName(userName).locator(
-			'xpath=ancestor::div[contains(@class, "-with-background")]',
-		);
+	public kycLevelStatus(level: KycLevels): Locator {
+		return this.kycLevelCard(level).locator("[class*=MuiTypography-body2]");
 	}
 
-	public get approveButton(): Locator {
-		return this.page.locator("button", {
-			hasText: "Approve",
+	public kycActionButton(level: KycLevels, button: KycAdminActions): Locator {
+		return this.kycLevelCard(level).getByRole("button", {
+			name: button,
 		});
 	}
 }

@@ -16,6 +16,10 @@ export class VerificationPageMap extends BaseMap {
 		});
 	}
 
+	public get veriffIFrameElement(): Locator {
+		return this.page.locator("#veriffFrame");
+	}
+
 	public get verifyMeTab(): Locator {
 		return this.page.getByRole("tab", { name: "Verify me" });
 	}
@@ -95,5 +99,13 @@ export class VerificationPageMap extends BaseMap {
 		return this.page.locator('span[class*="MuiTypography-caption"]', {
 			hasText: "You must confirm that the information above is accurate.",
 		});
+	}
+
+	public get kycLevelTwoVerificationTitle(): Locator {
+		return this.page.getByText("Level 2 Verification");
+	}
+
+	public get levelThreeVerificationHeader(): Locator {
+		return this.page.getByText("Level 3 Verification");
 	}
 }

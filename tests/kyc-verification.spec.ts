@@ -1,5 +1,7 @@
 import { testDetails } from "@core/helpers/test-details-helper";
 import { setAuthenticationCookies } from "@core/utils/utils";
+import { UserInfoTabs } from "@enums/admin/user-info-tabs";
+import { Cryptocurrency } from "@enums/cryptocurrencies";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
@@ -175,5 +177,122 @@ test.describe(
 				},
 			);
 		}
+	},
+);
+
+test.describe(
+	"KYC Admin Actions - Trigger and Revoke",
+	testDetails().withTags(JiraComponent.VERIFICATION).apply(),
+	() => {
+		const verificationTestData = testData().fromDomain().verification;
+
+		verificationTestData.kycAdminActionsScenarios.forEach(
+			({ kycLevel, trigger, revoke }) => {
+				test(
+					`[ENG-8621] KYC Level ${kycLevel} - Trigger and Revoke`,
+					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+					async ({ browserSessionManager }) => {
+						const adminUser = await browserSessionManager.loginAs(
+							TestUserRole.SUPERADMIN,
+							{ reuseContext: true },
+						);
+						const regularUser = await browserSessionManager.loginAs(
+							TestUserRole.REGULAR,
+						);
+
+						await adminUser.pages.userInfoAdminPage
+							.steps()
+							.navigateAndShowUserDetails(
+								regularUser.getAuthenticatedUser().user
+									.username,
+							);
+						await adminUser.pages.userInfoAdminPage.clickUserInfoTab(
+							UserInfoTabs.KYC,
+						);
+						// ============================================================
+						// STEP 1: TRIGGER KYC LEVEL
+						// ============================================================
+						await adminUser.pages.userInfoKycAdminPage
+							.assertThat()
+							.allKycCardsAndActionButtonsAreVisible(
+								kycLevel,
+								trigger.action,
+							);
+						await adminUser.pages.userInfoKycAdminPage.selectKycAction(
+							kycLevel,
+							trigger.action,
+						);
+						await trigger.assertToast(adminUser.pages.toast);
+						await adminUser.pages.userInfoKycAdminPage
+							.assertThat()
+							.kycActionButtonAndStatusAreVisible(
+								kycLevel,
+								revoke.action,
+								trigger.status,
+							);
+						await adminUser.pages.userInfoAdminPage.clickUserInfoTabAndRefresh(
+							UserInfoTabs.Info,
+						);
+						await adminUser.pages.infoAdminPage
+							.assertThat()
+							.userWithdrawalButtonStatusIs(
+								trigger.withdrawalStatusAfterAction,
+							);
+
+						await regularUser.pages.verificationPage.navigate();
+						await trigger.assertVerificationPPage(
+							regularUser.pages.verificationPage,
+						);
+
+						await regularUser.pages.homePage.navigateToWallet();
+						await regularUser.pages.walletModal.openWithdrawTabAndSelectPaymentMethod(
+							Cryptocurrency.Bitcoin,
+						);
+						await trigger.assertWalletModal(
+							regularUser.pages.walletModal,
+						);
+						// ============================================================
+						// STEP 2: REVOKE KYC LEVEL
+						// ============================================================
+						await adminUser.pages.userInfoAdminPage.clickUserInfoTab(
+							UserInfoTabs.KYC,
+						);
+						await adminUser.pages.userInfoKycAdminPage.selectKycAction(
+							kycLevel,
+							revoke.action,
+						);
+						await revoke.assertToast(adminUser.pages.toast);
+						await adminUser.pages.userInfoKycAdminPage
+							.assertThat()
+							.kycActionButtonAndStatusAreVisible(
+								kycLevel,
+								trigger.action,
+								revoke.status,
+							);
+						await adminUser.pages.userInfoAdminPage.clickUserInfoTabAndRefresh(
+							UserInfoTabs.Info,
+						);
+						await adminUser.pages.infoAdminPage
+							.assertThat()
+							.userWithdrawalButtonStatusIs(
+								revoke.withdrawalStatusAfterAction,
+							);
+
+						await regularUser.pages.verificationPage.navigate();
+						await revoke.assertVerificationPPage(
+							regularUser.pages.verificationPage,
+						);
+
+						await regularUser.pages.homePage.navigateToWallet();
+						await regularUser.pages.walletModal.openWithdrawTabAndSelectPaymentMethod(
+							Cryptocurrency.Bitcoin,
+						);
+						await revoke.assertWalletModal(
+							regularUser.pages.walletModal,
+						);
+					},
+				);
+			},
+		);
 	},
 );

@@ -40,4 +40,6 @@ export enum ToastSubTitle {
 	TIPS_PROCESSED_SUCCESSFULLY = "Tips processed successfully! Please check the logs below.",
 	COPIED_SHARABLE_LINK = "Copied sharable link",
 	COPIED_CODE = "Copied code",
+	KYC_LEVEL_TRIGGERED = "KYC level triggered successfully",
+	KYC_LEVEL_REVOKED = "KYC level revoked successfully",
 }

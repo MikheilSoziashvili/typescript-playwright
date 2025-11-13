@@ -11,6 +11,7 @@ import { quotesRemovalPattern } from "@support/regex-patterns";
 import { BanTypeOptions } from "@enums/admin/ban-type-options";
 import { BanCategories } from "@enums/admin/ban-categories";
 import { getItemsInnerText } from "@core/utils/utils";
+import { WithdrawalStatus } from "@enums/admin/withdrawal-status";
 
 export class UserInfoInfoAdminPageAsserter extends BaseAsserter<UserInfoInfoAdminPage> {
 	public constructor(page: UserInfoInfoAdminPage) {
@@ -230,5 +231,14 @@ export class UserInfoInfoAdminPageAsserter extends BaseAsserter<UserInfoInfoAdmi
 				.noteTextCellInRow(this.gamdomPage.map.firstNoteRow)
 				.innerText(),
 		).toContain(noteText);
+	}
+
+	@step("Verify user withdrawal button status")
+	public async userWithdrawalButtonStatusIs(
+		status: WithdrawalStatus,
+	): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.userWithdrawalButton(status),
+		]);
 	}
 }
