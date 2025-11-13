@@ -15,8 +15,7 @@ import {
 	formatLocalizedDate,
 	getISODate,
 	parseRelativeDateRelation,
-	setAuthenticationCookies,
-	useProviderBearerFromAuthenticate,
+	useProviderBearerFromAuthenticate
 } from "@core/utils/utils";
 import { CustomRewardType } from "@enums/admin/custom-reward-type";
 import { RewardStatus } from "@enums/admin/reward-status";
@@ -43,13 +42,9 @@ import { WalletType } from "@enums/wallet-types";
 import { storageStateNewSuperAdminUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import { logger } from "@logger/logger";
-import { BookOfArabiaPage } from "@pages/casino-games/wickedgames/book-of-arabia/book-of-arabia-page";
-import { CasinoPage } from "@pages/casino/casino-game-page";
-import { HomePage } from "@pages/home-page/home-page";
-import { NotificationsPage } from "@pages/notifications/notifications-page";
 import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
-import { testData } from "test-data/test-data-manager";
 import { predefined } from "test-data/sources/predefined/index";
+import { testData } from "test-data/test-data-manager";
 
 test.describe(
 	"EV Rewards system tests",
@@ -185,164 +180,141 @@ test.describe(
 					});
 			},
 		);
-
-		test.describe("Revoke free spins", () => {
-			const startDateOffset = 1;
-			const endDateOffset = 7;
-			test(
-				"[ENG-7506] Revoking free spins promotion reward",
-				testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
-				async ({
-					gamdomApiDbFacade,
-					browser,
-					evRewardsSystemAdminPage,
-					toast,
-					gamdomDb,
-					userInfoAdminPage,
-					userInfoRewardsAdminPage,
-					testDataObject,
-				}) => {
-					const { user: userData, cookie: userCookie } =
-						await gamdomApiDbFacade.createSingleUserDbAndAuth({
-							emailVerified: true,
-						});
-
-					const { outAbsPath: csvPath } = buildCsvFromTemplate(
-						REVOKE_FREE_SPINS_FILE_PATH,
-						[String(userData.userId)],
-					);
-
-					const betTestData = testDataObject.bet.build(
-						{
-							username: userData.username,
-						},
-						{ betAmount: 100 },
-					);
-
-					const userContext = await browser.newContext();
-
-					const userPage = await userContext.newPage();
-					await setAuthenticationCookies(userPage, userCookie);
-
-					await useProviderBearerFromAuthenticate(userPage, {
-						host: WICKED_GAMES_AUTH.HOST,
-						authPath: WICKED_GAMES_AUTH.AUTH_PATH,
-						tokenJsonKey: WICKED_GAMES_AUTH.TOKEN_KEY,
-					});
-
-					await evRewardsSystemAdminPage
-						.steps()
-						.setConditionsForFreeSpinsReward(
-							startDateOffset,
-							endDateOffset,
-						);
-
-					const { fs: freeSpinsAmount, denom: rewardAmount } =
-						readFsAndDenomFromCsv(csvPath, 1);
-
-					await evRewardsSystemAdminPage.bulkRewardFileUpload(
-						csvPath,
-					);
-					await evRewardsSystemAdminPage.clickRewardUsersButton();
-
-					await toast
-						.assertThat()
-						.toastMessageIs(
-							ToastTitle.SUCCESS,
-							ToastSubTitle.PROCESSED_OK,
-						);
-
-					await gamdomDb.updateRewardStatus(
-						userData.userId,
-						RewardStatus.ACTIVE,
-					);
-
-					const casinoPage = new CasinoPage(userPage);
-					await casinoPage.navigate();
-					await casinoPage
-						.steps()
-						.searchForGameAndOpen(CasinoGameName.BOOK_OF_ARABIA);
-
-					const userBookOfArabiaPage = new BookOfArabiaPage(userPage);
-					await userBookOfArabiaPage.assertThat().ensureGameLoaded();
-					await userBookOfArabiaPage
-						.steps()
-						.startGameAndSpin(betTestData.betAmount);
-
-					const userHomePage = new HomePage(userPage);
-					await userHomePage.navigate();
-
-					const notification = userHomePage.getNotification();
-
-					await notification.assertThat().waitForNotification({
-						timeout: Timeout.MAX,
-					});
-
-					const expectedDescription =
-						buildFreeSpinsRewardNotificationSubTitle(
-							freeSpinsAmount,
-							rewardAmount,
-							formatLocalizedDate({
-								daysOffset: endDateOffset,
-								includeTime: true,
-								atMidnight: true,
-							}),
-							CasinoGameName.BOOK_OF_ARABIA,
-						);
-
-					await notification
-						.assertThat()
-						.notificationMessageIs(
-							NotificationTitle.FREE_SPINS_PROMOTION_BONUS,
-							expectedDescription,
-						);
-					await notification
-						.assertThat()
-						.buttonTextIs(NotificationButton.PLAY);
-
-					const userNotificationPage = new NotificationsPage(
-						userPage,
-					);
-					await userNotificationPage.navigate();
-					await userNotificationPage
-						.assertThat()
-						.notificationVisibleAndHasTitleAndDescription(
-							NotificationTitle.FREE_SPINS_PROMOTION_BONUS,
-							expectedDescription,
-						);
-
-					await userInfoAdminPage.navigate();
-
-					await userInfoAdminPage.searchForSteam64OrUserId(
-						userData.userId,
-					);
-
-					await userInfoAdminPage.clickUserInfoTab(
-						UserInfoTabs.Rewards,
-					);
-
-					await userInfoRewardsAdminPage
-						.assertThat()
-						.rewardVisibleInSectionWithoutValue(
-							RewardStatus.ACTIVE,
-							CustomRewardType.FREE_SPINS_PROMOTION,
-						);
-
-					await userInfoRewardsAdminPage
-						.steps()
-						.clickRevokeRewardButton(
-							RewardStatus.ACTIVE,
-							CustomRewardType.FREE_SPINS_PROMOTION,
-						);
-
-					await userInfoRewardsAdminPage
-						.assertThat()
-						.noActiveRewardsVisible(RewardStatus.ACTIVE);
-				},
-			);
-		});
 	},
 );
+
+test.describe("Revoke free spins", () => {
+	test(
+		"[ENG-7506] Revoking free spins promotion reward",
+		testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+		async ({ browserSessionManager, gamdomDb, testDataObject }) => {
+			const superAdmin = await browserSessionManager.loginAs(
+				TestUserRole.SUPERADMIN,
+			);
+			const regular = await browserSessionManager.loginAs(
+				TestUserRole.REGULAR,
+			);
+
+			const { outAbsPath: csvPath } = buildCsvFromTemplate(
+				REVOKE_FREE_SPINS_FILE_PATH,
+				[String(regular.getAuthenticatedUser().user.userId)],
+			);
+
+			await useProviderBearerFromAuthenticate(regular.page, {
+				host: WICKED_GAMES_AUTH.HOST,
+				authPath: WICKED_GAMES_AUTH.AUTH_PATH,
+				tokenJsonKey: WICKED_GAMES_AUTH.TOKEN_KEY,
+			});
+
+			const betTestData = testDataObject.bet.build(
+				{ username: regular.getAuthenticatedUser().user.username },
+				{ betAmount: 100 },
+			);
+
+			await superAdmin.pages.evRewardsSystemAdminPage
+				.steps()
+				.setConditionsForFreeSpinsReward(
+					predefined.freeSpinsRewardConditions.startDateOffset,
+					predefined.freeSpinsRewardConditions.endDateOffset,
+				);
+
+			const { fs: freeSpinsAmount, denom: rewardAmount } =
+				readFsAndDenomFromCsv(csvPath, 1);
+
+			await superAdmin.pages.evRewardsSystemAdminPage.bulkRewardFileUpload(
+				csvPath,
+			);
+			await superAdmin.pages.evRewardsSystemAdminPage.clickRewardUsersButton();
+
+			await superAdmin.pages.toast
+				.assertThat()
+				.toastMessageIs(ToastTitle.SUCCESS, ToastSubTitle.PROCESSED_OK);
+
+			await gamdomDb.updateRewardStatus(
+				regular.getAuthenticatedUser().user.userId,
+				RewardStatus.ACTIVE,
+			);
+
+			await regular.pages.casinoPage.navigate();
+			await regular.pages.casinoPage
+				.steps()
+				.searchForGameAndOpen(CasinoGameName.BOOK_OF_ARABIA);
+
+			await regular.pages.bookOfArabiaPage
+				.assertThat()
+				.ensureGameLoaded();
+			await regular.pages.bookOfArabiaPage
+				.steps()
+				.startGameAndSpin(betTestData.betAmount);
+
+			await regular.pages.homePage.navigate();
+
+			const notification = regular.pages.homePage.getNotification();
+
+			await notification.assertThat().waitForNotification({
+				timeout: Timeout.MAX,
+			});
+
+			const expectedDescription =
+				buildFreeSpinsRewardNotificationSubTitle(
+					freeSpinsAmount,
+					rewardAmount,
+					formatLocalizedDate({
+						daysOffset: predefined.freeSpinsRewardConditions.endDateOffset,
+						includeTime: true,
+						atMidnight: true,
+					}),
+					CasinoGameName.BOOK_OF_ARABIA,
+				);
+
+			await notification
+				.assertThat()
+				.notificationMessageIs(
+					NotificationTitle.FREE_SPINS_PROMOTION_BONUS,
+					expectedDescription,
+				);
+			await notification
+				.assertThat()
+				.buttonTextIs(NotificationButton.PLAY);
+
+			await regular.pages.notificationsPage.navigate();
+			await regular.pages.notificationsPage
+				.assertThat()
+				.notificationVisibleAndHasTitleAndDescription(
+					NotificationTitle.FREE_SPINS_PROMOTION_BONUS,
+					expectedDescription,
+				);
+
+			await superAdmin.pages.userInfoAdminPage.navigate();
+
+			await superAdmin.pages.userInfoAdminPage.searchForSteam64OrUserId(
+				regular.getAuthenticatedUser().user.userId,
+			);
+
+			await superAdmin.pages.userInfoAdminPage.clickUserInfoTab(
+				UserInfoTabs.Rewards,
+			);
+
+			await superAdmin.pages.userInfoRewardsAdminPage
+				.assertThat()
+				.rewardVisibleInSectionWithoutValue(
+					RewardStatus.ACTIVE,
+					CustomRewardType.FREE_SPINS_PROMOTION,
+				);
+
+			await superAdmin.pages.userInfoRewardsAdminPage
+				.steps()
+				.clickRevokeRewardButton(
+					RewardStatus.ACTIVE,
+					CustomRewardType.FREE_SPINS_PROMOTION,
+				);
+
+			await superAdmin.pages.userInfoRewardsAdminPage
+				.assertThat()
+				.noActiveRewardsVisible(RewardStatus.ACTIVE);
+		},
+	);
+});
 
 test.describe("Free spins promotion reward", () => {
 	test.slow();
