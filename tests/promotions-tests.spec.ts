@@ -355,8 +355,13 @@ test.describe(
 			promotionCombinations.forEach((combination) => {
 				test(
 					`[ENG-5576] Promotions - Create a new promotion - Promotion Category: ${combination.category} - Promotion Subcategory: ${combination.subCategory} - Is For VIP: ${combination.isForVip}`,
-					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+					testDetails()
+						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+						.withTags(TestTag.PLATFORM_BUG)
+						.withJiraBugTickets("8964")
+						.apply(),
 					async ({ promotionAdminPage, promotionsModal, toast }) => {
+						test.fixme(isScheduledRun);
 						promotionName = generateRandomString({
 							prefix: `new_promotion_${combination.category}_${combination.subCategory}_${combination.isForVip}_`,
 							length: 3,
@@ -583,6 +588,8 @@ test.describe(
 						`[ENG-5736] Promotions - Update '${promotionType.name}' active promotion. Promotion Category: ${combination.category} - Promotion Subcategory: ${combination.subCategory} - Is For VIP: ${combination.isForVip}`,
 						testDetails()
 							.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+							.withTags(TestTag.PLATFORM_BUG)
+							.withJiraBugTickets("8964")
 							.apply(),
 						async ({
 							promotionAdminPage,
@@ -591,6 +598,7 @@ test.describe(
 							gamdomDb,
 							gamdomApiDbFacade,
 						}) => {
+							test.fixme(isScheduledRun);
 							const { user: promotionAdmin } =
 								await gamdomApiDbFacade.createSingleUserDbAndAuth(
 									{
