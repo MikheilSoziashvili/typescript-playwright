@@ -5,6 +5,8 @@ import { Attributes } from "@enums/playwright/htmlAttributes";
 import { step } from "decorators/step";
 import { expect } from "@playwright/test";
 import type { FieldValidationScenario } from "test-data/interfaces/domain";
+import type { Toast } from "../components/toast/toast";
+import type { Notification } from "../components/notification/notification";
 
 export class VerificationPageAsserter extends BaseAsserter<VerificationPage> {
 	public constructor(page: VerificationPage) {
@@ -93,5 +95,21 @@ export class VerificationPageAsserter extends BaseAsserter<VerificationPage> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.levelThreeVerificationHeader,
 		]);
+	}
+
+	@step("Verify submission toast and notification")
+	public async verifySubmissionToastAndNotification(
+		toast: Toast,
+		notification: Notification,
+		toastTitle: string,
+		toastSubTitle: string,
+		notificationTitle: string,
+		notificationSubTitle: string,
+	): Promise<void> {
+		await toast.assertThat().titleIs(toastTitle);
+		await toast.assertThat().subTitleIs(toastSubTitle);
+
+		await notification.assertThat().titleIs(notificationTitle);
+		await notification.assertThat().subTitleIs(notificationSubTitle);
 	}
 }

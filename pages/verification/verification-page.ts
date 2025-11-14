@@ -61,20 +61,20 @@ export class VerificationPage extends BasePage<VerificationPageMap> {
 		return countryDropdownValues;
 	}
 
-	@step("Select random country from dropdown")
-	public async selectRandomCountry(): Promise<void> {
+	@step("Select random option from dropdown")
+	public async selectRandomOption(): Promise<void> {
 		const options = this.page.locator('li[role="option"]');
 		const count = await options.count();
 
 		if (count === 0) {
-			throw new Error("No countries available in dropdown");
+			throw new Error("No options available in dropdown");
 		}
 
 		const randomIndex = getRandomIndex(count);
 		const selected = await options.nth(randomIndex).innerText();
 
 		await options.nth(randomIndex).click();
-		logger.info(`Selected country: ${selected}`);
+		logger.info(`Selected option: ${selected}`);
 	}
 
 	@step("Clear field using clear button")
@@ -110,7 +110,17 @@ export class VerificationPage extends BasePage<VerificationPageMap> {
 			faker.date.birthdate().toISOString().split("T")[0],
 		);
 		await this.map.countryDropdownContainer.click();
-		await this.selectRandomCountry();
+		await this.selectRandomOption();
+		await this.map.verifyCheckbox.click();
+		await this.map.submitButton.click();
+	}
+
+	@step("Fill in verification form for KYC level 2.5")
+	public async fillInKycLevel2_5Form(): Promise<void> {
+		await this.map.level2countryDropdownContainer.click();
+		await this.selectRandomOption();
+		await this.map.reasonForResidenceDropdown.click();
+		await this.selectRandomOption();
 		await this.map.verifyCheckbox.click();
 		await this.map.submitButton.click();
 	}
@@ -137,7 +147,7 @@ export class VerificationPage extends BasePage<VerificationPageMap> {
 		if (fieldLabel === KYC_FIELDS.COUNTRY) {
 			if (value === RANDOM_COUNTRY) {
 				await this.map.countryDropdownContainer.click();
-				await this.selectRandomCountry();
+				await this.selectRandomOption();
 			} else {
 				await this.map.countryDropdown.click();
 				await this.map.countryDropdown.blur();

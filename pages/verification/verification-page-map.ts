@@ -32,6 +32,14 @@ export class VerificationPageMap extends BaseMap {
 		return this.page.getByLabel("Country of Residence");
 	}
 
+	public get level2countryDropdownContainer(): Locator {
+		return this.page.getByLabel("Country");
+	}
+
+	public get reasonForResidenceDropdown(): Locator {
+		return this.page.getByLabel("Reason for Residence");
+	}
+
 	public get countryDropdown(): Locator {
 		return this.page.locator(
 			'input[role="combobox"][aria-autocomplete="list"]',

@@ -5,8 +5,16 @@ import { Cryptocurrency } from "@enums/cryptocurrencies";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
+import { NotificationSubTitle } from "@enums/notification-subtitles";
+import { NotificationTitle } from "@enums/notification-titles";
 import { TestUserRole } from "@enums/test-user-roles";
-import { InitialVerificationStatus } from "@enums/verification-enums";
+import { ToastSubTitle } from "@enums/toast-subtitles";
+import { ToastTitle } from "@enums/toast-titles";
+import {
+	InitialVerificationStatus,
+	KycAdminActions,
+	KycLevels,
+} from "@enums/verification-enums";
 import { test } from "@fixtures/fixtures";
 import { testData } from "test-data/test-data-manager";
 
@@ -292,6 +300,56 @@ test.describe(
 						);
 					},
 				);
+			},
+		);
+	},
+);
+
+test.describe(
+	"KYC Level 2.5 Verification",
+	testDetails().withTags(JiraComponent.VERIFICATION).apply(),
+	() => {
+		test(
+			"[ENG-8736] Submit KYC Level 2.5",
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			async ({ browserSessionManager }) => {
+				const adminUser = await browserSessionManager.loginAs(
+					TestUserRole.SUPERADMIN,
+					{ reuseContext: true },
+				);
+				const regularUser = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
+				);
+
+				await adminUser.pages.userInfoAdminPage
+					.steps()
+					.navigateAndShowUserDetails(
+						regularUser.getAuthenticatedUser().user.username,
+					);
+				await adminUser.pages.userInfoAdminPage.clickUserInfoTab(
+					UserInfoTabs.KYC,
+				);
+				await adminUser.pages.userInfoKycAdminPage.selectKycAction(
+					KycLevels.LEVEL_2_5,
+					KycAdminActions.TRIGGER,
+				);
+
+				await regularUser.pages.verificationPage.navigate();
+				await regularUser.pages.verificationPage
+					.assertThat()
+					.kycLevelTwoVerificationTitleIsVisible();
+				await regularUser.pages.verificationPage.fillInKycLevel2_5Form();
+
+				await regularUser.pages.verificationPage
+					.assertThat()
+					.verifySubmissionToastAndNotification(
+						regularUser.pages.toast,
+						regularUser.pages.homePage.getNotification(),
+						ToastTitle.SUCCESS,
+						ToastSubTitle.LEVEL_TWO_VERIFICATION_SUBMITTED,
+						NotificationTitle.KYC_VERIFIED,
+						NotificationSubTitle.KYC_LEVEL_TWO_VERIFIED,
+					);
 			},
 		);
 	},
