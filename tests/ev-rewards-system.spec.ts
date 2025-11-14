@@ -15,7 +15,7 @@ import {
 	formatLocalizedDate,
 	getISODate,
 	parseRelativeDateRelation,
-	useProviderBearerFromAuthenticate
+	useProviderBearerFromAuthenticate,
 } from "@core/utils/utils";
 import { CustomRewardType } from "@enums/admin/custom-reward-type";
 import { RewardStatus } from "@enums/admin/reward-status";
@@ -260,7 +260,8 @@ test.describe("Revoke free spins", () => {
 					freeSpinsAmount,
 					rewardAmount,
 					formatLocalizedDate({
-						daysOffset: predefined.freeSpinsRewardConditions.endDateOffset,
+						daysOffset:
+							predefined.freeSpinsRewardConditions.endDateOffset,
 						includeTime: true,
 						atMidnight: true,
 					}),
@@ -464,6 +465,11 @@ test.describe("Free spins promotion reward", () => {
 			await regular.pages.bookOfArabiaPage
 				.steps()
 				.playAllAvailableFreeSpins(1, 1);
+
+			await gamdomDb.updateRewardStatus(
+				regular.getAuthenticatedUser().user.userId,
+				RewardStatus.CANCELED,
+			);
 		},
 	);
 });
