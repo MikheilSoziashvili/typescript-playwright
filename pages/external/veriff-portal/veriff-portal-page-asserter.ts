@@ -1,10 +1,12 @@
 import { BaseAsserter } from "@pages/base/base-asserter";
 import { VeriffPortalPage } from "./veriff-portal-page";
 import { step } from "decorators/step";
+import { expect } from "@playwright/test";
 import {
 	InitialVerificationStatus,
 	VerificationStatus,
 } from "@enums/verification-enums";
+import { Timeout } from "@enums/timeout";
 
 export class VeriffPortalAsserter extends BaseAsserter<VeriffPortalPage> {
 	public constructor(page: VeriffPortalPage) {
@@ -76,15 +78,24 @@ export class VeriffPortalAsserter extends BaseAsserter<VeriffPortalPage> {
 		expectedStatus: VerificationStatus,
 		reason: string,
 	): Promise<void> {
-		await this.gamdomPage.refresh();
 		const actualStatus = this.gamdomPage.map.sessionStatus;
 		await this.checkElementsAreVisible([actualStatus]);
-		await this.checkElementsHaveText([
-			{
-				locator: actualStatus,
-				expectedText: expectedStatus,
-			},
-		]);
+
+		await expect
+			.poll(
+				async () => {
+					await this.gamdomPage.refresh();
+					const text = await actualStatus.textContent();
+					return text;
+				},
+				{
+					message: `Verification status should update to "${expectedStatus}"`,
+					timeout: Timeout.LONG,
+					intervals: [Timeout.ULTRA_SHORT],
+				},
+			)
+			.toBe(expectedStatus);
+
 		if (reason !== "") {
 			await this.checkElementsHaveText([
 				{
