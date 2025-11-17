@@ -43,4 +43,5 @@ export enum ToastSubTitle {
 	COPIED_CODE = "Copied code",
 	KYC_LEVEL_TRIGGERED = "KYC level triggered successfully",
 	KYC_LEVEL_REVOKED = "KYC level revoked successfully",
+	ADMIN_NEW_USERS_TABLE_FETCHED_SUCCESSFULLY = "Successfully fetched users from database.",
 }

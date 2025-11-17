@@ -6,4 +6,6 @@ export enum AttributesValues {
 	OPEN = "open",
 	CLOSED = "closed",
 	IDLE = "idle",
+	ICON_CHECKBOX_CHECKED = "icon-check-square-o",
+	ICON_CHECKBOX_UNCHECKED = "icon-square-o",
 }

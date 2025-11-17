@@ -1,6 +1,18 @@
+import { DateOffset } from "@enums/datetime/date-offset";
 import { Wallet } from "@enums/wallets";
 
 export const predefined = {
+	admin: {
+		newUsersPage: {
+			betweenUserIDsFilter: {
+				startUserID: 350,
+				endUserID: 450,
+			},
+		},
+	},
+	datetime: {
+		dateOffset: DateOffset,
+	},
 	wallets: {
 		walletType: Wallet.USD,
 	},

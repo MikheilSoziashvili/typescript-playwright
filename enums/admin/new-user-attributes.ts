@@ -1,0 +1,15 @@
+export enum NewUserAttribute {
+	EMAIL = "email",
+	USED_AFFIL_CODE = "used_affil_code",
+	PHONE_NUMBER = "phone_number",
+	WAGERED = "wagered",
+	NET_PROFIT = "net_profit",
+	TOTAL_DEPOSITED = "total_deposited",
+	TOTAL_REWARDS_CLAIMED = "total_rewards_claimed",
+	TOTAL_REWARD_AMOUNT_CLAIMED = "total_reward_amount_claimed",
+	WITHDRAW_DISABLED = "withdraw_disabled",
+	LAST_IP = "last_ip",
+	DISPLAY_USERNAME = "display_username",
+	REGISTRATION_IP = "registration_ip",
+	REGISTRATION_COUNTRY = "registration_country",
+}

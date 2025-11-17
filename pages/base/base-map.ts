@@ -188,6 +188,10 @@ export class BaseMap {
 		);
 	}
 
+	public get body(): Locator {
+		return this.page.locator("body");
+	}
+
 	public getTableRows(tableBody: Locator): Locator {
 		return tableBody.locator("tr");
 	}
