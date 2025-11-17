@@ -15,7 +15,17 @@ test.describe(
 	() => {
 		test.slow();
 		test.beforeEach(
-			async ({ cryptoAdminPage, browserSessionManager }, testInfo) => {
+			async (
+				{
+					cryptoAdminPage,
+					browserSessionManager,
+					gamdomApiDbFacade,
+					homePage,
+					walletModal,
+					page,
+				},
+				testInfo,
+			) => {
 				await browserSessionManager.loginAs(TestUserRole.SUPERADMIN, {
 					reuseContext: true,
 				});
@@ -23,6 +33,11 @@ test.describe(
 				await cryptoAdminPage.toggleCryptoOperations([
 					{
 						cryptoName: CryptoTicker.USDT,
+						deposit: true,
+						withdraw: true,
+					},
+					{
+						cryptoName: CryptoTicker.USDT_TRON,
 						deposit: true,
 						withdraw: true,
 					},
@@ -36,18 +51,35 @@ test.describe(
 				await cryptoAdminPage
 					.steps()
 					.setMinDepositAndWithdraw(
-						CryptoNode.nodeETH1,
+						CryptoNode.fireUSDT,
 						CryptoTicker.USDT,
 					);
+				await cryptoAdminPage
+					.steps()
+					.setMinDepositAndWithdraw(
+						CryptoNode.fireTRX_USDT,
+						CryptoTicker.USDT_TRX,
+					);
+				await homePage.navigate({
+					cookies: { clearCookies: true },
+				});
+
+				const { cookie } =
+					await gamdomApiDbFacade.createSingleUserDbAndAuth({
+						amount: 150000,
+					});
+
+				await setAuthenticationCookies(page, cookie);
+				await homePage.navigateToWallet();
+				await walletModal.selectPaymentMethod(Cryptocurrency.Tether);
 			},
 		);
 
 		test(
-			"[ENG-10132] USDT - deposit via sepolia",
+			"[ENG-10132] USDT_ETH - deposit via sepolia",
 			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
 			async ({
 				usdtClient,
-				gamdomApiDbFacade,
 				cryptoAdminPage,
 				homePage,
 				walletModal,
@@ -55,23 +87,12 @@ test.describe(
 				transactionDetailsModal,
 				userBalanceHandler,
 				gamdomApi,
-				page,
 				testDataPredefined,
 				browserSessionManager,
 			}) => {
-				const { cookie } =
-					await gamdomApiDbFacade.createSingleUserDbAndAuth({
-						amount: 150000,
-					});
-
-				await setAuthenticationCookies(page, cookie);
-
-				await homePage.navigateToWallet();
-
 				const initialBalance =
 					await userBalanceHandler.walletBalanceInFiatRounded();
 
-				await walletModal.selectPaymentMethod(Cryptocurrency.Tether);
 				const userDepositAddress =
 					await walletModal.getDepositAddress();
 				const amountToDeposit =
@@ -110,6 +131,86 @@ test.describe(
 					.verifyBalance(balanceAfterDeposit, expectedBalance);
 
 				const fullTransactionId = await usdtClient.getTransaction(
+					depositTransaction.id,
+				);
+
+				const superAdmin = await browserSessionManager.loginAs(
+					TestUserRole.SUPERADMIN,
+				);
+
+				const superAdminCookie = getCookieHeader(
+					superAdmin.getAuthenticatedUser().cookie,
+				);
+
+				await cryptoAdminPage
+					.assertThat()
+					.assertTransactionCryptoAmount(
+						gamdomApi,
+						superAdminCookie,
+						fullTransactionId.txHash,
+						parseFloat(amountToDeposit),
+					);
+			},
+		);
+
+		test(
+			"[ENG-10474] USDT_TRX - deposit",
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			async ({
+				usdtTrxClient,
+				cryptoAdminPage,
+				homePage,
+				walletModal,
+				transactionsPage,
+				transactionDetailsModal,
+				userBalanceHandler,
+				gamdomApi,
+				testDataPredefined,
+				browserSessionManager,
+			}) => {
+				const initialBalance =
+					await userBalanceHandler.walletBalanceInFiatRounded();
+
+				await walletModal.selectUsdtNetwork(CryptoTicker.USDT_TRX);
+				const userDepositAddress =
+					await walletModal.getDepositAddress();
+				const amountToDeposit =
+					testDataPredefined.data.usdtTrxAmountToDeposit
+						.amountToDeposit;
+				const vaultId = fireblocks.vaultId;
+
+				const depositTransaction = await usdtTrxClient.sendToAddress(
+					vaultId,
+					userDepositAddress,
+					amountToDeposit,
+				);
+
+				await usdtTrxClient.waitForCompletion(depositTransaction.id);
+
+				await transactionsPage
+					.steps()
+					.verifyDepositTransactionStatusIs(
+						TransactionState.COMPLETE,
+					);
+				await transactionsPage.clickTransactionDetailsButton();
+				await transactionDetailsModal
+					.assertThat()
+					.assertDepositAmountIn(
+						CryptoTicker.USDT_TRX,
+						parseFloat(amountToDeposit),
+					);
+
+				await homePage.navigate();
+
+				const balanceAfterDeposit =
+					await userBalanceHandler.walletBalanceInFiatRounded();
+				const expectedBalance =
+					initialBalance + parseFloat(amountToDeposit);
+				await homePage
+					.assertThat()
+					.verifyBalance(balanceAfterDeposit, expectedBalance);
+
+				const fullTransactionId = await usdtTrxClient.getTransaction(
 					depositTransaction.id,
 				);
 

@@ -214,6 +214,9 @@ on:
             FIREBLOCKS_TRX_ASSET_ID:
                 required: true
                 description: "Fireblocks TRX asset ID"
+            FIREBLOCKS_USDT_TRX_ASSET_ID:
+                required: true
+                description: "Fireblocks USDT_TRX asset ID"
 
 concurrency:
     group: ${{ github.event_name == 'repository_dispatch' && format('auto-deploy-env-{0}', github.event.client_payload.pr_number) || format('playwright-e2e-{0}', github.ref) }}
@@ -295,6 +298,7 @@ jobs:
             FIREBLOCKS_ETH_ASSET_ID: ${{ secrets.FIREBLOCKS_ETH_ASSET_ID }}
             FIREBLOCKS_SOL_ASSET_ID: ${{ secrets.FIREBLOCKS_SOL_ASSET_ID }}
             FIREBLOCKS_TRX_ASSET_ID: ${{ secrets.FIREBLOCKS_TRX_ASSET_ID }}
+            FIREBLOCKS_USDT_TRX_ASSET_ID: ${{ secrets.FIREBLOCKS_USDT_TRX_ASSET_ID }}
             VERIFF_PUBLISHABLE_KEY: ${{ secrets.VERIFF_PUBLISHABLE_KEY }}
             VERIFF_PRIVATE_KEY: ${{ secrets.VERIFF_PRIVATE_KEY }}
             VERIFF_USERNAME: ${{ secrets.VERIFF_USERNAME }}

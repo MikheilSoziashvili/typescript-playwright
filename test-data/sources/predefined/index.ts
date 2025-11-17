@@ -49,4 +49,7 @@ export const predefined = {
 	trxAmountToDeposit: {
 		amountToDeposit: "1",
 	},
+	usdtTrxAmountToDeposit: {
+		amountToDeposit: "0.02",
+	},
 };

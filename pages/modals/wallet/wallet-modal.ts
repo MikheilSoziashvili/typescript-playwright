@@ -188,4 +188,10 @@ export class WalletModal extends BasePage<WalletModalMap> {
 		await this.openWithdrawTab();
 		await this.selectPaymentMethod(paymentMethod);
 	}
+
+	@step("Select USDT Network from dropdown")
+	public async selectUsdtNetwork(network: string): Promise<void> {
+		await this.map.networkDropdown.click();
+		await this.map.networkDropdownOption(network).click();
+	}
 }

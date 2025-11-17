@@ -177,4 +177,12 @@ export class WalletModalMap extends BaseMap {
 	public get kycLevelThreeHeader(): Locator {
 		return this.page.getByTestId("levelLEVEL3KycLeftPanelContainer");
 	}
+
+	public get networkDropdown(): Locator {
+		return this.walletLeftPanel.getByTestId("Input");
+	}
+
+	public networkDropdownOption(dataValue: string): Locator {
+		return this.page.locator(`li[data-value="${dataValue}"]`);
+	}
 }
