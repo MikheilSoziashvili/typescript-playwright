@@ -7,6 +7,7 @@ import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { NotificationSubTitle } from "@enums/notification-subtitles";
 import { NotificationTitle } from "@enums/notification-titles";
+import { TestTag } from "@enums/test-tags";
 import { TestUserRole } from "@enums/test-user-roles";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
@@ -52,18 +53,17 @@ test.describe(
 					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
 					async ({ homePage, verificationPage, toast }) => {
 						await fillSubmissionForm(verificationPage);
-						const notification = homePage.getNotification();
-						await notification
-							.assertThat()
-							.titleIs(expectedNotificationTitle);
-						await notification
-							.assertThat()
-							.subTitleIs(expectedNotificationSubTitle);
 
-						await toast.assertThat().titleIs(expectedToastTitle);
-						await toast
+						await verificationPage
 							.assertThat()
-							.subTitleIs(expectedToastSubTitle);
+							.verifySubmissionToastAndNotification(
+								toast,
+								homePage.getNotification(),
+								expectedToastTitle,
+								expectedToastSubTitle,
+								expectedNotificationTitle,
+								expectedNotificationSubTitle,
+							);
 					},
 				);
 			},
@@ -124,7 +124,9 @@ test.describe(
 
 test.describe(
 	"KYC Level 2 Verification - Veriff Portal",
-	testDetails().withTags(JiraComponent.VERIFICATION).apply(),
+	testDetails()
+		.withTags(TestTag.SEQUENTIAL, JiraComponent.VERIFICATION)
+		.apply(),
 	() => {
 		const kycLevel2Scenarios = testData().fromCsvParsed({
 			file: CsvFilesName.KYC_LEVEL2_SUBMISSIONS,
