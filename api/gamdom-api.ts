@@ -378,25 +378,18 @@ export class GamdomApi extends BaseApi {
 	}
 
 	public async setProviderState(
-		id: number,
-		provider_name: string,
-		disabled: boolean,
-		qa_users_only: boolean,
-		provider_id: string,
-		imported_from: string,
+		providers: SetProviderStateRequest,
 		_headers: Record<string, string> = {},
 	): Promise<APIResponse> {
-		const payload: SetProviderStateRequest = [
-			{
-				id: id,
-				provider_name: provider_name,
-				priority: 0,
-				disabled: disabled,
-				provider_id: provider_id,
-				imported_from: imported_from,
-				qa_users_only: qa_users_only,
-			},
-		];
+		const payload: SetProviderStateRequest = providers.map((provider) => ({
+			id: provider.id,
+			provider_name: provider.provider_name,
+			priority: provider.priority || 0,
+			disabled: provider.disabled,
+			provider_id: provider.provider_id,
+			imported_from: provider.imported_from,
+			qa_users_only: provider.qa_users_only,
+		}));
 
 		const parameters = this.buildParameters(
 			ApiEndpoints.SET_PROVIDER_STATE,

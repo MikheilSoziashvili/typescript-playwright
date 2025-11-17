@@ -1,0 +1,8 @@
+export enum ProducerId {
+	ALEA_KALAMBA = "16",
+	ALEA_NOLIMIT_CITY = "43",
+	ALEA_HACKSAW_GAMING = "63",
+	ALEA_PRAGMATIC_PLAY = "6",
+	ALEA_ONETOUCH = "90",
+	ALEA_CALETA = "84",
+}

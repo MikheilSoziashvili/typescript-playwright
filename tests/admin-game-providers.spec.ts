@@ -13,6 +13,7 @@ import { CsvFilesName } from "@enums/csv-file-name";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
 import { Feature } from "@enums/feature";
+import { GameAggregator } from "@enums/game-aggregators";
 import { GameProvider } from "@enums/game-providers";
 import { JiraUser } from "@enums/jira/jira-users";
 import { TestTag } from "@enums/test-tags";
@@ -116,12 +117,17 @@ adminEnableGames.forEach((record) => {
 				) as Provider;
 
 				await gamdomApi.setProviderState(
-					hacksawHub.id,
-					"Hacksaw Gaming hub",
-					hacksawHub.disabled,
-					hacksawHub.qa_users_only,
-					hacksawHub.provider_id,
-					hacksawHub.imported_from,
+					[
+						{
+							id: hacksawHub.id,
+							provider_name: "Hacksaw Gaming hub",
+							priority: 0,
+							disabled: hacksawHub.disabled,
+							qa_users_only: hacksawHub.qa_users_only,
+							provider_id: hacksawHub.provider_id,
+							imported_from: hacksawHub.imported_from,
+						},
+					],
 					{ Cookie: superAdminCookie },
 				);
 			});
@@ -131,17 +137,18 @@ adminEnableGames.forEach((record) => {
 			 * This cleanup step ensures that each test starts with a clean slate.
 			 */
 			test.afterEach(async ({ gamdomApi }) => {
-				for (const provider of initialProvidersState) {
-					await gamdomApi.setProviderState(
-						provider.id,
-						provider.provider_name,
-						provider.disabled,
-						provider.qa_users_only,
-						provider.provider_id,
-						provider.imported_from,
-						{ Cookie: superAdminCookie },
-					);
-				}
+				await gamdomApi.setProviderState(
+					initialProvidersState.map((provider) => ({
+						id: provider.id,
+						provider_name: provider.provider_name,
+						priority: 0,
+						disabled: provider.disabled,
+						qa_users_only: provider.qa_users_only,
+						provider_id: provider.provider_id,
+						imported_from: provider.imported_from,
+					})),
+					{ Cookie: superAdminCookie },
+				);
 
 				// Set the specified features to enabled for both regular and qa users
 				const featuresToEnable: Feature[] = [
@@ -194,7 +201,8 @@ adminEnableGames.forEach((record) => {
 					const targetProvider = providers.find(
 						(provider) =>
 							provider.provider_name ===
-							providerEnum.providerName,
+								providerEnum.providerName &&
+							provider.imported_from !== GameAggregator.ALEA,
 					) as Provider;
 
 					// Extract the provider ID for use in setting provider state
@@ -202,12 +210,17 @@ adminEnableGames.forEach((record) => {
 
 					// Set the provider state (enable/disable, qa users only) based on the test configuration
 					await gamdomApi.setProviderState(
-						providerId,
-						providerEnum.providerName,
-						!regularEnabled,
-						qaEnabled,
-						providerEnum.providerIdName,
-						providerEnum.importedFrom,
+						[
+							{
+								id: providerId,
+								provider_name: providerEnum.providerName,
+								priority: 0,
+								disabled: !regularEnabled,
+								qa_users_only: qaEnabled,
+								provider_id: providerEnum.providerIdName,
+								imported_from: providerEnum.importedFrom,
+							},
+						],
 						{ Cookie: superAdminCookie },
 					);
 
