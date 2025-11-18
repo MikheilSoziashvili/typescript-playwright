@@ -23,7 +23,6 @@ import { GamdomDb } from "database/gamdom-db";
 import * as fs from "fs";
 import { KOTH_NAME_PREFIX } from "@constants/koth";
 import { DbServiceManager } from "services/db-pool-service/db-pool-service-manager";
-import { ProducerId } from "@enums/producer-ids";
 
 async function enableCoreFeatures(
 	gamdomApi: GamdomApi,
@@ -77,45 +76,6 @@ async function enableNewDesignV4Feature(
 	});
 
 	logger.info("New Design V4 has been successfully enabled.");
-}
-
-async function disableDuplicatedProviders(
-	gamdomApi: GamdomApi,
-	cookie: string,
-): Promise<void> {
-	const allProviders = await gamdomApi.getProviders({
-		Cookie: cookie,
-	});
-
-	const duplicatedProducerIds = [
-		ProducerId.ALEA_KALAMBA,
-		ProducerId.ALEA_NOLIMIT_CITY,
-		ProducerId.ALEA_HACKSAW_GAMING,
-		ProducerId.ALEA_PRAGMATIC_PLAY,
-		ProducerId.ALEA_ONETOUCH,
-		ProducerId.ALEA_CALETA,
-	];
-
-	const providersToDisable = allProviders.filter((provider) =>
-		duplicatedProducerIds.includes(provider.producer_id as ProducerId),
-	);
-	if (providersToDisable.length === 0) {
-		logger.info("No duplicated providers found to disable");
-		return;
-	}
-
-	await gamdomApi.setProviderState(
-		providersToDisable.map((provider) => ({
-			id: provider.id,
-			provider_name: provider.provider_name,
-			priority: 0,
-			disabled: true,
-			qa_users_only: provider.qa_users_only,
-			provider_id: provider.provider_id,
-			imported_from: provider.imported_from,
-		})),
-		{ Cookie: cookie },
-	);
 }
 
 async function createKothEvent(
@@ -334,7 +294,6 @@ async function globalSetup(): Promise<void> {
 	await configureRain();
 	await enableCoreFeatures(gamdomApi, cookie);
 	await ensureKothEventsExist(gamdomApi, cookie);
-	await disableDuplicatedProviders(gamdomApi, cookie);
 
 	if (Configuration.enableNewDesignV4Feature) {
 		await enableNewDesignV4Feature(gamdomApi, cookie);
