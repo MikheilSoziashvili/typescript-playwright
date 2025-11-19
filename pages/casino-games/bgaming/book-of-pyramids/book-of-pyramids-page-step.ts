@@ -51,4 +51,29 @@ export class BookOfPyramidsPageSteps extends BasePageStep<BookOfPyramidsPage> {
 		logger.info("LOSS detected (no win element)");
 		return { won: false, amount: 0 };
 	}
+
+	@step("Play until won and return all results")
+	public async playUntilWonAndGetResults(): Promise<
+		{
+			won: boolean;
+			amount: number;
+		}[]
+	> {
+		const results: { won: boolean; amount: number }[] = [];
+		let hasWon = false;
+
+		while (!hasWon) {
+			const result = await this.spinOnceAndGetResult();
+			results.push(result);
+
+			if (result.won) {
+				hasWon = true;
+				logger.info(
+					`Won after ${results.length} spin(s) with total amount: ${result.amount}`,
+				);
+			}
+		}
+
+		return results;
+	}
 }

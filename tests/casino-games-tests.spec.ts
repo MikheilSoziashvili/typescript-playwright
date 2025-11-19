@@ -1,15 +1,22 @@
-import { test } from "@fixtures/fixtures";
 import { testDetails } from "@core/helpers/test-details-helper";
-import { JiraUser } from "@enums/jira/jira-users";
-import { JiraComponent } from "@enums/jira/jira-components";
-import { CasinoGameName } from "@enums/casino-game";
 import {
 	setAuthenticationCookies,
 	stripAuthFromExternalRequests,
 } from "@core/utils/utils";
+import { UserInfoTabs } from "@enums/admin/user-info-tabs";
+import { CasinoGameName } from "@enums/casino-game";
 import { Currency } from "@enums/currencies";
-import { Wallet } from "@enums/wallets";
+import { CsvFilesName } from "@enums/csv-file-name";
+import { JiraComponent } from "@enums/jira/jira-components";
+import { JiraUser } from "@enums/jira/jira-users";
+import { ToastSubTitle } from "@enums/toast-subtitles";
+import { ToastTitle } from "@enums/toast-titles";
 import { Unit } from "@enums/units";
+import { Wallet } from "@enums/wallets";
+import { test } from "@fixtures/fixtures";
+import { testData } from "test-data/test-data-manager";
+import { TestUserRole } from "@enums/test-user-roles";
+
 test.use({ launchOptions: { slowMo: 1000 } });
 
 test.describe("Casino games tests", () => {
@@ -124,4 +131,78 @@ test.describe("Casino games tests", () => {
 				);
 		},
 	);
+
+	test.describe("Aggregator and Providers - Casino games tests", () => {
+		testData()
+			.fromCsvParsed({
+				file: CsvFilesName.CASINO_GAMES_AGGREGATOR_PROVIDER,
+			})
+			.forEach((game) => {
+				test(
+					`[ENG-5015] Verify round closer logs for Aggregator: ${game.aggregator}, Provider: ${game.gameProvider}, Casino game: ${game.gameName}`,
+					testDetails()
+						.withTags(
+							JiraComponent.ADMIN,
+							JiraComponent.CASINO,
+							JiraComponent.TRANSACTIONS,
+							JiraComponent.USER_INFO,
+						)
+						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+						.apply(),
+					async ({
+						casinoPage,
+						casinoGamesPage,
+						userInfoAdminPage,
+						transactionsAdminPage,
+						browserSessionManager,
+						toast,
+					}) => {
+						const superAdminSession =
+							await browserSessionManager.loginAs(
+								TestUserRole.SUPERADMIN,
+								{ reuseContext: true },
+							);
+
+						await casinoGamesPage
+							.steps()
+							.setupProviderAuthentication(game);
+
+						await casinoPage
+							.steps()
+							.searchForGameAndOpen(game.gameName);
+
+						await casinoGamesPage
+							.steps()
+							.playCasinoGameRoundSuccessfully(game);
+
+						await userInfoAdminPage
+							.steps()
+							.navigateAndShowUserDetails(
+								superAdminSession.getAuthenticatedUser().user
+									.username,
+							);
+
+						await userInfoAdminPage.clickUserInfoTab(
+							UserInfoTabs.Transactions,
+						);
+						await transactionsAdminPage
+							.steps()
+							.fetchStatsCalculationsData();
+
+						await toast
+							.assertThat()
+							.toastMessageIs(
+								ToastTitle.SUCCESS,
+								ToastSubTitle.SUCCESSFULLY_FETCHED_TRANSACTIONS,
+							);
+						await transactionsAdminPage
+							.assertThat()
+							.lastTransactionContainsWinAndRoundClosed();
+						await transactionsAdminPage
+							.assertThat()
+							.lastTransactionContainsGameCode(game.gameCode);
+					},
+				);
+			});
+	});
 });

@@ -1,5 +1,6 @@
 import {
 	BlogVerifySocialShareLinksCsvRecord,
+	CasinoGamesAggregatorProviderCsvRecord,
 	ChatPinMessagePermissionsCsvRecord,
 	FooterLinksAndEndpointsCsvRecord,
 	OriginalsQuickSelectButtonsCsvRecord,
@@ -13,6 +14,10 @@ import { OriginalsSelfExclusionCsvRecord } from "@dtos/csv/originals-self-exclus
 import { PlinkoTestDataCsvRecord } from "@dtos/csv/plinko-test-data-csv";
 import { UserInfoSendNotificationCsvRecord } from "@dtos/csv/user-info-send-notification-csv";
 import { CsvFilesName } from "@enums/csv-file-name";
+import {
+	CasinoGamesAggregatorProviderCsvParsedRecord,
+	parseCasinoGamesAggregatorProviderCsvRow,
+} from "test-data/parsers/casino-games-aggregator-provider-csv-parser";
 import {
 	BlogVerifySocialShareLinksCsvParsedRecord,
 	parseBlogVerifySocialShareLinksCsvRow,
@@ -81,6 +86,10 @@ export type CsvTransformerFunctionType<T extends keyof CsvTransformerMapType> =
 	(row: CsvRowType<T>) => CsvTransformerExistingReturnType<T>;
 
 export type CsvTransformerMapType = {
+	[CsvFilesName.CASINO_GAMES_AGGREGATOR_PROVIDER]: (
+		row: CasinoGamesAggregatorProviderCsvRecord,
+	) => CasinoGamesAggregatorProviderCsvParsedRecord;
+
 	[CsvFilesName.ORIGINALS_QUICK_SELECT_BUTTONS]: (
 		row: OriginalsQuickSelectButtonsCsvRecord,
 	) => OriginalsQuickSelectButtonsCsvParsedRecord;
@@ -131,6 +140,8 @@ export type CsvTransformerMapType = {
 };
 
 export const CsvTransformerMap: CsvTransformerMapType = {
+	[CsvFilesName.CASINO_GAMES_AGGREGATOR_PROVIDER]:
+		parseCasinoGamesAggregatorProviderCsvRow,
 	[CsvFilesName.ORIGINALS_QUICK_SELECT_BUTTONS]:
 		parseOriginalsQuickSelectButtonsCsvRow,
 	[CsvFilesName.USER_INFO_SEND_NOTIFICATION]:

@@ -6,6 +6,7 @@ import { step } from "decorators/step";
 import { parseToFloat, waitUntil } from "@core/utils/utils";
 import { logger } from "@logger/logger";
 import { currencyToNumberPattern } from "@support/regex-patterns";
+import { TransactionDetailsText } from "@enums/admin/transaction-details-text";
 
 export class UserInfoTransactionsAdminPageAsserter extends BaseAsserter<UserInfoTransactionsAdminPage> {
 	public constructor(page: UserInfoTransactionsAdminPage) {
@@ -146,7 +147,9 @@ export class UserInfoTransactionsAdminPageAsserter extends BaseAsserter<UserInfo
 		type: string,
 		valueUsd: number,
 	): Promise<void> {
-		const rows = this.gamdomPage.map.getTableRows(this.gamdomPage.map.logsTableBody);
+		const rows = this.gamdomPage.map.getTableRows(
+			this.gamdomPage.map.logsTableBody,
+		);
 		const formattedValue = parseToFloat(valueUsd, 2);
 
 		const found = await rows
@@ -158,5 +161,47 @@ export class UserInfoTransactionsAdminPageAsserter extends BaseAsserter<UserInfo
 			found,
 			buildTransactionTypeAndValueNotFoundMessage(type, formattedValue),
 		).toBeGreaterThan(0);
+	}
+
+	@step("Verify last transaction contains {expectedTexts}")
+	public async verifyLastTransactionContainsTexts(
+		expectedTexts: string[],
+	): Promise<void> {
+		await this.checkElementsAreVisible([this.gamdomPage.map.logsTableBody]);
+
+		const detailsColumns =
+			await this.gamdomPage.map.logsTableTransactionDetailsColumn.allTextContents();
+
+		expect(
+			detailsColumns.length,
+			"No transaction details found in the table",
+		).toBeGreaterThan(0);
+
+		const lastTransactionDetails = detailsColumns[0];
+		const missingTexts = expectedTexts.filter(
+			(text) => !lastTransactionDetails.includes(text),
+		);
+
+		expect(
+			missingTexts,
+			`Last transaction details should contain the following texts: ${expectedTexts.join(
+				", ",
+			)}. Missing: ${missingTexts.join(", ")}`,
+		).toHaveLength(0);
+	}
+
+	@step("Verify last transaction contains WIN and Round_Closed: true")
+	public async lastTransactionContainsWinAndRoundClosed(): Promise<void> {
+		await this.verifyLastTransactionContainsTexts([
+			TransactionDetailsText.MADE_A_WIN_ON_GAME,
+			TransactionDetailsText.ROUND_CLOSED_TRUE,
+		]);
+	}
+
+	@step("Verify last transaction contains game code {gameCode}")
+	public async lastTransactionContainsGameCode(
+		gameCode: string,
+	): Promise<void> {
+		await this.verifyLastTransactionContainsTexts([gameCode]);
 	}
 }

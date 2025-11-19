@@ -56,4 +56,5 @@ export enum CsvFilesName {
 	PROMO_CAMPAIGN_UPDATE = "ENG-3334-promo-campaign-update.csv",
 	POSSIBLE_WIN_POP_UP = "ENG-5685-possible-win-pop-up.csv",
 	KYC_LEVEL2_SUBMISSIONS = "ENG-8616-kyc-level2-submissions.csv",
+	CASINO_GAMES_AGGREGATOR_PROVIDER = "ENG-5015-casino-games-aggregator-provider.csv",
 }

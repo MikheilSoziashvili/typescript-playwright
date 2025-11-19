@@ -105,7 +105,7 @@ export class CasinoGamesUnifiedPage extends BasePage<CasinoGamesPageMap> {
 		switch (config.gameProvider) {
 			case GameProvider.BGAMING: {
 				const bookOfPyramidsPage = gamePage as BookOfPyramidsPage;
-				await bookOfPyramidsPage.steps().spinOnceAndGetResult();
+				await bookOfPyramidsPage.steps().playUntilWonAndGetResults();
 				break;
 			}
 			case GameProvider.HACKSAW_GAMING: {

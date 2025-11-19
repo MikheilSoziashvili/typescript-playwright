@@ -5,11 +5,11 @@ export enum GameProvider {
 }
 
 export enum CasinoGameName {
-	BARREL_BONANZA = "Barrel Bonanza",
-	MYSTIC_CHIEF = "Mystic Chief",
-	BOOK_OF_PYRAMIDS = "Book of Pyramids",
-	BOOK_OF_ARABIA = "Book Of Arabia",
-	CASH_VAULT_I = "Cash Vault I",
+	BARREL_BONANZA = "Barrel Bonanza", // Backseat Gaming
+	MYSTIC_CHIEF = "Mystic Chief", // Pragmatic Play
+	BOOK_OF_PYRAMIDS = "Book of Pyramids", // bgaming
+	BOOK_OF_ARABIA = "Book Of Arabia", // Wicked Games
+	CASH_VAULT_I = "Cash Vault I", // hacksaw
 }
 
 export enum CasinoGameUrl {
