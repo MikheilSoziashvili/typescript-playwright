@@ -935,7 +935,7 @@ test.describe(
 					.rewardStatusIs(
 						RewardsSource.PROMO_CAMPAIGN_FREE_SPINS,
 						CustomRewardType.FREE_SPINS,
-						"10×$0.20",
+						"10×$0.10",
 						RewardStatus.ACTIVE,
 					);
 

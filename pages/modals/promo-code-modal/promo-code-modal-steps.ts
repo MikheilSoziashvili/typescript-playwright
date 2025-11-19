@@ -13,7 +13,7 @@ export class PromoCodeModalSteps extends BasePageStep<PromoCodeModal> {
 	public async createDefaultFreeSpinsPromoCodeSuccessfully(
 		campaignName: string,
 		campaignCode: string,
-		gameName = CasinoGameName.MYSTIC_CHIEF,
+		gameName = CasinoGameName.BOOK_OF_ARABIA,
 		freeSpinsAmount = 10,
 	): Promise<void> {
 		await this.gamdomPage.assertThat().isDisplayed();

@@ -53,7 +53,7 @@ test.describe("Free spins tests", () => {
 
 					await freeSpinsAdminPage.steps().getFreeSpins({
 						userId: newUserId,
-						gameName: CasinoGameName.BARREL_BONANZA,
+						gameName: CasinoGameName.BOOK_OF_ARABIA,
 						betAmount: 100,
 					});
 
@@ -87,7 +87,7 @@ test.describe("Free spins tests", () => {
 								.steps()
 								.uploadBatchFreeSpinsFile(filePath);
 							await freeSpinsAdminPage.steps().getFreeSpins({
-								gameName: CasinoGameName.BARREL_BONANZA,
+								gameName: CasinoGameName.BOOK_OF_ARABIA,
 								betAmount: 100,
 							});
 							await assertions(freeSpinsAdminPage);
@@ -166,7 +166,7 @@ test.describe("Free spins tests", () => {
 
 					await freeSpinsAdminPage.steps().getFreeSpins({
 						userId: userId,
-						gameName: CasinoGameName.BARREL_BONANZA,
+						gameName: CasinoGameName.BOOK_OF_ARABIA,
 						betAmount: 1,
 					});
 					await userHomePage
@@ -205,7 +205,7 @@ test.describe("Free spins tests", () => {
 
 					await freeSpinsAdminPage.steps().getFreeSpins({
 						userId: newUserId,
-						gameName: CasinoGameName.MYSTIC_CHIEF,
+						gameName: CasinoGameName.BOOK_OF_ARABIA,
 						betAmount: 200,
 					});
 
@@ -289,7 +289,7 @@ test.describe(
 		.apply(),
 	() => {
 		const title = "Promotion";
-		const description = `The free spins promotion for Barrel Bonanza game has revoked. Note: ${DialogInput.REVOKE_FREE_SPINS_REASON}`;
+		const description = `The free spins promotion for Book Of Arabia game has revoked. Note: ${DialogInput.REVOKE_FREE_SPINS_REASON}`;
 
 		test.use(storageStateNewSuperAdminUserDB());
 		test(
@@ -334,7 +334,7 @@ test.describe(
 
 				await freeSpinsAdminPage.steps().getFreeSpins({
 					userId: userId,
-					gameName: CasinoGameName.BARREL_BONANZA,
+					gameName: CasinoGameName.BOOK_OF_ARABIA,
 					betAmount: 1,
 				});
 				await userHomePage.getNotification().assertThat().isDisplayed();

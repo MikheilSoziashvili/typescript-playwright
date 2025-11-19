@@ -311,7 +311,7 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 	@step("Verify redirection to game")
 	public async userIsRedirectedToGame(): Promise<void> {
 		await expect(this.gamdomPage.page).toHaveURL(
-			`${Configuration.environment_url}${CasinoGameUrl.BARREL_BONANZA}`,
+			`${Configuration.environment_url}${CasinoGameUrl.BOOK_OF_ARABIA}`,
 		);
 	}
 

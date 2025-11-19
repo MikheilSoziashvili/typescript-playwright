@@ -5,4 +5,5 @@ export enum ProducerId {
 	ALEA_PRAGMATIC_PLAY = "6",
 	ALEA_ONETOUCH = "90",
 	ALEA_CALETA = "84",
+	HUB_HACKSAW_GAMING = "Hacksaw Gaming",
 }

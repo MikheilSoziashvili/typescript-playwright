@@ -13,5 +13,5 @@ export enum CasinoGameName {
 }
 
 export enum CasinoGameUrl {
-	BARREL_BONANZA = "/casino/Barrel%20Bonanza_Backseat%20Gaming",
+	BOOK_OF_ARABIA = "/casino/Book%20Of%20Arabia_Wicked%20Games",
 }

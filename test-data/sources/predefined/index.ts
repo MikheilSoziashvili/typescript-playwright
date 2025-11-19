@@ -64,4 +64,8 @@ export const predefined = {
 	usdtTrxAmountToDeposit: {
 		amountToDeposit: "0.02",
 	},
+	newProviderNames: {
+		hacksawHub: "Hacksaw Gaming hub",
+		pragmaticPlayAlea: "Pragmatic Play alea",
+	},
 };

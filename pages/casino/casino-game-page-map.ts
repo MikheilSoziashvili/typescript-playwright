@@ -83,7 +83,8 @@ export class CasinoPageMap extends BaseMap {
 						hasText: new RegExp(`^${game}$`),
 					},
 				),
-			});
+			})
+			.first();
 	}
 
 	public dropdownHeartIcon(game: OriginalGames): Locator {

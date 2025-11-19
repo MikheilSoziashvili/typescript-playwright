@@ -54,5 +54,11 @@ export const Providers = {
 		idName: "hacksaw",
 		importedFrom: "hacksawgaming",
 	}),
+	kitsuneStudios: setProvider({
+		name: "Kitsune Studios",
+		idName: "kitsune",
+		importedFrom: "hacksawgaming",
+	}),
 	kalamba: setProvider({ name: "Kalamba", importedFrom: "hub88" }),
+	avatarUx: setProvider({ name: "AvatarUX", importedFrom: "hub88" }),
 } as const;

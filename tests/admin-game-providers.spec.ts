@@ -16,6 +16,7 @@ import { Feature } from "@enums/feature";
 import { GameAggregator } from "@enums/game-aggregators";
 import { GameProvider } from "@enums/game-providers";
 import { JiraUser } from "@enums/jira/jira-users";
+import { ProducerId } from "@enums/producer-ids";
 import { TestTag } from "@enums/test-tags";
 import { UserType } from "@enums/user-types";
 import { test } from "@fixtures/fixtures";
@@ -54,8 +55,8 @@ const configToStates: Record<string, Partial<Record<UserType, boolean>>> = {
 
 // Map provider names to their enums and additional properties
 const providerEnumMap: Record<string, ProviderDetails> = {
-	Hub88: Providers.kalamba,
-	Hacksaw: Providers.hacksawGaming,
+	Hub88: Providers.avatarUx,
+	Hacksaw: Providers.kitsuneStudios,
 	Pragmatic: Providers.pragmaticPlay,
 };
 
@@ -87,50 +88,73 @@ adminEnableGames.forEach((record) => {
 			 * Before each test, authenticate as super admin and capture the initial state of all providers.
 			 * This ensures we can reset the providers to their original state after each test.
 			 */
-			test.beforeEach(async ({ gamdomApi, gamdomDb }) => {
-				const superAdminData = new RegisterTestData({
-					useGamdomEmailDomain: true,
-				});
-				await gamdomDb.createNewUser({
-					username: superAdminData.username,
-					password: superAdminData.password,
-					email: superAdminData.email,
-					tags: UserTags.SuperAdmin,
-					userClass: UserClasses.Admin,
-					emailVerified: true,
-				});
-				superAdminCookie = getCookieHeader(
-					await gamdomApi.authenticateWithExistingUser(
-						superAdminData.username,
-						superAdminData.password,
-					),
-				);
+			test.beforeEach(
+				async ({ gamdomApi, gamdomDb, testDataPredefined }) => {
+					const superAdminData = new RegisterTestData({
+						useGamdomEmailDomain: true,
+					});
+					await gamdomDb.createNewUser({
+						username: superAdminData.username,
+						password: superAdminData.password,
+						email: superAdminData.email,
+						tags: UserTags.SuperAdmin,
+						userClass: UserClasses.Admin,
+						emailVerified: true,
+					});
+					superAdminCookie = getCookieHeader(
+						await gamdomApi.authenticateWithExistingUser(
+							superAdminData.username,
+							superAdminData.password,
+						),
+					);
 
-				// Retrieve and store the initial state of all providers
-				initialProvidersState = await gamdomApi.getProviders({
-					Cookie: superAdminCookie,
-				});
+					// Retrieve and store the initial state of all providers
+					initialProvidersState = await gamdomApi.getProviders({
+						Cookie: superAdminCookie,
+					});
 
-				// Temporary fix until we have control over imported Casino Providers upon redeploy so none have duplicated names
-				const hacksawHub = initialProvidersState.find(
-					(provider) => provider.producer_id === "Hacksaw Gaming",
-				) as Provider;
+					// Temporary fix until we have control over imported Casino Providers upon redeploy so none have duplicated names
+					const hacksawHub = initialProvidersState.find(
+						(provider) =>
+							provider.producer_id ===
+							ProducerId.HUB_HACKSAW_GAMING,
+					) as Provider;
 
-				await gamdomApi.setProviderState(
-					[
-						{
-							id: hacksawHub.id,
-							provider_name: "Hacksaw Gaming hub",
-							priority: 0,
-							disabled: hacksawHub.disabled,
-							qa_users_only: hacksawHub.qa_users_only,
-							provider_id: hacksawHub.provider_id,
-							imported_from: hacksawHub.imported_from,
-						},
-					],
-					{ Cookie: superAdminCookie },
-				);
-			});
+					const pragmaticPlayAlea = initialProvidersState.find(
+						(provider) =>
+							provider.producer_id ===
+							ProducerId.ALEA_PRAGMATIC_PLAY,
+					) as Provider;
+
+					await gamdomApi.setProviderState(
+						[
+							{
+								id: hacksawHub.id,
+								provider_name:
+									testDataPredefined.data.newProviderNames
+										.hacksawHub,
+								priority: 0,
+								disabled: hacksawHub.disabled,
+								qa_users_only: hacksawHub.qa_users_only,
+								provider_id: hacksawHub.provider_id,
+								imported_from: hacksawHub.imported_from,
+							},
+							{
+								id: pragmaticPlayAlea.id,
+								provider_name:
+									testDataPredefined.data.newProviderNames
+										.pragmaticPlayAlea,
+								priority: 0,
+								disabled: pragmaticPlayAlea.disabled,
+								qa_users_only: pragmaticPlayAlea.qa_users_only,
+								provider_id: pragmaticPlayAlea.provider_id,
+								imported_from: pragmaticPlayAlea.imported_from,
+							},
+						],
+						{ Cookie: superAdminCookie },
+					);
+				},
+			);
 
 			/**
 			 * After each test, reset the providers to their initial state.
