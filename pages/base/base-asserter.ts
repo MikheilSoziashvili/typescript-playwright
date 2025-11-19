@@ -239,11 +239,15 @@ export class BaseAsserter<
 	@step("Check that elements are hidden")
 	public async checkElementsAreHidden(
 		elements: Locator[],
-		timeout?: number,
-		message?: string,
+		options?: {
+			timeout?: number;
+			message?: string;
+		},
 	): Promise<void> {
 		await this.assertOnElements(elements, (el) =>
-			expect(el, message).toBeHidden({ timeout }),
+			expect(el, options?.message).toBeHidden({
+				timeout: options?.timeout,
+			}),
 		);
 	}
 

@@ -16,7 +16,7 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 		super(chat);
 	}
 
-	@step("Retry wit page reload")
+	@step("Retry with page reload")
 	private async retryWithPageReload(
 		fn: (attempt: number) => Promise<void>,
 		description: string,
@@ -117,12 +117,15 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 		retries = 3,
 	): Promise<void> {
 		const message = this.gamdomPage.map.messageLocator(messageInfo);
-		const diamondIcon = this.gamdomPage.map.diamondIcon();
+		const diamondIcon = this.gamdomPage.map.diamondIcon(messageInfo);
+
 		await this.retryWithPageReload(
 			async (_attempt) => {
 				await this.checkElementsAreVisible([message]);
 				if (vipStatus === VipUserStatus.PVIP) {
-					await this.checkElementsAreHidden([diamondIcon]);
+					await this.checkElementsAreHidden([diamondIcon], {
+						message: `VIP diamond icon should be hidden for message "${messageInfo.message}"`,
+					});
 				} else {
 					await this.checkElementsAreVisible([diamondIcon]);
 					await diamondIcon.hover();

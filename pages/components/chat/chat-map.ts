@@ -66,6 +66,16 @@ export class ChatMap extends BaseMap {
 		);
 	}
 
+	public get usernameInMessage(): Locator {
+		return this.page.locator('[data-testid*="messageSay-userName"]');
+	}
+
+	public get textInMessage(): Locator {
+		return this.page.locator(
+			'[data-testid*="messageSay-messageContainer"]',
+		);
+	}
+
 	public messageLocator(options?: ChatMessageOptions): Locator {
 		const messageLocator = this.chatMessagesList.locator(
 			`li[data-testid*="messageSay-container-"]`,
@@ -75,10 +85,14 @@ export class ChatMap extends BaseMap {
 		} else if (options?.username && options.message) {
 			return messageLocator
 				.filter({
-					hasText: `${options.username}`,
+					has: this.usernameInMessage.filter({
+						hasText: options.username,
+					}),
 				})
 				.filter({
-					hasText: `${options.message}`,
+					has: this.textInMessage.filter({
+						hasText: options.message,
+					}),
 				})
 				.last();
 		} else {
