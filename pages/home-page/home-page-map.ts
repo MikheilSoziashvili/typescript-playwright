@@ -187,6 +187,22 @@ export class HomePageMap extends BaseMap {
 		return this.page.locator("span[class*='MuiTypography-liveSelection']");
 	}
 
+	public get liveBetsRows(): Locator {
+		return this.page.locator("div[role='tabpanel'] table tbody tr");
+	}
+
+	public liveBetsUsernameCell(row: Locator): Locator {
+		return row.locator("td").nth(1).locator("span").last();
+	}
+
+	public get recentWinsItems(): Locator {
+		return this.page.locator("div[class*='RecentWins-styled__Item']");
+	}
+
+	public recentWinsUsername(item: Locator): Locator {
+		return item.locator("span[class*='UserName']");
+	}
+
 	public get gamdomLogoButton(): Locator {
 		return this.page.locator(
 			"div[class*='GamdomLogoWithIconButton-styled_']",

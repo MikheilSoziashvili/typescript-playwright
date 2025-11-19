@@ -371,4 +371,13 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 
 		return { parsedDiceResult, parsedHistoryResult };
 	}
+	@step("Place winning bet")
+	public async placeWinningBet(
+		diceBetData: DiceBetTestData,
+		expectedWins: number,
+	): Promise<void> {
+		await this.assertDiceBetValuesAreCorrect(diceBetData);
+
+		await this.playUntilNumberOfWins(diceBetData, expectedWins);
+	}
 }

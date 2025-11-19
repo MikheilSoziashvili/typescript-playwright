@@ -58,3 +58,10 @@ export enum OriginalsQuickSelectButtons {
 	MAX = "MAX",
 	DOUBLE = "DOUBLE",
 }
+
+export enum ExpectedWins {
+	ONE = 1,
+	FIVE = 5,
+	TEN = 10,
+	FIFTEEN = 15,
+}

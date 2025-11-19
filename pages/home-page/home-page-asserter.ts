@@ -18,6 +18,7 @@ import { HomePage } from "./home-page";
 import { CasinoGameUrl } from "@enums/casino-game";
 import * as Configuration from "configuration";
 import { Footer } from "@pages/components/footer/footer";
+import { HomePageSection } from "@enums/homepage-launch-locations";
 
 export class HomePageAsserter extends BaseAsserter<HomePage> {
 	public fromCsv: boolean;
@@ -301,6 +302,12 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 			.toBeGreaterThan(0);
 	}
 
+	@step("Verify Recent Wins and Total Bets sections are correct")
+	public async verifyHomepageStatisticsAreCorrect(): Promise<void> {
+		await this.verifyRecentWinsSectionIsVisibleAndPopulated();
+		await this.verifyTotalBetsAreNotZeroAndUpdatedInTime();
+	}
+
 	@step("Verify redirection to game")
 	public async userIsRedirectedToGame(): Promise<void> {
 		await expect(this.gamdomPage.page).toHaveURL(
@@ -377,5 +384,51 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		await this.gamdomPage.authenticatedHeader
 			.assertThat()
 			.loggedInUserElementsAreVisibleV4();
+	}
+
+	@step("Verify all usernames are hidden")
+	public async allUsernamesAreHidden(
+		list: Locator,
+		getUsername: (element: Locator) => Locator,
+		sectionName: string,
+	): Promise<void> {
+		const count = await list.count();
+		expect(count, `${sectionName} should contain items`).toBeGreaterThan(0);
+
+		for (let i = 0; i < count; i++) {
+			const element = list.nth(i);
+			const username = getUsername(element);
+			const text = await username.textContent();
+			expect(
+				text,
+				`${sectionName} username should contain 'Hidden user'`,
+			).toContain("Hidden user");
+		}
+	}
+
+	@step("Verify username is masked as Hidden user in section: {sectionName}")
+	public async usernameIsMaskedInSection(
+		sectionName: HomePageSection,
+	): Promise<void> {
+		const isLiveBets = sectionName === HomePageSection.LIVE_BETS;
+
+		const list = isLiveBets
+			? this.gamdomPage.map.liveBetsRows
+			: this.gamdomPage.map.recentWinsItems;
+
+		const getUsername = isLiveBets
+			? (row: Locator) => this.gamdomPage.map.liveBetsUsernameCell(row)
+			: (item: Locator) => this.gamdomPage.map.recentWinsUsername(item);
+
+		await this.allUsernamesAreHidden(list, getUsername, sectionName);
+	}
+
+	@step("Verify username is masked as Hidden user in multiple sections")
+	public async usernameIsMaskedInSections(
+		...sections: HomePageSection[]
+	): Promise<void> {
+		for (const section of sections) {
+			await this.usernameIsMaskedInSection(section);
+		}
 	}
 }

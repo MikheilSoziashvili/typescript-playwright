@@ -44,4 +44,6 @@ export enum ToastSubTitle {
 	KYC_LEVEL_TRIGGERED = "KYC level triggered successfully",
 	KYC_LEVEL_REVOKED = "KYC level revoked successfully",
 	ADMIN_NEW_USERS_TABLE_FETCHED_SUCCESSFULLY = "Successfully fetched users from database.",
+	HIDEN_DETAILS_DISABLED = "Hidden details mode disabled!",
+	HIDEN_DETAILS_ENABLED = "Hidden details mode enabled!",
 }

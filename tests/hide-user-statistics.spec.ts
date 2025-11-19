@@ -7,6 +7,8 @@ import {
 import { RegisterTestData } from "@dtos/test-data";
 import { ChatFooterPlaceholder } from "@enums/chat-footer-palceholders";
 import { JiraUser } from "@enums/jira/jira-users";
+import { UserPrivacyOption } from "@enums/user-privacy-options";
+import { ToggleOptions } from "@enums/visibility-options";
 import { test } from "@fixtures/fixtures";
 
 const userHiddenStats = new RegisterTestData();
@@ -31,7 +33,12 @@ test.describe("User statistics tests", () => {
 			);
 			await setAuthenticationCookies(page, cookie);
 			await profilePage.navigate();
-			await profilePage.steps().toggleUserStatisticsMode("on");
+			await profilePage
+				.steps()
+				.toggleUserPrivacy(
+					UserPrivacyOption.STATISTICS,
+					ToggleOptions.ON,
+				);
 			await homePage.navigate();
 			await homePage.authenticatedHeader.expandChatIfNotVisible();
 			await chat.steps().sendMessage(message);

@@ -3,41 +3,58 @@ import { step } from "decorators/step";
 import { getRandomEmail, getRandomPhone } from "@core/utils/utils";
 import { ContactType } from "@enums/personal-info-types";
 import { Timeout } from "@enums/timeout";
-import { logger } from "@logger/logger";
 import { BasePageStep } from "@pages/base/base-page-step";
 import { Page } from "@playwright/test";
 import { ProfilePage } from "./profile-page";
+import { UserPrivacyOption } from "@enums/user-privacy-options";
+import { ToggleOptions } from "@enums/visibility-options";
+import { ToastTitle } from "@enums/toast-titles";
+import { ToastSubTitle } from "@enums/toast-subtitles";
+import { Toast } from "@pages/components/toast/toast";
 
 export class ProfilePageSteps extends BasePageStep<ProfilePage> {
+	public toast: Toast;
 	public constructor(gamdomPage: ProfilePage) {
 		super(gamdomPage);
+		this.toast = new Toast(gamdomPage.page);
 	}
 
-	@step("Set hide user statistics mode")
-	private async setHideUserStatisticsMode(): Promise<void> {
-		if (!(await this.gamdomPage.map.hideStatisticsToggle.isChecked())) {
-			await this.gamdomPage.map.hideStatisticsToggle.click();
-		} else {
-			logger.info("Hidden statistics mode already enabled");
+	@step("Toggle user privacy setting: {setting} -> {mode}")
+	public async toggleUserPrivacy(
+		setting: UserPrivacyOption,
+		mode: ToggleOptions,
+	): Promise<void> {
+		const toggles = {
+			[UserPrivacyOption.STATISTICS]:
+				this.gamdomPage.map.hideStatisticsToggle,
+			[UserPrivacyOption.DETAILS]: this.gamdomPage.map.hideDetailsToggle,
+		} as const;
+
+		const toggle = toggles[setting];
+
+		const shouldBeChecked = mode === ToggleOptions.ON;
+		const isChecked = await toggle.isChecked();
+
+		if (isChecked === shouldBeChecked) {
+			return;
 		}
+
+		await toggle.click();
 	}
 
-	@step("Set show user statistics mode")
-	private async setShowUserStatisticsMode(): Promise<void> {
-		if (await this.gamdomPage.map.hideStatisticsToggle.isChecked()) {
-			await this.gamdomPage.map.hideStatisticsToggle.click();
-		} else {
-			logger.info("Hidden statistics mode already disabled");
-		}
-	}
+	@step("Enable Hidden Details privacy and verify toast message")
+	public async enableHiddenDetails(): Promise<void> {
+		await this.toggleUserPrivacy(
+			UserPrivacyOption.DETAILS,
+			ToggleOptions.ON,
+		);
 
-	@step("Toggle user statistics mode")
-	public async toggleUserStatisticsMode(toggle: "on" | "off"): Promise<void> {
-		if (toggle === "on") {
-			await this.setHideUserStatisticsMode();
-		} else {
-			await this.setShowUserStatisticsMode();
-		}
+		await this.toast
+			.assertThat()
+			.toastMessageIs(
+				ToastTitle.SUCCESS,
+				ToastSubTitle.HIDEN_DETAILS_ENABLED,
+			);
 	}
 
 	@step("Complete verification flow")

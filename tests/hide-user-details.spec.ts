@@ -1,0 +1,62 @@
+import { testDetails } from "@core/helpers/test-details-helper";
+import { DiceGameResultMessage } from "@enums/dice-result-messages";
+import { HomePageSection } from "@enums/homepage-launch-locations";
+import { JiraComponent } from "@enums/jira/jira-components";
+import { JiraUser } from "@enums/jira/jira-users";
+import { ExpectedWins } from "@enums/original-games";
+import { TestUserRole } from "@enums/test-user-roles";
+import { test } from "@fixtures/fixtures";
+
+test.describe(
+	"User details tests",
+	testDetails().withTags(JiraComponent.PROFILE).apply(),
+	() => {
+		test(
+			"[ENG-4419] Hidden details in Live Bets and Recent Wins - ON",
+			testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+			async ({ browserSessionManager, testDataObject }) => {
+				const regular = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
+					{ reuseContext: true },
+				);
+
+				await regular.pages.profilePage.navigate();
+				await regular.pages.profilePage.steps().enableHiddenDetails();
+
+				await regular.pages.diceGamePage.navigate();
+				await regular.pages.diceGamePage
+					.assertThat()
+					.diceMessageIs(DiceGameResultMessage.PLACE_YOUR_BETS);
+
+				const betTestData = testDataObject.bet.preconfigured({
+					username: regular.getAuthenticatedUser().user.username,
+				}).highBetMinMultiplier;
+
+				await regular.pages.diceGamePage.steps().placeWinningBet(
+					{
+						betAmount: betTestData.betAmount,
+						multiplier: betTestData.autoCashoutMultiplier,
+					},
+					ExpectedWins.TEN,
+				);
+
+				await regular.pages.diceGamePage
+					.assertThat()
+					.diceMessageIs(DiceGameResultMessage.WIN);
+
+				await regular.pages.homePage.clickGamdomLogo();
+
+				await regular.pages.homePage
+					.assertThat()
+					.verifyHomepageStatisticsAreCorrect();
+
+				await regular.pages.homePage
+					.assertThat()
+					.usernameIsMaskedInSections(
+						HomePageSection.RECENT_WINS,
+						HomePageSection.LIVE_BETS,
+					);
+			},
+		);
+	},
+);

@@ -190,6 +190,7 @@ test.describe("Revoke free spins", () => {
 		async ({ browserSessionManager, gamdomDb, testDataObject }) => {
 			const superAdmin = await browserSessionManager.loginAs(
 				TestUserRole.SUPERADMIN,
+				{ reuseContext: true },
 			);
 			const regular = await browserSessionManager.loginAs(
 				TestUserRole.REGULAR,
@@ -325,6 +326,7 @@ test.describe("Free spins promotion reward", () => {
 		async ({ browserSessionManager, gamdomDb, testDataObject }) => {
 			const superAdmin = await browserSessionManager.loginAs(
 				TestUserRole.SUPERADMIN,
+				{ reuseContext: true },
 			);
 			const regular = await browserSessionManager.loginAs(
 				TestUserRole.REGULAR,

@@ -31,10 +31,12 @@ export class BetTestDataObjectFactory extends BaseTestDataObjectFactory<
 	public static override preconfigured({ username }: { username: string }): {
 		normalBetMinMultiplier: BetTestData;
 		normalBetMediumMultiplier: BetTestData;
+		highBetMinMultiplier: BetTestData;
 	} {
 		return {
 			normalBetMinMultiplier: new BetTestData(username, 10, 1.1),
 			normalBetMediumMultiplier: new BetTestData(username, 10, 1.5),
+			highBetMinMultiplier: new BetTestData(username, 100, 1.2),
 		};
 	}
 
