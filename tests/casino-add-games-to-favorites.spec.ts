@@ -2,7 +2,6 @@ import { test } from "@fixtures/fixtures";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraComponent } from "@enums/jira/jira-components";
-import { OriginalGame } from "@enums/original-games";
 import { CasinoGameName } from "@enums/casino-game";
 import { JiraUser } from "@enums/jira/jira-users";
 
@@ -31,13 +30,15 @@ test.describe(
 			async ({ casinoPage }) => {
 				await casinoPage.navigate();
 
-				await casinoPage.searchForGame(OriginalGame.Dice);
+				await casinoPage.searchForGame(CasinoGameName.BOOK_OF_ARABIA);
 				await casinoPage.addGameFromDropdownToFavorites(
-					OriginalGame.Dice,
+					CasinoGameName.BOOK_OF_ARABIA,
 				);
 				await casinoPage
 					.steps()
-					.openFavoritesAndCheckIfGameHasBeenAdded(OriginalGame.Dice);
+					.openFavoritesAndCheckIfGameHasBeenAdded(
+						CasinoGameName.BOOK_OF_ARABIA,
+					);
 			},
 		);
 

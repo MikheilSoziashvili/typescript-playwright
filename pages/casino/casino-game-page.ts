@@ -1,9 +1,6 @@
 import { CASINO_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { step } from "decorators/step";
-import {
-	BasePageNavigationParametersType,
-	OriginalGames,
-} from "@core/types/types";
+import { BasePageNavigationParametersType } from "@core/types/types";
 import { BasePage } from "@pages/base/base-page";
 import { Page } from "@playwright/test";
 import { CasinoPageMap } from "./casino-game-page-map";
@@ -75,7 +72,7 @@ export class CasinoPage extends BasePage<CasinoPageMap> {
 
 	@step("Add game from dropdown to favorites")
 	public async addGameFromDropdownToFavorites(
-		game: OriginalGames,
+		game: CasinoGameName,
 	): Promise<void> {
 		await this.map.dropdownHeartIcon(game).click();
 		await this.map.titleImage.click();

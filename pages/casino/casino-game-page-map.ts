@@ -1,7 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
 import { GameProvider } from "@enums/game-providers";
-import { OriginalGames } from "@core/types/types";
 import { CasinoGameName } from "@enums/casino-game";
 
 export class CasinoPageMap extends BaseMap {
@@ -52,7 +51,7 @@ export class CasinoPageMap extends BaseMap {
 			.first();
 	}
 
-	public originalGameDropdownItem(game: OriginalGames): Locator {
+	public casinoGameDropdownItem(game: CasinoGameName): Locator {
 		return this.page
 			.locator("li")
 			.filter({
@@ -67,7 +66,7 @@ export class CasinoPageMap extends BaseMap {
 				has: this.page.locator(
 					"div[class*='DropdownItem-styled__OptionDesc']",
 					{
-						hasText: "Gamdom Originals",
+						hasText: "Wicked Games",
 					},
 				),
 			});
@@ -87,8 +86,8 @@ export class CasinoPageMap extends BaseMap {
 			.first();
 	}
 
-	public dropdownHeartIcon(game: OriginalGames): Locator {
-		return this.originalGameDropdownItem(game)
+	public dropdownHeartIcon(game: CasinoGameName): Locator {
+		return this.casinoGameDropdownItem(game)
 			.locator("div[class*='DropdownItem-styled__LikesWrapper']")
 			.first();
 	}
