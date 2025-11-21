@@ -148,6 +148,7 @@ env:
     VERIFF_USERNAME: ${{ secrets.VERIFF_USERNAME }}
     VERIFF_PASSWORD: ${{ secrets.VERIFF_PASSWORD }}
     VERIFF_SECRET_2FA: ${{ secrets.VERIFF_SECRET_2FA }}
+    FIREBLOCKS_USDC_ETH_ASSET_ID: ${{ vars.FIREBLOCKS_USDC_ETH_ASSET_ID }}
 
 jobs:
     detect-new-modified-tests:

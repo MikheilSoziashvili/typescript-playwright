@@ -190,7 +190,7 @@ export class WalletModal extends BasePage<WalletModalMap> {
 	}
 
 	@step("Select USDT Network from dropdown")
-	public async selectUsdtNetwork(network: string): Promise<void> {
+	public async selectDepositNetwork(network: string): Promise<void> {
 		await this.map.networkDropdown.click();
 		await this.map.networkDropdownOption(network).click();
 	}

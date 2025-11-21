@@ -17,6 +17,7 @@ jobs:
         env:
             BUILD_NUMBER: ${{ github.run_number }}
             BUILD_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            FIREBLOCKS_USDC_ETH_ASSET_ID: ${{ vars.FIREBLOCKS_USDC_ETH_ASSET_ID }}
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4

@@ -68,4 +68,7 @@ export const predefined = {
 		hacksawHub: "Hacksaw Gaming hub",
 		pragmaticPlayAlea: "Pragmatic Play alea",
 	},
+	usdcEthAmountToDeposit: {
+		amountToDeposit: "0.02",
+	},
 };

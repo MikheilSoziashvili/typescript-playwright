@@ -61,3 +61,7 @@ export function createTrxClient(): FireblocksClient {
 export function createUsdtTrxClient(): FireblocksClient {
 	return createFireblocksClient(fireblocksConfig.usdtTrxAssetId);
 }
+
+export function createUsdcEthClient(): FireblocksClient {
+	return createFireblocksClient(fireblocksConfig.usdcEthAssetId);
+}
