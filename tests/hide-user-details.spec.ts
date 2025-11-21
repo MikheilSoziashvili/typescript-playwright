@@ -4,12 +4,13 @@ import { HomePageSection } from "@enums/homepage-launch-locations";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { ExpectedWins } from "@enums/original-games";
+import { TestTag } from "@enums/test-tags";
 import { TestUserRole } from "@enums/test-user-roles";
 import { test } from "@fixtures/fixtures";
 
 test.describe(
 	"User details tests",
-	testDetails().withTags(JiraComponent.PROFILE).apply(),
+	testDetails().withTags(TestTag.SEQUENTIAL, JiraComponent.PROFILE).apply(),
 	() => {
 		test(
 			"[ENG-4419] Hidden details in Live Bets and Recent Wins - ON",
