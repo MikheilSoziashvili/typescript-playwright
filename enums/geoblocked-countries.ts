@@ -12,4 +12,5 @@ export enum SoftBlockedCountry {
 	SPAIN = "Spain",
 	AUSTRALIA = "Australia",
 	FRANCE = "France",
+	SLOVAKIA = "Slovakia",
 }

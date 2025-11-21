@@ -52,6 +52,9 @@ export const PT_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8010");
 
 // France server - soft blocked
-export const FR_PROXY_CREDENTIALS = createProxyCredentials(
-	"fr.oxylabs.io:    ", //TBD
-);
+export const FR_PROXY_CREDENTIALS =
+	createProxyCredentials("dc.oxylabs.io:8011");
+
+// Slovakia server - soft blocked
+export const SK_PROXY_CREDENTIALS =
+	createProxyCredentials("dc.oxylabs.io:8020");

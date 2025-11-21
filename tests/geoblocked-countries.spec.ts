@@ -1,72 +1,37 @@
 import { USER_1_CREDENTIALS } from "@constants/credentials";
 import { PRODUCTION_BASE_URL } from "@constants/page-urls";
-import {
-	AU_PROXY_CREDENTIALS,
-	DE_PROXY_CREDENTIALS,
-	DK_PROXY_CREDENTIALS,
-	ES_PROXY_CREDENTIALS,
-	NL_PROXY_CREDENTIALS,
-	PT_PROXY_CREDENTIALS,
-	UK_PROXY_CREDENTIALS,
-	US_PROXY_CREDENTIALS,
-	BE_PROXY_CREDENTIALS,
-} from "@constants/proxies";
 import { testDetails } from "@core/helpers/test-details-helper";
-import { ProxyCredentialsType } from "@core/types/types";
-import {
-	GeoblockedCountry,
-	SoftBlockedCountry,
-} from "@enums/geoblocked-countries";
+import { SoftBlockedCountry } from "@enums/geoblocked-countries";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { AnnotationType } from "@enums/playwright/annotationsTypes";
 import { test } from "@fixtures/fixtures";
 import * as Configuration from "configuration";
+import { OAuthExpectations } from "test-data/interfaces";
+import { testData } from "test-data/test-data-manager";
 
 const baseUrls = [PRODUCTION_BASE_URL, Configuration.environment_url];
 const SOFTBLOCK_MODAL_TITLE =
 	"Sorry, but Gamdom is not available in your jurisdiction.";
 
-const countries = [
-	GeoblockedCountry.UNITED_STATED,
-	GeoblockedCountry.BELGIUM,
-	GeoblockedCountry.NETHERLANDS,
-];
-
-const geoblockedCredentialsMap = new Map<string, ProxyCredentialsType>([
-	[GeoblockedCountry.UNITED_STATED, US_PROXY_CREDENTIALS],
-	[GeoblockedCountry.BELGIUM, BE_PROXY_CREDENTIALS],
-	[GeoblockedCountry.NETHERLANDS, NL_PROXY_CREDENTIALS],
-]);
-
-const softBlockedCountries = [
-	SoftBlockedCountry.DENMARK,
-	SoftBlockedCountry.PORTUGAL,
-	SoftBlockedCountry.UNITED_KINGDOM,
-	SoftBlockedCountry.GERMANY,
-	SoftBlockedCountry.SPAIN,
-	SoftBlockedCountry.AUSTRALIA,
-];
-
-const softBlockedCredentialsMap = new Map<string, ProxyCredentialsType>([
-	[SoftBlockedCountry.DENMARK, DK_PROXY_CREDENTIALS],
-	[SoftBlockedCountry.PORTUGAL, PT_PROXY_CREDENTIALS],
-	[SoftBlockedCountry.UNITED_KINGDOM, UK_PROXY_CREDENTIALS],
-	[SoftBlockedCountry.GERMANY, DE_PROXY_CREDENTIALS],
-	[SoftBlockedCountry.SPAIN, ES_PROXY_CREDENTIALS],
-	[SoftBlockedCountry.AUSTRALIA, AU_PROXY_CREDENTIALS],
-]);
+const geoblockTestDataDomain = testData().fromDomain().oAuthLogin;
 
 for (const baseURL of baseUrls) {
-	for (const country of countries) {
+	for (const country of geoblockTestDataDomain.countries) {
 		test.describe(`Geoblocked country: ${country}`, () => {
 			test.use({
-				proxy: geoblockedCredentialsMap.get(country),
+				proxy: geoblockTestDataDomain.geoblockedCredentialsMap.get(
+					country,
+				),
 				baseURL: baseURL,
 			});
 
 			test(
 				`[ENG-5596] Check the country-based access restrictions : Blocked in ${country} for URL ${baseURL}`,
-				testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+				testDetails()
+					.withAuthor(JiraUser.RALUCA_ARITON)
+					.withTags(JiraComponent.GEOBLOCK)
+					.apply(),
 				async ({ homePage, geoblockedPage }) => {
 					await homePage.tryNavigate({ retries: 5 });
 					await geoblockedPage
@@ -86,7 +51,7 @@ for (const baseURL of baseUrls) {
 - UK - Disabled from soft blocked countries as the CI runners are in the UK
 - PT - Disabled from soft blocked countries for e2e-stg env due to use the proxy for other test needs.
 Unskip once proxies are stable or replaced.*/
-for (const country of softBlockedCountries) {
+for (const country of geoblockTestDataDomain.softBlockedCountries) {
 	test.describe(
 		`Soft blocked country: ${country}`,
 		testDetails()
@@ -102,12 +67,17 @@ for (const country of softBlockedCountries) {
 					country === SoftBlockedCountry.PORTUGAL,
 			);
 			test.use({
-				proxy: softBlockedCredentialsMap.get(country),
+				proxy: geoblockTestDataDomain.softBlockedCredentialsMap.get(
+					country,
+				),
 			});
 
 			test(
 				`[ENG-2621] Check the country-based access restrictions : Soft blocked in ${country}`,
-				testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+				testDetails()
+					.withAuthor(JiraUser.RALUCA_ARITON)
+					.withTags(JiraComponent.GEOBLOCK)
+					.apply(),
 				async ({ homePage, softblockModal }) => {
 					await homePage.navigate();
 
@@ -132,6 +102,104 @@ for (const country of softBlockedCountries) {
 							USER_1_CREDENTIALS.username,
 							USER_1_CREDENTIALS.password,
 						);
+				},
+			);
+		},
+	);
+}
+
+for (const country of geoblockTestDataDomain.softBlockedWithoutLoginCountries) {
+	test.describe(`Soft blocked country: ${country} (login not available)`, () => {
+		test.use({
+			proxy: geoblockTestDataDomain.softBlockedCredentialsMap.get(
+				SoftBlockedCountry.SLOVAKIA,
+			),
+		});
+
+		test(
+			"[ENG-5905] Soft blocked behavior for SK (no login allowed)",
+			testDetails()
+				.withAuthor(JiraUser.RALUCA_ARITON)
+				.withTags(JiraComponent.GEOBLOCK)
+				.apply(),
+			async ({ homePage, softblockModal }) => {
+				await homePage.navigate();
+
+				await softblockModal.assertThat().isDisplayed();
+				await softblockModal
+					.assertThat()
+					.hasCorrectTitle(SOFTBLOCK_MODAL_TITLE);
+
+				await softblockModal.steps().closeSoftblockModal();
+				await softblockModal.assertThat().isNotDisplayed();
+
+				await homePage.unauthenticatedHeader
+					.assertThat()
+					.isCreateAccountButtonDisabled();
+
+				await homePage.unauthenticatedHeader
+					.assertThat()
+					.isSignInButtonDisabled();
+
+				await homePage.assertThat().verifyTopBannerButtonsState();
+			},
+		);
+	});
+}
+
+for (const country of geoblockTestDataDomain.softBlockedCountries) {
+	test.describe(
+		`OAuth restrictions for ${country}`,
+		testDetails()
+			.withArbitraryAnnotations({
+				type: AnnotationType.INFRASTRUCTURE,
+				description: `Skipped softblocked countries (AU, UK, PT) due to current proxy limitations.`,
+			})
+			.apply(),
+		() => {
+			test.fixme(
+				country === SoftBlockedCountry.UNITED_KINGDOM ||
+					country === SoftBlockedCountry.AUSTRALIA ||
+					country === SoftBlockedCountry.PORTUGAL,
+			);
+			const oAuthTestDataDomain = testData().fromDomain().oAuthLogin;
+
+			const scenario = oAuthTestDataDomain.oAuthScenarios.find(
+				(s) => s.country === country,
+			);
+
+			const expects: OAuthExpectations = scenario
+				? scenario.expectations
+				: { steam: true, google: true, telegram: true };
+
+			test.use({
+				proxy: oAuthTestDataDomain.softBlockedCredentialsMap.get(
+					country,
+				),
+			});
+
+			test(
+				`[ENG-5914] Verify OAuth restriction rules for ${country}`,
+				testDetails()
+					.withAuthor(JiraUser.RALUCA_ARITON)
+					.withTags(JiraComponent.GEOBLOCK)
+					.apply(),
+				async ({ homePage, softblockModal }) => {
+					await homePage.navigate();
+
+					await softblockModal.assertThat().isDisplayed();
+					await softblockModal
+						.assertThat()
+						.hasCorrectTitle(SOFTBLOCK_MODAL_TITLE);
+
+					await softblockModal.steps().closeSoftblockModal();
+					await softblockModal.assertThat().isNotDisplayed();
+
+					await homePage.unauthenticatedHeader.openLoginModal();
+
+					await homePage.unauthenticatedHeader
+						.assertThat()
+						.oAuthButtonsMatch(expects);
 				},
 			);
 		},

@@ -2,6 +2,8 @@ import { BaseAsserter } from "@base/base-asserter";
 import { step } from "decorators/step";
 import { Timeout } from "@enums/timeout";
 import { UnauthenticatedHeader } from "./unauthenticated-header";
+import { oAuthAccount } from "@enums/oAuth-accounts";
+import { Locator } from "@playwright/test";
 
 export class UnauthenticatedHeaderAsserter extends BaseAsserter<UnauthenticatedHeader> {
 	public constructor(unauthenticatedHeader: UnauthenticatedHeader) {
@@ -21,6 +23,11 @@ export class UnauthenticatedHeaderAsserter extends BaseAsserter<UnauthenticatedH
 		await this.checkElementsAreDisabled([this.gamdomPage.map.signUpBtn]);
 	}
 
+	@step("Check Sign In button is disabled")
+	async isSignInButtonDisabled(): Promise<void> {
+		await this.checkElementsAreDisabled([this.gamdomPage.map.loginBtn]);
+	}
+
 	@step("Check social login options are visible")
 	async socialLoginOptionsAreVisible(): Promise<void> {
 		await this.checkElementsAreVisible([
@@ -28,5 +35,56 @@ export class UnauthenticatedHeaderAsserter extends BaseAsserter<UnauthenticatedH
 			this.gamdomPage.map.googleSignInButton,
 			this.gamdomPage.map.telegramSignInButton,
 		]);
+	}
+
+	@step("Ensure OAuth provider is enabled (visible + enabled)")
+	async ensureOAuthEnabled(button: Locator): Promise<void> {
+		await this.checkElementsAreVisible([button]);
+		await this.checkElementsAreEnabled([button]);
+	}
+
+	@step("Ensure OAuth provider is disabled")
+	async ensureOAuthDisabled(button: Locator): Promise<void> {
+		await this.checkElementsAreDisabled([button]);
+	}
+
+	@step("Ensure all OAuth providers are enabled")
+	async ensureAllOAuthEnabled(): Promise<void> {
+		await this.ensureOAuthEnabled(this.gamdomPage.map.steamSignInButton);
+		await this.ensureOAuthEnabled(this.gamdomPage.map.googleSignInButton);
+		await this.ensureOAuthEnabled(this.gamdomPage.map.telegramSignInButton);
+	}
+
+	@step("Check OAuth provider is enabled/disabled")
+	async oAuthIsEnabled(
+		provider: oAuthAccount,
+		expected: boolean,
+	): Promise<void> {
+		const buttonMap = {
+			[oAuthAccount.STEAM]: this.gamdomPage.map.steamSignInButton,
+			[oAuthAccount.GOOGLE]: this.gamdomPage.map.googleSignInButton,
+			[oAuthAccount.TELEGRAM]: this.gamdomPage.map.telegramSignInButton,
+		};
+
+		const button = buttonMap[provider];
+
+		await (expected
+			? this.ensureOAuthEnabled(button)
+			: this.ensureOAuthDisabled(button));
+	}
+
+	@step("Verify OAuth buttons match expected rules")
+	async oAuthButtonsMatch(expects: {
+		steam: boolean;
+		google: boolean;
+		telegram: boolean;
+	}): Promise<void> {
+		if (expects.steam && expects.google && expects.telegram) {
+			return this.ensureAllOAuthEnabled();
+		}
+
+		await this.oAuthIsEnabled(oAuthAccount.STEAM, expects.steam);
+		await this.oAuthIsEnabled(oAuthAccount.GOOGLE, expects.google);
+		await this.oAuthIsEnabled(oAuthAccount.TELEGRAM, expects.telegram);
 	}
 }
