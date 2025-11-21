@@ -5,6 +5,7 @@ import { BookOfPyramidsPage } from "./bgaming/book-of-pyramids/book-of-pyramids-
 import { CasinoGamesUnifiedPage } from "./casino-games-page";
 import { CashVaultIPage } from "./hacksaw-gaming/cash-vault-i/cash-vault-i-page";
 import { BookOfArabiaPage } from "./wickedgames/book-of-arabia/book-of-arabia-page";
+import { LiveBaccaratSqueezePage } from "./evolution-gaming/live-baccarat-squeeze/live-baccarat-squeeze-page";
 import { CasinoGameConfig } from "@core/interfaces";
 
 export class CasinoGamesPageAsserter extends BaseAsserter<CasinoGamesUnifiedPage> {
@@ -40,6 +41,13 @@ export class CasinoGamesPageAsserter extends BaseAsserter<CasinoGamesUnifiedPage
 			case GameProvider.WICKED_GAMES: {
 				const bookOfArabiaPage = gamePage as BookOfArabiaPage;
 				await bookOfArabiaPage.assertThat().ensureGameLoaded();
+				break;
+			}
+			case GameProvider.EVOLUTION_GAMING: {
+				await this.gamdomPage.setExtraHTTPHeaders();
+				const liveBaccaratSqueezePage =
+					gamePage as LiveBaccaratSqueezePage;
+				await liveBaccaratSqueezePage.steps().gameIsLoaded();
 				break;
 			}
 			default: {
@@ -78,6 +86,17 @@ export class CasinoGamesPageAsserter extends BaseAsserter<CasinoGamesUnifiedPage
 			case GameProvider.WICKED_GAMES: {
 				const bookOfArabiaPage = gamePage as BookOfArabiaPage;
 				await bookOfArabiaPage.assertThat().spinButtonIsIdle();
+				break;
+			}
+			case GameProvider.EVOLUTION_GAMING: {
+				const liveBaccaratSqueezePage =
+					gamePage as LiveBaccaratSqueezePage;
+				await liveBaccaratSqueezePage
+					.assertThat()
+					.gameRoundResultAppeared();
+				await this.gamdomPage.setExtraHTTPHeaders({
+					Authorization: `Bearer ${process.env.OAUTH2_JWT}`,
+				});
 				break;
 			}
 			default: {

@@ -1,5 +1,6 @@
 import { generateRandomString } from "@core/utils/utils";
 import {
+	CasinoGamesGenerator,
 	PromoCampaignCodesGenerator,
 	PromoCodesGenerators,
 } from "test-data/interfaces/random";
@@ -49,6 +50,12 @@ export class RandomDataSourceGenerator {
 				`${
 					this.predefinedRandom.promoCodes.campaignCode
 				}${generateRandomString({ length: 7 })}`,
+		};
+	}
+
+	public get casinoGames(): CasinoGamesGenerator {
+		return {
+			playerName: () => this.predefinedRandom.casinoGames.playerName,
 		};
 	}
 }

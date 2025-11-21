@@ -30,6 +30,7 @@ export class CasinoGamesPageSteps extends BasePageStep<CasinoGamesUnifiedPage> {
 				});
 				break;
 			}
+			case GameProvider.EVOLUTION_GAMING:
 			case GameProvider.BGAMING:
 			case GameProvider.HACKSAW_GAMING:
 				// No additional setup needed for these providers

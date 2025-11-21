@@ -156,7 +156,9 @@ test.describe("Casino games tests", () => {
 						transactionsAdminPage,
 						browserSessionManager,
 						toast,
+						page,
 					}) => {
+						await stripAuthFromExternalRequests(page);
 						const superAdminSession =
 							await browserSessionManager.loginAs(
 								TestUserRole.SUPERADMIN,

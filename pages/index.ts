@@ -52,6 +52,7 @@ import { BlogCategoryPage } from "./blog/category/blog-category-page";
 import { BlogPostPage } from "./blog/post/blog-post-page";
 import { BookOfPyramidsPage } from "./casino-games/bgaming/book-of-pyramids/book-of-pyramids-page";
 import { CashVaultIPage } from "./casino-games/hacksaw-gaming/cash-vault-i/cash-vault-i-page";
+import { LiveBaccaratSqueezePage } from "./casino-games/evolution-gaming/live-baccarat-squeeze/live-baccarat-squeeze-page";
 import { CasinoGamesUnifiedPage } from "./casino-games/casino-games-page";
 import { CasinoPage } from "./casino/casino-game-page";
 import { Notification } from "@components/notification/notification";
@@ -196,6 +197,7 @@ export const GamePages = {
 	bookOfPyramidsPage: BookOfPyramidsPage,
 	bubblesBonanzaPage: CashVaultIPage,
 	bookOfArabiaPage: BookOfArabiaPage,
+	liveBaccaratSqueezePage: LiveBaccaratSqueezePage,
 	casinoGamesPage: CasinoGamesUnifiedPage,
 } as const;
 

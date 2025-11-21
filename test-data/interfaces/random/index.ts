@@ -8,3 +8,6 @@ export interface PromoCampaignCodesGenerator {
 	codeValue(): string;
 }
 
+export interface CasinoGamesGenerator {
+	playerName(): string;
+}

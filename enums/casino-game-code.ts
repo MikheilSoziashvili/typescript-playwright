@@ -20,4 +20,8 @@ export const CasinoGameCode: Record<string, CasinoGameCodeEntry> = {
 		name: "Book Of Arabia",
 		code: "wicked_bookofarabia",
 	},
+	LIVE_BACCARAT_SQUEEZE: {
+		name: "Live Baccarat Squeeze",
+		code: "evo_livebaccaratsqueeze",
+	},
 };

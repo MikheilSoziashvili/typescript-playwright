@@ -18,4 +18,9 @@ export const predefinedRandom = {
 	emails: {
 		forgotPassword: getRandomEmail(),
 	},
+	casinoGames: {
+		playerName: generateRandomString({
+			prefix: "Player_",
+		}),
+	},
 };
