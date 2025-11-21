@@ -43,6 +43,7 @@ export const TRANSACTIONS_PAGE_ENDPOINT = "/transactions";
 export const CRYPTO_ADMIN_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/CryptoAdmin`;
 export const MINES_GAME_PAGE_ENDPOINT = "/mines";
 export const KENO_GAME_PAGE_ENDPOINT = "/keno";
+export const POCKET_DICE_GAME_PAGE_ENDPOINT = "/pocket-dice";
 export const EV_REWARDS_ADMIN_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/EVRewardsSystemAdmin`;
 export const PRIVACY_PAGE_ENDPOINT = "/privacy";
 export const SPORTS_PAGE_ENDPOINT = "/sports";

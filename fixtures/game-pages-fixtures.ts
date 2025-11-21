@@ -7,6 +7,7 @@ import { OriginalsPage } from "@pages/originals/originals-page";
 import { PlinkoGamePage } from "@pages/plinko-game-page/plinko-game-page";
 import { MinesGamePage } from "@pages/mines-game-page/mines-game-page";
 import { KenoGamePage } from "@pages/keno-game/keno-game-page";
+import { PocketDicePage } from "@pages/pocket-dice-game/pocket-dice-page";
 import { BookOfPyramidsPage } from "@pages/casino-games/bgaming/book-of-pyramids/book-of-pyramids-page";
 import { CashVaultIPage } from "@pages/casino-games/hacksaw-gaming/cash-vault-i/cash-vault-i-page";
 import { BookOfArabiaPage } from "@pages/casino-games/wickedgames/book-of-arabia/book-of-arabia-page";
@@ -27,6 +28,7 @@ export type GamePages = {
 	plinkoGamePage: PlinkoGamePage;
 	minesGamePage: MinesGamePage;
 	kenoGamePage: KenoGamePage;
+	pocketDicePage: PocketDicePage;
 	bookOfPyramidsPage: BookOfPyramidsPage;
 	bubblesBonanzaPage: CashVaultIPage;
 	bookOfArabiaPage: BookOfArabiaPage;
@@ -47,6 +49,7 @@ export const gamePagesFixtures = base.extend<GamePages>({
 	plinkoGamePage: sessionAwarePage(PlinkoGamePage),
 	minesGamePage: sessionAwarePage(MinesGamePage),
 	kenoGamePage: sessionAwarePage(KenoGamePage),
+	pocketDicePage: sessionAwarePage(PocketDicePage),
 	bookOfPyramidsPage: sessionAwarePage(BookOfPyramidsPage),
 	bubblesBonanzaPage: sessionAwarePage(CashVaultIPage),
 	bookOfArabiaPage: sessionAwarePage(BookOfArabiaPage),

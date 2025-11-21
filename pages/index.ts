@@ -104,6 +104,7 @@ import { StatisticsPage } from "./statistics/statistics-page";
 import { TransactionsPage } from "./transactions/transactions-page";
 import { VerificationPage } from "./verification/verification-page";
 import { BookOfArabiaPage } from "./casino-games/wickedgames/book-of-arabia/book-of-arabia-page";
+import { PocketDicePage } from "./pocket-dice-game/pocket-dice-page";
 
 export const GamdomPages = {
 	homePage: HomePage,
@@ -199,6 +200,7 @@ export const GamePages = {
 	bookOfArabiaPage: BookOfArabiaPage,
 	liveBaccaratSqueezePage: LiveBaccaratSqueezePage,
 	casinoGamesPage: CasinoGamesUnifiedPage,
+	pocketDicePage: PocketDicePage,
 } as const;
 
 export const Components = {

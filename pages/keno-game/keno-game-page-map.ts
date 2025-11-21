@@ -58,11 +58,27 @@ export class KenoGamePageMap extends BaseMap {
 		return this.page.getByTestId("originals-risk-slider");
 	}
 
+	public get sliderThumb(): Locator {
+		return this.riskRowsSlider.getByTestId("risk-slider-thumb");
+	}
+
 	public get yourBetValue(): Locator {
 		return this.page.getByTestId("Keno-balance");
 	}
 
 	public kenoGameTile(index: number): Locator {
 		return this.page.getByTestId(`originals-keno-cell-${index}`);
+	}
+
+	public get autobetCount(): Locator {
+		return this.page.getByTestId("originals-autobet-bet-count");
+	}
+
+	public get increaseByOnWin(): Locator {
+		return this.page.getByTestId("originals-autobet-win-increase");
+	}
+
+	public get increaseByOnLoss(): Locator {
+		return this.page.getByTestId("originals-autobet-loss-increase");
 	}
 }

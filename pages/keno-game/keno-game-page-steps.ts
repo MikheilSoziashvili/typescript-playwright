@@ -3,7 +3,10 @@ import { KenoGamePage } from "./keno-game-page";
 import { step } from "decorators/step";
 import { logger } from "@logger/logger";
 import { getFormattedMultiplier, parseMultiplier } from "@core/utils/utils";
-import { calculateBalanceAfterProfit } from "@formulas/betting-calculations";
+import {
+	calculateBalanceAfterProfit,
+	calculateBetAmountWithPercentage,
+} from "@formulas/betting-calculations";
 import { expect } from "@playwright/test";
 
 export class KenoGamePageSteps extends BasePageStep<KenoGamePage> {
@@ -44,10 +47,7 @@ export class KenoGamePageSteps extends BasePageStep<KenoGamePage> {
 		await this.gamdomPage.map.betAmountInput.fill(betAmount.toString());
 
 		if (options?.riskValue !== undefined) {
-			await this.gamdomPage.adjustSliderValue(
-				this.gamdomPage.map.riskRowsSlider,
-				options.riskValue,
-			);
+			await this.gamdomPage.defineSliderValues(options.riskValue);
 		}
 
 		await this.gamdomPage.map.pickRandomTilesButton.click();
@@ -196,5 +196,65 @@ export class KenoGamePageSteps extends BasePageStep<KenoGamePage> {
 		);
 
 		return multiplier;
+	}
+
+	@step("Verify bet amount increased by percentage")
+	public async verifyBetAmountIncreasedBy(
+		previousBet: number,
+		percentage: number,
+	): Promise<number> {
+		const actualBet = await this.gamdomPage.getBetAmountInputValue();
+		const expectedBet = calculateBetAmountWithPercentage(
+			previousBet,
+			percentage,
+		);
+		expect(actualBet).toBeCloseTo(expectedBet, 1);
+		return actualBet;
+	}
+
+	@step("Play autobet rounds until win and loss detected")
+	public async playAutobetUntilWinAndLoss(
+		betAmount: number,
+		onWinPercentage: number,
+		onLossPercentage: number,
+	): Promise<void> {
+		let hasWin = false;
+		let hasLoss = false;
+		let currentBet = betAmount;
+
+		while (!hasWin || !hasLoss) {
+			await this.gamdomPage.map.startPlayingButton.click();
+			await this.gamdomPage.assertThat().startPlayingButtonIsEnabled();
+
+			const isWin = await this.gamdomPage.assertThat().isWinDetected();
+
+			if (isWin && !hasWin) {
+				logger.info("First win detected");
+				hasWin = true;
+			} else if (!isWin && !hasLoss) {
+				logger.info("First loss detected");
+				hasLoss = true;
+			}
+
+			if (hasWin || hasLoss) {
+				currentBet = await this.updateBetAmount(
+					currentBet,
+					isWin,
+					onWinPercentage,
+					onLossPercentage,
+				);
+			}
+		}
+	}
+
+	@step("Update bet amount based on win/loss")
+	private async updateBetAmount(
+		currentBet: number,
+		isWin: boolean,
+		onWinPercentage: number,
+		onLossPercentage: number,
+	): Promise<number> {
+		const percentage = isWin ? onWinPercentage : onLossPercentage;
+		return this.verifyBetAmountIncreasedBy(currentBet, percentage);
 	}
 }

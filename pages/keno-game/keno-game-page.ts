@@ -80,11 +80,12 @@ export class KenoGamePage extends BasePage<KenoGamePageMap> {
 
 	@step("Define slider values")
 	public async defineSliderValues(riskValue: number): Promise<void> {
-		const slider = this.map.riskRowsSlider;
-		await slider.focus();
-		await slider.press(KeyboardKey.HOME);
+		const sliderThumb = this.map.sliderThumb;
+		await sliderThumb.click();
+		await sliderThumb.press(KeyboardKey.HOME);
+
 		for (let i = 0; i < riskValue; i++) {
-			await slider.press(KeyboardKey.ARROW_RIGHT);
+			await sliderThumb.press(KeyboardKey.ARROW_RIGHT);
 		}
 	}
 
@@ -116,6 +117,29 @@ export class KenoGamePage extends BasePage<KenoGamePageMap> {
 
 	@step("Pick random tiles")
 	public async pickRandomTiles(): Promise<void> {
+		await this.map.pickRandomTilesButton.click();
+	}
+
+	@step("Get bet amount input value")
+	public async getBetAmountInputValue(): Promise<number> {
+		const value = await this.map.betAmountInput.inputValue();
+		return parseFloat(value);
+	}
+
+	@step("Configure autobet with Increase By")
+	public async configureAutobetIncreaseBy(
+		betAmount: number,
+		riskValue: number,
+		autobetCount: number,
+		onWinPercentage: number,
+		onLossPercentage: number,
+	): Promise<void> {
+		await this.map.autobetSection.click();
+		await this.insertBet(betAmount);
+		await this.defineSliderValues(riskValue);
+		await this.map.autobetCount.fill(autobetCount.toString());
+		await this.map.increaseByOnWin.fill(onWinPercentage.toString());
+		await this.map.increaseByOnLoss.fill(onLossPercentage.toString());
 		await this.map.pickRandomTilesButton.click();
 	}
 }

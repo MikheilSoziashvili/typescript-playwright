@@ -34,6 +34,15 @@ export const predefined = {
 		betAmountDDefault: 1,
 		betAmountSmall: 10,
 	},
+	sokAutobet: {
+		betAmount: 1,
+		betAmountLow: 0.15,
+		autobetCount: 1,
+		onWinIncrease20: 20,
+		onWinIncrease50: 50,
+		onLossIncrease50: 50,
+		onLossIncrease20: 20,
+	},
 	veriff: {
 		documentTypes: ["document-front", "document-back", "face"],
 		documentImage:
