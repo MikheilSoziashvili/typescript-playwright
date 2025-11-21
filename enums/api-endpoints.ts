@@ -7,6 +7,7 @@ export enum ApiEndpoints {
 	GET_FEATURES_STATE = "/client-api/admin/feature/getFeaturesState",
 	SET_PROVIDER_STATE = "/client-api/admin/providers/saveExtProvidersList",
 	GET_PROVIDERS = "/client-api/admin/providers/getSlotsProviders",
+	GET_HOURLY_CRYPTO_BALANCES = "/client-api/admin/crypto/getHourlyCryptoBalances",
 	EDIT_USER_INFO = "/client-api/admin/user/editUserInfo",
 	CREATE_KOTH = "/client-api/admin/koth/createEvent",
 	ENABLE_RAIN = "/stream/chat/rpc/startCustomRain",

@@ -148,6 +148,10 @@ export const veriffConfig = {
 	secret2FA: asString(process.env.VERIFF_SECRET_2FA),
 };
 
+export const hourlyCryptoBalancesCronInterval = Number(
+	process.env.HOURLY_CRYPTO_BALANCES_CRON_INTERVAL ?? Timeout.LONG,
+);
+
 export const users: TestUserConfigurationObject[] = [
 	{
 		username: "superadmin",

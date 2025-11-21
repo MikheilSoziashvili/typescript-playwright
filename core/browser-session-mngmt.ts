@@ -202,6 +202,23 @@ export class BrowserSessionManager {
 				return userAuth;
 			}
 
+			case TestUserRole.ADMIN_CRYPTOSUPADMIN: {
+				const userAuth =
+					await this.gamdomApiDbFacade.createAdminUserDbAndAuth({
+						emailVerified: true,
+						useGamdomEmailDomain: false,
+						tags: [
+							UserTags.CryptoSupAdmin,
+							UserTags.CryptoAdmin,
+							UserTags.CryptoViewOnlyAdmin,
+							UserTags.UserInfoCryptoAdmin,
+						],
+						userClass: UserClasses.Admin,
+					});
+				await setAuthenticationCookies(page, userAuth.cookie);
+				return userAuth;
+			}
+
 			case TestUserRole.ADMIN_USER_INFO_ADMIN: {
 				const userAuth =
 					await this.gamdomApiDbFacade.createAdminUserDbAndAuth({

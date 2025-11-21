@@ -34,6 +34,8 @@ import { GetAllRedirectsResponse } from "@dtos/responses/gamdom-api/get-all-redi
 import { CreateRedirectRequest } from "@dtos/requests/gamdom-api/create-redirect-request";
 import { BulkRewardRequest } from "@dtos/requests/gamdom-api/bulk-reward-request";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
+import { HourlyCryptoBalancesRequest } from "@dtos/requests/gamdom-api/hourly-crypto-balances-request";
+import { HourlyCryptoBalancesResponse } from "@dtos/responses/gamdom-api/get-hourly-crypto-balances-response";
 
 export class GamdomApi extends BaseApi {
 	private gamdomDb: GamdomDb;
@@ -775,5 +777,21 @@ export class GamdomApi extends BaseApi {
 			_headers,
 		);
 		return this.post(parameters);
+	}
+
+	public async getHourlyCryptoBalances(options?: {
+		payload?: HourlyCryptoBalancesRequest;
+		headers?: Record<string, string>;
+	}): Promise<HourlyCryptoBalancesResponse> {
+		const payload = options?.payload ?? { page: 1, pageSize: 20 };
+		const headers = options?.headers;
+
+		const parameters = this.buildParameters(
+			ApiEndpoints.GET_HOURLY_CRYPTO_BALANCES,
+			payload,
+			headers,
+		);
+		const response = await this.post(parameters);
+		return response.json() as Promise<HourlyCryptoBalancesResponse>;
 	}
 }
