@@ -4,6 +4,7 @@ import {
 	createSolClient,
 	createTrxClient,
 	createUsdcEthClient,
+	createUsdcSolClient,
 	createUsdtClient,
 	createUsdtTrxClient,
 } from "@core/crypto/fireblocks/fireblocks-factory";
@@ -22,6 +23,7 @@ export type CryptoClients = {
 	trxClient: FireblocksClient;
 	usdtTrxClient: FireblocksClient;
 	usdcEthClient: FireblocksClient;
+	usdcSolClient: FireblocksClient;
 };
 
 export const cryptoFixtures = base.extend<CryptoClients>({
@@ -52,5 +54,8 @@ export const cryptoFixtures = base.extend<CryptoClients>({
 	},
 	usdcEthClient: async ({}, use) => {
 		await use(createUsdcEthClient());
+	},
+	usdcSolClient: async ({}, use) => {
+		await use(createUsdcSolClient());
 	},
 });

@@ -69,6 +69,7 @@ jobs:
             FIREBLOCKS_VAULT_ID: ${{ secrets.FIREBLOCKS_VAULT_ID }}
             TAG: ${{ inputs.tag == '' && 'visual' || inputs.tag }}
             FIREBLOCKS_USDC_ETH_ASSET_ID: ${{ vars.FIREBLOCKS_USDC_ETH_ASSET_ID }}
+            FIREBLOCKS_USDC_SOL_ASSET_ID: ${{ vars.FIREBLOCKS_USDC_SOL_ASSET_ID }}
 
         steps:
             - name: Validation For Environment URL

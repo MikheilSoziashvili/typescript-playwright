@@ -285,6 +285,7 @@ jobs:
             ENABLE_NEW_DESIGN_V4: ${{ inputs.enable_new_design_v4 }}
             GITHUB_EVENT_NAME: ${{ github.event_name }}
             FIREBLOCKS_USDC_ETH_ASSET_ID: ${{ vars.FIREBLOCKS_USDC_ETH_ASSET_ID }}
+            FIREBLOCKS_USDC_SOL_ASSET_ID: ${{ vars.FIREBLOCKS_USDC_SOL_ASSET_ID }}
 
         steps:
             - name: Validate required inputs for custom environment

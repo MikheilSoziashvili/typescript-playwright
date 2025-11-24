@@ -80,4 +80,7 @@ export const predefined = {
 	usdcEthAmountToDeposit: {
 		amountToDeposit: "0.02",
 	},
+	usdcSolAmountToDeposit: {
+		amountToDeposit: "0.02",
+	},
 };

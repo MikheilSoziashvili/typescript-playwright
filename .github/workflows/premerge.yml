@@ -30,6 +30,8 @@ jobs:
             VERIFF_USERNAME: ${{ vars.VERIFF_USERNAME }}
             XRP_TESTNET_RPC_URL: ${{ vars.XRP_TESTNET_RPC_URL }}
             XRP_TESTNET_FAUCET_URL: ${{ vars.XRP_TESTNET_FAUCET_URL }}
+            FIREBLOCKS_USDC_SOL_ASSET_ID: ${{ vars.FIREBLOCKS_USDC_SOL_ASSET_ID }}
+
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4

@@ -23,4 +23,5 @@ export enum CryptoTicker {
 	USDT_TRX = "USDT_TRX",
 	USDT_TRON = "USDT_TRON",
 	USDC_ETH = "USDC_ETH",
+	USDC_SOL = "USDC_SOL",
 }

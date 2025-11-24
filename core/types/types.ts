@@ -241,6 +241,7 @@ export type FireblocksConfig = {
 	trxAssetId: string;
 	usdtTrxAssetId: string;
 	usdcEthAssetId: string;
+	usdcSolAssetId: string;
 };
 
 export type UtxoNodeConfig = {

@@ -9,4 +9,5 @@ export enum CryptoNode {
 	fireTRX = "fireTRX",
 	fireTRX_USDT = "fireTRX_USDT",
 	fireUSDC_ETH = "fireUSDC_ETH",
+	fireUSDC_SOL = "fireUSDC_SOL",
 }

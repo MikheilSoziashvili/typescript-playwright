@@ -36,6 +36,11 @@ test.describe(
 						deposit: true,
 						withdraw: true,
 					},
+					{
+						cryptoName: CryptoTicker.USDC_SOL,
+						deposit: true,
+						withdraw: true,
+					},
 				]);
 
 				await cryptoAdminPage.refreshCryptoData();
@@ -48,6 +53,13 @@ test.describe(
 					.setMinDepositAndWithdraw(
 						CryptoNode.fireUSDC_ETH,
 						CryptoTicker.USDC_ETH,
+					);
+
+				await cryptoAdminPage
+					.steps()
+					.setMinDepositAndWithdraw(
+						CryptoNode.fireUSDC_SOL,
+						CryptoTicker.USDC_SOL,
 					);
 
 				await homePage.navigate({
@@ -123,6 +135,86 @@ test.describe(
 					.verifyBalance(balanceAfterDeposit, expectedBalance);
 
 				const fullTransactionId = await usdcEthClient.getTransaction(
+					depositTransaction.id,
+				);
+
+				const superAdmin = await browserSessionManager.loginAs(
+					TestUserRole.SUPERADMIN,
+				);
+
+				const superAdminCookie = getCookieHeader(
+					superAdmin.getAuthenticatedUser().cookie,
+				);
+
+				await cryptoAdminPage
+					.assertThat()
+					.assertTransactionCryptoAmount(
+						gamdomApi,
+						superAdminCookie,
+						fullTransactionId.txHash,
+						parseFloat(amountToDeposit),
+					);
+			},
+		);
+
+		test(
+			"[ENG-10915] USDC_SOL - deposit",
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			async ({
+				usdcSolClient,
+				cryptoAdminPage,
+				homePage,
+				walletModal,
+				transactionsPage,
+				transactionDetailsModal,
+				userBalanceHandler,
+				gamdomApi,
+				browserSessionManager,
+				testDataPredefined,
+			}) => {
+				const initialBalance =
+					await userBalanceHandler.walletBalanceInFiatRounded();
+
+				await walletModal.selectDepositNetwork(CryptoTicker.USDC_SOL);
+				const userDepositAddress =
+					await walletModal.getDepositAddress();
+				const amountToDeposit =
+					testDataPredefined.data.usdcSolAmountToDeposit
+						.amountToDeposit;
+				const vaultId = fireblocks.vaultId;
+
+				const depositTransaction = await usdcSolClient.sendToAddress(
+					vaultId,
+					userDepositAddress,
+					amountToDeposit,
+				);
+
+				await usdcSolClient.waitForCompletion(depositTransaction.id);
+
+				await transactionsPage
+					.steps()
+					.verifyDepositTransactionStatusIs(
+						TransactionState.COMPLETE,
+					);
+				await transactionsPage.clickTransactionDetailsButton();
+				await transactionDetailsModal
+					.assertThat()
+					.assertDepositAmountIn(
+						CryptoTicker.USDC_SOL,
+						parseFloat(amountToDeposit),
+					);
+
+				await homePage.navigate();
+
+				const balanceAfterDeposit =
+					await userBalanceHandler.walletBalanceInFiatRounded();
+				const expectedBalance =
+					initialBalance + parseFloat(amountToDeposit);
+				await homePage
+					.assertThat()
+					.verifyBalance(balanceAfterDeposit, expectedBalance);
+
+				const fullTransactionId = await usdcSolClient.getTransaction(
 					depositTransaction.id,
 				);
 
