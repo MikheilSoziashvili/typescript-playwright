@@ -18,6 +18,18 @@ jobs:
             BUILD_NUMBER: ${{ github.run_number }}
             BUILD_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
             FIREBLOCKS_USDC_ETH_ASSET_ID: ${{ vars.FIREBLOCKS_USDC_ETH_ASSET_ID }}
+            ENVIRONMENT_URL: ${{ vars.ENVIRONMENT_URL }}
+            FIREBLOCKS_BASE_URL: ${{ vars.FIREBLOCKS_BASE_URL }}
+            FIREBLOCKS_ETH_ASSET_ID: ${{ vars.FIREBLOCKS_ETH_ASSET_ID }}
+            FIREBLOCKS_SOL_ASSET_ID: ${{ vars.FIREBLOCKS_SOL_ASSET_ID }}
+            FIREBLOCKS_TRX_ASSET_ID: ${{ vars.FIREBLOCKS_TRX_ASSET_ID }}
+            FIREBLOCKS_USDT_TRX_ASSET_ID: ${{ vars.FIREBLOCKS_USDT_TRX_ASSET_ID }}
+            FIREBLOCKS_VAULT_ID: ${{ vars.FIREBLOCKS_VAULT_ID }}
+            LITECOIN_RPC_PORT: ${{ vars.LITECOIN_RPC_PORT }}
+            VERIFF_PUBLISHABLE_KEY: ${{ vars.VERIFF_PUBLISHABLE_KEY }}
+            VERIFF_USERNAME: ${{ vars.VERIFF_USERNAME }}
+            XRP_TESTNET_RPC_URL: ${{ vars.XRP_TESTNET_RPC_URL }}
+            XRP_TESTNET_FAUCET_URL: ${{ vars.XRP_TESTNET_FAUCET_URL }}
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
@@ -75,22 +87,11 @@ jobs:
             BITCOIN_RPC_USER: ${{ secrets.BITCOIN_RPC_USER }}
             BITCOIN_RPC_PASS: ${{ secrets.BITCOIN_RPC_PASS }}
             FIREBLOCKS_API_KEY: ${{ secrets.FIREBLOCKS_API_KEY }}
-            FIREBLOCKS_BASE_URL: ${{ secrets.FIREBLOCKS_BASE_URL }}
             FIREBLOCKS_SECRET_KEY: ${{ secrets.FIREBLOCKS_SECRET_KEY }}
             FIREBLOCKS_SECRET_KEY_PATH: ${{ secrets.FIREBLOCKS_SECRET_KEY_PATH }}
             FIREBLOCKS_USDT_ASSET_ID: ${{ secrets.FIREBLOCKS_USDT_ASSET_ID }}
-            FIREBLOCKS_VAULT_ID: ${{ secrets.FIREBLOCKS_VAULT_ID }}
             XRP_TESTNET_WALLET_SEED: ${{ secrets.XRP_TESTNET_WALLET_SEED }}
-            XRP_TESTNET_RPC_URL: ${{ secrets.XRP_TESTNET_RPC_URL }}
-            XRP_TESTNET_FAUCET_URL: ${{ secrets.XRP_TESTNET_FAUCET_URL }}
-            LITECOIN_RPC_PORT: ${{ secrets.LITECOIN_RPC_PORT }}
-            FIREBLOCKS_ETH_ASSET_ID: ${{ secrets.FIREBLOCKS_ETH_ASSET_ID }}
-            FIREBLOCKS_SOL_ASSET_ID: ${{ secrets.FIREBLOCKS_SOL_ASSET_ID }}
-            FIREBLOCKS_TRX_ASSET_ID: ${{ secrets.FIREBLOCKS_TRX_ASSET_ID }}
-            FIREBLOCKS_USDT_TRX_ASSET_ID: ${{ secrets.FIREBLOCKS_USDT_TRX_ASSET_ID }}
-            VERIFF_PUBLISHABLE_KEY: ${{ secrets.VERIFF_PUBLISHABLE_KEY }}
             VERIFF_PRIVATE_KEY: ${{ secrets.VERIFF_PRIVATE_KEY }}
-            VERIFF_USERNAME: ${{ secrets.VERIFF_USERNAME }}
             VERIFF_PASSWORD: ${{ secrets.VERIFF_PASSWORD }}
             VERIFF_SECRET_2FA: ${{ secrets.VERIFF_SECRET_2FA }}
 
@@ -126,21 +127,10 @@ jobs:
             BITCOIN_RPC_USER: ${{ secrets.BITCOIN_RPC_USER }}
             BITCOIN_RPC_PASS: ${{ secrets.BITCOIN_RPC_PASS }}
             FIREBLOCKS_API_KEY: ${{ secrets.FIREBLOCKS_API_KEY }}
-            FIREBLOCKS_BASE_URL: ${{ secrets.FIREBLOCKS_BASE_URL }}
             FIREBLOCKS_SECRET_KEY: ${{ secrets.FIREBLOCKS_SECRET_KEY }}
             FIREBLOCKS_SECRET_KEY_PATH: ${{ secrets.FIREBLOCKS_SECRET_KEY_PATH }}
             FIREBLOCKS_USDT_ASSET_ID: ${{ secrets.FIREBLOCKS_USDT_ASSET_ID }}
-            FIREBLOCKS_VAULT_ID: ${{ secrets.FIREBLOCKS_VAULT_ID }}
             XRP_TESTNET_WALLET_SEED: ${{ secrets.XRP_TESTNET_WALLET_SEED }}
-            XRP_TESTNET_RPC_URL: ${{ secrets.XRP_TESTNET_RPC_URL }}
-            XRP_TESTNET_FAUCET_URL: ${{ secrets.XRP_TESTNET_FAUCET_URL }}
-            LITECOIN_RPC_PORT: ${{ secrets.LITECOIN_RPC_PORT }}
-            FIREBLOCKS_ETH_ASSET_ID: ${{ secrets.FIREBLOCKS_ETH_ASSET_ID }}
-            FIREBLOCKS_SOL_ASSET_ID: ${{ secrets.FIREBLOCKS_SOL_ASSET_ID }}
-            FIREBLOCKS_TRX_ASSET_ID: ${{ secrets.FIREBLOCKS_TRX_ASSET_ID }}
-            FIREBLOCKS_USDT_TRX_ASSET_ID: ${{ secrets.FIREBLOCKS_USDT_TRX_ASSET_ID }}
-            VERIFF_PUBLISHABLE_KEY: ${{ secrets.VERIFF_PUBLISHABLE_KEY }}
             VERIFF_PRIVATE_KEY: ${{ secrets.VERIFF_PRIVATE_KEY }}
-            VERIFF_USERNAME: ${{ secrets.VERIFF_USERNAME }}
             VERIFF_PASSWORD: ${{ secrets.VERIFF_PASSWORD }}
             VERIFF_SECRET_2FA: ${{ secrets.VERIFF_SECRET_2FA }}
