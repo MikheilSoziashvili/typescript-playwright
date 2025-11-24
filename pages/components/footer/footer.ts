@@ -25,7 +25,7 @@ export class Footer extends BaseComponent<FooterMap> {
 	public async openFooterLinkByPlaceholder(
 		footerLink: string,
 	): Promise<void> {
-		await this.map.footerLinkByPlaceholder(footerLink).click();
+		await this.map.footerLinkByPlaceholder(footerLink).first().click();
 	}
 
 	@step("Open social media footer link by placeholder")
