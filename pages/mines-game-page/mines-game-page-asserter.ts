@@ -6,6 +6,7 @@ import { step } from "decorators/step";
 import { MinesGamePage } from "./mines-game-page";
 import { Timeout } from "@enums/timeout";
 import { IntervalMs } from "@enums/interval-millisecond";
+import { betLabelPattern } from "@support/regex-patterns";
 
 export class MinesGamePageAsserter extends BaseAsserter<MinesGamePage> {
 	public constructor(page: MinesGamePage) {
@@ -100,9 +101,10 @@ export class MinesGamePageAsserter extends BaseAsserter<MinesGamePage> {
 	async verifyBetAmountIsDisplayedInBetDetailsModal(
 		expectedAmount: string,
 	): Promise<void> {
-		await expect(this.gamdomPage.map.betDetailsBetAmount).toHaveText(
-			expectedAmount,
-		);
+		const betText =
+			await this.gamdomPage.map.betDetailsBetAmount.textContent();
+		const betAmount = betText?.replace(betLabelPattern, "").trim() || "";
+		expect(betAmount).toBe(expectedAmount);
 	}
 
 	@step("Verify bet amount in field")

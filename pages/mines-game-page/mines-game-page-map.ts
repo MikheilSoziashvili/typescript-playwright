@@ -67,7 +67,7 @@ export class MinesGamePageMap extends BaseMap {
 	}
 
 	public get gameHistoryModalContainer(): Locator {
-		return this.page.locator('div[class^="ModalHistorystyled__Container"]');
+		return this.page.getByTestId("game-history-container");
 	}
 
 	public get gameHistoryTable(): Locator {
@@ -87,17 +87,11 @@ export class MinesGamePageMap extends BaseMap {
 	}
 
 	public get singleBetHistoryModal(): Locator {
-		return this.page.locator('div[class^="ModalRoundstyled__Grid"]');
-	}
-
-	public get singleBetHistoryModalDetails(): Locator {
-		return this.singleBetHistoryModal.locator(
-			"div[class^='ModalRoundstyled__CardText']",
-		);
+		return this.page.getByTestId("game-history-bet-details-container");
 	}
 
 	public get betDetailsBetAmount(): Locator {
-		return this.singleBetHistoryModalDetails.nth(1);
+		return this.page.getByTestId("bet-details-card-Bet");
 	}
 
 	public get autobetTab(): Locator {

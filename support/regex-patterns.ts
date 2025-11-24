@@ -34,6 +34,7 @@ export const currencyAmountPattern = (
 
 export const currencyToNumberPattern = /[^\d.-]/g;
 export const currencyOnlyPattern = /[^0-9.,\s]/g;
+export const betLabelPattern = /^Bet/i;
 export const urlSpecialCharactersPattern = /[^a-z0-9\s-_]/g;
 export const urlSpacesAndUnderscoresPattern = /[\s_]+/g;
 export const urlMultipleHyphensPattern = /-+/g;
@@ -67,4 +68,3 @@ export const escapedNewlinePattern = /\\n/g;
 
 export const classNamePattern = (attributeValue: string): RegExp =>
 	new RegExp(`\\b${attributeValue}\\b`);
-

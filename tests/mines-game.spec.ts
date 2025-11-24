@@ -109,10 +109,6 @@ test.describe("Mines tests", () => {
 			.withAuthor(JiraUser.NIKOLAY_GENOV)
 			.apply(),
 		async ({ minesGamePage }) => {
-			test.fixme(
-				true,
-				"Temporarily skipped until data-testids are added",
-			);
 			await minesGamePage.navigateAndWaitForGameToLoad();
 
 			await minesGamePage.steps().placeBetAndConfigureMines(minesBetData);
