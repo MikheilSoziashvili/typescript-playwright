@@ -98,6 +98,7 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 			diceBetData.betAmount,
 			diceBetData.multiplier,
 		);
+		await this.gamdomPage.map.manualMultiplierField.blur();
 		const expectedValues = getExpectedDiceBetValues(diceBetData);
 		await this.gamdomPage
 			.assertThat()
