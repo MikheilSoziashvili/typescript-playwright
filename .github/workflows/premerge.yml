@@ -31,6 +31,7 @@ jobs:
             XRP_TESTNET_RPC_URL: ${{ vars.XRP_TESTNET_RPC_URL }}
             XRP_TESTNET_FAUCET_URL: ${{ vars.XRP_TESTNET_FAUCET_URL }}
             FIREBLOCKS_USDC_SOL_ASSET_ID: ${{ vars.FIREBLOCKS_USDC_SOL_ASSET_ID }}
+            DOGE_TESTNET_ADDRESS: ${{ vars.DOGE_TESTNET_ADDRESS }}
 
         steps:
             - uses: actions/checkout@v4
@@ -96,6 +97,8 @@ jobs:
             VERIFF_PRIVATE_KEY: ${{ secrets.VERIFF_PRIVATE_KEY }}
             VERIFF_PASSWORD: ${{ secrets.VERIFF_PASSWORD }}
             VERIFF_SECRET_2FA: ${{ secrets.VERIFF_SECRET_2FA }}
+            DOGE_TESTNET_PRIVATE_KEY: ${{ secrets.DOGE_TESTNET_PRIVATE_KEY }}
+
 
     tests-run:
         needs: detect-tests
@@ -136,3 +139,5 @@ jobs:
             VERIFF_PRIVATE_KEY: ${{ secrets.VERIFF_PRIVATE_KEY }}
             VERIFF_PASSWORD: ${{ secrets.VERIFF_PASSWORD }}
             VERIFF_SECRET_2FA: ${{ secrets.VERIFF_SECRET_2FA }}
+            DOGE_TESTNET_PRIVATE_KEY: ${{ secrets.DOGE_TESTNET_PRIVATE_KEY }}
+

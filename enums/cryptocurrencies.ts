@@ -5,7 +5,7 @@ export enum Cryptocurrency {
 	Tether = "TETHER",
 	Tron = "TRON",
 	Ripple = "Ripple",
-	Dogecoin = "Doge",
+	Doge = "Doge",
 	Solana = "Solana",
 	USDC = "USDC",
 }

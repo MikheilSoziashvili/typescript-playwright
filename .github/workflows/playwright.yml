@@ -184,6 +184,9 @@ on:
             VERIFF_SECRET_2FA:
                 required: true
                 description: "Veriff 2FA Secret"
+            DOGE_TESTNET_PRIVATE_KEY:
+                required: true
+                description: "Doge Testnet Private Key"
 
 concurrency:
     group: ${{ github.event_name == 'repository_dispatch' && format('auto-deploy-env-{0}', github.event.client_payload.pr_number) || format('playwright-e2e-{0}', github.ref) }}
@@ -286,6 +289,8 @@ jobs:
             GITHUB_EVENT_NAME: ${{ github.event_name }}
             FIREBLOCKS_USDC_ETH_ASSET_ID: ${{ vars.FIREBLOCKS_USDC_ETH_ASSET_ID }}
             FIREBLOCKS_USDC_SOL_ASSET_ID: ${{ vars.FIREBLOCKS_USDC_SOL_ASSET_ID }}
+            DOGE_TESTNET_ADDRESS: ${{ vars.DOGE_TESTNET_ADDRESS }}
+            DOGE_TESTNET_PRIVATE_KEY: ${{ secrets.DOGE_TESTNET_PRIVATE_KEY}}
 
         steps:
             - name: Validate required inputs for custom environment

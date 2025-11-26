@@ -1,3 +1,5 @@
+import { DogeTestnetClient } from "@core/crypto/doge/doge-testnet-client";
+import { createDogeTestnetClient } from "@core/crypto/doge/doge-testnet-factory";
 import { FireblocksClient } from "@core/crypto/fireblocks/fireblocks-client";
 import {
 	createEthClient,
@@ -24,6 +26,7 @@ export type CryptoClients = {
 	usdtTrxClient: FireblocksClient;
 	usdcEthClient: FireblocksClient;
 	usdcSolClient: FireblocksClient;
+	dogeClient: DogeTestnetClient;
 };
 
 export const cryptoFixtures = base.extend<CryptoClients>({
@@ -57,5 +60,8 @@ export const cryptoFixtures = base.extend<CryptoClients>({
 	},
 	usdcSolClient: async ({}, use) => {
 		await use(createUsdcSolClient());
+	},
+	dogeClient: async ({}, use) => {
+		await use(createDogeTestnetClient());
 	},
 });

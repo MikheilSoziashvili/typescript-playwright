@@ -140,6 +140,11 @@ export const xrpTestnet = {
 	faucetUrl: asString(process.env.XRP_TESTNET_FAUCET_URL),
 };
 
+export const dogeTestnet = {
+	privateKey: asString(process.env.DOGE_TESTNET_PRIVATE_KEY),
+	address: asString(process.env.DOGE_TESTNET_ADDRESS),
+};
+
 export const veriffConfig = {
 	apiUrl: asString(veriffBaseUrl),
 	callBackUrl: asString(veriffCallbackUrl),

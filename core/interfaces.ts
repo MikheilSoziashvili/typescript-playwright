@@ -76,3 +76,37 @@ export interface GameRoundResult {
 	amount: string;
 	betSpot: BaccaratBetSpot;
 }
+
+export interface AddressBalanceResponse {
+	chain_stats: {
+		funded_txo_sum: number;
+		spent_txo_sum: number;
+	};
+	mempool_stats: {
+		funded_txo_sum: number;
+		spent_txo_sum: number;
+	};
+}
+
+export interface ElectrsUtxo {
+	txid: string;
+	vout: number;
+	status: {
+		confirmed: boolean;
+		block_height?: number;
+	};
+	value: number;
+}
+
+export interface ElectrsTxResponse {
+	txid: string;
+	status: {
+		confirmed: boolean;
+		block_height?: number;
+	};
+}
+
+export interface TransactionResult {
+	txHash: string;
+	validated: boolean;
+}

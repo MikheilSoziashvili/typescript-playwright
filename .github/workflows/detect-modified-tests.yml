@@ -71,6 +71,9 @@ on:
                 required: true
             VERIFF_SECRET_2FA:
                 required: true
+            DOGE_TESTNET_PRIVATE_KEY:
+                required: true
+                description: "Doge Testnet Private Key"
 
 concurrency:
     group: detect-modified-tests-${{ github.ref }}
@@ -128,6 +131,8 @@ env:
     VERIFF_SECRET_2FA: ${{ secrets.VERIFF_SECRET_2FA }}
     FIREBLOCKS_USDC_ETH_ASSET_ID: ${{ vars.FIREBLOCKS_USDC_ETH_ASSET_ID }}
     FIREBLOCKS_USDC_SOL_ASSET_ID: ${{ vars.FIREBLOCKS_USDC_SOL_ASSET_ID }}
+    DOGE_TESTNET_ADDRESS: ${{ vars.DOGE_TESTNET_ADDRESS }}
+    DOGE_TESTNET_PRIVATE_KEY: ${{ secrets.DOGE_TESTNET_PRIVATE_KEY}}
 
 jobs:
     detect-new-modified-tests:
