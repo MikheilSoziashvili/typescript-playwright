@@ -3,6 +3,7 @@ import { ErrorConsoleAsserter } from "@core/listeners/console-listener/error-con
 import { ErrorConsoleListener } from "@core/listeners/console-listener/error-console-listener";
 import { ClientApiInitListener } from "@core/listeners/network-listener/client-api-token-listener";
 import { HourlyCryptoBalancesListener } from "@core/listeners/network-listener/hourly-crypto-balances-listener";
+import { UserAuditLogListener } from "@core/listeners/network-listener/user-audit-log-listener";
 import { test as base } from "@playwright/test";
 
 export type Listeners = {
@@ -11,6 +12,7 @@ export type Listeners = {
 	clientApiInitListener: ClientApiInitListener;
 	hourlyCryptoBalancesListener: HourlyCryptoBalancesListener;
 	errorConsoleAsserter: ErrorConsoleAsserter;
+	userAuditLogListener: UserAuditLogListener;
 };
 
 export const listenersFixtures = base.extend<Listeners>({
@@ -35,5 +37,10 @@ export const listenersFixtures = base.extend<Listeners>({
 	errorConsoleAsserter: async ({ errorConsoleListener }, use) => {
 		const asserter = new ErrorConsoleAsserter(errorConsoleListener);
 		await use(asserter);
+	},
+	userAuditLogListener: async ({ browserSessionManager }, use) => {
+		const page = browserSessionManager.active.page;
+		const listener = new UserAuditLogListener(page);
+		await use(listener);
 	},
 });

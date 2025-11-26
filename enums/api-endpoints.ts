@@ -26,4 +26,5 @@ export enum ApiEndpoints {
 	CREATE_SESSION = "/v1/sessions/",
 	SESSION_MEDIA = "/v1/sessions/{sessionId}/media",
 	SUBMIT_DECISION = "/v1/sessions/{sessionId}",
+	GET_USER_AUDIT_LOG = "/client-api/admin/user/getUserAuditLog",
 }

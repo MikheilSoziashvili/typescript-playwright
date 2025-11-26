@@ -5,10 +5,14 @@ import { UserInfoEditInfoAdminPageAsserter } from "./user-info-edit-info-admin-p
 import { UserInfoEditInfoAdminPageSteps } from "./user-info-edit-info-admin-page-steps";
 import { UserTags } from "@enums/db/user-tags";
 import { step } from "decorators/step";
+import { Toast } from "@pages/components/toast/toast";
 
 export class UserInfoEditInfoAdminPage extends BasePage<UserInfoEditInfoAdminPageMap> {
+	public readonly toast: Toast;
+
 	public constructor(page: Page) {
 		super(page, new UserInfoEditInfoAdminPageMap(page));
+		this.toast = new Toast(page);
 	}
 
 	public override assertThat(): UserInfoEditInfoAdminPageAsserter {

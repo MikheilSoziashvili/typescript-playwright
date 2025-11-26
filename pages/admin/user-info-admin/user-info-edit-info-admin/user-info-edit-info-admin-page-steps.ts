@@ -1,10 +1,10 @@
-import { BasePageStep } from "@pages/base/base-page-step";
-import { UserInfoEditInfoAdminPage } from "./user-info-edit-info-admin-page";
-import { step } from "decorators/step";
 import { BalanceEditStep } from "@dtos/test-data";
-import { Page } from "@playwright/test";
-import { ToastAsserter } from "@pages/components/toast/toast-asserter";
 import { logger } from "@logger/logger";
+import { BasePageStep } from "@pages/base/base-page-step";
+import { ToastAsserter } from "@pages/components/toast/toast-asserter";
+import { Page } from "@playwright/test";
+import { step } from "decorators/step";
+import { UserInfoEditInfoAdminPage } from "./user-info-edit-info-admin-page";
 
 export class UserInfoEditInfoAdminPageSteps extends BasePageStep<UserInfoEditInfoAdminPage> {
 	public constructor(gamdomPage: UserInfoEditInfoAdminPage) {
@@ -36,5 +36,26 @@ export class UserInfoEditInfoAdminPageSteps extends BasePageStep<UserInfoEditInf
 			await toast.subTitleIs(step.expectedMsg);
 			await toast.isNotDisplayed();
 		}
+	}
+
+	@step("Select eSports category option")
+	public async selectEsportsCategory(category: string): Promise<void> {
+		await this.gamdomPage.map.esportsCategoryCombobox.click();
+		await this.gamdomPage.map.esportsCategoryOption(category).click();
+	}
+
+	@step("Save eSports category and get toast message")
+	public async saveEsportsCategoryAndGetToastMessage(): Promise<string> {
+		await this.gamdomPage.clickSaveButton();
+		const toastMessage = await this.gamdomPage.toast.getToastMessage();
+		return toastMessage;
+	}
+
+	@step("Select and save esports category, then get toast message")
+	public async selectAndSaveEsportsCategoryAndGetToastMessage(
+		category: string,
+	): Promise<string> {
+		await this.selectEsportsCategory(category);
+		return this.saveEsportsCategoryAndGetToastMessage();
 	}
 }

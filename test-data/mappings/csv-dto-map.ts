@@ -20,6 +20,7 @@ import {
 	PromoCampaignUpdateCsv,
 	KycLevel2SubmissionsCsv,
 	CasinoGamesAggregatorProviderCsv,
+	EsportsCategoriesCsv,
 } from "@dtos/csv";
 import { HomePageBannerCarouselCsv } from "@dtos/csv/home-page-banner-carousel-csv";
 import { OriginalsSelfExclusionCsv } from "@dtos/csv/originals-self-exclusion";
@@ -55,4 +56,5 @@ export type CsvDtoMap = {
 	[CsvFilesName.POSSIBLE_WIN_POP_UP]: PossibleWinPopUpCsv;
 	[CsvFilesName.KYC_LEVEL2_SUBMISSIONS]: KycLevel2SubmissionsCsv;
 	[CsvFilesName.CASINO_GAMES_AGGREGATOR_PROVIDER]: CasinoGamesAggregatorProviderCsv;
+	[CsvFilesName.ESPORTS_CATEGORIES]: EsportsCategoriesCsv;
 };

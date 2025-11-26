@@ -20,4 +20,16 @@ export class Toast extends BaseComponent<ToastMap> {
 	}): Promise<void> {
 		await this.map.toastHereButtonLocator(options).click();
 	}
+
+	@step("Get toast message")
+	public async getToastMessage(): Promise<string> {
+		const container = this.map.toastContainer();
+
+		await container.waitFor();
+
+		const subTitle = this.map.toastSubTitleLocator();
+		await subTitle.waitFor();
+
+		return (await subTitle.innerText()).trim();
+	}
 }

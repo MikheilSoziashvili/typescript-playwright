@@ -21,3 +21,4 @@ export * from "./promo-campaign-update-csv";
 export * from "./possible-win-pop-up-csv";
 export * from "./kyc-level2-submissions-csv";
 export * from "./casino-games-aggregator-provider-csv";
+export * from "./esports-categories-csv";

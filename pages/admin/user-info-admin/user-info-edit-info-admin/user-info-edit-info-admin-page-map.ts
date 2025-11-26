@@ -37,4 +37,16 @@ export class UserInfoEditInfoAdminPageMap extends BaseMap {
 			has: this.page.locator("td").getByText(key, { exact: true }),
 		});
 	}
+
+	public get esportsCategoryRow(): Locator {
+		return this.rowByKeyExact("e_sports_player_category");
+	}
+
+	public get esportsCategoryCombobox(): Locator {
+		return this.esportsCategoryRow.locator('div[role="combobox"]');
+	}
+
+	public esportsCategoryOption(category: string): Locator {
+		return this.page.locator(`li[role="option"][data-value="${category}"]`);
+	}
 }

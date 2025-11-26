@@ -16,6 +16,7 @@ import { UserTags } from "@enums/db/user-tags";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { TestTag } from "@enums/test-tags";
+import { TestUserRole } from "@enums/test-user-roles";
 import { Timeout } from "@enums/timeout";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
@@ -383,6 +384,82 @@ test.describe(
 						.saveButtonIsEnabledWithSaveText();
 				},
 			);
+		});
+
+		test.describe("Edit info - e-sports player category", () => {
+			testData()
+				.fromCsvRaw({
+					file: CsvFilesName.ESPORTS_CATEGORIES,
+				})
+				.forEach((eSportCategory) => {
+					test(
+						`[ENG-6324] - UserInfo - EditInfo tab - verify assignment of ${eSportCategory.userCategory} eSports category to user`,
+						testDetails()
+							.withTags(JiraComponent.EDIT_INFO)
+							.withAuthor(JiraUser.RALUCA_ARITON)
+							.apply(),
+						async ({
+							gamdomApiDbFacade,
+							browserSessionManager,
+							userAuditLogListener,
+						}) => {
+							const [regularUserData] =
+								await gamdomApiDbFacade.createUsersDb({
+									usersCount: 1,
+								});
+
+							const superAdmin =
+								await browserSessionManager.loginAs(
+									TestUserRole.SUPERADMIN,
+									{ reuseContext: true },
+								);
+
+							await superAdmin.pages.userInfoAdminPage
+								.steps()
+								.navigateAndShowUserDetails(
+									regularUserData.username,
+								);
+							await superAdmin.pages.userInfoAdminPage.clickUserInfoTab(
+								UserInfoTabs.EditInfo,
+							);
+
+							const toastText =
+								await superAdmin.pages.userInfoEditInfoAdminPage
+									.steps()
+									.selectAndSaveEsportsCategoryAndGetToastMessage(
+										eSportCategory.userCategory,
+									);
+
+							const toastResult =
+								await superAdmin.pages.userInfoEditInfoAdminPage
+									.assertThat()
+									.assertEsportsCategoryToast(
+										eSportCategory.userCategory,
+										toastText,
+									);
+
+							await superAdmin.pages.userInfoAdminPage.clickUserInfoTab(
+								UserInfoTabs.Transactions,
+							);
+
+							userAuditLogListener.startListening();
+
+							await superAdmin.pages.transactionsAdminPage.clickFetchData();
+
+							const auditResponse =
+								await userAuditLogListener.getLatestAuditLog();
+
+							await superAdmin.pages.transactionsAdminPage
+								.assertThat()
+								.esportsCategoryAuditLog(
+									auditResponse,
+									eSportCategory.userCategory,
+									regularUserData.userId,
+									toastResult,
+								);
+						},
+					);
+				});
 		});
 	},
 );

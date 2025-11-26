@@ -3,6 +3,11 @@ import { UserTags } from "@enums/db/user-tags";
 import { expect } from "@playwright/test";
 import { step } from "decorators/step";
 import { UserInfoEditInfoAdminPage } from "./user-info-edit-info-admin-page";
+import { ToastSubTitle } from "@enums/toast-subtitles";
+import {
+	EsportsCategory,
+	EsportsToastResult,
+} from "@enums/esport-toast-results";
 
 export class UserInfoEditInfoAdminPageAsserter extends BaseAsserter<UserInfoEditInfoAdminPage> {
 	public constructor(page: UserInfoEditInfoAdminPage) {
@@ -65,5 +70,23 @@ export class UserInfoEditInfoAdminPageAsserter extends BaseAsserter<UserInfoEdit
 		const saveButton = this.gamdomPage.map.saveButton;
 		await expect(saveButton).toBeEnabled();
 		await expect(saveButton).toHaveText("SAVE");
+	}
+
+	@step("Assert eSports category toast behavior")
+	public async assertEsportsCategoryToast(
+		category: string,
+		toastText: string,
+	): Promise<EsportsToastResult> {
+		const isDefault = category === EsportsCategory.DEFAULT_CATEGORY;
+
+		const expectedToast = isDefault
+			? ToastSubTitle.NO_CHANGES_WERE_MADE
+			: ToastSubTitle.SUCCESSFUL_EDIT;
+
+		expect(toastText).toContain(expectedToast);
+
+		return isDefault
+			? EsportsToastResult.DEFAULT_CATEGORY_NO_CHANGE
+			: EsportsToastResult.CATEGORY_UPDATED;
 	}
 }
