@@ -44,8 +44,8 @@ export class CryptoAdminMap extends BaseMap {
 	}
 
 	public cryptoRow(cryptoName: string): Locator {
-		return this.cryptoTableContainer.locator("tbody tr", {
-			has: this.page.getByRole("rowheader", { name: cryptoName }),
+		return this.cryptoTableContainer.locator("tbody tr").filter({
+			has: this.page.locator(`th:text-is("${cryptoName}")`),
 		});
 	}
 
