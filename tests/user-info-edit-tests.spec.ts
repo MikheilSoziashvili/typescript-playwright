@@ -395,6 +395,8 @@ test.describe(
 					test(
 						`[ENG-6324] - UserInfo - EditInfo tab - verify assignment of ${eSportCategory.userCategory} eSports category to user`,
 						testDetails()
+							.withTags(TestTag.PLATFORM_BUG)
+							.withJiraBugTickets("8283")
 							.withTags(JiraComponent.EDIT_INFO)
 							.withAuthor(JiraUser.RALUCA_ARITON)
 							.apply(),

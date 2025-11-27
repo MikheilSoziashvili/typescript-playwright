@@ -7,15 +7,13 @@ export class FaqPageMap extends BaseMap {
 	}
 
 	public get affiliateCodeRegisterContainer(): Locator {
-		return this.page.locator(
-			"div.MuiAccordion-root:has(div.MuiAccordionSummary-content h5:text-is('What affiliate code am I registered under?'))",
-		);
+		return this.page.getByTestId("accordion-affiliate");
 	}
 
 	public get expandAffiliateCodeRegisterButtonLocator(): Locator {
-		return this.affiliateCodeRegisterContainer.locator(
-			"div.MuiAccordionSummary-root[role=button]",
-		);
+		return this.affiliateCodeRegisterContainer
+			.getByTestId("accordion-summary-affiliate")
+			.filter({ hasText: "What affiliate code am I registered under?" });
 	}
 
 	public get affiliateUnderCodeLinkButtonLocator(): Locator {
