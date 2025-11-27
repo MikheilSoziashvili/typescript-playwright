@@ -97,6 +97,9 @@ on:
             SLACK_BOT_USER_OAUTH_TOKEN:
                 required: true
                 description: "Slack Bot User Oauth Token"
+            SLACK_CRYPTO_LOW_WALLET_BALANCE_E2E_BOT_TOKEN:
+                required: true
+                description: "Slack Crypto Low Wallet Balance Channel Bot Oauth Token"
             STEAM_USERNAME:
                 required: true
                 description: "Steam authentication username"
@@ -250,6 +253,7 @@ jobs:
             DB_PORT: ${{ secrets.DB_PORT }}
 
             SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
+            SLACK_CRYPTO_LOW_WALLET_BALANCE_E2E_BOT_TOKEN: ${{secrets.SLACK_CRYPTO_LOW_WALLET_BALANCE_E2E_BOT_TOKEN}}
             OAUTH2_JWT: ${{ secrets.OAUTH2_JWT }}
             BITCOIN_RPC_HOST: ${{ secrets.BITCOIN_RPC_HOST }}
             BITCOIN_RPC_PORT: ${{ secrets.BITCOIN_RPC_PORT }}

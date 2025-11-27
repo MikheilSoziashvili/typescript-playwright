@@ -14,6 +14,7 @@ import { asString, getFilePath } from "@core/utils/utils";
 import { Protocol } from "@enums/api/protocols";
 import { ConfiguraitonUrl } from "@enums/configuration-urls";
 import { LogLevel } from "@enums/log-levels";
+import { SlackChannel } from "@enums/slack/slack-channels";
 import { Timeout } from "@enums/timeout";
 import "dotenv/config";
 
@@ -43,6 +44,11 @@ export const slack: Record<string, string | string[]> = {
 	webHookUrl: asString(process.env.SLACK_REPORTER_WEBHOOK_URL),
 	oAuthToken: asString(process.env.SLACK_BOT_USER_OAUTH_TOKEN),
 	channels: ["playwright-e2e-reporting"],
+};
+export const slackBotTokens: Record<SlackChannel, string> = {
+	[SlackChannel.CRYPTO_LOW_WALLET_BALANCE_E2E]: asString(
+		process.env.SLACK_CRYPTO_LOW_WALLET_BALANCE_E2E_BOT_TOKEN,
+	),
 };
 export const jira: Record<string, string> = {
 	baseUrl: ConfiguraitonUrl.JIRA,

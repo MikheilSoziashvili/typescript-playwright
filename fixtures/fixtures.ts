@@ -13,6 +13,7 @@ import { facadesFixtures } from "./facade-fixtures";
 import { testDataFixtures } from "./test-data-fixtures";
 import { listenersFixtures } from "./listeners-fixtures";
 import { cryptoFixtures } from "./crypto-fixtures";
+import { slackWebApisFixtures } from "./slack-web-api-fixtures";
 
 export const test = mergeTests(
 	gamdomPagesFixtures,
@@ -28,4 +29,5 @@ export const test = mergeTests(
 	testDataFixtures,
 	listenersFixtures,
 	cryptoFixtures,
+	slackWebApisFixtures,
 );

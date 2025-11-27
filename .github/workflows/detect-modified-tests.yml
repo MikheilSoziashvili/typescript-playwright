@@ -13,6 +13,8 @@ on:
                 required: true
             SLACK_BOT_USER_OAUTH_TOKEN:
                 required: true
+            SLACK_CRYPTO_LOW_WALLET_BALANCE_E2E_BOT_TOKEN:
+                required: true
             STEAM_USERNAME:
                 required: true
             STEAM_PASSWORD:
@@ -89,6 +91,7 @@ env:
     XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
     XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
     SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
+    SLACK_CRYPTO_LOW_WALLET_BALANCE_E2E_BOT_TOKEN: ${{secrets.SLACK_CRYPTO_LOW_WALLET_BALANCE_E2E_BOT_TOKEN}}
     STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
     STEAM_PASSWORD: ${{ secrets.STEAM_PASSWORD }}
     GOOGLE_EMAIL: ${{ secrets.GOOGLE_EMAIL }}
