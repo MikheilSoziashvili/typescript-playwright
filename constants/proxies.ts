@@ -57,4 +57,34 @@ export const FR_PROXY_CREDENTIALS =
 
 // Slovakia server - soft blocked
 export const SK_PROXY_CREDENTIALS =
+	createProxyCredentials("dc.oxylabs.io:8012");
+
+// Italia server
+export const IT_PROXY_CREDENTIALS =
+	createProxyCredentials("dc.oxylabs.io:8013");
+
+// Austria server
+export const AT_PROXY_CREDENTIALS =
+	createProxyCredentials("dc.oxylabs.io:8014");
+
+// Canada server
+export const CA_PROXY_CREDENTIALS =
+	createProxyCredentials("dc.oxylabs.io:8015");
+
+// Poland server
+export const PL_PROXY_CREDENTIALS =
+	createProxyCredentials("dc.oxylabs.io:8016");
+
+// Ireland servers
+export const IE_PROXY_CREDENTIALS_1 =
+	createProxyCredentials("dc.oxylabs.io:8017");
+
+export const IE_PROXY_CREDENTIALS_2 =
+	createProxyCredentials("dc.oxylabs.io:8018");
+
+export const IE_PROXY_CREDENTIALS_3 =
+	createProxyCredentials("dc.oxylabs.io:8019");
+
+// Czeck Republic server
+export const CZ_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8020");
