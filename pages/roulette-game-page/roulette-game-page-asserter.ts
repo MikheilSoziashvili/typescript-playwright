@@ -96,20 +96,21 @@ export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 	}
 
 	@step("Check total bets")
-	public async totalBetsAre(
-		betColor: RouletteBetColor,
-	): Promise<void> {
+	public async totalBetsAre(betColor: RouletteBetColor): Promise<void> {
 		const betSection = this.gamdomPage.map.betSectionsByColor[betColor];
 
 		const betRows = await this.gamdomPage.map
-				.betRowsByColor(betColor).count();
+			.betRowsByColor(betColor)
+			.count();
 
 		const numberOfBets = await this.gamdomPage.map
 			.betTotalBetsCount(betSection)
 			.textContent();
 		const numberOfBetsAsNumber = parseInt(numberOfBets ?? "0");
 
-		expect(numberOfBetsAsNumber, `Total bets count for ${betColor}`).toBe(betRows);
+		expect(numberOfBetsAsNumber, `Total bets count for ${betColor}`).toBe(
+			betRows,
+		);
 	}
 
 	@step("Check profit amount is displayed")

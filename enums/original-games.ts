@@ -10,9 +10,9 @@ export enum OriginalGame {
 }
 
 export enum RouletteNumberColor {
-	RED = 7,
 	GREEN = 0,
-	BLACK = 14,
+	RED = 50,
+	BLACK = 100,
 }
 
 export enum RouletteBetColor {
