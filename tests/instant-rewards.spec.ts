@@ -42,6 +42,10 @@ instantRewardsInputData.forEach((inputData) => {
 			`[ENG-3679] Rewards - Instant reward - ${inputData.game} - Bet: ${inputData.betAmount}`,
 			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
 			async ({ originalsPage, rewardsPage }) => {
+				test.fixme(
+					true,
+					"Temporary skipped until test cases are adjusted to use casino games, then the automation code will be adjusted to align",
+				);
 				await originalsPage.navigateToGame(inputData.game);
 				await originalsPage.placeBet(
 					inputData.game,

@@ -85,6 +85,10 @@ rewardsInputData.forEach((inputData) => {
 			`[ENG-3712] Verify in-progress rank gain for '${inputData.game}' Originals game with '${inputData.betAmount}' bet, expected rank '${inputData.expectedInProgressRanks}', and claim all Royalty-Up rewards`,
 			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
 			async ({ rewardsPage, toast, originalsPage }) => {
+				test.fixme(
+					true,
+					"Temporary skipped until test cases are adjusted to use casino games, then the automation code will be adjusted to align",
+				);
 				test.slow();
 
 				await originalsPage.navigateToGame(inputData.game);
