@@ -210,6 +210,17 @@ test.describe(
 							TestUserRole.REGULAR,
 						);
 
+						await adminUser.pages.cryptoAdminPage.navigate();
+						await adminUser.pages.cryptoAdminPage.toggleCryptoOperations(
+							[
+								{
+									cryptoName: Cryptocurrency.Bitcoin,
+									deposit: true,
+									withdraw: true,
+								},
+							],
+						);
+
 						await adminUser.pages.userInfoAdminPage
 							.steps()
 							.navigateAndShowUserDetails(

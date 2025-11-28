@@ -4,17 +4,15 @@ import { CsvFilesName } from "@enums/csv-file-name";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { testData } from "test-data/test-data-manager";
-import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { SelfExclusionDays } from "@enums/self-exlusion-days";
 import { CasinoGameName } from "@enums/casino-game";
 import { Cryptocurrency } from "@enums/cryptocurrencies";
+import { TestUserRole } from "@enums/test-user-roles";
 
 test.describe(
 	"Self Exclusion",
 	testDetails().withTags(JiraComponent.SELF_EXCLUSION).apply(),
 	() => {
-		test.use(storageStateNewUserDB());
-
 		testData()
 			.fromCsvParsed({
 				file: CsvFilesName.ORIGINALS_SELF_EXCLUSION,
@@ -23,8 +21,18 @@ test.describe(
 				test(
 					`[ENG-4422] Verify self exclusion for ${record.period} in game - ${record.game}`,
 					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
-					async ({ settingsPage, originalsPage }) => {
+					async ({
+						settingsPage,
+						originalsPage,
+						browserSessionManager,
+					}) => {
 						const betAmount = 10;
+						await browserSessionManager.loginAs(
+							TestUserRole.REGULAR,
+							{
+								reuseContext: true,
+							},
+						);
 						await settingsPage
 							.steps()
 							.navigateAndEnableSelfExclusion(record.period);
@@ -42,7 +50,10 @@ test.describe(
 			test(
 				`[ENG-4422] Verify self exclusion in Casino for ${period}`,
 				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
-				async ({ settingsPage, casinoPage }) => {
+				async ({ settingsPage, casinoPage, browserSessionManager }) => {
+					await browserSessionManager.loginAs(TestUserRole.REGULAR, {
+						reuseContext: true,
+					});
 					await settingsPage
 						.steps()
 						.navigateAndEnableSelfExclusion(period);
@@ -64,7 +75,10 @@ test.describe(
 			test(
 				`[ENG-4422] Verify self exclusion in Sports for ${period}`,
 				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
-				async ({ settingsPage, sportsPage }) => {
+				async ({ settingsPage, sportsPage, browserSessionManager }) => {
+					await browserSessionManager.loginAs(TestUserRole.REGULAR, {
+						reuseContext: true,
+					});
 					await settingsPage
 						.steps()
 						.navigateAndEnableSelfExclusion(period);
@@ -80,15 +94,34 @@ test.describe(
 			test(
 				`[ENG-4422] Verify self exclusion in Wallet Deposit tab for ${period}`,
 				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
-				async ({ settingsPage, walletModal, homePage }) => {
-					await settingsPage
+				async ({ browserSessionManager }) => {
+					const adminUser = await browserSessionManager.loginAs(
+						TestUserRole.SUPERADMIN,
+						{ reuseContext: true },
+					);
+					const regularUUser = await browserSessionManager.loginAs(
+						TestUserRole.REGULAR,
+					);
+
+					await adminUser.pages.cryptoAdminPage.navigate();
+					await adminUser.pages.cryptoAdminPage.toggleCryptoOperations(
+						[
+							{
+								cryptoName: Cryptocurrency.Bitcoin,
+								deposit: true,
+								withdraw: true,
+							},
+						],
+					);
+
+					await regularUUser.pages.settingsPage
 						.steps()
 						.navigateAndEnableSelfExclusion(period);
-					await homePage.navigateToWallet();
-					await walletModal.selectPaymentMethod(
+					await regularUUser.pages.homePage.navigateToWallet();
+					await regularUUser.pages.walletModal.selectPaymentMethod(
 						Cryptocurrency.Bitcoin,
 					);
-					await walletModal
+					await regularUUser.pages.walletModal
 						.assertThat()
 						.verifyDepositDisabledTextIsDisplayed();
 				},
@@ -99,16 +132,35 @@ test.describe(
 			test(
 				`[ENG-4422] Verify self exclusion in Wallet Buy crypto tab for ${period}`,
 				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
-				async ({ settingsPage, walletModal, homePage }) => {
-					await settingsPage
+				async ({ browserSessionManager }) => {
+					const adminUser = await browserSessionManager.loginAs(
+						TestUserRole.SUPERADMIN,
+						{ reuseContext: true },
+					);
+					const regularUUser = await browserSessionManager.loginAs(
+						TestUserRole.REGULAR,
+					);
+
+					await adminUser.pages.cryptoAdminPage.navigate();
+					await adminUser.pages.cryptoAdminPage.toggleCryptoOperations(
+						[
+							{
+								cryptoName: Cryptocurrency.Bitcoin,
+								deposit: true,
+								withdraw: true,
+							},
+						],
+					);
+
+					await regularUUser.pages.settingsPage
 						.steps()
 						.navigateAndEnableSelfExclusion(period);
-					await homePage.navigateToWallet();
-					await walletModal.openBuyCryptoTab();
-					await walletModal.selectPaymentMethod(
+					await regularUUser.pages.homePage.navigateToWallet();
+					await regularUUser.pages.walletModal.openBuyCryptoTab();
+					await regularUUser.pages.walletModal.selectPaymentMethod(
 						Cryptocurrency.Bitcoin,
 					);
-					await walletModal
+					await regularUUser.pages.walletModal
 						.assertThat()
 						.verifyDepositDisabledTextIsDisplayed();
 				},
@@ -119,7 +171,16 @@ test.describe(
 			test(
 				`[ENG-4422] Verify self exclusion in Wallet Redeem tab for ${period}`,
 				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
-				async ({ settingsPage, walletModal, homePage }) => {
+				async ({
+					settingsPage,
+					walletModal,
+					homePage,
+					browserSessionManager,
+				}) => {
+					await browserSessionManager.loginAs(TestUserRole.REGULAR, {
+						reuseContext: true,
+					});
+
 					await settingsPage
 						.steps()
 						.navigateAndEnableSelfExclusion(period);
