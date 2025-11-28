@@ -6,6 +6,7 @@ import { BookOfPyramidsPageSteps } from "./book-of-pyramids-page-step";
 import { step } from "decorators/step";
 import { parseCurrencyToNumber } from "@core/utils/utils";
 import { Timeout } from "@enums/timeout";
+import accounting from "accounting";
 
 export class BookOfPyramidsPage extends BasePage<BookOfPyramidsPageMap> {
 	public constructor(page: Page) {
@@ -34,5 +35,11 @@ export class BookOfPyramidsPage extends BasePage<BookOfPyramidsPageMap> {
 	public async getBetAmount(): Promise<number> {
 		const raw = await this.map.totalBetValue.textContent();
 		return parseCurrencyToNumber(raw ?? "0");
+	}
+
+	@step("Get in-game balance")
+	public async getGameBalance(): Promise<number> {
+		const text = (await this.map.gameBalance.innerText()).trim();
+		return accounting.unformat(text);
 	}
 }

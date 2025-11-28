@@ -80,33 +80,33 @@ test.describe("Casino games tests", () => {
 		},
 	);
 	test(
-		"[ENG-7244]Casino - Verify in-game balance reflects selected crypto wallet balance",
+		"[ENG-7244] Casino - Verify in-game balance reflects selected crypto wallet balance",
 		testDetails()
 			.withTags(JiraComponent.CASINO)
 			.withAuthor(JiraUser.ANGEL_PETROV)
 			.apply(),
-		async ({ casinoPage, bubblesBonanzaPage }) => {
+		async ({ casinoPage, bookOfPyramidsPage }) => {
 			await casinoPage.authenticatedHeader.changeWallet(Wallet.BTC);
 			await casinoPage
 				.steps()
-				.searchForGameAndOpen(CasinoGameName.CASH_VAULT_I);
+				.searchForGameAndOpen(CasinoGameName.BOOK_OF_PYRAMIDS);
 
 			const headerBalance =
-				await bubblesBonanzaPage.authenticatedHeader.getAccountBalanceInCasinoGame();
-			const gameBalance = await bubblesBonanzaPage.getGameBalance();
+				await bookOfPyramidsPage.authenticatedHeader.getAccountBalanceInCasinoGame();
+			const gameBalance = await bookOfPyramidsPage.getGameBalance();
 
-			await bubblesBonanzaPage
+			await bookOfPyramidsPage
 				.assertThat()
 				.verifyBalanceWithTolerance(gameBalance, headerBalance, 0.01);
 
-			await bubblesBonanzaPage.steps().refreshUntilGameIsLoaded();
+			await bookOfPyramidsPage.steps().refreshUntilGameIsLoaded();
 
 			const headerBalanceAfterRefresh =
-				await bubblesBonanzaPage.authenticatedHeader.getAccountBalanceInCasinoGame();
+				await bookOfPyramidsPage.authenticatedHeader.getAccountBalanceInCasinoGame();
 			const gameBalanceAfterRefresh =
-				await bubblesBonanzaPage.getGameBalance();
+				await bookOfPyramidsPage.getGameBalance();
 
-			await bubblesBonanzaPage
+			await bookOfPyramidsPage
 				.assertThat()
 				.verifyBalanceWithTolerance(
 					gameBalanceAfterRefresh,
@@ -114,15 +114,15 @@ test.describe("Casino games tests", () => {
 					0.01,
 				);
 
-			await bubblesBonanzaPage.authenticatedHeader.changeWallet(
+			await bookOfPyramidsPage.authenticatedHeader.changeWallet(
 				Wallet.XRP,
 			);
 
 			const headerBalanceEth =
-				await bubblesBonanzaPage.authenticatedHeader.getAccountBalanceInCasinoGame();
-			const gameBalanceEth = await bubblesBonanzaPage.getGameBalance();
+				await bookOfPyramidsPage.authenticatedHeader.getAccountBalanceInCasinoGame();
+			const gameBalanceEth = await bookOfPyramidsPage.getGameBalance();
 
-			await bubblesBonanzaPage
+			await bookOfPyramidsPage
 				.assertThat()
 				.verifyBalanceWithTolerance(
 					gameBalanceEth,

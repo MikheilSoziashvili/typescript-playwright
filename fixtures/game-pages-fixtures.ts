@@ -30,7 +30,7 @@ export type GamePages = {
 	kenoGamePage: KenoGamePage;
 	pocketDicePage: PocketDicePage;
 	bookOfPyramidsPage: BookOfPyramidsPage;
-	bubblesBonanzaPage: CashVaultIPage;
+	cashVaultIPage: CashVaultIPage;
 	bookOfArabiaPage: BookOfArabiaPage;
 	liveBaccaratSqueezePage: LiveBaccaratSqueezePage;
 	casinoGamesPage: CasinoGamesUnifiedPage;
@@ -51,7 +51,7 @@ export const gamePagesFixtures = base.extend<GamePages>({
 	kenoGamePage: sessionAwarePage(KenoGamePage),
 	pocketDicePage: sessionAwarePage(PocketDicePage),
 	bookOfPyramidsPage: sessionAwarePage(BookOfPyramidsPage),
-	bubblesBonanzaPage: sessionAwarePage(CashVaultIPage),
+	cashVaultIPage: sessionAwarePage(CashVaultIPage),
 	bookOfArabiaPage: sessionAwarePage(BookOfArabiaPage),
 	liveBaccaratSqueezePage: sessionAwarePage(LiveBaccaratSqueezePage),
 
@@ -86,7 +86,7 @@ export const gamePagesFixtures = base.extend<GamePages>({
 		{
 			browserSessionManager,
 			bookOfPyramidsPage,
-			bubblesBonanzaPage,
+			cashVaultIPage,
 			bookOfArabiaPage,
 			liveBaccaratSqueezePage,
 		},
@@ -96,7 +96,7 @@ export const gamePagesFixtures = base.extend<GamePages>({
 		const casinoGames = new CasinoGamesUnifiedPage(
 			page,
 			bookOfPyramidsPage,
-			bubblesBonanzaPage,
+			cashVaultIPage,
 			bookOfArabiaPage,
 			liveBaccaratSqueezePage,
 		);

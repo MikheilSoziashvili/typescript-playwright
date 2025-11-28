@@ -196,7 +196,7 @@ export const GamePages = {
 	minesGamePage: MinesGamePage,
 	kenoGamePage: KenoGamePage,
 	bookOfPyramidsPage: BookOfPyramidsPage,
-	bubblesBonanzaPage: CashVaultIPage,
+	cashVaultIPage: CashVaultIPage,
 	bookOfArabiaPage: BookOfArabiaPage,
 	liveBaccaratSqueezePage: LiveBaccaratSqueezePage,
 	casinoGamesPage: CasinoGamesUnifiedPage,

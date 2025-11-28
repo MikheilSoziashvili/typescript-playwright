@@ -27,4 +27,8 @@ export class BookOfPyramidsPageMap extends BaseMap {
 	public get skipButton(): Locator {
 		return this.gameFrame.locator("#btn-skipDesktop");
 	}
+
+	public get gameBalance(): Locator {
+		return this.gameFrame.locator("#panel-balance-value");
+	}
 }

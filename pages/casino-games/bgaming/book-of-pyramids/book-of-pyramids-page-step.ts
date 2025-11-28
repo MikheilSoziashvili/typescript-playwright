@@ -1,10 +1,11 @@
 import { BasePageStep } from "@pages/base/base-page-step";
 import { BookOfPyramidsPage } from "./book-of-pyramids-page";
-import { parseCurrencyToNumber } from "@core/utils/utils";
+import { parseCurrencyToNumber, waitUntil } from "@core/utils/utils";
 import { step } from "decorators/step";
 import { expect } from "@playwright/test";
 import { logger } from "@logger/logger";
 import { Timeout } from "@enums/timeout";
+import { TimeoutSeconds } from "@enums/timeout-seconds";
 
 export class BookOfPyramidsPageSteps extends BasePageStep<BookOfPyramidsPage> {
 	public constructor(gamdomPage: BookOfPyramidsPage) {
@@ -75,5 +76,30 @@ export class BookOfPyramidsPageSteps extends BasePageStep<BookOfPyramidsPage> {
 		}
 
 		return results;
+	}
+
+	@step("Refresh until game is loaded")
+	public async refreshUntilGameIsLoaded(): Promise<void> {
+		await waitUntil(
+			async () => {
+				try {
+					await this.gamdomPage
+						.assertThat()
+						.checkElementsAreVisible(
+							[this.gamdomPage.map.gameBalance],
+							Timeout.EXTRA_SHORT,
+						);
+					return true;
+				} catch {
+					await this.gamdomPage.refresh();
+					return false;
+				}
+			},
+			{
+				errorMessage: "Casino game failed to load",
+				intervalSeconds: TimeoutSeconds.THREE,
+				timeoutSeconds: Timeout.MEDIUM,
+			},
+		);
 	}
 }
