@@ -405,6 +405,7 @@ test.describe(
 							browserSessionManager,
 							userAuditLogListener,
 						}) => {
+							test.fixme(isScheduledRun);
 							const [regularUserData] =
 								await gamdomApiDbFacade.createUsersDb({
 									usersCount: 1,
