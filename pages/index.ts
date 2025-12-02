@@ -105,6 +105,7 @@ import { TransactionsPage } from "./transactions/transactions-page";
 import { VerificationPage } from "./verification/verification-page";
 import { BookOfArabiaPage } from "./casino-games/wickedgames/book-of-arabia/book-of-arabia-page";
 import { PocketDicePage } from "./pocket-dice-game/pocket-dice-page";
+import { ZuluGoldPage } from "./casino-games/elk-studios/zulu-gold/zulu-gold-page";
 
 export const GamdomPages = {
 	homePage: HomePage,
@@ -201,6 +202,7 @@ export const GamePages = {
 	liveBaccaratSqueezePage: LiveBaccaratSqueezePage,
 	casinoGamesPage: CasinoGamesUnifiedPage,
 	pocketDicePage: PocketDicePage,
+	zuluGoldPage: ZuluGoldPage,
 } as const;
 
 export const Components = {

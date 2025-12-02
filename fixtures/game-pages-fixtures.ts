@@ -12,6 +12,7 @@ import { BookOfPyramidsPage } from "@pages/casino-games/bgaming/book-of-pyramids
 import { CashVaultIPage } from "@pages/casino-games/hacksaw-gaming/cash-vault-i/cash-vault-i-page";
 import { BookOfArabiaPage } from "@pages/casino-games/wickedgames/book-of-arabia/book-of-arabia-page";
 import { LiveBaccaratSqueezePage } from "@pages/casino-games/evolution-gaming/live-baccarat-squeeze/live-baccarat-squeeze-page";
+import { ZuluGoldPage } from "@pages/casino-games/elk-studios/zulu-gold/zulu-gold-page";
 import { CasinoGamesUnifiedPage } from "@pages/casino-games/casino-games-page";
 import {
 	BrowserSessionManager,
@@ -33,6 +34,7 @@ export type GamePages = {
 	cashVaultIPage: CashVaultIPage;
 	bookOfArabiaPage: BookOfArabiaPage;
 	liveBaccaratSqueezePage: LiveBaccaratSqueezePage;
+	zuluGoldPage: ZuluGoldPage;
 	casinoGamesPage: CasinoGamesUnifiedPage;
 };
 
@@ -54,6 +56,7 @@ export const gamePagesFixtures = base.extend<GamePages>({
 	cashVaultIPage: sessionAwarePage(CashVaultIPage),
 	bookOfArabiaPage: sessionAwarePage(BookOfArabiaPage),
 	liveBaccaratSqueezePage: sessionAwarePage(LiveBaccaratSqueezePage),
+	zuluGoldPage: sessionAwarePage(ZuluGoldPage),
 
 	originalsPage: async (
 		{
@@ -89,6 +92,7 @@ export const gamePagesFixtures = base.extend<GamePages>({
 			cashVaultIPage,
 			bookOfArabiaPage,
 			liveBaccaratSqueezePage,
+			zuluGoldPage,
 		},
 		use,
 	) => {
@@ -99,6 +103,7 @@ export const gamePagesFixtures = base.extend<GamePages>({
 			cashVaultIPage,
 			bookOfArabiaPage,
 			liveBaccaratSqueezePage,
+			zuluGoldPage,
 		);
 		await use(casinoGames);
 	},

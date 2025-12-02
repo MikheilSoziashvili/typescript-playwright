@@ -3,7 +3,10 @@ import { step } from "decorators/step";
 import { CasinoGamesUnifiedPage } from "./casino-games-page";
 import { GameProvider } from "@enums/casino-game";
 import { useProviderBearerFromAuthenticate } from "@core/utils/utils";
-import { WICKED_GAMES_AUTH } from "@constants/auth-casino-game-providers";
+import {
+	ALEA_PLAY_AUTH,
+	WICKED_GAMES_AUTH,
+} from "@constants/auth-casino-game-providers";
 import { CasinoGameConfig } from "@core/interfaces";
 
 export class CasinoGamesPageSteps extends BasePageStep<CasinoGamesUnifiedPage> {
@@ -30,6 +33,13 @@ export class CasinoGamesPageSteps extends BasePageStep<CasinoGamesUnifiedPage> {
 				});
 				break;
 			}
+			case GameProvider.ELK_STUDIOS:
+				await useProviderBearerFromAuthenticate(this.gamdomPage.page, {
+					host: ALEA_PLAY_AUTH.HOST,
+					authPath: ALEA_PLAY_AUTH.AUTH_PATH,
+					tokenJsonKey: ALEA_PLAY_AUTH.TOKEN_KEY,
+				});
+				break;
 			case GameProvider.EVOLUTION_GAMING:
 			case GameProvider.BGAMING:
 			case GameProvider.HACKSAW_GAMING:

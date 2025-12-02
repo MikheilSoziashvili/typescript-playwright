@@ -2,21 +2,22 @@ import { BasePage } from "@pages/base/base-page";
 import { Page } from "@playwright/test";
 import { step } from "decorators/step";
 
-import { BookOfPyramidsPage } from "./bgaming/book-of-pyramids/book-of-pyramids-page";
-import { CashVaultIPage } from "./hacksaw-gaming/cash-vault-i/cash-vault-i-page";
-import { BookOfArabiaPage } from "./wickedgames/book-of-arabia/book-of-arabia-page";
-import { LiveBaccaratSqueezePage } from "./evolution-gaming/live-baccarat-squeeze/live-baccarat-squeeze-page";
-import { GameProvider, CasinoGameName } from "@enums/casino-game";
-import { CasinoGamesPage } from "@core/types/types";
 import { CasinoGameConfig } from "@core/interfaces";
-import { CasinoGamesPageMap } from "./casino-games-page-map";
-import { CasinoGamesPageAsserter } from "./casino-games-page-asserter";
-import { CasinoGamesPageSteps } from "./casino-games-page-steps";
-import { BetTestDataObjectFactory } from "test-data/objects/factories/bet-test-data-object-factory";
+import { CasinoGamesPage } from "@core/types/types";
 import {
 	BaccaratBetSpot,
 	BaccaratChipValue,
 } from "@enums/baccarat-game-options";
+import { CasinoGameName, GameProvider } from "@enums/casino-game";
+import { testData } from "test-data/test-data-manager";
+import { BookOfPyramidsPage } from "./bgaming/book-of-pyramids/book-of-pyramids-page";
+import { CasinoGamesPageAsserter } from "./casino-games-page-asserter";
+import { CasinoGamesPageMap } from "./casino-games-page-map";
+import { CasinoGamesPageSteps } from "./casino-games-page-steps";
+import { ZuluGoldPage } from "./elk-studios/zulu-gold/zulu-gold-page";
+import { LiveBaccaratSqueezePage } from "./evolution-gaming/live-baccarat-squeeze/live-baccarat-squeeze-page";
+import { CashVaultIPage } from "./hacksaw-gaming/cash-vault-i/cash-vault-i-page";
+import { BookOfArabiaPage } from "./wickedgames/book-of-arabia/book-of-arabia-page";
 
 /**
  * Maps each game to its corresponding provider.
@@ -29,6 +30,7 @@ const GAME_PROVIDER_MAP: Record<CasinoGameName, GameProvider> = {
 	[CasinoGameName.BARREL_BONANZA]: GameProvider.HACKSAW_GAMING,
 	[CasinoGameName.MYSTIC_CHIEF]: GameProvider.BGAMING,
 	[CasinoGameName.LIVE_BACCARAT_SQUEEZE]: GameProvider.EVOLUTION_GAMING,
+	[CasinoGameName.ZULU_GOLD]: GameProvider.ELK_STUDIOS,
 };
 
 /**
@@ -47,6 +49,7 @@ export class CasinoGamesUnifiedPage extends BasePage<CasinoGamesPageMap> {
 		private cashVaultIPage: CashVaultIPage,
 		private bookOfArabiaPage: BookOfArabiaPage,
 		private liveBaccaratSqueezePage: LiveBaccaratSqueezePage,
+		private zuluGoldPage: ZuluGoldPage,
 	) {
 		super(page, new CasinoGamesPageMap(page));
 		this.gamesMap = {
@@ -55,6 +58,7 @@ export class CasinoGamesUnifiedPage extends BasePage<CasinoGamesPageMap> {
 			[CasinoGameName.BOOK_OF_ARABIA]: this.bookOfArabiaPage,
 			[CasinoGameName.LIVE_BACCARAT_SQUEEZE]:
 				this.liveBaccaratSqueezePage,
+			[CasinoGameName.ZULU_GOLD]: this.zuluGoldPage,
 		};
 	}
 
@@ -124,10 +128,9 @@ export class CasinoGamesUnifiedPage extends BasePage<CasinoGamesPageMap> {
 			}
 			case GameProvider.WICKED_GAMES: {
 				const bookOfArabiaPage = gamePage as BookOfArabiaPage;
-				const betTestData = BetTestDataObjectFactory.build(
-					{ username: "default" },
-					{ betAmount: 200 },
-				);
+				const betTestData = testData()
+					.fromObject()
+					.bet.build({ username: "default" }, { betAmount: 200 });
 				await bookOfArabiaPage
 					.steps()
 					.startGameAndSpin(betTestData.betAmount);
@@ -147,6 +150,17 @@ export class CasinoGamesUnifiedPage extends BasePage<CasinoGamesPageMap> {
 						betAmount: BaccaratChipValue.TWO,
 					});
 
+				break;
+			}
+			case GameProvider.ELK_STUDIOS: {
+				const zuluGoldPage = gamePage as ZuluGoldPage;
+				const spinCount = testData()
+					.fromObject()
+					.bet.build({ username: "default" }, { betAmount: 30 });
+				await zuluGoldPage.clickNextButton();
+				await zuluGoldPage
+					.steps()
+					.spinUntilWinRound(spinCount.betAmount);
 				break;
 			}
 			default: {

@@ -6,6 +6,7 @@ import { CasinoGamesUnifiedPage } from "./casino-games-page";
 import { CashVaultIPage } from "./hacksaw-gaming/cash-vault-i/cash-vault-i-page";
 import { BookOfArabiaPage } from "./wickedgames/book-of-arabia/book-of-arabia-page";
 import { LiveBaccaratSqueezePage } from "./evolution-gaming/live-baccarat-squeeze/live-baccarat-squeeze-page";
+import { ZuluGoldPage } from "./elk-studios/zulu-gold/zulu-gold-page";
 import { CasinoGameConfig } from "@core/interfaces";
 
 export class CasinoGamesPageAsserter extends BaseAsserter<CasinoGamesUnifiedPage> {
@@ -44,10 +45,14 @@ export class CasinoGamesPageAsserter extends BaseAsserter<CasinoGamesUnifiedPage
 				break;
 			}
 			case GameProvider.EVOLUTION_GAMING: {
-				await this.gamdomPage.setExtraHTTPHeaders();
 				const liveBaccaratSqueezePage =
 					gamePage as LiveBaccaratSqueezePage;
 				await liveBaccaratSqueezePage.steps().gameIsLoaded();
+				break;
+			}
+			case GameProvider.ELK_STUDIOS: {
+				const zuluGoldPage = gamePage as ZuluGoldPage;
+				await zuluGoldPage.assertThat().nextButtonVisible();
 				break;
 			}
 			default: {
@@ -97,6 +102,11 @@ export class CasinoGamesPageAsserter extends BaseAsserter<CasinoGamesUnifiedPage
 				await this.gamdomPage.setExtraHTTPHeaders({
 					Authorization: `Bearer ${process.env.OAUTH2_JWT}`,
 				});
+				break;
+			}
+			case GameProvider.ELK_STUDIOS: {
+				const zuluGoldPage = gamePage as ZuluGoldPage;
+				await zuluGoldPage.assertThat().waitForRoundFinish();
 				break;
 			}
 			default: {

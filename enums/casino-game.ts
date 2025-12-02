@@ -3,6 +3,7 @@ export enum GameProvider {
 	HACKSAW_GAMING = "hacksaw-gaming",
 	WICKED_GAMES = "wickedgames",
 	EVOLUTION_GAMING = "evolution-gaming",
+	ELK_STUDIOS = "elk-studios",
 }
 
 export enum CasinoGameName {
@@ -12,6 +13,7 @@ export enum CasinoGameName {
 	BOOK_OF_ARABIA = "Book Of Arabia", // Wicked Games
 	CASH_VAULT_I = "Cash Vault I", // hacksaw
 	LIVE_BACCARAT_SQUEEZE = "Live Baccarat Squeeze", // evolution-gaming
+	ZULU_GOLD = "Zulu Gold", // elk-studios
 }
 
 export enum CasinoGameUrl {

@@ -47,6 +47,8 @@ export const rewardedUserIdPattern = /Successfully rewarded user\s*#(\d+)/g;
 
 export const wickedGamesHostPattern = /tequity\.staging\.wicked\.games$/i;
 export const wickedGamesAuthPathPattern = /\/authenticate(?:\?.*)?$/i;
+export const aleaPlayHostPattern = /play\.aleaplay\.com$/i;
+export const aleaPlayAuthPathPattern = /\/api\/v1\/games\/\d+(?:\?.*)?$/i;
 export const sessionIdPattern = /\.([a-z0-9]{8})-/i;
 /* eslint-disable no-control-regex */
 // Added regex to avoid external library dependency

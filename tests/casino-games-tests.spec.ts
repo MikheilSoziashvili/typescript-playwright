@@ -5,17 +5,17 @@ import {
 } from "@core/utils/utils";
 import { UserInfoTabs } from "@enums/admin/user-info-tabs";
 import { CasinoGameName } from "@enums/casino-game";
-import { Currency } from "@enums/currencies";
 import { CsvFilesName } from "@enums/csv-file-name";
+import { Currency } from "@enums/currencies";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
+import { TestUserRole } from "@enums/test-user-roles";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { Unit } from "@enums/units";
 import { Wallet } from "@enums/wallets";
 import { test } from "@fixtures/fixtures";
 import { testData } from "test-data/test-data-manager";
-import { TestUserRole } from "@enums/test-user-roles";
 
 test.use({ launchOptions: { slowMo: 1000 } });
 
@@ -158,6 +158,7 @@ test.describe("Casino games tests", () => {
 						toast,
 						page,
 					}) => {
+						test.slow();
 						await stripAuthFromExternalRequests(page);
 						const superAdminSession =
 							await browserSessionManager.loginAs(

@@ -24,6 +24,7 @@ import { BookOfPyramidsPage } from "@pages/casino-games/bgaming/book-of-pyramids
 import { CashVaultIPage } from "@pages/casino-games/hacksaw-gaming/cash-vault-i/cash-vault-i-page";
 import { BookOfArabiaPage } from "@pages/casino-games/wickedgames/book-of-arabia/book-of-arabia-page";
 import { LiveBaccaratSqueezePage } from "@pages/casino-games/evolution-gaming/live-baccarat-squeeze/live-baccarat-squeeze-page";
+import { ZuluGoldPage } from "@pages/casino-games/elk-studios/zulu-gold/zulu-gold-page";
 import { APIRequestContext, APIResponse, TestInfo } from "@playwright/test";
 
 export type TestUserConfigurationObject = {
@@ -116,7 +117,8 @@ export type CasinoGamesPage =
 	| BookOfPyramidsPage
 	| CashVaultIPage
 	| BookOfArabiaPage
-	| LiveBaccaratSqueezePage;
+	| LiveBaccaratSqueezePage
+	| ZuluGoldPage;
 
 export type PoolConfigurationType = {
 	host: string;

@@ -15,11 +15,11 @@ const createProxyCredentials = (
 export const US_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8001");
 
-// United Kingdom server - soft blocked - removed from the e2e-staging config as the CI servers are in the UK
+// United Kingdom server - removed from the e2e-staging config as the CI servers are in the UK
 export const UK_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8002");
 
-// Germany server - soft blocked
+// Germany server - soft blocked, oauth disabled
 export const DE_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8003");
 
@@ -39,27 +39,27 @@ export const BE_PROXY_CREDENTIALS =
 export const ES_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8007");
 
-// Australia server - soft blocked
+// Australia server - soft blocked, games blocked
 export const AU_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8008");
 
-// Denmark server - soft blocked
+// Denmark server - soft blocked, oauth disabled for steam
 export const DK_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8009");
 
-// Portugal server - soft blocked
+// Portugal server
 export const PT_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8010");
 
-// France server - soft blocked
+// France server - soft blocked, games blocked
 export const FR_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8011");
 
-// Slovakia server - soft blocked
+// Slovakia server - soft blocked, oauth disabled, soft blocked without login
 export const SK_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8012");
 
-// Italia server
+// Italy server
 export const IT_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8013");
 
@@ -75,16 +75,18 @@ export const CA_PROXY_CREDENTIALS =
 export const PL_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8016");
 
-// Ireland servers
-export const IE_PROXY_CREDENTIALS_1 =
+// Ireland server
+export const IE_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8017");
 
+// Ireland server 2
 export const IE_PROXY_CREDENTIALS_2 =
 	createProxyCredentials("dc.oxylabs.io:8018");
 
+// Ireland server 3
 export const IE_PROXY_CREDENTIALS_3 =
 	createProxyCredentials("dc.oxylabs.io:8019");
 
-// Czeck Republic server
+// Czech Republic server
 export const CZ_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8020");

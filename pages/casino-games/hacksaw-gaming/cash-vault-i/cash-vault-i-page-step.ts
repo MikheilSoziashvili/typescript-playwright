@@ -19,7 +19,7 @@ export class CashVaultIPageSteps extends BasePageStep<CashVaultIPage> {
 						.assertThat()
 						.checkElementsAreVisible(
 							[this.gamdomPage.map.gameBalance],
-							Timeout.EXTRA_SHORT,
+							Timeout.MEDIUM,
 						);
 					return true;
 				} catch {
@@ -30,7 +30,7 @@ export class CashVaultIPageSteps extends BasePageStep<CashVaultIPage> {
 			{
 				errorMessage: "Casino game failed to load",
 				intervalSeconds: TimeoutSeconds.THREE,
-				timeoutSeconds: Timeout.MEDIUM,
+				timeoutSeconds: Timeout.EXTRA_LONG,
 			},
 		);
 	}
