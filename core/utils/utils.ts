@@ -1,3 +1,5 @@
+import * as path from "path";
+import { format } from "date-fns";
 import { GamdomApi } from "@api/gamdom-api";
 import { WICKED_GAMES_AUTH } from "@constants/auth-casino-game-providers";
 import { DEFAULT_CURRENCY, DEFAULT_MULTIPLIER } from "@constants/defaults";
@@ -46,11 +48,9 @@ import {
 import accounting from "accounting";
 import { environment_url, users } from "configuration";
 import { parse } from "csv-parse/sync";
-import { format } from "date-fns";
 import fs, { promises as fsPromises, readFileSync } from "fs";
 import jsQR from "jsqr";
 import { authenticator } from "otplib";
-import * as path from "path";
 import { Browser, BrowserContext, Cookie, Locator, Page } from "playwright";
 import { PNG, PNGOptions } from "pngjs";
 import sharp from "sharp";
