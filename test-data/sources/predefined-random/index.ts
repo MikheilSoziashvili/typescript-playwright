@@ -23,4 +23,14 @@ export const predefinedRandom = {
 			prefix: "Player_",
 		}),
 	},
+	sportsBlog: {
+		articleName: generateRandomString({
+			prefix: "new_article_",
+			length: 3,
+		}),
+		articleSubtitle: generateRandomString({
+			prefix: "new_article_subtitle_",
+			length: 3,
+		}),
+	},
 };

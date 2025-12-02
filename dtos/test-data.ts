@@ -413,3 +413,37 @@ export class FreeSpinsPromotionTestData {
 		this.denominationCoins = options.denominationCoins;
 	}
 }
+
+export class SportsBlogArticleTestData {
+	public title: string;
+	public customUrl: string;
+	public subtitle: string;
+	public detailedDescription: string;
+	public author: string;
+	public articleStartDate?: string;
+	public articleStartTime?: string;
+	public coverImage: string;
+	public thumbnailImage: string;
+
+	constructor(options: {
+		title: string;
+		customUrl: string;
+		subtitle: string;
+		detailedDescription: string;
+		author: string;
+		articleStartDate?: string;
+		articleStartTime?: string;
+		coverImage: string;
+		thumbnailImage: string;
+	}) {
+		this.title = options.title;
+		this.customUrl = options.customUrl;
+		this.subtitle = options.subtitle;
+		this.detailedDescription = options.detailedDescription;
+		this.author = options.author;
+		this.articleStartDate = options.articleStartDate;
+		this.articleStartTime = options.articleStartTime;
+		this.coverImage = options.coverImage;
+		this.thumbnailImage = options.thumbnailImage;
+	}
+}

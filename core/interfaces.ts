@@ -110,3 +110,15 @@ export interface TransactionResult {
 	txHash: string;
 	validated: boolean;
 }
+
+export interface SportsBlogArticleTestDataParams {
+	title: string;
+	customUrl: string;
+	subtitle: string;
+	detailedDescription?: string;
+	author: string;
+	articleStartDate?: string;
+	articleStartTime?: string;
+	coverImage?: string;
+	thumbnailImage?: string;
+}

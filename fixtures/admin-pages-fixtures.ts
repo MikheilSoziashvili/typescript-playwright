@@ -50,6 +50,7 @@ import {
 	BrowserSessionManager,
 	sessionAwarePage,
 } from "@core/browser-session-mngmt";
+import { SportsBlogAdminPage } from "@pages/admin/sports-blog-admin/sports-blog-admin-page";
 
 export type AdminPages = {
 	browserSessionManager: BrowserSessionManager;
@@ -100,6 +101,7 @@ export type AdminPages = {
 	userInfoKycAdminPage: UserInfoKycAdminPage;
 	bulkActionsAdminPage: BulkActionsAdminPage;
 	userInfoSessionsAdminPage: UserInfoSessionsAdminPage;
+	sportsBlogAdminPage: SportsBlogAdminPage;
 };
 
 export const adminPagesFixtures = base.extend<AdminPages>({
@@ -157,4 +159,5 @@ export const adminPagesFixtures = base.extend<AdminPages>({
 	userInfoKycAdminPage: sessionAwarePage(UserInfoKycAdminPage),
 	bulkActionsAdminPage: sessionAwarePage(BulkActionsAdminPage),
 	userInfoSessionsAdminPage: sessionAwarePage(UserInfoSessionsAdminPage),
+	sportsBlogAdminPage: sessionAwarePage(SportsBlogAdminPage),
 });

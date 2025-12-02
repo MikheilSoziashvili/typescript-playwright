@@ -49,3 +49,4 @@ export const PRIVACY_PAGE_ENDPOINT = "/privacy";
 export const SPORTS_PAGE_ENDPOINT = "/sports";
 export const ADMIN_KOTH_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/KOTHAdmin`;
 export const ADMIN_BULK_ACTIONS_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/BulkActions`;
+export const SPORTS_BLOG_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/SportsBlogAdmin`;

@@ -106,6 +106,8 @@ import { VerificationPage } from "./verification/verification-page";
 import { BookOfArabiaPage } from "./casino-games/wickedgames/book-of-arabia/book-of-arabia-page";
 import { PocketDicePage } from "./pocket-dice-game/pocket-dice-page";
 import { ZuluGoldPage } from "./casino-games/elk-studios/zulu-gold/zulu-gold-page";
+import { SportsBlogAdminPage } from "./admin/sports-blog-admin/sports-blog-admin-page";
+import { SportsBlogModal } from "./modals/sports-blog-modal/sports-blog-modal";
 
 export const GamdomPages = {
 	homePage: HomePage,
@@ -185,6 +187,7 @@ export const GamdomAdminPages = {
 	userInfoKycAdminPage: UserInfoKycAdminPage,
 	bulkActionsAdminPage: BulkActionsAdminPage,
 	userInfoSessionsAdminPage: UserInfoSessionsAdminPage,
+	sportsBlogPage: SportsBlogAdminPage,
 };
 
 export const GamePages = {
@@ -231,6 +234,7 @@ export const Modals = {
 	softblockModal: SoftblockModalPage,
 	newRedirectModal: NewRedirectModal,
 	promotionsModal: PromotionsModal,
+	sportsBlogModal: SportsBlogModal,
 };
 
 export const AllGamdomPages = {

@@ -95,4 +95,5 @@ export enum UserTags {
 	BulkActionTipAdmin = "BulkActionTipAdmin",
 	BulkActionBanAdmin = "BulkActionBanAdmin",
 	BulkActionNotificationAdmin = "BulkActionNotificationAdmin",
+	SportsBlogAdmin = "SportsBlogAdmin",
 }
