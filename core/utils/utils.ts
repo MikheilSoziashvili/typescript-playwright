@@ -1,10 +1,11 @@
-import * as path from "path";
-import { format } from "date-fns";
 import { GamdomApi } from "@api/gamdom-api";
+import { WICKED_GAMES_AUTH } from "@constants/auth-casino-game-providers";
 import { DEFAULT_CURRENCY, DEFAULT_MULTIPLIER } from "@constants/defaults";
 import { MAILINATOR_DOMAIN, TEAMGAMDOM_DOMAIN } from "@constants/domains";
 import { AUTH_PATH } from "@constants/file-paths";
+import { PRODUCTION_BASE_URL } from "@constants/page-urls";
 import { JsonData, WaitUntilOptions } from "@core/interfaces";
+import { jiraUserMap } from "@core/reporters/jira-failed-tests-reporter/user-map";
 import {
 	CalculateMinesMultiplierArgs,
 	CredentialsType,
@@ -23,9 +24,11 @@ import { Locale } from "@enums/locale";
 import { NumberSeparators } from "@enums/number-separators";
 import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { DocumentReadyState } from "@enums/playwright/document-ready-states";
+import { RelativeDateRelation } from "@enums/relative-date-relation";
 import { Timeout } from "@enums/timeout";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { logger } from "@logger/logger";
+import { ChatMessageOptions } from "@pages/components/chat/chat-map";
 import { expect } from "@playwright/test";
 import {
 	currencyToNumberPattern,
@@ -43,19 +46,16 @@ import {
 import accounting from "accounting";
 import { environment_url, users } from "configuration";
 import { parse } from "csv-parse/sync";
+import { format } from "date-fns";
 import fs, { promises as fsPromises, readFileSync } from "fs";
 import jsQR from "jsqr";
 import { authenticator } from "otplib";
+import * as path from "path";
 import { Browser, BrowserContext, Cookie, Locator, Page } from "playwright";
 import { PNG, PNGOptions } from "pngjs";
 import sharp from "sharp";
 import xml2js from "xml2js";
 import { isFileNotFoundError } from "./error-utils";
-import { ChatMessageOptions } from "@pages/components/chat/chat-map";
-import { RelativeDateRelation } from "@enums/relative-date-relation";
-import { WICKED_GAMES_AUTH } from "@constants/auth-casino-game-providers";
-import { jiraUserMap } from "@core/reporters/jira-failed-tests-reporter/user-map";
-import { PRODUCTION_BASE_URL } from "@constants/page-urls";
 
 export function encodeCredentials(username: string, password: string): string {
 	const credentials = `${username}:${password}`;

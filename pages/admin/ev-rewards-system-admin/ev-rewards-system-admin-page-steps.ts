@@ -4,14 +4,12 @@ import {
 	computePayoutFromCsv,
 	parseUserIdsFromSuccessLogs,
 } from "@core/utils/csv-utils/generating-reward-csv-utils";
+import { EvRewardTypes } from "@enums/ev-reward-types";
+import { ExpectedResultToastKey } from "@enums/expected-reward-toast-keys";
+import { RelativeDateRelation } from "@enums/relative-date-relation";
 import { BasePageStep } from "@pages/base/base-page-step";
-import { Locator } from "@playwright/test";
 import { step } from "decorators/step";
 import { EvRewardsSystemAdminPage } from "./ev-rewards-system-admin-page";
-import { ExpectedResultToastKey } from "@enums/expected-reward-toast-keys";
-import { EvRewardTypes } from "@enums/ev-reward-types";
-import { RelativeDateRelation } from "@enums/relative-date-relation";
-import { getISODate } from "@core/utils/utils";
 
 export class EvRewardsSystemAdminSteps extends BasePageStep<EvRewardsSystemAdminPage> {
 	private static readonly DEFAULT_RELATIVE_DAYS = 2;
@@ -27,33 +25,6 @@ export class EvRewardsSystemAdminSteps extends BasePageStep<EvRewardsSystemAdmin
 		days: number = EvRewardsSystemAdminSteps.DEFAULT_RELATIVE_DAYS,
 	): Promise<number> {
 		return rel === RelativeDateRelation.FUTURE ? days : -days;
-	}
-
-	@step("Pick a date relative to today")
-	public async pickDateRelativeIn(
-		input: Locator,
-		offset: number,
-	): Promise<void> {
-		await input.click();
-
-		const iso = getISODate({
-			daysOffset: offset,
-			hours: 0,
-			minutes: 0,
-		});
-		const d = new Date(iso);
-
-		const targetDay = d.getDate();
-		const targetMonth = d.getMonth();
-		const targetYear = d.getFullYear();
-
-		// The calendar grid may display the same day twice (end of month and next month).
-		// Select by day + month + year
-		const cellSelector = `.rdtPicker:visible td.rdtDay[data-value="${targetDay}"][data-month="${targetMonth}"][data-year="${targetYear}"]`;
-		await this.gamdomPage.page.locator(cellSelector).click();
-		await this.gamdomPage.page
-			.locator("body")
-			.click({ position: { x: 0, y: 0 } });
 	}
 
 	@step("Navigate and check rewards type elements")
@@ -75,7 +46,7 @@ export class EvRewardsSystemAdminSteps extends BasePageStep<EvRewardsSystemAdmin
 
 	@step("Pick start date: N days relative to today (calendar)")
 	public async pickStartDate(daysOffset: number): Promise<void> {
-		await this.pickDateRelativeIn(
+		await this.gamdomPage.datepicker.pickDateRelativeIn(
 			this.gamdomPage.map.rewardAvailableAfterDateInput,
 			daysOffset,
 		);
@@ -83,7 +54,7 @@ export class EvRewardsSystemAdminSteps extends BasePageStep<EvRewardsSystemAdmin
 
 	@step("Pick end date: N days relative to today (calendar)")
 	public async pickEndDate(daysOffset: number): Promise<void> {
-		await this.pickDateRelativeIn(
+		await this.gamdomPage.datepicker.pickDateRelativeIn(
 			this.gamdomPage.map.rewardExpiresAfterDateInput,
 			daysOffset,
 		);
