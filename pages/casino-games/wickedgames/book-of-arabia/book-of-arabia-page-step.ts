@@ -1,18 +1,24 @@
 import { BasePageStep } from "@pages/base/base-page-step";
 import { step } from "decorators/step";
 import { BookOfArabiaPage } from "./book-of-arabia-page";
+import { logger } from "@logger/logger";
 
 export class BookOfArabiaPageSteps extends BasePageStep<BookOfArabiaPage> {
 	public constructor(gamdomPage: BookOfArabiaPage) {
 		super(gamdomPage);
 	}
 
-	@step("Set bet amount and spin")
-	public async setBetAmountAndSpin(amount: number): Promise<void> {
+	@step("Set bet amount")
+	public async setBetAmount(amount: number): Promise<void> {
 		await this.gamdomPage.map.betContainer.click();
 		await this.gamdomPage.map.betOptionsRoot.waitFor({ state: "visible" });
 
 		await this.gamdomPage.map.getBetOption(amount).click();
+	}
+
+	@step("Set bet amount and spin")
+	public async setBetAmountAndSpin(amount: number): Promise<void> {
+		await this.setBetAmount(amount);
 		await this.spinAndWait();
 	}
 
@@ -54,5 +60,27 @@ export class BookOfArabiaPageSteps extends BasePageStep<BookOfArabiaPage> {
 	public async ensureLoadedAndSpin(betAmount: number): Promise<void> {
 		await this.gamdomPage.assertThat().ensureGameLoaded();
 		await this.gamdomPage.steps().startGameAndSpin(betAmount);
+	}
+
+	@step("Spin until won")
+	public async spinUntilWon(betAmount: number): Promise<void> {
+		let hasWon = false;
+		let spinCount = 0;
+
+		await this.gamdomPage.clickContinueButton();
+		await this.setBetAmount(betAmount);
+		while (!hasWon) {
+			await this.spinAndWait();
+			spinCount++;
+
+			const isWon = await this.gamdomPage
+				.assertThat()
+				.isWinLabelVisible();
+
+			if (isWon) {
+				hasWon = true;
+				logger.info(`Won after ${spinCount} spin(s)`);
+			}
+		}
 	}
 }

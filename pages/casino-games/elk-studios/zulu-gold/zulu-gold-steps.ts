@@ -3,6 +3,7 @@ import { BaseVisualSteps } from "@pages/base-visual/base-visual-steps";
 import { step } from "decorators/step";
 import { ZuluGoldMap } from "./zulu-gold-map";
 import { ZuluGoldPage } from "./zulu-gold-page";
+import { TimeoutSeconds } from "@enums/timeout-seconds";
 
 export class ZuluGoldSteps extends BaseVisualSteps {
 	protected zuluGoldPage: ZuluGoldPage;
@@ -34,10 +35,28 @@ export class ZuluGoldSteps extends BaseVisualSteps {
 					.assertThat()
 					.spinButtonExists();
 
-				if (!spinButtonExists) {
-					return false;
-				}
+				if (spinButtonExists) {
+					await this.zuluGoldPage.clickSpinButton();
+				} else {
+					const spinBonusButtonExists = await this.zuluGoldPage
+						.assertThat()
+						.spinBonusButtonExists();
 
+					if (spinBonusButtonExists) {
+						await this.zuluGoldPage.clickSpinBonusButton();
+					} else {
+						const spinBonusSecondButtonExists =
+							await this.zuluGoldPage
+								.assertThat()
+								.spinBonusSecondButtonExists();
+
+						if (spinBonusSecondButtonExists) {
+							await this.zuluGoldPage.clickSpinBonusSecondButton();
+						} else {
+							return false;
+						}
+					}
+				}
 				await this.zuluGoldPage.clickSpinButton();
 				await waitForSeconds(2);
 
@@ -45,8 +64,9 @@ export class ZuluGoldSteps extends BaseVisualSteps {
 			},
 			{
 				errorMessage: `Win-label not found after ${maxSpins} spins`,
-				intervalSeconds: 0,
-				timeoutSeconds: maxSpins * 8,
+				intervalSeconds: TimeoutSeconds.HALF,
+				timeoutSeconds:
+					maxSpins * (TimeoutSeconds.TEN + TimeoutSeconds.FIVE),
 			},
 		);
 

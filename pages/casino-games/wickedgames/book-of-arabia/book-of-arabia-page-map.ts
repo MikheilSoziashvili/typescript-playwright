@@ -73,4 +73,14 @@ export class BookOfArabiaPageMap extends BaseMap {
 			exact: false,
 		});
 	}
+
+	public get winContainer(): Locator {
+		return this.gameFrame.locator('[class="total-win-container"]');
+	}
+
+	public get winLabel(): Locator {
+		return this.winContainer.locator('[class*="total-win"]', {
+			hasText: "WIN",
+		});
+	}
 }

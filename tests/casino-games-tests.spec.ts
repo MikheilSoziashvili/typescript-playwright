@@ -158,6 +158,11 @@ test.describe("Casino games tests", () => {
 						toast,
 						page,
 					}) => {
+						test.fixme(
+							game.gameName ===
+								CasinoGameName.LIVE_BACCARAT_SQUEEZE,
+							"Temporary skipped until needed proxy for CI is added",
+						);
 						test.slow();
 						await stripAuthFromExternalRequests(page);
 						const superAdminSession =
@@ -172,11 +177,11 @@ test.describe("Casino games tests", () => {
 
 						await casinoPage
 							.steps()
-							.searchForGameAndOpen(game.gameName);
+							.searchForGameAndOpenWithRetries(game.gameName);
 
 						await casinoGamesPage
 							.steps()
-							.playCasinoGameRoundSuccessfully(game);
+							.playCasinoGameRoundUntilWinSuccessfully(game);
 
 						await userInfoAdminPage
 							.steps()

@@ -4,6 +4,7 @@ import { waitUntil } from "@core/utils/utils";
 import { step } from "decorators/step";
 import { Timeout } from "@enums/timeout";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
+import { logger } from "@logger/logger";
 
 export class CashVaultIPageSteps extends BasePageStep<CashVaultIPage> {
 	public constructor(gamdomPage: CashVaultIPage) {
@@ -44,5 +45,25 @@ export class CashVaultIPageSteps extends BasePageStep<CashVaultIPage> {
 		await this.gamdomPage.clickScratchAllButton();
 		await this.gamdomPage.assertThat().scratchAllButtonIsNotVisible();
 		await this.gamdomPage.assertThat().buyButtonIsVisible();
+	}
+
+	@step("Scratch cards until won")
+	public async scratchCardsUntilWon(): Promise<void> {
+		let hasWon = false;
+		let scratchCount = 0;
+
+		while (!hasWon) {
+			await this.buyAndScratchAllCards();
+			scratchCount++;
+
+			const isWon = await this.gamdomPage
+				.assertThat()
+				.isWonLabelVisible();
+
+			if (isWon) {
+				hasWon = true;
+				logger.info(`Won after ${scratchCount} scratch(es)`);
+			}
+		}
 	}
 }

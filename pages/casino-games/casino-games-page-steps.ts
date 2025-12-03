@@ -55,20 +55,20 @@ export class CasinoGamesPageSteps extends BasePageStep<CasinoGamesUnifiedPage> {
 	/**
 	 * Plays a complete game round successfully by combining:
 	 * 1. Wait for game to load successfully
-	 * 2. Play the game round
+	 * 2. Play the game round until win
 	 * 3. Wait for the game round to finish
 	 *
 	 * @param config - The game configuration containing gameName and gameProvider
 	 * @returns A promise that resolves when the complete round has been played
 	 */
 	@step(
-		"Play game round successfully for {config.gameProvider}/{config.gameName}",
+		"Play game round until win successfully for {config.gameProvider}/{config.gameName}",
 	)
-	public async playCasinoGameRoundSuccessfully(
+	public async playCasinoGameRoundUntilWinSuccessfully(
 		config: CasinoGameConfig,
 	): Promise<void> {
 		await this.gamdomPage.assertThat().waitForGameLoadSuccessfully(config);
-		await this.gamdomPage.playCasinoGameRound(config);
+		await this.gamdomPage.playCasinoGameRoundUntilWin(config);
 		await this.gamdomPage.assertThat().waitForCasinoGameRoundFinish(config);
 	}
 }

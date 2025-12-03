@@ -106,13 +106,15 @@ export class CasinoGamesUnifiedPage extends BasePage<CasinoGamesPageMap> {
 	}
 
 	/**
-	 * Plays a game round for the specified game.
+	 * Plays a game round until win for the specified game.
 	 *
 	 * @param config - The game configuration containing gameName and gameProvider
 	 * @returns A promise that resolves when the round has been played
 	 */
-	@step("Play round for {config.gameProvider}/{config.gameName}")
-	public async playCasinoGameRound(config: CasinoGameConfig): Promise<void> {
+	@step("Play round until win for {config.gameProvider}/{config.gameName}")
+	public async playCasinoGameRoundUntilWin(
+		config: CasinoGameConfig,
+	): Promise<void> {
 		const gamePage = this.getGamePage(config);
 
 		switch (config.gameProvider) {
@@ -123,7 +125,7 @@ export class CasinoGamesUnifiedPage extends BasePage<CasinoGamesPageMap> {
 			}
 			case GameProvider.HACKSAW_GAMING: {
 				const cashVaultIPage = gamePage as CashVaultIPage;
-				await cashVaultIPage.steps().buyAndScratchAllCards();
+				await cashVaultIPage.steps().scratchCardsUntilWon();
 				break;
 			}
 			case GameProvider.WICKED_GAMES: {
@@ -133,7 +135,7 @@ export class CasinoGamesUnifiedPage extends BasePage<CasinoGamesPageMap> {
 					.bet.build({ username: "default" }, { betAmount: 200 });
 				await bookOfArabiaPage
 					.steps()
-					.startGameAndSpin(betTestData.betAmount);
+					.spinUntilWon(betTestData.betAmount);
 				break;
 			}
 			case GameProvider.EVOLUTION_GAMING: {

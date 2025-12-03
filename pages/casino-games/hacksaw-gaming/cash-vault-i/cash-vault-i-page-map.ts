@@ -26,4 +26,17 @@ export class CashVaultIPageMap extends BaseMap {
 	public get scratchAllButton(): Locator {
 		return this.actionsButtonContainer.locator("#StopBtn");
 	}
+
+	public get feedbackMessageContainer(): Locator {
+		return this.gameFrame.locator("#FeedbackMsg");
+	}
+
+	public get wonLabel(): Locator {
+		return this.feedbackMessageContainer.locator(
+			'[data-main-field="win-amount"]',
+			{
+				hasText: "YOU WON $",
+			},
+		);
+	}
 }

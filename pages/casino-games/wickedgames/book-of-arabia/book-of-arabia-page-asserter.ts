@@ -94,7 +94,7 @@ export class BookOfArabiaPageAsserter extends BaseAsserter<BookOfArabiaPage> {
 			try {
 				await this.checkElementsAreVisible(
 					[iframe, continueButton],
-					Timeout.MEDIUM,
+					Timeout.LONG,
 				);
 				return;
 			} catch {
@@ -111,5 +111,10 @@ export class BookOfArabiaPageAsserter extends BaseAsserter<BookOfArabiaPage> {
 				await this.gamdomPage.refresh();
 			}
 		}
+	}
+
+	@step("Check if win label is visible")
+	public async isWinLabelVisible(): Promise<boolean> {
+		return this.isElementVisible([this.gamdomPage.map.winLabel]);
 	}
 }

@@ -1,5 +1,5 @@
 import { OriginalGames, VisibilityResult } from "@core/types/types";
-import { waitUntil } from "@core/utils/utils";
+import { waitForSeconds, waitUntil } from "@core/utils/utils";
 import { CasinoGameName } from "@enums/casino-game";
 import { GameProvider } from "@enums/game-providers";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
@@ -78,6 +78,35 @@ export class CasinoPageSteps extends BasePageStep<CasinoPage> {
 	public async searchForGameAndOpen(game: CasinoGameName): Promise<void> {
 		await this.gamdomPage.searchForGame(game);
 		await this.gamdomPage.openGameFromDropdown(game);
+	}
+
+	@step("Search for a casino game and open it with retries")
+	public async searchForGameAndOpenWithRetries(
+		game: CasinoGameName,
+		maxRetries = 3,
+	): Promise<void> {
+		await waitUntil(
+			async () => {
+				const initialUrl = this.gamdomPage.page.url();
+
+				await this.gamdomPage.searchForGame(game);
+				await this.gamdomPage.openGameFromDropdown(game);
+				await waitForSeconds(1);
+
+				const currentUrl = this.gamdomPage.page.url();
+
+				if (currentUrl !== initialUrl) {
+					return true;
+				}
+				await this.gamdomPage.refresh();
+				return false;
+			},
+			{
+				errorMessage: `Failed to open game ${game} after ${maxRetries} retries`,
+				intervalSeconds: 2,
+				timeoutSeconds: TimeoutSeconds.SIXTY,
+			},
+		);
 	}
 
 	@step("Select multiple providers from dropdown")

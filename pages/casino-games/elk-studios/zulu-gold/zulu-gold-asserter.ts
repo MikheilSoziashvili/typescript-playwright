@@ -65,23 +65,26 @@ export class ZuluGoldAsserter extends BaseVisualAsserter {
 	@step("Check if spin bonus button exists")
 	public async spinBonusButtonExists(): Promise<boolean> {
 		logger.info("Checking if spin bonus button exists");
-		const spinButtonMatch = await this.zuluGoldPage.findVisualElement(
-			this.map.spinBonusSecondButton,
-			{
-				threshold: VisualComparisonThreshold.VERY_RELAXED,
-			},
-		);
-		if (spinButtonMatch?.found) {
-			return true;
-		}
-
 		const spinBonusButtonMatch = await this.zuluGoldPage.findVisualElement(
 			this.map.spinBonusButton,
 			{
-				threshold: VisualComparisonThreshold.VERY_RELAXED,
+				threshold: VisualComparisonThreshold.ULTRA_RELAXED,
 			},
 		);
 		return spinBonusButtonMatch?.found ?? false;
+	}
+
+	@step("Check if spin bonus second button exists")
+	public async spinBonusSecondButtonExists(): Promise<boolean> {
+		logger.info("Checking if spin bonus second button exists");
+		const spinBonusSecondButtonMatch =
+			await this.zuluGoldPage.findVisualElement(
+				this.map.spinBonusSecondButton,
+				{
+					threshold: VisualComparisonThreshold.ULTRA_RELAXED,
+				},
+			);
+		return spinBonusSecondButtonMatch?.found ?? false;
 	}
 
 	@step("Check if win label exists")
@@ -97,22 +100,32 @@ export class ZuluGoldAsserter extends BaseVisualAsserter {
 	}
 
 	@step("Wait for round finish")
-	public async waitForRoundFinish(): Promise<void> {
+	public async waitForRoundFinish(): Promise<boolean> {
 		logger.info(
 			"Verifying either spin button or spin bonus button is visible",
 		);
-		const spinButtonExists = await this.spinButtonExists();
-		const spinBonusButtonExists = await this.spinBonusButtonExists();
+		let roundFinished = false;
+
+		if (await this.spinButtonExists()) {
+			logger.info("Spin button exists");
+			roundFinished = true;
+		}
+
+		if (await this.spinBonusButtonExists()) {
+			logger.info("Spin bonus button exists");
+			roundFinished = true;
+		}
+
+		if (await this.spinBonusSecondButtonExists()) {
+			logger.info("Spin bonus second button exists");
+			roundFinished = true;
+		}
 
 		expect(
-			spinButtonExists || spinBonusButtonExists,
+			roundFinished,
 			"Round is not finished. Neither spin button nor spin bonus button is visible",
 		).toBe(true);
 
-		if (spinButtonExists) {
-			logger.info("Round finished. Spin button is visible");
-		} else {
-			logger.info("Round finished. Spin bonus button is visible");
-		}
+		return false;
 	}
 }

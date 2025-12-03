@@ -36,4 +36,20 @@ export class ZuluGoldPage extends BaseVisualPage<ZuluGoldMap> {
 			threshold: VisualComparisonThreshold.RELAXED,
 		});
 	}
+
+	@step("Click spin bonus button")
+	async clickSpinBonusButton(): Promise<void> {
+		logger.info("Clicking spin bonus button");
+		await this.clickVisualElement(this.map.spinBonusButton, {
+			threshold: VisualComparisonThreshold.ULTRA_RELAXED,
+		});
+	}
+
+	@step("Click spin bonus second button")
+	async clickSpinBonusSecondButton(): Promise<void> {
+		logger.info("Clicking spin bonus second button");
+		await this.clickVisualElement(this.map.spinBonusSecondButton, {
+			threshold: VisualComparisonThreshold.ULTRA_RELAXED,
+		});
+	}
 }

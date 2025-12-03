@@ -36,4 +36,14 @@ export class CashVaultIPageAsserter extends BaseAsserter<CashVaultIPage> {
 		await this.buyButtonIsVisible();
 		await this.scratchAllButtonIsNotVisible();
 	}
+
+	@step("Verify won label is visible")
+	public async wonLabelIsVisible(): Promise<void> {
+		await this.checkElementsAreVisible([this.gamdomPage.map.wonLabel]);
+	}
+
+	@step("Check if won label is visible")
+	public async isWonLabelVisible(): Promise<boolean> {
+		return this.isElementVisible([this.gamdomPage.map.wonLabel]);
+	}
 }
