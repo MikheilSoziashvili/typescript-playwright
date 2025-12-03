@@ -37,4 +37,16 @@ export class GooglePageMap extends BaseMap {
 	public get verifyItsYouScreen(): Locator {
 		return this.page.getByText("Verify it’s you");
 	}
+
+	public get gTryAnotherWayBtn(): Locator {
+		return this.page.getByRole("button", {
+			name: /try another way/i,
+		});
+	}
+
+	public get gGetVerificationCodeBtn(): Locator {
+		return this.page.getByRole("button", {
+			name: /get a verification code/i,
+		});
+	}
 }

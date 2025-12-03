@@ -34,6 +34,9 @@ export class GoogleAuthPage extends BasePage<GooglePageMap> {
 	): Promise<void> {
 		await this.enterCredentials(email, password);
 
+		await this.map.gTryAnotherWayBtn.click();
+		await this.map.gGetVerificationCodeBtn.click();
+
 		const previousCode = await this.handleTwoStepVerification(authSecret);
 
 		await this.waitForWrongCodeMessageToDisappear();
@@ -117,7 +120,7 @@ export class GoogleAuthPage extends BasePage<GooglePageMap> {
 		email: string,
 		password: string,
 	): Promise<void> {
-		await this.map.gEmailField.fill(email);
+		await this.map.gEmailField.pressSequentially(email);
 		await this.map.gMoveForwardBtn.click();
 		await this.map.gPasswordField.fill(password);
 		await this.map.gPasswordNextBtn.click();
