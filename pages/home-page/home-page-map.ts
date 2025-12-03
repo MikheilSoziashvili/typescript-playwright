@@ -30,7 +30,7 @@ export class HomePageMap extends BaseMap {
 
 	public get bannerCarousel(): Locator {
 		return this.page.locator(
-			`div[class*="swiper-initialized swiper-horizontal sc-"]`,
+			`div[class*="swiper-horizontal HomePageSlider"]`,
 		);
 	}
 
