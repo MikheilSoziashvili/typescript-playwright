@@ -1,5 +1,7 @@
-import { generateRandomString } from "@core/utils/utils";
+import { generateRandomString, getRandomIndex } from "@core/utils/utils";
+import { BlogPostCategories } from "@enums/post-categories";
 import {
+	BlogPostsGenerator,
 	CasinoGamesGenerator,
 	PromoCampaignCodesGenerator,
 	PromoCodesGenerators,
@@ -56,6 +58,37 @@ export class RandomDataSourceGenerator {
 	public get casinoGames(): CasinoGamesGenerator {
 		return {
 			playerName: () => this.predefinedRandom.casinoGames.playerName,
+		};
+	}
+
+	public get blogPosts(): BlogPostsGenerator {
+		return {
+			paragraph: () =>
+				generateRandomString({
+					prefix: "automation_blog_paragraph_",
+					length: 5,
+				}),
+			title: () =>
+				generateRandomString({
+					prefix: "automation_blog_title_",
+				}),
+			subTitle: () =>
+				generateRandomString({
+					prefix: "automation_blog_sub_title_",
+				}),
+			author: () =>
+				generateRandomString({
+					prefix: "automation_blog_author_",
+				}),
+			slug: () =>
+				generateRandomString({
+					prefix: "automation-blog-slug-",
+				}),
+			category: () => {
+				const values = Object.values(BlogPostCategories);
+				const randomIndex = getRandomIndex(values.length);
+				return values[randomIndex] as BlogPostCategories;
+			},
 		};
 	}
 }

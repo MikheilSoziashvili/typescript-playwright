@@ -258,6 +258,13 @@ export class BaseMap {
 		}
 	}
 
+	public fileInput(parent?: Locator): Locator {
+		const fileInputSelector = 'input[type="file"]';
+		return parent
+			? parent.locator(fileInputSelector)
+			: this.page.locator(fileInputSelector);
+	}
+
 	public toggleCheckbox(toggle: Locator): Locator {
 		return toggle.locator('input[type="checkbox"]');
 	}

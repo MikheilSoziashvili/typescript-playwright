@@ -6,6 +6,7 @@ import { SecurityAdminPage } from "@pages/admin/security-admin/security-admin-pa
 import { UserInfoAdminPage } from "@pages/admin/user-info-admin/user-info-admin-page";
 import { VipManagerAdminPage } from "@pages/admin/vip-manager/vip-manager-page";
 import { WriterAdminPage } from "@pages/admin/writer-admin/writer-admin-page";
+import { WriterAdminNewPage } from "@pages/admin/writer-admin-new/writer-admin-new-page";
 import { MarketingAdminPage } from "@pages/admin/marketing-admin/marketing-admin-page";
 import { FeaturesAdminPage } from "@pages/admin/features-admin/features-admin-page";
 import { TestingAdminPage } from "@pages/admin/testing-admin/testing-admin-page";
@@ -61,6 +62,7 @@ export type AdminPages = {
 	freeSpinsAdminPage: FreeSpinsAdminPage;
 	securityAdminPage: SecurityAdminPage;
 	writerAdminPage: WriterAdminPage;
+	writerAdminNewPage: WriterAdminNewPage;
 	vipManagerAdminPage: VipManagerAdminPage;
 	actionsAdminPage: ActionsAdminPage;
 	affiliatesAdminPage: AffiliatesAdminPage;
@@ -117,6 +119,7 @@ export const adminPagesFixtures = base.extend<AdminPages>({
 	freeSpinsAdminPage: sessionAwarePage(FreeSpinsAdminPage),
 	securityAdminPage: sessionAwarePage(SecurityAdminPage),
 	writerAdminPage: sessionAwarePage(WriterAdminPage),
+	writerAdminNewPage: sessionAwarePage(WriterAdminNewPage),
 	vipManagerAdminPage: sessionAwarePage(VipManagerAdminPage),
 	actionsAdminPage: sessionAwarePage(ActionsAdminPage),
 	affiliatesAdminPage: sessionAwarePage(AffiliatesAdminPage),

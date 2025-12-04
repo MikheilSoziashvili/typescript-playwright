@@ -6,6 +6,7 @@ import { PromoCodeDomainData } from "./promo-code-domain-data";
 import { AdminNewUsersDomainData } from "./admin-new-users-domain-data";
 import { SokGamesDomainData } from "./sok-games-domain-data";
 import { GeoblockDomainData } from "./geoblock-domain-data";
+import { AdminWriterDomainData } from "./admin-writer-domain-data";
 
 export const domainRegistry = {
 	originals: OriginalsDomainData,
@@ -14,6 +15,7 @@ export const domainRegistry = {
 	verification: VerificationDomainData,
 	promoCodes: PromoCodeDomainData,
 	adminNewUsers: AdminNewUsersDomainData,
+	adminWriter: AdminWriterDomainData,
 	sokGames: SokGamesDomainData,
 	oAuthLogin: GeoblockDomainData,
 };

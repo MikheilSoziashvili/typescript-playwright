@@ -45,6 +45,7 @@ import { UserInfoSessionsAdminPage } from "./admin/user-info-admin/user-info-ses
 import { UserInfoTransactionsAdminPage } from "./admin/user-info-admin/user-info-transactions-admin/user-info-transactions-admin-page";
 import { VipManagerAdminPage } from "./admin/vip-manager/vip-manager-page";
 import { WriterAdminPage } from "./admin/writer-admin/writer-admin-page";
+import { WriterAdminNewPage } from "./admin/writer-admin-new/writer-admin-new-page";
 import { AffiliatesPage } from "./affiliates/affiliates-page";
 import { BannedUserPage } from "./banned-user/banned-user-page";
 import { BlogPage } from "./blog/blog-page";
@@ -147,6 +148,7 @@ export const GamdomAdminPages = {
 	freeSpinsAdminPage: FreeSpinsAdminPage,
 	securityAdminPage: SecurityAdminPage,
 	writerAdminPage: WriterAdminPage,
+	writerAdminNewPage: WriterAdminNewPage,
 	vipManagerAdminPage: VipManagerAdminPage,
 	actionsAdminPage: ActionsAdminPage,
 	affiliatesAdminPage: AffiliatesAdminPage,

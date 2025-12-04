@@ -5,6 +5,7 @@ import {
 	SUPER_ADMIN_CREDENTIALS,
 	USER_1_CREDENTIALS,
 } from "./credentials";
+import { ImageSize } from "@enums/img/image-sizes";
 
 export const storageStateDir: string = getFilePath(
 	".auth",
@@ -55,6 +56,17 @@ export const EV_REWARD_FREE_SPINS_FILE_MAP = {
 	thousand_pass: path.resolve(
 		__dirname,
 		`../${TEST_FILES_DIR}/ENG-7499-users-1k-pass.csv`,
+	),
+} as const;
+
+export const ADMIN_WRITER_BLOG_POST_IMAGE_FILE_MAP = {
+	[ImageSize.ABOVE_1MB]: path.resolve(
+		__dirname,
+		`../${TEST_FILES_DIR}/ENG-7574-blog-post-above-1mb-image.png`,
+	),
+	[ImageSize.BELOW_1MB]: path.resolve(
+		__dirname,
+		`../${TEST_FILES_DIR}/ENG-7574-blog-post-below-1mb-image.png`,
 	),
 } as const;
 

@@ -1,3 +1,5 @@
+import { BlogPostCategories } from "@enums/post-categories";
+
 export interface PromoCodesGenerators {
 	name(): string;
 	codeValue(): string;
@@ -10,4 +12,13 @@ export interface PromoCampaignCodesGenerator {
 
 export interface CasinoGamesGenerator {
 	playerName(): string;
+}
+
+export interface BlogPostsGenerator {
+	paragraph(): string;
+	title(): string;
+	subTitle(): string;
+	author(): string;
+	slug(): string;
+	category(): BlogPostCategories;
 }
