@@ -37,6 +37,7 @@ export class LiveBaccaratSqueezePageSteps extends BasePageStep<LiveBaccaratSquee
 
 	@step("Game is loaded")
 	public async gameIsLoaded(): Promise<void> {
+		await this.gamdomPage.assertThat().waitForLoaderPopupToDisappear();
 		await this.handleScreenNamePopupIfDisplayed();
 		await this.gamdomPage
 			.assertThat()

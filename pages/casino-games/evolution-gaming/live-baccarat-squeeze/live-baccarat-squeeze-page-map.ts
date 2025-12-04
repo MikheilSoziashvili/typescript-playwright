@@ -99,4 +99,8 @@ export class LiveBaccaratSqueezePageMap extends BaseMap {
 	public get screenNameSaveButton(): Locator {
 		return this.gameFrame.locator('[data-role="button-save"]');
 	}
+
+	public get loaderPopup(): Locator {
+		return this.gameFrame.locator('[data-role="loader-popup"]');
+	}
 }

@@ -12,6 +12,12 @@ import { TestUserRole } from "@enums/test-user-roles";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
 import { ProxyCredentialsType } from "./types/types";
+import { CasinoGamesUnifiedPage } from "@pages/casino-games/casino-games-page";
+import { BookOfPyramidsPage } from "@pages/casino-games/bgaming/book-of-pyramids/book-of-pyramids-page";
+import { CashVaultIPage } from "@pages/casino-games/hacksaw-gaming/cash-vault-i/cash-vault-i-page";
+import { BookOfArabiaPage } from "@pages/casino-games/wickedgames/book-of-arabia/book-of-arabia-page";
+import { LiveBaccaratSqueezePage } from "@pages/casino-games/evolution-gaming/live-baccarat-squeeze/live-baccarat-squeeze-page";
+import { ZuluGoldPage } from "@pages/casino-games/elk-studios/zulu-gold/zulu-gold-page";
 
 type Pages = {
 	[K in keyof AllGamdomPagesType]: InstanceType<AllGamdomPagesType[K]>;
@@ -56,6 +62,21 @@ export class BrowserUserSession {
 					return this.pageCache[prop] as InstanceType<
 						AllGamdomPagesType[K]
 					>;
+				}
+
+				// TODO: Revise instantiation of CasinoGamesUnifiedPage and OriginalsPage
+				// Special handling for CasinoGamesUnifiedPage
+				if (prop === "casinoGamesPage") {
+					const instance = new CasinoGamesUnifiedPage(
+						this.page,
+						new BookOfPyramidsPage(this.page),
+						new CashVaultIPage(this.page),
+						new BookOfArabiaPage(this.page),
+						new LiveBaccaratSqueezePage(this.page),
+						new ZuluGoldPage(this.page),
+					);
+					this.pageCache[prop] = instance;
+					return instance as InstanceType<AllGamdomPagesType[K]>;
 				}
 
 				const PageClass = AllGamdomPages[prop] as new (

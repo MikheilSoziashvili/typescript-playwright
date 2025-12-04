@@ -1,3 +1,4 @@
+import { CZ_PROXY_CREDENTIALS } from "@constants/proxies";
 import { testDetails } from "@core/helpers/test-details-helper";
 import {
 	setAuthenticationCookies,
@@ -131,86 +132,81 @@ test.describe("Casino games tests", () => {
 				);
 		},
 	);
+});
 
-	test.describe("Aggregator and Providers - Casino games tests", () => {
-		testData()
-			.fromCsvParsed({
-				file: CsvFilesName.CASINO_GAMES_AGGREGATOR_PROVIDER,
-			})
-			.forEach((game) => {
-				test(
-					`[ENG-5015] Verify round closer logs for Aggregator: ${game.aggregator}, Provider: ${game.gameProvider}, Casino game: ${game.gameName}`,
-					testDetails()
-						.withTags(
-							JiraComponent.ADMIN,
-							JiraComponent.CASINO,
-							JiraComponent.TRANSACTIONS,
-							JiraComponent.USER_INFO,
-						)
-						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
-						.apply(),
-					async ({
-						casinoPage,
-						casinoGamesPage,
-						userInfoAdminPage,
-						transactionsAdminPage,
-						browserSessionManager,
-						toast,
-						page,
-					}) => {
-						test.fixme(
-							game.gameName ===
-								CasinoGameName.LIVE_BACCARAT_SQUEEZE,
-							"Temporary skipped until needed proxy for CI is added",
+test.describe("Aggregator and Providers - Casino games tests", () => {
+	testData()
+		.fromCsvParsed({
+			file: CsvFilesName.CASINO_GAMES_AGGREGATOR_PROVIDER,
+		})
+		.forEach((game) => {
+			test(
+				`[ENG-5015] Verify round closer logs for Aggregator: ${game.aggregator}, Provider: ${game.gameProvider}, Casino game: ${game.gameName}`,
+				testDetails()
+					.withTags(
+						JiraComponent.ADMIN,
+						JiraComponent.CASINO,
+						JiraComponent.TRANSACTIONS,
+						JiraComponent.USER_INFO,
+					)
+					.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+					.apply(),
+				async ({ browserSessionManager }) => {
+					test.slow();
+					const superAdminWithProxySession =
+						await browserSessionManager.loginAs(
+							TestUserRole.SUPERADMIN,
+							{
+								reuseContext: true,
+								proxyCredentials: CZ_PROXY_CREDENTIALS,
+							},
 						);
-						test.slow();
-						await stripAuthFromExternalRequests(page);
-						const superAdminSession =
-							await browserSessionManager.loginAs(
-								TestUserRole.SUPERADMIN,
-								{ reuseContext: true },
-							);
 
-						await casinoGamesPage
-							.steps()
-							.setupProviderAuthentication(game);
+					await stripAuthFromExternalRequests(
+						superAdminWithProxySession.page,
+					);
 
-						await casinoPage
-							.steps()
-							.searchForGameAndOpenWithRetries(game.gameName);
+					await superAdminWithProxySession.pages.casinoPage.navigate();
 
-						await casinoGamesPage
-							.steps()
-							.playCasinoGameRoundUntilWinSuccessfully(game);
+					await superAdminWithProxySession.pages.casinoGamesPage
+						.steps()
+						.setupProviderAuthentication(game);
 
-						await userInfoAdminPage
-							.steps()
-							.navigateAndShowUserDetails(
-								superAdminSession.getAuthenticatedUser().user
-									.username,
-							);
+					await superAdminWithProxySession.pages.casinoPage
+						.steps()
+						.searchForGameAndOpenWithRetries(game.gameName);
 
-						await userInfoAdminPage.clickUserInfoTab(
-							UserInfoTabs.Transactions,
+					await superAdminWithProxySession.pages.casinoGamesPage
+						.steps()
+						.playCasinoGameRoundUntilWinSuccessfully(game);
+
+					await superAdminWithProxySession.pages.userInfoAdminPage
+						.steps()
+						.navigateAndShowUserDetails(
+							superAdminWithProxySession.getAuthenticatedUser()
+								.user.username,
 						);
-						await transactionsAdminPage
-							.steps()
-							.fetchStatsCalculationsData();
 
-						await toast
-							.assertThat()
-							.toastMessageIs(
-								ToastTitle.SUCCESS,
-								ToastSubTitle.SUCCESSFULLY_FETCHED_TRANSACTIONS,
-							);
-						await transactionsAdminPage
-							.assertThat()
-							.lastTransactionContainsWinAndRoundClosed();
-						await transactionsAdminPage
-							.assertThat()
-							.lastTransactionContainsGameCode(game.gameCode);
-					},
-				);
-			});
-	});
+					await superAdminWithProxySession.pages.userInfoAdminPage.clickUserInfoTab(
+						UserInfoTabs.Transactions,
+					);
+					await superAdminWithProxySession.pages.transactionsAdminPage
+						.steps()
+						.fetchStatsCalculationsData();
+
+					await superAdminWithProxySession.pages.toast
+						.assertThat()
+						.toastMessageIs(
+							ToastTitle.SUCCESS,
+							ToastSubTitle.SUCCESSFULLY_FETCHED_TRANSACTIONS,
+						);
+					await superAdminWithProxySession.pages.transactionsAdminPage
+						.assertThat()
+						.lastTransactionContainsWinAndRoundClosed();
+					await superAdminWithProxySession.pages.transactionsAdminPage
+						.assertThat()
+						.lastTransactionContainsGameCode(game.gameCode);
+				},
+			);
+		});
 });
