@@ -1039,6 +1039,10 @@ test.describe(
 		.withTags(JiraComponent.REWARDS, JiraComponent.ADMIN_PANEL)
 		.apply(),
 	() => {
+		test.fixme(
+			true,
+			"Temporary skipped until test cases are adjusted to use casino games, then the automation code will be adjusted to align",
+		);
 		test.use(storageStateNewSuperAdminUserDB());
 
 		const royaltyUpAmount = "$5.00";
