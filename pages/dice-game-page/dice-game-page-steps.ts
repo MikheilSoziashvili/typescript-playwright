@@ -157,25 +157,6 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 		return { newDiceResult, newHistoryResult };
 	}
 
-	@step("Roll dice")
-	public async rollDice(diceBetData: DiceBetTestData): Promise<void> {
-		await this.gamdomPage.fillInManualBetData(diceBetData.betAmount);
-		const multiplier = diceBetData.multiplier || 1;
-		await this.gamdomPage
-			.assertThat()
-			.manualBetAndProfitOnWinValuesAreCorrect(
-				diceBetData.betAmount,
-				diceBetData.betAmount * multiplier,
-			);
-		await this.gamdomPage.rollDice();
-		await expect(
-			this.gamdomPage.isManualBetInputFieldDisabled(),
-		).resolves.toBe(true);
-		await this.gamdomPage
-			.assertThat()
-			.checkElementsAreVisible([this.gamdomPage.map.diceGameAreaMessage]);
-	}
-
 	@step("Start autobet")
 	public async startAutobet(diceBetData: DiceAutobetTestData): Promise<void> {
 		const accountBalanceBeforeBet =

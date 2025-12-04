@@ -34,6 +34,11 @@ export const predefined = {
 		betAmountDDefault: 1,
 		betAmountSmall: 10,
 	},
+	dice: {
+		betAmount: 1,
+		multiplier: 1.5,
+		defaultMultiplier: 2.0,
+	},
 	sokAutobet: {
 		betAmount: 1,
 		betAmountLow: 0.15,
