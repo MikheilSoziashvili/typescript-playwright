@@ -244,9 +244,13 @@ test.describe("Revoke free spins", () => {
 			await regular.pages.bookOfArabiaPage
 				.assertThat()
 				.ensureGameLoaded();
+			await regular.pages.bookOfArabiaPage.clickContinueButton();
 			await regular.pages.bookOfArabiaPage
 				.steps()
-				.startGameAndSpin(betTestData.betAmount);
+				.handleUnexpectedFreeSpinsPopup();
+			await regular.pages.bookOfArabiaPage
+				.steps()
+				.setBetAmountAndSpin(betTestData.betAmount);
 
 			await regular.pages.homePage.navigate();
 
@@ -372,8 +376,15 @@ test.describe("Free spins promotion reward", () => {
 				.searchForGameAndOpen(CasinoGameName.BOOK_OF_ARABIA);
 
 			await regular.pages.bookOfArabiaPage
+				.assertThat()
+				.ensureGameLoaded();
+			await regular.pages.bookOfArabiaPage.clickContinueButton();
+			await regular.pages.bookOfArabiaPage
 				.steps()
-				.ensureLoadedAndSpin(betTestData.betAmount);
+				.handleUnexpectedFreeSpinsPopup();
+			await regular.pages.bookOfArabiaPage
+				.steps()
+				.setBetAmountAndSpin(betTestData.betAmount);
 
 			await regular.pages.homePage.navigate();
 

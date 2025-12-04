@@ -2,6 +2,8 @@ import { BasePageStep } from "@pages/base/base-page-step";
 import { step } from "decorators/step";
 import { BookOfArabiaPage } from "./book-of-arabia-page";
 import { logger } from "@logger/logger";
+import { PopUpButtons } from "@enums/popup-buttons";
+import { VisibilityState } from "@enums/playwright/visibility-states";
 
 export class BookOfArabiaPageSteps extends BasePageStep<BookOfArabiaPage> {
 	public constructor(gamdomPage: BookOfArabiaPage) {
@@ -82,5 +84,18 @@ export class BookOfArabiaPageSteps extends BasePageStep<BookOfArabiaPage> {
 				logger.info(`Won after ${spinCount} spin(s)`);
 			}
 		}
+	}
+
+	@step("Handle unexpected free spins popup if it appears")
+	public async handleUnexpectedFreeSpinsPopup(): Promise<void> {
+		const popup = this.gamdomPage.map.popUpContainer;
+		const popupVisible = await popup.isVisible();
+
+		if (!popupVisible) {
+			return;
+		}
+
+		await this.gamdomPage.map.popUpButton(PopUpButtons.OPT_OUT).click();
+		await popup.waitFor({ state: VisibilityState.HIDDEN });
 	}
 }
