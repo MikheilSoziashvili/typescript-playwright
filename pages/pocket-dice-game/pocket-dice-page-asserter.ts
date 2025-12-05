@@ -21,10 +21,11 @@ export class PocketDiceAsserter extends BaseAsserter<PocketDicePage> {
 
 	@step("Check if win is detected")
 	public async isWinDetected(): Promise<boolean> {
-		const element = this.gamdomPage.map.winBanner;
-		if (await element.isVisible()) {
+		try {
+			await this.checkElementsAreVisible([this.gamdomPage.map.winBanner]);
 			return true;
+		} catch {
+			return false;
 		}
-		return false;
 	}
 }
