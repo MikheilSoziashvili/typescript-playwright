@@ -74,15 +74,17 @@ test.describe(
 						acceptNewsOffers: true,
 					});
 				await homePage.registerModal.clickStartPlayingBtnV4();
+
+				await homePage.authenticatedHeader
+					.assertThat()
+					.userIsRegisteredV4(registerData.username);
+
 				await toastV4
 					.assertThat()
 					.toastMessageIsV4(
 						ToastTitle.SUCCESS_V4,
 						ToastSubTitle.RESEND_EMAIL,
 					);
-				await homePage.authenticatedHeader
-					.assertThat()
-					.userIsRegisteredV4(registerData.username);
 			},
 		);
 	},

@@ -1,0 +1,8 @@
+username,password,expected_username_warning,expected_password_warning
+,,Username cannot be empty,Password cannot be empty
+a,a,Username must be at least 5 characters,Password must be at least 5 characters
+aaaa,aaaa,Username must be at least 5 characters,Password must be at least 5 characters
+aaaa,aaaaa,Username must be at least 5 characters,
+aaaaa,aaaa,,Password must be at least 5 characters
+"!@#$%^&*()","!@#$%^&*()",,
+"select,delete,update,insert","select,delete,update,insert",,

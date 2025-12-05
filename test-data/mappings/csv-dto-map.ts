@@ -21,6 +21,8 @@ import {
 	KycLevel2SubmissionsCsv,
 	CasinoGamesAggregatorProviderCsv,
 	EsportsCategoriesCsv,
+	LoginRejectedV4Csv,
+	LoginInputValidationV4Csv,
 } from "@dtos/csv";
 import { HomePageBannerCarouselCsv } from "@dtos/csv/home-page-banner-carousel-csv";
 import { OriginalsSelfExclusionCsv } from "@dtos/csv/originals-self-exclusion";
@@ -57,4 +59,6 @@ export type CsvDtoMap = {
 	[CsvFilesName.KYC_LEVEL2_SUBMISSIONS]: KycLevel2SubmissionsCsv;
 	[CsvFilesName.CASINO_GAMES_AGGREGATOR_PROVIDER]: CasinoGamesAggregatorProviderCsv;
 	[CsvFilesName.ESPORTS_CATEGORIES]: EsportsCategoriesCsv;
+	[CsvFilesName.LOGIN_REJECTED_V4]: LoginRejectedV4Csv;
+	[CsvFilesName.LOGIN_INPUT_VALIDATION_V4]: LoginInputValidationV4Csv;
 };

@@ -130,7 +130,7 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.walletButtonV4,
 			this.gamdomPage.map.accountBalanceV4,
-			this.gamdomPage.map.userAccountMenuButtonV4,
+			this.gamdomPage.map.userAccountMenuAvatarV4,
 		]);
 	}
 
@@ -139,7 +139,7 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 		await this.loggedInUserElementsAreVisibleV4();
 
 		const receivedUsername =
-			await this.gamdomPage.map.userAccountUserNameV4.textContent();
+			await this.gamdomPage.map.userAccountUsernameV4.textContent();
 
 		expect(receivedUsername?.trim()).toBe(username);
 	}

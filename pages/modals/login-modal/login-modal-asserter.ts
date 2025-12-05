@@ -1,8 +1,10 @@
 import { BaseAsserter } from "@base/base-asserter";
-import { step } from "decorators/step";
-import { expect } from "@playwright/test";
-import { LoginModal } from "./login-modal";
 import { Timeout } from "@enums/timeout";
+import { ToastSubTitle } from "@enums/toast-subtitles";
+import { ToastTitle } from "@enums/toast-titles";
+import { expect, Locator } from "@playwright/test";
+import { step } from "decorators/step";
+import { LoginModal } from "./login-modal";
 
 export class LoginModalAsserter extends BaseAsserter<LoginModal> {
 	public fromCsv: boolean;
@@ -79,21 +81,21 @@ export class LoginModalAsserter extends BaseAsserter<LoginModal> {
 	}
 
 	@step("Check forgot password form is visible")
-	async forgotPasswordFormIsVisibleV4(): Promise<void> {
+	public async forgotPasswordFormIsVisibleV4(): Promise<void> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.forgotPasswordFormV4,
 		]);
 	}
 
 	@step("Check forgot password form is not visible")
-	async forgotPasswordFormIsNotVisibleV4(): Promise<void> {
+	public async forgotPasswordFormIsNotVisibleV4(): Promise<void> {
 		await this.checkElementsAreNotVisible([
 			this.gamdomPage.map.forgotPasswordFormV4,
 		]);
 	}
 
 	@step("Verify forgot password confirmation text and visibility")
-	async forgotPasswordConfirmationTextAndVisibilityV4(
+	public async forgotPasswordConfirmationTextAndVisibilityV4(
 		expectedText: string,
 	): Promise<void> {
 		await this.checkElementsAreVisible([
@@ -106,5 +108,53 @@ export class LoginModalAsserter extends BaseAsserter<LoginModal> {
 				expectedText: expectedText,
 			},
 		]);
+	}
+
+	@step("Assert failed login toast message - v4")
+	public async assertFailedLoginToastMessageV4(): Promise<void> {
+		await this.gamdomPage.toast
+			.assertThat()
+			.toastMessageIsV4(
+				ToastTitle.FAILED_V4,
+				ToastSubTitle.USER_DOES_NOT_EXIST,
+			);
+	}
+
+	@step("Check field error text - v4")
+	private async checkFieldErrorV4(
+		locator: Locator,
+		expectedText: string,
+	): Promise<void> {
+		if (!expectedText) {
+			await this.checkElementsAreHidden([locator]);
+			return;
+		}
+
+		await this.checkElementsHaveText([
+			{
+				locator,
+				expectedText,
+			},
+		]);
+	}
+
+	@step("Check username field error text - v4")
+	public async usernameFieldErrorTextIsV4(
+		expectedText: string,
+	): Promise<void> {
+		await this.checkFieldErrorV4(
+			this.gamdomPage.map.usernameErrorTooltipV4,
+			expectedText,
+		);
+	}
+
+	@step("Check password field error text - v4")
+	public async passwordFieldErrorTextIsV4(
+		expectedText: string,
+	): Promise<void> {
+		await this.checkFieldErrorV4(
+			this.gamdomPage.map.passwordErrorTooltipV4,
+			expectedText,
+		);
 	}
 }

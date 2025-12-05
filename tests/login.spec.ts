@@ -289,5 +289,61 @@ test.describe(
 				await loginModal.steps().closeForgotPasswordFormAndVerifyV4();
 			},
 		);
+
+		test.describe("Verify username and password field validations on login modal", () => {
+			testData()
+				.fromCsvRaw({ file: CsvFilesName.LOGIN_REJECTED_V4 })
+				.forEach((record) => {
+					test(
+						`[ENG-9836] Login rejected for [Username: ${record.username}] and [Password: ${record.password}]`,
+						testDetails()
+							.withAuthor(JiraUser.RALUCA_ARITON)
+							.apply(),
+						async ({ homePage }) => {
+							await homePage.navigateAndCheckTitle();
+							await homePage.unauthenticatedHeader.openLoginModalV4();
+							await homePage.loginModal.loginV4(
+								record.username,
+								record.password,
+							);
+
+							await homePage.loginModal
+								.assertThat()
+								.assertFailedLoginToastMessageV4();
+						},
+					);
+				});
+
+			testData()
+				.fromCsvRaw({ file: CsvFilesName.LOGIN_INPUT_VALIDATION_V4 })
+				.forEach((record) => {
+					test(
+						`[ENG-9836] Login input validation for [Username: ${record.username}] and [Password: ${record.password}]`,
+						testDetails()
+							.withAuthor(JiraUser.RALUCA_ARITON)
+							.apply(),
+						async ({ homePage }) => {
+							await homePage.navigateAndCheckTitle();
+							await homePage.unauthenticatedHeader.openLoginModalV4();
+							await homePage.loginModal.loginV4(
+								record.username,
+								record.password,
+							);
+
+							await homePage.loginModal
+								.assertThat()
+								.usernameFieldErrorTextIsV4(
+									record.expected_username_warning,
+								);
+
+							await homePage.loginModal
+								.assertThat()
+								.passwordFieldErrorTextIsV4(
+									record.expected_password_warning,
+								);
+						},
+					);
+				});
+		});
 	},
 );

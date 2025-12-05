@@ -159,4 +159,12 @@ export class LoginModalMap extends BaseMap {
 	public get forgotPasswordCloseButtonV4(): Locator {
 		return this.forgotPasswordFormV4.getByTestId("forgot-pwd-close-btn");
 	}
+
+	public get usernameErrorTooltipV4(): Locator {
+		return this.usernameContainerV4.getByTestId("signin-username-error");
+	}
+
+	public get passwordErrorTooltipV4(): Locator {
+		return this.passwordContainerV4.getByTestId("signin-password-error");
+	}
 }

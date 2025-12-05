@@ -6,10 +6,14 @@ import { LoginModalAsserter } from "./login-modal-asserter";
 import { findUser } from "@core/utils/utils";
 import { TestUserConfigurationObject } from "@core/types/types";
 import { LoginModalSteps } from "./login-modal-steps";
+import { ToastV4 } from "@pages/components/toastV4/toast-v4";
 
 export class LoginModal extends BaseModal<LoginModalMap> {
+	public toast: ToastV4;
+
 	constructor(page: Page) {
 		super(page, new LoginModalMap(page));
+		this.toast = new ToastV4(page);
 	}
 
 	public assertThat(fromCsv = false): LoginModalAsserter {

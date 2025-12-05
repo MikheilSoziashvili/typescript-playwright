@@ -171,14 +171,20 @@ export class AuthenticatedHeaderMap extends BaseMap {
 		);
 	}
 
-	public get userAccountMenuButtonV4(): Locator {
+	public get userAccountMenuAvatarV4(): Locator {
 		return this.authenticatedHeaderContainerV4.getByTestId(
-			"account-menu-button",
+			"full-account-widget-avatar",
 		);
 	}
 
-	public get userAccountUserNameV4(): Locator {
-		return this.userAccountMenuButtonV4.getByTestId(
+	public get userAccountMenuStackV4(): Locator {
+		return this.authenticatedHeaderContainerV4.getByTestId(
+			"full-account-widget-stack",
+		);
+	}
+
+	public get userAccountUsernameV4(): Locator {
+		return this.userAccountMenuStackV4.getByTestId(
 			"full-account-widget-username",
 		);
 	}

@@ -27,8 +27,8 @@ export class RegisterModalSteps extends BaseModalStep<RegisterModal> {
 			await this.gamdomModal
 				.steps()
 				.checkCheckbox(
-					this.gamdomModal.map.termsOfServiceCheckboxInputV4,
 					this.gamdomModal.map.termsOfServiceCheckboxVisualV4,
+					this.gamdomModal.map.termsOfServiceCheckboxInputV4,
 					true,
 				);
 		}
@@ -37,8 +37,8 @@ export class RegisterModalSteps extends BaseModalStep<RegisterModal> {
 			await this.gamdomModal
 				.steps()
 				.checkCheckbox(
-					this.gamdomModal.map.newsAndOffersCheckboxInputV4,
 					this.gamdomModal.map.newsAndOffersCheckboxVisualV4,
+					this.gamdomModal.map.newsAndOffersCheckboxInputV4,
 					true,
 				);
 		}
