@@ -1,7 +1,7 @@
 export enum PromotionSubStatuses {
-	NONE = "null",
-	CASINO = "CASINO",
-	LIVE_CASINO = "LIVECASINO",
-	SPORTS = "SPORTS",
-	ESPORTS = "ESPORTS",
+	NONE = "None",
+	CASINO = "Casino",
+	LIVE_CASINO = "Live casino",
+	SPORTS = "Sports",
+	ESPORTS = "Esports",
 }

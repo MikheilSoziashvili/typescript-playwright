@@ -455,9 +455,9 @@ test.describe(
 				);
 			});
 
-			promotionTypes.forEach((promotionType) => {
+			promotionCombinations.forEach((combination) => {
 				test(
-					`[ENG-7398] Promotions - Duplicate '${promotionType.name}' existing promotion`,
+					`[ENG-7398] Promotions - Duplicate - Promotion Category: ${combination.category} - Promotion Subcategory: ${combination.subCategory} - Is For VIP: ${combination.isForVip} existing promotion`,
 					testDetails()
 						.withAuthor(JiraUser.RALUCA_ARITON)
 						.withTags(TestTag.PLATFORM_BUG)
@@ -478,7 +478,9 @@ test.describe(
 							useGamdomEmailDomain: true,
 						});
 						promotionName = generateRandomString({
-							prefix: `${promotionType.name.toLowerCase()}_promotion_`,
+							prefix:
+								`${combination.category}_${combination.subCategory}_${combination.isForVip}`.toLowerCase() +
+								"_promotion_",
 							length: 5,
 						});
 						promotionsToDelete.push(promotionName);
@@ -486,9 +488,12 @@ test.describe(
 						const promotionTestData = new PromotionTestData({
 							title: promotionName,
 							customUrl: generateCustomUrl(promotionName),
-							isForVip: PromotionIsVipCategories.ALL,
-							promotionCategory: PromotionCategories.CASINO,
-							promotionSubCategory: PromotionSubStatuses.CASINO,
+							isForVip:
+								PromotionIsVipCategories[combination.isForVip],
+							promotionCategory:
+								PromotionCategories[combination.category],
+							promotionSubCategory:
+								PromotionSubStatuses[combination.subCategory],
 							promotionStartDate: formatDate(3),
 							promotionEndDate: formatDate(5),
 							promotionStartTime: PromotionTime.START_TIME,
@@ -501,13 +506,19 @@ test.describe(
 							.steps()
 							.fillPromotionSuccessfully(promotionTestData);
 
-						const expectedPromotionData = {
+						const expectedPromotionData = new PromotionTestData({
 							...promotionTestData,
+							isForVip:
+								PromotionIsVipCategories[combination.isForVip],
+							promotionCategory:
+								PromotionCategories[combination.category],
+							promotionSubCategory:
+								PromotionSubStatuses[combination.subCategory],
 							promotionStartDate: formatDate(1),
 							promotionEndDate: formatDate(3),
 							promotionStartTime: PromotionTime.DEFAULT_TIME,
 							promotionEndTime: PromotionTime.DEFAULT_TIME,
-						};
+						});
 
 						const duplicatedPromotionTitle = `${expectedPromotionData.title} (Copy)`;
 						const duplicatedPromotionTitleSecond = `${duplicatedPromotionTitle} (Copy)`;

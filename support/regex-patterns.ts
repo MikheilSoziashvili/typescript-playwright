@@ -63,8 +63,12 @@ export const windowsLineEndingPattern = /\r\n/g;
 export const trailingHashPattern = /#$/;
 export const testTimeoutPattern = /Test timeout of (\d+)ms exceeded/;
 
-export const dropdownValuePattern = (value: string): RegExp =>
-	new RegExp(`^\\s*${value}\\s*$`, "i");
+export const normalizeDropdownValue = (value: string): string =>
+	value.replace(/\s+/g, "");
+
+export const dropdownNormalizedPattern = (value: string): RegExp =>
+	new RegExp(normalizeDropdownValue(value), "i");
+
 export const sequentialTestPattern = new RegExp(TestTag.SEQUENTIAL, "i");
 export const escapedNewlinePattern = /\\n/g;
 

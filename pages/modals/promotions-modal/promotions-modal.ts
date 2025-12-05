@@ -70,7 +70,7 @@ export class PromotionsModal extends BasePage<PromotionsModalMap> {
 	@step("Select promotion category")
 	public async selectPromotionCategory(category: string): Promise<void> {
 		await this.map.promotionsModalPromotionCategoryDropdown.click();
-		await this.map.promotionDropdownItemByPlaceholder(category).click();
+		await this.map.getDropdownOption(category).click();
 	}
 
 	@step("Select promotion sub category")
@@ -78,7 +78,7 @@ export class PromotionsModal extends BasePage<PromotionsModalMap> {
 		subCategory: string,
 	): Promise<void> {
 		await this.map.promotionsModalPromotionSubCategoryDropdown.click();
-		await this.map.promotionDropdownItemByPlaceholder(subCategory).click();
+		await this.map.getDropdownOption(subCategory).click();
 	}
 
 	@step("Select start and end date and time")
@@ -88,7 +88,10 @@ export class PromotionsModal extends BasePage<PromotionsModalMap> {
 		startTime?: string,
 		endTime?: string,
 	): Promise<void> {
-		const fields: [string | undefined, { fill: (value: string) => Promise<void> }][] = [
+		const fields: [
+			string | undefined,
+			{ fill: (value: string) => Promise<void> },
+		][] = [
 			[startDate, this.map.promotionsModalStartDateInput],
 			[startTime, this.map.promotionsModalStartTimeInput],
 			[endDate, this.map.promotionsModalEndDateInput],

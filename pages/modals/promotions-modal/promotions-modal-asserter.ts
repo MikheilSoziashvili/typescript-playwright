@@ -5,7 +5,10 @@ import { AttributesValues } from "@enums/playwright/htmlAttributesValues";
 import { expect, Locator } from "@playwright/test";
 import { step } from "decorators/step";
 import { PromotionsModal } from "./promotions-modal";
-import { dropdownValuePattern } from "@support/regex-patterns";
+import {
+	dropdownNormalizedPattern,
+	normalizeDropdownValue,
+} from "@support/regex-patterns";
 
 export class PromotionsModalAsserter extends BaseAsserter<PromotionsModal> {
 	public constructor(page: PromotionsModal) {
@@ -197,8 +200,13 @@ export class PromotionsModalAsserter extends BaseAsserter<PromotionsModal> {
 		dropdown: Locator,
 		expected: string | undefined,
 	): Promise<void> {
-		const actual = await dropdown.textContent();
-		expect(actual?.trim()).toMatch(dropdownValuePattern(expected ?? ""));
+		const actual = (await dropdown.textContent())?.trim() ?? "";
+
+		const actualNormalized = normalizeDropdownValue(actual);
+
+		expect(actualNormalized).toMatch(
+			dropdownNormalizedPattern(expected ?? ""),
+		);
 	}
 
 	@step("Assert text area value")

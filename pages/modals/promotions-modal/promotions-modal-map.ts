@@ -90,13 +90,20 @@ export class PromotionsModalMap extends BaseMap {
 		);
 	}
 
+	public getDropdownOption(label: string): Locator {
+		return this.page.getByRole("option", { name: label, exact: true });
+	}
+
 	public get promotionsModalPromotionSubCategoryDropdown(): Locator {
 		return this.promotionsModalDropdownInputByLabelName(
 			"Promotion Sub Category",
 		);
 	}
 
-	private promotionsModalInputByLabelAndType(label: string, type: "date" | "time"): Locator {
+	private promotionsModalInputByLabelAndType(
+		label: string,
+		type: "date" | "time",
+	): Locator {
 		return this.page
 			.locator(`label:has-text("${label}")`)
 			.locator("..")

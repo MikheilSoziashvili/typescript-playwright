@@ -1,5 +1,5 @@
 export enum PromotionCategories {
-	ALL = "null",
-	CASINO = "CASINO",
-	SPORTSBOOK = "SPORTSBOOK",
+	ALL = "All",
+	CASINO = "Casino",
+	SPORTSBOOK = "Sports book",
 }
