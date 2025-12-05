@@ -4,6 +4,7 @@ import { step } from "decorators/step";
 import { ZuluGoldMap } from "./zulu-gold-map";
 import { ZuluGoldPage } from "./zulu-gold-page";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
+import { logger } from "@logger/logger";
 
 export class ZuluGoldSteps extends BaseVisualSteps {
 	protected zuluGoldPage: ZuluGoldPage;
@@ -28,14 +29,17 @@ export class ZuluGoldSteps extends BaseVisualSteps {
 					.winLabelExists();
 
 				if (winLabelExists) {
+					logger.info(`Win-label found after ${spinCount} spins`);
 					return true;
 				}
+				logger.info(`Win-label not found after ${spinCount} spins`);
 
 				const spinButtonExists = await this.zuluGoldPage
 					.assertThat()
 					.spinButtonExists();
 
 				if (spinButtonExists) {
+					logger.info(`Spin-button found after ${spinCount} spins`);
 					await this.zuluGoldPage.clickSpinButton();
 				} else {
 					const spinBonusButtonExists = await this.zuluGoldPage
@@ -43,21 +47,29 @@ export class ZuluGoldSteps extends BaseVisualSteps {
 						.spinBonusButtonExists();
 
 					if (spinBonusButtonExists) {
+						logger.info(
+							`Spin-bonus-button found after ${spinCount} spins`,
+						);
 						await this.zuluGoldPage.clickSpinBonusButton();
 					} else {
+						logger.info(
+							`Spin-bonus-button not found after ${spinCount} spins`,
+						);
 						const spinBonusSecondButtonExists =
 							await this.zuluGoldPage
 								.assertThat()
 								.spinBonusSecondButtonExists();
 
 						if (spinBonusSecondButtonExists) {
+							logger.info(
+								`Spin-bonus-second-button found after ${spinCount} spins`,
+							);
 							await this.zuluGoldPage.clickSpinBonusSecondButton();
 						} else {
 							return false;
 						}
 					}
 				}
-				await this.zuluGoldPage.clickSpinButton();
 				await waitForSeconds(2);
 
 				return false;

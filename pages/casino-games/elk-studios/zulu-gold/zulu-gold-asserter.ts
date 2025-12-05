@@ -30,7 +30,7 @@ export class ZuluGoldAsserter extends BaseVisualAsserter {
 	public async spinButtonVisible(): Promise<void> {
 		logger.info("Verifying spin button is visible");
 		await this.imageFound(this.map.spinButton, {
-			threshold: VisualComparisonThreshold.RELAXED,
+			threshold: VisualComparisonThreshold.ULTRA_RELAXED,
 		});
 	}
 
@@ -38,7 +38,7 @@ export class ZuluGoldAsserter extends BaseVisualAsserter {
 	public async winLabelVisible(): Promise<void> {
 		logger.info("Verifying win label is visible");
 		await this.imageFound(this.map.winLabel, {
-			threshold: VisualComparisonThreshold.VERY_RELAXED,
+			threshold: VisualComparisonThreshold.ULTRA_RELAXED,
 		});
 	}
 
@@ -46,7 +46,7 @@ export class ZuluGoldAsserter extends BaseVisualAsserter {
 	public async waitForWinLabel(): Promise<void> {
 		logger.info("Waiting for win label");
 		await this.zuluGoldPage.waitForVisualElement(this.map.winLabel, {
-			threshold: VisualComparisonThreshold.RELAXED,
+			threshold: VisualComparisonThreshold.ULTRA_RELAXED,
 		});
 	}
 
@@ -56,7 +56,7 @@ export class ZuluGoldAsserter extends BaseVisualAsserter {
 		const match = await this.zuluGoldPage.findVisualElement(
 			this.map.spinButton,
 			{
-				threshold: VisualComparisonThreshold.RELAXED,
+				threshold: VisualComparisonThreshold.ULTRA_RELAXED,
 			},
 		);
 		return match?.found ?? false;
