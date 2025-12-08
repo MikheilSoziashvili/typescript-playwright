@@ -15,6 +15,7 @@ import { testDetails } from "@core/helpers/test-details-helper";
 import { AnnotationType } from "@enums/playwright/annotationsTypes";
 import { JiraUser } from "@enums/jira/jira-users";
 import { TestUserRole } from "@enums/test-user-roles";
+import { Unit } from "@enums/units";
 
 test.describe("UTXO tests", () => {
 	test.slow();
@@ -236,6 +237,7 @@ test.describe("UTXO tests", () => {
 				cryptoAdminPage,
 				browserSessionManager,
 				testDataPredefined,
+				userBalanceHandler,
 			},
 			testInfo,
 		) => {
@@ -250,6 +252,10 @@ test.describe("UTXO tests", () => {
 			const superAdminCookie = getCookieHeader(cookie);
 
 			await homePage.navigateToWallet();
+
+			const initialBalanceCoins =
+				await userBalanceHandler.walletBalanceInCoins(Unit.LTC_LITOSHI);
+
 			const addressDetails =
 				await walletModal.selectCryptoAndGetDepositDetails(
 					Cryptocurrency.Litecoin,
@@ -281,10 +287,23 @@ test.describe("UTXO tests", () => {
 				.assertDepositAmountIn(CryptoTicker.LTC, amountToDeposit);
 
 			await homePage.navigate();
-			await homePage.authenticatedHeader.clickBalanceDropdown();
-			await homePage.authenticatedHeader
+
+			const expectedBalanceUSD = await userBalanceHandler
+				.steps()
+				.calculateExpectedBalanceAfterCryptoDeposit(
+					initialBalanceCoins,
+					amountToDeposit,
+					Unit.LTC_LITOSHI,
+				);
+
+			const balanceAfterDepositUSD =
+				await userBalanceHandler.walletBalanceInFiatRounded(
+					Unit.LTC_LITOSHI,
+				);
+
+			await homePage
 				.assertThat()
-				.walletBalanceIs(Wallet.LTC, amountToDeposit);
+				.verifyBalance(balanceAfterDepositUSD, expectedBalanceUSD);
 
 			await cryptoAdminPage
 				.assertThat()

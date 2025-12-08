@@ -79,10 +79,10 @@ export class CryptoAdminPage extends BasePage<CryptoAdminMap> {
 				if (typeof desiredState === "boolean") {
 					const isChecked = await locator.isChecked();
 					if (isChecked !== desiredState) {
-						const dialogPromise = this.page.waitForEvent("dialog");
-						this.acceptDialog();
+						this.page.once("dialog", async (dialog) => {
+							await dialog.accept();
+						});
 						await locator.click();
-						await dialogPromise;
 					}
 				}
 			}
