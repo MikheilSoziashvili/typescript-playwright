@@ -55,7 +55,7 @@ test.describe.parallel("Admin page tabs visibility tests", () => {
 				ourGamesAdminPage,
 				plainSqlAdminPage,
 				statsAdminPage,
-				battlesAdminPage,
+				slotsArenaAdminPage,
 				cdnUploadAdminPage,
 				eventsManagingAdminPage,
 				dynamicDomainsAdminPage,
@@ -118,8 +118,8 @@ test.describe.parallel("Admin page tabs visibility tests", () => {
 						plainSqlAdminPage.map.queryButton,
 					[AdminTabLocatorKey.Stats]:
 						statsAdminPage.map.currentKingOfTheHillEventsHeader,
-					[AdminTabLocatorKey.Battles]:
-						battlesAdminPage.map.viewDetailButton,
+					[AdminTabLocatorKey.SlotsArena]:
+						slotsArenaAdminPage.map.viewDetailButton,
 					[AdminTabLocatorKey.CdnUpload]:
 						cdnUploadAdminPage.map.cdnUploaderHeader,
 					[AdminTabLocatorKey.EventsManaging]:

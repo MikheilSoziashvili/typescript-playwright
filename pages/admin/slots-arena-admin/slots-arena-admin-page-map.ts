@@ -1,12 +1,12 @@
 import { BaseMap } from "@pages/base/base-map";
 import { Locator, Page } from "playwright";
 
-export class BattlesAdminMap extends BaseMap {
+export class SlotsArenaAdminMap extends BaseMap {
 	public constructor(page: Page) {
 		super(page);
 	}
 
-	public get battlesAdminPageContent(): Locator {
+	public get arenaAdminPageContent(): Locator {
 		return this.page.getByTestId("adminSlotBattlesPageContent");
 	}
 

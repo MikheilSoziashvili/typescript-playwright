@@ -1,7 +1,7 @@
 import { ActionsAdminPage } from "./admin/actions-admin/actions-admin-page";
 import { AffiliatesAdminPage } from "./admin/affiliates-admin/affiliates-admin-page";
 import { BaseAdminPage } from "./admin/base-admin/base-admin-page";
-import { BattlesAdminPage } from "./admin/battles-admin/battles-admin-page";
+import { SlotsArenaAdmin } from "./admin/slots-arena-admin/slots-arena-admin-page";
 import { BotsAdminPage } from "./admin/bots-admin/bots-admin-page";
 import { BulkActionsAdminPage } from "./admin/bulk-actions-admin/bulk-actions-admin-page";
 import { CasinoGamesAdminPage } from "./admin/casino-games-admin/casino-games-admin-page";
@@ -172,7 +172,7 @@ export const GamdomAdminPages = {
 	casinoGamesAdminPage: CasinoGamesAdminPage,
 	giftCardsAdminPage: GiftCardsAdminPage,
 	promoCampaignsAdminPage: PromoCampaignsAdminPage,
-	battlesAdminPage: BattlesAdminPage,
+	battlesAdminPage: SlotsArenaAdmin,
 	cdnUploadAdminPage: CdnUploadAdminPage,
 	eventsManagingAdminPage: EventsManagingAdminPage,
 	dynamicDomainsAdminPage: DynamicDomainsAdminPage,

@@ -26,7 +26,7 @@ export enum AdminTabLocatorKey {
 	OurGames = "our-games-locator",
 	PlainSql = "plain-sql-locator",
 	Stats = "stats-locator",
-	Battles = "battles-locator",
+	SlotsArena = "arena-locator",
 	CdnUpload = "cdn-upload-locator",
 	EventsManaging = "events-managing-locator",
 	DynamicDomains = "dynamic-domains-locator",

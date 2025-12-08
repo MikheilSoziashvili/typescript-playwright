@@ -24,7 +24,7 @@ CommunityConnectAdmin,community-connect-locator,/admin/CommunityConnectAdmin
 "Casino Providers",casino-providers-locator,/admin/Casino%20Providers
 "Casino Games",casino-games-locator,"/admin/Casino%20Games"
 OurGamesAdmin,our-games-locator,/admin/OurGamesAdmin
-BattlesAdmin,battles-locator,/admin/BattlesAdmin
+SlotsArenaAdmin,arena-locator,/admin/SlotsArenaAdmin
 CdnUploadAdmin,cdn-upload-locator,/admin/CdnUploadAdmin
 EventsManaging,events-managing-locator,/admin/EventsManaging
 DynamicDomainsAdmin,dynamic-domains-locator,/admin/DynamicDomainsAdmin

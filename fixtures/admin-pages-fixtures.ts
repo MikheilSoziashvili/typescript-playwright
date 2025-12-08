@@ -24,7 +24,7 @@ import { CommunityConnectAdminPage } from "@pages/admin/community-connect-admin/
 import { CasinoProvidersAdminPage } from "@pages/admin/casino-providers-admin/casino-providers-admin-page";
 import { CasinoGamesAdminPage } from "@pages/admin/casino-games-admin/casino-games-admin-page";
 import { GiftCardsAdminPage } from "@pages/admin/gift-cards-admin/gift-cards-admin-page";
-import { BattlesAdminPage } from "@pages/admin/battles-admin/battles-admin-page";
+import { SlotsArenaAdmin } from "@pages/admin/slots-arena-admin/slots-arena-admin-page";
 import { CdnUploadAdminPage } from "@pages/admin/cdn-upload-admin/cdn-upload-admin-page";
 import { EventsManagingAdminPage } from "@pages/admin/events-managing-admin/events-managing-admin-page";
 import { DynamicDomainsAdminPage } from "@pages/admin/dynamic-domains-admin/dynamic-domains-admin-page";
@@ -86,7 +86,7 @@ export type AdminPages = {
 	casinoGamesAdminPage: CasinoGamesAdminPage;
 	giftCardsAdminPage: GiftCardsAdminPage;
 	promoCampaignsAdminPage: PromoCampaignsAdminPage;
-	battlesAdminPage: BattlesAdminPage;
+	slotsArenaAdminPage: SlotsArenaAdmin;
 	cdnUploadAdminPage: CdnUploadAdminPage;
 	eventsManagingAdminPage: EventsManagingAdminPage;
 	dynamicDomainsAdminPage: DynamicDomainsAdminPage;
@@ -143,7 +143,7 @@ export const adminPagesFixtures = base.extend<AdminPages>({
 	casinoGamesAdminPage: sessionAwarePage(CasinoGamesAdminPage),
 	giftCardsAdminPage: sessionAwarePage(GiftCardsAdminPage),
 	promoCampaignsAdminPage: sessionAwarePage(PromoCampaignsAdminPage),
-	battlesAdminPage: sessionAwarePage(BattlesAdminPage),
+	slotsArenaAdminPage: sessionAwarePage(SlotsArenaAdmin),
 	cdnUploadAdminPage: sessionAwarePage(CdnUploadAdminPage),
 	eventsManagingAdminPage: sessionAwarePage(EventsManagingAdminPage),
 	dynamicDomainsAdminPage: sessionAwarePage(DynamicDomainsAdminPage),
