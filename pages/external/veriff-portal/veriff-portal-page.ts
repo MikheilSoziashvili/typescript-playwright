@@ -12,6 +12,8 @@ export class VeriffPortalPage extends BasePage<VeriffPortalMap> {
 		super(page, new VeriffPortalMap(page));
 	}
 
+	public static previousCode?: string;
+
 	public override assertThat(): VeriffPortalAsserter {
 		return new VeriffPortalAsserter(this);
 	}

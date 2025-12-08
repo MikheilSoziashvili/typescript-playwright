@@ -6,11 +6,21 @@ import {
 	InitialVerificationStatus,
 	VerificationStatus,
 } from "@enums/verification-enums";
-import { generate2FACodeFromSecret } from "@core/utils/utils";
+import { generate2FACodeFromSecret, waitUntil } from "@core/utils/utils";
+import { logger } from "@logger/logger";
+import { TimeoutSeconds } from "@enums/timeout-seconds";
 
 export class VeriffPortalSteps extends BasePageStep<VeriffPortalPage> {
 	public constructor(page: VeriffPortalPage) {
 		super(page);
+	}
+
+	private get previousCode(): string | undefined {
+		return VeriffPortalPage.previousCode;
+	}
+
+	private set previousCode(value: string | undefined) {
+		VeriffPortalPage.previousCode = value;
 	}
 
 	@step("Navigate to Veriff portal and log in")
@@ -21,9 +31,45 @@ export class VeriffPortalSteps extends BasePageStep<VeriffPortalPage> {
 		await this.gamdomPage.map.emailInput.fill(veriffConfig.username);
 		await this.gamdomPage.map.passwordInput.fill(veriffConfig.password);
 		await this.gamdomPage.map.loginButton.click();
-		const code = await generate2FACodeFromSecret(veriffConfig.secret2FA);
+
+		const code = await this.generateNew2FACode(veriffConfig.secret2FA);
+		logger.info(`Generated 2FA code for Veriff portal login: ${code}`);
+
 		await this.gamdomPage.map.multiFactorAuthInput.fill(code);
 		await this.gamdomPage.map.loginButton.click();
+
+		this.previousCode = code;
+	}
+
+	@step("Generate new 2FA code different from previous")
+	private async generateNew2FACode(secret: string): Promise<string> {
+		let newCode = await generate2FACodeFromSecret(secret);
+
+		if (this.previousCode) {
+			await waitUntil(
+				async () => {
+					newCode = await generate2FACodeFromSecret(secret);
+					const isDifferent = newCode !== this.previousCode;
+					if (!isDifferent) {
+						logger.info(
+							`Code matches previous (${this.previousCode}). Waiting for new code...`,
+						);
+					}
+					return isDifferent;
+				},
+				{
+					errorMessage: `Failed to generate a different 2FA code from ${this.previousCode}`,
+					intervalSeconds: TimeoutSeconds.ONE,
+					timeoutSeconds: TimeoutSeconds.SIXTY,
+				},
+			);
+
+			logger.info(
+				`Successfully generated new code different from previous: ${newCode}`,
+			);
+		}
+
+		return newCode;
 	}
 
 	@step("Open verification details for user")

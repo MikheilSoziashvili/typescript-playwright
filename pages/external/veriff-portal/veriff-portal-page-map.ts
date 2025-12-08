@@ -33,14 +33,14 @@ export class VeriffPortalMap extends BaseMap {
 	public openVerificationLink(vendorData: string): Locator {
 		return this.page
 			.locator("tr")
-			.filter({ hasText: vendorData })
+			.filter({ has: this.page.locator(`span[title="${vendorData}"]`) })
 			.locator("a", { hasText: "Not available" });
 	}
 
 	public verificationStatusInTable(vendorData: string): Locator {
 		return this.page
 			.locator("tr")
-			.filter({ hasText: vendorData })
+			.filter({ has: this.page.locator(`span[title="${vendorData}"]`) })
 			.locator('td [data-test-id="sessionStatus"]');
 	}
 
