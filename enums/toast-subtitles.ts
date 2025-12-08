@@ -44,7 +44,7 @@ export enum ToastSubTitle {
 	KYC_LEVEL_TRIGGERED = "KYC level triggered successfully",
 	KYC_LEVEL_REVOKED = "KYC level revoked successfully",
 	ADMIN_NEW_USERS_TABLE_FETCHED_SUCCESSFULLY = "Successfully fetched users from database.",
-	ADMIN_WRITER_FILE_SIZE_EXCEEDED = "File size is more then 1 MB",
+	ADMIN_WRITER_FILE_SIZE_EXCEEDED = "File size is more than 1 MB",
 	HIDEN_DETAILS_DISABLED = "Hidden details mode disabled!",
 	HIDEN_DETAILS_ENABLED = "Hidden details mode enabled!",
 	ARTICLE_CREATED_SUCCESSFULLY = "Article created successfully",
