@@ -515,6 +515,45 @@ export abstract class BasePage<T extends BaseMap> {
 	}
 
 	/**
+	 * Attempts to click an element only if it exists. Logs a warning when missing.
+	 * @param locator - The element to click.
+	 * @param warningMessage - Optional warning message override.
+	 * @returns {Promise<boolean>} - True if click happened, false otherwise
+	 */
+	@step("Click element if present")
+	public async clickIfPresent(
+		locator: Locator,
+		options?: { warningMessage?: string; timeout?: number },
+	): Promise<boolean> {
+		const timeout = options?.timeout ?? Timeout.SHORT;
+		const warningMessage = options?.warningMessage;
+
+		try {
+			await locator
+				.first()
+				.waitFor({ state: VisibilityState.VISIBLE, timeout: timeout });
+		} catch {
+			logger.warn(
+				warningMessage ??
+					`Optional locator ${locator.toString()} not found within ${timeout}ms. Skipping click.`,
+			);
+			return false;
+		}
+
+		try {
+			await locator.first().click();
+			return true;
+		} catch (error) {
+			logger.warn(
+				warningMessage ??
+					`Failed to click optional locator ${locator.toString()}.`,
+				error,
+			);
+			return false;
+		}
+	}
+
+	/**
 	 * Retrieves slider bounds (current, min, max values) from ARIA attributes.
 	 */
 	@step("Get slider bounds from ARIA attributes")

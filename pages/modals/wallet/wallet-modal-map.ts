@@ -1,3 +1,4 @@
+import { WalletModalContent } from "@constants/wallet-modal-content";
 import { BaseMap } from "@pages/base/base-map";
 import { Locator, Page } from "playwright";
 
@@ -56,6 +57,30 @@ export class WalletModalMap extends BaseMap {
 		return this.page.getByTestId("LeftPanelContainer");
 	}
 
+	public get walletLeftPanelCryptoWithdrawHeader(): Locator {
+		return this.walletLeftPanel.locator(
+			'[class^="CryptoWithdrawPanel-styled__Head-"]',
+		);
+	}
+
+	public get walletLeftPanelBankWithdrawHeader(): Locator {
+		return this.walletLeftPanel.locator(
+			'[class*="WithDrawPanel-styled__Head-"]',
+		);
+	}
+
+	public get walletLeftPanelCryptoWithdrawHeaderTitle(): Locator {
+		return this.walletLeftPanelCryptoWithdrawHeader.locator(
+			'[class^="CryptoWithdrawPanel-styled__HeadWrapper"]',
+		);
+	}
+
+	public get walletLeftPanelBankWithdrawHeaderTitle(): Locator {
+		return this.walletLeftPanelBankWithdrawHeader.locator(
+			'[class*="WithDrawPanel-styled__HeadWrapper"]',
+		);
+	}
+
 	public get leftPanelVaultActionButtonsContainer(): Locator {
 		return this.vaultLeftPanel.getByTestId("walletVaultActionsContainer");
 	}
@@ -112,6 +137,70 @@ export class WalletModalMap extends BaseMap {
 		);
 	}
 
+	public get withdrawTabContainer(): Locator {
+		return this.page.locator(
+			'[class^="Withdraw-styled__WithdrawContainer"]',
+		);
+	}
+
+	public get withdrawEmailNotConfirmedContainer(): Locator {
+		return this.walletLeftPanel.locator(
+			'[class^="EmailNotVerifiedForWithdraw-styled__Container"]',
+		);
+	}
+
+	public get withdrawEmailNotConfirmedIcon(): Locator {
+		return this.withdrawEmailNotConfirmedContainer.locator(
+			'g[clip-path="url(#email-not-verified_icon_svg__a)"]',
+		);
+	}
+
+	public get withdrawEmailNotConfirmedTextSection(): Locator {
+		return this.withdrawEmailNotConfirmedContainer.locator(
+			'[class^="EmailNotVerifiedForWithdraw-styled__TextSection"]',
+		);
+	}
+
+	public get withdrawEmailNotConfirmedTextSectionHeader(): Locator {
+		return this.withdrawEmailNotConfirmedTextSection.locator("h5");
+	}
+
+	public get withdrawEmailNotConfirmedTextSectionContent(): Locator {
+		return this.withdrawEmailNotConfirmedTextSection.locator("p");
+	}
+
+	public get withdrawEmailNotConfirmedResendEmailButton(): Locator {
+		return this.withdrawEmailNotConfirmedContainer.getByText(
+			WalletModalContent.EMAIL_NOT_VERIFIED_BUTTON,
+		);
+	}
+
+	public get withdrawEmailNotConfirmedResendEmailContinueButton(): Locator {
+		return this.page
+			.getByTestId("modalContainer")
+			.getByTestId("confirmation-modal-continue-button");
+	}
+
+	public get withdrawCountryDropdownContainer(): Locator {
+		return this.withdrawTabContainer.locator(
+			'[class^="Withdraw-styled__CountriesSelectorWrapper"]',
+		);
+	}
+
+	public get withdrawCountryDropdownOption(): Locator {
+		return this.withdrawCountryDropdownContainer
+			.getByTestId("Input")
+			.filter({
+				has: this.page.locator(`[role="combobox"]`),
+			});
+	}
+
+	public withdrawCountryDropdownOptions(optionValue: string): Locator {
+		return this.page
+			.getByTestId("ListContainer")
+			.locator(`li[data-value="${optionValue}"]`);
+	}
+
 	public get promoCodeInputField(): Locator {
 		return this.walletLeftPanel.locator('input[placeholder="Enter Code"]');
 	}
@@ -134,6 +223,10 @@ export class WalletModalMap extends BaseMap {
 
 	public cryptoPaymentMethod(paymentMethod: string): Locator {
 		return this.page.getByTestId(`deposit-crypto-${paymentMethod}`);
+	}
+
+	public bankPaymentMethod(paymentMethod: string): Locator {
+		return this.page.getByTestId(`${paymentMethod}PaymentMethodContainer`);
 	}
 
 	public get cryptoDepositAddress(): Locator {

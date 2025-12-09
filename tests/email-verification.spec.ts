@@ -7,9 +7,14 @@ import { test } from "fixtures/fixtures";
 import { RegisterTestData } from "@dtos/test-data";
 import { JiraUser } from "@enums/jira/jira-users";
 import { testDetails } from "@core/helpers/test-details-helper";
+import { TestUserRole } from "@enums/test-user-roles";
+import { testData } from "test-data/test-data-manager";
+import { JiraComponent } from "@enums/jira/jira-components";
 
 test.describe("Email Verification Tests", () => {
 	test.use({ storageState: { cookies: [], origins: [] } });
+
+	const userWalletTestDataDomain = testData().fromDomain().userWallet;
 
 	test(
 		"[ENG-1133] E-mail verification - new account",
@@ -89,6 +94,59 @@ test.describe("Email Verification Tests", () => {
 					newEmailData.inbox,
 					page,
 				);
+		},
+	);
+
+	test(
+		`[ENG-7516] [Wallet] Verify e-mail verification restriction on Withdraw tab`,
+		testDetails()
+			.withTags(JiraComponent.WALLET, JiraComponent.WITHDRAWAL)
+			.withAuthor(JiraUser.YUKSEL_CHAUSH)
+			.apply(),
+		async ({ browserSessionManager, mailinatorApi, testDataRandom }) => {
+			const regularUserEmailNotVerified =
+				await browserSessionManager.loginAs(TestUserRole.REGULAR, {
+					reuseContext: true,
+					regularUserOptions: {
+						emailVerified: false,
+						email: testDataRandom.data.mailinator.emailInbox()
+							.email,
+					},
+				});
+
+			await regularUserEmailNotVerified.pages.homePage.navigateToWallet();
+			await regularUserEmailNotVerified.pages.walletModal.openWithdrawTab();
+
+			await regularUserEmailNotVerified.pages.walletModal
+				.steps()
+				.verifyWithdrawCryptoEmailNotVerifiedMessage();
+
+			await regularUserEmailNotVerified.pages.walletModal
+				.steps()
+				.verifyWithdrawBankEmailNotVerifiedMessage(
+					userWalletTestDataDomain.countryAvailableBankPaymentMethods,
+				);
+
+			await regularUserEmailNotVerified.pages.walletModal
+				.steps()
+				.resendVerificationWithdrawEmailSuccessfully();
+
+			const { inbox } = testDataRandom.data.mailinator.emailInbox(
+				regularUserEmailNotVerified.authenticatedUser?.user.email,
+			);
+
+			await regularUserEmailNotVerified.pages.profilePage
+				.steps()
+				.verifyEmail(
+					mailinatorApi,
+					MAILINATOR_DOMAIN,
+					inbox,
+					regularUserEmailNotVerified.page,
+				);
+
+			await regularUserEmailNotVerified.pages.homePage.authenticatedHeader
+				.assertThat()
+				.loggedInUserElementsAreVisible();
 		},
 	);
 });

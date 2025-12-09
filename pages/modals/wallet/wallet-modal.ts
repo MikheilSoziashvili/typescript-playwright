@@ -9,10 +9,15 @@ import { TwoFactorAuthModal } from "../two-factor-authentication-modal/two-facto
 import { step } from "decorators/step";
 import { Cryptocurrency, CryptoTicker } from "@enums/cryptocurrencies";
 import { expect } from "@playwright/test";
+import { CountryCodeISO3166 } from "@enums/country-codes-iso3166";
+import { Toast } from "@pages/components/toast/toast";
 
 export class WalletModal extends BasePage<WalletModalMap> {
+	public toast: Toast;
+
 	public constructor(page: Page) {
 		super(page, new WalletModalMap(page));
+		this.toast = new Toast(page);
 	}
 
 	public override assertThat(): WalletModalAsserter {
@@ -113,8 +118,27 @@ export class WalletModal extends BasePage<WalletModalMap> {
 	}
 
 	@step("Select payment method")
-	public async selectPaymentMethod(paymentMethod: string): Promise<void> {
-		await this.map.cryptoPaymentMethod(paymentMethod).click();
+	public async selectPaymentMethod(
+		paymentMethod: string,
+		options?: { skipIfMissing?: boolean },
+	): Promise<boolean> {
+		const cryptoPayMethod = this.map.cryptoPaymentMethod(paymentMethod);
+
+		if (options?.skipIfMissing) {
+			return this.clickIfPresent(cryptoPayMethod, {
+				timeout: Timeout.EXTRA_SHORT,
+			});
+		}
+
+		await cryptoPayMethod.click();
+		return true;
+	}
+
+	@step("Select bank withdraw payment method")
+	public async selectBankWithdrawPaymentMethod(
+		paymentMethod: string,
+	): Promise<void> {
+		await this.map.bankPaymentMethod(paymentMethod).click();
 	}
 
 	@step("Get deposit address")
@@ -189,9 +213,23 @@ export class WalletModal extends BasePage<WalletModalMap> {
 		await this.selectPaymentMethod(paymentMethod);
 	}
 
+	@step("Resend verification email on Withdraw tab if email is not confirmed")
+	public async resendVerificationWithdrawEmailNotConfirmed(): Promise<void> {
+		await this.map.withdrawEmailNotConfirmedResendEmailButton.click();
+		await this.map.withdrawEmailNotConfirmedResendEmailContinueButton.click();
+	}
+
 	@step("Select USDT Network from dropdown")
 	public async selectDepositNetwork(network: string): Promise<void> {
 		await this.map.networkDropdown.click();
 		await this.map.networkDropdownOption(network).click();
+	}
+
+	@step("Select withdraw country")
+	public async selectWithdrawCountry(
+		country: CountryCodeISO3166,
+	): Promise<void> {
+		await this.map.withdrawCountryDropdownOption.click();
+		await this.map.withdrawCountryDropdownOptions(country).click();
 	}
 }

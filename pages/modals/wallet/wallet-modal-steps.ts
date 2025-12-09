@@ -7,6 +7,10 @@ import { ToastSubTitle } from "@enums/toast-subtitles";
 import { Unit } from "@enums/units";
 import { WalletType } from "@enums/wallet-types";
 import { Currency } from "@enums/currencies";
+import { Cryptocurrency } from "@enums/cryptocurrencies";
+import { CountryCodeISO3166 } from "@enums/country-codes-iso3166";
+import { BankPaymentMethod } from "@enums/bank-payment-methods";
+import { CountryAvailableBankPaymentMethods } from "test-data/interfaces/domain/user-wallet-domain-interfaces";
 
 export class WalletModalSteps extends BasePageStep<WalletModal> {
 	public constructor(page: WalletModal) {
@@ -128,5 +132,74 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 		const toast = new Toast(this.gamdomPage.page);
 		await toast.assertThat().titleIs(ToastTitle.SUCCESS);
 		await toast.assertThat().subTitleIs(ToastSubTitle.PROMO_CODE_REDEEMED);
+	}
+
+	@step(
+		"Verify withdraw 'Email Not Verified' in left panel for each cryptocurrency",
+	)
+	public async verifyWithdrawCryptoEmailNotVerifiedMessage(): Promise<void> {
+		for (const crypto of Object.values(Cryptocurrency)) {
+			// Not each cryptocurrency is always available
+			const isClicked = await this.gamdomPage.selectPaymentMethod(
+				crypto,
+				{ skipIfMissing: true },
+			);
+			if (isClicked) {
+				await this.gamdomPage
+					.assertThat()
+					.withdrawCryptoLeftPanelHeaderCorrect(crypto);
+				await this.gamdomPage
+					.assertThat()
+					.withdrawEmailNotVerifiedPanelContentCorrect();
+			}
+		}
+	}
+
+	@step("Verify bank withdraw payment method for country is present")
+	public async verifyWithdrawBankPaymentMethodPresentForCountry(
+		country: CountryCodeISO3166,
+	): Promise<void> {
+		await this.gamdomPage.selectWithdrawCountry(country);
+		await this.gamdomPage
+			.assertThat()
+			.withdrawBankPaymentMethodPresentForCountry(country);
+	}
+
+	@step(
+		"Verify withdraw 'Email Not Verified' in left panel for bank - Havale1 and UPI",
+	)
+	public async verifyWithdrawBankEmailNotVerifiedMessage(
+		countryAvailableBankPaymentMethods: CountryAvailableBankPaymentMethods,
+	): Promise<void> {
+		for (const [country, bankPaymentMethods] of Object.entries(
+			countryAvailableBankPaymentMethods,
+		) as [CountryCodeISO3166, BankPaymentMethod[]][]) {
+			await this.verifyWithdrawBankPaymentMethodPresentForCountry(
+				country,
+			);
+
+			for (const bankPaymentMethod of bankPaymentMethods) {
+				await this.gamdomPage.selectBankWithdrawPaymentMethod(
+					bankPaymentMethod,
+				);
+				await this.gamdomPage
+					.assertThat()
+					.withdrawBankLeftPanelHeaderCorrect(bankPaymentMethod);
+				await this.gamdomPage
+					.assertThat()
+					.withdrawEmailNotVerifiedPanelContentCorrect();
+			}
+		}
+	}
+
+	@step("Resend verification email on Withdraw tab successfully")
+	public async resendVerificationWithdrawEmailSuccessfully(): Promise<void> {
+		await this.gamdomPage.resendVerificationWithdrawEmailNotConfirmed();
+		await this.gamdomPage.toast
+			.assertThat()
+			.toastMessageIs(
+				ToastTitle.SUCCESS,
+				ToastSubTitle.RESEND_VERIFICATION_EMAIL_SUCCESSFULLY,
+			);
 	}
 }

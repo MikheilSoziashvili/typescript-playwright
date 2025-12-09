@@ -6,6 +6,12 @@ import { step } from "decorators/step";
 import { Unit } from "@enums/units";
 import { WalletType } from "@enums/wallet-types";
 import { Currency } from "@enums/currencies";
+import { Cryptocurrency } from "@enums/cryptocurrencies";
+import { cryptocurrencyTickerMap } from "@core/mappings/crypto/cryptocurrency-ticker-map";
+import { WalletModalContent } from "@constants/wallet-modal-content";
+import { BankPaymentMethod } from "@enums/bank-payment-methods";
+import { CountryCodeISO3166 } from "@enums/country-codes-iso3166";
+import { bankPaymentMethodLabelMap } from "@core/mappings/bank/bank-payment-method-label-map";
 
 export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 	public constructor(page: WalletModal) {
@@ -44,6 +50,78 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 		).toContainText(
 			`${amount} has been transferred from your Wallet to your Vault`,
 		);
+	}
+
+	@step("Crypto withdraw left panel header is correct")
+	public async withdrawCryptoLeftPanelHeaderCorrect(
+		cryptoCurrency: Cryptocurrency,
+	): Promise<void> {
+		const cryptoTicker =
+			cryptoCurrency === Cryptocurrency.Tether
+				? Cryptocurrency.Tether
+				: cryptocurrencyTickerMap[cryptoCurrency];
+		await expect(
+			this.gamdomPage.map.walletLeftPanelCryptoWithdrawHeaderTitle,
+		).toHaveText(`${cryptoTicker} Withdraw`);
+	}
+
+	@step("Bank withdraw left panel header is correct")
+	public async withdrawBankLeftPanelHeaderCorrect(
+		bankPaymentMethod: BankPaymentMethod,
+	): Promise<void> {
+		const bankPaymentMethodName =
+			bankPaymentMethod === BankPaymentMethod.HAVALE1
+				? ""
+				: `${bankPaymentMethodLabelMap[bankPaymentMethod]} `;
+
+		await this.checkElementsHaveText([
+			{
+				locator:
+					this.gamdomPage.map.walletLeftPanelBankWithdrawHeaderTitle,
+				expectedText: `${bankPaymentMethodName}Withdraw`,
+			},
+		]);
+	}
+
+	@step("Withdraw error 'Email Not Verified' in left panel is correct")
+	public async withdrawEmailNotVerifiedPanelContentCorrect(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.withdrawEmailNotConfirmedIcon,
+			this.gamdomPage.map.withdrawEmailNotConfirmedResendEmailButton,
+		]);
+
+		await this.checkElementsHaveText([
+			{
+				locator:
+					this.gamdomPage.map
+						.withdrawEmailNotConfirmedTextSectionHeader,
+				expectedText: WalletModalContent.EMAIL_NOT_VERIFIED_TITLE,
+			},
+			{
+				locator:
+					this.gamdomPage.map
+						.withdrawEmailNotConfirmedTextSectionContent,
+				expectedText: WalletModalContent.EMAIL_NOT_VERIFIED_BODY,
+			},
+		]);
+	}
+
+	@step("Bank withdraw payment methods are visible for country")
+	public async withdrawBankPaymentMethodPresentForCountry(
+		country?: CountryCodeISO3166,
+	): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.bankPaymentMethod(BankPaymentMethod.HAVALE1),
+		]);
+
+		if (country === CountryCodeISO3166.INDIA) {
+			await this.checkElementsAreVisible([
+				this.gamdomPage.map.bankPaymentMethod(
+					BankPaymentMethod.HAVALE1,
+				),
+				this.gamdomPage.map.bankPaymentMethod(BankPaymentMethod.UPI),
+			]);
+		}
 	}
 
 	@step("Vault withdraw toast message is displayed")

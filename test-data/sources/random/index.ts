@@ -1,8 +1,13 @@
-import { generateRandomString, getRandomIndex } from "@core/utils/utils";
+import {
+	generateEmailAndInbox,
+	generateRandomString,
+	getRandomIndex,
+} from "@core/utils/utils";
 import { BlogPostCategories } from "@enums/post-categories";
 import {
 	BlogPostsGenerator,
 	CasinoGamesGenerator,
+	MailinatorGenerator,
 	PromoCampaignCodesGenerator,
 	PromoCodesGenerators,
 } from "test-data/interfaces/random";
@@ -58,6 +63,13 @@ export class RandomDataSourceGenerator {
 	public get casinoGames(): CasinoGamesGenerator {
 		return {
 			playerName: () => this.predefinedRandom.casinoGames.playerName,
+		};
+	}
+
+	public get mailinator(): MailinatorGenerator {
+		return {
+			emailInbox: (overrideEmail?: string) =>
+				generateEmailAndInbox(overrideEmail),
 		};
 	}
 

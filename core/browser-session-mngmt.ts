@@ -23,6 +23,17 @@ type Pages = {
 	[K in keyof AllGamdomPagesType]: InstanceType<AllGamdomPagesType[K]>;
 };
 
+type SessionContextOptions = {
+	reuseContext?: boolean;
+	proxyCredentials?: ProxyCredentialsType;
+};
+
+type BrowserSessionLoginOptions = SessionContextOptions & {
+	regularUserOptions?: Parameters<
+		GamdomApiDbFacade["createSingleUserDbAndAuth"]
+	>[0];
+};
+
 export class BrowserUserSession {
 	private pageCache: Partial<Record<keyof AllGamdomPagesType, unknown>> = {};
 
@@ -110,10 +121,7 @@ export class BrowserSessionManager {
 
 	public async loginAs(
 		role: TestUserRole,
-		options?: {
-			reuseContext?: boolean;
-			proxyCredentials?: ProxyCredentialsType;
-		},
+		options?: BrowserSessionLoginOptions,
 	): Promise<BrowserUserSession> {
 		const existingSession = this.sessions.get(role);
 		if (existingSession && !options?.proxyCredentials) {
@@ -122,7 +130,11 @@ export class BrowserSessionManager {
 		}
 
 		const { context, page } = await this.getOrCreateContext(options);
-		const authenticatedUser = await this.authenticateUser(role, page);
+		const authenticatedUser = await this.authenticateUser(
+			role,
+			page,
+			options,
+		);
 
 		const session = this.createSession(
 			role,
@@ -174,10 +186,9 @@ export class BrowserSessionManager {
 		this.sessions.clear();
 	}
 
-	private async getOrCreateContext(options?: {
-		reuseContext?: boolean;
-		proxyCredentials?: ProxyCredentialsType;
-	}): Promise<{ context: BrowserContext; page: Page }> {
+	private async getOrCreateContext(
+		options?: SessionContextOptions,
+	): Promise<{ context: BrowserContext; page: Page }> {
 		const shouldReuse = options?.reuseContext && !options.proxyCredentials;
 
 		if (shouldReuse) {
@@ -204,6 +215,7 @@ export class BrowserSessionManager {
 	private async authenticateUser(
 		role: TestUserRole,
 		page: Page,
+		options?: BrowserSessionLoginOptions,
 	): Promise<AuthenticatedUser | undefined> {
 		switch (role) {
 			case TestUserRole.ANONYMOUS:
@@ -211,7 +223,9 @@ export class BrowserSessionManager {
 
 			case TestUserRole.REGULAR: {
 				const userAuth =
-					await this.gamdomApiDbFacade.createSingleUserDbAndAuth();
+					await this.gamdomApiDbFacade.createSingleUserDbAndAuth(
+						options?.regularUserOptions,
+					);
 				await setAuthenticationCookies(page, userAuth.cookie);
 				return userAuth;
 			}
