@@ -7,14 +7,19 @@ import { ExpectedWins } from "@enums/original-games";
 import { TestTag } from "@enums/test-tags";
 import { TestUserRole } from "@enums/test-user-roles";
 import { test } from "@fixtures/fixtures";
+import { isScheduledRun } from "configuration";
 
 test.describe(
 	"User details tests",
 	testDetails().withTags(TestTag.SEQUENTIAL, JiraComponent.PROFILE).apply(),
 	() => {
+		test.fixme(isScheduledRun);
 		test(
 			"[ENG-4419] Hidden details in Live Bets and Recent Wins - ON",
-			testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+			testDetails()
+				.withJiraBugTickets("7893")
+				.withAuthor(JiraUser.RALUCA_ARITON)
+				.apply(),
 			async ({ browserSessionManager, testDataObject }) => {
 				const regular = await browserSessionManager.loginAs(
 					TestUserRole.REGULAR,
