@@ -38,3 +38,9 @@ export enum kycAdminStatus {
 export enum SubmitSessionRequestStatus {
 	SUBMITTED = "submitted",
 }
+
+export enum ProofOfFunds {
+	BANK_STATEMENT = "Bank statement",
+	WAGE_SLIP = "Wage slip",
+	INVOICE = "Invoice",
+}

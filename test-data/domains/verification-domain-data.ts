@@ -6,6 +6,7 @@ import {
 	KycAdminActions,
 	kycAdminStatus,
 	KycLevels,
+	ProofOfFunds,
 	VerificationFormType as VerificationFormTypeEnum,
 	VerificationTabType,
 } from "@enums/verification-enums";
@@ -62,6 +63,11 @@ export const DATE_INPUT_DESCRIPTIONS = {
  * Special input value to trigger random country selection
  */
 export const RANDOM_COUNTRY = "Random Country";
+
+/*
+ * All available Proof of Funds options
+ */
+export const PROOF_OF_FUNDS_OPTIONS = Object.values(ProofOfFunds);
 
 // ============================================================================
 // CONSTANTS - Validation Inputs

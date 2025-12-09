@@ -9,7 +9,7 @@ import { getItemsAttribute, getRandomIndex } from "@core/utils/utils";
 import { Attributes } from "@enums/playwright/htmlAttributes";
 import { step } from "decorators/step";
 import { logger } from "@logger/logger";
-import { VerificationTabType } from "@enums/verification-enums";
+import { ProofOfFunds, VerificationTabType } from "@enums/verification-enums";
 import { faker } from "@faker-js/faker";
 import {
 	KYC_FIELDS,
@@ -19,6 +19,7 @@ import { FieldValidationScenario } from "test-data/interfaces";
 import { VeriffApi } from "@api/veriff-api";
 import * as Configuration from "../../configuration";
 import { testData } from "test-data/test-data-manager";
+import { KYC_LEVEL_3_FILE_PATH } from "@constants/file-paths";
 
 export class VerificationPage extends BasePage<VerificationPageMap> {
 	public constructor(page: Page) {
@@ -217,5 +218,18 @@ export class VerificationPage extends BasePage<VerificationPageMap> {
 		sessionId: string,
 	): Promise<void> {
 		await veriffApi.submitSession(sessionId);
+	}
+
+	@step("Fill in Level 3 verification form")
+	public async fillInKycLevel3Form(option: ProofOfFunds): Promise<void> {
+		await this.map.proofOfFundsDropdown.click();
+		await this.map.proofOfFundsOption(option).click();
+		const [fileChooser] = await Promise.all([
+			this.page.waitForEvent("filechooser"),
+			this.map.uploadProofOfFundsButton.click(),
+		]);
+		await fileChooser.setFiles(KYC_LEVEL_3_FILE_PATH);
+		await this.map.verifyCheckbox.click();
+		await this.map.submitButton.click();
 	}
 }

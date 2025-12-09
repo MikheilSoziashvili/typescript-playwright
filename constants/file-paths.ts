@@ -88,3 +88,8 @@ export const FREE_SPINS_REWARD_MILESTONES = path.resolve(
 	__dirname,
 	`../${TEST_FILES_DIR}/ENG-7504-free-spins-reward-milestones.csv`,
 );
+
+export const KYC_LEVEL_3_FILE_PATH = path.resolve(
+	__dirname,
+	`../${TEST_FILES_DIR}/sample_image.jpg`,
+);

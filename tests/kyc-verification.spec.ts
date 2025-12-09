@@ -17,6 +17,7 @@ import {
 	KycLevels,
 } from "@enums/verification-enums";
 import { test } from "@fixtures/fixtures";
+import { PROOF_OF_FUNDS_OPTIONS } from "test-data/domains/verification-domain-data";
 import { testData } from "test-data/test-data-manager";
 
 test.describe(
@@ -364,6 +365,52 @@ test.describe(
 						NotificationSubTitle.KYC_LEVEL_TWO_VERIFIED,
 					);
 			},
+		);
+	},
+);
+
+test.describe(
+	"KYC Level 3 Verification",
+	testDetails().withTags(JiraComponent.VERIFICATION).apply(),
+	() => {
+		PROOF_OF_FUNDS_OPTIONS.forEach((proofOfFund) =>
+			test(
+				`[ENG-8737] Submit KYC Level 3 - ${proofOfFund}`,
+				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+				async ({ browserSessionManager }) => {
+					const adminUser = await browserSessionManager.loginAs(
+						TestUserRole.SUPERADMIN,
+						{ reuseContext: true },
+					);
+					const regularUser = await browserSessionManager.loginAs(
+						TestUserRole.REGULAR,
+					);
+
+					await adminUser.pages.userInfoAdminPage
+						.steps()
+						.navigateAndShowUserDetails(
+							regularUser.getAuthenticatedUser().user.username,
+						);
+					await adminUser.pages.userInfoAdminPage.clickUserInfoTab(
+						UserInfoTabs.KYC,
+					);
+					await adminUser.pages.userInfoKycAdminPage.selectKycAction(
+						KycLevels.LEVEL_3,
+						KycAdminActions.TRIGGER,
+					);
+
+					await regularUser.pages.verificationPage.navigate();
+					await regularUser.pages.verificationPage
+						.assertThat()
+						.kycLevelThreeVerificationHeaderIsVisible();
+					await regularUser.pages.verificationPage.fillInKycLevel3Form(
+						proofOfFund,
+					);
+					await regularUser.pages.verificationPage
+						.assertThat()
+						.kycLevelThreeVerificationInProgressMessageIsVisible();
+				},
+			),
 		);
 	},
 );

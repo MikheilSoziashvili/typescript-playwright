@@ -1,5 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
+import { ProofOfFunds } from "@enums/verification-enums";
 
 export class VerificationPageMap extends BaseMap {
 	public constructor(page: Page) {
@@ -115,5 +116,23 @@ export class VerificationPageMap extends BaseMap {
 
 	public get levelThreeVerificationHeader(): Locator {
 		return this.page.getByText("Level 3 Verification");
+	}
+
+	public get proofOfFundsDropdown(): Locator {
+		return this.page.getByLabel("Proof of Funds");
+	}
+
+	public proofOfFundsOption(option: ProofOfFunds): Locator {
+		return this.page.getByRole("option", { name: option });
+	}
+
+	public get uploadProofOfFundsButton(): Locator {
+		return this.page.getByText("Choose file to upload");
+	}
+
+	public get levelThreeVerificationInProgressMessage(): Locator {
+		return this.page.getByText(
+			"Verification in progress. Please wait for the verification to complete.",
+		);
 	}
 }

@@ -97,6 +97,13 @@ export class VerificationPageAsserter extends BaseAsserter<VerificationPage> {
 		]);
 	}
 
+	@step("KYC Level Three Verification header is visible")
+	public async kycLevelThreeVerificationInProgressMessageIsVisible(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.levelThreeVerificationInProgressMessage,
+		]);
+	}
+
 	@step("Verify submission toast and notification")
 	public async verifySubmissionToastAndNotification(
 		toast: Toast,
