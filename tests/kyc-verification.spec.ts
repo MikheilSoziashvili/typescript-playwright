@@ -323,35 +323,44 @@ test.describe(
 	"KYC Level 2.5 Verification",
 	testDetails().withTags(JiraComponent.VERIFICATION).apply(),
 	() => {
+		const verificationTestData = testData().fromDomain().verification;
+
+		test.beforeEach(async ({ browserSessionManager }) => {
+			const adminUser = await browserSessionManager.loginAs(
+				TestUserRole.SUPERADMIN,
+				{ reuseContext: true },
+			);
+			const regularUser = await browserSessionManager.loginAs(
+				TestUserRole.REGULAR,
+			);
+
+			await adminUser.pages.userInfoAdminPage
+				.steps()
+				.navigateAndShowUserDetails(
+					regularUser.getAuthenticatedUser().user.username,
+				);
+			await adminUser.pages.userInfoAdminPage.clickUserInfoTab(
+				UserInfoTabs.KYC,
+			);
+			await adminUser.pages.userInfoKycAdminPage.selectKycAction(
+				KycLevels.LEVEL_2_5,
+				KycAdminActions.TRIGGER,
+			);
+
+			await regularUser.pages.verificationPage.navigate();
+			await regularUser.pages.verificationPage
+				.assertThat()
+				.kycLevelTwoVerificationTitleIsVisible();
+		});
+
 		test(
 			"[ENG-8736] Submit KYC Level 2.5",
 			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
 			async ({ browserSessionManager }) => {
-				const adminUser = await browserSessionManager.loginAs(
-					TestUserRole.SUPERADMIN,
-					{ reuseContext: true },
-				);
 				const regularUser = await browserSessionManager.loginAs(
 					TestUserRole.REGULAR,
 				);
 
-				await adminUser.pages.userInfoAdminPage
-					.steps()
-					.navigateAndShowUserDetails(
-						regularUser.getAuthenticatedUser().user.username,
-					);
-				await adminUser.pages.userInfoAdminPage.clickUserInfoTab(
-					UserInfoTabs.KYC,
-				);
-				await adminUser.pages.userInfoKycAdminPage.selectKycAction(
-					KycLevels.LEVEL_2_5,
-					KycAdminActions.TRIGGER,
-				);
-
-				await regularUser.pages.verificationPage.navigate();
-				await regularUser.pages.verificationPage
-					.assertThat()
-					.kycLevelTwoVerificationTitleIsVisible();
 				await regularUser.pages.verificationPage.fillInKycLevel2_5Form();
 
 				await regularUser.pages.verificationPage
@@ -364,6 +373,49 @@ test.describe(
 						NotificationTitle.KYC_VERIFIED,
 						NotificationSubTitle.KYC_LEVEL_TWO_VERIFIED,
 					);
+			},
+		);
+
+		verificationTestData.level2_5FieldValidationScenarios.forEach(
+			({ testId, formType, fieldValidations, processInput }) => {
+				test(
+					`[${testId}] ${formType} Level 2.5 - Field validations`,
+					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+					async ({ browserSessionManager }) => {
+						const regularUser = await browserSessionManager.loginAs(
+							TestUserRole.REGULAR,
+						);
+
+						for (const {
+							inputField,
+							input,
+							expectedErrorMessage,
+						} of fieldValidations) {
+							const actualInput = processInput(input);
+
+							await regularUser.pages.verificationPage.fillInputAndTriggerValidation(
+								inputField,
+								actualInput,
+							);
+
+							await regularUser.pages.verificationPage
+								.assertThat()
+								.validateErrorMessageForField(
+									inputField,
+									expectedErrorMessage,
+								);
+						}
+
+						await regularUser.pages.verificationPage.toggleCheckbox(
+							{
+								count: 2,
+							},
+						);
+						await regularUser.pages.verificationPage
+							.assertThat()
+							.checkboxValidationMessageIsDisplayed();
+					},
+				);
 			},
 		);
 	},

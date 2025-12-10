@@ -46,6 +46,14 @@ export const KYB_FIELDS = {
 	REGISTRATION_NUMBER: "Registration number",
 } as const;
 
+/**
+ * KYC Level 2.5 form field names
+ */
+export const KYC_LEVEL_2_5_FIELDS = {
+	COUNTRY: "Country",
+	REASON_FOR_RESIDENCE: "Reason for Residence",
+} as const;
+
 // ============================================================================
 // CONSTANTS - Date Input Descriptions
 // ============================================================================
@@ -60,9 +68,9 @@ export const DATE_INPUT_DESCRIPTIONS = {
 } as const;
 
 /**
- * Special input value to trigger random country selection
+ * Special input value to trigger random option selection
  */
-export const RANDOM_COUNTRY = "Random Country";
+export const RANDOM_OPTION = "Random Option";
 
 /*
  * All available Proof of Funds options
@@ -109,6 +117,8 @@ export const ERROR_MESSAGES = {
 	BUSINESS_NAME_REQUIRED: "Business name is required",
 	BUSINESS_ADDRESS_REQUIRED: "Business address is required",
 	INVALID_REGISTRATION_NUMBER: "Please enter a valid registration number",
+	COUNTRY_REQUIRED: "Country is required",
+	REASON_FOR_RESIDENCE_REQUIRED: "Reason for residence is required",
 	NO_ERROR: "",
 } as const;
 
@@ -278,7 +288,7 @@ export class VerificationDomainData {
 		},
 		{
 			inputField: KYC_FIELDS.COUNTRY,
-			input: RANDOM_COUNTRY,
+			input: RANDOM_OPTION,
 			expectedErrorMessage: ERROR_MESSAGES.NO_ERROR,
 		},
 	];
@@ -388,6 +398,48 @@ export class VerificationDomainData {
 		];
 
 	// ========================================================================
+	// KYC LEVEL 2.5 - FIELD VALIDATION SCENARIOS DATASET
+	// ========================================================================
+
+	/**
+	 * KYC Level 2.5 field validation scenarios
+	 */
+	private readonly kycLevel2_5FieldValidations: FieldValidationScenario[] = [
+		{
+			inputField: KYC_LEVEL_2_5_FIELDS.COUNTRY,
+			input: VALID_INPUTS.EMPTY,
+			expectedErrorMessage: ERROR_MESSAGES.COUNTRY_REQUIRED,
+		},
+		{
+			inputField: KYC_LEVEL_2_5_FIELDS.COUNTRY,
+			input: RANDOM_OPTION,
+			expectedErrorMessage: ERROR_MESSAGES.NO_ERROR,
+		},
+		{
+			inputField: KYC_LEVEL_2_5_FIELDS.REASON_FOR_RESIDENCE,
+			input: VALID_INPUTS.EMPTY,
+			expectedErrorMessage: ERROR_MESSAGES.REASON_FOR_RESIDENCE_REQUIRED,
+		},
+		{
+			inputField: KYC_LEVEL_2_5_FIELDS.REASON_FOR_RESIDENCE,
+			input: RANDOM_OPTION,
+			expectedErrorMessage: ERROR_MESSAGES.NO_ERROR,
+		},
+	];
+
+	/**
+	 * KYC Level 2.5 clear field validation scenarios
+	 */
+	private readonly kycLevel2_5ClearFieldValidations: FieldValidationScenario[] =
+		[
+			{
+				inputField: KYC_LEVEL_2_5_FIELDS.COUNTRY,
+				input: RANDOM_OPTION,
+				expectedErrorMessage: ERROR_MESSAGES.COUNTRY_REQUIRED,
+			},
+		];
+
+	// ========================================================================
 	// COMBINED FIELD VALIDATION SCENARIOS
 	// ========================================================================
 
@@ -411,6 +463,21 @@ export class VerificationDomainData {
 				clearFieldValidations: this.kybLevel1ClearFieldValidations,
 				processInput: (input: string) => input,
 				tabType: VerificationTabType.VERIFY_BUSINESS,
+			},
+		];
+
+	/**
+	 * Combined field validation test scenario for KYC Level 2.5.
+	 */
+	public readonly level2_5FieldValidationScenarios: FieldValidationTestScenario[] =
+		[
+			{
+				testId: "ENG-8833",
+				formType: VerificationFormTypeEnum.KYC,
+				fieldValidations: this.kycLevel2_5FieldValidations,
+				clearFieldValidations: this.kycLevel2_5ClearFieldValidations,
+				processInput: (input: string) => input,
+				tabType: VerificationTabType.VERIFY_YOURSELF,
 			},
 		];
 

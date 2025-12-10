@@ -1,7 +1,7 @@
 import { BasePage } from "@base/base-page";
 import { VERIFICATION_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
-import { Page } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 import { VerificationPageAsserter } from "./verification-page-asserter";
 import { VerificationPageMap } from "./verification-page-map";
 import { VerificationPageSteps } from "./verification-page-steps";
@@ -13,13 +13,15 @@ import { ProofOfFunds, VerificationTabType } from "@enums/verification-enums";
 import { faker } from "@faker-js/faker";
 import {
 	KYC_FIELDS,
-	RANDOM_COUNTRY,
+	KYC_LEVEL_2_5_FIELDS,
+	RANDOM_OPTION,
 } from "test-data/domains/verification-domain-data";
 import { FieldValidationScenario } from "test-data/interfaces";
 import { VeriffApi } from "@api/veriff-api";
 import * as Configuration from "../../configuration";
 import { testData } from "test-data/test-data-manager";
 import { KYC_LEVEL_3_FILE_PATH } from "@constants/file-paths";
+import { KeyboardKey } from "@enums/keyboard";
 
 export class VerificationPage extends BasePage<VerificationPageMap> {
 	public constructor(page: Page) {
@@ -140,19 +142,61 @@ export class VerificationPage extends BasePage<VerificationPageMap> {
 		await this.map.submitButton.click();
 	}
 
+	private getDropdownConfig(): Partial<
+		Record<
+			string,
+			{
+				container: Locator;
+				onRandom: () => Promise<void>;
+				onNonRandom: () => Promise<void>;
+			}
+		>
+	> {
+		return {
+			[KYC_FIELDS.COUNTRY]: {
+				container: this.map.countryDropdownContainer,
+				onRandom: async () => {
+					await this.selectRandomOption();
+				},
+				onNonRandom: async () => {
+					await this.map.countryDropdown.blur();
+				},
+			},
+			[KYC_LEVEL_2_5_FIELDS.COUNTRY]: {
+				container: this.map.level2countryDropdownContainer,
+				onRandom: async () => {
+					await this.selectRandomOption();
+				},
+				onNonRandom: async () => {
+					await this.selectRandomOption();
+					await this.map.level2CountryClearButton.click();
+				},
+			},
+			[KYC_LEVEL_2_5_FIELDS.REASON_FOR_RESIDENCE]: {
+				container: this.map.reasonForResidenceDropdown,
+				onRandom: async () => {
+					await this.selectRandomOption();
+				},
+				onNonRandom: async () => {
+					await this.page.keyboard.press(KeyboardKey.ESCAPE);
+					await this.map.reasonForResidenceDropdown.blur();
+				},
+			},
+		};
+	}
+
 	@step("Fill input and trigger validation")
 	public async fillInputAndTriggerValidation(
 		fieldLabel: string,
 		value: string,
 	): Promise<void> {
-		if (fieldLabel === KYC_FIELDS.COUNTRY) {
-			if (value === RANDOM_COUNTRY) {
-				await this.map.countryDropdownContainer.click();
-				await this.selectRandomOption();
-			} else {
-				await this.map.countryDropdown.click();
-				await this.map.countryDropdown.blur();
-			}
+		const dropdownConfig = this.getDropdownConfig();
+		const config = dropdownConfig[fieldLabel];
+
+		if (config) {
+			const isRandom = value === RANDOM_OPTION;
+			await config.container.click();
+			await (isRandom ? config.onRandom() : config.onNonRandom());
 			return;
 		}
 

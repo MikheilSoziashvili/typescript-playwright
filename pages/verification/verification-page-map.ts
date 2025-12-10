@@ -34,7 +34,7 @@ export class VerificationPageMap extends BaseMap {
 	}
 
 	public get level2countryDropdownContainer(): Locator {
-		return this.page.getByLabel("Country");
+		return this.page.getByRole("combobox", { name: "Country" });
 	}
 
 	public get reasonForResidenceDropdown(): Locator {
@@ -102,6 +102,12 @@ export class VerificationPageMap extends BaseMap {
 			.getByLabel(fieldLabel)
 			.locator("..")
 			.getByTestId("clearInputButton");
+	}
+
+	public get level2CountryClearButton(): Locator {
+		return this.level2countryDropdownContainer
+			.locator("..")
+			.getByTestId("CloseIcon");
 	}
 
 	public get checkboxValidationMessage(): Locator {
