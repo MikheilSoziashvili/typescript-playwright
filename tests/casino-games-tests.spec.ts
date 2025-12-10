@@ -1,4 +1,4 @@
-import { CZ_PROXY_CREDENTIALS } from "@constants/proxies";
+import { IE_PROXY_CREDENTIALS_2 } from "@constants/proxies";
 import { testDetails } from "@core/helpers/test-details-helper";
 import {
 	setAuthenticationCookies,
@@ -10,12 +10,14 @@ import { CsvFilesName } from "@enums/csv-file-name";
 import { Currency } from "@enums/currencies";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
+import { TestTag } from "@enums/test-tags";
 import { TestUserRole } from "@enums/test-user-roles";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { Unit } from "@enums/units";
 import { Wallet } from "@enums/wallets";
 import { test } from "@fixtures/fixtures";
+import { isScheduledRun } from "configuration";
 import { testData } from "test-data/test-data-manager";
 
 test.use({ launchOptions: { slowMo: 1000 } });
@@ -150,15 +152,21 @@ test.describe("Aggregator and Providers - Casino games tests", () => {
 						JiraComponent.USER_INFO,
 					)
 					.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+					.withJiraBugTickets("11715")
+					.withTags(TestTag.PLATFORM_BUG)
 					.apply(),
 				async ({ browserSessionManager }) => {
+					test.fixme(
+						isScheduledRun,
+						"Games can not be loaded. Temporary skipped until fixed by DevOps team",
+					);
 					test.slow();
 					const superAdminWithProxySession =
 						await browserSessionManager.loginAs(
 							TestUserRole.SUPERADMIN,
 							{
 								reuseContext: true,
-								proxyCredentials: CZ_PROXY_CREDENTIALS,
+								proxyCredentials: IE_PROXY_CREDENTIALS_2,
 							},
 						);
 

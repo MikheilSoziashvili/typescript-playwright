@@ -4,6 +4,7 @@ export enum VisualComparisonThreshold {
 	RELAXED = 0.2,
 	VERY_RELAXED = 0.3,
 	ULTRA_RELAXED = 0.4,
+	SUPER_RELAXED = 0.5,
 }
 
 export enum VisualAutomationPolling {

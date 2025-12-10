@@ -18,6 +18,7 @@ import { CashVaultIPage } from "@pages/casino-games/hacksaw-gaming/cash-vault-i/
 import { BookOfArabiaPage } from "@pages/casino-games/wickedgames/book-of-arabia/book-of-arabia-page";
 import { LiveBaccaratSqueezePage } from "@pages/casino-games/evolution-gaming/live-baccarat-squeeze/live-baccarat-squeeze-page";
 import { ZuluGoldPage } from "@pages/casino-games/elk-studios/zulu-gold/zulu-gold-page";
+import { SweetBonanzaPage } from "@pages/casino-games/pragmatic-play/sweet-bonanza/sweet-bonanza-page";
 
 type Pages = {
 	[K in keyof AllGamdomPagesType]: InstanceType<AllGamdomPagesType[K]>;
@@ -85,6 +86,7 @@ export class BrowserUserSession {
 						new BookOfArabiaPage(this.page),
 						new LiveBaccaratSqueezePage(this.page),
 						new ZuluGoldPage(this.page),
+						new SweetBonanzaPage(this.page),
 					);
 					this.pageCache[prop] = instance;
 					return instance as InstanceType<AllGamdomPagesType[K]>;

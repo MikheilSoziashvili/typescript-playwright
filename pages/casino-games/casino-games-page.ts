@@ -18,6 +18,7 @@ import { ZuluGoldPage } from "./elk-studios/zulu-gold/zulu-gold-page";
 import { LiveBaccaratSqueezePage } from "./evolution-gaming/live-baccarat-squeeze/live-baccarat-squeeze-page";
 import { CashVaultIPage } from "./hacksaw-gaming/cash-vault-i/cash-vault-i-page";
 import { BookOfArabiaPage } from "./wickedgames/book-of-arabia/book-of-arabia-page";
+import { SweetBonanzaPage } from "./pragmatic-play/sweet-bonanza/sweet-bonanza-page";
 
 /**
  * Maps each game to its corresponding provider.
@@ -31,6 +32,7 @@ const GAME_PROVIDER_MAP: Record<CasinoGameName, GameProvider> = {
 	[CasinoGameName.MYSTIC_CHIEF]: GameProvider.BGAMING,
 	[CasinoGameName.LIVE_BACCARAT_SQUEEZE]: GameProvider.EVOLUTION_GAMING,
 	[CasinoGameName.ZULU_GOLD]: GameProvider.ELK_STUDIOS,
+	[CasinoGameName.SWEET_BONANZA]: GameProvider.PRAGMATIC_PLAY,
 };
 
 /**
@@ -50,6 +52,7 @@ export class CasinoGamesUnifiedPage extends BasePage<CasinoGamesPageMap> {
 		private bookOfArabiaPage: BookOfArabiaPage,
 		private liveBaccaratSqueezePage: LiveBaccaratSqueezePage,
 		private zuluGoldPage: ZuluGoldPage,
+		private sweetBonanzaPage: SweetBonanzaPage,
 	) {
 		super(page, new CasinoGamesPageMap(page));
 		this.gamesMap = {
@@ -59,6 +62,7 @@ export class CasinoGamesUnifiedPage extends BasePage<CasinoGamesPageMap> {
 			[CasinoGameName.LIVE_BACCARAT_SQUEEZE]:
 				this.liveBaccaratSqueezePage,
 			[CasinoGameName.ZULU_GOLD]: this.zuluGoldPage,
+			[CasinoGameName.SWEET_BONANZA]: this.sweetBonanzaPage,
 		};
 	}
 
@@ -161,6 +165,17 @@ export class CasinoGamesUnifiedPage extends BasePage<CasinoGamesPageMap> {
 					.bet.build({ username: "default" }, { betAmount: 30 });
 				await zuluGoldPage.clickNextButton();
 				await zuluGoldPage
+					.steps()
+					.spinUntilWinRound(spinCount.betAmount);
+				break;
+			}
+			case GameProvider.PRAGMATIC_PLAY: {
+				const sweetBonanzaPage = gamePage as SweetBonanzaPage;
+				const spinCount = testData()
+					.fromObject()
+					.bet.build({ username: "default" }, { betAmount: 30 });
+				await sweetBonanzaPage.clickNextButton();
+				await sweetBonanzaPage
 					.steps()
 					.spinUntilWinRound(spinCount.betAmount);
 				break;

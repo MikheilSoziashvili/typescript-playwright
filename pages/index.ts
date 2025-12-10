@@ -109,6 +109,7 @@ import { PocketDicePage } from "./pocket-dice-game/pocket-dice-page";
 import { ZuluGoldPage } from "./casino-games/elk-studios/zulu-gold/zulu-gold-page";
 import { SportsBlogAdminPage } from "./admin/sports-blog-admin/sports-blog-admin-page";
 import { SportsBlogModal } from "./modals/sports-blog-modal/sports-blog-modal";
+import { SweetBonanzaPage } from "./casino-games/pragmatic-play/sweet-bonanza/sweet-bonanza-page";
 
 export const GamdomPages = {
 	homePage: HomePage,
@@ -208,6 +209,7 @@ export const GamePages = {
 	casinoGamesPage: CasinoGamesUnifiedPage,
 	pocketDicePage: PocketDicePage,
 	zuluGoldPage: ZuluGoldPage,
+	sweetBonanzaPage: SweetBonanzaPage,
 } as const;
 
 export const Components = {

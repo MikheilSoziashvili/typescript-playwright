@@ -8,6 +8,7 @@ import { BookOfArabiaPage } from "./wickedgames/book-of-arabia/book-of-arabia-pa
 import { LiveBaccaratSqueezePage } from "./evolution-gaming/live-baccarat-squeeze/live-baccarat-squeeze-page";
 import { ZuluGoldPage } from "./elk-studios/zulu-gold/zulu-gold-page";
 import { CasinoGameConfig } from "@core/interfaces";
+import { SweetBonanzaPage } from "./pragmatic-play/sweet-bonanza/sweet-bonanza-page";
 
 export class CasinoGamesPageAsserter extends BaseAsserter<CasinoGamesUnifiedPage> {
 	public constructor(page: CasinoGamesUnifiedPage) {
@@ -53,6 +54,11 @@ export class CasinoGamesPageAsserter extends BaseAsserter<CasinoGamesUnifiedPage
 			case GameProvider.ELK_STUDIOS: {
 				const zuluGoldPage = gamePage as ZuluGoldPage;
 				await zuluGoldPage.assertThat().nextButtonVisible();
+				break;
+			}
+			case GameProvider.PRAGMATIC_PLAY: {
+				const sweetBonanzaPage = gamePage as SweetBonanzaPage;
+				await sweetBonanzaPage.assertThat().nextButtonVisible();
 				break;
 			}
 			default: {
@@ -107,6 +113,11 @@ export class CasinoGamesPageAsserter extends BaseAsserter<CasinoGamesUnifiedPage
 			case GameProvider.ELK_STUDIOS: {
 				const zuluGoldPage = gamePage as ZuluGoldPage;
 				await zuluGoldPage.assertThat().waitForRoundFinish();
+				break;
+			}
+			case GameProvider.PRAGMATIC_PLAY: {
+				const sweetBonanzaPage = gamePage as SweetBonanzaPage;
+				await sweetBonanzaPage.assertThat().waitForRoundFinish();
 				break;
 			}
 			default: {

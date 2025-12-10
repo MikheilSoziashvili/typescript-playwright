@@ -18,6 +18,7 @@ import {
 	BrowserSessionManager,
 	sessionAwarePage,
 } from "@core/browser-session-mngmt";
+import { SweetBonanzaPage } from "@pages/casino-games/pragmatic-play/sweet-bonanza/sweet-bonanza-page";
 
 export type GamePages = {
 	browserSessionManager: BrowserSessionManager;
@@ -35,6 +36,7 @@ export type GamePages = {
 	bookOfArabiaPage: BookOfArabiaPage;
 	liveBaccaratSqueezePage: LiveBaccaratSqueezePage;
 	zuluGoldPage: ZuluGoldPage;
+	sweetBonanzaPage: SweetBonanzaPage;
 	casinoGamesPage: CasinoGamesUnifiedPage;
 };
 
@@ -57,6 +59,7 @@ export const gamePagesFixtures = base.extend<GamePages>({
 	bookOfArabiaPage: sessionAwarePage(BookOfArabiaPage),
 	liveBaccaratSqueezePage: sessionAwarePage(LiveBaccaratSqueezePage),
 	zuluGoldPage: sessionAwarePage(ZuluGoldPage),
+	sweetBonanzaPage: sessionAwarePage(SweetBonanzaPage),
 
 	originalsPage: async (
 		{
@@ -93,6 +96,7 @@ export const gamePagesFixtures = base.extend<GamePages>({
 			bookOfArabiaPage,
 			liveBaccaratSqueezePage,
 			zuluGoldPage,
+			sweetBonanzaPage,
 		},
 		use,
 	) => {
@@ -104,6 +108,7 @@ export const gamePagesFixtures = base.extend<GamePages>({
 			bookOfArabiaPage,
 			liveBaccaratSqueezePage,
 			zuluGoldPage,
+			sweetBonanzaPage,
 		);
 		await use(casinoGames);
 	},

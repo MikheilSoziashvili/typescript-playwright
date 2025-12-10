@@ -43,6 +43,7 @@ export class CasinoGamesPageSteps extends BasePageStep<CasinoGamesUnifiedPage> {
 			case GameProvider.EVOLUTION_GAMING:
 			case GameProvider.BGAMING:
 			case GameProvider.HACKSAW_GAMING:
+			case GameProvider.PRAGMATIC_PLAY:
 				// No additional setup needed for these providers
 				break;
 			default:
