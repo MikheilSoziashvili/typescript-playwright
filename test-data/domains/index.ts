@@ -8,6 +8,7 @@ import { SokGamesDomainData } from "./sok-games-domain-data";
 import { GeoblockDomainData } from "./geoblock-domain-data";
 import { AdminWriterDomainData } from "./admin-writer-domain-data";
 import { UserWalletDomainData } from "./user-wallet-domain-data";
+import { CryptoWithdrawalDomainData } from "./crypto-withdrawal-domain-data";
 
 export const domainRegistry = {
 	originals: OriginalsDomainData,
@@ -20,4 +21,5 @@ export const domainRegistry = {
 	adminWriter: AdminWriterDomainData,
 	sokGames: SokGamesDomainData,
 	oAuthLogin: GeoblockDomainData,
+	cryptoWithdrawal: CryptoWithdrawalDomainData,
 };

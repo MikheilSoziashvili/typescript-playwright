@@ -1,4 +1,5 @@
 import { WalletModalContent } from "@constants/wallet-modal-content";
+import { WithdrawalSpeed } from "@enums/withdrawal-speeds";
 import { BaseMap } from "@pages/base/base-map";
 import { Locator, Page } from "playwright";
 
@@ -277,5 +278,25 @@ export class WalletModalMap extends BaseMap {
 
 	public networkDropdownOption(dataValue: string): Locator {
 		return this.page.locator(`li[data-value="${dataValue}"]`);
+	}
+
+	public withdrawalSpeedButton(speed: WithdrawalSpeed): Locator {
+		return this.page.locator(`button[role="tab"]:has-text("${speed}")`);
+	}
+
+	public usdWithdrawAmountInput(): Locator {
+		return this.page.getByLabel("USD to withdraw");
+	}
+
+	public withdrawAddressInput(): Locator {
+		return this.page.locator('input[type="text"][placeholder*="Address"]');
+	}
+
+	public get networkFeeAmount(): Locator {
+		return this.page
+			.locator("span", { hasText: "The network fee is approximately" })
+			.locator("..")
+			.locator("span")
+			.nth(1);
 	}
 }

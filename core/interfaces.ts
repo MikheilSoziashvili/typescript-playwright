@@ -144,3 +144,53 @@ export interface PromotionTestDataParamsV4 {
 	buttonText?: string;
 	buttonLink?: string;
 }
+
+export interface TransactionDetails {
+	id?: number;
+	user_id?: number;
+	log_type?: string;
+	delta?: number;
+	delta_in_unit?: number;
+	balance_after?: number;
+	wallet_unit?: string;
+	crypto_rate?: string;
+	log_type_detail?: string;
+	source_table?: string;
+	source_id?: string;
+	full_row?: {
+		id?: number;
+		created?: string;
+		changed?: string;
+		address?: string;
+		txid?: string;
+		amount_crypto?: number;
+		crypto_price_usd?: number;
+		paid_fee_coins?: number;
+		external_transaction_id?: string;
+		destination_tag?: string | null;
+		chainalysis_id?: string | null;
+		backend_type?: string;
+		backend_title?: string;
+		scan_id?: string | null;
+		meta?: string | null;
+		modified?: string | null;
+		nonce?: string | null;
+	};
+	amount_crypto?: number;
+	crypto_price_usd?: number;
+	paid_fee_coins?: number;
+	external_transaction_id?: string;
+	destination_tag?: string | null;
+	chainalysis_id?: string | null;
+	backend_type?: string;
+	backend_title?: string;
+	scan_id?: string | null;
+	meta?: string | null;
+	modified?: string | null;
+	nonce?: string | null;
+	fee_level?: string;
+	user_paid_fee_coins?: number;
+	paid_fee_delta_coins?: number;
+	bulk_withdrawal_id?: number | null;
+	[key: string]: unknown;
+}

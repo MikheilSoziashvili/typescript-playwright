@@ -53,6 +53,10 @@ async function enableCoreFeatures(
 				states: ALL_USER_TYPES_ENABLED,
 			},
 			{ feature: Feature.PLINKO_BANNER, states: ALL_USER_TYPES_ENABLED },
+			{
+				feature: Feature.USERS_PAY_WD_FEES,
+				states: ALL_USER_TYPES_ENABLED,
+			},
 		],
 		{ Cookie: cookie },
 	);

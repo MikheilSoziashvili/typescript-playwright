@@ -273,4 +273,29 @@ export class UserInfoTransactionsAdminPageAsserter extends BaseAsserter<UserInfo
 
 		expect(newCategory).toBe(expectedCategory);
 	}
+
+	@step("Assert transaction detail field value")
+	public async transactionDetailFieldIs(
+		fieldName: string,
+		expectedValue: unknown,
+	): Promise<void> {
+		const details = await this.gamdomPage.getTransactionDetails();
+
+		let actualValue: unknown =
+			details.full_row?.[fieldName as keyof typeof details.full_row];
+		if (actualValue === undefined) {
+			actualValue = details[fieldName];
+		}
+
+		expect(actualValue).toBe(expectedValue);
+	}
+
+	@step("Assert multiple transaction detail fields")
+	public async transactionDetailFieldsAre(
+		fields: { field: string; value: unknown }[],
+	): Promise<void> {
+		for (const { field, value } of fields) {
+			await this.transactionDetailFieldIs(field, value);
+		}
+	}
 }

@@ -69,6 +69,30 @@ export class CryptoAdminAsserter extends BaseAsserter<CryptoAdminPage> {
 		expect(cryptoAmount).toBeCloseTo(expectedAmount, 5);
 	}
 
+	@step(`Assert the coins amount value matching by transaction id`)
+	public async assertTransactionCoinsAmount(
+		gamdomApi: GamdomApi,
+		adminCookie: string,
+		transactionId: string,
+		expectedAmount: number,
+	): Promise<void> {
+		const transactions = await gamdomApi.getCryptoAdminTransactions({
+			Cookie: adminCookie,
+		});
+
+		const matched = transactions.find((trx) =>
+			trx.txid.toLowerCase().startsWith(transactionId.toLowerCase()),
+		);
+
+		const coinsAmount = matched?.amount_coins;
+
+		if (coinsAmount === undefined) {
+			throw new Error("Coins amount not found in transaction");
+		}
+
+		expect(Math.abs(coinsAmount - expectedAmount)).toBeLessThanOrEqual(20);
+	}
+
 	@step("Assert the 'Hourly Crypto Balances' table header is correct")
 	public async hourlyCryptoBalancesTableHeaderVisibleCorrect(): Promise<void> {
 		await this.checkElementsHaveText([

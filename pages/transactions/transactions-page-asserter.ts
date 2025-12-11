@@ -3,6 +3,7 @@ import { TransactionsPage } from "./transactions-page";
 import { expect } from "playwright/test";
 import { step } from "decorators/step";
 import { TransactionState } from "@enums/transaction-states";
+import { TransactionType } from "@enums/transaction-types";
 
 export class TransactionsAsserter extends BaseAsserter<TransactionsPage> {
 	public constructor(page: TransactionsPage) {
@@ -12,9 +13,11 @@ export class TransactionsAsserter extends BaseAsserter<TransactionsPage> {
 	@step("Assert transaction status is")
 	public async assertTransactionStatusIs(
 		expectedStatus: TransactionState,
+		type: TransactionType,
 	): Promise<void> {
 		const finalStatus = await this.gamdomPage.waitForTransactionStatus(
 			expectedStatus,
+			type,
 		);
 		expect(finalStatus).toBe(expectedStatus);
 	}

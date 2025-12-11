@@ -27,6 +27,21 @@ export class TransactionDetailsModal extends BasePage<TransactionDetailsModalMap
 		return this.map.depositAmountIn(cryptoCurrency).inputValue();
 	}
 
+	@step("Get withdrawal amount in USD")
+	public async getWithdrawalAmountInUsd(): Promise<string> {
+		return this.map.withdrawalAmountInUsd.inputValue();
+	}
+
+	@step("Get network transaction fee in USD")
+	public async getNetworkTransactionFee(): Promise<string> {
+		return this.map.networkTransactionFee.inputValue();
+	}
+
+	@step("Get network transaction speed")
+	public async getNetworkTransactionSpeed(): Promise<string> {
+		return this.map.networkProcessingSpeed.inputValue();
+	}
+
 	@step("Get blockchain transaction id")
 	public async getBlockchainTransactionId(): Promise<string> {
 		const href = await this.map.blockchainTransactionLink.getAttribute(

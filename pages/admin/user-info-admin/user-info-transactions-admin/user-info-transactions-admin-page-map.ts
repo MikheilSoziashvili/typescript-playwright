@@ -87,4 +87,41 @@ export class UserInfoTransactionsAdminPageMap extends BaseMap {
 	public get totalProfitCell(): Locator {
 		return this.wageredStatsTable.getByTestId("total-profit");
 	}
+
+	public getDetailsButtonInRow(row: Locator): Locator {
+		return row
+			.getByTestId("transaction-details")
+			.getByTestId("toggle-detail-icon");
+	}
+
+	public getRowsByTransactionType(type: string): Locator {
+		return this.logsTableRows.filter({
+			has: this.page
+				.getByTestId("transaction-type")
+				.filter({ hasText: type }),
+		});
+	}
+
+	public async getRowByTypeWithBalance(type: string): Promise<Locator> {
+		const rows = this.getRowsByTransactionType(type);
+		const count = await rows.count();
+
+		for (let i = 0; i < count; i++) {
+			const row = rows.nth(i);
+			const balanceCell = row.getByTestId("transaction-balance-after");
+			const balanceText = await balanceCell.textContent();
+
+			if (balanceText && balanceText.trim() !== "") {
+				return row;
+			}
+		}
+
+		throw new Error(
+			`No row found with type "${type}" that has a balance value`,
+		);
+	}
+
+	public get transactionDetailContent(): Locator {
+		return this.page.getByTestId("transaction-detail-content");
+	}
 }

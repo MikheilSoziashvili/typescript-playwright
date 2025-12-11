@@ -8,6 +8,8 @@ import { BasePageNavigationParametersType } from "@core/types/types";
 import { waitUntil } from "@core/utils/utils";
 import { step } from "decorators/step";
 import { TransactionState } from "@enums/transaction-states";
+import { TimeoutSeconds } from "@enums/timeout-seconds";
+import { TransactionType } from "@enums/transaction-types";
 
 export class TransactionsPage extends BasePage<TransactionsMap> {
 	public constructor(page: Page) {
@@ -47,7 +49,31 @@ export class TransactionsPage extends BasePage<TransactionsMap> {
 	}
 
 	@step("Get transaction status")
-	public async getTransactionStatus(): Promise<string> {
+	public async getTransactionStatus(type: TransactionType): Promise<string> {
+		await waitUntil(
+			async () => {
+				const count = await this.map.transactionStatus.count();
+				if (count !== 1) {
+					await this.page.reload();
+
+					switch (type) {
+						case TransactionType.DEPOSIT:
+							await this.openDepositsTab();
+							break;
+						case TransactionType.WITHDRAWAL:
+							await this.openWithdrawsTab();
+							break;
+					}
+				}
+				return count === 1;
+			},
+			{
+				errorMessage: "Multiple transactions are still visible",
+				intervalSeconds: TimeoutSeconds.TWO,
+				timeoutSeconds: TimeoutSeconds.SIXTY,
+			},
+		);
+
 		const status = await this.map.transactionStatus.textContent();
 		if (status === null) {
 			throw new Error("Transaction status could not be retrieved.");
@@ -58,19 +84,21 @@ export class TransactionsPage extends BasePage<TransactionsMap> {
 	@step("Wait for transaction status")
 	public async waitForTransactionStatus(
 		expectedStatus: TransactionState,
+		type: TransactionType,
 	): Promise<TransactionState> {
 		let finalStatus = TransactionState.PENDING;
 
 		await waitUntil(
 			async () => {
-				finalStatus =
-					(await this.getTransactionStatus()) as TransactionState;
+				finalStatus = (await this.getTransactionStatus(
+					type,
+				)) as TransactionState;
 				return finalStatus === expectedStatus;
 			},
 			{
 				errorMessage: `Transaction did not reach '${expectedStatus}' status in time`,
-				intervalSeconds: 5,
-				timeoutSeconds: 80,
+				intervalSeconds: TimeoutSeconds.FIVE,
+				timeoutSeconds: TimeoutSeconds.ONE_TWENTY,
 			},
 		);
 

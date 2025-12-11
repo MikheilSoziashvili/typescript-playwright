@@ -11,6 +11,7 @@ import { Cryptocurrency, CryptoTicker } from "@enums/cryptocurrencies";
 import { expect } from "@playwright/test";
 import { CountryCodeISO3166 } from "@enums/country-codes-iso3166";
 import { Toast } from "@pages/components/toast/toast";
+import { WithdrawalSpeed } from "@enums/withdrawal-speeds";
 
 export class WalletModal extends BasePage<WalletModalMap> {
 	public toast: Toast;
@@ -231,5 +232,77 @@ export class WalletModal extends BasePage<WalletModalMap> {
 	): Promise<void> {
 		await this.map.withdrawCountryDropdownOption.click();
 		await this.map.withdrawCountryDropdownOptions(country).click();
+	}
+
+	@step("Select withdrawal speed")
+	public async selectWithdrawalSpeed(speed: WithdrawalSpeed): Promise<void> {
+		await this.map.withdrawalSpeedButton(speed).click();
+	}
+
+	@step("Fill withdrawal amount")
+	public async fillWithdrawalAmount(amount: number): Promise<void> {
+		await this.map.usdWithdrawAmountInput().fill(amount.toString());
+	}
+
+	@step(
+		"Withdraw a selected crypto with given parameters depending on the cryptocurrency",
+	)
+	public async withdrawCrypto(params: {
+		cryptocurrency: Cryptocurrency | CryptoTicker;
+		address: string;
+		amount: number;
+		speed: WithdrawalSpeed;
+		network?: string;
+		destinationTag?: string;
+	}): Promise<string> {
+		const {
+			cryptocurrency,
+			address,
+			amount,
+			speed,
+			network,
+			destinationTag,
+		} = params;
+
+		await this.openWithdrawTab();
+		await this.selectPaymentMethod(cryptocurrency);
+
+		if (
+			[
+				Cryptocurrency.Tether,
+				CryptoTicker.USDT,
+				Cryptocurrency.USDC,
+				CryptoTicker.USDC,
+			].includes(cryptocurrency) &&
+			network
+		) {
+			await this.selectDepositNetwork(network);
+		}
+
+		await this.selectWithdrawalSpeed(speed);
+		await this.map.withdrawAddressInput().fill(address);
+
+		if (
+			(cryptocurrency === Cryptocurrency.Ripple ||
+				cryptocurrency === CryptoTicker.XRP) &&
+			destinationTag
+		) {
+			await this.map.cryptoDestinationTag.fill(destinationTag);
+		}
+
+		await this.fillWithdrawalAmount(amount);
+		const networkFee = await this.getNetworkFeeAmount();
+
+		await this.clickCryptoWithdrawButton();
+		return networkFee;
+	}
+
+	@step("Get network fee amount")
+	public async getNetworkFeeAmount(): Promise<string> {
+		const feeAmount = await this.map.networkFeeAmount.textContent();
+		if (!feeAmount) {
+			throw new Error("Network fee amount could not be retrieved.");
+		}
+		return feeAmount.trim();
 	}
 }

@@ -88,4 +88,20 @@ export class CryptoAdminPage extends BasePage<CryptoAdminMap> {
 			}
 		}
 	}
+
+	@step("Set user pay withdrawals")
+	public async setUserPayWd(
+		nodeTitle: string,
+		enabled: boolean,
+		currency?: string,
+	): Promise<void> {
+		const checkbox = this.map.userPayWdCheckbox(nodeTitle, currency);
+		const isChecked = await checkbox.isChecked();
+
+		if (isChecked !== enabled) {
+			await checkbox.click();
+			this.acceptDialog();
+			await this.map.saveButton(nodeTitle, currency).click();
+		}
+	}
 }

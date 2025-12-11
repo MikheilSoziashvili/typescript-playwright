@@ -39,7 +39,9 @@ export class TransactionsSteps extends BasePageStep<TransactionsPage> {
 				break;
 		}
 
-		await this.gamdomPage.assertThat().assertTransactionStatusIs(status);
+		await this.gamdomPage
+			.assertThat()
+			.assertTransactionStatusIs(status, type);
 	}
 
 	@step("Verify tip sent transaction details")

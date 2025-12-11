@@ -3,6 +3,7 @@ import { TransactionDetailsModal } from "./transaction-details-modal";
 import { expect } from "playwright/test";
 import { step } from "decorators/step";
 import { CryptoTicker } from "@enums/cryptocurrencies";
+import { sanitizeAmount } from "@support/regex-patterns";
 
 export class TransactionDetailsModalAsserter extends BaseAsserter<TransactionDetailsModal> {
 	public constructor(page: TransactionDetailsModal) {
@@ -18,5 +19,40 @@ export class TransactionDetailsModalAsserter extends BaseAsserter<TransactionDet
 			crypto,
 		);
 		expect(parseFloat(actualValue)).toBe(expectedValue);
+	}
+
+	@step("Assert withdrawal amount in USD")
+	public async withdrawalAmountInUsdIs(expectedValue: number): Promise<void> {
+		const actualValue = await this.gamdomPage.getWithdrawalAmountInUsd();
+		const cleanedValue = actualValue.replace(sanitizeAmount, "");
+		expect(parseFloat(cleanedValue)).toBeCloseTo(expectedValue, 2);
+	}
+
+	@step("Assert network transaction fee amount")
+	public async networkTransactionFeeAmountIs(
+		expectedValue: string,
+	): Promise<void> {
+		const actualValue = await this.gamdomPage.getNetworkTransactionFee();
+		const cleanedValue = actualValue.replace(sanitizeAmount, "");
+		expect(parseFloat(cleanedValue)).toBe(parseFloat(expectedValue));
+	}
+
+	@step("Assert network transaction speed")
+	public async networkTransactionSpeedIs(
+		expectedValue: string,
+	): Promise<void> {
+		const actualValue = await this.gamdomPage.getNetworkTransactionSpeed();
+		expect(actualValue).toBe(expectedValue);
+	}
+
+	@step("Assert withdrawal details")
+	public async withdrawalTransactionDetailsAre(
+		amountInUsd: number,
+		networkFee: string,
+		transactionSpeed: string,
+	): Promise<void> {
+		await this.withdrawalAmountInUsdIs(amountInUsd);
+		await this.networkTransactionFeeAmountIs(networkFee);
+		await this.networkTransactionSpeedIs(transactionSpeed);
 	}
 }

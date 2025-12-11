@@ -15,6 +15,18 @@ export class TransactionDetailsModalMap extends BaseMap {
 			.locator("~ div input");
 	}
 
+	public get withdrawalAmountInUsd(): Locator {
+		return this.page.getByLabel("Withdrawal Amount", { exact: true });
+	}
+
+	public get networkTransactionFee(): Locator {
+		return this.page.getByLabel("Network Transaction Fee");
+	}
+
+	public get networkProcessingSpeed(): Locator {
+		return this.page.getByLabel("Network Processing Spee");
+	}
+
 	public get blockchainTransactionLink(): Locator {
 		return this.page.locator('a:has-text("Blockchain Transaction")');
 	}

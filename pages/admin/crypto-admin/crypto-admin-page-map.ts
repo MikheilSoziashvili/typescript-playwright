@@ -132,4 +132,21 @@ export class CryptoAdminMap extends BaseMap {
 			[HourlyCryptoBalancesColumn.TIME]: 5,
 		};
 	}
+
+	private getRow(nodeTitle: string, currency?: string): Locator {
+		const row = this.page.locator("tr").filter({ hasText: nodeTitle });
+		return currency ? row.filter({ hasText: currency }) : row;
+	}
+
+	public userPayWdCheckbox(nodeTitle: string, currency?: string): Locator {
+		return this.getRow(nodeTitle, currency)
+			.locator('input[type="checkbox"]')
+			.first();
+	}
+
+	public saveButton(nodeTitle: string, currency?: string): Locator {
+		return this.getRow(nodeTitle, currency)
+			.locator('button:has-text("Save")')
+			.first();
+	}
 }

@@ -64,6 +64,8 @@ export const predefined = {
 	},
 	ethAmountToDeposit: {
 		amountToDeposit: "0.0002",
+		amountToWithdraw: 0.3,
+		withdrawalAddress: "0x88190Ef584BD63E320693133f01c0cfcdA24bB8e",
 	},
 	solAmountToDeposit: {
 		amountToDeposit: "0.002",

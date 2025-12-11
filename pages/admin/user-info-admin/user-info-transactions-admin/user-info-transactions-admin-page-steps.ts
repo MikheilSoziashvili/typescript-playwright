@@ -2,6 +2,9 @@ import { BasePageStep } from "@pages/base/base-page-step";
 import { UserInfoTransactionsAdminPage } from "./user-info-transactions-admin-page";
 import { LogType } from "@enums/log-types";
 import { step } from "decorators/step";
+import { TransactionDetailField } from "@enums/admin/transaction-details-fields";
+import { TransactionType } from "@enums/transaction-types";
+import { FeeLevel } from "fireblocks-sdk";
 
 export class UserInfoTransactionsAdminPageSteps extends BasePageStep<UserInfoTransactionsAdminPage> {
 	public constructor(gamdomPage: UserInfoTransactionsAdminPage) {
@@ -40,5 +43,22 @@ export class UserInfoTransactionsAdminPageSteps extends BasePageStep<UserInfoTra
 	public async fetchStatsCalculationsData(): Promise<void> {
 		await this.gamdomPage.checkStatsCalculationBox();
 		await this.gamdomPage.clickFetchData();
+	}
+
+	@step("Fetch data for a record with balance and verify fee level")
+	public async fetchDataForRecordWithBalanceAndVerifyFeeLevel(
+		transactionType: TransactionType,
+		expectedFeeLevel: FeeLevel,
+	): Promise<void> {
+		await this.gamdomPage.clickFetchData();
+		await this.gamdomPage.clickDetailsForTransactionWithBalance(
+			transactionType,
+		);
+		await this.gamdomPage
+			.assertThat()
+			.transactionDetailFieldIs(
+				TransactionDetailField.FEE_LEVEL,
+				expectedFeeLevel,
+			);
 	}
 }
