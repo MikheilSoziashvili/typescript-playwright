@@ -17,6 +17,8 @@ export class FaqPageMap extends BaseMap {
 	}
 
 	public get affiliateUnderCodeLinkButtonLocator(): Locator {
-		return this.affiliateCodeRegisterContainer.locator("a[href='#']");
+		return this.page
+			.getByTestId("text-block-wrapper-affiliate-code-2")
+			.locator("[class*='FAQ-styled__LinkText']");
 	}
 }
