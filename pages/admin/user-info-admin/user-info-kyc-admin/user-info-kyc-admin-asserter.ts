@@ -23,10 +23,16 @@ export class UserInfoKycAdminPageAsserter extends BaseAsserter<UserInfoKycAdminP
 	public async kycActionButtonIsVisible(
 		level: KycLevels,
 		buttonName: KycAdminActions,
+		secondButtonName?: KycAdminActions,
 	): Promise<void> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.kycActionButton(level, buttonName),
 		]);
+		if (secondButtonName) {
+			await this.checkElementsAreVisible([
+				this.gamdomPage.map.kycActionButton(level, secondButtonName),
+			]);
+		}
 	}
 
 	@step("Verify KYC action button and status are visible")
@@ -34,8 +40,27 @@ export class UserInfoKycAdminPageAsserter extends BaseAsserter<UserInfoKycAdminP
 		level: KycLevels,
 		buttonName: KycAdminActions,
 		expectedStatus: string,
+		secondButtonName?: KycAdminActions,
 	): Promise<void> {
-		await this.kycActionButtonIsVisible(level, buttonName);
+		await this.kycActionButtonIsVisible(
+			level,
+			buttonName,
+			secondButtonName,
+		);
+		await this.kycLevelStatusIs(level, expectedStatus);
+	}
+
+	@step("Verify KYC action buttons and status are visible")
+	public async kycActionButtonsAndStatusAreVisible(
+		level: KycLevels,
+		buttonNames: KycAdminActions[],
+		expectedStatus: string,
+	): Promise<void> {
+		for (const buttonName of buttonNames) {
+			await this.checkElementsAreVisible([
+				this.gamdomPage.map.kycActionButton(level, buttonName),
+			]);
+		}
 		await this.kycLevelStatusIs(level, expectedStatus);
 	}
 
@@ -52,6 +77,17 @@ export class UserInfoKycAdminPageAsserter extends BaseAsserter<UserInfoKycAdminP
 		}
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.kycActionButton(level, buttonName),
+		]);
+	}
+
+	@step("Verify level 3 submitted form fields and data are visible")
+	public async level3SubmittedFormFieldsAndDataAreVisible(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.rejectionReasonInput,
+			this.gamdomPage.map.proofOfFundsField,
+			this.gamdomPage.map.proofOfFundsImage,
+			this.gamdomPage.map.approveDataButton,
+			this.gamdomPage.map.rejectDataButton,
 		]);
 	}
 }

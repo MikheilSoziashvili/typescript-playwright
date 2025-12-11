@@ -5,17 +5,19 @@ import { ToastTitle } from "@enums/toast-titles";
 import {
 	KycAdminActions,
 	kycAdminStatus,
+	KycLevel3ReviewAction,
 	KycLevels,
 	ProofOfFunds,
 	VerificationFormType as VerificationFormTypeEnum,
 	VerificationTabType,
 } from "@enums/verification-enums";
-import { getISODate } from "@core/utils/utils";
+import { generateRandomString, getISODate } from "@core/utils/utils";
 import {
 	FieldValidationScenario,
 	FieldValidationTestScenario,
 	KycAdminActionConfig,
 	kycAdminActionsScenario,
+	KycLevel3ReviewActionScenario,
 	VerificationFormType,
 } from "test-data/interfaces/domain";
 import { VerificationPage } from "@pages/verification/verification-page";
@@ -23,6 +25,7 @@ import { faker } from "@faker-js/faker";
 import { Toast } from "@pages/components/toast/toast";
 import { WalletModal } from "@pages/modals/wallet/wallet-modal";
 import { WithdrawalStatus } from "@enums/admin/withdrawal-status";
+import { UserInfoKycAdminPageSteps } from "@pages/admin/user-info-admin/user-info-kyc-admin/user-info-kyc-steps";
 
 // ============================================================================
 // CONSTANTS - Form Field Names
@@ -76,6 +79,11 @@ export const RANDOM_OPTION = "Random Option";
  * All available Proof of Funds options
  */
 export const PROOF_OF_FUNDS_OPTIONS = Object.values(ProofOfFunds);
+
+export const REJECTION_REASON_TEXT = generateRandomString({
+	prefix: "Rejected_",
+	length: 10,
+});
 
 // ============================================================================
 // CONSTANTS - Validation Inputs
@@ -556,6 +564,41 @@ export class VerificationDomainData {
 						.kycLevelThreeVerificationHeaderIsVisible(),
 			},
 			revoke: this.createStandardRevokeAction(),
+		},
+	];
+
+	// ========================================================================
+	// KYC LEVEL 3 REVIEW ACTIONS SCENARIOS
+	// ========================================================================
+
+	/**
+	 * KYC Level 3 admin review actions configuration
+	 */
+	public readonly kycLevel3ReviewActions: KycLevel3ReviewActionScenario[] = [
+		{
+			testId: "ENG-8851",
+			action: KycLevel3ReviewAction.APPROVE,
+			approveOrRejectSubmission: (
+				steps: UserInfoKycAdminPageSteps,
+			): Promise<void> => steps.openAndApproveLevel3Submission(),
+			expectedToastTitle: ToastTitle.SUCCESS,
+			expectedToastSubTitle: ToastSubTitle.DOCUMENTS_APPROVED,
+			expectedStatus: kycAdminStatus.APPROVED,
+			expectedButtons: [
+				KycAdminActions.REVIEW_DATA,
+				KycAdminActions.RETRIGGER,
+			],
+		},
+		{
+			testId: "ENG-8854",
+			action: KycLevel3ReviewAction.REJECT,
+			approveOrRejectSubmission: (
+				steps: UserInfoKycAdminPageSteps,
+			): Promise<void> => steps.openAndRejectLevel3Submission(),
+			expectedToastTitle: ToastTitle.SUCCESS,
+			expectedToastSubTitle: ToastSubTitle.DOCUMENTS_REJECTED,
+			expectedStatus: kycAdminStatus.REJECTED,
+			expectedButtons: [KycAdminActions.REVIEW_DATA],
 		},
 	];
 }

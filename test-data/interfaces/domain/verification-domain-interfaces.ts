@@ -6,6 +6,7 @@ import { ToastTitle } from "@enums/toast-titles";
 import {
 	KycAdminActions,
 	kycAdminStatus,
+	KycLevel3ReviewAction,
 	KycLevels,
 	VerificationFormType as VerificationFormTypeEnum,
 	VerificationTabType,
@@ -13,6 +14,7 @@ import {
 import { Toast } from "@pages/components/toast/toast";
 import { WalletModal } from "@pages/modals/wallet/wallet-modal";
 import { VerificationPage } from "@pages/verification/verification-page";
+import { UserInfoKycAdminPageSteps } from "@pages/admin/user-info-admin/user-info-kyc-admin/user-info-kyc-steps";
 
 export interface VerificationFormType {
 	testId: string;
@@ -60,4 +62,19 @@ export interface kycAdminActionsScenario {
 	kycLevel: KycLevels;
 	trigger: KycAdminActionConfig;
 	revoke: KycAdminActionConfig;
+}
+
+/**
+ * Configuration for KYC Level 3 review actions (approve/reject)
+ */
+export interface KycLevel3ReviewActionScenario {
+	testId: string;
+	action: KycLevel3ReviewAction;
+	approveOrRejectSubmission: (
+		steps: UserInfoKycAdminPageSteps,
+	) => Promise<void>;
+	expectedToastTitle: ToastTitle;
+	expectedToastSubTitle: ToastSubTitle;
+	expectedStatus: kycAdminStatus;
+	expectedButtons: KycAdminActions[];
 }

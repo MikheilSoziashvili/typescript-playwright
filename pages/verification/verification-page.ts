@@ -5,7 +5,11 @@ import { Locator, Page } from "@playwright/test";
 import { VerificationPageAsserter } from "./verification-page-asserter";
 import { VerificationPageMap } from "./verification-page-map";
 import { VerificationPageSteps } from "./verification-page-steps";
-import { getItemsAttribute, getRandomIndex } from "@core/utils/utils";
+import {
+	excludeHeaderFromHost,
+	getItemsAttribute,
+	getRandomIndex,
+} from "@core/utils/utils";
 import { Attributes } from "@enums/playwright/htmlAttributes";
 import { step } from "decorators/step";
 import { logger } from "@logger/logger";
@@ -266,13 +270,22 @@ export class VerificationPage extends BasePage<VerificationPageMap> {
 
 	@step("Fill in Level 3 verification form")
 	public async fillInKycLevel3Form(option: ProofOfFunds): Promise<void> {
+		await excludeHeaderFromHost(
+			this.page,
+			"/s3*.amazonaws.com/",
+			"authorization",
+		);
+
 		await this.map.proofOfFundsDropdown.click();
 		await this.map.proofOfFundsOption(option).click();
+
 		const [fileChooser] = await Promise.all([
 			this.page.waitForEvent("filechooser"),
 			this.map.uploadProofOfFundsButton.click(),
 		]);
+
 		await fileChooser.setFiles(KYC_LEVEL_3_FILE_PATH);
+		await this.assertThat().fileIsUploaded();
 		await this.map.verifyCheckbox.click();
 		await this.map.submitButton.click();
 	}

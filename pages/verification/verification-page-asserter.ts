@@ -119,4 +119,9 @@ export class VerificationPageAsserter extends BaseAsserter<VerificationPage> {
 		await notification.assertThat().titleIs(notificationTitle);
 		await notification.assertThat().subTitleIs(notificationSubTitle);
 	}
+
+	@step("Verify file is uploaded")
+	public async fileIsUploaded(): Promise<void> {
+		await this.checkElementsAreVisible([this.gamdomPage.map.uploadedFile]);
+	}
 }

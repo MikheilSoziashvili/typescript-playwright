@@ -136,6 +136,10 @@ export class VerificationPageMap extends BaseMap {
 		return this.page.getByText("Choose file to upload");
 	}
 
+	public get uploadedFile(): Locator {
+		return this.page.locator('img[alt="file"]');
+	}
+
 	public get levelThreeVerificationInProgressMessage(): Locator {
 		return this.page.getByText(
 			"Verification in progress. Please wait for the verification to complete.",

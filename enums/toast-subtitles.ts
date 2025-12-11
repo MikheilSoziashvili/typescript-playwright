@@ -50,4 +50,6 @@ export enum ToastSubTitle {
 	HIDEN_DETAILS_ENABLED = "Hidden details mode enabled!",
 	ARTICLE_CREATED_SUCCESSFULLY = "Article created successfully",
 	USER_DOES_NOT_EXIST = "User does not exist",
+	DOCUMENTS_APPROVED = "Documents approved successfully",
+	DOCUMENTS_REJECTED = "Documents rejected successfully",
 }

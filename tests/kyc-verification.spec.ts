@@ -1,5 +1,4 @@
 import { testDetails } from "@core/helpers/test-details-helper";
-import { setAuthenticationCookies } from "@core/utils/utils";
 import { UserInfoTabs } from "@enums/admin/user-info-tabs";
 import { Cryptocurrency } from "@enums/cryptocurrencies";
 import { CsvFilesName } from "@enums/csv-file-name";
@@ -14,7 +13,9 @@ import { ToastTitle } from "@enums/toast-titles";
 import {
 	InitialVerificationStatus,
 	KycAdminActions,
+	kycAdminStatus,
 	KycLevels,
+	ProofOfFunds,
 } from "@enums/verification-enums";
 import { test } from "@fixtures/fixtures";
 import { PROOF_OF_FUNDS_OPTIONS } from "test-data/domains/verification-domain-data";
@@ -26,18 +27,16 @@ test.describe(
 	() => {
 		const verificationTestData = testData().fromDomain().verification;
 
-		test.beforeEach(
-			async ({ page, gamdomApiDbFacade, verificationPage }) => {
-				const { cookie } =
-					await gamdomApiDbFacade.createSingleUserDbAndAuth();
-				await setAuthenticationCookies(page, cookie);
+		test.beforeEach(async ({ browserSessionManager, verificationPage }) => {
+			await browserSessionManager.loginAs(TestUserRole.REGULAR, {
+				reuseContext: true,
+			});
 
-				await verificationPage.navigate();
-				await verificationPage
-					.assertThat()
-					.verificationPageTitleAndTabsAreVisible();
-			},
-		);
+			await verificationPage.navigate();
+			await verificationPage
+				.assertThat()
+				.verificationPageTitleAndTabsAreVisible();
+		});
 
 		verificationTestData.level1VerificationScenarios.forEach(
 			({
@@ -425,36 +424,42 @@ test.describe(
 	"KYC Level 3 Verification",
 	testDetails().withTags(JiraComponent.VERIFICATION).apply(),
 	() => {
+		test.beforeEach(async ({ browserSessionManager }) => {
+			const adminUser = await browserSessionManager.loginAs(
+				TestUserRole.SUPERADMIN,
+				{ reuseContext: true },
+			);
+			const regularUser = await browserSessionManager.loginAs(
+				TestUserRole.REGULAR,
+			);
+
+			await adminUser.pages.userInfoAdminPage
+				.steps()
+				.navigateAndShowUserDetails(
+					regularUser.getAuthenticatedUser().user.username,
+				);
+			await adminUser.pages.userInfoAdminPage.clickUserInfoTab(
+				UserInfoTabs.KYC,
+			);
+			await adminUser.pages.userInfoKycAdminPage.selectKycAction(
+				KycLevels.LEVEL_3,
+				KycAdminActions.TRIGGER,
+			);
+
+			await regularUser.pages.verificationPage.navigate();
+			await regularUser.pages.verificationPage
+				.assertThat()
+				.kycLevelThreeVerificationHeaderIsVisible();
+		});
+
 		PROOF_OF_FUNDS_OPTIONS.forEach((proofOfFund) =>
 			test(
 				`[ENG-8737] Submit KYC Level 3 - ${proofOfFund}`,
 				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
 				async ({ browserSessionManager }) => {
-					const adminUser = await browserSessionManager.loginAs(
-						TestUserRole.SUPERADMIN,
-						{ reuseContext: true },
-					);
 					const regularUser = await browserSessionManager.loginAs(
 						TestUserRole.REGULAR,
 					);
-
-					await adminUser.pages.userInfoAdminPage
-						.steps()
-						.navigateAndShowUserDetails(
-							regularUser.getAuthenticatedUser().user.username,
-						);
-					await adminUser.pages.userInfoAdminPage.clickUserInfoTab(
-						UserInfoTabs.KYC,
-					);
-					await adminUser.pages.userInfoKycAdminPage.selectKycAction(
-						KycLevels.LEVEL_3,
-						KycAdminActions.TRIGGER,
-					);
-
-					await regularUser.pages.verificationPage.navigate();
-					await regularUser.pages.verificationPage
-						.assertThat()
-						.kycLevelThreeVerificationHeaderIsVisible();
 					await regularUser.pages.verificationPage.fillInKycLevel3Form(
 						proofOfFund,
 					);
@@ -463,6 +468,67 @@ test.describe(
 						.kycLevelThreeVerificationInProgressMessageIsVisible();
 				},
 			),
+		);
+
+		const verificationTestData = testData().fromDomain().verification;
+
+		verificationTestData.kycLevel3ReviewActions.forEach(
+			({
+				testId,
+				action,
+				approveOrRejectSubmission,
+				expectedToastTitle,
+				expectedToastSubTitle,
+				expectedStatus,
+				expectedButtons,
+			}) =>
+				test(
+					`[${testId}] [ENG-8674] ${action} KYC Level 3 in Admin`,
+					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+					async ({ browserSessionManager }) => {
+						const adminUser = await browserSessionManager.loginAs(
+							TestUserRole.SUPERADMIN,
+							{ reuseContext: true },
+						);
+						const regularUser = await browserSessionManager.loginAs(
+							TestUserRole.REGULAR,
+						);
+						await regularUser.pages.verificationPage.fillInKycLevel3Form(
+							ProofOfFunds.BANK_STATEMENT,
+						);
+						await regularUser.pages.verificationPage
+							.assertThat()
+							.kycLevelThreeVerificationInProgressMessageIsVisible();
+
+						await adminUser.pages.userInfoKycAdminPage.refresh();
+						await adminUser.pages.userInfoKycAdminPage
+							.assertThat()
+							.kycActionButtonAndStatusAreVisible(
+								KycLevels.LEVEL_3,
+								KycAdminActions.REVIEW_DATA,
+								kycAdminStatus.NEEDS_REVIEW,
+							);
+
+						await approveOrRejectSubmission(
+							adminUser.pages.userInfoKycAdminPage.steps(),
+						);
+
+						await adminUser.pages.toast
+							.assertThat()
+							.toastMessageIs(
+								expectedToastTitle,
+								expectedToastSubTitle,
+							);
+
+						await adminUser.pages.userInfoKycAdminPage
+							.assertThat()
+							.kycActionButtonsAndStatusAreVisible(
+								KycLevels.LEVEL_3,
+								expectedButtons,
+								expectedStatus,
+							);
+					},
+				),
 		);
 	},
 );

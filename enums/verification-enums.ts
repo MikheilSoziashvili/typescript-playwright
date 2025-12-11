@@ -18,6 +18,8 @@ export enum KycLevels {
 export enum KycAdminActions {
 	TRIGGER = "Trigger",
 	REVOKE_TRIGGER = "Revoke Trigger",
+	REVIEW_DATA = "Review Data",
+	RETRIGGER = "Retrigger",
 }
 
 export enum InitialVerificationStatus {
@@ -33,10 +35,18 @@ export enum VerificationStatus {
 export enum kycAdminStatus {
 	NOT_TRIGGERED = "Not Triggered",
 	IN_PROGRESS = "In Progress",
+	NEEDS_REVIEW = "Needs Review",
+	APPROVED = "Approved",
+	REJECTED = "Rejected",
 }
 
 export enum SubmitSessionRequestStatus {
 	SUBMITTED = "submitted",
+}
+
+export enum KycLevel3ReviewAction {
+	APPROVE = "Approve",
+	REJECT = "Reject",
 }
 
 export enum ProofOfFunds {
