@@ -10,6 +10,7 @@ import {
 	MailinatorGenerator,
 	PromoCampaignCodesGenerator,
 	PromoCodesGenerators,
+	PromotionTitlesGenerator,
 	PromotionTitlesV4Generator,
 } from "test-data/interfaces/random";
 import { PredefinedData, PredefinedRandomData } from "test-data/types";
@@ -120,6 +121,22 @@ export class RandomDataSourceGenerator {
 				generateRandomString({
 					prefix:
 						`${category}_${subCategory}_${label}_`.toLowerCase() +
+						"promotion_",
+					length: 5,
+				}),
+		};
+	}
+
+	public get promotionTitles(): PromotionTitlesGenerator {
+		return {
+			promotionTitle: (
+				category: string,
+				subCategory: string,
+				isForVip: string,
+			) =>
+				generateRandomString({
+					prefix:
+						`${category}_${subCategory}_${isForVip}_`.toLowerCase() +
 						"promotion_",
 					length: 5,
 				}),

@@ -27,6 +27,7 @@ import { TestTag } from "@enums/test-tags";
 import { TestUserRole } from "@enums/test-user-roles";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
+import { VipUserStatus } from "@enums/vip-user-statuses";
 import { test } from "@fixtures/fixtures";
 import { PromotionsPage } from "@pages/promotions/promotions-page";
 import { isCI } from "configuration";
@@ -466,61 +467,83 @@ test.describe(
 						.withJiraBugTickets("8964")
 						.apply(),
 					async ({
-						promotionAdminPage,
-						promotionsModal,
-						gamdomApiDbFacade,
-						promotionsPage,
+						browserSessionManager,
+						testDataRandom,
+						testDataObject,
+						gamdomDb,
 					}) => {
 						test.fixme(isCI);
 
-						await gamdomApiDbFacade.createSingleUserDbAndAuth({
-							tags: UserTags.PromotionAdmin,
-							userClass: UserClasses.Admin,
-							emailVerified: true,
-							useGamdomEmailDomain: true,
-						});
-						promotionName = generateRandomString({
-							prefix:
-								`${combination.category}_${combination.subCategory}_${combination.isForVip}`.toLowerCase() +
-								"_promotion_",
-							length: 5,
-						});
+						const promotionsAdminUser =
+							await browserSessionManager.loginAs(
+								TestUserRole.ADMIN_PROMOTIONS_ADMIN,
+								{ reuseContext: true },
+							);
+
+						const regular = await browserSessionManager.loginAs(
+							TestUserRole.REGULAR,
+						);
+
+						await gamdomDb.insertVipUser(
+							regular.getAuthenticatedUser().user.userId,
+							promotionsAdminUser.getAuthenticatedUser().user
+								.userId,
+							VipUserStatus.BASIC_VIP,
+						);
+
+						const promotionName =
+							testDataRandom.data.promotionTitles.promotionTitle(
+								combination.category,
+								combination.subCategory,
+								combination.isForVip,
+							);
+
 						promotionsToDelete.push(promotionName);
 
-						const promotionTestData = new PromotionTestData({
-							title: promotionName,
-							customUrl: generateCustomUrl(promotionName),
-							isForVip:
-								PromotionIsVipCategories[combination.isForVip],
-							promotionCategory:
-								PromotionCategories[combination.category],
-							promotionSubCategory:
-								PromotionSubStatuses[combination.subCategory],
-							promotionStartDate: formatDate(3),
-							promotionEndDate: formatDate(5),
-							promotionStartTime: PromotionTime.START_TIME,
-							promotionEndTime: PromotionTime.END_TIME,
-						});
+						const promotionTestData =
+							testDataObject.promotions.build({
+								title: promotionName,
+								customUrl: generateCustomUrl(promotionName),
+								isForVip:
+									PromotionIsVipCategories[
+										combination.isForVip
+									],
+								promotionCategory:
+									PromotionCategories[combination.category],
+								promotionSubCategory:
+									PromotionSubStatuses[
+										combination.subCategory
+									],
+								promotionStartDate: formatDate(3),
+								promotionEndDate: formatDate(5),
+								promotionStartTime: PromotionTime.START_TIME,
+								promotionEndTime: PromotionTime.END_TIME,
+							});
 
-						await promotionAdminPage.navigate();
-						await promotionAdminPage.clickCreateNewPromotionButton();
-						await promotionsModal
+						await promotionsAdminUser.pages.promotionAdminPage.navigate();
+						await promotionsAdminUser.pages.promotionAdminPage.clickCreateNewPromotionButton();
+						await promotionsAdminUser.pages.promotionsModal
 							.steps()
 							.fillPromotionSuccessfully(promotionTestData);
 
-						const expectedPromotionData = new PromotionTestData({
-							...promotionTestData,
-							isForVip:
-								PromotionIsVipCategories[combination.isForVip],
-							promotionCategory:
-								PromotionCategories[combination.category],
-							promotionSubCategory:
-								PromotionSubStatuses[combination.subCategory],
-							promotionStartDate: formatDate(1),
-							promotionEndDate: formatDate(3),
-							promotionStartTime: PromotionTime.DEFAULT_TIME,
-							promotionEndTime: PromotionTime.DEFAULT_TIME,
-						});
+						const expectedPromotionData =
+							testDataObject.promotions.build({
+								...promotionTestData,
+								isForVip:
+									PromotionIsVipCategories[
+										combination.isForVip
+									],
+								promotionCategory:
+									PromotionCategories[combination.category],
+								promotionSubCategory:
+									PromotionSubStatuses[
+										combination.subCategory
+									],
+								promotionStartDate: formatDate(1),
+								promotionEndDate: formatDate(3),
+								promotionStartTime: PromotionTime.DEFAULT_TIME,
+								promotionEndTime: PromotionTime.DEFAULT_TIME,
+							});
 
 						const duplicatedPromotionTitle = `${expectedPromotionData.title} (Copy)`;
 						const duplicatedPromotionTitleSecond = `${duplicatedPromotionTitle} (Copy)`;
@@ -534,16 +557,16 @@ test.describe(
 						const duplicatedPromotionUrl = `${cleanedCustomUrl}-copy`;
 						const duplicatedPromotionUrlSecond = `${duplicatedPromotionUrl}-copy`;
 
-						await promotionAdminPage
+						await promotionsAdminUser.pages.promotionAdminPage
 							.steps()
 							.checkPromotionIsDisplayedInPromotionsTable(
 								promotionName,
 							);
 
-						await promotionAdminPage.clickDuplicatePromotionButton(
+						await promotionsAdminUser.pages.promotionAdminPage.clickDuplicatePromotionButton(
 							promotionName,
 						);
-						await promotionsModal
+						await promotionsAdminUser.pages.promotionsModal
 							.assertThat()
 							.duplicatePromotionHasLoaded(
 								duplicatedPromotionTitle,
@@ -551,19 +574,19 @@ test.describe(
 								PromotionTime.DEFAULT_TIME,
 								expectedPromotionData,
 							);
-						await promotionsModal.clickSaveButton();
+						await promotionsAdminUser.pages.promotionsModal.clickSaveButton();
 
-						await promotionAdminPage
+						await promotionsAdminUser.pages.promotionAdminPage
 							.steps()
 							.checkPromotionIsDisplayedInPromotionsTable(
 								duplicatedPromotionTitle,
 							);
 
-						await promotionAdminPage.clickDuplicatePromotionButton(
+						await promotionsAdminUser.pages.promotionAdminPage.clickDuplicatePromotionButton(
 							duplicatedPromotionTitle,
 						);
 
-						await promotionsModal
+						await promotionsAdminUser.pages.promotionsModal
 							.assertThat()
 							.duplicatePromotionHasLoaded(
 								duplicatedPromotionTitleSecond,
@@ -571,23 +594,21 @@ test.describe(
 								PromotionTime.DEFAULT_TIME,
 								expectedPromotionData,
 							);
-						await promotionsModal.clickSaveButton();
+						await promotionsAdminUser.pages.promotionsModal.clickSaveButton();
 
-						await promotionsPage
+						await promotionsAdminUser.pages.promotionsPage
 							.steps()
 							.activateAndSetVisibleDuplicatedPromotions(
 								duplicatedPromotionTitle,
 								duplicatedPromotionTitleSecond,
 							);
 
-						await promotionsPage.navigate();
-						await promotionsPage
-							.assertThat()
-							.promotionsPageIsLoaded();
-
-						await promotionsPage
+						await promotionsAdminUser.pages.promotionsPage
 							.steps()
-							.verifyDuplicatedPromotionsAreDisplayed(
+							.verifyDuplicatedPromotionsVisibilityForCorrectUser(
+								PromotionIsVipCategories[combination.isForVip],
+								regular.pages.promotionsPage,
+								promotionsAdminUser.pages.promotionsPage,
 								duplicatedPromotionTitle,
 								duplicatedPromotionTitleSecond,
 							);

@@ -35,3 +35,11 @@ export interface PromotionTitlesV4Generator {
 		label: string,
 	): string;
 }
+
+export interface PromotionTitlesGenerator {
+	promotionTitle(
+		category: string,
+		subCategory: string,
+		label: string,
+	): string;
+}

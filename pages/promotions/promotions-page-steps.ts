@@ -4,6 +4,7 @@ import { step } from "decorators/step";
 import { GamdomDb } from "database/gamdom-db";
 import { PromotionLabelsV4 } from "@enums/promotion-labels";
 import { getISODate } from "@core/utils/utils";
+import { PromotionIsVipCategories } from "@enums/promotion-is-vip-categories";
 
 export class PromotionsPageSteps extends BasePageStep<PromotionsPage> {
 	private readonly gamdomDb: GamdomDb;
@@ -40,6 +41,30 @@ export class PromotionsPageSteps extends BasePageStep<PromotionsPage> {
 				.assertThat()
 				.promotionIsDisplayedInPromotionsPage(title);
 		}
+	}
+
+	@step("Verify duplicated promotions visibility for correct user")
+	public async verifyDuplicatedPromotionsVisibilityForCorrectUser(
+		isForVip: PromotionIsVipCategories,
+		regularUserPage: PromotionsPage,
+		adminUserPage: PromotionsPage,
+		duplicatedPromotionTitle: string,
+		duplicatedPromotionTitleSecond: string,
+	): Promise<void> {
+		const pageToUse =
+			isForVip === PromotionIsVipCategories.FOR_VIP
+				? regularUserPage
+				: adminUserPage;
+
+		await pageToUse.navigate();
+		await pageToUse.assertThat().promotionsPageIsLoaded();
+
+		await pageToUse
+			.steps()
+			.verifyDuplicatedPromotionsAreDisplayed(
+				duplicatedPromotionTitle,
+				duplicatedPromotionTitleSecond,
+			);
 	}
 
 	@step("Insert helper promotion for archived scenarios")
