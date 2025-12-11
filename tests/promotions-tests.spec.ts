@@ -24,12 +24,14 @@ import { PromotionSubStatuses } from "@enums/promotion-sub-categories";
 import { PromotionTime } from "@enums/promotion-time";
 import { PromotionType } from "@enums/promotion-types";
 import { TestTag } from "@enums/test-tags";
+import { TestUserRole } from "@enums/test-user-roles";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { test } from "@fixtures/fixtures";
 import { PromotionsPage } from "@pages/promotions/promotions-page";
 import { isCI } from "configuration";
 import { GamdomDb } from "database/gamdom-db";
+import { testData } from "test-data/test-data-manager";
 
 type PromotionInsertMethod = (
 	gamdomDb: GamdomDb,
@@ -772,6 +774,119 @@ test.describe(
 							},
 						);
 					});
+				},
+			);
+		});
+	},
+);
+
+const promotionCombinationsV4 = testData().fromCsvParsed({
+	file: CsvFilesName.PROMOTION_COMBINATIONS_FOR_LABEL_DISPLAY_V4,
+});
+
+test.describe(
+	"Promotions tests - v4",
+	testDetails().withTags(TestTag.V4, JiraComponent.PROMOTIONS).apply(),
+	() => {
+		let promotionsToDelete: string[] = [];
+
+		test.afterEach(async ({ gamdomDb }) => {
+			await gamdomDb.deletePromotionByTitle(promotionsToDelete);
+			promotionsToDelete = [];
+		});
+
+		promotionCombinationsV4.forEach((combination) => {
+			test(
+				`[ENG-11500] Verify promotions card labels - Promotion Category: ${combination.category} - Promotion Subcategory: ${combination.subcategory} - Label: ${combination.label}`,
+				testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+				async ({
+					browserSessionManager,
+					testDataRandom,
+					gamdomDb,
+					testDataObject,
+				}) => {
+					const promotionsAdminUser =
+						await browserSessionManager.loginAs(
+							TestUserRole.ADMIN_PROMOTIONS_ADMIN,
+							{ reuseContext: true },
+						);
+
+					const helperTitle =
+						testDataRandom.data.promotionTitlesV4.helperPromotionTitle();
+					promotionsToDelete.push(helperTitle);
+
+					const adminUserId =
+						promotionsAdminUser.getAuthenticatedUser().user.userId;
+					await promotionsAdminUser.pages.promotionsPage
+						.steps()
+						.insertHelperPromotionV4(
+							helperTitle,
+							adminUserId,
+							combination.label,
+						);
+
+					const promotionName =
+						testDataRandom.data.promotionTitlesV4.promotionTitle(
+							combination.category,
+							combination.subcategory,
+							combination.label,
+						);
+					promotionsToDelete.push(promotionName);
+
+					const promotionTestDataV4 = testDataObject.promotions.build(
+						{
+							title: promotionName,
+							customUrl: generateCustomUrl(promotionName),
+							promotionCategory: combination.category,
+							promotionSubCategory: combination.subcategory,
+							isForVip: PromotionIsVipCategories.ALL,
+							promotionStartDate: formatDate(3),
+							promotionEndDate: formatDate(5),
+						},
+					);
+
+					await promotionsAdminUser.pages.promotionAdminPage.navigate();
+					await promotionsAdminUser.pages.promotionAdminPage.clickCreateNewPromotionButton();
+					await promotionsAdminUser.pages.promotionsModal
+						.steps()
+						.fillPromotionSuccessfully(promotionTestDataV4);
+
+					await promotionsAdminUser.pages.toastV4
+						.assertThat()
+						.toastMessageIsV4(
+							ToastTitle.SUCCESS_V4,
+							ToastSubTitle.PROMOTION_CREATED_SUCCESSFULLY,
+						);
+
+					await promotionsAdminUser.pages.promotionAdminPage
+						.steps()
+						.checkPromotionIsDisplayedInPromotionsTable(
+							promotionName,
+						);
+
+					await gamdomDb.updatePromotionDatesByTitle(
+						promotionName,
+						Number(combination.startDateMode),
+						Number(combination.endDateMode),
+					);
+					await gamdomDb.setPromotionVisibleByTitle(
+						promotionName,
+						true,
+					);
+
+					await promotionsAdminUser.pages.promotionsPage.navigate();
+					await promotionsAdminUser.pages.promotionsPage
+						.assertThat()
+						.promotionsPageIsLoadedV4();
+					await promotionsAdminUser.pages.promotionsPage
+						.assertThat()
+						.promotionIsDisplayedInPromotionsPageV4(promotionName);
+					await promotionsAdminUser.pages.promotionsPage
+						.assertThat()
+						.promotionLabelForPromotionIsDisplayedV4(
+							promotionName,
+							combination.label,
+						);
 				},
 			);
 		});

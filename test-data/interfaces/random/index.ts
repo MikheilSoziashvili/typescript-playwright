@@ -26,3 +26,12 @@ export interface BlogPostsGenerator {
 	slug(): string;
 	category(): BlogPostCategories;
 }
+
+export interface PromotionTitlesV4Generator {
+	helperPromotionTitle(): string;
+	promotionTitle(
+		category: string,
+		subCategory: string,
+		label: string,
+	): string;
+}

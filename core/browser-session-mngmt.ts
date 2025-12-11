@@ -280,6 +280,18 @@ export class BrowserSessionManager {
 				return userAuth;
 			}
 
+			case TestUserRole.ADMIN_PROMOTIONS_ADMIN: {
+				const userAuth =
+					await this.gamdomApiDbFacade.createAdminUserDbAndAuth({
+						emailVerified: true,
+						useGamdomEmailDomain: false,
+						tags: UserTags.PromotionAdmin,
+						userClass: UserClasses.Admin,
+					});
+				await setAuthenticationCookies(page, userAuth.cookie);
+				return userAuth;
+			}
+
 			default:
 				throw new Error(
 					`Unsupported user role for authentication detected`,

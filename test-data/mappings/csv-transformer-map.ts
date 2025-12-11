@@ -9,6 +9,7 @@ import {
 	PromoCampaignUpdateCsvRecord,
 	UserProfileItemsLinksAccessibilityCsvRecord,
 	KycLevel2SubmissionsCsvRecord,
+	PromotionCombinationForLabelDisplayV4CsvRecord,
 } from "@dtos/csv";
 import { OriginalsSelfExclusionCsvRecord } from "@dtos/csv/originals-self-exclusion";
 import { PlinkoTestDataCsvRecord } from "@dtos/csv/plinko-test-data-csv";
@@ -66,6 +67,10 @@ import {
 	parseKycLevel2SubmissionsCsvRow,
 	KycLevel2SubmissionsCsvParsedRecord,
 } from "test-data/parsers/kyc-level2-submissions-csv-parser";
+import {
+	parsePromotionCombinationLabelUpdateCsvRow,
+	PromotionCombinationForLabelDisplayV4CsvParsedRecord,
+} from "test-data/parsers/promotion-combinations-for-label-display-csv-parser";
 
 export type CsvTransformerExistingType<T> =
 	T extends keyof CsvTransformerMapType ? CsvTransformerMapType[T] : never;
@@ -137,6 +142,10 @@ export type CsvTransformerMapType = {
 	[CsvFilesName.KYC_LEVEL2_SUBMISSIONS]: (
 		row: KycLevel2SubmissionsCsvRecord,
 	) => KycLevel2SubmissionsCsvParsedRecord;
+	
+	[CsvFilesName.PROMOTION_COMBINATIONS_FOR_LABEL_DISPLAY_V4]: (
+		row: PromotionCombinationForLabelDisplayV4CsvRecord,
+	) => PromotionCombinationForLabelDisplayV4CsvParsedRecord;
 };
 
 export const CsvTransformerMap: CsvTransformerMapType = {
@@ -161,4 +170,6 @@ export const CsvTransformerMap: CsvTransformerMapType = {
 		parseBlogVerifySocialShareLinksCsvRow,
 	[CsvFilesName.PROMO_CAMPAIGN_UPDATE]: parsePromoCampaignUpdateCsvRecord,
 	[CsvFilesName.KYC_LEVEL2_SUBMISSIONS]: parseKycLevel2SubmissionsCsvRow,
+	[CsvFilesName.PROMOTION_COMBINATIONS_FOR_LABEL_DISPLAY_V4]:
+		parsePromotionCombinationLabelUpdateCsvRow,
 } as const;

@@ -2,6 +2,8 @@ import { BasePageStep } from "@pages/base/base-page-step";
 import { PromotionsPage } from "./promotions-page";
 import { step } from "decorators/step";
 import { GamdomDb } from "database/gamdom-db";
+import { PromotionLabelsV4 } from "@enums/promotion-labels";
+import { getISODate } from "@core/utils/utils";
 
 export class PromotionsPageSteps extends BasePageStep<PromotionsPage> {
 	private readonly gamdomDb: GamdomDb;
@@ -38,5 +40,26 @@ export class PromotionsPageSteps extends BasePageStep<PromotionsPage> {
 				.assertThat()
 				.promotionIsDisplayedInPromotionsPage(title);
 		}
+	}
+
+	@step("Insert helper promotion for archived scenarios")
+	public async insertHelperPromotionV4(
+		helperTitle: string,
+		userId: number,
+		label: string,
+	): Promise<void> {
+		if (label.toUpperCase() !== PromotionLabelsV4.ARCHIVE.toUpperCase()) {
+			return;
+		}
+
+		const startDate = getISODate({ daysOffset: -3 });
+		const endDate = getISODate({ daysOffset: 5 });
+
+		await this.gamdomDb.insertDefaultPromotion(
+			helperTitle,
+			userId,
+			startDate,
+			endDate,
+		);
 	}
 }

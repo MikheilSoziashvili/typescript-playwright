@@ -10,6 +10,7 @@ import {
 	MailinatorGenerator,
 	PromoCampaignCodesGenerator,
 	PromoCodesGenerators,
+	PromotionTitlesV4Generator,
 } from "test-data/interfaces/random";
 import { PredefinedData, PredefinedRandomData } from "test-data/types";
 
@@ -101,6 +102,27 @@ export class RandomDataSourceGenerator {
 				const randomIndex = getRandomIndex(values.length);
 				return values[randomIndex] as BlogPostCategories;
 			},
+		};
+	}
+
+	public get promotionTitlesV4(): PromotionTitlesV4Generator {
+		return {
+			helperPromotionTitle: () =>
+				generateRandomString({
+					prefix: "v4_label_helper_",
+					length: 4,
+				}),
+			promotionTitle: (
+				category: string,
+				subCategory: string,
+				label: string,
+			) =>
+				generateRandomString({
+					prefix:
+						`${category}_${subCategory}_${label}_`.toLowerCase() +
+						"promotion_",
+					length: 5,
+				}),
 		};
 	}
 }

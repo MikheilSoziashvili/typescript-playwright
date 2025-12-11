@@ -1384,6 +1384,30 @@ export class GamdomDb extends BaseDB {
 		);
 	}
 
+	public async updatePromotionDatesByTitle(
+		title: string,
+		startDateMode: number,
+		endDateMode: number,
+		hasLogMessage = false,
+	): Promise<QueryResultRow> {
+		const startDate = getISODate({ daysOffset: startDateMode });
+		const expirationDate = getISODate({ daysOffset: endDateMode });
+		const now = getISODate();
+
+		const updateData = {
+			[PromotionColumns.StartDate]: startDate,
+			[PromotionColumns.ExpirationDate]: expirationDate,
+			[PromotionColumns.ModifiedDate]: now,
+		};
+
+		return this.update(
+			DbTables.Promotions,
+			updateData,
+			`${PromotionColumns.Title} = '${title}'`,
+			hasLogMessage,
+		);
+	}
+
 	public async setPromotionVisibleByTitle(
 		title: string,
 		isVisible: boolean,

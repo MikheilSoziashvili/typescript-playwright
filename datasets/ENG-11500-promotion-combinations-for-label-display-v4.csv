@@ -1,0 +1,7 @@
+category,subcategory,label,startDateMode,endDateMode
+All,None,Soon,2,2
+All,None,Archive,-2,-2
+Casino,Casino,Casino,-5,5
+Casino,Live casino,Live Casino,-2,5
+Sports book,Sports,Sports,-2,5
+Sports book,Esports,E-Sports,-2,5

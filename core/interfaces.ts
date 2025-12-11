@@ -122,3 +122,25 @@ export interface SportsBlogArticleTestDataParams {
 	coverImage?: string;
 	thumbnailImage?: string;
 }
+
+export interface PromotionTestDataParamsV4 {
+	title: string;
+	customUrl: string;
+	isForVip: string;
+	promotionCategory: string;
+	promotionSubCategory: string;
+	promotionStartDate?: string;
+	promotionEndDate?: string;
+	promotionStartTime?: string;
+	promotionEndTime?: string;
+	coverImage?: string;
+	thumbnailImage?: string;
+	priority?: number;
+	shortDescription?: string;
+	detailedDescription?: string;
+	termsAndConditions?: string;
+	howToParticipate?: string;
+	prizesDescription?: string;
+	buttonText?: string;
+	buttonLink?: string;
+}

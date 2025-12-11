@@ -110,6 +110,7 @@ import { ZuluGoldPage } from "./casino-games/elk-studios/zulu-gold/zulu-gold-pag
 import { SportsBlogAdminPage } from "./admin/sports-blog-admin/sports-blog-admin-page";
 import { SportsBlogModal } from "./modals/sports-blog-modal/sports-blog-modal";
 import { SweetBonanzaPage } from "./casino-games/pragmatic-play/sweet-bonanza/sweet-bonanza-page";
+import { ToastV4 } from "./components/toastV4/toast-v4";
 
 export const GamdomPages = {
 	homePage: HomePage,
@@ -215,6 +216,7 @@ export const GamePages = {
 export const Components = {
 	notifications: Notification,
 	toast: Toast,
+	toastV4: ToastV4,
 	chat: Chat,
 	footer: Footer,
 };

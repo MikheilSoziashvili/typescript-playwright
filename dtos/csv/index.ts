@@ -24,3 +24,4 @@ export * from "./casino-games-aggregator-provider-csv";
 export * from "./esports-categories-csv";
 export * from "./login-rejected-v4-csv";
 export * from "./login-input-validation-v4-csv";
+export * from "./promotion-combinations-for-label-display-v4-csv";
