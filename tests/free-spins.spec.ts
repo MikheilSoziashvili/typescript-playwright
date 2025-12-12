@@ -229,7 +229,7 @@ test.describe("Free spins tests", () => {
 
 	test.describe(
 		"Top played slots tests",
-		testDetails().withTags(JiraComponent.FREE_SPINS).apply(),
+		testDetails().withTags(JiraComponent.FREE_SPINS).withJiraBugTickets("11715").apply(),
 		() => {
 			test(
 				"[ENG-4860] Verify that the TOP PLAYED SLOTS table is displayed only after the GET button from the Get top played slots panel is clicked",

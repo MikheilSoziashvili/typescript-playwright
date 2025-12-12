@@ -41,6 +41,7 @@ test.describe("Casino games tests", () => {
 		testDetails()
 			.withTags(JiraComponent.CASINO)
 			.withAuthor(JiraUser.ANGEL_PETROV)
+			.withJiraBugTickets("11715")
 			.apply(),
 		async ({ casinoPage, bookOfPyramidsPage, userBalanceHandler }) => {
 			await casinoPage
@@ -87,6 +88,7 @@ test.describe("Casino games tests", () => {
 		testDetails()
 			.withTags(JiraComponent.CASINO)
 			.withAuthor(JiraUser.ANGEL_PETROV)
+			.withJiraBugTickets("11715")
 			.apply(),
 		async ({ casinoPage, bookOfPyramidsPage }) => {
 			await casinoPage.authenticatedHeader.changeWallet(Wallet.BTC);
