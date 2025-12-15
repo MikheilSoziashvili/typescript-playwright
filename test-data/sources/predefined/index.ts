@@ -69,6 +69,9 @@ export const predefined = {
 	},
 	solAmountToDeposit: {
 		amountToDeposit: "0.002",
+		amountToDepositLarger: "0.007",
+		amountToWithdraw: 0.40,
+		withdrawalAddress: "EHWKMqDvZ71AmpS4uLD5vAGwkeyFdPg8jh2bHk3YCKzi",
 	},
 	freeSpinsRewardConditions: {
 		startDateOffset: 1,
