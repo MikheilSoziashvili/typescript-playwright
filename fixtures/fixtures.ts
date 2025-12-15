@@ -15,6 +15,7 @@ import { listenersFixtures } from "./listeners-fixtures";
 import { cryptoFixtures } from "./crypto-fixtures";
 import { visualAutomationFixtures } from "./visual-automation-fixtures";
 import { slackWebApisFixtures } from "./slack-web-api-fixtures";
+import { reporterFixtures } from "./reportportal-fixtures";
 
 export const test = mergeTests(
 	gamdomPagesFixtures,
@@ -32,4 +33,5 @@ export const test = mergeTests(
 	cryptoFixtures,
 	visualAutomationFixtures,
 	slackWebApisFixtures,
+	reporterFixtures,
 );

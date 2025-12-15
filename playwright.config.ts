@@ -8,10 +8,96 @@ import { ReporterDescription, defineConfig } from "@playwright/test";
 import { sequentialTestPattern } from "@support/regex-patterns";
 import * as Configuration from "configuration";
 
-/** Read environment variables from file. https://github.com/motdotla/dotenv */
-// require('dotenv').config();
-
 /** See https://playwright.dev/docs/test-configuration. */
+
+/**
+ * ReportPortal Configuration
+ * Documentation: https://github.com/reportportal/agent-js-playwright
+ */
+const rpConfig = {
+	endpoint: Configuration.reportPortal.endpoint,
+	apiKey: Configuration.reportPortal.apiKey,
+	project: Configuration.reportPortal.project,
+	launch: Configuration.reportPortal.launchName,
+
+	/**
+	 * Support for reusing launch ID across multiple test executions
+	 *
+	 * Environment variable precedence:
+	 * - RP_LAUNCH_ID (set by GitHub Actions) - HIGHEST PRIORITY
+	 * - Configuration.reportPortal.launchId (static config value)
+	 * - undefined (let ReportPortal create new launch) - DEFAULT
+	 */
+	launchId: process.env.RP_LAUNCH_ID || Configuration.reportPortal.launchId,
+
+	attributes: [
+		{
+			key: "environment",
+			value: Configuration.environment_url || "localhost",
+		},
+		{
+			key: "ci",
+			value: Configuration.isCI ? "true" : "false",
+		},
+		{
+			key: "trigger",
+			value: Configuration.isScheduledRun ? "nightly" : "manual",
+		},
+		{
+			key: "branch",
+			value: Configuration.branchName,
+		},
+		{
+			key: "build_url",
+			value: process.env.BUILD_URL || "N/A",
+		},
+	],
+
+	description: `Automated E2E tests run on ${new Date().toISOString()} - Branch: ${
+		Configuration.branchName
+	}${process.env.RP_LAUNCH_ID ? " [Combined Results]" : ""}`,
+
+	// Reporting mode: 'DEFAULT' for Launches page, 'DEBUG' for Debug page
+	mode: "DEFAULT",
+
+	// Mark skipped tests as 'To Investigate'
+	skippedIssue: false,
+
+	// Enable debug logs for troubleshooting
+	debug: false,
+
+	// Print launch UUID for reference
+	launchUuidPrint: true,
+
+	// Options: 'STDOUT', 'STDERR', 'FILE', 'ENVIRONMENT'
+	launchUuidPrintOutput: "ENVIRONMENT",
+
+	// Disable automatic code reference generation to allow manual test case ID
+	autoCodeReference: true,
+
+	// Include Playwright test steps as nested steps in ReportPortal
+	includeTestSteps: true,
+
+	// Include Playwright project name in code reference (useful for multi-project setups)
+	includePlaywrightProjectNameToCodeReference: false,
+
+	// Attach latest error to test description
+	extendTestDescriptionWithLastError: true,
+	uploadVideo: true,
+	uploadTrace: true,
+
+	// HTTP client configuration (optional)
+	restClientConfig: {
+		// Request timeout in milliseconds
+		timeout: 120000,
+
+		// Retry configuration for failed requests
+		retry: {
+			retries: 3,
+			retryDelay: () => 1000,
+		},
+	},
+};
 
 /**
  * Configures and returns the list of Playwright reporters based on environment and configuration.
@@ -24,6 +110,10 @@ function getReporter(): ReporterDescription[] {
 		[REPORT_FORMATS.LIST],
 		[REPORT_FORMATS.HTML, HTML_REPORTER_OPTIONS],
 	];
+
+	if (Configuration.reportPortal.enabled) {
+		reporters.push(["@reportportal/agent-js-playwright", rpConfig]);
+	}
 
 	// Enable blob reporter in CI for report merging
 	if (process.env.CI) {
@@ -38,7 +128,6 @@ function getReporter(): ReporterDescription[] {
 		);
 	}
 
-	// Enable local JIRA failed tests reporter for debugging
 	// This is intentionally controlled by a configuration flag (not an environment variable)
 	// to avoid accidental activation in CI/CD.
 	// To test JIRA reporting locally, set `enableLocalJiraFailedTestsReporter` to true in your configuration.

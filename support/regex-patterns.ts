@@ -74,3 +74,6 @@ export const escapedNewlinePattern = /\\n/g;
 
 export const classNamePattern = (attributeValue: string): RegExp =>
 	new RegExp(`\\b${attributeValue}\\b`);
+
+export const jiraIssuePattern = /\[([A-Z]+-\d+)\]/;
+export const tagPrefixPattern = /^@/;

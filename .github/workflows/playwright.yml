@@ -76,6 +76,11 @@ on:
                 type: boolean
                 required: false
                 default: false
+            enable_reportportal:
+                description: "Send test results to ReportPortal"
+                type: boolean
+                required: false
+                default: false
 
     schedule:
         - cron: "0 3 * * *"
@@ -295,6 +300,14 @@ jobs:
             FIREBLOCKS_USDC_SOL_ASSET_ID: ${{ vars.FIREBLOCKS_USDC_SOL_ASSET_ID }}
             DOGE_TESTNET_ADDRESS: ${{ vars.DOGE_TESTNET_ADDRESS }}
             DOGE_TESTNET_PRIVATE_KEY: ${{ secrets.DOGE_TESTNET_PRIVATE_KEY}}
+            RP_ENABLED: ${{ github.event_name == 'schedule' || inputs.enable_reportportal == true }}
+            RP_API_KEY: ${{ secrets.RP_API_KEY }}
+            RP_ENDPOINT: ${{ vars.RP_ENDPOINT }}
+            RP_PROJECT: ${{ vars.RP_PROJECT || 'superadmin_personal' }}
+            RP_LAUNCH_NAME: ${{ github.event_name == 'schedule' && 'Nightly E2E Tests' || format('E2E Tests - {0}', github.ref_name) }}
+            RP_MODE: DEFAULT
+            GITHUB_REF_NAME: ${{ github.ref_name }}
+            BRANCH_NAME: ${{ github.ref_name }}
 
         steps:
             - name: Validate required inputs for custom environment
@@ -400,6 +413,18 @@ jobs:
                     $TEST_COMMAND $INVERT_SEQUENTIAL_TESTS $V4_OPTION $WORKERS $SHARD_OPTION $PROJECT_CHROMIUM
                   fi
 
+            - name: Capture ReportPortal Launch ID
+              if: always()
+              run: |
+                  # ReportPortal agent sets RP_LAUNCH_UUID environment variable
+                  if [ -n "$RP_LAUNCH_UUID" ]; then
+                    echo "Captured ReportPortal Launch ID: $RP_LAUNCH_UUID"
+                    echo "CAPTURED_RP_LAUNCH_ID=$RP_LAUNCH_UUID" >> $GITHUB_ENV
+                  else
+                    echo "No ReportPortal Launch UUID found."
+                    echo "This is expected if ReportPortal is disabled for this run!"
+                  fi
+
             - name: Upload blob report to GitHub Actions Artifacts
               if: always()
               uses: actions/upload-artifact@v4
@@ -422,9 +447,18 @@ jobs:
 
             - name: Sequential Tests (Global Settings)
               if: always()
+              env:
+                  RP_LAUNCH_ID: ${{ env.CAPTURED_RP_LAUNCH_ID }}
               run: |
                   if [ ${{ github.event_name }} == 'schedule' ] || [ "${{ inputs.run_sequential_tests }}" == "true" ]; then
                       echo "Running sequential tests that modify global platform settings..."
+                      
+                      if [ -n "$RP_LAUNCH_ID" ]; then
+                        echo "Reusing ReportPortal Launch ID: $RP_LAUNCH_ID"
+                        echo "Sequential tests will be added to the same ReportPortal launch."
+                      else
+                        echo "No ReportPortal Launch ID available (ReportPortal may be disabled)."
+                      fi
 
                       V4_OPTION=""
                       if [ "$ENABLE_NEW_DESIGN_V4" == "true" ]; then
@@ -472,6 +506,30 @@ jobs:
 
                   echo "Merging all blob reports into HTML and JSON..."
                   npx playwright merge-reports --reporter json,html ./all-blob-report > e2e-results.json
+
+            - name: Extract final ReportPortal Launch ID and URL
+              if: always()
+              run: |
+                  # Use the captured ID from first run
+                  FINAL_LAUNCH_ID="${{ env.CAPTURED_RP_LAUNCH_ID }}"
+
+                  if [ -n "$FINAL_LAUNCH_ID" ]; then
+                    echo "Final ReportPortal Launch ID (combined): $FINAL_LAUNCH_ID"
+                    echo "RP_LAUNCH_ID=$FINAL_LAUNCH_ID" >> $GITHUB_ENV
+                    
+                    # Construct ReportPortal URL
+                    RP_BASE_URL="${RP_ENDPOINT%/api/v2}"
+                    RP_LAUNCH_URL="$RP_BASE_URL/ui/#$RP_PROJECT/launches/all/$FINAL_LAUNCH_ID"
+                    echo "RP_LAUNCH_URL=$RP_LAUNCH_URL" >> $GITHUB_ENV
+                    echo "Combined ReportPortal Launch URL: $RP_LAUNCH_URL"
+                    echo ""
+                    echo "This launch contains results from:"
+                    echo "  - Main execution (cron or manual)"
+                    echo "  - Sequential tests (if enabled)"
+                  else
+                    echo "No ReportPortal Launch UUID found."
+                    echo "This is expected if ReportPortal is disabled for this run!"
+                  fi
 
             - name: Upload Playwright report to S3 and generate report url
               if: always()
@@ -521,6 +579,7 @@ jobs:
                   body: |
                       🐞🤖🕷️
                       :world_map: Playwright report available [here](${{ env.REPORT_URL }})
+                      ${{ env.RP_LAUNCH_URL && format(':chart_with_upwards_trend: ReportPortal Launch [here]({0})', env.RP_LAUNCH_URL) || '' }}
                   token: ${{ steps.app-token.outputs.token }}
                   edit-mode: "replace"
                   append-separator: "none"
@@ -550,7 +609,13 @@ jobs:
               if: ${{ always() && github.event_name == 'pull_request' }}
               run: |
                   COMMENT=":world_map: Playwright report available [here]($REPORT_URL)"
-                  echo $COMMENT
+
+                  if [ -n "$RP_LAUNCH_URL" ]; then
+                    COMMENT="$COMMENT\n:chart_with_upwards_trend: ReportPortal Launch available [here]($RP_LAUNCH_URL)"
+                  fi
+
+                  echo -e "$COMMENT"
                   gh pr comment ${{ github.event.pull_request.number }} --body "$COMMENT"
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  RP_LAUNCH_URL: ${{ env.RP_LAUNCH_URL }}

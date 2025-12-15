@@ -164,6 +164,21 @@ export const hourlyCryptoBalancesCronInterval = Number(
 	process.env.HOURLY_CRYPTO_BALANCES_CRON_INTERVAL ?? Timeout.LONG,
 );
 
+// ReportPortal Configuration
+export const branchName =
+	process.env.GITHUB_REF_NAME || process.env.BRANCH_NAME || "local";
+
+export const reportPortal = {
+	// TODO: to be changed to `process.env.RP_ENABLED === "true"`, when the RP is deployed
+	enabled: false,
+	apiKey: asString(process.env.RP_API_KEY),
+	endpoint: asString(process.env.RP_ENDPOINT),
+	project: asString(process.env.RP_PROJECT),
+	launchName: asString(process.env.RP_LAUNCH_NAME || "Playwright E2E Tests"),
+	launchId: process.env.RP_LAUNCH_ID,
+	mode: process.env.RP_MODE || "DEFAULT",
+};
+
 export const users: TestUserConfigurationObject[] = [
 	{
 		username: "superadmin",
