@@ -4,6 +4,8 @@ import { step } from "decorators/step";
 import { logger } from "@logger/logger";
 import { calculateBetAmountWithPercentage } from "@formulas/betting-calculations";
 import { expect } from "@playwright/test";
+import { waitUntil } from "@core/utils/utils";
+import { TimeoutSeconds } from "@enums/timeout-seconds";
 
 export class PocketDiceSteps extends BasePageStep<PocketDicePage> {
 	public constructor(page: PocketDicePage) {
@@ -73,6 +75,19 @@ export class PocketDiceSteps extends BasePageStep<PocketDicePage> {
 		onLossPercentage: number,
 	): Promise<number> {
 		const percentage = isWin ? onWinPercentage : onLossPercentage;
+
+		await waitUntil(
+			async () => {
+				const value = await this.gamdomPage.getBetAmountInputValue();
+				return currentBet != value;
+			},
+			{
+				errorMessage: `Bet amount did not change from ${currentBet}`,
+				intervalSeconds: TimeoutSeconds.HALF,
+				timeoutSeconds: TimeoutSeconds.FIVE,
+			},
+		);
+
 		return this.verifyBetAmountIncreasedBy(currentBet, percentage);
 	}
 }

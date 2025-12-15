@@ -2,12 +2,17 @@ import { BasePageStep } from "@pages/base/base-page-step";
 import { KenoGamePage } from "./keno-game-page";
 import { step } from "decorators/step";
 import { logger } from "@logger/logger";
-import { getFormattedMultiplier, parseMultiplier } from "@core/utils/utils";
+import {
+	getFormattedMultiplier,
+	parseMultiplier,
+	waitUntil,
+} from "@core/utils/utils";
 import {
 	calculateBalanceAfterProfit,
 	calculateBetAmountWithPercentage,
 } from "@formulas/betting-calculations";
 import { expect } from "@playwright/test";
+import { TimeoutSeconds } from "@enums/timeout-seconds";
 
 export class KenoGamePageSteps extends BasePageStep<KenoGamePage> {
 	public constructor(gamdomPage: KenoGamePage) {
@@ -255,6 +260,19 @@ export class KenoGamePageSteps extends BasePageStep<KenoGamePage> {
 		onLossPercentage: number,
 	): Promise<number> {
 		const percentage = isWin ? onWinPercentage : onLossPercentage;
+
+		await waitUntil(
+			async () => {
+				const value = await this.gamdomPage.getBetAmountInputValue();
+				return currentBet != value;
+			},
+			{
+				errorMessage: `Bet amount did not change from ${currentBet}`,
+				intervalSeconds: TimeoutSeconds.HALF,
+				timeoutSeconds: TimeoutSeconds.FIVE,
+			},
+		);
+
 		return this.verifyBetAmountIncreasedBy(currentBet, percentage);
 	}
 }
