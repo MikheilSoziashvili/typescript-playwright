@@ -36,6 +36,7 @@ import { BulkRewardRequest } from "@dtos/requests/gamdom-api/bulk-reward-request
 import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { HourlyCryptoBalancesRequest } from "@dtos/requests/gamdom-api/hourly-crypto-balances-request";
 import { HourlyCryptoBalancesResponse } from "@dtos/responses/gamdom-api/get-hourly-crypto-balances-response";
+import { FINGERPRINT } from "@constants/fingerprint-details";
 
 export class GamdomApi extends BaseApi {
 	private gamdomDb: GamdomDb;
@@ -79,6 +80,7 @@ export class GamdomApi extends BaseApi {
 			username: username,
 			password: password,
 			captcha_solution: "captcha",
+			fingerprint: FINGERPRINT,
 			totp_token: "",
 		};
 
