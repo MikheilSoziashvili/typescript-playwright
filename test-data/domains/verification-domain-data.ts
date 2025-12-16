@@ -3,6 +3,11 @@ import { NotificationTitle } from "@enums/notification-titles";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import {
+	KYC_LEVEL_3_FILE_PATH,
+	LARGE_KYC_LEVEL_3_FILE_PATH,
+	PDF_KYC_LEVEL_3_FILE_PATH,
+} from "@constants/file-paths";
+import {
 	KycAdminActions,
 	kycAdminStatus,
 	KycLevel3ReviewAction,
@@ -55,6 +60,11 @@ export const KYB_FIELDS = {
 export const KYC_LEVEL_2_5_FIELDS = {
 	COUNTRY: "Country",
 	REASON_FOR_RESIDENCE: "Reason for Residence",
+} as const;
+
+export const KYC_LEVEL_3_FIELDS = {
+	PROOF_OF_FUNDS: "Proof of Funds",
+	FILE_UPLOAD: "FILE_UPLOAD_LOCATOR", // Special locator for file upload without label
 } as const;
 
 // ============================================================================
@@ -127,6 +137,11 @@ export const ERROR_MESSAGES = {
 	INVALID_REGISTRATION_NUMBER: "Please enter a valid registration number",
 	COUNTRY_REQUIRED: "Country is required",
 	REASON_FOR_RESIDENCE_REQUIRED: "Reason for residence is required",
+	REASON_FOR_FUNDS_REQUIRED: "Reason for funds is required",
+	FILE_TOO_LARGE: "Files must be less than 5 MB",
+	FILE_FORMAT_NOT_SUPPORTED:
+		"Only certain file types are allowed: JPG/JPEG, PNG",
+	FILE_UPLOAD_REQUIRED: "Please upload a file",
 	NO_ERROR: "",
 } as const;
 
@@ -448,6 +463,60 @@ export class VerificationDomainData {
 		];
 
 	// ========================================================================
+	// KYC LEVEL 3 - FIELD VALIDATION SCENARIOS DATASET
+	// ========================================================================
+
+	/**
+	 * KYC Level 3 field validation scenarios
+	 */
+	private readonly kycLevel3FieldValidations: FieldValidationScenario[] = [
+		// Proof of Funds dropdown validation
+		{
+			inputField: KYC_LEVEL_3_FIELDS.PROOF_OF_FUNDS,
+			input: VALID_INPUTS.EMPTY,
+			expectedErrorMessage: ERROR_MESSAGES.REASON_FOR_FUNDS_REQUIRED,
+		},
+		{
+			inputField: KYC_LEVEL_3_FIELDS.PROOF_OF_FUNDS,
+			input: RANDOM_OPTION,
+			expectedErrorMessage: ERROR_MESSAGES.NO_ERROR,
+		},
+		// File upload validation
+		{
+			inputField: KYC_LEVEL_3_FIELDS.FILE_UPLOAD,
+			input: VALID_INPUTS.EMPTY,
+			expectedErrorMessage: ERROR_MESSAGES.FILE_UPLOAD_REQUIRED,
+		},
+		{
+			inputField: KYC_LEVEL_3_FIELDS.FILE_UPLOAD,
+			input: PDF_KYC_LEVEL_3_FILE_PATH,
+			expectedErrorMessage: ERROR_MESSAGES.FILE_FORMAT_NOT_SUPPORTED,
+		},
+		{
+			inputField: KYC_LEVEL_3_FIELDS.FILE_UPLOAD,
+			input: LARGE_KYC_LEVEL_3_FILE_PATH,
+			expectedErrorMessage: ERROR_MESSAGES.FILE_TOO_LARGE,
+		},
+		{
+			inputField: KYC_LEVEL_3_FIELDS.FILE_UPLOAD,
+			input: KYC_LEVEL_3_FILE_PATH,
+			expectedErrorMessage: ERROR_MESSAGES.NO_ERROR,
+		},
+	];
+
+	/**
+	 * KYC Level 3 clear field validation scenarios
+	 */
+	private readonly kycLevel3ClearFieldValidations: FieldValidationScenario[] =
+		[
+			{
+				inputField: KYC_LEVEL_3_FIELDS.PROOF_OF_FUNDS,
+				input: RANDOM_OPTION,
+				expectedErrorMessage: ERROR_MESSAGES.REASON_FOR_FUNDS_REQUIRED,
+			},
+		];
+
+	// ========================================================================
 	// COMBINED FIELD VALIDATION SCENARIOS
 	// ========================================================================
 
@@ -484,6 +553,21 @@ export class VerificationDomainData {
 				formType: VerificationFormTypeEnum.KYC,
 				fieldValidations: this.kycLevel2_5FieldValidations,
 				clearFieldValidations: this.kycLevel2_5ClearFieldValidations,
+				processInput: (input: string) => input,
+				tabType: VerificationTabType.VERIFY_YOURSELF,
+			},
+		];
+
+	/**
+	 * Combined field validation test scenario for KYC Level 3.
+	 */
+	public readonly level3FieldValidationScenarios: FieldValidationTestScenario[] =
+		[
+			{
+				testId: "ENG-8673",
+				formType: VerificationFormTypeEnum.KYC,
+				fieldValidations: this.kycLevel3FieldValidations,
+				clearFieldValidations: this.kycLevel3ClearFieldValidations,
 				processInput: (input: string) => input,
 				tabType: VerificationTabType.VERIFY_YOURSELF,
 			},

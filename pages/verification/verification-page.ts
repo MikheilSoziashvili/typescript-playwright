@@ -18,6 +18,7 @@ import { faker } from "@faker-js/faker";
 import {
 	KYC_FIELDS,
 	KYC_LEVEL_2_5_FIELDS,
+	KYC_LEVEL_3_FIELDS,
 	RANDOM_OPTION,
 } from "test-data/domains/verification-domain-data";
 import { FieldValidationScenario } from "test-data/interfaces";
@@ -186,7 +187,34 @@ export class VerificationPage extends BasePage<VerificationPageMap> {
 					await this.map.reasonForResidenceDropdown.blur();
 				},
 			},
+			[KYC_LEVEL_3_FIELDS.PROOF_OF_FUNDS]: {
+				container: this.map.proofOfFundsDropdown,
+				onRandom: async () => {
+					await this.selectRandomOption();
+				},
+				onNonRandom: async () => {
+					await this.page.keyboard.press(KeyboardKey.ESCAPE);
+					await this.map.proofOfFundsDropdown.blur();
+				},
+			},
 		};
+	}
+
+	@step("Handle file upload validation")
+	private async handleFileUploadValidation(value: string): Promise<void> {
+		const isFileUploaded = await this.map.uploadedFile.isVisible();
+		if (isFileUploaded) {
+			await this.map.closeIcon.click();
+		}
+
+		if (!value) {
+			await this.handleFileUpload(this.map.uploadProofOfFundsButton, "");
+		} else {
+			await this.handleFileUpload(
+				this.map.uploadProofOfFundsButton,
+				value,
+			);
+		}
 	}
 
 	@step("Fill input and trigger validation")
@@ -201,6 +229,11 @@ export class VerificationPage extends BasePage<VerificationPageMap> {
 			const isRandom = value === RANDOM_OPTION;
 			await config.container.click();
 			await (isRandom ? config.onRandom() : config.onNonRandom());
+			return;
+		}
+
+		if (fieldLabel === KYC_LEVEL_3_FIELDS.FILE_UPLOAD) {
+			await this.handleFileUploadValidation(value);
 			return;
 		}
 

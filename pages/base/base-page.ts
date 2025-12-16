@@ -643,4 +643,17 @@ export abstract class BasePage<T extends BaseMap> {
 		await this.page.mouse.move(targetX, centerY);
 		await this.page.mouse.up();
 	}
+
+	@step("Handle file upload")
+	public async handleFileUpload(
+		uploadButton: Locator,
+		filePath: string,
+	): Promise<void> {
+		const [fileChooser] = await Promise.all([
+			this.page.waitForEvent("filechooser"),
+			uploadButton.click(),
+		]);
+
+		await fileChooser.setFiles(filePath || []);
+	}
 }

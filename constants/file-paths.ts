@@ -93,3 +93,13 @@ export const KYC_LEVEL_3_FILE_PATH = path.resolve(
 	__dirname,
 	`../${TEST_FILES_DIR}/sample_image.jpg`,
 );
+
+export const LARGE_KYC_LEVEL_3_FILE_PATH = path.resolve(
+	__dirname,
+	`../${TEST_FILES_DIR}/png_6mb.png`,
+);
+
+export const PDF_KYC_LEVEL_3_FILE_PATH = path.resolve(
+	__dirname,
+	`../${TEST_FILES_DIR}/pdf_1mb.pdf`,
+);

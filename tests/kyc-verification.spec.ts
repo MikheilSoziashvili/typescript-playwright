@@ -472,6 +472,49 @@ test.describe(
 
 		const verificationTestData = testData().fromDomain().verification;
 
+		verificationTestData.level3FieldValidationScenarios.forEach(
+			({ testId, formType, fieldValidations, processInput }) => {
+				test(
+					`[${testId}] ${formType} Level 3 - Field validations`,
+					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+					async ({ browserSessionManager }) => {
+						const regularUser = await browserSessionManager.loginAs(
+							TestUserRole.REGULAR,
+						);
+
+						for (const {
+							inputField,
+							input,
+							expectedErrorMessage,
+						} of fieldValidations) {
+							const actualInput = processInput(input);
+
+							await regularUser.pages.verificationPage.fillInputAndTriggerValidation(
+								inputField,
+								actualInput,
+							);
+
+							await regularUser.pages.verificationPage
+								.assertThat()
+								.validateErrorMessageForField(
+									inputField,
+									expectedErrorMessage,
+								);
+						}
+
+						await regularUser.pages.verificationPage.toggleCheckbox(
+							{
+								count: 2,
+							},
+						);
+						await regularUser.pages.verificationPage
+							.assertThat()
+							.checkboxValidationMessageIsDisplayed();
+					},
+				);
+			},
+		);
+
 		verificationTestData.kycLevel3ReviewActions.forEach(
 			({
 				testId,

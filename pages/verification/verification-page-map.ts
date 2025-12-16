@@ -1,6 +1,7 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
 import { ProofOfFunds } from "@enums/verification-enums";
+import { KYC_LEVEL_3_FIELDS } from "test-data/domains/verification-domain-data";
 
 export class VerificationPageMap extends BaseMap {
 	public constructor(page: Page) {
@@ -90,6 +91,9 @@ export class VerificationPageMap extends BaseMap {
 	}
 
 	public getErrorMessageForField(fieldLabel: string): Locator {
+		if (fieldLabel === KYC_LEVEL_3_FIELDS.FILE_UPLOAD) {
+			return this.fileUploadErrorMessage;
+		}
 		return this.page
 			.getByLabel(fieldLabel)
 			.locator("..")
@@ -138,6 +142,16 @@ export class VerificationPageMap extends BaseMap {
 
 	public get uploadedFile(): Locator {
 		return this.page.locator('img[alt="file"]');
+	}
+
+	public get fileUploadErrorMessage(): Locator {
+		return this.page
+			.locator('span[class*="MuiTypography-caption"]')
+			.first();
+	}
+
+	public get closeIcon(): Locator {
+		return this.page.locator("i[class*='icon-close']");
 	}
 
 	public get levelThreeVerificationInProgressMessage(): Locator {
