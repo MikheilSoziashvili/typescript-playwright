@@ -12,6 +12,7 @@ import { expect } from "@playwright/test";
 import { CountryCodeISO3166 } from "@enums/country-codes-iso3166";
 import { Toast } from "@pages/components/toast/toast";
 import { WithdrawalSpeed } from "@enums/withdrawal-speeds";
+import { logger } from "@logger/logger";
 
 export class WalletModal extends BasePage<WalletModalMap> {
 	public toast: Toast;
@@ -254,6 +255,7 @@ export class WalletModal extends BasePage<WalletModalMap> {
 		speed: WithdrawalSpeed;
 		network?: string;
 		destinationTag?: string;
+		isVip?: boolean;
 	}): Promise<string> {
 		const {
 			cryptocurrency,
@@ -262,9 +264,14 @@ export class WalletModal extends BasePage<WalletModalMap> {
 			speed,
 			network,
 			destinationTag,
+			isVip,
 		} = params;
 
 		await this.openWithdrawTab();
+		await this.selectPaymentMethod(cryptocurrency);
+		if (isVip) {
+			await this.selectPaymentMethod(Cryptocurrency.Bitcoin);
+		}
 		await this.selectPaymentMethod(cryptocurrency);
 
 		if (
@@ -291,18 +298,32 @@ export class WalletModal extends BasePage<WalletModalMap> {
 		}
 
 		await this.fillWithdrawalAmount(amount);
-		const networkFee = await this.getNetworkFeeAmount();
+		const networkFee = await this.getNetworkFeeAmount(isVip, speed);
 
 		await this.clickCryptoWithdrawButton();
 		return networkFee;
 	}
 
 	@step("Get network fee amount")
-	public async getNetworkFeeAmount(): Promise<string> {
-		const feeAmount = await this.map.networkFeeAmount.textContent();
-		if (!feeAmount) {
-			throw new Error("Network fee amount could not be retrieved.");
+	public async getNetworkFeeAmount(
+		isVip?: boolean,
+		speed?: WithdrawalSpeed,
+	): Promise<string> {
+		if (isVip && speed === WithdrawalSpeed.Standard) {
+			await this.assertThat().checkElementsAreVisible([
+				this.map.userIsVipText,
+			]);
+			await this.assertThat().checkElementsAreNotVisible([
+				this.map.networkFeeAmount,
+			]);
+			logger.info("User is VIP - no network fee applied.");
+			return "0";
+		} else {
+			const feeAmount = await this.map.networkFeeAmount.textContent();
+			if (!feeAmount) {
+				throw new Error("Network fee amount could not be retrieved.");
+			}
+			return feeAmount.trim();
 		}
-		return feeAmount.trim();
 	}
 }

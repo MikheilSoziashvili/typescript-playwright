@@ -56,7 +56,7 @@ export class UserInfoTransactionsAdminPage extends BasePage<UserInfoTransactions
 	public async clickDetailsForTransactionWithBalance(
 		type: string,
 	): Promise<void> {
-		const row = await this.map.getRowByTypeWithBalance(type.toLowerCase());
+		const row = this.map.getRowByTypeWithBalance(type.toLowerCase());
 		const detailsButton = this.map.getDetailsButtonInRow(row);
 		await detailsButton.click();
 	}

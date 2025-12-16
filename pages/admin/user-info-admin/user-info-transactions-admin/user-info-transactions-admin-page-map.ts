@@ -102,23 +102,14 @@ export class UserInfoTransactionsAdminPageMap extends BaseMap {
 		});
 	}
 
-	public async getRowByTypeWithBalance(type: string): Promise<Locator> {
-		const rows = this.getRowsByTransactionType(type);
-		const count = await rows.count();
-
-		for (let i = 0; i < count; i++) {
-			const row = rows.nth(i);
-			const balanceCell = row.getByTestId("transaction-balance-after");
-			const balanceText = await balanceCell.textContent();
-
-			if (balanceText && balanceText.trim() !== "") {
-				return row;
-			}
-		}
-
-		throw new Error(
-			`No row found with type "${type}" that has a balance value`,
-		);
+	public getRowByTypeWithBalance(type: string): Locator {
+		return this.getRowsByTransactionType(type)
+			.filter({
+				has: this.page
+					.getByTestId("transaction-balance-after")
+					.filter({ hasNotText: "" }),
+			})
+			.first();
 	}
 
 	public get transactionDetailContent(): Locator {

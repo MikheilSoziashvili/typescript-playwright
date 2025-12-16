@@ -299,4 +299,10 @@ export class WalletModalMap extends BaseMap {
 			.locator("span")
 			.nth(1);
 	}
+
+	public get userIsVipText(): Locator {
+		return this.page.locator(
+			"span[class*='NetworkSpeedTabs-styled__VipBadgeText']",
+		);
+	}
 }

@@ -4,6 +4,7 @@ import { expect } from "playwright/test";
 import { step } from "decorators/step";
 import { CryptoTicker } from "@enums/cryptocurrencies";
 import { sanitizeAmount } from "@support/regex-patterns";
+import { WithdrawalSpeed } from "@enums/withdrawal-speeds";
 
 export class TransactionDetailsModalAsserter extends BaseAsserter<TransactionDetailsModal> {
 	public constructor(page: TransactionDetailsModal) {
@@ -50,9 +51,12 @@ export class TransactionDetailsModalAsserter extends BaseAsserter<TransactionDet
 		amountInUsd: number,
 		networkFee: string,
 		transactionSpeed: string,
+		isVip: boolean,
 	): Promise<void> {
 		await this.withdrawalAmountInUsdIs(amountInUsd);
-		await this.networkTransactionFeeAmountIs(networkFee);
+		if (!isVip && transactionSpeed === WithdrawalSpeed.Standard) {
+			await this.networkTransactionFeeAmountIs(networkFee);
+		}
 		await this.networkTransactionSpeedIs(transactionSpeed);
 	}
 }
