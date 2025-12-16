@@ -318,7 +318,7 @@ test.describe(
 
 		for (const speed of cryptoWithdrawalDomainData.withdrawalSpeeds) {
 			test(
-				`[ENG-11606] ETH - withdraw with vip user - ${speed.toLowerCase()}`,
+				`[ENG-12053] ETH - withdraw with vip user - ${speed.toLowerCase()}`,
 				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
 				async ({
 					cryptoAdminPage,
