@@ -77,6 +77,7 @@ jobs:
             OXYLABS_USER: ${{ secrets.OXYLABS_USER }}
             OXYLABS_PASSWORD: ${{ secrets.OXYLABS_PASSWORD }}
             MAILINATOR_API_KEY: ${{ secrets.MAILINATOR_API_KEY }}
+            E2E_HOT_WALLET_CONFIG_ADMIN_API_KEY: ${{ secrets.E2E_HOT_WALLET_CONFIG_ADMIN_API_KEY }}
             AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
             AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
@@ -100,7 +101,6 @@ jobs:
             VERIFF_SECRET_2FA: ${{ secrets.VERIFF_SECRET_2FA }}
             DOGE_TESTNET_PRIVATE_KEY: ${{ secrets.DOGE_TESTNET_PRIVATE_KEY }}
 
-
     tests-run:
         needs: detect-tests
         if: always()
@@ -118,6 +118,7 @@ jobs:
             OXYLABS_USER: ${{ secrets.OXYLABS_USER }}
             OXYLABS_PASSWORD: ${{ secrets.OXYLABS_PASSWORD }}
             MAILINATOR_API_KEY: ${{ secrets.MAILINATOR_API_KEY }}
+            E2E_HOT_WALLET_CONFIG_ADMIN_API_KEY: ${{ secrets.E2E_HOT_WALLET_CONFIG_ADMIN_API_KEY }}
             AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
             AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
@@ -142,4 +143,3 @@ jobs:
             VERIFF_PASSWORD: ${{ secrets.VERIFF_PASSWORD }}
             VERIFF_SECRET_2FA: ${{ secrets.VERIFF_SECRET_2FA }}
             DOGE_TESTNET_PRIVATE_KEY: ${{ secrets.DOGE_TESTNET_PRIVATE_KEY }}
-

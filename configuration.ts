@@ -66,6 +66,10 @@ export const xray: Record<string, string> = {
 	clientSecret: asString(process.env.XRAY_CLIENT_SECRET),
 };
 
+export const hotWalletConfig = {
+	adminApiKey: asString(process.env.E2E_HOT_WALLET_CONFIG_ADMIN_API_KEY),
+};
+
 export const coingecko: Record<string, string> = {
 	baseUrl: ConfiguraitonUrl.COINGECKO,
 	apiKey: asString(process.env.COINGECKO_API_KEY),

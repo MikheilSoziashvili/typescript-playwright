@@ -253,3 +253,9 @@ export type UtxoNodeConfig = {
 	user: string;
 	pass: string;
 };
+
+export type NotificationTimeWindow = {
+	startTimestampSeconds: number;
+	earliestAllowedTimestampSeconds: number;
+	endTimeMs: number;
+};

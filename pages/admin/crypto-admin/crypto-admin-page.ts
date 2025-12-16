@@ -9,6 +9,7 @@ import {
 	CryptoOperationOptions,
 } from "@core/types/types";
 import { step } from "decorators/step";
+import { Cryptocurrency, CryptoTicker } from "@enums/cryptocurrencies";
 
 export class CryptoAdminPage extends BasePage<CryptoAdminMap> {
 	public constructor(page: Page) {
@@ -57,6 +58,31 @@ export class CryptoAdminPage extends BasePage<CryptoAdminMap> {
 	public async sendQueuedWithdrawals(): Promise<void> {
 		await this.navigate();
 		await this.map.sendQueuedWithdrawalsButton.click();
+	}
+
+	@step("Enable all crypto operations")
+	public async enableAllCryptoOperations(): Promise<void> {
+		const cryptoList = [
+			Cryptocurrency.Bitcoin,
+			Cryptocurrency.Litecoin,
+			Cryptocurrency.Ethereum,
+			CryptoTicker.USDT,
+			CryptoTicker.USDC_ETH,
+			CryptoTicker.USDT_TRON,
+			Cryptocurrency.Tron,
+			Cryptocurrency.Ripple,
+			Cryptocurrency.Doge,
+			Cryptocurrency.Solana,
+			CryptoTicker.USDC_SOL,
+		];
+
+		const cryptoConfig = cryptoList.map((crypto) => ({
+			cryptoName: crypto,
+			deposit: true,
+			withdraw: true,
+		}));
+
+		await this.toggleCryptoOperations(cryptoConfig);
 	}
 
 	@step("Toggle crypto operations")
