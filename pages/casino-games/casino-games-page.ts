@@ -8,7 +8,7 @@ import {
 	BaccaratBetSpot,
 	BaccaratChipValue,
 } from "@enums/baccarat-game-options";
-import { CasinoGameName, GameProvider } from "@enums/casino-game";
+import { CasinoGameName, GameProvider, RoundOutcome } from "@enums/casino-game";
 import { testData } from "test-data/test-data-manager";
 import { BookOfPyramidsPage } from "./bgaming/book-of-pyramids/book-of-pyramids-page";
 import { CasinoGamesPageAsserter } from "./casino-games-page-asserter";
@@ -110,26 +110,42 @@ export class CasinoGamesUnifiedPage extends BasePage<CasinoGamesPageMap> {
 	}
 
 	/**
-	 * Plays a game round until win for the specified game.
+	 * Plays a casino game round until the specified outcome is detected
 	 *
 	 * @param config - The game configuration containing gameName and gameProvider
-	 * @returns A promise that resolves when the round has been played
+	 * @param roundOutcome - The desired round outcome (WIN or LOSE)
 	 */
-	@step("Play round until win for {config.gameProvider}/{config.gameName}")
-	public async playCasinoGameRoundUntilWin(
+	@step(
+		"Play round until {roundOutcome} for {config.gameProvider}/{config.gameName}",
+	)
+	public async playCasinoGameRound(
 		config: CasinoGameConfig,
+		roundOutcome: RoundOutcome,
 	): Promise<void> {
 		const gamePage = this.getGamePage(config);
+		const isWin = roundOutcome === RoundOutcome.WIN;
 
 		switch (config.gameProvider) {
 			case GameProvider.BGAMING: {
 				const bookOfPyramidsPage = gamePage as BookOfPyramidsPage;
-				await bookOfPyramidsPage.steps().playUntilWonAndGetResults();
+				if (isWin) {
+					await bookOfPyramidsPage
+						.steps()
+						.playUntilWonAndGetResults();
+				} else {
+					await bookOfPyramidsPage
+						.steps()
+						.playUntilLostAndGetResults();
+				}
 				break;
 			}
 			case GameProvider.HACKSAW_GAMING: {
 				const cashVaultIPage = gamePage as CashVaultIPage;
-				await cashVaultIPage.steps().scratchCardsUntilWon();
+				if (isWin) {
+					await cashVaultIPage.steps().scratchCardsUntilWon();
+				} else {
+					await cashVaultIPage.steps().scratchCardsUntilLost();
+				}
 				break;
 			}
 			case GameProvider.WICKED_GAMES: {
@@ -137,25 +153,41 @@ export class CasinoGamesUnifiedPage extends BasePage<CasinoGamesPageMap> {
 				const betTestData = testData()
 					.fromObject()
 					.bet.build({ username: "default" }, { betAmount: 200 });
-				await bookOfArabiaPage
-					.steps()
-					.spinUntilWon(betTestData.betAmount);
+				if (isWin) {
+					await bookOfArabiaPage
+						.steps()
+						.spinUntilWon(betTestData.betAmount);
+				} else {
+					await bookOfArabiaPage
+						.steps()
+						.spinUntilLost(betTestData.betAmount);
+				}
 				break;
 			}
 			case GameProvider.EVOLUTION_GAMING: {
 				const liveBaccaratSqueezePage =
 					gamePage as LiveBaccaratSqueezePage;
-				await liveBaccaratSqueezePage
-					.steps()
-					.playUntilWonAndGetResults({
-						betSpots: [
-							BaccaratBetSpot.TIE,
-							BaccaratBetSpot.PLAYER,
-							BaccaratBetSpot.BANKER,
-						],
-						betAmount: BaccaratChipValue.TWO,
-					});
-
+				const baccaratBetDataWin = {
+					betSpots: [
+						BaccaratBetSpot.TIE,
+						BaccaratBetSpot.PLAYER,
+						BaccaratBetSpot.BANKER,
+					],
+					betAmount: BaccaratChipValue.TWO,
+				};
+				const baccaratBetDataLoss = {
+					betSpots: [BaccaratBetSpot.TIE],
+					betAmount: BaccaratChipValue.TWO,
+				};
+				if (isWin) {
+					await liveBaccaratSqueezePage
+						.steps()
+						.playUntilWonAndGetResults(baccaratBetDataWin);
+				} else {
+					await liveBaccaratSqueezePage
+						.steps()
+						.playUntilLostAndGetResults(baccaratBetDataLoss);
+				}
 				break;
 			}
 			case GameProvider.ELK_STUDIOS: {
@@ -164,9 +196,15 @@ export class CasinoGamesUnifiedPage extends BasePage<CasinoGamesPageMap> {
 					.fromObject()
 					.bet.build({ username: "default" }, { betAmount: 30 });
 				await zuluGoldPage.clickNextButton();
-				await zuluGoldPage
-					.steps()
-					.spinUntilWinRound(spinCount.betAmount);
+				if (isWin) {
+					await zuluGoldPage
+						.steps()
+						.spinUntilWinRound(spinCount.betAmount);
+				} else {
+					await zuluGoldPage
+						.steps()
+						.spinUntilLoseRound(spinCount.betAmount);
+				}
 				break;
 			}
 			case GameProvider.PRAGMATIC_PLAY: {
@@ -175,9 +213,15 @@ export class CasinoGamesUnifiedPage extends BasePage<CasinoGamesPageMap> {
 					.fromObject()
 					.bet.build({ username: "default" }, { betAmount: 30 });
 				await sweetBonanzaPage.clickNextButton();
-				await sweetBonanzaPage
-					.steps()
-					.spinUntilWinRound(spinCount.betAmount);
+				if (isWin) {
+					await sweetBonanzaPage
+						.steps()
+						.spinUntilWinRound(spinCount.betAmount);
+				} else {
+					await sweetBonanzaPage
+						.steps()
+						.spinUntilLoseRound(spinCount.betAmount);
+				}
 				break;
 			}
 			default: {

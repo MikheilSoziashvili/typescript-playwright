@@ -9,6 +9,7 @@ import { currencyToNumberPattern } from "@support/regex-patterns";
 import { TransactionDetailsText } from "@enums/admin/transaction-details-text";
 import { UserAuditLogEntry } from "@dtos/responses/gamdom-api/get-user-audit-log-response";
 import { EsportsToastResult } from "@enums/esport-toast-results";
+import { RoundOutcome } from "@enums/casino-game";
 
 export class UserInfoTransactionsAdminPageAsserter extends BaseAsserter<UserInfoTransactionsAdminPage> {
 	public constructor(page: UserInfoTransactionsAdminPage) {
@@ -205,6 +206,69 @@ export class UserInfoTransactionsAdminPageAsserter extends BaseAsserter<UserInfo
 		gameCode: string,
 	): Promise<void> {
 		await this.verifyLastTransactionContainsTexts([gameCode]);
+	}
+
+	@step("Verify row before last contains BET transaction")
+	public async rowBeforeLastContainsBetTransaction(): Promise<void> {
+		await this.checkElementsAreVisible([this.gamdomPage.map.logsTableBody]);
+
+		const detailsColumns =
+			await this.gamdomPage.map.logsTableTransactionDetailsColumn.allTextContents();
+
+		expect(
+			detailsColumns.length,
+			"Expected at least 2 transactions in the table",
+		).toBeGreaterThanOrEqual(2);
+
+		const rowBeforeLastDetails = detailsColumns[1];
+
+		expect(
+			rowBeforeLastDetails,
+			`Row before last should contain "${TransactionDetailsText.MADE_A_BET_ON_GAME}"`,
+		).toContain(TransactionDetailsText.MADE_A_BET_ON_GAME);
+	}
+
+	@step("Verify last transaction value matches round outcome {roundOutcome}")
+	public async lastTransactionValueMatchesRoundOutcome(
+		roundOutcome: RoundOutcome,
+	): Promise<void> {
+		await this.checkElementsAreVisible([this.gamdomPage.map.logsTableBody]);
+
+		const valueColumns =
+			await this.gamdomPage.map.logsTableValueColumn.allTextContents();
+
+		expect(
+			valueColumns.length,
+			"No transaction values found in the table",
+		).toBeGreaterThan(0);
+
+		const lastTransactionValue = valueColumns[0];
+		const numericValue = parseFloat(
+			lastTransactionValue.replace(currencyToNumberPattern, ""),
+		);
+
+		logger.info(
+			`Last transaction value: ${lastTransactionValue}, numeric: ${numericValue}, expected outcome: ${roundOutcome}`,
+		);
+
+		switch (roundOutcome) {
+			case RoundOutcome.WIN:
+				expect(
+					numericValue,
+					`Expected positive value for WIN round, but got: ${lastTransactionValue}`,
+				).toBeGreaterThan(0);
+				break;
+			case RoundOutcome.LOSE:
+				expect(
+					numericValue,
+					`Expected 0 value for LOSE round, but got: ${lastTransactionValue}`,
+				).toBe(0);
+				break;
+			default:
+				throw new Error(
+					`Unhandled round outcome: ${String(roundOutcome)}`,
+				);
+		}
 	}
 
 	@step("eSports category audit log")

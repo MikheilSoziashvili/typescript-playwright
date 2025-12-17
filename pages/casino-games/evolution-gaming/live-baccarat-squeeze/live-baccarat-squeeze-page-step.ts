@@ -144,4 +144,65 @@ export class LiveBaccaratSqueezePageSteps extends BasePageStep<LiveBaccaratSquee
 
 		return results;
 	}
+
+	@step("Play until lost and get results")
+	public async playUntilLostAndGetResults(
+		options: PlayUntilWonOptions,
+	): Promise<GameRoundResult[]> {
+		const results: GameRoundResult[] = [];
+		const betSpots = Array.isArray(options.betSpots)
+			? options.betSpots
+			: [options.betSpots];
+		const maxAttempts = options.maxAttempts ?? 10;
+		let hasLost = false;
+		let attempts = 0;
+
+		while (!hasLost && attempts < maxAttempts) {
+			attempts++;
+			logger.info(`Starting game round ${attempts}`);
+
+			await this.gamdomPage.assertThat().gameReadyToStart();
+
+			await this.gamdomPage
+				.assertThat()
+				.checkElementsAreVisible([
+					this.gamdomPage.map.bettingGridContainer,
+				]);
+
+			await this.placeBetsOnMultipleSpots(betSpots, options.betAmount);
+
+			await this.gamdomPage.assertThat().gameRoundResultAppeared();
+
+			const result = await this.gamdomPage
+				.assertThat()
+				.verifyGameRoundResultAndGetWinningAmount(betSpots);
+
+			const isWin = betSpots.some(
+				(spot) => spot.toUpperCase() === result.winner,
+			);
+
+			const roundResult: GameRoundResult = {
+				won: isWin && result.amount !== "0" && result.amount !== "",
+				amount: result.amount,
+				betSpot: result.winner as BaccaratBetSpot,
+			};
+
+			results.push(roundResult);
+
+			if (!roundResult.won) {
+				hasLost = true;
+				logger.info(`Lost after ${attempts} round(s)`);
+			} else {
+				logger.info(`Round ${attempts} was a win, retrying...`);
+			}
+		}
+
+		if (!hasLost) {
+			logger.warn(
+				`Did not lose after ${maxAttempts} attempts, returning results`,
+			);
+		}
+
+		return results;
+	}
 }

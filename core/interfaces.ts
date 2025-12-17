@@ -1,5 +1,5 @@
 import { BaccaratBetSpot } from "@enums/baccarat-game-options";
-import { CasinoGameName, GameProvider } from "@enums/casino-game";
+import { CasinoGameName, GameProvider, RoundOutcome } from "@enums/casino-game";
 
 export interface JsonData {
 	[key: string]: string | number | boolean | JsonData | JsonData[];
@@ -63,6 +63,10 @@ export interface TransactionResult {
 export interface CasinoGameConfig {
 	gameName: CasinoGameName;
 	gameProvider: GameProvider;
+}
+
+export interface CasinoGameRoundConfig extends CasinoGameConfig {
+	roundOutcome: RoundOutcome;
 }
 
 export interface PlayUntilWonOptions {

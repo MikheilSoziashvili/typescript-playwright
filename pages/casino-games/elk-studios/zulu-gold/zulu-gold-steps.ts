@@ -84,4 +84,104 @@ export class ZuluGoldSteps extends BaseVisualSteps {
 
 		return spinCount;
 	}
+
+	@step("Spin until lose round")
+	public async spinUntilLoseRound(maxSpins: number): Promise<number> {
+		let spinCount = 0;
+
+		await waitUntil(
+			async () => {
+				spinCount++;
+
+				const spinResult = await this.tryHandleSpinButton(spinCount);
+				if (spinResult === true) {
+					return true;
+				}
+				if (spinResult === false) {
+					return false;
+				}
+
+				await this.tryHandleBonusButtons(spinCount);
+				return false;
+			},
+			{
+				errorMessage: `Could not get a losing round after ${maxSpins} spins`,
+				intervalSeconds: TimeoutSeconds.HALF,
+				timeoutSeconds:
+					maxSpins * (TimeoutSeconds.TEN + TimeoutSeconds.FIVE),
+			},
+		);
+
+		return spinCount;
+	}
+
+	/**
+	 * @returns true = lose round found, false = won round, null = spin button doesn't exist
+	 */
+	@step("Try handle spin button")
+	private async tryHandleSpinButton(
+		spinCount: number,
+	): Promise<boolean | null> {
+		const spinButtonExists = await this.zuluGoldPage
+			.assertThat()
+			.spinButtonExists();
+
+		if (!spinButtonExists) {
+			return null;
+		}
+
+		logger.info(`Spin-button found after ${spinCount} spins`);
+		await this.zuluGoldPage.clickSpinButton();
+		await waitForSeconds(2);
+
+		const winLabelExists = await this.zuluGoldPage
+			.assertThat()
+			.winLabelExists();
+
+		if (!winLabelExists) {
+			logger.info(`Lose round after ${spinCount} spins`);
+			return true;
+		}
+
+		logger.info(`Win-label found after ${spinCount} spins, retrying...`);
+		return false;
+	}
+
+	@step("Try handle bonus buttons")
+	private async tryHandleBonusButtons(spinCount: number): Promise<void> {
+		if (
+			await this.tryClickBonusButton(
+				() => this.zuluGoldPage.assertThat().spinBonusButtonExists(),
+				() => this.zuluGoldPage.clickSpinBonusButton(),
+				"Spin-bonus-button",
+				spinCount,
+			)
+		) {
+			return;
+		}
+
+		await this.tryClickBonusButton(
+			() => this.zuluGoldPage.assertThat().spinBonusSecondButtonExists(),
+			() => this.zuluGoldPage.clickSpinBonusSecondButton(),
+			"Spin-bonus-second-button",
+			spinCount,
+		);
+	}
+
+	@step("Try click bonus button")
+	private async tryClickBonusButton(
+		existsFn: () => Promise<boolean>,
+		clickFn: () => Promise<void>,
+		label: string,
+		spinCount: number,
+	): Promise<boolean> {
+		if (!(await existsFn())) {
+			return false;
+		}
+
+		logger.info(`${label} found after ${spinCount} spins`);
+		await clickFn();
+		await waitForSeconds(2);
+		return true;
+	}
 }

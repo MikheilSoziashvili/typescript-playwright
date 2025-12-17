@@ -78,6 +78,29 @@ export class BookOfPyramidsPageSteps extends BasePageStep<BookOfPyramidsPage> {
 		return results;
 	}
 
+	@step("Play until lost and return all results")
+	public async playUntilLostAndGetResults(): Promise<
+		{
+			won: boolean;
+			amount: number;
+		}[]
+	> {
+		const results: { won: boolean; amount: number }[] = [];
+		let hasLost = false;
+
+		while (!hasLost) {
+			const result = await this.spinOnceAndGetResult();
+			results.push(result);
+
+			if (!result.won) {
+				hasLost = true;
+				logger.info(`Lost after ${results.length} spin(s)`);
+			}
+		}
+
+		return results;
+	}
+
 	@step("Refresh until game is loaded")
 	public async refreshUntilGameIsLoaded(): Promise<void> {
 		await waitUntil(

@@ -86,6 +86,28 @@ export class BookOfArabiaPageSteps extends BasePageStep<BookOfArabiaPage> {
 		}
 	}
 
+	@step("Spin until lost")
+	public async spinUntilLost(betAmount: number): Promise<void> {
+		let hasLost = false;
+		let spinCount = 0;
+
+		await this.gamdomPage.clickContinueButton();
+		await this.setBetAmount(betAmount);
+		while (!hasLost) {
+			await this.spinAndWait();
+			spinCount++;
+
+			const isWon = await this.gamdomPage
+				.assertThat()
+				.isWinLabelVisible();
+
+			if (!isWon) {
+				hasLost = true;
+				logger.info(`Lost after ${spinCount} spin(s)`);
+			}
+		}
+	}
+
 	@step("Handle unexpected free spins popup if it appears")
 	public async handleUnexpectedFreeSpinsPopup(): Promise<void> {
 		const popup = this.gamdomPage.map.popUpContainer;

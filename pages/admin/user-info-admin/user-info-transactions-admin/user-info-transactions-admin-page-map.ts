@@ -72,6 +72,12 @@ export class UserInfoTransactionsAdminPageMap extends BaseMap {
 		);
 	}
 
+	public get logsTableValueColumn(): Locator {
+		return this.logsTableBody.locator(
+			'[data-testid="transaction-value"]:not(.user-event-info)',
+		);
+	}
+
 	public get wageredStatsTable(): Locator {
 		return this.page.getByTestId("wagered-stats-table");
 	}

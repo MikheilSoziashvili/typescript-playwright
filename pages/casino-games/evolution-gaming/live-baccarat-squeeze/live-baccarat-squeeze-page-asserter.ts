@@ -98,24 +98,27 @@ export class LiveBaccaratSqueezePageAsserter extends BaseAsserter<LiveBaccaratSq
 	public async verifyGameRoundResultAndGetWinningAmount(
 		expectedBetSpots: BaccaratBetSpot[],
 	): Promise<{ winner: string; amount: string }> {
-		const [winnerText, amountText] = await Promise.all([
-			this.gamdomPage.map.gameResultWinner.textContent(),
-			this.gamdomPage.map.gameResultAmount.textContent(),
-		]);
-
+		const winnerText =
+			await this.gamdomPage.map.gameResultWinner.textContent();
 		const winner = winnerText?.trim() ?? "";
-		const amount = amountText?.trim() ?? "";
 
 		const normalizedSpots = expectedBetSpots.map((spot) =>
 			spot.toUpperCase(),
 		);
 
-		if (normalizedSpots.includes(winner)) {
+		const isWin = normalizedSpots.includes(winner);
+
+		if (isWin) {
 			await expect(this.gamdomPage.map.gameResultMessage).toContainText(
 				BaccaratGameResultMessage.YOU_WIN,
 			);
+			const amountText =
+				await this.gamdomPage.map.gameResultAmount.textContent();
+			const amount = amountText?.trim() ?? "";
+			return { winner, amount };
 		}
 
+		const amount = "";
 		return { winner, amount };
 	}
 }

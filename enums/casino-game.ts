@@ -7,6 +7,11 @@ export enum GameProvider {
 	PRAGMATIC_PLAY = "pragmatic-play",
 }
 
+export enum RoundOutcome {
+	WIN = "win",
+	LOSE = "lose",
+}
+
 export enum CasinoGameName {
 	BARREL_BONANZA = "Barrel Bonanza", // Backseat Gaming
 	MYSTIC_CHIEF = "Mystic Chief", // Pragmatic Play

@@ -6,7 +6,6 @@ import {
 } from "@core/utils/utils";
 import { UserInfoTabs } from "@enums/admin/user-info-tabs";
 import { CasinoGameName } from "@enums/casino-game";
-import { CsvFilesName } from "@enums/csv-file-name";
 import { Currency } from "@enums/currencies";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
@@ -140,12 +139,11 @@ test.describe("Casino games tests", () => {
 
 test.describe("Aggregator and Providers - Casino games tests", () => {
 	testData()
-		.fromCsvParsed({
-			file: CsvFilesName.CASINO_GAMES_AGGREGATOR_PROVIDER,
-		})
+		.fromDomain()
+		.casinoGames.allGamesWithRoundOutcomes()
 		.forEach((game) => {
 			test(
-				`[ENG-5015] Verify round closer logs for Aggregator: ${game.aggregator}, Provider: ${game.gameProvider}, Casino game: ${game.gameName}`,
+				`[ENG-5015] Verify round closer logs for Aggregator: ${game.aggregator}, Provider: ${game.gameProvider}, Casino game: ${game.gameName}, Round outcome: ${game.roundOutcome}`,
 				testDetails()
 					.withTags(
 						JiraComponent.ADMIN,
@@ -188,7 +186,7 @@ test.describe("Aggregator and Providers - Casino games tests", () => {
 
 					await superAdminWithProxySession.pages.casinoGamesPage
 						.steps()
-						.playCasinoGameRoundUntilWinSuccessfully(game);
+						.playCasinoGameRoundSuccessfully(game);
 
 					await superAdminWithProxySession.pages.userInfoAdminPage
 						.steps()
@@ -216,6 +214,14 @@ test.describe("Aggregator and Providers - Casino games tests", () => {
 					await superAdminWithProxySession.pages.transactionsAdminPage
 						.assertThat()
 						.lastTransactionContainsGameCode(game.gameCode);
+					await superAdminWithProxySession.pages.transactionsAdminPage
+						.assertThat()
+						.lastTransactionValueMatchesRoundOutcome(
+							game.roundOutcome,
+						);
+					await superAdminWithProxySession.pages.transactionsAdminPage
+						.assertThat()
+						.rowBeforeLastContainsBetTransaction();
 				},
 			);
 		});

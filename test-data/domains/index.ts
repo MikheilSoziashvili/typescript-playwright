@@ -1,3 +1,4 @@
+import { CasinoGamesDomainData } from "./casino-games-domain-data";
 import { OriginalsDomainData } from "./originals-domain-data";
 import { VerificationDomainData } from "./verification-domain-data";
 import { VipManagerDomainData } from "./vip-manager-domain-data";
@@ -20,6 +21,7 @@ export const domainRegistry = {
 	promoCodes: PromoCodeDomainData,
 	adminNewUsers: AdminNewUsersDomainData,
 	adminWriter: AdminWriterDomainData,
+	casinoGames: CasinoGamesDomainData,
 	sokGames: SokGamesDomainData,
 	oAuthLogin: GeoblockDomainData,
 	cryptoWithdrawal: CryptoWithdrawalDomainData,

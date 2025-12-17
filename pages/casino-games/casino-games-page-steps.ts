@@ -7,7 +7,7 @@ import {
 	ALEA_PLAY_AUTH,
 	WICKED_GAMES_AUTH,
 } from "@constants/auth-casino-game-providers";
-import { CasinoGameConfig } from "@core/interfaces";
+import { CasinoGameConfig, CasinoGameRoundConfig } from "@core/interfaces";
 
 export class CasinoGamesPageSteps extends BasePageStep<CasinoGamesUnifiedPage> {
 	public constructor(gamdomPage: CasinoGamesUnifiedPage) {
@@ -56,20 +56,20 @@ export class CasinoGamesPageSteps extends BasePageStep<CasinoGamesUnifiedPage> {
 	/**
 	 * Plays a complete game round successfully by combining:
 	 * 1. Wait for game to load successfully
-	 * 2. Play the game round until win
+	 * 2. Play the game round until win or lose based on roundOutcome
 	 * 3. Wait for the game round to finish
 	 *
-	 * @param config - The game configuration containing gameName and gameProvider
+	 * @param config - The game configuration containing gameName, gameProvider, and roundOutcome
 	 * @returns A promise that resolves when the complete round has been played
 	 */
 	@step(
-		"Play game round until win successfully for {config.gameProvider}/{config.gameName}",
+		"Play game round until {config.roundOutcome} successfully for {config.gameProvider}/{config.gameName}",
 	)
-	public async playCasinoGameRoundUntilWinSuccessfully(
-		config: CasinoGameConfig,
+	public async playCasinoGameRoundSuccessfully(
+		config: CasinoGameRoundConfig,
 	): Promise<void> {
 		await this.gamdomPage.assertThat().waitForGameLoadSuccessfully(config);
-		await this.gamdomPage.playCasinoGameRoundUntilWin(config);
+		await this.gamdomPage.playCasinoGameRound(config, config.roundOutcome);
 		await this.gamdomPage.assertThat().waitForCasinoGameRoundFinish(config);
 	}
 }

@@ -52,4 +52,41 @@ export class SweetBonanzaSteps extends BaseVisualSteps {
 
 		return spinCount;
 	}
+
+	@step("Spin until lose round")
+	public async spinUntilLoseRound(maxSpins: number): Promise<number> {
+		let spinCount = 0;
+
+		await waitUntil(
+			async () => {
+				spinCount++;
+
+				await this.sweetBonanzaPage.assertThat().waitForSpinButton();
+				await this.sweetBonanzaPage.clickSpinButton();
+				await waitForSeconds(2);
+
+				const winLabelExists = await this.sweetBonanzaPage
+					.assertThat()
+					.winLabelExists();
+
+				if (!winLabelExists) {
+					logger.info(`Lose round after ${spinCount} spins`);
+					return true;
+				}
+				logger.info(
+					`Win-label found after ${spinCount} spins, retrying...`,
+				);
+
+				return false;
+			},
+			{
+				errorMessage: `Could not get a losing round after ${maxSpins} spins`,
+				intervalSeconds: TimeoutSeconds.HALF,
+				timeoutSeconds:
+					maxSpins * (TimeoutSeconds.TEN + TimeoutSeconds.FIVE),
+			},
+		);
+
+		return spinCount;
+	}
 }

@@ -66,4 +66,24 @@ export class CashVaultIPageSteps extends BasePageStep<CashVaultIPage> {
 			}
 		}
 	}
+
+	@step("Scratch cards until lost")
+	public async scratchCardsUntilLost(): Promise<void> {
+		let hasLost = false;
+		let scratchCount = 0;
+
+		while (!hasLost) {
+			await this.buyAndScratchAllCards();
+			scratchCount++;
+
+			const isWon = await this.gamdomPage
+				.assertThat()
+				.isWonLabelVisible();
+
+			if (!isWon) {
+				hasLost = true;
+				logger.info(`Lost after ${scratchCount} scratch(es)`);
+			}
+		}
+	}
 }
