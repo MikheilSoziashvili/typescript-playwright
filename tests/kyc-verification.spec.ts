@@ -454,7 +454,7 @@ test.describe(
 
 		PROOF_OF_FUNDS_OPTIONS.forEach((proofOfFund) =>
 			test(
-				`[ENG-8737] Submit KYC Level 3 - ${proofOfFund}`,
+				`[ENG-8663] Submit KYC Level 3 - ${proofOfFund}`,
 				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
 				async ({ browserSessionManager }) => {
 					const regularUser = await browserSessionManager.loginAs(
