@@ -126,6 +126,8 @@ export class CryptoAdminPage extends BasePage<CryptoAdminMap> {
 
 		if (isChecked !== enabled) {
 			await checkbox.click();
+			await this.map.feeLevelDropdown(nodeTitle, currency).click();
+			await this.map.selectLowestFeeLevelOption.click();
 			this.acceptDialog();
 			await this.map.saveButton(nodeTitle, currency).click();
 		}

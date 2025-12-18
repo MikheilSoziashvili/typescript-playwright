@@ -144,6 +144,16 @@ export class CryptoAdminMap extends BaseMap {
 			.first();
 	}
 
+	public feeLevelDropdown(nodeTitle: string, currency?: string): Locator {
+		return this.getRow(nodeTitle, currency)
+			.getByTestId("titleDropdownInput")
+			.first();
+	}
+
+	public get selectLowestFeeLevelOption(): Locator {
+		return this.page.getByRole("option", { name: "LOW" });
+	}
+
 	public saveButton(nodeTitle: string, currency?: string): Locator {
 		return this.getRow(nodeTitle, currency)
 			.locator('button:has-text("Save")')
