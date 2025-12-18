@@ -4,6 +4,7 @@ import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { TestUserRole } from "@enums/test-user-roles";
 import { testData } from "test-data/test-data-manager";
+import { isScheduledRun } from "configuration";
 
 test.describe(
 	"Admin - Writer",
@@ -24,8 +25,13 @@ test.describe(
 							blogImageUploadScenario.imageSize
 						]
 					}`,
-					testDetails().withAuthor(JiraUser.YUKSEL_CHAUSH).apply(),
+					testDetails()
+						.withJiraBugTickets("ENG-12009")
+						.withAuthor(JiraUser.YUKSEL_CHAUSH)
+						.apply(),
 					async ({ browserSessionManager, writerAdminNewPage }) => {
+						test.fixme(isScheduledRun);
+
 						await browserSessionManager.loginAs(
 							TestUserRole.SUPERADMIN,
 							{ reuseContext: true },
