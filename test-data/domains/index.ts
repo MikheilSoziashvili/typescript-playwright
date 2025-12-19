@@ -11,9 +11,11 @@ import { AdminWriterDomainData } from "./admin-writer-domain-data";
 import { UserWalletDomainData } from "./user-wallet-domain-data";
 import { CryptoWithdrawalDomainData } from "./crypto-withdrawal-domain-data";
 import { HotWalletDomainData } from "./hot-wallet-domain-data";
+import { DiceGameDomainData } from "./dice-game-domain-data";
 
 export const domainRegistry = {
 	originals: OriginalsDomainData,
+	diceGame: DiceGameDomainData,
 	vipManager: VipManagerDomainData,
 	freeSpins: FreeSpinsDomainData,
 	userWallet: UserWalletDomainData,

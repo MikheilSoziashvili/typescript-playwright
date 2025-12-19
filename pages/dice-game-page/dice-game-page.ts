@@ -8,10 +8,13 @@ import { DiceAutobetTestData } from "@dtos/test-data";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { step } from "decorators/step";
 import { BetIncreaseCondition } from "@enums/dice-autobet-section-name";
+import { Toast } from "@pages/components/toast/toast";
 
 export class DiceGamePage extends BasePage<DiceGamePageMap> {
+	public toast: Toast;
 	public constructor(page: Page) {
 		super(page, new DiceGamePageMap(page));
+		this.toast = new Toast(page);
 	}
 
 	public override async navigate(

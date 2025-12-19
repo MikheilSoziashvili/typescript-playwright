@@ -11,6 +11,7 @@ export enum ToastSubTitle {
 	UPLOAD_CSV_FILE = "Please upload a CSV file!",
 	REFRESHED_STATE = "Refreshed state",
 	AUTOBET_FINISHED = "Autobet finished!",
+	BET_TOO_HIGH = "Bet too high!",
 	PASSWORD_CHANGED = "You have successfully changed your password. Have fun and good luck!",
 	CHANGE_CAMPAIGN_STATUS = "Successfully changed status for campaign",
 	PROMO_CODE_REDEEMED = "Promo code has been redeemed.",
@@ -52,4 +53,5 @@ export enum ToastSubTitle {
 	USER_DOES_NOT_EXIST = "User does not exist",
 	DOCUMENTS_APPROVED = "Documents approved successfully",
 	DOCUMENTS_REJECTED = "Documents rejected successfully",
+	DICE_POTENTIAL_WIN_TOO_HIGH = "Potential Win must be lower than $800000. Please decrease your bet size",
 }
