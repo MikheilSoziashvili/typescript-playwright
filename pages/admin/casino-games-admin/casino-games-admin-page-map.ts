@@ -21,4 +21,40 @@ export class CasinoGamesAdminMap extends BaseMap {
 			.getByTestId("downloadGamesContainer")
 			.getByTestId("downloadGamesButton");
 	}
+
+	public get saveChangesButton(): Locator {
+		return this.adminCasinoGamesPageHeaderContainer.getByTestId(
+			"saveChangesButton",
+		);
+	}
+
+	public get searchByNameOrCodeContainer(): Locator {
+		return this.adminCasinoGamesPageHeaderContainer.getByTestId(
+			"searchByNameOrCodeContainer",
+		);
+	}
+
+	public get searchByNameOrCodeInput(): Locator {
+		return this.searchByNameOrCodeContainer.getByTestId(
+			"searchByNameOrCodeInput",
+		);
+	}
+
+	public tableRowByCasinoGameAndProviderName(
+		gameName: string,
+		providerName: string,
+	): Locator {
+		return this.adminCasinoGamesPageContent.locator(
+			`//tbody//tr[td[contains(@class,"game-name") and text()="${gameName}"] and td[contains(@class,"imported-from") and contains(text(),"${providerName}")]]`,
+		);
+	}
+
+	public toggleOnOffCasinoGameByCasinoNameAndProviderName(
+		gameName: string,
+		providerName: string,
+	): Locator {
+		return this.tableRowByCasinoGameAndProviderName(gameName, providerName)
+			.locator('//td//span[@role="button"]')
+			.nth(0);
+	}
 }

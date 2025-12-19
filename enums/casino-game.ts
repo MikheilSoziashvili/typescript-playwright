@@ -7,6 +7,12 @@ export enum GameProvider {
 	PRAGMATIC_PLAY = "pragmatic-play",
 }
 
+export enum GameProviderCode {
+	SOFTSWISS = "softswiss",
+	ALEA = "alea",
+	HACKSAW_GAMING = "hacksawgaming",
+}
+
 export enum RoundOutcome {
 	WIN = "win",
 	LOSE = "lose",

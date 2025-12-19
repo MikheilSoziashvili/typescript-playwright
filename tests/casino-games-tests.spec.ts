@@ -5,7 +5,7 @@ import {
 	stripAuthFromExternalRequests,
 } from "@core/utils/utils";
 import { UserInfoTabs } from "@enums/admin/user-info-tabs";
-import { CasinoGameName } from "@enums/casino-game";
+import { CasinoGameName, GameProviderCode } from "@enums/casino-game";
 import { Currency } from "@enums/currencies";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
@@ -14,6 +14,7 @@ import { TestUserRole } from "@enums/test-user-roles";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { Unit } from "@enums/units";
+import { ToggleOptions } from "@enums/visibility-options";
 import { Wallet } from "@enums/wallets";
 import { test } from "@fixtures/fixtures";
 import { isScheduledRun } from "configuration";
@@ -138,6 +139,20 @@ test.describe("Casino games tests", () => {
 });
 
 test.describe("Aggregator and Providers - Casino games tests", () => {
+	test.beforeEach(async ({ casinoGamesAdminPage, browserSessionManager }) => {
+		await browserSessionManager.loginAs(TestUserRole.SUPERADMIN, {
+			reuseContext: true,
+		});
+		await casinoGamesAdminPage.navigate();
+		await casinoGamesAdminPage
+			.steps()
+			.searchAndToggleOnOffCasinoGameForProviders(
+				CasinoGameName.CASH_VAULT_I,
+				[GameProviderCode.SOFTSWISS, GameProviderCode.ALEA],
+				ToggleOptions.OFF,
+			);
+	});
+
 	testData()
 		.fromDomain()
 		.casinoGames.allGamesWithRoundOutcomes()

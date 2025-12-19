@@ -28,6 +28,7 @@ export const PROMO_CAMPAIGNS_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/Promo%20Cam
 export const PROMOTION_ADMIN_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/PromotionAdmin`;
 export const GIFT_CARDS_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/GiftCardsAdmin`;
 export const SEO_REDIRECTS_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/SEORedirects`;
+export const CASINO_GAMES_ADMIN_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/Casino%20Games`;
 export const BANNED_USER_PAGE_ENDPOINT = "/banned?reason";
 export const ESPORTS_PAGE_ENDPOINT = "/esports";
 export const SLOTS_BATTLE_PAGE_ENDPOINT = "/slots-battles";
