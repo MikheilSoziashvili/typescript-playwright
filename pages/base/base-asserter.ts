@@ -638,7 +638,7 @@ export class BaseAsserter<
 		timeout: number = Timeout.SHORT,
 	): Promise<void> {
 		await this.gamdomPage.map.waitForInvisibility({
-			locator: this.gamdomPage.map.getLoadingAnimation(),
+			locator: this.gamdomPage.map.getLoadingAnimation().first(),
 			timeout: timeout,
 		});
 	}
