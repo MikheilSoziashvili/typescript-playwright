@@ -12,6 +12,12 @@ export class ChatMap extends BaseMap {
 		super(page);
 	}
 
+	public get chatHeaderButton(): Locator {
+		return this.page
+			.getByTestId("headerContainer")
+			.getByTestId("iconChatButton");
+	}
+
 	public get chatOpenedStateContainer(): Locator {
 		return this.page.locator("[data-testid*=chatSectionContainer-]");
 	}

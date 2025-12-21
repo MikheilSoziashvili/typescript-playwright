@@ -296,4 +296,11 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 		const pinned = this.gamdomPage.map.pinnedMessageLocator(options);
 		await expect(pinned).toHaveCount(0);
 	}
+
+	@step("Assert that chat header button is missing")
+	public async chatHeaderButtonIsMissing(): Promise<void> {
+		await this.checkElementsAreNotVisible([
+			this.gamdomPage.map.chatHeaderButton,
+		]);
+	}
 }

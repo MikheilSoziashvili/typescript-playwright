@@ -431,4 +431,11 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 			await this.usernameIsMaskedInSection(section);
 		}
 	}
+
+	@step("Verify header container is visible")
+	public async headerContainerIsVisible(): Promise<void> {
+		await this.gamdomPage
+			.assertThat()
+			.checkElementsAreVisible([this.gamdomPage.map.headerContainer]);
+	}
 }

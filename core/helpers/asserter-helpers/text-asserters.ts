@@ -110,9 +110,9 @@ export function buildCashPromoCodeTransactionsDetailsValue(
 export function buildFreeSpinsPromoCodeTransactionsDetailsValue(
 	promoCampaignName: string,
 	freeSpins = 10,
-	amount = 0.2,
+	amount = 0.1,
 ): string {
-	return `Promo code activated, code: ${promoCampaignName}, reward type: free_spins, ${freeSpins} FS x ${amount} for pp_direct_vswayswest`;
+	return `Promo code activated, code: ${promoCampaignName}, reward type: free_spins, ${freeSpins} FS x ${amount} for wicked_bookofarabia`;
 }
 
 export function buildInformationalCashPromoCodeTransactionsDetailsValue(): string {

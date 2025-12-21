@@ -71,7 +71,7 @@ export const AT_PROXY_CREDENTIALS =
 export const CA_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8015");
 
-// Poland server
+// Poland server - chat disabled in e2e-stg and e2e-qa env
 export const PL_PROXY_CREDENTIALS =
 	createProxyCredentials("dc.oxylabs.io:8016");
 
