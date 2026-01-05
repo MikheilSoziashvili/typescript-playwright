@@ -19,6 +19,7 @@ import { LiveBaccaratSqueezePage } from "./evolution-gaming/live-baccarat-squeez
 import { CashVaultIPage } from "./hacksaw-gaming/cash-vault-i/cash-vault-i-page";
 import { BookOfArabiaPage } from "./wickedgames/book-of-arabia/book-of-arabia-page";
 import { SweetBonanzaPage } from "./pragmatic-play/sweet-bonanza/sweet-bonanza-page";
+import { SweetBonanzaCandyLandPage } from "./pragmatic-play-live/sweet-bonanza-candy-land/sweet-bonanza-candy-land-page";
 
 /**
  * Maps each game to its corresponding provider.
@@ -33,6 +34,7 @@ const GAME_PROVIDER_MAP: Record<CasinoGameName, GameProvider> = {
 	[CasinoGameName.LIVE_BACCARAT_SQUEEZE]: GameProvider.EVOLUTION_GAMING,
 	[CasinoGameName.ZULU_GOLD]: GameProvider.ELK_STUDIOS,
 	[CasinoGameName.SWEET_BONANZA]: GameProvider.PRAGMATIC_PLAY,
+	[CasinoGameName.SWEET_BONANZA_CANDYLAND]: GameProvider.PRAGMATIC_PLAY_LIVE,
 };
 
 /**
@@ -53,6 +55,7 @@ export class CasinoGamesUnifiedPage extends BasePage<CasinoGamesPageMap> {
 		private liveBaccaratSqueezePage: LiveBaccaratSqueezePage,
 		private zuluGoldPage: ZuluGoldPage,
 		private sweetBonanzaPage: SweetBonanzaPage,
+		private sweetBonanzaCandyLandPage: SweetBonanzaCandyLandPage,
 	) {
 		super(page, new CasinoGamesPageMap(page));
 		this.gamesMap = {
@@ -63,6 +66,8 @@ export class CasinoGamesUnifiedPage extends BasePage<CasinoGamesPageMap> {
 				this.liveBaccaratSqueezePage,
 			[CasinoGameName.ZULU_GOLD]: this.zuluGoldPage,
 			[CasinoGameName.SWEET_BONANZA]: this.sweetBonanzaPage,
+			[CasinoGameName.SWEET_BONANZA_CANDYLAND]:
+				this.sweetBonanzaCandyLandPage,
 		};
 	}
 
@@ -221,6 +226,21 @@ export class CasinoGamesUnifiedPage extends BasePage<CasinoGamesPageMap> {
 					await sweetBonanzaPage
 						.steps()
 						.spinUntilLoseRound(spinCount.betAmount);
+				}
+				break;
+			}
+			case GameProvider.PRAGMATIC_PLAY_LIVE: {
+				const sweetBonanzaCandyLandPage =
+					gamePage as SweetBonanzaCandyLandPage;
+				const maxRounds = 30;
+				if (isWin) {
+					await sweetBonanzaCandyLandPage
+						.steps()
+						.playUntilWinRound(maxRounds);
+				} else {
+					await sweetBonanzaCandyLandPage
+						.steps()
+						.playUntilLossRound(maxRounds);
 				}
 				break;
 			}

@@ -24,7 +24,7 @@ export class BookOfArabiaPageMap extends BaseMap {
 	}
 
 	public get betContainer(): Locator {
-		return this.gameFrame.locator(".bet-container");
+		return this.gameFrame.locator(".viewport").locator(".bet-container");
 	}
 
 	public get betOptionsRoot(): Locator {

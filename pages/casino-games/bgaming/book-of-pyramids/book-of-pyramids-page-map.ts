@@ -5,8 +5,18 @@ export class BookOfPyramidsPageMap extends BaseMap {
 		super(page);
 	}
 
+	public get launcherIframeElement(): Locator {
+		return this.page.locator('iframe[src*="ignition.button"]');
+	}
+
+	public get launcherFrame(): FrameLocator {
+		return this.page.frameLocator('iframe[src*="ignition.button"]');
+	}
+
 	public get gameFrame(): FrameLocator {
-		return this.page.frameLocator('iframe[src*="int.bgaming-system.com"]');
+		return this.launcherFrame.frameLocator(
+			'iframe[src*="int.bgaming-system.com"]',
+		);
 	}
 
 	public get spinButton(): Locator {
@@ -16,6 +26,7 @@ export class BookOfPyramidsPageMap extends BaseMap {
 	public get totalWinValue(): Locator {
 		return this.gameFrame.locator("#message .total-win-value").first();
 	}
+
 	public get maxBetButton(): Locator {
 		return this.gameFrame.locator("#btn-maxBetDesktop");
 	}

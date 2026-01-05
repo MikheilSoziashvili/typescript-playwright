@@ -28,6 +28,11 @@ export class BookOfPyramidsPageAsserter extends BaseAsserter<BookOfPyramidsPage>
 	@step("Check spin button is displayed")
 	public async spinButtonIsDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible(
+			[this.gamdomPage.map.launcherIframeElement],
+			Timeout.LONG,
+			"Launcher iframe is not displayed. Game is not yet loaded.",
+		);
+		await this.checkElementsAreVisible(
 			[this.gamdomPage.map.spinButton],
 			Timeout.LONG,
 			"Spin button is not displayed. Game is not yet loaded.",

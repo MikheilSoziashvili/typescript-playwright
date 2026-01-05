@@ -5,6 +5,7 @@ export enum GameProvider {
 	EVOLUTION_GAMING = "evolution-gaming",
 	ELK_STUDIOS = "elk-studios",
 	PRAGMATIC_PLAY = "pragmatic-play",
+	PRAGMATIC_PLAY_LIVE = "pragmatic-play-live",
 }
 
 export enum GameProviderCode {
@@ -27,6 +28,7 @@ export enum CasinoGameName {
 	LIVE_BACCARAT_SQUEEZE = "Live Baccarat Squeeze", // evolution-gaming
 	ZULU_GOLD = "Zulu Gold", // elk-studios
 	SWEET_BONANZA = "Sweet Bonanza", // pragmatic-play
+	SWEET_BONANZA_CANDYLAND = "Sweet Bonanza CandyLand", // pragmatic-play-live
 }
 
 export enum CasinoGameUrl {

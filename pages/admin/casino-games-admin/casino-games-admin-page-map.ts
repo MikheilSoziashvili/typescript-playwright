@@ -40,6 +40,14 @@ export class CasinoGamesAdminMap extends BaseMap {
 		);
 	}
 
+	public get tableBody(): Locator {
+		return this.adminCasinoGamesPageContent.locator("tbody");
+	}
+
+	public get tableRows(): Locator {
+		return this.tableBody.locator("tr");
+	}
+
 	public tableRowByCasinoGameAndProviderName(
 		gameName: string,
 		providerName: string,

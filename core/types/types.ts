@@ -27,6 +27,7 @@ import { LiveBaccaratSqueezePage } from "@pages/casino-games/evolution-gaming/li
 import { ZuluGoldPage } from "@pages/casino-games/elk-studios/zulu-gold/zulu-gold-page";
 import { APIRequestContext, APIResponse, TestInfo } from "@playwright/test";
 import { SweetBonanzaPage } from "@pages/casino-games/pragmatic-play/sweet-bonanza/sweet-bonanza-page";
+import { SweetBonanzaCandyLandPage } from "@pages/casino-games/pragmatic-play-live/sweet-bonanza-candy-land/sweet-bonanza-candy-land-page";
 
 export type TestUserConfigurationObject = {
 	username: string;
@@ -120,7 +121,8 @@ export type CasinoGamesPage =
 	| BookOfArabiaPage
 	| LiveBaccaratSqueezePage
 	| ZuluGoldPage
-	| SweetBonanzaPage;
+	| SweetBonanzaPage
+	| SweetBonanzaCandyLandPage;
 
 export type PoolConfigurationType = {
 	host: string;

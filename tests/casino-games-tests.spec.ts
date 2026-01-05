@@ -151,6 +151,13 @@ test.describe("Aggregator and Providers - Casino games tests", () => {
 				[GameProviderCode.SOFTSWISS, GameProviderCode.ALEA],
 				ToggleOptions.OFF,
 			);
+		await casinoGamesAdminPage
+			.steps()
+			.searchAndToggleOnOffCasinoGameForProviders(
+				CasinoGameName.SWEET_BONANZA,
+				[GameProviderCode.ALEA],
+				ToggleOptions.OFF,
+			);
 	});
 
 	testData()

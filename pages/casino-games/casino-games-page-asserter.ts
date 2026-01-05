@@ -9,6 +9,7 @@ import { LiveBaccaratSqueezePage } from "./evolution-gaming/live-baccarat-squeez
 import { ZuluGoldPage } from "./elk-studios/zulu-gold/zulu-gold-page";
 import { CasinoGameConfig } from "@core/interfaces";
 import { SweetBonanzaPage } from "./pragmatic-play/sweet-bonanza/sweet-bonanza-page";
+import { SweetBonanzaCandyLandPage } from "./pragmatic-play-live/sweet-bonanza-candy-land/sweet-bonanza-candy-land-page";
 
 export class CasinoGamesPageAsserter extends BaseAsserter<CasinoGamesUnifiedPage> {
 	public constructor(page: CasinoGamesUnifiedPage) {
@@ -59,6 +60,12 @@ export class CasinoGamesPageAsserter extends BaseAsserter<CasinoGamesUnifiedPage
 			case GameProvider.PRAGMATIC_PLAY: {
 				const sweetBonanzaPage = gamePage as SweetBonanzaPage;
 				await sweetBonanzaPage.assertThat().nextButtonVisible();
+				break;
+			}
+			case GameProvider.PRAGMATIC_PLAY_LIVE: {
+				const sweetBonanzaCandyLandPage =
+					gamePage as SweetBonanzaCandyLandPage;
+				await sweetBonanzaCandyLandPage.assertThat().waitForBetsBlock();
 				break;
 			}
 			default: {
@@ -118,6 +125,14 @@ export class CasinoGamesPageAsserter extends BaseAsserter<CasinoGamesUnifiedPage
 			case GameProvider.PRAGMATIC_PLAY: {
 				const sweetBonanzaPage = gamePage as SweetBonanzaPage;
 				await sweetBonanzaPage.assertThat().waitForRoundFinish();
+				break;
+			}
+			case GameProvider.PRAGMATIC_PLAY_LIVE: {
+				const sweetBonanzaCandyLandPage =
+					gamePage as SweetBonanzaCandyLandPage;
+				await sweetBonanzaCandyLandPage
+					.assertThat()
+					.waitForRoundFinish();
 				break;
 			}
 			default: {

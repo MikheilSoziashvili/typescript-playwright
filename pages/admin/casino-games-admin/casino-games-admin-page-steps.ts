@@ -7,6 +7,7 @@ import { expect } from "@playwright/test";
 import { AttributesValues } from "@enums/playwright/htmlAttributesValues";
 import { logger } from "@logger/logger";
 import { Locator } from "@playwright/test";
+import { Timeout } from "@enums/timeout";
 
 export class CasinoGamesAdminSteps extends BasePageStep<CasinoGamesAdminPage> {
 	public constructor(page: CasinoGamesAdminPage) {
@@ -43,6 +44,26 @@ export class CasinoGamesAdminSteps extends BasePageStep<CasinoGamesAdminPage> {
 		return toggleClass?.includes(AttributesValues.CHECKED) ?? false;
 	}
 
+	@step("Wait for table results to load")
+	private async waitForTableResultsToLoad(): Promise<void> {
+		await expect(this.gamdomPage.map.tableRows.first()).toBeVisible({
+			timeout: Timeout.MEDIUM,
+		});
+	}
+
+	@step("Check if game exists for provider")
+	private async isGameAvailableForProvider(
+		gameName: string,
+		providerName: string,
+	): Promise<boolean> {
+		const tableRow =
+			this.gamdomPage.map.tableRowByCasinoGameAndProviderName(
+				gameName,
+				providerName,
+			);
+		return tableRow.isVisible();
+	}
+
 	@step("Toggle on/off casino game successfully")
 	public async toggleOnOffCasinoGameSuccessfully(
 		gameName: string,
@@ -73,6 +94,18 @@ export class CasinoGamesAdminSteps extends BasePageStep<CasinoGamesAdminPage> {
 		let anyToggled = false;
 
 		for (const providerName of providerNames) {
+			const isGameAvailable = await this.isGameAvailableForProvider(
+				gameName,
+				providerName,
+			);
+
+			if (!isGameAvailable) {
+				logger.info(
+					`Casino game "${gameName}" from provider "${providerName}" is not available in the table. Skipping.`,
+				);
+				continue;
+			}
+
 			const wasToggled = await this.toggleOnOffCasinoGame(
 				gameName,
 				providerName,
@@ -97,6 +130,7 @@ export class CasinoGamesAdminSteps extends BasePageStep<CasinoGamesAdminPage> {
 		action: ToggleOptions,
 	): Promise<void> {
 		await this.gamdomPage.searchCasinoGameByName(gameName);
+		await this.waitForTableResultsToLoad();
 		await this.toggleOnOffCasinoGameForProviders(
 			gameName,
 			providerNames,
