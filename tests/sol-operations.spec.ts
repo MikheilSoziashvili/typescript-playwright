@@ -188,7 +188,7 @@ test.describe(
 					const {
 						withdrawalAddress,
 						amountToWithdraw,
-						amountToDeposit,
+						amountToDepositLarger,
 					} = testDataPredefined.data.solAmountToDeposit;
 					const vaultId = fireblocks.vaultId;
 
@@ -205,7 +205,7 @@ test.describe(
 					const depositTransaction = await solClient.sendToAddress(
 						vaultId,
 						userDepositAddress,
-						amountToDeposit,
+						amountToDepositLarger,
 					);
 
 					await solClient.waitForCompletion(depositTransaction.id);

@@ -55,6 +55,9 @@ export const predefined = {
 	},
 	usdtAmountToDeposit: {
 		amountToDeposit: "0.02",
+		amountToDepositLarger: "0.4",
+		amountToWithdraw: 0.2,
+		withdrawalAddress: "0x88190Ef584BD63E320693133f01c0cfcdA24bB8e",
 	},
 	xrpAmountToDeposit: {
 		amountToDeposit: "0.05",
@@ -70,7 +73,7 @@ export const predefined = {
 	solAmountToDeposit: {
 		amountToDeposit: "0.002",
 		amountToDepositLarger: "0.007",
-		amountToWithdraw: 0.40,
+		amountToWithdraw: 0.4,
 		withdrawalAddress: "EHWKMqDvZ71AmpS4uLD5vAGwkeyFdPg8jh2bHk3YCKzi",
 	},
 	freeSpinsRewardConditions: {
