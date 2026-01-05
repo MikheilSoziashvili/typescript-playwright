@@ -38,7 +38,7 @@ export function getExpectedDiceBetValues(betData: DiceBetTestData): {
 	const multiplier = betData.multiplier as number;
 	const betAmount = betData.betAmount;
 
-	const userEdgeDecimal = 0.999;
+	const userEdgeDecimal = 0.99;
 	const winChance = (100 * userEdgeDecimal) / multiplier;
 	const rollOver = 100 - winChance;
 	const profitOnWin = betAmount * (multiplier - 1);
