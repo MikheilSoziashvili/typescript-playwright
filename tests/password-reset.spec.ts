@@ -53,8 +53,12 @@ test.describe("Password reset", () => {
 					"Password Reset",
 				);
 
-			await toast.assertThat().titleIs(ToastTitle.SUCCESS);
-			await toast.assertThat().subTitleIs(ToastSubTitle.PASSWORD_CHANGED);
+			await toast
+				.assertThat()
+				.toastMessageIs(
+					ToastTitle.SUCCESS,
+					ToastSubTitle.PASSWORD_CHANGED,
+				);
 
 			await homePage.navigateAndCheckTitle();
 			await homePage.steps().loginUser(user.username, newUserPassword);
