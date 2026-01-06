@@ -1,4 +1,7 @@
-import { buildSendingOutFreeSpinsToastSubTitle } from "@core/helpers/asserter-helpers/text-asserters";
+import {
+	buildFreeSpinsRevokeNotificationDescription,
+	buildSendingOutFreeSpinsToastSubTitle,
+} from "@core/helpers/asserter-helpers/text-asserters";
 import { testDetails } from "@core/helpers/test-details-helper";
 import {
 	setAuthenticationCookies,
@@ -11,6 +14,7 @@ import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
+import { TestUserRole } from "@enums/test-user-roles";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import {
@@ -20,7 +24,6 @@ import {
 import { test } from "@fixtures/fixtures";
 import { FreeSpinsAdminPage } from "@pages/admin/free-spins-admin/free-spins-admin-page";
 import { HomePage } from "@pages/home-page/home-page";
-import { NotificationsPage } from "@pages/notifications/notifications-page";
 import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
 import { testData } from "test-data/test-data-manager";
 
@@ -229,7 +232,10 @@ test.describe("Free spins tests", () => {
 
 	test.describe(
 		"Top played slots tests",
-		testDetails().withTags(JiraComponent.FREE_SPINS).withJiraBugTickets("11715").apply(),
+		testDetails()
+			.withTags(JiraComponent.FREE_SPINS)
+			.withJiraBugTickets("11715")
+			.apply(),
 		() => {
 			test(
 				"[ENG-4860] Verify that the TOP PLAYED SLOTS table is displayed only after the GET button from the Get top played slots panel is clicked",
@@ -288,73 +294,65 @@ test.describe(
 		.withTags(JiraComponent.REWARDS, JiraComponent.FREE_SPINS)
 		.apply(),
 	() => {
-		const title = "Promotion";
-		const description = `The free spins promotion for Book Of Arabia game has revoked. Note: ${DialogInput.REVOKE_FREE_SPINS_REASON}`;
+		const predefinedData = testData().fromPredefined().data;
+		const notificationTitle =
+			predefinedData.notifications.freeSpinsRevoke.title;
+		const notificationDescription =
+			buildFreeSpinsRevokeNotificationDescription(
+				CasinoGameName.BOOK_OF_ARABIA,
+				DialogInput.REVOKE_FREE_SPINS_REASON,
+			);
 
-		test.use(storageStateNewSuperAdminUserDB());
 		test(
 			"[ENG-2866] Revoke Free spins and verify user notification",
 			testDetails()
 				.withTags(JiraComponent.FREE_SPINS)
 				.withAuthor(JiraUser.NIKOLAY_GENOV)
 				.apply(),
-			async ({
-				browser,
-				gamdomApi,
-				gamdomDb,
-				freeSpinsAdminPage,
-				toast,
-				testDataObject,
-			}) => {
-				const userData = testDataObject.register.random();
-
-				await gamdomDb.createNewUser({
-					username: userData.username,
-					password: userData.password,
-					email: userData.email,
-				});
-				const userCookie = await gamdomApi.authenticateWithExistingUser(
-					userData.username,
-					userData.password,
+			async ({ browserSessionManager }) => {
+				const superAdmin = await browserSessionManager.loginAs(
+					TestUserRole.SUPERADMIN,
+					{ reuseContext: true },
 				);
-				const userContext = await browser.newContext();
-				const userPage = await userContext.newPage();
-				await setAuthenticationCookies(userPage, userCookie);
-				const userHomePage = new HomePage(userPage);
-				await userHomePage.navigate();
+				const regularUser = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
+				);
 
-				await freeSpinsAdminPage.navigate();
+				const userId = regularUser.getAuthenticatedUser().user.userId;
 
-				const userId = (
-					await gamdomApi.getBasicInfo(
-						userData.username,
-						userData.password,
-					)
-				).user.id;
+				await regularUser.pages.homePage.navigate();
 
-				await freeSpinsAdminPage.steps().getFreeSpins({
+				await superAdmin.pages.freeSpinsAdminPage.navigate();
+				await superAdmin.pages.freeSpinsAdminPage.steps().getFreeSpins({
 					userId: userId,
 					gameName: CasinoGameName.BOOK_OF_ARABIA,
 					betAmount: 1,
 				});
-				await userHomePage.getNotification().assertThat().isDisplayed();
 
-				await freeSpinsAdminPage.getActivatedFreeSpins();
-				await freeSpinsAdminPage.revokeFreeSpins();
-				await toast.assertThat().titleIs(ToastTitle.SUCCESS, {
-					subTitle: ToastSubTitle.FREE_SPINS_REVOKED,
-				});
+				await regularUser.pages.homePage
+					.getNotification()
+					.assertThat()
+					.isDisplayed();
 
-				await freeSpinsAdminPage.getActivatedFreeSpins();
-				await freeSpinsAdminPage.assertThat().freeSpinsAreRevoked();
+				await superAdmin.pages.freeSpinsAdminPage.getActivatedFreeSpins();
+				await superAdmin.pages.freeSpinsAdminPage.revokeFreeSpins();
+				await superAdmin.pages.toast
+					.assertThat()
+					.titleIs(ToastTitle.SUCCESS, {
+						subTitle: ToastSubTitle.FREE_SPINS_REVOKED,
+					});
 
-				const userNotificationPage = new NotificationsPage(userPage);
-				await userNotificationPage.navigate();
-				await userNotificationPage
+				await superAdmin.pages.freeSpinsAdminPage.getActivatedFreeSpins();
+				await superAdmin.pages.freeSpinsAdminPage
+					.assertThat()
+					.freeSpinsAreRevoked();
+
+				await regularUser.pages.notificationsPage.navigate();
+				await regularUser.pages.notificationsPage
 					.assertThat()
 					.notificationVisibleAndHasTitleAndDescription(
-						title,
-						description,
+						notificationTitle,
+						notificationDescription,
 					);
 			},
 		);

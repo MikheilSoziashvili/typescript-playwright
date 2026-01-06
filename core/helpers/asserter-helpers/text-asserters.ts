@@ -185,3 +185,10 @@ export function buildTransactionTypeAndValueNotFoundMessage(
 ): string {
 	return `Transaction with type='${type}' and value='${formattedValue}' not found`;
 }
+
+export function buildFreeSpinsRevokeNotificationDescription(
+	gameName: string,
+	reason: string,
+): string {
+	return `The free spins promotion for ${gameName} game has been revoked. Note: ${reason}`;
+}

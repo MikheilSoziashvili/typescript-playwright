@@ -23,6 +23,9 @@ export const predefined = {
 		title: "testNotificationTitle",
 		description: "testNotificationDescription",
 		reason: "testNotificationReason",
+		freeSpinsRevoke: {
+			title: "Promotion",
+		},
 	},
 	betsNumberPlinkoCannon: {
 		numberOfBets: "500",
