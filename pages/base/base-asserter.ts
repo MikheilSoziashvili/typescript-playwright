@@ -750,4 +750,28 @@ export class BaseAsserter<
 			timeout,
 		});
 	}
+
+	@step("Wait for element to appear after refresh")
+	protected async waitForElementAfterRefresh(
+		locator: Locator,
+		options?: {
+			timeout?: number;
+			intervals?: number[];
+		},
+	): Promise<void> {
+		await expect
+			.poll(
+				async () => {
+					await this.gamdomPage.page.reload();
+					return locator.count();
+				},
+				{
+					timeout: options?.timeout ?? Timeout.EXTRA_LONG,
+					intervals: options?.intervals,
+				},
+			)
+			.toBeGreaterThan(0);
+
+		await expect(locator).toBeVisible();
+	}
 }

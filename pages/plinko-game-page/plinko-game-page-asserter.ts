@@ -3,8 +3,6 @@ import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { expect, Locator, TestInfo } from "@playwright/test";
 import { step } from "decorators/step";
 import { PlinkoGamePage } from "./plinko-game-page";
-import { Timeout } from "@enums/timeout";
-import { IntervalMs } from "@enums/interval-millisecond";
 import { Currency } from "@enums/currencies";
 
 export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
@@ -229,21 +227,11 @@ export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 
 	@step("Plinko game is disabled")
 	public async plinkoIsDisabled(): Promise<void> {
-		await expect
-			.poll(
-				async () => {
-					await this.gamdomPage.refresh();
-					return this.gamdomPage.map
-						.disabledGameMessage()
-						.isVisible();
-				},
-				{
-					timeout: Timeout.EXTRA_LONG,
-					intervals: [IntervalMs.SHORT],
-				},
-			)
-			.toBe(true);
+		await this.waitForElementAfterRefresh(
+			this.gamdomPage.map.disabledGameMessage(),
+		);
 	}
+
 	@step("Verify profit on win amount is correct")
 	public async verifyProfitOnWinAmountIsCorrect(
 		coefficient: Locator,
