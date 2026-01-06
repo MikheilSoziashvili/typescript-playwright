@@ -8,8 +8,8 @@ on:
     workflow_dispatch:
 
 concurrency:
-    group: premerge-${{ github.ref }}
-    cancel-in-progress: false
+    group: premerge-${{ github.event.pull_request.number || github.ref }}
+    cancel-in-progress: true
 
 jobs:
     premerge-checks:

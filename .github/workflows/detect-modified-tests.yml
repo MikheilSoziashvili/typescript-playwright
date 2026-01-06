@@ -79,10 +79,6 @@ on:
                 required: true
                 description: "Doge Testnet Private Key"
 
-concurrency:
-    group: detect-modified-tests-${{ github.ref }}
-    cancel-in-progress: true
-
 env:
     CI: true
     BUILD_NUMBER: ${{ github.run_number }}
