@@ -287,8 +287,6 @@ test.describe(
 
 					// Deposit USDT_ETH
 					await homePage.navigateToWallet();
-					const initialBalanceUSD =
-						await userBalanceHandler.walletBalanceInFiatRounded();
 					await walletModal.selectPaymentMethod(
 						Cryptocurrency.Tether,
 					);
@@ -313,6 +311,8 @@ test.describe(
 					await diceGamePage.rollDiceWithAmount(50);
 
 					// Withdraw USDT_ETH
+					const initialBalanceUSD =
+						await userBalanceHandler.walletBalanceInFiatRounded();
 					await homePage.navigateToWallet();
 					const withdrawalFee = await walletModal.withdrawCrypto({
 						cryptocurrency: Cryptocurrency.Tether,
@@ -326,6 +326,7 @@ test.describe(
 					await homePage.navigate();
 					const balanceAfterWithdrawUSD =
 						await userBalanceHandler.walletBalanceInFiatRounded();
+
 					await homePage
 						.assertThat()
 						.verifyBalanceWithTolerance(
