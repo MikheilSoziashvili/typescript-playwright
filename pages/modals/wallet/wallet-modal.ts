@@ -269,9 +269,6 @@ export class WalletModal extends BasePage<WalletModalMap> {
 
 		await this.openWithdrawTab();
 		await this.selectPaymentMethod(cryptocurrency);
-		if (isVip) {
-			await this.selectPaymentMethod(Cryptocurrency.Bitcoin);
-		}
 		await this.selectPaymentMethod(cryptocurrency);
 
 		if (
@@ -306,24 +303,24 @@ export class WalletModal extends BasePage<WalletModalMap> {
 
 	@step("Get network fee amount")
 	public async getNetworkFeeAmount(
-		isVip?: boolean,
-		speed?: WithdrawalSpeed,
+		isVip: boolean | undefined,
+		speed: WithdrawalSpeed,
 	): Promise<string> {
-		if (isVip && speed === WithdrawalSpeed.Standard) {
+		const isNetworkFeeVisible = await this.map.networkFeeAmount.isVisible();
+		const isStandardSpeed = speed === WithdrawalSpeed.Standard;
+
+		if (isVip && isStandardSpeed && !isNetworkFeeVisible) {
 			await this.assertThat().checkElementsAreVisible([
 				this.map.userIsVipText,
 			]);
-			await this.assertThat().checkElementsAreNotVisible([
-				this.map.networkFeeAmount,
-			]);
 			logger.info("User is VIP - no network fee applied.");
 			return "0";
-		} else {
-			const feeAmount = await this.map.networkFeeAmount.textContent();
-			if (!feeAmount) {
-				throw new Error("Network fee amount could not be retrieved.");
-			}
-			return feeAmount.trim();
 		}
+
+		const feeAmount = await this.map.networkFeeAmount.textContent();
+		if (!feeAmount) {
+			throw new Error("Network fee amount could not be retrieved.");
+		}
+		return feeAmount.trim();
 	}
 }

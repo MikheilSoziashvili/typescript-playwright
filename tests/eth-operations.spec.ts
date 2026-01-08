@@ -43,11 +43,7 @@ test.describe(
 					.steps()
 					.waitUntilCryptoDataRefreshed(testInfo);
 
-				await cryptoAdminPage.setUserPayWd(
-					CryptoNode.fireETH,
-					true,
-					CryptoTicker.ETH,
-				);
+				await cryptoAdminPage.setUserPayWd(CryptoNode.fireETH, true);
 
 				await cryptoAdminPage
 					.steps()
@@ -55,10 +51,7 @@ test.describe(
 
 				await cryptoAdminPage
 					.steps()
-					.setMinDepositAndWithdraw(
-						CryptoNode.fireETH,
-						CryptoTicker.ETH,
-					);
+					.setMinDepositAndWithdraw(CryptoNode.fireETH);
 			},
 		);
 
@@ -273,8 +266,8 @@ test.describe(
 						.withdrawalTransactionDetailsAre(
 							withdrawnAmountAfterFee,
 							withdrawalFee,
-							speed,
 							false,
+							speed,
 						);
 
 					const withdrawTransactionId =
@@ -444,8 +437,8 @@ test.describe(
 						.withdrawalTransactionDetailsAre(
 							withdrawnAmountAfterFee,
 							withdrawalFee,
-							speed,
 							true,
+							speed,
 						);
 
 					const withdrawTransactionId =

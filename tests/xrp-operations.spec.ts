@@ -35,10 +35,7 @@ test.describe(
 
 				await cryptoAdminPage
 					.steps()
-					.setMinDepositAndWithdraw(
-						CryptoNode.fireXRP,
-						CryptoTicker.XRP,
-					);
+					.setMinDepositAndWithdraw(CryptoNode.fireXRP);
 			},
 		);
 

@@ -35,10 +35,7 @@ test.describe(
 
 				await cryptoAdminPage
 					.steps()
-					.setMinDepositAndWithdraw(
-						CryptoNode.fireDOGE,
-						CryptoTicker.DOGE,
-					);
+					.setMinDepositAndWithdraw(CryptoNode.fireDOGE);
 			},
 		);
 

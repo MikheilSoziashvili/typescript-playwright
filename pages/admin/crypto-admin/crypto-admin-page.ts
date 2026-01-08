@@ -39,19 +39,13 @@ export class CryptoAdminPage extends BasePage<CryptoAdminMap> {
 	}
 
 	@step("Click min deposit button")
-	public async clickMinDepositButton(
-		nodeTitle: string,
-		currency?: string,
-	): Promise<void> {
-		await this.map.minDepositButton(nodeTitle, currency).click();
+	public async clickMinDepositButton(nodeTitle: string): Promise<void> {
+		await this.map.minDepositButton(nodeTitle).click();
 	}
 
 	@step("Click min withdraw button")
-	public async clickMinWithdrawButton(
-		nodeTitle: string,
-		currency?: string,
-	): Promise<void> {
-		await this.map.minWithdrawButton(nodeTitle, currency).click();
+	public async clickMinWithdrawButton(nodeTitle: string): Promise<void> {
+		await this.map.minWithdrawButton(nodeTitle).click();
 	}
 
 	@step("Send queued withdrawals")
@@ -119,17 +113,16 @@ export class CryptoAdminPage extends BasePage<CryptoAdminMap> {
 	public async setUserPayWd(
 		nodeTitle: string,
 		enabled: boolean,
-		currency?: string,
 	): Promise<void> {
-		const checkbox = this.map.userPayWdCheckbox(nodeTitle, currency);
+		const checkbox = this.map.userPayWdCheckbox(nodeTitle);
 		const isChecked = await checkbox.isChecked();
 
 		if (isChecked !== enabled) {
 			await checkbox.click();
-			await this.map.feeLevelDropdown(nodeTitle, currency).click();
+			await this.map.feeLevelDropdown(nodeTitle).click();
 			await this.map.selectLowestFeeLevelOption.click();
 			this.acceptDialog();
-			await this.map.saveButton(nodeTitle, currency).click();
+			await this.map.saveButton(nodeTitle).click();
 		}
 	}
 }

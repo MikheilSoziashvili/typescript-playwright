@@ -22,7 +22,6 @@ export class CryptoAdminSteps extends BasePageStep<CryptoAdminPage> {
 	async setDepositOrWithdrawMin(
 		action: TransactionType.DEPOSIT | TransactionType.WITHDRAWAL,
 		nodeTitle: CryptoNode,
-		currency?: string,
 		value = "0.00001",
 	): Promise<void> {
 		this.gamdomPage.acceptDialog({
@@ -32,9 +31,9 @@ export class CryptoAdminSteps extends BasePageStep<CryptoAdminPage> {
 		});
 
 		if (action === TransactionType.DEPOSIT) {
-			await this.gamdomPage.clickMinDepositButton(nodeTitle, currency);
+			await this.gamdomPage.clickMinDepositButton(nodeTitle);
 		} else {
-			await this.gamdomPage.clickMinWithdrawButton(nodeTitle, currency);
+			await this.gamdomPage.clickMinWithdrawButton(nodeTitle);
 		}
 	}
 
@@ -65,21 +64,18 @@ export class CryptoAdminSteps extends BasePageStep<CryptoAdminPage> {
 	@step("Set minimum deposit and withdraw")
 	public async setMinDepositAndWithdraw(
 		nodeTitle: CryptoNode,
-		currency: string,
 		minDepositValue = "0.00001",
 		minWithdrawValue = "0.00001",
 	): Promise<void> {
 		await this.setDepositOrWithdrawMin(
 			TransactionType.DEPOSIT,
 			nodeTitle,
-			currency,
 			minDepositValue,
 		);
 
 		await this.setDepositOrWithdrawMin(
 			TransactionType.WITHDRAWAL,
 			nodeTitle,
-			currency,
 			minWithdrawValue,
 		);
 	}

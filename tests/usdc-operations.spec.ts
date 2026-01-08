@@ -50,17 +50,11 @@ test.describe(
 
 				await cryptoAdminPage
 					.steps()
-					.setMinDepositAndWithdraw(
-						CryptoNode.fireUSDC_ETH,
-						CryptoTicker.USDC_ETH,
-					);
+					.setMinDepositAndWithdraw(CryptoNode.fireUSDC_ETH);
 
 				await cryptoAdminPage
 					.steps()
-					.setMinDepositAndWithdraw(
-						CryptoNode.fireUSDC_SOL,
-						CryptoTicker.USDC_SOL,
-					);
+					.setMinDepositAndWithdraw(CryptoNode.fireUSDC_SOL);
 
 				await homePage.navigate({
 					cookies: { clearCookies: true },

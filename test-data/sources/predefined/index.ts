@@ -84,7 +84,10 @@ export const predefined = {
 		endDateOffset: 7,
 	},
 	trxAmountToDeposit: {
-		amountToDeposit: "1",
+		amountToDeposit: "0.002",
+		amountToDepositLarger: "0.007",
+		amountToWithdraw: 0.3,
+		withdrawalAddress: "TLa2f6VPqDgRE67v1736s7bJ8Ray5wYjU7",
 	},
 	usdtTrxAmountToDeposit: {
 		amountToDeposit: "0.02",

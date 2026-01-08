@@ -60,16 +60,10 @@ test.describe("UTXO tests", () => {
 
 			await cryptoAdminPage
 				.steps()
-				.setMinDepositAndWithdraw(
-					CryptoNode.nodeBTC1,
-					CryptoTicker.BTC,
-				);
+				.setMinDepositAndWithdraw(CryptoNode.nodeBTC1);
 			await cryptoAdminPage
 				.steps()
-				.setMinDepositAndWithdraw(
-					CryptoNode.nodeLTC1,
-					CryptoTicker.LTC,
-				);
+				.setMinDepositAndWithdraw(CryptoNode.nodeLTC1);
 		},
 	);
 

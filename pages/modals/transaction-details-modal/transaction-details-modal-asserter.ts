@@ -50,8 +50,8 @@ export class TransactionDetailsModalAsserter extends BaseAsserter<TransactionDet
 	public async withdrawalTransactionDetailsAre(
 		amountInUsd: number,
 		networkFee: string,
-		transactionSpeed: string,
 		isVip: boolean,
+		transactionSpeed: string,
 	): Promise<void> {
 		await this.withdrawalAmountInUsdIs(amountInUsd);
 		if (!isVip && transactionSpeed === WithdrawalSpeed.Standard) {

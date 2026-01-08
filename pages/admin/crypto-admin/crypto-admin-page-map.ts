@@ -23,20 +23,20 @@ export class CryptoAdminMap extends BaseMap {
 			.locator('span[class*="MuiTypography-body"]');
 	}
 
-	public minDepositButton(nodeTitle: string, currency?: string): Locator {
-		let row = this.page.locator("tr").filter({ hasText: nodeTitle });
-		if (currency) {
-			row = row.filter({ hasText: currency });
-		}
-		return row.locator("td img").first();
+	public minDepositButton(nodeTitle: string): Locator {
+		return this.page
+			.locator("tr")
+			.filter({ has: this.page.getByText(nodeTitle, { exact: true }) })
+			.locator("td img")
+			.first();
 	}
 
-	public minWithdrawButton(nodeTitle: string, currency?: string): Locator {
-		let row = this.page.locator("tr").filter({ hasText: nodeTitle });
-		if (currency) {
-			row = row.filter({ hasText: currency });
-		}
-		return row.locator("td img").nth(2);
+	public minWithdrawButton(nodeTitle: string): Locator {
+		return this.page
+			.locator("tr")
+			.filter({ has: this.page.getByText(nodeTitle, { exact: true }) })
+			.locator("td img")
+			.nth(2);
 	}
 
 	public get cryptoTableContainer(): Locator {
@@ -133,29 +133,26 @@ export class CryptoAdminMap extends BaseMap {
 		};
 	}
 
-	private getRow(nodeTitle: string, currency?: string): Locator {
-		const row = this.page.locator("tr").filter({ hasText: nodeTitle });
-		return currency ? row.filter({ hasText: currency }) : row;
+	private getRow(nodeTitle: string): Locator {
+		return this.page.locator("tr").filter({
+			has: this.page.getByText(nodeTitle, { exact: true }),
+		});
 	}
 
-	public userPayWdCheckbox(nodeTitle: string, currency?: string): Locator {
-		return this.getRow(nodeTitle, currency)
-			.locator('input[type="checkbox"]')
-			.first();
+	public userPayWdCheckbox(nodeTitle: string): Locator {
+		return this.getRow(nodeTitle).locator('input[type="checkbox"]').first();
 	}
 
-	public feeLevelDropdown(nodeTitle: string, currency?: string): Locator {
-		return this.getRow(nodeTitle, currency)
-			.getByTestId("titleDropdownInput")
-			.first();
+	public feeLevelDropdown(nodeTitle: string): Locator {
+		return this.getRow(nodeTitle).getByTestId("titleDropdownInput").first();
 	}
 
 	public get selectLowestFeeLevelOption(): Locator {
 		return this.page.getByRole("option", { name: "LOW" });
 	}
 
-	public saveButton(nodeTitle: string, currency?: string): Locator {
-		return this.getRow(nodeTitle, currency)
+	public saveButton(nodeTitle: string): Locator {
+		return this.getRow(nodeTitle)
 			.locator('button:has-text("Save")')
 			.first();
 	}

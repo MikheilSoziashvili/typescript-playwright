@@ -42,11 +42,7 @@ test.describe(
 					.steps()
 					.waitUntilCryptoDataRefreshed(testInfo);
 
-				await cryptoAdminPage.setUserPayWd(
-					CryptoNode.fireSOL,
-					true,
-					CryptoTicker.SOL,
-				);
+				await cryptoAdminPage.setUserPayWd(CryptoNode.fireSOL, true);
 
 				await cryptoAdminPage
 					.steps()
@@ -54,10 +50,7 @@ test.describe(
 
 				await cryptoAdminPage
 					.steps()
-					.setMinDepositAndWithdraw(
-						CryptoNode.fireSOL,
-						CryptoTicker.SOL,
-					);
+					.setMinDepositAndWithdraw(CryptoNode.fireSOL);
 			},
 		);
 
@@ -272,8 +265,8 @@ test.describe(
 						.withdrawalTransactionDetailsAre(
 							withdrawnAmountAfterFee,
 							withdrawalFee,
-							speed,
 							false,
+							speed,
 						);
 
 					const withdrawTransactionId =
@@ -440,8 +433,8 @@ test.describe(
 						.withdrawalTransactionDetailsAre(
 							withdrawnAmountAfterFee,
 							withdrawalFee,
-							speed,
 							true,
+							speed,
 						);
 
 					const withdrawTransactionId =

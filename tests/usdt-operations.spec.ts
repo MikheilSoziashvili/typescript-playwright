@@ -55,11 +55,7 @@ test.describe(
 					.steps()
 					.waitUntilCryptoDataRefreshed(testInfo);
 
-				await cryptoAdminPage.setUserPayWd(
-					CryptoNode.fireUSDT,
-					true,
-					CryptoTicker.USDT,
-				);
+				await cryptoAdminPage.setUserPayWd(CryptoNode.fireUSDT, true);
 
 				await cryptoAdminPage
 					.steps()
@@ -67,16 +63,10 @@ test.describe(
 
 				await cryptoAdminPage
 					.steps()
-					.setMinDepositAndWithdraw(
-						CryptoNode.fireUSDT,
-						CryptoTicker.USDT,
-					);
+					.setMinDepositAndWithdraw(CryptoNode.fireUSDT);
 				await cryptoAdminPage
 					.steps()
-					.setMinDepositAndWithdraw(
-						CryptoNode.fireTRX_USDT,
-						CryptoTicker.USDT_TRX,
-					);
+					.setMinDepositAndWithdraw(CryptoNode.fireTRX_USDT);
 				await homePage.navigate({
 					cookies: { clearCookies: true },
 				});
@@ -364,8 +354,8 @@ test.describe(
 						.withdrawalTransactionDetailsAre(
 							withdrawnAmountAfterFee,
 							withdrawalFee,
-							speed,
 							false,
+							speed,
 						);
 
 					const withdrawTransactionId =
