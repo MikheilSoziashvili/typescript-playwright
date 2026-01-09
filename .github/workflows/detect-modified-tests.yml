@@ -79,6 +79,10 @@ on:
                 required: true
                 description: "Doge Testnet Private Key"
 
+concurrency:
+    group: detect-modified-tests-${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
 env:
     CI: true
     BUILD_NUMBER: ${{ github.run_number }}
@@ -89,7 +93,7 @@ env:
     XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
     XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
     SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
-    SLACK_CRYPTO_LOW_WALLET_BALANCE_E2E_BOT_TOKEN: ${{secrets.SLACK_CRYPTO_LOW_WALLET_BALANCE_E2E_BOT_TOKEN}}
+    SLACK_CRYPTO_LOW_WALLET_BALANCE_E2E_BOT_TOKEN: ${{ secrets.SLACK_CRYPTO_LOW_WALLET_BALANCE_E2E_BOT_TOKEN }}
     STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
     STEAM_PASSWORD: ${{ secrets.STEAM_PASSWORD }}
     GOOGLE_EMAIL: ${{ secrets.GOOGLE_EMAIL }}
@@ -134,7 +138,7 @@ env:
     FIREBLOCKS_USDC_ETH_ASSET_ID: ${{ vars.FIREBLOCKS_USDC_ETH_ASSET_ID }}
     FIREBLOCKS_USDC_SOL_ASSET_ID: ${{ vars.FIREBLOCKS_USDC_SOL_ASSET_ID }}
     DOGE_TESTNET_ADDRESS: ${{ vars.DOGE_TESTNET_ADDRESS }}
-    DOGE_TESTNET_PRIVATE_KEY: ${{ secrets.DOGE_TESTNET_PRIVATE_KEY}}
+    DOGE_TESTNET_PRIVATE_KEY: ${{ secrets.DOGE_TESTNET_PRIVATE_KEY }}
 
 jobs:
     detect-new-modified-tests:
@@ -144,6 +148,7 @@ jobs:
         outputs:
             run_tests: ${{ steps.detect.outputs.run_tests }}
             test_files: ${{ steps.detect.outputs.test_files }}
+
         steps:
             - name: Checkout Repository
               uses: actions/checkout@v4
@@ -153,39 +158,45 @@ jobs:
 
             - name: Fetch All Branches to Ensure Base Exists
               run: |
-                  git remote -v  
-                  git fetch --all --prune  
+                  set -euo pipefail
+                  git remote -v
+                  git fetch --all --prune
                   git branch -r
 
             - name: Detect newly added and modified test files
               id: detect
               run: |
-                  git fetch origin master --depth=1  
+                  set -euo pipefail
 
+                  git fetch origin master --depth=1
                   BASE_COMMIT=origin/master
-                  echo "Comparing against base commit: $BASE_COMMIT"
 
+                  echo "Comparing against base commit: $BASE_COMMIT"
                   echo "=== Show file differences ==="
                   git diff --name-status $BASE_COMMIT HEAD
 
                   NEW_OR_MODIFIED_TESTS=$(git diff --name-only --diff-filter=AM $BASE_COMMIT HEAD | grep -E "tests/.*\.spec\.ts$" || true)
 
                   if [[ -z "$NEW_OR_MODIFIED_TESTS" ]]; then
-                      echo "No new or modified test files found."
-                      echo "run_tests=false" >> $GITHUB_OUTPUT
-                  else
-                      echo "Detected new/modified test files:"
-                      echo "$NEW_OR_MODIFIED_TESTS"
-                      TEST_FILES=$(echo "$NEW_OR_MODIFIED_TESTS" | xargs)
-                      echo "test_files=$TEST_FILES" >> $GITHUB_OUTPUT
-                      echo "run_tests=true" >> $GITHUB_OUTPUT
+                    echo "No new or modified test files found."
+                    echo "run_tests=false" >> "$GITHUB_OUTPUT"
+                    exit 0
                   fi
+
+                  echo "Detected new/modified test files:"
+                  echo "$NEW_OR_MODIFIED_TESTS"
+
+                  TEST_FILES=$(echo "$NEW_OR_MODIFIED_TESTS" | xargs)
+                  echo "test_files=$TEST_FILES" >> "$GITHUB_OUTPUT"
+                  echo "run_tests=true" >> "$GITHUB_OUTPUT"
 
     run-new-modified-tests:
         needs: detect-new-modified-tests
-        if: needs.detect-new-modified-tests.outputs.run_tests == 'true'
+
+        if: ${{ needs.detect-new-modified-tests.outputs.run_tests == 'true' && !cancelled() }}
+
         runs-on: self-hosted-dind-playwright
-        timeout-minutes: 60
+        timeout-minutes: 45
         environment: staging
 
         steps:
@@ -199,6 +210,7 @@ jobs:
 
             - name: Install Node.js dependencies
               run: |
+                  set -euo pipefail
                   if ! command -v yarn &>/dev/null; then
                     npm install -g yarn
                   fi
@@ -206,24 +218,38 @@ jobs:
 
             - name: Install system dependencies
               run: |
+                  set -euo pipefail
                   sudo apt-get update
                   sudo apt-get install -y git curl unzip gh
                   if ! command -v aws &> /dev/null; then
-                      echo "AWS CLI not found. Installing..."
-                      curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-                      unzip awscliv2.zip
-                      sudo ./aws/install
+                    echo "AWS CLI not found. Installing..."
+                    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+                    unzip awscliv2.zip
+                    sudo ./aws/install
                   else
-                      echo "AWS CLI is already installed. Skipping installation."
+                    echo "AWS CLI is already installed. Skipping installation."
                   fi
 
             - name: Install Playwright Browsers
-              run: yarn playwright install --with-deps
+              run: |
+                  set -euo pipefail
+                  yarn playwright install --with-deps
 
             - name: Run New or Modified Tests
+              env:
+                  TEST_FILES: ${{ needs.detect-new-modified-tests.outputs.test_files }}
               run: |
-                  echo "Running tests: ${{ needs.detect-new-modified-tests.outputs.test_files }}"
-                  yarn playwright test ${{ needs.detect-new-modified-tests.outputs.test_files }} --repeat-each=5 --workers=10 --retries=0 --grep-invert @v4
+                  set -euo pipefail
+
+                  echo "Running tests: $TEST_FILES"
+
+                  trap 'echo "Cancelled - killing process group"; kill -TERM 0 || true; exit 130' SIGTERM SIGINT
+
+                  exec yarn playwright test $TEST_FILES \
+                    --repeat-each=3 \
+                    --workers=10 \
+                    --retries=0 \
+                    --grep-invert @v4
 
             - name: Upload Playwright report to S3 and generate report url
               if: always()
