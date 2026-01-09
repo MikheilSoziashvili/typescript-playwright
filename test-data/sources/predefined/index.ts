@@ -91,6 +91,9 @@ export const predefined = {
 	},
 	usdtTrxAmountToDeposit: {
 		amountToDeposit: "0.02",
+		amountToDepositLarger: "10",
+		amountToWithdraw: 9,
+		withdrawalAddress: "TGffk8beDx7NWo3Gcing54piQhMtUt3Hbq",
 	},
 	newProviderNames: {
 		hacksawHub: "Hacksaw Gaming hub",
