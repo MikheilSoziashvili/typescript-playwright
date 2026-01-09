@@ -364,7 +364,6 @@ test.describe(
 						.withJiraBugTickets("8964")
 						.apply(),
 					async ({ promotionAdminPage, promotionsModal, toast }) => {
-						test.fixme(isCI);
 						promotionName = generateRandomString({
 							prefix: `new_promotion_${combination.category}_${combination.subCategory}_${combination.isForVip}_`,
 							length: 3,
@@ -632,7 +631,6 @@ test.describe(
 							gamdomDb,
 							gamdomApiDbFacade,
 						}) => {
-							test.fixme(isCI);
 							const { user: promotionAdmin } =
 								await gamdomApiDbFacade.createSingleUserDbAndAuth(
 									{
