@@ -12,6 +12,7 @@ import { UserWalletDomainData } from "./user-wallet-domain-data";
 import { CryptoWithdrawalDomainData } from "./crypto-withdrawal-domain-data";
 import { HotWalletDomainData } from "./hot-wallet-domain-data";
 import { DiceGameDomainData } from "./dice-game-domain-data";
+import { RewardsDomainData } from "./rewards-domain-data";
 
 export const domainRegistry = {
 	originals: OriginalsDomainData,
@@ -28,4 +29,5 @@ export const domainRegistry = {
 	oAuthLogin: GeoblockDomainData,
 	cryptoWithdrawal: CryptoWithdrawalDomainData,
 	hotWallet: HotWalletDomainData,
+	rewards: RewardsDomainData,
 };

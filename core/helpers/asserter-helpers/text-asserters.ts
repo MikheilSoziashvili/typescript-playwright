@@ -1,12 +1,14 @@
 import { DEFAULT_CURRENCY } from "@constants/defaults";
 import { buildAmountWithCurrency } from "@core/utils/utils";
 import { AmlVerificationLevel } from "@enums/db/aml-verification-level";
+import { RewardsRoyaltyUpRanks } from "@enums/rewards-royalty-up-ranks";
+import { ToastSubTitle } from "@enums/toast-subtitles";
 
 export function buildClaimedAmountSubTitle(
 	amount: number,
 	currency = DEFAULT_CURRENCY,
 ): string {
-	const amountWithCurrency = buildAmountWithCurrency(amount, currency);
+	const amountWithCurrency = buildAmountWithCurrency(amount, currency, true);
 	const subTitle = `You have successfully claimed ${amountWithCurrency}!`;
 
 	return subTitle;
@@ -71,11 +73,13 @@ export function buildCreateAffiliateCodeSubTitle(
 }
 
 export function buildRewardsRoyaltyUpRankSubTitle(
-	royaltyUpRank: string,
+	royaltyUpRank: RewardsRoyaltyUpRanks,
 ): string {
-	const subTitle = `Congratulations! You ranked up to ${royaltyUpRank} rank. Your royalty reward awaits you on the rewards page.`;
+	if (royaltyUpRank === RewardsRoyaltyUpRanks.UNRANKED) {
+		return ToastSubTitle.ROYALTY_UP_STARTED;
+	}
 
-	return subTitle;
+	return `Congratulations! You ranked up to ${royaltyUpRank} rank. Your royalty reward awaits you on the rewards page.`;
 }
 
 export function buildCreatedCampaignSubTitle(campaignName: string): string {

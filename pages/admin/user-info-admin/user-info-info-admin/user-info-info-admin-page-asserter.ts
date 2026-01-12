@@ -7,7 +7,10 @@ import { Attributes } from "@enums/playwright/htmlAttributes";
 import { ToastTitle } from "@enums/toast-titles";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { CountryCodes } from "@enums/country-codes";
-import { quotesRemovalPattern } from "@support/regex-patterns";
+import {
+	currencyToNumberPattern,
+	quotesRemovalPattern,
+} from "@support/regex-patterns";
 import { BanTypeOptions } from "@enums/admin/ban-type-options";
 import { BanCategories } from "@enums/admin/ban-categories";
 import { getItemsInnerText } from "@core/utils/utils";
@@ -208,6 +211,23 @@ export class UserInfoInfoAdminPageAsserter extends BaseAsserter<UserInfoInfoAdmi
 		const cleanedText = cellText?.replace(quotesRemovalPattern, "") || "";
 
 		await this.checkStringElementsAreEqual([countryCode], [cleanedText]);
+	}
+
+	@step("Check user XP is above expected royalty up rank XP value")
+	public async userXpAboveExpectedRoyaltyUpRankXpValue(
+		expectedXpValue: number,
+	): Promise<void> {
+		const cellText =
+			await this.gamdomPage.map.userXpTableCell.textContent();
+		const cleanedText = cellText?.replace(quotesRemovalPattern, "") || "";
+		const actualXpValue = parseFloat(
+			cleanedText.replace(currencyToNumberPattern, ""),
+		);
+
+		expect(
+			actualXpValue,
+			`Expected user XP (${actualXpValue}) to be greater than ${expectedXpValue}`,
+		).toBeGreaterThan(expectedXpValue);
 	}
 
 	@step("Notes are sorted by creation time (newest first)")

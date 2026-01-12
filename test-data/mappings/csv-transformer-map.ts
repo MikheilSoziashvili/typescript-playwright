@@ -10,6 +10,7 @@ import {
 	UserProfileItemsLinksAccessibilityCsvRecord,
 	KycLevel2SubmissionsCsvRecord,
 	PromotionCombinationForLabelDisplayV4CsvRecord,
+	RoyaltyUpLevelRanksCsvRecord,
 } from "@dtos/csv";
 import { OriginalsSelfExclusionCsvRecord } from "@dtos/csv/originals-self-exclusion";
 import { PlinkoTestDataCsvRecord } from "@dtos/csv/plinko-test-data-csv";
@@ -71,6 +72,10 @@ import {
 	parsePromotionCombinationLabelUpdateCsvRow,
 	PromotionCombinationForLabelDisplayV4CsvParsedRecord,
 } from "test-data/parsers/promotion-combinations-for-label-display-csv-parser";
+import {
+	parseRoyaltyUpLevelRanksCsvRow,
+	RoyaltyUpLevelRanksCsvParsedRecord,
+} from "test-data/parsers/royalty-up-level-ranks-csv-parser";
 
 export type CsvTransformerExistingType<T> =
 	T extends keyof CsvTransformerMapType ? CsvTransformerMapType[T] : never;
@@ -142,10 +147,14 @@ export type CsvTransformerMapType = {
 	[CsvFilesName.KYC_LEVEL2_SUBMISSIONS]: (
 		row: KycLevel2SubmissionsCsvRecord,
 	) => KycLevel2SubmissionsCsvParsedRecord;
-	
+
 	[CsvFilesName.PROMOTION_COMBINATIONS_FOR_LABEL_DISPLAY_V4]: (
 		row: PromotionCombinationForLabelDisplayV4CsvRecord,
 	) => PromotionCombinationForLabelDisplayV4CsvParsedRecord;
+
+	[CsvFilesName.ROYALTY_UP_LEVEL_RANKS]: (
+		row: RoyaltyUpLevelRanksCsvRecord,
+	) => RoyaltyUpLevelRanksCsvParsedRecord;
 };
 
 export const CsvTransformerMap: CsvTransformerMapType = {
@@ -172,4 +181,5 @@ export const CsvTransformerMap: CsvTransformerMapType = {
 	[CsvFilesName.KYC_LEVEL2_SUBMISSIONS]: parseKycLevel2SubmissionsCsvRow,
 	[CsvFilesName.PROMOTION_COMBINATIONS_FOR_LABEL_DISPLAY_V4]:
 		parsePromotionCombinationLabelUpdateCsvRow,
+	[CsvFilesName.ROYALTY_UP_LEVEL_RANKS]: parseRoyaltyUpLevelRanksCsvRow,
 } as const;

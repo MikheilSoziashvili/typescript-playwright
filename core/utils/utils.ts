@@ -348,10 +348,56 @@ export function asString(str: string | undefined): string {
 export function buildAmountWithCurrency(
 	amount: number,
 	currency = DEFAULT_CURRENCY,
+	useThousandSeparator = false,
 ): string {
-	const amountWithCurrency = `${currency}${parseToFloat(amount)}`;
+	let formattedAmount: string;
+
+	if (useThousandSeparator) {
+		// Format with thousand separators for better readability
+		formattedAmount = amount.toLocaleString("en-US", {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2,
+		});
+	} else {
+		formattedAmount = parseToFloat(amount);
+	}
+
+	const amountWithCurrency = `${currency}${formattedAmount}`;
 
 	return amountWithCurrency;
+}
+
+/**
+ * Formats a numeric value as a currency string with optional 'k' suffix for thousands.
+ *
+ * @param value - The numeric value to format.
+ * @param currency - The currency symbol to prepend (default: '$').
+ * @returns The formatted currency string.
+ *
+ * @example
+ * formatCurrencyWithSuffix(400000); // "$400k"
+ * formatCurrencyWithSuffix(4800); // "$4.8k"
+ * formatCurrencyWithSuffix(108); // "$108.00"
+ * formatCurrencyWithSuffix(1000000, '€'); // "€1000k"
+ */
+export function formatCurrencyWithSuffix(
+	value: number,
+	currency = DEFAULT_CURRENCY,
+): string {
+	const suffixes = [
+		{ threshold: 1000000, suffix: "m" },
+		{ threshold: 1000, suffix: "k" },
+	];
+
+	for (const { threshold, suffix } of suffixes) {
+		if (value >= threshold) {
+			const scaled = value / threshold;
+			const formatted = scaled % 1 === 0 ? scaled : +scaled.toFixed(2);
+			return `${currency}${formatted}${suffix}`;
+		}
+	}
+
+	return `${currency}${value.toFixed(2)}`;
 }
 
 export function conformLinkWithProtocol(

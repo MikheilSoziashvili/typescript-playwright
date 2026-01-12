@@ -54,4 +54,5 @@ export enum ToastSubTitle {
 	DOCUMENTS_APPROVED = "Documents approved successfully",
 	DOCUMENTS_REJECTED = "Documents rejected successfully",
 	DICE_POTENTIAL_WIN_TOO_HIGH = "Potential Win must be lower than $800000. Please decrease your bet size",
+	ROYALTY_UP_STARTED = "Congratulations on kick-starting your Royalty journey.",
 }

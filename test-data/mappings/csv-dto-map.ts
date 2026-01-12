@@ -24,6 +24,7 @@ import {
 	LoginRejectedV4Csv,
 	LoginInputValidationV4Csv,
 	PromotionCombinationForLabelDisplayV4Csv,
+	RoyaltyUpLevelRanksCsv,
 } from "@dtos/csv";
 import { HomePageBannerCarouselCsv } from "@dtos/csv/home-page-banner-carousel-csv";
 import { OriginalsSelfExclusionCsv } from "@dtos/csv/originals-self-exclusion";
@@ -63,4 +64,5 @@ export type CsvDtoMap = {
 	[CsvFilesName.LOGIN_REJECTED_V4]: LoginRejectedV4Csv;
 	[CsvFilesName.LOGIN_INPUT_VALIDATION_V4]: LoginInputValidationV4Csv;
 	[CsvFilesName.PROMOTION_COMBINATIONS_FOR_LABEL_DISPLAY_V4]: PromotionCombinationForLabelDisplayV4Csv;
+	[CsvFilesName.ROYALTY_UP_LEVEL_RANKS]: RoyaltyUpLevelRanksCsv;
 };

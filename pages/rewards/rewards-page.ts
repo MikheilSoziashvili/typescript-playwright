@@ -16,6 +16,7 @@ import { RewardsPageAsserter } from "./rewards-page-asserter";
 import { RewardsPageMap } from "./rewards-page-map";
 import { RewardsPageSteps } from "./rewards-page-steps";
 import { RewardType } from "@enums/admin/reward-type";
+import { logger } from "@logger/logger";
 
 export class RewardsPage extends BasePage<RewardsPageMap> {
 	public constructor(page: Page) {
@@ -90,9 +91,19 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 	@step("Claim royalty up reward")
 	async claimRoyaltyUpReward(
 		claimRewards: RewardsRoyaltyUpRanks[],
+		options?: {
+			includePreviousRankReward?: boolean;
+			previousRank?: RewardsRoyaltyUpRanks;
+		},
 	): Promise<void> {
-		for (let i = 0; i < claimRewards.length; i++) {
-			const reward = claimRewards[i];
+		for (const reward of claimRewards) {
+			if (
+				reward === RewardsRoyaltyUpRanks.UNRANKED &&
+				!(options?.includePreviousRankReward && options.previousRank)
+			) {
+				logger.info("UNRANKED reward is not claimable");
+				continue;
+			}
 
 			const rewardKey = reward
 				.replace(" ", "_")
@@ -100,17 +111,23 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 
 			let expectedRewardValue = RewardsRoyaltyUpRanksValues[rewardKey];
 
-			// Add UNRANKED value only for the first reward in the loop
-			if (i === 0) {
-				expectedRewardValue += RewardsRoyaltyUpRanksValues.UNRANKED;
+			if (options?.includePreviousRankReward && options.previousRank) {
+				const previousRankKey = options.previousRank
+					.replace(" ", "_")
+					.toUpperCase() as keyof typeof RewardsRoyaltyUpRanksValues;
+
+				const previousRankValue =
+					RewardsRoyaltyUpRanksValues[previousRankKey];
+
+				logger.info(
+					`Including previous rank '${options.previousRank}' reward: $${previousRankValue}`,
+				);
+				expectedRewardValue += previousRankValue;
 			}
 
-			await this.navigateCarouselElementByIndex(
-				this.map.royaltyUpItemsIndex,
-				this.map.royaltyUpSliderPreviousButton,
-				this.map.royaltyUpSliderNextButton,
-				1,
-			);
+			await this.map
+				.royaltyUpRewardsItem(reward)
+				.scrollIntoViewIfNeeded();
 
 			const accountBalanceInitial =
 				await this.authenticatedHeader.getAccountBalance();

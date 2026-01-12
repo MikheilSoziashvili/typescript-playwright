@@ -1,5 +1,5 @@
 export const RewardsRoyaltyUpRanksValues = {
-	UNRANKED: 0,
+	UNRANKED: 2,
 
 	BRONZE_1: 1.5,
 	BRONZE_2: 3.75,

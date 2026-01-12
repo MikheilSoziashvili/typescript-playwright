@@ -1,6 +1,6 @@
 import { BaseAsserter } from "@base/base-asserter";
 import { DEFAULT_CURRENCY } from "@constants/defaults";
-import { parseToFloat } from "@core/utils/utils";
+import { formatCurrencyWithSuffix, parseToFloat } from "@core/utils/utils";
 import { RewardType } from "@enums/admin/reward-type";
 import { OriginalGame } from "@enums/original-games";
 import { RewardsRoyaltyUpRanks } from "@enums/rewards-royalty-up-ranks";
@@ -127,6 +127,11 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 		await this.gamdomPage.map.royaltyUpBlock.scrollIntoViewIfNeeded();
 
 		for (const reward of claimableRewards) {
+			if (reward === RewardsRoyaltyUpRanks.UNRANKED) {
+				logger.info("UNRANKED reward is not claimable");
+				continue;
+			}
+
 			await expect(
 				this.gamdomPage.map.royaltyUpItemClaimButton(reward),
 			).toBeEnabled();
@@ -138,9 +143,12 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 				.replace(" ", "_")
 				.toUpperCase() as keyof typeof RewardsRoyaltyUpRanksValues;
 			const expectedRewardValue = RewardsRoyaltyUpRanksValues[key];
+
+			const formattedValue =
+				formatCurrencyWithSuffix(expectedRewardValue);
 			await expect(
 				this.gamdomPage.map.royaltyUpItemClaimButton(reward),
-			).toHaveText(`Claim $${expectedRewardValue.toFixed(2)}`);
+			).toHaveText(`Claim ${formattedValue}`);
 		}
 	}
 

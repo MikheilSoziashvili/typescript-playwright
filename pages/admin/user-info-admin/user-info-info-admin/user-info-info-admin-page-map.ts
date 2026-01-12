@@ -213,7 +213,9 @@ export class UserInfoInfoAdminPageMap extends BaseMap {
 
 	public getTableRowByHeaderText(headerText: string): Locator {
 		return this.adminInfoTable.locator("tr", {
-			has: this.page.locator("th", { hasText: headerText }),
+			has: this.page.locator("th", {
+				hasText: new RegExp(`^${headerText}`),
+			}),
 		});
 	}
 
@@ -221,8 +223,16 @@ export class UserInfoInfoAdminPageMap extends BaseMap {
 		return this.getTableRowByHeaderText(headerText).locator("td");
 	}
 
+	public getTableCellSpanByHeaderText(headerText: string): Locator {
+		return this.getTableCellByHeaderText(headerText).locator("span");
+	}
+
 	public get lastCountryTableCell(): Locator {
 		return this.getTableCellByHeaderText("last_country");
+	}
+
+	public get userXpTableCell(): Locator {
+		return this.getTableCellSpanByHeaderText("xp");
 	}
 
 	public get noteCreatedCells(): Locator {

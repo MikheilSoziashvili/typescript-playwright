@@ -4,6 +4,7 @@ import { DiceBetTestDataObjectFactory } from "./factories/dice-bet-test-data-obj
 import { FreeSpinsPromotionTestDataObjectFactory } from "./factories/free-spins-promotion-test-data-object-factory";
 import { PromotionTestDataObjectFactory } from "./factories/promotion-test-data-object-factory";
 import { RegisterTestDataObjectFactory } from "./factories/register-test-data-object-factory";
+import { RoyaltyUpLevelRanksTestDataObjectFactory } from "./factories/royalty-up-level-ranks-test-data-object-factory";
 import { SportsBlogArticleTestDataObjectFactory } from "./factories/sports-blog-article-test-data-object-factory";
 
 export const objectFactoryRegistry = {
@@ -14,4 +15,5 @@ export const objectFactoryRegistry = {
 	blogArticle: SportsBlogArticleTestDataObjectFactory,
 	blogPost: BlogPostTestDataObjectFactory,
 	promotions: PromotionTestDataObjectFactory,
+	royaltyUpLevelRanks: RoyaltyUpLevelRanksTestDataObjectFactory,
 };

@@ -61,4 +61,5 @@ export enum CsvFilesName {
 	LOGIN_REJECTED_V4 = "ENG-9836-login-rejected-v4.csv",
 	LOGIN_INPUT_VALIDATION_V4 = "ENG-9836-login-input-validation-v4.csv",
 	PROMOTION_COMBINATIONS_FOR_LABEL_DISPLAY_V4 = "ENG-11500-promotion-combinations-for-label-display-v4.csv",
+	ROYALTY_UP_LEVEL_RANKS = "ENG-10465-royalty-up-level-ranks.csv",
 }
