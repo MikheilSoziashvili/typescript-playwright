@@ -85,4 +85,18 @@ export class ProfilePageMap extends BaseMap {
 			hasText: `${dropdownItem}`,
 		});
 	}
+
+	public get usernameContainerV4(): Locator {
+		return this.page.getByTestId(
+			"profile-page-change-user-info-username-container",
+		);
+	}
+
+	public get saveUsernameButtonV4(): Locator {
+		return this.page.getByTestId("profile-page-change-user-info-save-username");
+	}
+
+	public get changeUsernameInputV4(): Locator {
+		return this.getInputField("displayUsername", this.usernameContainerV4);
+	}
 }

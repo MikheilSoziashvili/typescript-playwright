@@ -43,3 +43,7 @@ export interface PromotionTitlesGenerator {
 		label: string,
 	): string;
 }
+
+export interface UsernameGenerator {
+	username(): string;
+}

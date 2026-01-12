@@ -33,4 +33,9 @@ export class PrivacyPage extends BasePage<PrivacyPageMap> {
 	public async unignoreUser(username: string): Promise<void> {
 		await this.map.getUnignoreButton(username).click();
 	}
+
+	@step("Click unignore user icon - v4")
+	public async clickUnignoreUserV4(username: string): Promise<void> {
+		await this.map.getUnignoreButtonV4(username).click();
+	}
 }

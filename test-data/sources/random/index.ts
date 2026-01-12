@@ -12,6 +12,7 @@ import {
 	PromoCodesGenerators,
 	PromotionTitlesGenerator,
 	PromotionTitlesV4Generator,
+	UsernameGenerator,
 } from "test-data/interfaces/random";
 import { PredefinedData, PredefinedRandomData } from "test-data/types";
 
@@ -139,6 +140,15 @@ export class RandomDataSourceGenerator {
 						`${category}_${subCategory}_${isForVip}_`.toLowerCase() +
 						"promotion_",
 					length: 5,
+				}),
+		};
+	}
+
+	public get username(): UsernameGenerator {
+		return {
+			username: () =>
+				generateRandomString({
+					length: 6,
 				}),
 		};
 	}

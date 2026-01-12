@@ -251,4 +251,86 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		);
 		await this.component.assertThat().messageIsUnpinned(options);
 	}
+
+	@step("Send a message and verify it is visible -v4")
+	public async sendMessageAndVerifyItsVisibleV4(
+		message: string,
+		messageInfo: ChatMessageOptions,
+	): Promise<void> {
+		await this.sendMessageV4(message);
+		await this.component.assertThat().isMessageVisibleV4(messageInfo);
+	}
+
+	@step("Send message - v4")
+	public async sendMessageV4(message: string): Promise<void> {
+		const maxRetries = 3;
+
+		for (let attempt = 1; attempt <= maxRetries; attempt++) {
+			try {
+				await this.sendMessageAttempt(message);
+				return;
+			} catch (error) {
+				const isLastAttempt = attempt === maxRetries;
+				const isTimeout =
+					error instanceof Error && error.name === "TimeoutError";
+
+				if (!isTimeout || isLastAttempt) {
+					throw error;
+				}
+
+				logger.info(`Retrying sendMessage. Attempt ${attempt}`);
+				await this.component.expandChatV4();
+			}
+		}
+	}
+
+	@step("Send message attempt")
+	private async sendMessageAttempt(message: string): Promise<void> {
+		await this.component.map.waitForAttributeToHaveValue(
+			this.component.map.chatTextBoxV4,
+			Attributes.CONTENTEDITABLE,
+			BooleanValueString.TRUE,
+			Timeout.LONG,
+		);
+
+		await this.component.map.chatTextBoxV4.clear();
+		await this.component.map.chatTextBoxV4.click();
+		await this.component.map.chatTextBoxV4.pressSequentially(message, {
+			delay: 30,
+		});
+
+		await expect
+			.poll(
+				async () => {
+					await this.component.map.sendMessageButtonV4.click();
+					const currentMessage =
+						await this.component.map.chatTextBoxV4.innerText();
+					return currentMessage.trim() !== message.trim();
+				},
+				{
+					message:
+						"Message was not sent successfully after multiple click attempts",
+					timeout: Timeout.EXTRA_LONG,
+				},
+			)
+			.toBeTruthy();
+	}
+
+	@step("Ignore user from chat - v4")
+	public async ignoreUserFromChatV4(
+		options?: ChatMessageOptions,
+	): Promise<void> {
+		const messageUserLevel =
+			this.component.map.messageActionsTriggerV4(options);
+		await this.component.map.waitForVisibility({
+			locator: messageUserLevel,
+		});
+
+		await messageUserLevel.click();
+
+		await this.commonUserOptionsPopup.assertThat().isDisplayedV4();
+		await this.commonUserOptionsPopup.clickOptionV4(
+			CommonUserPopupOption.IGNORE,
+		);
+	}
 }

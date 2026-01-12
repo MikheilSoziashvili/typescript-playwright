@@ -45,6 +45,7 @@ export enum JiraComponent {
 	NOTIFICATIONS = "Notifications",
 	PASSWORD_RESET = "Password reset",
 	PLINKO = "Plinko",
+	PRIVACY = "Privacy",
 	PROFILE = "Profile",
 	PROMO_CAMPAINGS = "Promo Campaings",
 	PROMO_CODES = "Promo Codes",

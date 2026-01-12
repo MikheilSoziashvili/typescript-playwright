@@ -303,4 +303,46 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 			this.gamdomPage.map.chatHeaderButton,
 		]);
 	}
+
+	@step("Check message is visible - v4")
+	public async isMessageVisibleV4(
+		messageInfo: ChatMessageOptions,
+		retries = 3,
+	): Promise<void> {
+		const locator = this.gamdomPage.map.messageLocatorV4(messageInfo);
+		await this.retryWithPageReload(
+			(_attempt) => this.checkElementsAreVisible([locator]),
+			`Message from "${messageInfo.username}" with text "${messageInfo.message}" is visible`,
+			retries,
+		);
+		await expect(locator).toBeAttached();
+	}
+
+	@step("Check info message is visible - v4")
+	public async isInfoMessageVisibleV4(
+		infoMessage: string,
+		username?: string,
+		index?: number,
+	): Promise<void> {
+		let locator = this.gamdomPage.map.infoMessageLocatorV4(index);
+
+		if (username) {
+			locator = locator.filter({ hasText: username });
+		}
+
+		await expect(locator.last()).toHaveText(infoMessage);
+	}
+
+	@step("Check message is not visible - v4")
+	public async messageIsNotVisibleV4(
+		messageInfo: ChatMessageOptions,
+		retries = 3,
+	): Promise<void> {
+		const locator = this.gamdomPage.map.messageLocatorV4(messageInfo);
+		await this.retryWithPageReload(
+			(_attempt) => this.checkElementsAreHidden([locator]),
+			`Message from "${messageInfo.username}" with text "${messageInfo.message}" is not visible`,
+			retries,
+		);
+	}
 }

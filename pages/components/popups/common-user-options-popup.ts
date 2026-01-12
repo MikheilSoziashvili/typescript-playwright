@@ -25,4 +25,14 @@ export class CommonUserOptionsPopup extends BaseComponent<CommonUserOptionsPopup
 			.popupOption(option)
 			.click({ timeout: Timeout.EXTRA_SHORT, delay: Delay.EXTRA_SHORT });
 	}
+
+	@step("Click option - v4")
+	public async clickOptionV4(option: CommonUserPopupOption): Promise<void> {
+		await this.map.waitForVisibility({
+			locator: this.map.popupLocatorV4,
+		});
+		await this.map
+			.popupOptionV4(option)
+			.click({ timeout: Timeout.EXTRA_SHORT, delay: Delay.EXTRA_SHORT });
+	}
 }

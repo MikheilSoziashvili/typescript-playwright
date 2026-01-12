@@ -4,7 +4,7 @@ import { getRandomEmail, getRandomPhone } from "@core/utils/utils";
 import { ContactType } from "@enums/personal-info-types";
 import { Timeout } from "@enums/timeout";
 import { BasePageStep } from "@pages/base/base-page-step";
-import { Page } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
 import { ProfilePage } from "./profile-page";
 import { UserPrivacyOption } from "@enums/user-privacy-options";
 import { ToggleOptions } from "@enums/visibility-options";
@@ -241,5 +241,14 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 			default:
 				throw new Error(`Unsupported contact type: ${String(type)}`);
 		}
+	}
+
+	@step("Change username - v4")
+	public async changeUsernameV4(username: string): Promise<void> {
+		await this.gamdomPage.map.changeUsernameInputV4.fill(username);
+		await this.gamdomPage.clickSaveUsernameV4();
+		await expect(this.gamdomPage.map.changeUsernameInputV4).toHaveValue(
+			username,
+		);
 	}
 }

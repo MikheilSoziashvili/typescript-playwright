@@ -16,4 +16,14 @@ export class CommonUserOptionsPopupMap extends BaseMap {
 	public popupOption(option: CommonUserPopupOption): Locator {
 		return this.popupLocator.locator("ul li").filter({ hasText: option });
 	}
+
+	public get popupLocatorV4(): Locator {
+		return this.page.locator('div[class*="PopoverV4"] div[role="listbox"]');
+	}
+
+	public popupOptionV4(option: CommonUserPopupOption): Locator {
+		return this.popupLocatorV4.locator(
+			`[data-testid$="-messageActions-option-${option.toLowerCase()}"]`,
+		);
+	}
 }

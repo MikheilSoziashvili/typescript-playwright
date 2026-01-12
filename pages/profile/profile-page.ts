@@ -71,4 +71,9 @@ export class ProfilePage extends BasePage<ProfilePageMap> {
 	): Promise<void> {
 		await this.map.userProfileLeftMenuItem(menuItem).click();
 	}
+
+	@step("Click save username - v4")
+	public async clickSaveUsernameV4(): Promise<void> {
+		await this.map.saveUsernameButtonV4.click();
+	}
 }

@@ -248,4 +248,98 @@ export class ChatMap extends BaseMap {
 	public get chatroomsDropdownSelectedValue(): Locator {
 		return this.chatHeader.getByTestId("Input");
 	}
+
+	public get chatButtonV4(): Locator {
+		return this.page.getByTestId("chat-toggle-btn");
+	}
+
+	public get chatFooterV4(): Locator {
+		return this.chatLocatorV4.getByTestId("chat-footer");
+	}
+
+	public get chatTextBoxV4(): Locator {
+		return this.chatFooterV4.getByTestId("chat-input-editable");
+	}
+
+	public get sendMessageButtonV4(): Locator {
+		return this.chatFooterV4.getByTestId("chat-input-send-button");
+	}
+
+	public get chatLocatorV4(): Locator {
+		return this.page.getByTestId("chat-container");
+	}
+
+	public get chatHeaderV4(): Locator {
+		return this.chatLocatorV4.getByTestId("chat-header");
+	}
+
+	public get chatMessagesListV4(): Locator {
+		return this.chatLocatorV4.getByTestId("chat-messages");
+	}
+
+	public get chatMessagesWithContentListV4(): Locator {
+		return this.chatMessagesListV4.getByTestId("chatMessages-withContent");
+	}
+
+	public get usernameInMessageV4(): Locator {
+		return this.page.locator(
+			'[data-testid^="message-say-"][data-testid$="-chatUserName-inner"]',
+		);
+	}
+
+	public get textInMessageV4(): Locator {
+		return this.page.locator(
+			'[data-testid^="message-say-"][data-testid$="-messageContainer"]',
+		);
+	}
+
+	public messageLocatorV4(options?: ChatMessageOptions): Locator {
+		const messageLocator = this.chatMessagesWithContentListV4.locator(
+			'li[data-testid^="message-say-"][data-testid$="-container"]',
+		);
+		if (options?.index) {
+			return messageLocator.nth(options.index - 1);
+		} else if (options?.username && options.message) {
+			return messageLocator
+				.filter({
+					has: this.usernameInMessageV4.filter({
+						hasText: options.username,
+					}),
+				})
+				.filter({
+					has: this.textInMessageV4.filter({
+						hasText: options.message,
+					}),
+				})
+				.last();
+		} else {
+			return messageLocator.last();
+		}
+	}
+
+	public messageActionsTriggerV4(options?: ChatMessageOptions): Locator {
+		return this.messageLocatorV4(options).locator(
+			'[data-testid^="message-say-"][data-testid$="-messageActionsTrigger"]',
+		);
+	}
+
+	public get infoMessageContainerV4(): Locator {
+		return this.chatMessagesWithContentListV4.locator(
+			'[data-testid^="message-client_message-"][data-testid$="-client_message"]',
+		);
+	}
+
+	public get infoMessagesV4(): Locator {
+		return this.infoMessageContainerV4.locator(
+			'[data-testid$="-client_message-text"]',
+		);
+	}
+
+	public infoMessageLocatorV4(index?: number): Locator {
+		const infoLocator = this.infoMessagesV4;
+		if (index) {
+			return infoLocator.nth(index - 1);
+		}
+		return infoLocator;
+	}
 }

@@ -10,6 +10,10 @@ import { buildIgnoreUserMessageInfo } from "@core/helpers/asserter-helpers/text-
 import { PrivacyPage } from "@pages/privacy/privacy-page";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraUser } from "@enums/jira/jira-users";
+import { TestUserRole } from "@enums/test-user-roles";
+import { testData } from "test-data/test-data-manager";
+import { TestTag } from "@enums/test-tags";
+import { JiraComponent } from "@enums/jira/jira-components";
 
 test.describe(`[ENG-1334] "Ignore" user from the chat`, () => {
 	let user2Context;
@@ -157,3 +161,222 @@ test.describe(`[ENG-1334] "Ignore" user from the chat`, () => {
 		);
 	});
 });
+
+test.describe(
+	`[ENG-11852] "Ignore" user from the chat - v4`,
+	testDetails()
+		.withTags(TestTag.V4, JiraComponent.CHAT, JiraComponent.PRIVACY)
+		.apply(),
+	() => {
+		const chatDomainData = testData().fromDomain().chat;
+
+		test.describe("Ignoring a user - v4", () => {
+			test(
+				`Ignoring an user - v4`,
+				testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+				async ({ browserSessionManager }) => {
+					const user1 = await browserSessionManager.loginAs(
+						TestUserRole.REGULAR,
+						{
+							reuseContext: true,
+						},
+					);
+
+					const user2 = await browserSessionManager.loginAs(
+						TestUserRole.SUPERADMIN,
+					);
+
+					const user1Username =
+						user1.getAuthenticatedUser().user.username;
+
+					const ignoreUserScenarioData =
+						chatDomainData.buildIgnoreUserScenarioData(
+							user1Username,
+						);
+
+					const [pair1, pair2] = ignoreUserScenarioData.messagePairs;
+					const tipUserInfoMessage =
+						ignoreUserScenarioData.tipUserInfoMessage;
+
+					// Send message as user1
+					await user1.pages.homePage.navigate();
+					await user1.pages.chat.expandChatV4();
+					await user1.pages.chat
+						.steps()
+						.sendMessageAndVerifyItsVisibleV4(
+							pair1.message,
+							pair1.info,
+						);
+
+					// As user2 find the chat message and ignore user1
+					await user2.pages.homePage.navigate();
+					await user2.pages.chat.expandChatV4();
+					await user2.pages.chat
+						.assertThat()
+						.isMessageVisibleV4(pair1.info);
+					await user2.pages.chat
+						.steps()
+						.ignoreUserFromChatV4(pair1.info);
+					await user2.pages.chat
+						.assertThat()
+						.isInfoMessageVisibleV4(
+							tipUserInfoMessage,
+							user1Username,
+						);
+					await user2.pages.chat
+						.assertThat()
+						.messageIsNotVisibleV4(pair1.info);
+
+					// Send a new message as user1
+					await user1.pages.chat
+						.steps()
+						.sendMessageAndVerifyItsVisibleV4(
+							pair2.message,
+							pair2.info,
+						);
+
+					// Assert newly sent message from user1 is not visible as user2
+					await user2.pages.chat
+						.assertThat()
+						.messageIsNotVisibleV4(pair2.info);
+
+					// Navigate with user2 to the privacy page
+					await user2.pages.privacyPage.navigate();
+					await user2.pages.privacyPage
+						.assertThat()
+						.userIsIgnoredV4(user1Username);
+				},
+			);
+		});
+
+		test.describe(`Changing an ignored user's username - v4`, () => {
+			test(
+				`Changing an ignored user's username - v4`,
+				testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+				async ({ browserSessionManager }) => {
+					const user1 = await browserSessionManager.loginAs(
+						TestUserRole.REGULAR,
+						{
+							reuseContext: true,
+						},
+					);
+
+					const user2 = await browserSessionManager.loginAs(
+						TestUserRole.SUPERADMIN,
+					);
+
+					const user1Username =
+						user1.getAuthenticatedUser().user.username;
+
+					const { messagePairs } =
+						chatDomainData.buildIgnoreUserScenarioData(
+							user1Username,
+						);
+					const [pair1, pair2] = messagePairs;
+
+					// Send message as user1
+					await user1.pages.homePage.navigate();
+					await user1.pages.chat.expandChatV4();
+					await user1.pages.chat.steps().sendMessageV4(pair1.message);
+
+					// As user2 find the chat message and ignore user1
+					await user2.pages.homePage.navigate();
+					await user2.pages.chat.expandChatV4();
+					await user2.pages.chat
+						.steps()
+						.ignoreUserFromChatV4(pair1.info);
+
+					const newUsername = testData()
+						.fromRandom()
+						.data.username.username();
+					pair2.info.username = newUsername;
+
+					//Change username for user1
+					await user1.pages.profilePage.navigate();
+					await user1.pages.profilePage
+						.steps()
+						.changeUsernameV4(newUsername);
+
+					// Send a new message as user1
+					await user1.pages.chat
+						.steps()
+						.sendMessageAndVerifyItsVisibleV4(
+							pair2.message,
+							pair2.info,
+						);
+
+					// Assert newly sent message from user1 is not visible as user2
+					await user2.pages.chat
+						.assertThat()
+						.messageIsNotVisibleV4(pair2.info);
+				},
+			);
+		});
+
+		test.describe(`Unignoring an ignored user - v4`, () => {
+			test(
+				`Unignoring an ignored user - v4`,
+				testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+				async ({ browserSessionManager }) => {
+					const user1 = await browserSessionManager.loginAs(
+						TestUserRole.REGULAR,
+						{
+							reuseContext: true,
+						},
+					);
+
+					const user2 = await browserSessionManager.loginAs(
+						TestUserRole.SUPERADMIN,
+					);
+
+					const user1Username =
+						user1.getAuthenticatedUser().user.username;
+
+					const { messagePairs } =
+						chatDomainData.buildIgnoreUserScenarioData(
+							user1Username,
+						);
+					const [pair1, pair2] = messagePairs;
+
+					// Send message as user1
+					await user1.pages.homePage.navigate();
+					await user1.pages.chat.expandChatV4();
+					await user1.pages.chat.steps().sendMessageV4(pair1.message);
+
+					// As user2 find the chat message and ignore user1
+					await user2.pages.homePage.navigate();
+					await user2.pages.chat.expandChatV4();
+					await user2.pages.chat
+						.steps()
+						.ignoreUserFromChatV4(pair1.info);
+					await user2.pages.chat
+						.assertThat()
+						.messageIsNotVisibleV4(pair1.info);
+
+					// As user2 unignore user1
+					await user2.pages.privacyPage.navigate();
+					await user2.pages.privacyPage.clickUnignoreUserV4(
+						user1Username,
+					);
+					await user2.pages.unblockUserModal.clickUnblockButtonV4();
+					await user2.pages.chat
+						.assertThat()
+						.isMessageVisibleV4(pair1.info);
+
+					// Send a new message as user1
+					await user1.pages.chat
+						.steps()
+						.sendMessageAndVerifyItsVisibleV4(
+							pair2.message,
+							pair2.info,
+						);
+
+					// Assert newly sent message from user1 is visible as user2
+					await user2.pages.chat
+						.assertThat()
+						.isMessageVisibleV4(pair2.info);
+				},
+			);
+		});
+	},
+);

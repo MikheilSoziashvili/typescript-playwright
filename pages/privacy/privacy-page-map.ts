@@ -21,4 +21,15 @@ export class PrivacyPageMap extends BaseMap {
 			.locator("..");
 		return row.getByRole("button", { name: "Unignore" });
 	}
+
+	public getIgnoredUserV4(username: string): Locator {
+		return this.page.getByText(username, { exact: true });
+	}
+
+	public getUnignoreButtonV4(username: string): Locator {
+		const row = this.getIgnoredUserV4(username)
+			.locator("..")
+			.locator("..");
+		return row.locator('svg[class*="StyledCloseIcon"]');
+	}
 }

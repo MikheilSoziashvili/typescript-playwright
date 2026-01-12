@@ -111,6 +111,7 @@ import { SportsBlogAdminPage } from "./admin/sports-blog-admin/sports-blog-admin
 import { SportsBlogModal } from "./modals/sports-blog-modal/sports-blog-modal";
 import { SweetBonanzaPage } from "./casino-games/pragmatic-play/sweet-bonanza/sweet-bonanza-page";
 import { ToastV4 } from "./components/toastV4/toast-v4";
+import { UnblockUserModal } from "./modals/unblock-user-modal-v4/unblock-user-modal-v4";
 
 export const GamdomPages = {
 	homePage: HomePage,
@@ -241,6 +242,7 @@ export const Modals = {
 	newRedirectModal: NewRedirectModal,
 	promotionsModal: PromotionsModal,
 	sportsBlogModal: SportsBlogModal,
+	unblockUserModal: UnblockUserModal,
 };
 
 export const AllGamdomPages = {
