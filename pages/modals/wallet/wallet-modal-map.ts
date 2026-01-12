@@ -256,6 +256,10 @@ export class WalletModalMap extends BaseMap {
 		return this.page.getByLabel("Your personal Destination Tag");
 	}
 
+	public get cryptoWithdrawDestinationTag(): Locator {
+		return this.page.getByLabel("Destination Tag (optional)");
+	}
+
 	public get kycLevelOneCotainer(): Locator {
 		return this.page.getByTestId("levelLEVEL1KycLeftPanelContainer");
 	}

@@ -291,7 +291,7 @@ export class WalletModal extends BasePage<WalletModalMap> {
 				cryptocurrency === CryptoTicker.XRP) &&
 			destinationTag
 		) {
-			await this.map.cryptoDestinationTag.fill(destinationTag);
+			await this.map.cryptoWithdrawDestinationTag.fill(destinationTag);
 		}
 
 		await this.fillWithdrawalAmount(amount);
