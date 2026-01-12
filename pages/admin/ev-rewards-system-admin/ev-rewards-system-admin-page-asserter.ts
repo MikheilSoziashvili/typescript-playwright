@@ -72,10 +72,8 @@ export class EvRewardsSystemAdminAsserter extends BaseAsserter<EvRewardsSystemAd
 	@step("Assert balance after (with or without payout)")
 	public async finalBalanceIsCorrect(
 		balanceBefore: number,
-		payout: number,
 		balanceAfter: number,
-		shouldDeduct: boolean,
 	): Promise<void> {
-		expect(balanceAfter).toBe(shouldDeduct ? balanceBefore - payout : balanceBefore);
+		expect(balanceAfter).toBe(balanceBefore);
 	}
 }

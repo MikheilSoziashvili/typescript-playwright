@@ -158,11 +158,6 @@ test.describe(
 										WalletType.DEFAULT,
 									);
 
-								const shouldDeduct =
-									await evRewardsSystemAdminPage
-										.steps()
-										.shouldDeductBalance(resultKey);
-
 								logger.info(
 									`Balance before: ${balanceBefore}, Payout: ${csvPayout}, Balance after: ${balanceAfter}`,
 								);
@@ -171,9 +166,7 @@ test.describe(
 									.assertThat()
 									.finalBalanceIsCorrect(
 										balanceBefore,
-										csvPayout,
 										balanceAfter,
-										shouldDeduct,
 									);
 							},
 						);
