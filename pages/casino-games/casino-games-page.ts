@@ -21,6 +21,16 @@ import { BookOfArabiaPage } from "./wickedgames/book-of-arabia/book-of-arabia-pa
 import { SweetBonanzaPage } from "./pragmatic-play/sweet-bonanza/sweet-bonanza-page";
 import { SweetBonanzaCandyLandPage } from "./pragmatic-play-live/sweet-bonanza-candy-land/sweet-bonanza-candy-land-page";
 
+type CasinoGamesDeps = {
+	bookOfPyramidsPage: BookOfPyramidsPage;
+	cashVaultIPage: CashVaultIPage;
+	bookOfArabiaPage: BookOfArabiaPage;
+	liveBaccaratSqueezePage: LiveBaccaratSqueezePage;
+	zuluGoldPage: ZuluGoldPage;
+	sweetBonanzaPage: SweetBonanzaPage;
+	sweetBonanzaCandyLandPage: SweetBonanzaCandyLandPage;
+};
+
 /**
  * Maps each game to its corresponding provider.
  * Ensures only valid game-provider combinations are used.
@@ -47,17 +57,31 @@ export class CasinoGamesUnifiedPage extends BasePage<CasinoGamesPageMap> {
 	 */
 	private gamesMap: Partial<Record<CasinoGameName, CasinoGamesPage>>;
 
-	public constructor(
-		page: Page,
-		private bookOfPyramidsPage: BookOfPyramidsPage,
-		private cashVaultIPage: CashVaultIPage,
-		private bookOfArabiaPage: BookOfArabiaPage,
-		private liveBaccaratSqueezePage: LiveBaccaratSqueezePage,
-		private zuluGoldPage: ZuluGoldPage,
-		private sweetBonanzaPage: SweetBonanzaPage,
-		private sweetBonanzaCandyLandPage: SweetBonanzaCandyLandPage,
-	) {
+	private readonly bookOfPyramidsPage: BookOfPyramidsPage;
+	private readonly cashVaultIPage: CashVaultIPage;
+	private readonly bookOfArabiaPage: BookOfArabiaPage;
+	private readonly liveBaccaratSqueezePage: LiveBaccaratSqueezePage;
+	private readonly zuluGoldPage: ZuluGoldPage;
+	private readonly sweetBonanzaPage: SweetBonanzaPage;
+	private readonly sweetBonanzaCandyLandPage: SweetBonanzaCandyLandPage;
+
+	public constructor(page: Page, deps?: Partial<CasinoGamesDeps>) {
 		super(page, new CasinoGamesPageMap(page));
+
+		this.bookOfPyramidsPage =
+			deps?.bookOfPyramidsPage ?? new BookOfPyramidsPage(page);
+		this.cashVaultIPage = deps?.cashVaultIPage ?? new CashVaultIPage(page);
+		this.bookOfArabiaPage =
+			deps?.bookOfArabiaPage ?? new BookOfArabiaPage(page);
+		this.liveBaccaratSqueezePage =
+			deps?.liveBaccaratSqueezePage ?? new LiveBaccaratSqueezePage(page);
+		this.zuluGoldPage = deps?.zuluGoldPage ?? new ZuluGoldPage(page);
+		this.sweetBonanzaPage =
+			deps?.sweetBonanzaPage ?? new SweetBonanzaPage(page);
+		this.sweetBonanzaCandyLandPage =
+			deps?.sweetBonanzaCandyLandPage ??
+			new SweetBonanzaCandyLandPage(page);
+
 		this.gamesMap = {
 			[CasinoGameName.BOOK_OF_PYRAMIDS]: this.bookOfPyramidsPage,
 			[CasinoGameName.CASH_VAULT_I]: this.cashVaultIPage,

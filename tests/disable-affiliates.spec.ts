@@ -2,39 +2,39 @@ import {
 	ALL_USER_TYPES_DISABLED,
 	ALL_USER_TYPES_ENABLED,
 } from "@constants/feature-configurations";
+import { BrowserUserSession } from "@core/browser-session-mngmt";
 import { testDetails } from "@core/helpers/test-details-helper";
-import { getCookieHeader, setAuthenticationCookies } from "@core/utils/utils";
 import { Feature } from "@enums/feature";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { TestTag } from "@enums/test-tags";
+import { TestUserRole } from "@enums/test-user-roles";
 import { test } from "@fixtures/fixtures";
 
 test.describe.serial(
 	"Affiliates - disable feature",
 	testDetails().withTags(TestTag.SEQUENTIAL).apply(),
 	() => {
-		let superAdminCookie: string;
+		let superadmin: BrowserUserSession;
 
-		test.beforeEach(async ({ gamdomApiDbFacade, gamdomApi, page }) => {
-			const { cookie } =
-				await gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
-			superAdminCookie = getCookieHeader(cookie);
-			await setAuthenticationCookies(page, cookie);
-
-			await gamdomApi.setMultipleFeatureStates(
-				[
-					{
-						feature: Feature.AFFILIATES,
-						states: ALL_USER_TYPES_DISABLED,
-					},
-					{
-						feature: Feature.AFFILIATES_INFO,
-						states: ALL_USER_TYPES_DISABLED,
-					},
-				],
-				{ Cookie: superAdminCookie },
+		test.beforeEach(async ({ browserSessionManager }) => {
+			superadmin = await browserSessionManager.loginAs(
+				TestUserRole.SUPERADMIN,
+				{ reuseContext: true },
 			);
+
+			await (
+				await superadmin.apis.gamdomApi
+			).setMultipleFeatureStates([
+				{
+					feature: Feature.AFFILIATES,
+					states: ALL_USER_TYPES_DISABLED,
+				},
+				{
+					feature: Feature.AFFILIATES_INFO,
+					states: ALL_USER_TYPES_DISABLED,
+				},
+			]);
 		});
 
 		test(
@@ -43,41 +43,43 @@ test.describe.serial(
 				.withTags(JiraComponent.AFFILIATES)
 				.withAuthor(JiraUser.NIKOLAY_GENOV)
 				.apply(),
-			async ({ homePage, gamdomApiDbFacade, footer }) => {
+			async ({ browserSessionManager, footer }) => {
 				const expectedUrlPart = "/rewards";
 
-				const { cookie } =
-					await gamdomApiDbFacade.createSingleUserDbAndAuth();
-				await setAuthenticationCookies(homePage.page, cookie);
+				const regularUser = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
+					{
+						reuseContext: true,
+					},
+				);
 
-				await homePage.navigate();
-				await homePage
+				await regularUser.pages.homePage.navigate();
+				await regularUser.pages.homePage
 					.assertThat()
 					.verifyAffiliatesRedirectWithRetry(footer, expectedUrlPart);
 
-				await homePage.navigate({
+				await regularUser.pages.homePage.navigate({
 					cookies: { clearCookies: true },
 				});
-				await homePage
+				await regularUser.pages.homePage
 					.assertThat()
 					.verifyAffiliatesRedirectWithRetry(footer, expectedUrlPart);
 			},
 		);
 
-		test.afterAll(async ({ gamdomApi }) => {
-			await gamdomApi.setMultipleFeatureStates(
-				[
-					{
-						feature: Feature.AFFILIATES,
-						states: ALL_USER_TYPES_ENABLED,
-					},
-					{
-						feature: Feature.AFFILIATES_INFO,
-						states: ALL_USER_TYPES_ENABLED,
-					},
-				],
-				{ Cookie: superAdminCookie },
-			);
+		test.afterEach(async ({}) => {
+			await (
+				await superadmin.apis.gamdomApi
+			).setMultipleFeatureStates([
+				{
+					feature: Feature.AFFILIATES,
+					states: ALL_USER_TYPES_ENABLED,
+				},
+				{
+					feature: Feature.AFFILIATES_INFO,
+					states: ALL_USER_TYPES_ENABLED,
+				},
+			]);
 		});
 	},
 );

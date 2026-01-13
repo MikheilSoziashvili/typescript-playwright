@@ -25,6 +25,16 @@ import { OriginalsMap } from "./originals-page-map";
 import { OriginalsSteps } from "./originals-page-steps";
 import { Toast } from "@pages/components/toast/toast";
 
+type OriginalsDeps = {
+	diceGamePage: DiceGamePage;
+	crashGamePage: CrashGamePage;
+	hiloGamePage: HiloGamePage;
+	rouletteGamePage: RouletteGamePage;
+	plinkoGamePage: PlinkoGamePage;
+	minesGamePage: MinesGamePage;
+	kenoGamePage: KenoGamePage;
+};
+
 /**
  * The OriginalsPage class acts as a unified interface for interacting with all the "Originals" games.
  * It leverages individual game POMs (Dice, Crash, Hi-Lo, Roulette).
@@ -38,29 +48,31 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 	 */
 	private gamesMap: Record<OriginalGames, OriginalGamesPage>;
 
+	private readonly diceGamePage: DiceGamePage;
+	private readonly crashGamePage: CrashGamePage;
+	private readonly hiloGamePage: HiloGamePage;
+	private readonly rouletteGamePage: RouletteGamePage;
+	private readonly plinkoGamePage: PlinkoGamePage;
+	private readonly minesGamePage: MinesGamePage;
+	private readonly kenoGamePage: KenoGamePage;
+
 	/**
 	 * Constructs an instance of the OriginalsPage.
-	 *
 	 * @param {Page} page - The Playwright Page object for browser automation.
-	 * @param {DiceGamePage} diceGamePage - The Dice game page object.
-	 * @param {CrashGamePage} crashGamePage - The Crash game page object.
-	 * @param {HiloGamePage} hiloGamePage - The Hi-Lo game page object.
-	 * @param {RouletteGamePage} rouletteGamePage - The Roulette game page object.
-	 * @param {PlinkoGamePage} plinkoGamePage - The Plinko game page object.
-	 * @param {MinesGamePage} minesGamePage - The Mines game page object.
-	 * @param {KenoGamesPage} kenoGamePage - The Keno game page object.
+	 * @param {Partial<OriginalsDeps>} deps - Optional override injection of game pages
 	 */
-	public constructor(
-		page: Page,
-		private diceGamePage: DiceGamePage,
-		private crashGamePage: CrashGamePage,
-		private hiloGamePage: HiloGamePage,
-		private rouletteGamePage: RouletteGamePage,
-		private plinkoGamePage: PlinkoGamePage,
-		private minesGamePage: MinesGamePage,
-		private kenoGamePage: KenoGamePage,
-	) {
+	public constructor(page: Page, deps?: Partial<OriginalsDeps>) {
 		super(page, new OriginalsMap(page));
+
+		this.diceGamePage = deps?.diceGamePage ?? new DiceGamePage(page);
+		this.crashGamePage = deps?.crashGamePage ?? new CrashGamePage(page);
+		this.hiloGamePage = deps?.hiloGamePage ?? new HiloGamePage(page);
+		this.rouletteGamePage =
+			deps?.rouletteGamePage ?? new RouletteGamePage(page);
+		this.plinkoGamePage = deps?.plinkoGamePage ?? new PlinkoGamePage(page);
+		this.minesGamePage = deps?.minesGamePage ?? new MinesGamePage(page);
+		this.kenoGamePage = deps?.kenoGamePage ?? new KenoGamePage(page);
+
 		this.gamesMap = {
 			Dice: this.diceGamePage,
 			Crash: this.crashGamePage,
@@ -70,6 +82,7 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 			Mines: this.minesGamePage,
 			Keno: this.kenoGamePage,
 		};
+
 		this.handlers = this._handlers;
 		this.toast = new Toast(this.page);
 	}

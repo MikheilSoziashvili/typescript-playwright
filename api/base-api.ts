@@ -368,4 +368,21 @@ export class BaseApi {
 	): Promise<APIResponse> {
 		return this.makeRequest(HttpMethod.PATCH, parameters, options);
 	}
+
+	/**
+	 * Disposes the underlying Playwright API request context.
+	 *
+	 * This should be called when the API instance is no longer needed to ensure
+	 * that all network resources, sockets and internal handles held by the
+	 * {@link APIRequestContext} are properly released.
+	 *
+	 * Typically invoked during test teardown or session cleanup to avoid
+	 * resource leaks.
+	 *
+	 * @returns {Promise<void>} A promise that resolves once the request context has been disposed.
+	 */
+	public async dispose(): Promise<void> {
+		const ctx = await this.context;
+		await ctx.dispose();
+	}
 }

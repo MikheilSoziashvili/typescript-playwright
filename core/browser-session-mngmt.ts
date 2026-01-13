@@ -11,32 +11,30 @@ import { AuthenticatedUser } from "./facades/gamdom-api-db/interfaces";
 import { TestUserRole } from "@enums/test-user-roles";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
-import { ProxyCredentialsType } from "./types/types";
-import { CasinoGamesUnifiedPage } from "@pages/casino-games/casino-games-page";
-import { BookOfPyramidsPage } from "@pages/casino-games/bgaming/book-of-pyramids/book-of-pyramids-page";
-import { CashVaultIPage } from "@pages/casino-games/hacksaw-gaming/cash-vault-i/cash-vault-i-page";
-import { BookOfArabiaPage } from "@pages/casino-games/wickedgames/book-of-arabia/book-of-arabia-page";
-import { LiveBaccaratSqueezePage } from "@pages/casino-games/evolution-gaming/live-baccarat-squeeze/live-baccarat-squeeze-page";
-import { ZuluGoldPage } from "@pages/casino-games/elk-studios/zulu-gold/zulu-gold-page";
-import { SweetBonanzaPage } from "@pages/casino-games/pragmatic-play/sweet-bonanza/sweet-bonanza-page";
-import { SweetBonanzaCandyLandPage } from "@pages/casino-games/pragmatic-play-live/sweet-bonanza-candy-land/sweet-bonanza-candy-land-page";
+import { AllApis, AllApisType, ApiFactories } from "@api/index";
+import { BaseApi } from "@api/base-api";
+import {
+	StorageStateAwareApi,
+	ApiPromises,
+	Pages,
+	BrowserSessionLoginOptions,
+	SessionContextOptions,
+} from "./types/browser-session-mngmt-types";
 
-type Pages = {
-	[K in keyof AllGamdomPagesType]: InstanceType<AllGamdomPagesType[K]>;
-};
+function isStorageStateAwareApi(api: unknown): api is StorageStateAwareApi {
+	if (typeof api !== "object" || api === null) {
+		return false;
+	}
 
-type SessionContextOptions = {
-	reuseContext?: boolean;
-	proxyCredentials?: ProxyCredentialsType;
-};
-
-type BrowserSessionLoginOptions = SessionContextOptions & {
-	regularUserOptions?: Parameters<
-		GamdomApiDbFacade["createSingleUserDbAndAuth"]
-	>[0];
-};
+	return (
+		"addContextStorageState" in api &&
+		typeof (api as { addContextStorageState?: unknown })
+			.addContextStorageState === "function"
+	);
+}
 
 export class BrowserUserSession {
+	private apiCache: Partial<Record<keyof AllApisType, Promise<unknown>>> = {};
 	private pageCache: Partial<Record<keyof AllGamdomPagesType, unknown>> = {};
 
 	constructor(
@@ -54,9 +52,53 @@ export class BrowserUserSession {
 		return this.authenticatedUser;
 	}
 
-	get pages(): {
-		[K in keyof AllGamdomPagesType]: InstanceType<AllGamdomPagesType[K]>;
-	} {
+	get apis(): ApiPromises {
+		return new Proxy({} as ApiPromises, {
+			get: <K extends keyof AllApisType>(
+				_target: ApiPromises,
+				prop: K,
+			) => {
+				if (!Object.prototype.hasOwnProperty.call(AllApis, prop)) {
+					throw new Error(
+						`API "${String(prop)}" not found in registry`,
+					);
+				}
+
+				const cached = this.apiCache[prop];
+				if (cached) {
+					return cached;
+				}
+
+				const created = this.createApi(prop);
+				this.apiCache[prop] = created;
+
+				return created;
+			},
+		});
+	}
+
+	private createApi<K extends keyof AllApisType>(prop: K): ApiPromises[K] {
+		return (async () => {
+			// instantiate API class (special constructor (like CurrencyApi) if present, else default constructor)
+			const api =
+				prop in ApiFactories
+					? (ApiFactories[prop as keyof typeof ApiFactories](
+							this.page,
+					  ) as InstanceType<AllApisType[K]>)
+					: new (AllApis[prop] as unknown as new () => InstanceType<
+							AllApisType[K]
+					  >)();
+
+			const storageState = await this.context.storageState();
+			if (isStorageStateAwareApi(api)) {
+				await api.addContextStorageState(storageState);
+			}
+
+			return api;
+		})() as ApiPromises[K];
+	}
+
+	get pages(): Pages {
 		return new Proxy({} as Pages, {
 			get: <K extends keyof AllGamdomPagesType>(
 				_target: Pages,
@@ -77,23 +119,6 @@ export class BrowserUserSession {
 					>;
 				}
 
-				// TODO: Revise instantiation of CasinoGamesUnifiedPage and OriginalsPage
-				// Special handling for CasinoGamesUnifiedPage
-				if (prop === "casinoGamesPage") {
-					const instance = new CasinoGamesUnifiedPage(
-						this.page,
-						new BookOfPyramidsPage(this.page),
-						new CashVaultIPage(this.page),
-						new BookOfArabiaPage(this.page),
-						new LiveBaccaratSqueezePage(this.page),
-						new ZuluGoldPage(this.page),
-						new SweetBonanzaPage(this.page),
-						new SweetBonanzaCandyLandPage(this.page),
-					);
-					this.pageCache[prop] = instance;
-					return instance as InstanceType<AllGamdomPagesType[K]>;
-				}
-
 				const PageClass = AllGamdomPages[prop] as new (
 					page: Page,
 				) => InstanceType<AllGamdomPagesType[K]>;
@@ -104,6 +129,20 @@ export class BrowserUserSession {
 				return instance;
 			},
 		});
+	}
+
+	public async disposeApis(): Promise<void> {
+		for (const apiPromise of Object.values(this.apiCache)) {
+			try {
+				const api = await apiPromise;
+				if (typeof (api as BaseApi).dispose === "function") {
+					await (api as BaseApi).dispose();
+				}
+			} catch {
+				// ignore api disposal failures
+			}
+		}
+		this.apiCache = {};
 	}
 }
 
@@ -184,6 +223,7 @@ export class BrowserSessionManager {
 	public async cleanup(): Promise<void> {
 		for (const [role, session] of this.sessions.entries()) {
 			if (role !== TestUserRole.ANONYMOUS) {
+				await session.disposeApis();
 				await this.safeCloseContext(session.context);
 			}
 		}
