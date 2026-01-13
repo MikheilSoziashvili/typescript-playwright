@@ -60,7 +60,7 @@ export class BookOfArabiaPageMap extends BaseMap {
 
 	public get popUpContainer(): Locator {
 		return this.outerFrameLocator.locator(
-			'div[class*="StyledLayer__StyledContainer"]',
+			'div[class*="ReactModal__Content ReactModal__Content--after-open"]',
 		);
 	}
 

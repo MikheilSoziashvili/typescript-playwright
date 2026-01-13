@@ -5,6 +5,7 @@ import { expect } from "@playwright/test";
 import { step } from "decorators/step";
 import { BookOfArabiaPage } from "./book-of-arabia-page";
 import { logger } from "@logger/logger";
+import { freeSpinsMessagePattern } from "@support/regex-patterns";
 
 export class BookOfArabiaPageAsserter extends BaseAsserter<BookOfArabiaPage> {
 	public constructor(page: BookOfArabiaPage) {
@@ -55,7 +56,7 @@ export class BookOfArabiaPageAsserter extends BaseAsserter<BookOfArabiaPage> {
 		const popUpButton = this.gamdomPage.map.popUpButton(PopUpButtons.START);
 		const elementsToCheck = [
 			popUp,
-			popUp.getByText(`You have ${expectedSpins} spin`, { exact: false }),
+			popUp.getByText(freeSpinsMessagePattern(expectedSpins)),
 		];
 		if (expectedBet) {
 			elementsToCheck.push(
