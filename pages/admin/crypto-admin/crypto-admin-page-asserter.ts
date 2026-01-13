@@ -5,9 +5,11 @@ import { expect } from "playwright/test";
 import { step } from "decorators/step";
 import { HourlyCryptoBalancesResponse } from "@dtos/responses/gamdom-api/get-hourly-crypto-balances-response";
 import { HourlyCryptoBalancesColumn } from "@enums/admin/hourly-crypto-balances-table-columns";
-import { formatBalance } from "@core/utils/utils";
+import { formatBalance, waitUntil } from "@core/utils/utils";
 import { CurrencySymbol } from "@enums/currenciesSymbols";
 import { NumberSeparators } from "@enums/number-separators";
+import { TimeoutSeconds } from "@enums/timeout-seconds";
+import { TransactionType } from "@enums/transaction-types";
 
 export class CryptoAdminAsserter extends BaseAsserter<CryptoAdminPage> {
 	public constructor(page: CryptoAdminPage) {
@@ -75,16 +77,36 @@ export class CryptoAdminAsserter extends BaseAsserter<CryptoAdminPage> {
 		adminCookie: string,
 		transactionId: string,
 		expectedAmount: number,
+		type?: TransactionType,
 	): Promise<void> {
-		const transactions = await gamdomApi.getCryptoAdminTransactions({
-			Cookie: adminCookie,
-		});
+		const normalizedId = transactionId.toLowerCase();
+		let coinsAmount: number | undefined;
 
-		const matched = transactions.find((trx) =>
-			trx.txid.toLowerCase().startsWith(transactionId.toLowerCase()),
+		await waitUntil(
+			async () => {
+				const transactions = await gamdomApi.getCryptoAdminTransactions(
+					{
+						Cookie: adminCookie,
+					},
+				);
+
+				const matched = transactions.find(
+					(trx) =>
+						(!type ||
+							trx.type.toLowerCase() === type.toLowerCase()) &&
+						typeof trx.txid === "string" &&
+						trx.txid.toLowerCase().startsWith(normalizedId),
+				);
+
+				coinsAmount = matched?.amount_coins;
+				return coinsAmount !== undefined;
+			},
+			{
+				errorMessage: `Coins amount not found in transaction (txid startsWith '${transactionId}')`,
+				intervalSeconds: TimeoutSeconds.FIVE,
+				timeoutSeconds: TimeoutSeconds.THIRTY,
+			},
 		);
-
-		const coinsAmount = matched?.amount_coins;
 
 		if (coinsAmount === undefined) {
 			throw new Error("Coins amount not found in transaction");

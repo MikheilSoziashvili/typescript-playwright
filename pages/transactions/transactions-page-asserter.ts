@@ -4,6 +4,7 @@ import { expect } from "playwright/test";
 import { step } from "decorators/step";
 import { TransactionState } from "@enums/transaction-states";
 import { TransactionType } from "@enums/transaction-types";
+import { TimeoutSeconds } from "@enums/timeout-seconds";
 
 export class TransactionsAsserter extends BaseAsserter<TransactionsPage> {
 	public constructor(page: TransactionsPage) {
@@ -14,10 +15,12 @@ export class TransactionsAsserter extends BaseAsserter<TransactionsPage> {
 	public async assertTransactionStatusIs(
 		expectedStatus: TransactionState,
 		type: TransactionType,
+		timeout?: TimeoutSeconds,
 	): Promise<void> {
 		const finalStatus = await this.gamdomPage.waitForTransactionStatus(
 			expectedStatus,
 			type,
+			timeout,
 		);
 		expect(finalStatus).toBe(expectedStatus);
 	}

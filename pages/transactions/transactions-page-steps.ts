@@ -3,6 +3,7 @@ import { TransactionsPage } from "./transactions-page";
 import { step } from "decorators/step";
 import { TransactionState } from "@enums/transaction-states";
 import { TransactionType } from "@enums/transaction-types";
+import { TimeoutSeconds } from "@enums/timeout-seconds";
 
 export class TransactionsSteps extends BasePageStep<TransactionsPage> {
 	public constructor(page: TransactionsPage) {
@@ -19,14 +20,20 @@ export class TransactionsSteps extends BasePageStep<TransactionsPage> {
 	@step("Verify withdraw transaction status is")
 	public async verifyWithdrawTransactionStatusIs(
 		status: TransactionState,
+		timeout?: TimeoutSeconds,
 	): Promise<void> {
-		await this.verifyTransactionStatus(TransactionType.WITHDRAWAL, status);
+		await this.verifyTransactionStatus(
+			TransactionType.WITHDRAWAL,
+			status,
+			timeout,
+		);
 	}
 
 	@step("Verify transaction status")
 	private async verifyTransactionStatus(
 		type: TransactionType,
 		status: TransactionState,
+		timeout?: TimeoutSeconds,
 	): Promise<void> {
 		await this.gamdomPage.navigate();
 
@@ -41,7 +48,7 @@ export class TransactionsSteps extends BasePageStep<TransactionsPage> {
 
 		await this.gamdomPage
 			.assertThat()
-			.assertTransactionStatusIs(status, type);
+			.assertTransactionStatusIs(status, type, timeout);
 	}
 
 	@step("Verify tip sent transaction details")

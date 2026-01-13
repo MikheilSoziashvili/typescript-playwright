@@ -85,6 +85,7 @@ export class TransactionsPage extends BasePage<TransactionsMap> {
 	public async waitForTransactionStatus(
 		expectedStatus: TransactionState,
 		type: TransactionType,
+		timeout?: TimeoutSeconds,
 	): Promise<TransactionState> {
 		let finalStatus = TransactionState.PENDING;
 
@@ -98,7 +99,7 @@ export class TransactionsPage extends BasePage<TransactionsMap> {
 			{
 				errorMessage: `Transaction did not reach '${expectedStatus}' status in time`,
 				intervalSeconds: TimeoutSeconds.FIVE,
-				timeoutSeconds: TimeoutSeconds.ONE_TWENTY,
+				timeoutSeconds: timeout ?? TimeoutSeconds.ONE_TWENTY,
 			},
 		);
 

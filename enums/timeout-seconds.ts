@@ -11,5 +11,6 @@ export enum TimeoutSeconds {
 	ONE_TWENTY = 120,
 	ONE_EIGHTY = 180,
 	TWO_FORTY = 240,
+	THREE_HUNDRED = 300,
 	FOUR_EIGHTY = 480,
 }

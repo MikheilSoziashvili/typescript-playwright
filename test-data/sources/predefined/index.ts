@@ -110,4 +110,9 @@ export const predefined = {
 	dogeAmountToDeposit: {
 		amountToDeposit: "0.10",
 	},
+	btcAmountToDeposit: {
+		amountToDeposit: 0.00005,
+		amountToWithdraw: 1.5,
+		feeRate: 50,
+	},
 };
