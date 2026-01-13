@@ -47,7 +47,7 @@ export class RegisterModalMap extends BaseMap {
 	}
 
 	public get registerDialogV4(): Locator {
-		return this.page.getByTestId("auth-modal-dialog");
+		return this.page.getByTestId("auth-modal-signup-dialog");
 	}
 
 	public get registerFormV4(): Locator {
