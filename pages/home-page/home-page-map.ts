@@ -252,4 +252,8 @@ export class HomePageMap extends BaseMap {
 			hasText: `${tab}`,
 		});
 	}
+
+	public get walletButtonV4(): Locator {
+		return this.page.getByTestId("nav-wallet-action-btn");
+	}
 }

@@ -1,6 +1,7 @@
 import { WalletModalContent } from "@constants/wallet-modal-content";
 import { WithdrawalSpeed } from "@enums/withdrawal-speeds";
 import { BaseMap } from "@pages/base/base-map";
+import { currencyAmountPattern } from "@support/regex-patterns";
 import { Locator, Page } from "playwright";
 
 export class WalletModalMap extends BaseMap {
@@ -308,5 +309,85 @@ export class WalletModalMap extends BaseMap {
 		return this.page.locator(
 			"span[class*='NetworkSpeedTabs-styled__VipBadgeText']",
 		);
+	}
+
+	public get walletLeftPanelV4(): Locator {
+		return this.page.getByTestId("wallet-left-panel");
+	}
+
+	public get vaultTabButtonV4(): Locator {
+		return this.walletLeftPanelV4.getByTestId("wallet-menu-vault");
+	}
+
+	public get walletDepositWithdrawContainerV4(): Locator {
+		return this.page.getByTestId("vault-tabs-container");
+	}
+
+	public get walletDropdownV4(): Locator {
+		return this.walletDepositWithdrawContainerV4.getByTestId(
+			"vault-wallet-list-select-button",
+		);
+	}
+
+	private get walletDropdownListboxV4(): Locator {
+		return this.page.getByRole("listbox");
+	}
+
+	private get walletDropdownSelectOptionsV4(): Locator {
+		return this.walletDropdownListboxV4.locator(
+			'[data-testid^="vault-wallet-list-select-option-"]',
+		);
+	}
+
+	public walletDropdownOptionV4(optionText: string): Locator {
+		return this.walletDropdownSelectOptionsV4.filter({
+			hasText: optionText,
+		});
+	}
+
+	private get selectedWalletButtonV4(): Locator {
+		return this.walletDepositWithdrawContainerV4.getByTestId(
+			"vault-wallet-list-select-button",
+		);
+	}
+
+	public get vaultWalletAmountV4(): Locator {
+		return this.selectedWalletButtonV4
+			.locator('p[data-testid="wallet-sec-txt"]')
+			.filter({ hasText: currencyAmountPattern() });
+	}
+
+	public get vaultInputFieldV4(): Locator {
+		return this.walletDepositWithdrawContainerV4.getByTestId(
+			"vault-amount-field-input-input",
+		);
+	}
+
+	public get vaultSubmitButtonV4(): Locator {
+		return this.page.getByTestId("vault-submit-button");
+	}
+
+	public get vaultWithdrawTabV4(): Locator {
+		return this.walletDepositWithdrawContainerV4.getByTestId(
+			"vault-withdraw-tab",
+		);
+	}
+
+	public get vaultDepositTabV4(): Locator {
+		return this.walletDepositWithdrawContainerV4.getByTestId(
+			"vault-deposit-tab",
+		);
+	}
+
+	public get vaultDepositToastMessageV4(): Locator {
+		return this.page
+			.getByTestId("toast-message-message")
+			.getByText("transferred from your Wallet to your Vault");
+	}
+
+	public get vaultWithdrawToastMessageV4(): Locator {
+		return this.page
+			.getByTestId("toast-message-message")
+			.getByText("transferred from your Vault to your Wallet");
 	}
 }

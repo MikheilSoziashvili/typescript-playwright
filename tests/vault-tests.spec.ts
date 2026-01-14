@@ -1,12 +1,17 @@
 import { DATASETS_DIR } from "@constants/file-paths";
 import { testDetails } from "@core/helpers/test-details-helper";
-import { formatCurrency, parse_csv } from "@core/utils/utils";
+import {
+	formatCurrency,
+	parse_csv,
+	setAuthenticationCookies,
+} from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { Currency } from "@enums/currencies";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { Locale } from "@enums/locale";
 import { SelfExclusionDays } from "@enums/self-exlusion-days";
+import { TestTag } from "@enums/test-tags";
 import { Unit } from "@enums/units";
 import { Wallet } from "@enums/wallets";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
@@ -107,6 +112,70 @@ test.describe(
 						await walletModal
 							.steps()
 							.withdrawFromVaultAndVerify(
+								record.wallet,
+								record.unit,
+							);
+					},
+				);
+			});
+		});
+	},
+);
+
+test.describe(
+	"Vault tests - v4",
+	testDetails()
+		.withTags(TestTag.V4, JiraComponent.VAULT, JiraComponent.WALLET)
+		.apply(),
+	() => {
+		walletDataset.forEach((record) => {
+			test.describe(`Vault wallet tests: ${record.wallet} - v4`, () => {
+				test(
+					`[ENG-8805] Vault - make a deposit from [${record.wallet}] wallet`,
+					testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+					async ({
+						gamdomApiDbFacade,
+						page,
+						homePage,
+						walletModal,
+					}) => {
+						const { cookie } =
+							await gamdomApiDbFacade.createSingleUserDbAndAuth({
+								unit: record.unit,
+								amount: 5000000000,
+							});
+						await setAuthenticationCookies(page, cookie);
+
+						await homePage.navigateToWalletV4();
+						await walletModal
+							.steps()
+							.depositFromWalletAndVerifyV4(
+								record.wallet,
+								record.unit,
+							);
+					},
+				);
+
+				test(
+					`[ENG-8804] Vault - make a withdrawal from [${record.wallet}] wallet - v4`,
+					testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+					async ({
+						gamdomApiDbFacade,
+						page,
+						homePage,
+						walletModal,
+					}) => {
+						const { cookie } =
+							await gamdomApiDbFacade.createSingleUserDbAndAuth({
+								unit: record.unit,
+								amount: 5000000000,
+							});
+						await setAuthenticationCookies(page, cookie);
+
+						await homePage.navigateToWalletV4();
+						await walletModal
+							.steps()
+							.withdrawFromVaultAndVerifyV4(
 								record.wallet,
 								record.unit,
 							);

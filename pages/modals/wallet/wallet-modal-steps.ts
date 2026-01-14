@@ -202,4 +202,77 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 				ToastSubTitle.RESEND_VERIFICATION_EMAIL_SUCCESSFULLY,
 			);
 	}
+
+	@step(
+		`Deposit from a given wallet and verify the amount is available in the vault - v4`,
+	)
+	public async depositFromWalletAndVerifyV4(
+		wallet: string,
+		unit: Unit,
+		depositAmount?: number,
+	): Promise<void> {
+		await this.gamdomPage.openVaultTabV4();
+		await this.gamdomPage.selectWalletOptionV4(wallet);
+
+		const amount =
+			depositAmount !== undefined
+				? depositAmount
+				: await this.getVaultAmountMinusOneV4();
+
+		await this.gamdomPage.fillVaultAmountV4(amount);
+		await this.gamdomPage.clickVaultSubmitButtonV4();
+
+		const expectedAmountUsd =
+			await this.userBalanceHandler.walletBalanceInFiatRounded(
+				unit,
+				Currency.USD,
+				WalletType.VAULT,
+			);
+
+		const formattedAmount = this.formatAmount(expectedAmountUsd);
+
+		await this.gamdomPage
+			.assertThat()
+			.vaultDepositToastMessageIsDisplayedV4(formattedAmount);
+		await this.gamdomPage.openWithdrawTabInVaultV4();
+		await this.gamdomPage.selectWalletOptionV4(wallet);
+		await this.gamdomPage.assertThat().vaultWalletAmountIs(amount, unit);
+	}
+
+	@step(
+		`Withdraw from a given vault wallet and verify the amount is available in the wallet - v4`,
+	)
+	public async withdrawFromVaultAndVerifyV4(
+		wallet: string,
+		unit: Unit,
+	): Promise<void> {
+		await this.depositFromWalletAndVerifyV4(wallet, unit);
+		await this.gamdomPage.openWithdrawTabInVaultV4();
+		await this.gamdomPage.selectWalletOptionV4(wallet);
+
+		const amount = await this.getVaultAmountMinusOneV4();
+		const usdBeforeWithdrawal =
+			await this.userBalanceHandler.walletBalanceInFiatRounded(
+				unit,
+				Currency.USD,
+				WalletType.VAULT,
+			);
+		const formattedToast = this.formatAmount(usdBeforeWithdrawal - 1);
+
+		await this.gamdomPage.fillVaultAmountV4(amount);
+		await this.gamdomPage.clickVaultSubmitButtonV4();
+
+		await this.gamdomPage
+			.assertThat()
+			.vaultWithdrawToastMessageIsDisplayedV4(formattedToast);
+		await this.gamdomPage.openDepositTabInVaultV4();
+		await this.gamdomPage.selectWalletOptionV4(wallet);
+		await this.gamdomPage.assertThat().vaultWalletAmountIs(1, unit);
+	}
+
+	@step("Get vault amount minus one - v4")
+	private async getVaultAmountMinusOneV4(): Promise<number> {
+		const rawAmountText = await this.gamdomPage.getVaultWalletAmountV4();
+		return parseFloat(rawAmountText) - 1;
+	}
 }

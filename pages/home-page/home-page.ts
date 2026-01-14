@@ -209,4 +209,16 @@ export class HomePage extends BasePage<HomePageMap> {
 		await this.navigate();
 		await this.authenticatedHeader.expandChatIfNotVisible();
 	}
+
+	@step("Navigate to wallet - v4")
+	public async navigateToWalletV4(): Promise<void> {
+		await this.navigate();
+		await this.page.waitForLoadState();
+		await this.clickWalletButtonV4();
+	}
+
+	@step("Click wallet button - v4")
+	public async clickWalletButtonV4(): Promise<void> {
+		await this.map.walletButtonV4.click();
+	}
 }

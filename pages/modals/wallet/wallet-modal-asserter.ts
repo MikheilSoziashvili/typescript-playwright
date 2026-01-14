@@ -26,6 +26,7 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 		);
 	}
 
+	//Same in v3 and v4
 	@step("Vault wallet amount is")
 	public async vaultWalletAmountIs(
 		expectedUsd: number,
@@ -175,5 +176,27 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.kycLevelThreeHeader,
 		]);
+	}
+
+	@step("Vault deposit toast message is displayed - v4")
+	public async vaultDepositToastMessageIsDisplayedV4(
+		amount: string,
+	): Promise<void> {
+		await expect(
+			this.gamdomPage.map.vaultDepositToastMessageV4,
+		).toContainText(
+			`${amount} has been transferred from your Wallet to your Vault`,
+		);
+	}
+
+	@step("Vault withdraw toast message is displayed - v4")
+	public async vaultWithdrawToastMessageIsDisplayedV4(
+		amount: string,
+	): Promise<void> {
+		await expect(
+			this.gamdomPage.map.vaultWithdrawToastMessageV4,
+		).toContainText(
+			`${amount} has been transferred from your Vault to your Wallet`,
+		);
 	}
 }

@@ -323,4 +323,42 @@ export class WalletModal extends BasePage<WalletModalMap> {
 		}
 		return feeAmount.trim();
 	}
+
+	@step("Open vault tab - v4")
+	public async openVaultTabV4(): Promise<void> {
+		await this.map.vaultTabButtonV4.click({ timeout: Timeout.LONG });
+	}
+
+	@step("Open withdraw tab in vault - v4")
+	public async openWithdrawTabInVaultV4(): Promise<void> {
+		await this.map.vaultWithdrawTabV4.click();
+	}
+
+	@step("Open deposit tab in vault - v4")
+	public async openDepositTabInVaultV4(): Promise<void> {
+		await this.map.vaultDepositTabV4.click();
+	}
+
+	@step("Select wallet option - v4")
+	public async selectWalletOptionV4(option: string): Promise<void> {
+		await this.map.walletDropdownV4.click();
+		await this.map.walletDropdownOptionV4(option).click();
+	}
+
+	@step("Get vault wallet amount - v4")
+	public async getVaultWalletAmountV4(): Promise<string> {
+		const amountLocator = this.map.vaultWalletAmountV4;
+		const amountText = (await amountLocator.textContent()) ?? "";
+		return amountText.replace(sanitizeAmount, "");
+	}
+
+	@step("Fill vault amount - v4")
+	public async fillVaultAmountV4(amount: number): Promise<void> {
+		await this.map.vaultInputFieldV4.fill(`${amount}`);
+	}
+
+	@step("Click vault deposit button - v4")
+	public async clickVaultSubmitButtonV4(): Promise<void> {
+		await this.map.vaultSubmitButtonV4.click();
+	}
 }
