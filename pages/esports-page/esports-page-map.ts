@@ -1,4 +1,5 @@
 import { BaseMap } from "@base/base-map";
+import { EsportsSidebarSection } from "@enums/esports-sidebar-sections";
 import { FrameLocator, Locator, Page } from "@playwright/test";
 
 export class EsportsPageMap extends BaseMap {
@@ -8,6 +9,34 @@ export class EsportsPageMap extends BaseMap {
 
 	public get sportsIFrame(): FrameLocator {
 		return this.page.frameLocator(`iframe[id*='obt-sportsbook']`);
+	}
+
+	public get sidebarContainer(): Locator {
+		return this.sportsIFrame.locator(".sidebar-columna");
+	}
+
+	public sidebarSectionHeader(sectionName: EsportsSidebarSection): Locator {
+		return this.sidebarContainer.locator(".v-expansion-panel-header", {
+			hasText: sectionName,
+		});
+	}
+
+	public sidebarSectionContent(sectionName: EsportsSidebarSection): Locator {
+		return this.sidebarSectionHeader(sectionName)
+			.locator("..")
+			.locator(".v-expansion-panel-content");
+	}
+
+	public sidebarSectionItem(
+		sectionName: EsportsSidebarSection,
+		itemName: string,
+	): Locator {
+		return this.sidebarSectionContent(sectionName)
+			.locator(".contenido")
+			.locator(".item", {
+				hasText: itemName,
+			})
+			.first();
 	}
 
 	public get esportsButton(): Locator {

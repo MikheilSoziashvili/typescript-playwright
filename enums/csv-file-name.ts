@@ -58,6 +58,7 @@ export enum CsvFilesName {
 	KYC_LEVEL2_SUBMISSIONS = "ENG-8616-kyc-level2-submissions.csv",
 	CASINO_GAMES_AGGREGATOR_PROVIDER = "ENG-5015-casino-games-aggregator-provider.csv",
 	ESPORTS_CATEGORIES = "ENG-6324-esports-categories.csv",
+	OBT_ESPORTS_PAGES_STATUS_CODE = "ENG-4830-obt-esports-pages-status-code.csv",
 	LOGIN_REJECTED_V4 = "ENG-9836-login-rejected-v4.csv",
 	LOGIN_INPUT_VALIDATION_V4 = "ENG-9836-login-input-validation-v4.csv",
 	PROMOTION_COMBINATIONS_FOR_LABEL_DISPLAY_V4 = "ENG-11500-promotion-combinations-for-label-display-v4.csv",

@@ -11,6 +11,7 @@ import {
 	KycLevel2SubmissionsCsvRecord,
 	PromotionCombinationForLabelDisplayV4CsvRecord,
 	RoyaltyUpLevelRanksCsvRecord,
+	ObtEsportsPagesStatusCodeCsvRecord,
 } from "@dtos/csv";
 import { OriginalsSelfExclusionCsvRecord } from "@dtos/csv/originals-self-exclusion";
 import { PlinkoTestDataCsvRecord } from "@dtos/csv/plinko-test-data-csv";
@@ -76,6 +77,10 @@ import {
 	parseRoyaltyUpLevelRanksCsvRow,
 	RoyaltyUpLevelRanksCsvParsedRecord,
 } from "test-data/parsers/royalty-up-level-ranks-csv-parser";
+import {
+	parseObtEsportsPagesStatusCodeCsvRow,
+	ObtEsportsPagesStatusCodeCsvParsedRecord,
+} from "test-data/parsers/obt-esports-pages-status-code-csv-parser";
 
 export type CsvTransformerExistingType<T> =
 	T extends keyof CsvTransformerMapType ? CsvTransformerMapType[T] : never;
@@ -155,6 +160,10 @@ export type CsvTransformerMapType = {
 	[CsvFilesName.ROYALTY_UP_LEVEL_RANKS]: (
 		row: RoyaltyUpLevelRanksCsvRecord,
 	) => RoyaltyUpLevelRanksCsvParsedRecord;
+
+	[CsvFilesName.OBT_ESPORTS_PAGES_STATUS_CODE]: (
+		row: ObtEsportsPagesStatusCodeCsvRecord,
+	) => ObtEsportsPagesStatusCodeCsvParsedRecord;
 };
 
 export const CsvTransformerMap: CsvTransformerMapType = {
@@ -182,4 +191,6 @@ export const CsvTransformerMap: CsvTransformerMapType = {
 	[CsvFilesName.PROMOTION_COMBINATIONS_FOR_LABEL_DISPLAY_V4]:
 		parsePromotionCombinationLabelUpdateCsvRow,
 	[CsvFilesName.ROYALTY_UP_LEVEL_RANKS]: parseRoyaltyUpLevelRanksCsvRow,
+	[CsvFilesName.OBT_ESPORTS_PAGES_STATUS_CODE]:
+		parseObtEsportsPagesStatusCodeCsvRow,
 } as const;
