@@ -292,7 +292,7 @@ test.describe(
 						});
 					await setAuthenticationCookies(page, cookie);
 
-					const { feeRate, amountToWithdraw, amountToDeposit } =
+					const { feeRate, amountToWithdraw, amountToDepositLarger } =
 						testDataPredefined.data.btcAmountToDeposit;
 
 					// Deposit BTC
@@ -310,7 +310,7 @@ test.describe(
 
 					const sendResponse = await btcClient.sendToAddress(
 						addressDetails.address,
-						amountToDeposit,
+						amountToDepositLarger,
 						{
 							replaceable: false,
 							feeRate: feeRate,

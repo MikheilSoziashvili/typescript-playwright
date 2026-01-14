@@ -112,6 +112,7 @@ export const predefined = {
 	},
 	btcAmountToDeposit: {
 		amountToDeposit: 0.00005,
+		amountToDepositLarger: 0.0001,
 		amountToWithdraw: 1.5,
 		feeRate: 50,
 	},
