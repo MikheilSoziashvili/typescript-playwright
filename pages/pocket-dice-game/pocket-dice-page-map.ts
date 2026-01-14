@@ -61,6 +61,8 @@ export class PocketDiceMap extends BaseMap {
 	}
 
 	public get winBanner(): Locator {
-		return this.page.locator("[class*='ResultBannerstyled__Label']");
+		return this.page.locator(
+			"[class*='ResultBannerstyled__Base-PocketDice']",
+		);
 	}
 }

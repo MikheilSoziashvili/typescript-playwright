@@ -18,14 +18,4 @@ export class PocketDiceAsserter extends BaseAsserter<PocketDicePage> {
 			this.gamdomPage.map.startAutobetButton,
 		]);
 	}
-
-	@step("Check if win is detected")
-	public async isWinDetected(): Promise<boolean> {
-		try {
-			await this.checkElementsAreVisible([this.gamdomPage.map.winBanner]);
-			return true;
-		} catch {
-			return false;
-		}
-	}
 }
