@@ -192,15 +192,21 @@ export class XrpTestnetClient {
 				DestinationTag: Number(destinationTag),
 			};
 
-			const response = await this.client.submitAndWait(payment, {
-				wallet: this.wallet,
-			});
+			const prepared = await this.client.autofill(payment);
+			const signed = this.wallet.sign(prepared);
+			const response = await this.client.submit(signed.tx_blob);
 
-			const hash = response.result.hash;
+			const hash = (response.result.tx_json.hash ??
+				response.result.tx_json.Hash) as string;
+
+			if (!hash) {
+				throw new XrpTestnetTransactionError(
+					"No transaction hash returned",
+				);
+			}
 
 			logger.info(`[XRP Testnet] Transaction submitted`, {
 				hash: hash,
-				validated: response.result.validated,
 			});
 
 			return {
@@ -255,8 +261,16 @@ export class XrpTestnetClient {
 		try {
 			await waitUntil(
 				async () => {
-					const tx = await this.getTransaction(txHash);
-					return tx.validated === true;
+					try {
+						const tx = await this.getTransaction(txHash);
+						return tx.validated === true;
+					} catch (error) {
+						const errorMsg = this.getErrorMessage(error);
+						if (errorMsg.includes("Transaction not found")) {
+							return false;
+						}
+						throw error;
+					}
 				},
 				{
 					errorMessage: `XRP testnet tx ${txHash} not validated`,

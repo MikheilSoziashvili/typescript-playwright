@@ -14,7 +14,6 @@ import { UserInfoTabs } from "@enums/admin/user-info-tabs";
 import { TransactionType } from "@enums/transaction-types";
 import { testData } from "test-data/test-data-manager";
 import { VipUserStatus } from "@enums/vip-user-statuses";
-import { logger } from "@logger/logger";
 
 test.describe(
 	"XRP tests",
@@ -230,7 +229,6 @@ test.describe(
 						destinationTag: String(details.destinationTag),
 						isVip: true,
 					});
-					logger.info(`Withdrawal fee: ${withdrawalFee}`);
 					await toast.assertThat().titleIs(ToastTitle.SUCCESS);
 
 					// Verify balance
@@ -239,10 +237,7 @@ test.describe(
 						await userBalanceHandler.walletBalanceInFiatRounded(
 							Unit.XRP_DROP,
 						);
-					logger.info(`Initial balance USD: ${initialBalanceUSD}`);
-					logger.info(
-						`Balance after withdraw USD: ${balanceAfterWithdrawUSD}`,
-					);
+
 					await homePage
 						.assertThat()
 						.verifyBalanceWithTolerance(
@@ -304,6 +299,165 @@ test.describe(
 
 					// Verify user info transactions tab as superadmin
 					await setAuthenticationCookies(page, superAdminCookie);
+					const expectedFeeLevel = withdrawalSpeedToFeeLevel[speed];
+
+					await userInfoAdminPage
+						.steps()
+						.navigateAndShowUserDetails(user.username);
+					await userInfoAdminPage.clickUserInfoTab(
+						UserInfoTabs.Transactions,
+					);
+					await transactionsAdminPage
+						.steps()
+						.fetchDataForRecordWithBalanceAndVerifyFeeLevel(
+							TransactionType.WITHDRAWAL,
+							expectedFeeLevel,
+						);
+				},
+			);
+		}
+
+		for (const speed of cryptoWithdrawalDomainData.withdrawalSpeeds) {
+			test(
+				`[ENG-13678] XRP - withdraw with regular user - ${speed.toLowerCase()}`,
+				testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+				async ({
+					cryptoAdminPage,
+					homePage,
+					walletModal,
+					transactionsPage,
+					transactionDetailsModal,
+					userBalanceHandler,
+					gamdomApi,
+					testDataPredefined,
+					gamdomApiDbFacade,
+					page,
+					xrpTestnetClient,
+					toast,
+					diceGamePage,
+					userInfoAdminPage,
+					transactionsAdminPage,
+				}) => {
+					// Setup user and test data
+					const { user, cookie } =
+						await gamdomApiDbFacade.createSingleUserDbAndAuth({
+							wagered: 100000,
+						});
+					await setAuthenticationCookies(page, cookie);
+
+					const {
+						withdrawalAddress,
+						amountToWithdraw,
+						amountToDeposit,
+					} = testDataPredefined.data.xrpAmountToDeposit;
+
+					// Deposit XRP
+					await homePage.navigateToWallet();
+					const initialBalanceUSD =
+						await userBalanceHandler.walletBalanceInFiatRounded();
+
+					const details =
+						await walletModal.selectXrpAndGetDepositDetails();
+
+					const depositTransaction =
+						await xrpTestnetClient.sendToAddress(
+							details.address,
+							amountToDeposit,
+							details.destinationTag,
+						);
+
+					await xrpTestnetClient.waitForCompletion(
+						depositTransaction.id,
+					);
+					await transactionsPage
+						.steps()
+						.verifyDepositTransactionStatusIs(
+							TransactionState.COMPLETE,
+						);
+
+					// Meet wager requirement
+					await diceGamePage.navigate();
+					await diceGamePage.rollDiceWithAmount(50);
+
+					// Withdraw ETH
+					await homePage.navigateToWallet();
+					const withdrawalFee = await walletModal.withdrawCrypto({
+						cryptocurrency: Cryptocurrency.Ripple,
+						address: withdrawalAddress,
+						amount: amountToWithdraw,
+						speed: speed,
+						destinationTag: String(details.destinationTag),
+					});
+					await toast.assertThat().titleIs(ToastTitle.SUCCESS);
+
+					// Verify balance
+					await homePage.navigate();
+					const balanceAfterWithdrawUSD =
+						await userBalanceHandler.walletBalanceInFiatRounded(
+							Unit.XRP_DROP,
+						);
+					await homePage
+						.assertThat()
+						.verifyBalanceWithTolerance(
+							balanceAfterWithdrawUSD,
+							initialBalanceUSD - amountToWithdraw,
+						);
+
+					const withdrawnAmountAfterFee =
+						amountToWithdraw - parseFloat(withdrawalFee);
+
+					// Process withdrawal as superadmin
+					const { cookie: superAdmin } =
+						await gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
+					await setAuthenticationCookies(page, superAdmin);
+					await cryptoAdminPage.sendQueuedWithdrawals();
+
+					// Verify withdrawal transaction flow
+					await setAuthenticationCookies(page, cookie);
+					await transactionsPage
+						.steps()
+						.verifyWithdrawTransactionStatusIs(
+							TransactionState.SENT,
+						);
+
+					await transactionsPage
+						.steps()
+						.verifyWithdrawTransactionStatusIs(
+							TransactionState.CONFIRMED,
+						);
+
+					// Verify transaction details
+					await transactionsPage.clickTransactionDetailsButton();
+					await transactionDetailsModal
+						.assertThat()
+						.withdrawalTransactionDetailsAre(
+							withdrawnAmountAfterFee,
+							withdrawalFee,
+							false,
+							speed,
+						);
+
+					const withdrawTransactionId =
+						await transactionDetailsModal.getBlockchainTransactionId();
+
+					// Verify admin panel shows correct amounts
+					const superAdminCookie = getCookieHeader(superAdmin);
+					const withdrawnAmountAfterFeeInCoins =
+						userBalanceHandler.usdToCoinsTrunc(
+							withdrawnAmountAfterFee,
+						);
+
+					await cryptoAdminPage
+						.assertThat()
+						.assertTransactionCoinsAmount(
+							gamdomApi,
+							superAdminCookie,
+							withdrawTransactionId,
+							withdrawnAmountAfterFeeInCoins,
+						);
+
+					// Verify user info transactions tab as superadmin
+					await setAuthenticationCookies(page, superAdmin);
 					const expectedFeeLevel = withdrawalSpeedToFeeLevel[speed];
 
 					await userInfoAdminPage

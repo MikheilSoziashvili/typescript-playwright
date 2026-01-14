@@ -63,8 +63,8 @@ export const predefined = {
 		withdrawalAddress: "0x88190Ef584BD63E320693133f01c0cfcdA24bB8e",
 	},
 	xrpAmountToDeposit: {
-		amountToDeposit: "0.05",
-		amountToWithdraw: 0.3,
+		amountToDeposit: "0.1",
+		amountToWithdraw: 0.1,
 		withdrawalAddress: "rDsbeomae4FXwgQTJp9Rs64Qg9vDiTCdBv",
 	},
 	ltcAmountToDeposit: {

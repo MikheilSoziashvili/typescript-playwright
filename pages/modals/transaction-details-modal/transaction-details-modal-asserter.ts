@@ -54,9 +54,15 @@ export class TransactionDetailsModalAsserter extends BaseAsserter<TransactionDet
 		transactionSpeed: string,
 	): Promise<void> {
 		await this.withdrawalAmountInUsdIs(amountInUsd);
-		if (!isVip && transactionSpeed === WithdrawalSpeed.Standard) {
+
+		const shouldSkipFeeCheck =
+			(isVip && transactionSpeed === WithdrawalSpeed.Standard) ||
+			Number(networkFee) === 0;
+
+		if (!shouldSkipFeeCheck) {
 			await this.networkTransactionFeeAmountIs(networkFee);
 		}
+
 		await this.networkTransactionSpeedIs(transactionSpeed);
 	}
 }
