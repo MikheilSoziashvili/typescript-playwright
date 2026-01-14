@@ -90,7 +90,7 @@ export class VeriffPortalAsserter extends BaseAsserter<VeriffPortalPage> {
 				},
 				{
 					message: `Verification status should update to "${expectedStatus}"`,
-					timeout: Timeout.LONG,
+					timeout: Timeout.EXTRA_LONG,
 					intervals: [Timeout.ULTRA_SHORT],
 				},
 			)
