@@ -199,4 +199,14 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 			`${amount} has been transferred from your Vault to your Wallet`,
 		);
 	}
+
+	@step("Verify deposit Disabled text is displayed - v4")
+	public async verifyDepositDisabledTextIsDisplayedV4(): Promise<void> {
+		await this.checkElementsHaveText([
+			{
+				locator: this.gamdomPage.map.depositDisabledTextV4,
+				expectedText: "Deposits Disabled",
+			},
+		]);
+	}
 }

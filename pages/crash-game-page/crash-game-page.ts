@@ -5,7 +5,7 @@ import { BasePageNavigationParametersType } from "@core/types/types";
 import { BetIncreaseCondition } from "@enums/crash-autobet-section";
 import { Timeout } from "@enums/timeout";
 import { logger } from "@logger/logger";
-import { Page, expect } from "@playwright/test";
+import { Page } from "@playwright/test";
 import { CrashGamePageAsserter } from "./crash-game-page-asserter";
 import { CrashGamePageMap } from "./crash-game-page-map";
 import { CrashGamePageSteps } from "./crash-game-page-steps";
@@ -95,14 +95,16 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 	public async waitBettingWindowAvailable(
 		timeout = Timeout.EXTRA_MAX / 2,
 	): Promise<void> {
-		await expect(this.map.spinningCountdownCounter).toBeVisible({
+		await this.map.waitForVisibility({
+			locator: this.map.spinningCountdownCounter,
 			timeout: timeout,
 		});
 	}
 
 	@step("Wait for crash")
 	public async waitCrash(timeout = Timeout.EXTRA_MAX / 2): Promise<void> {
-		await expect(this.map.multiplierCounterCrashed).toBeAttached({
+		await this.map.multiplierCounterCrashed.waitFor({
+			state: "attached",
 			timeout: timeout,
 		});
 	}
@@ -191,5 +193,42 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 	@step("Fill increase by input")
 	public async fillIncreaseByInput(increaseByAmount: number): Promise<void> {
 		await this.map.increaseByInput.fill(increaseByAmount.toString());
+	}
+
+	@step("Wait for previous bet round to finish - v4")
+	public async waitPreviousBetRoundFinishV4(
+		timeout = Timeout.EXTRA_MAX / 2,
+	): Promise<void> {
+		await this.assertThat().waitPlayerBetBoxesAbsentV4(timeout);
+	}
+
+	@step("Wait for betting window to be available - v4")
+	public async waitBettingWindowAvailableV4(
+		timeout = Timeout.EXTRA_MAX / 2,
+	): Promise<void> {
+		await this.map.waitForVisibility({
+			locator: this.map.spinningCountdownCounterV4,
+			timeout: timeout,
+		});
+	}
+
+	@step("Fill in bet amount - v4")
+	public async fillInBetAmountV4(betAmount: number): Promise<void> {
+		await this.map.betFieldV4.click();
+		await this.map.betFieldV4.selectText();
+		await this.map.betFieldV4.press("Backspace");
+		await this.map.betFieldV4.pressSequentially(String(betAmount));
+	}
+
+	@step("Place bet - v4")
+	public async placeBetV4(
+		betAmount: number,
+		autoCashoutMultiplier: number,
+	): Promise<void> {
+		await this.waitPreviousBetRoundFinishV4();
+		await this.waitBettingWindowAvailableV4();
+		await this.fillInBetAmountV4(betAmount);
+		await this.map.autoCashOutFieldV4.fill(`${autoCashoutMultiplier}`);
+		await this.map.placeBetBtnV4.click();
 	}
 }

@@ -19,8 +19,16 @@ export class HiloGamePageMap extends BaseMap {
 		return this.gameContainer.getByTestId("hiloUsersInfoAreaColumn");
 	}
 
-	public get gameArea(): Locator {
+	public get gameAreaV3(): Locator {
 		return this.gameContainer.getByTestId("hiloGameAreaColumn");
+	}
+
+	private get gameAreaV4(): Locator {
+		return this.page.getByTestId("hilo-game-area-progress-bar-container");
+	}
+
+	public get gameArea(): Locator {
+		return this.gameAreaV3.or(this.gameAreaV4);
 	}
 
 	public get betControlsArea(): Locator {
@@ -43,7 +51,7 @@ export class HiloGamePageMap extends BaseMap {
 
 	// game area
 	public get gameStateLocator(): Locator {
-		return this.gameArea.getByTestId("hiloGamestate");
+		return this.gameAreaV3.getByTestId("hiloGamestate");
 	}
 
 	public get spinningCountdownTimer(): Locator {
@@ -63,7 +71,7 @@ export class HiloGamePageMap extends BaseMap {
 	}
 
 	public get yourBetContainer(): Locator {
-		return this.gameArea.getByTestId("hiloBetAmountSection");
+		return this.gameAreaV3.getByTestId("hiloBetAmountSection");
 	}
 
 	public get yourBetField(): Locator {
@@ -162,5 +170,23 @@ export class HiloGamePageMap extends BaseMap {
 		return this.cardsProbabilityContainer
 			.locator(`[class*='ProbabilityContainer']`)
 			.last();
+	}
+
+	public get spinningCountdownTimerV4(): Locator {
+		return this.page.getByTestId(
+			"hilo-game-area-accepting-bets-spinning-in",
+		);
+	}
+
+	public get yourBetFieldV4(): Locator {
+		return this.page.getByTestId("hilo-bet-area-amount-input");
+	}
+
+	public get redButtonV4(): Locator {
+		return this.page.getByTestId("hilo-bet-area-bet-red");
+	}
+
+	public get blackButtonV4(): Locator {
+		return this.page.getByTestId("hilo-bet-area-bet-black");
 	}
 }

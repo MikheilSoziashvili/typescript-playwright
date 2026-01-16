@@ -118,4 +118,18 @@ export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 		await this.gamdomPage.assertThat().selfExclusionTabNotVisible();
 		await this.gamdomPage.assertThat().selfExclusionTimerDisplayed(days);
 	}
+
+	@step("Enable self exclusion - v4")
+	public async navigateAndEnableSelfExclusionV4(
+		days: SelfExclusionDays,
+	): Promise<void> {
+		await this.gamdomPage.navigate();
+		await this.gamdomPage.assertThat().selfExclusionTabsVisibleV4();
+		await this.gamdomPage.map.selfExclusionTimeV4(days).click();
+		await this.gamdomPage.assertThat().selfExclusionModalHeadingVisibleV4();
+		await this.gamdomPage.map.confirmModalContinueButtonV4.click();
+		await this.gamdomPage.refresh();
+		await this.gamdomPage.assertThat().selfExclusionTabNotVisibleV4();
+		await this.gamdomPage.assertThat().selfExclusionTimerDisplayedV4(days);
+	}
 }

@@ -232,4 +232,102 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 		});
 		return parseInt(timeText);
 	}
+
+	// Get the time left for betting, ensuring the game has finished spinning,
+	// by waiting for hidden and visible states since the roulette's state at test start is unknown.
+	@step("Get time left for betting - v4")
+	public async getTimeLeftForBettingV4(): Promise<number> {
+		const isSpinning = await this.map.gameResultStateLocatorV4.isVisible();
+
+		if (isSpinning) {
+			await this.map.waitForInvisibility({
+				locator: this.map.gameResultStateLocatorV4,
+				timeout: Timeout.LONG,
+			});
+
+			await this.map.waitForVisibility({
+				locator: this.map.spinningCountdownCounterV4,
+				timeout: Timeout.LONG,
+			});
+		}
+
+		const timeText = await this.map.spinningCountdownCounterV4.innerText({
+			timeout: Timeout.LONG,
+		});
+		return parseInt(timeText);
+	}
+
+	// Wait for the next betting window if the current round is finishing,
+	// as we don't know the game's state when the test starts.
+	@step("Wait for betting window to be available - v4")
+	public async waitBettingWindowAvailableV4(): Promise<void> {
+		const timeLeft = await this.getTimeLeftForBettingV4();
+
+		if (timeLeft < 4) {
+			logger.info(
+				`Time left for betting is ${timeLeft} seconds. Waiting for the next round...`,
+			);
+
+			await this.map.waitForInvisibility({
+				locator: this.map.spinningCountdownCounterV4,
+				timeout: Timeout.LONG,
+			});
+
+			await this.map.waitForVisibility({
+				locator: this.map.spinningCountdownCounterV4,
+				timeout: Timeout.LONG,
+			});
+
+			logger.info("Betting window is now available.");
+		} else {
+			logger.info(
+				`Sufficient time left (${timeLeft} seconds) to place the bet.`,
+			);
+		}
+	}
+
+	@step("Bet on color - v4")
+	public async betOnColorV4(betColor: RouletteBetColor): Promise<void> {
+		switch (betColor) {
+			case RouletteBetColor.GREEN:
+				await this.map.greenBetSectionV4.click();
+				await this.map.waitForVisibility({
+					locator: this.map.betSectionsByColorV4.green,
+				});
+				break;
+			case RouletteBetColor.RED:
+				await this.map.redBetSectionV4.click();
+				await this.map.waitForVisibility({
+					locator: this.map.betSectionsByColorV4.red,
+				});
+				break;
+			case RouletteBetColor.BLACK:
+				await this.map.blackBetSectionV4.click();
+				await this.map.waitForVisibility({
+					locator: this.map.betSectionsByColorV4.black,
+				});
+				break;
+			default:
+				break;
+		}
+	}
+
+	@step("Insert bet - v4")
+	public async insertBetV4(betAmount: number): Promise<void> {
+		await this.map.betFieldV4.click();
+		await this.map.betFieldV4.selectText();
+		await this.map.betFieldV4.press("Backspace");
+		await this.map.betFieldV4.pressSequentially(String(betAmount));
+	}
+
+	@step("Place bet - v4")
+	public async placeBetV4(
+		betAmount: number,
+		betColor: RouletteBetColor,
+	): Promise<void> {
+		await this.waitBettingWindowAvailableV4();
+		await this.insertBetV4(betAmount);
+		await this.assertThat().betButtonsEnabledV4();
+		await this.betOnColorV4(betColor);
+	}
 }

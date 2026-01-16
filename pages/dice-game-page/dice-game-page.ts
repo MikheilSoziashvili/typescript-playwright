@@ -142,4 +142,28 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 	public async isAutoBetInputFieldDisabled(): Promise<boolean> {
 		return this.map.autobetYourBetInput.isDisabled();
 	}
+
+	@step("Fill in manual bet data - v4")
+	public async fillInManualBetDataV4(
+		betAmount: number,
+		multiplier?: number,
+	): Promise<void> {
+		await this.map.manualBetFieldV4.fill(`${betAmount}`);
+		multiplier !== undefined &&
+			(await this.map.manualMultiplierFieldV4.fill(`${multiplier}`));
+	}
+
+	@step("Roll dice - v4")
+	public async rollDiceV4(): Promise<void> {
+		await this.map.rollDiceBtnV4.click();
+	}
+
+	@step("Place bet - v4")
+	public async placeBetV4(
+		betAmount: number,
+		multiplier = 1.1,
+	): Promise<void> {
+		await this.fillInManualBetDataV4(betAmount, multiplier);
+		await this.rollDiceV4();
+	}
 }

@@ -133,4 +133,13 @@ export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 
 		return currentBetAmount;
 	}
+
+	@step("Wait for player bet boxes to be absent - v4")
+	public async waitPlayerBetBoxesAbsentV4(timeout: number): Promise<void> {
+		const betBoxes = this.gamdomPage.map.betBoxesV4;
+		await expect(betBoxes).toBeAttached({
+			attached: false,
+			timeout: timeout,
+		});
+	}
 }

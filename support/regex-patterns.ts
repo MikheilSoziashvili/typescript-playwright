@@ -1,5 +1,6 @@
 import { CurrencySymbol } from "@enums/currenciesSymbols";
 import { TestTag } from "@enums/test-tags";
+import { SelfExclusionDays } from "@enums/self-exlusion-days";
 
 export const twoDigitDecimalWithX = /[0-9]{1,2}\.[0-9]{1,2}[x]/;
 export const twoDigitDecimalWithS = /[0-9]{1,2}\.[0-9]{1,2}[s]/;
@@ -80,3 +81,18 @@ export const tagPrefixPattern = /^@/;
 
 export const freeSpinsMessagePattern = (expectedSpins: number): RegExp =>
 	new RegExp(`You have ${expectedSpins} spin(s)?`, "i");
+
+
+export const selfExclusionTimerV4Pattern = (days: SelfExclusionDays): RegExp => {
+	switch (days) {
+		case SelfExclusionDays.ONE_DAY:
+			return /^0d\s+23h\s+59m\s+\d{1,2}s$/;
+		case SelfExclusionDays.FIVE_DAYS:
+			return /^4d\s+23h\s+59m\s+\d{1,2}s$/;
+		case SelfExclusionDays.EIGHT_DAYS:
+			return /^7d\s+23h\s+59m\s+\d{1,2}s$/;
+		default:
+			return /^\d+d\s+\d{1,2}h\s+\d{1,2}m\s+\d{1,2}s$/;
+	}
+};
+

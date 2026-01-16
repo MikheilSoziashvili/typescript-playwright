@@ -1,4 +1,4 @@
-import { expect, Page } from "@playwright/test";
+import { Page } from "@playwright/test";
 import { BasePage } from "@base/base-page";
 import { HiloGamePageMap } from "./hilo-game-page.map";
 import { HiloGamePageAsserter } from "./hilo-game-page-asserter";
@@ -59,7 +59,8 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 	public async waitBettingWindowAvailable(
 		timeout = Timeout.EXTRA_MAX / 2,
 	): Promise<void> {
-		await expect(this.map.spinningCountdownTimer).toBeVisible({
+		await this.map.waitForVisibility({
+			locator: this.map.spinningCountdownTimer,
 			timeout: timeout,
 		});
 	}
@@ -118,5 +119,44 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 		result = !includeBetReturn ? result - betAmount : result;
 
 		return result;
+	}
+
+	@step("Wait betting window available - v4")
+	public async waitBettingWindowAvailableV4(
+		timeout = Timeout.EXTRA_MAX / 2,
+	): Promise<void> {
+		await this.map.waitForVisibility({
+			locator: this.map.spinningCountdownTimerV4,
+			timeout: timeout,
+		});
+	}
+
+	@step("Fill in bet amount - v4")
+	public async fillInBetAmountV4(betAmount: number): Promise<void> {
+		await this.map.yourBetFieldV4.fill(`${betAmount}`);
+	}
+
+	@step("Click bet option - v4")
+	public async clickBetOptionV4(betOption: HiloBetOption): Promise<void> {
+		switch (betOption) {
+			case HiloBetOption.RED:
+				await this.map.redButtonV4.click();
+				break;
+			case HiloBetOption.BLACK:
+				await this.map.blackButtonV4.click();
+				break;
+			default:
+				break;
+		}
+	}
+
+	@step("Place bet - v4")
+	public async placeBetV4(
+		betAmount: number,
+		betOption: HiloBetOption,
+	): Promise<void> {
+		await this.waitBettingWindowAvailableV4();
+		await this.fillInBetAmountV4(betAmount);
+		await this.clickBetOptionV4(betOption);
 	}
 }

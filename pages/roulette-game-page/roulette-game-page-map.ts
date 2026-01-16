@@ -15,8 +15,12 @@ export class RouletteGamePageMap extends BaseMap {
 		return this.page.locator("#site_content");
 	}
 
-	public get gameContainer(): Locator {
+	public get gameContainerV3(): Locator {
 		return this.mainContainer.locator("*[class*='ContainerAnimate']");
+	}
+
+	public get gameContainer(): Locator {
+		return this.gameContainerV3.or(this.gameContainerV4);
 	}
 
 	public get gameStatusContainer(): Locator {
@@ -244,5 +248,45 @@ export class RouletteGamePageMap extends BaseMap {
 		return this.page.getByRole("button").filter({
 			hasText: "Stop",
 		});
+	}
+
+	public get gameContainerV4(): Locator {
+		return this.page.locator("*[class*='MainBodyContentContainer']");
+	}
+
+	public get gameResultStateLocatorV4(): Locator {
+		return this.page.getByTestId("game-wrapper-state-AfterGame");
+	}
+
+	public get spinningCountdownCounterV4(): Locator {
+		return this.page.getByTestId("game-wrapper-state-Rolling").first();
+	}
+
+	public get betFieldV4(): Locator {
+		return this.page.getByTestId("roulette-stake-input-field-container");
+	}
+
+	public get betOptionsGridV4(): Locator {
+		return this.gameContainerV4.getByTestId("bets-wrapper");
+	}
+
+	public get betSectionsByColorV4(): Record<RouletteBetColor, Locator> {
+		return {
+			[RouletteBetColor.GREEN]: this.greenBetSectionV4,
+			[RouletteBetColor.RED]: this.redBetSectionV4,
+			[RouletteBetColor.BLACK]: this.blackBetSectionV4,
+		};
+	}
+
+	public get redBetSectionV4(): Locator {
+		return this.betOptionsGridV4.getByTestId("bet-red-button");
+	}
+
+	public get greenBetSectionV4(): Locator {
+		return this.betOptionsGridV4.getByTestId("bet-green-button");
+	}
+
+	public get blackBetSectionV4(): Locator {
+		return this.betOptionsGridV4.getByTestId("bet-black-button");
 	}
 }

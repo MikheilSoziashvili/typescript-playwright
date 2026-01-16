@@ -390,4 +390,26 @@ export class WalletModalMap extends BaseMap {
 			.getByTestId("toast-message-message")
 			.getByText("transferred from your Vault to your Wallet");
 	}
+
+	public cryptoPaymentMethodV4(paymentMethod: string): Locator {
+		return this.page.getByTestId(`deposit-crypto-${paymentMethod}`);
+	}
+
+	public get selfExcludePanelV4(): Locator {
+		return this.page.getByTestId("self-exclude-content-container");
+	}
+
+	public get depositDisabledTextV4(): Locator {
+		return this.selfExcludePanelV4.getByTestId(
+			"self-exclude-message-title",
+		);
+	}
+
+	public get buyCryptoTabButtonV4(): Locator {
+		return this.page.getByTestId("wallet-menu-buycrypto");
+	}
+
+	public get redeemTabButtonV4(): Locator {
+		return this.page.getByTestId("wallet-menu-redeem");
+	}
 }

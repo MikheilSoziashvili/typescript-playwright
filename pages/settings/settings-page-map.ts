@@ -92,4 +92,53 @@ export class SettingsPageMap extends BaseMap {
 			.locator("h5", { hasText: "Self exclusion" })
 			.locator("+ div h4");
 	}
+
+	public get settingsContainerV4(): Locator {
+		return this.page.locator(
+			`[class^="ProfileLayout-styled__ProfileMainContainer-sc-"]`,
+		);
+	}
+
+	public get selfExclusionTabsV4(): Locator {
+		return this.settingsContainerV4
+			.getByTestId("self-exclusion-inactive-panel-1day-button")
+			.locator("..");
+	}
+
+	private selfExclusionDayKeyV4(days: SelfExclusionDays): string {
+		switch (days) {
+			case SelfExclusionDays.ONE_DAY:
+				return "1day";
+			case SelfExclusionDays.FIVE_DAYS:
+				return "5days";
+			case SelfExclusionDays.EIGHT_DAYS:
+				return "8days";
+			default:
+				return String(days).replace(" ", "");
+		}
+	}
+
+	public selfExclusionTimeV4(days: SelfExclusionDays): Locator {
+		const dayKey = this.selfExclusionDayKeyV4(days);
+
+		return this.settingsContainerV4.getByTestId(
+			`self-exclusion-inactive-panel-${dayKey}-button`,
+		);
+	}
+
+	public get confirmModalHeadingV4(): Locator {
+		return this.page.getByTestId(
+			"self-exclusion-modal-v4-continue-description",
+		);
+	}
+
+	public get confirmModalContinueButtonV4(): Locator {
+		return this.page.getByTestId("self-exclusion-modal-v4-continue-button");
+	}
+
+	public get selfExclusionTimerV4(): Locator {
+		return this.settingsContainerV4.getByTestId(
+			"self-exclusion-active-panel-",
+		);
+	}
 }

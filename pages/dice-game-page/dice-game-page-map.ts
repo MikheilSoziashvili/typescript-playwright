@@ -171,4 +171,26 @@ export class DiceGamePageMap extends BaseMap {
 	public get onLossIncreaseByInput(): Locator {
 		return this.getInputLocatorByLabel(/^On Loss$/);
 	}
+
+	public get manualYourBetContainerV4(): Locator {
+		return this.page.getByTestId("dice-your-bet-container");
+	}
+
+	public get manualBetFieldV4(): Locator {
+		return this.manualYourBetContainerV4.getByTestId("dice-your-bet-input");
+	}
+
+	public get manualMultiplierContainerV4(): Locator {
+		return this.page.getByTestId("dice-game-area-multiplier-container");
+	}
+
+	public get manualMultiplierFieldV4(): Locator {
+		return this.manualMultiplierContainerV4.getByTestId(
+			"dice-game-area-multiplier-input",
+		);
+	}
+
+	public get rollDiceBtnV4(): Locator {
+		return this.page.getByTestId("dice-roll-dice-btn");
+	}
 }

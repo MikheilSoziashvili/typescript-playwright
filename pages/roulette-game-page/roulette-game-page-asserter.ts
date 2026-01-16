@@ -206,4 +206,13 @@ export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 		}
 		return false;
 	}
+
+	@step("Check bet buttons are enabled - v4")
+	public async betButtonsEnabledV4(): Promise<void> {
+		for (const betButton of Object.values(
+			this.gamdomPage.map.betSectionsByColorV4,
+		)) {
+			await expect(betButton).toHaveCSS("opacity", "1");
+		}
+	}
 }

@@ -6,7 +6,7 @@ import { Cryptocurrency, CryptoTicker } from "@enums/cryptocurrencies";
 import { Currency } from "@enums/currencies";
 import { HouseEdgeValue } from "@enums/house-edge-values";
 import { JiraComponent } from "@enums/jira/jira-components";
-import { OriginalGame } from "@enums/original-games";
+import { OriginalGame, RouletteBetColor } from "@enums/original-games";
 import { RainStatus } from "@enums/rain-status";
 import { TestTag } from "@enums/test-tags";
 import { Unit } from "@enums/units";
@@ -28,6 +28,11 @@ import { ZuluGoldPage } from "@pages/casino-games/elk-studios/zulu-gold/zulu-gol
 import { APIRequestContext, APIResponse, TestInfo } from "@playwright/test";
 import { SweetBonanzaPage } from "@pages/casino-games/pragmatic-play/sweet-bonanza/sweet-bonanza-page";
 import { SweetBonanzaCandyLandPage } from "@pages/casino-games/pragmatic-play-live/sweet-bonanza-candy-land/sweet-bonanza-candy-land-page";
+import {
+	PlinkoRiskOption,
+	PlinkoRowsOption,
+} from "@enums/plinko/plinko-game-options";
+import { HiloBetOption } from "@enums/hilo-bet-options";
 
 export type TestUserConfigurationObject = {
 	username: string;
@@ -261,3 +266,25 @@ export type NotificationTimeWindow = {
 	earliestAllowedTimestampSeconds: number;
 	endTimeMs: number;
 };
+
+export type PlinkoBetOptions = {
+	rowsValue?: PlinkoRowsOption;
+	riskValue?: PlinkoRiskOption;
+};
+
+export type BetOption =
+	| number
+	| RouletteBetColor
+	| HiloBetOption
+	| PlinkoBetOptions;
+
+export const isNumberBetOption = (option?: BetOption): option is number =>
+	typeof option === "number";
+
+export const isStringBetOption = (
+	option?: BetOption,
+): option is RouletteBetColor | HiloBetOption => typeof option === "string";
+
+export const isObjectBetOptions = (
+	option?: BetOption,
+): option is PlinkoBetOptions => typeof option === "object";

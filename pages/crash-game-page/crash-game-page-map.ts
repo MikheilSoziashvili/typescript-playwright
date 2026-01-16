@@ -10,8 +10,12 @@ export class CrashGamePageMap extends BaseMap {
 		return this.page.locator("#site_content");
 	}
 
-	public get gameContainer(): Locator {
+	public get gameContainerV3(): Locator {
 		return this.mainContainer.getByTestId("crashGridControls");
+	}
+
+	public get gameContainer(): Locator {
+		return this.gameContainerV3.or(this.gameContainerV4);
 	}
 
 	public get chart(): Locator {
@@ -136,5 +140,51 @@ export class CrashGamePageMap extends BaseMap {
 		return this.betOptions.locator(
 			'div.MuiFormControl-root input[type="text"].MuiOutlinedInput-input',
 		);
+	}
+
+	public get mainContainerV4(): Locator {
+		return this.page.getByTestId("main-layout-content");
+	}
+
+	public get gameContainerV4(): Locator {
+		return this.mainContainerV4.locator(
+			"*[class*='Crash-styled__GamePrimarySection-sc-']",
+		);
+	}
+
+	public get betBoxesV4(): Locator {
+		return this.page.locator("UserBets-styled__Wrapper-sc-");
+	}
+
+	public get chartInnerContainerV4(): Locator {
+		return this.page.locator("#chart-inner-container");
+	}
+
+	public get spinningCountdownCounterV4(): Locator {
+		return this.chartInnerContainerV4.getByTestId(
+			"crashSpinningCountdownCounter",
+		);
+	}
+
+	public get yourBetContainerV4(): Locator {
+		return this.page.getByTestId("crashBetAmountInput-container");
+	}
+
+	public get betFieldV4(): Locator {
+		return this.page.getByLabel("Bet amount", { exact: true });
+	}
+
+	public get autoCashoutContainerV4(): Locator {
+		return this.page.getByTestId("crashCashOutInput-container");
+	}
+
+	public get autoCashOutFieldV4(): Locator {
+		return this.autoCashoutContainerV4.getByTestId(
+			"crashCashOutInput-input",
+		);
+	}
+
+	public get placeBetBtnV4(): Locator {
+		return this.page.getByTestId("crashPlayButton");
 	}
 }

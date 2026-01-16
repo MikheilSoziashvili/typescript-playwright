@@ -6,12 +6,15 @@ import { SportsSteps } from "./sports-page-steps";
 import { SPORTS_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { Toast } from "@pages/components/toast/toast";
+import { ToastV4 } from "@pages/components/toastV4/toast-v4";
 
 export class SportsPage extends BasePage<SportsMap> {
 	public readonly toast: Toast;
+	public readonly toastV4: ToastV4;
 	public constructor(page: Page) {
 		super(page, new SportsMap(page));
 		this.toast = new Toast(page);
+		this.toastV4 = new ToastV4(page);
 	}
 
 	public override assertThat(): SportsAsserter {

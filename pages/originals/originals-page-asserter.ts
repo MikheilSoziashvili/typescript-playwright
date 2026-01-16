@@ -156,4 +156,14 @@ export class OriginalsAsserter extends BaseAsserter<OriginalsPage> {
 				valuesMatch: true,
 			});
 	}
+
+	@step("Self exclusion toast message is displayed - v4")
+	public async selfExclusionToastMessageIsDisplayedV4(): Promise<void> {
+		await this.gamdomPage.toastV4
+			.assertThat()
+			.toastMessageIsV4(
+				ToastTitle.FAILED_V4,
+				ToastSubTitle.SELF_EXCLUSION,
+			);
+	}
 }

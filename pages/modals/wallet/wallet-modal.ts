@@ -361,4 +361,31 @@ export class WalletModal extends BasePage<WalletModalMap> {
 	public async clickVaultSubmitButtonV4(): Promise<void> {
 		await this.map.vaultSubmitButtonV4.click();
 	}
+
+	@step("Select payment method - v4")
+	public async selectPaymentMethodV4(
+		paymentMethod: string,
+		options?: { skipIfMissing?: boolean },
+	): Promise<boolean> {
+		const cryptoPayMethod = this.map.cryptoPaymentMethodV4(paymentMethod);
+
+		if (options?.skipIfMissing) {
+			return this.clickIfPresent(cryptoPayMethod, {
+				timeout: Timeout.EXTRA_SHORT,
+			});
+		}
+
+		await cryptoPayMethod.click();
+		return true;
+	}
+
+	@step("Open Buy crypto tab - v4")
+	public async openBuyCryptoTabV4(): Promise<void> {
+		await this.map.buyCryptoTabButtonV4.click();
+	}
+
+	@step("Open redeem tab - v4")
+	public async openRedeemTabV4(): Promise<void> {
+		await this.map.redeemTabButtonV4.click();
+	}
 }

@@ -168,4 +168,29 @@ export class CasinoPageMap extends BaseMap {
 	public get gameProviderLabel(): Locator {
 		return this.page.getByTestId("game-provider");
 	}
+
+	public get searchInputFieldV4(): Locator {
+		return this.page.getByTestId("external-games-search-field-input");
+	}
+
+	public get searchQuickSearchInputFieldV4(): Locator {
+		return this.page.getByTestId("search-input-input");
+	}
+
+	public get casinoGamesDropdownListboxV4(): Locator {
+		return this.page.getByRole("listbox");
+	}
+
+	public casinoGameInDropdownV4(game: CasinoGameName): Locator {
+		return this.page
+			.locator(
+				'[data-testid^="quick-search-carousel-item-"][data-testid$="-container"]',
+			)
+			.filter({
+				has: this.page.locator('[data-testid$="-title"]', {
+					hasText: new RegExp(`^${game}$`),
+				}),
+			})
+			.first();
+	}
 }

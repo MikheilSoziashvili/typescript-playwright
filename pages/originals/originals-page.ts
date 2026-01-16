@@ -1,4 +1,11 @@
-import { OriginalGames, OriginalGamesPage } from "@core/types/types";
+import {
+	BetOption,
+	isNumberBetOption,
+	isObjectBetOptions,
+	isStringBetOption,
+	OriginalGames,
+	OriginalGamesPage,
+} from "@core/types/types";
 import { HiloBetOption } from "@enums/hilo-bet-options";
 import {
 	MaxBetAmount,
@@ -24,6 +31,7 @@ import { OriginalsAsserter } from "./originals-page-asserter";
 import { OriginalsMap } from "./originals-page-map";
 import { OriginalsSteps } from "./originals-page-steps";
 import { Toast } from "@pages/components/toast/toast";
+import { ToastV4 } from "@pages/components/toastV4/toast-v4";
 
 type OriginalsDeps = {
 	diceGamePage: DiceGamePage;
@@ -41,6 +49,7 @@ type OriginalsDeps = {
  */
 export class OriginalsPage extends BasePage<OriginalsMap> {
 	public readonly toast: Toast;
+	public readonly toastV4: ToastV4;
 	public handlers: typeof this._handlers;
 	/**
 	 * A map that associates each OriginalGame to its corresponding page object.
@@ -85,6 +94,7 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 
 		this.handlers = this._handlers;
 		this.toast = new Toast(this.page);
+		this.toastV4 = new ToastV4(this.page);
 	}
 
 	/**
@@ -140,21 +150,16 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 	public async placeBet(
 		game: OriginalGames,
 		betAmount: number,
-		multiplierOrColorOrOption?:
-			| number
-			| RouletteBetColor
-			| HiloBetOption
-			| { rowsValue?: PlinkoRowsOption; riskValue?: PlinkoRiskOption },
+		multiplierOrColorOrOption?: BetOption,
 	): Promise<void> {
 		const gamePage = this.gamesMap[game];
-		const isNumber = typeof multiplierOrColorOrOption === "number";
-		const isString = typeof multiplierOrColorOrOption === "string";
-		const isObject = typeof multiplierOrColorOrOption === "object";
 		const defaultMultiplier = 1.1;
 
 		switch (game) {
 			case OriginalGame.Crash: {
-				const crashMultiplier = isNumber
+				const crashMultiplier = isNumberBetOption(
+					multiplierOrColorOrOption,
+				)
 					? multiplierOrColorOrOption
 					: defaultMultiplier;
 				await (gamePage as CrashGamePage).placeBet(
@@ -164,7 +169,9 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 				break;
 			}
 			case OriginalGame.Dice: {
-				const diceMultiplier = isNumber
+				const diceMultiplier = isNumberBetOption(
+					multiplierOrColorOrOption,
+				)
 					? multiplierOrColorOrOption
 					: defaultMultiplier;
 				await (gamePage as DiceGamePage).placeBet(
@@ -174,7 +181,7 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 				break;
 			}
 			case OriginalGame.Roulette: {
-				const betColor = isString
+				const betColor = isStringBetOption(multiplierOrColorOrOption)
 					? (multiplierOrColorOrOption as RouletteBetColor)
 					: RouletteBetColor.RED;
 				await (gamePage as RouletteGamePage).placeBet(
@@ -184,14 +191,16 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 				break;
 			}
 			case OriginalGame.HiLo: {
-				const betOption = isString
+				const betOption = isStringBetOption(multiplierOrColorOrOption)
 					? (multiplierOrColorOrOption as HiloBetOption)
 					: HiloBetOption.RED;
 				await (gamePage as HiloGamePage).placeBet(betAmount, betOption);
 				break;
 			}
 			case OriginalGame.Plinko: {
-				const plinkoOptions = isObject
+				const plinkoOptions = isObjectBetOptions(
+					multiplierOrColorOrOption,
+				)
 					? (multiplierOrColorOrOption as {
 							rowsValue?: PlinkoRowsOption;
 							riskValue?: PlinkoRiskOption;
@@ -211,7 +220,112 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 					.steps()
 					.placeManualBetWithRandomTile({
 						betAmount: betAmount,
-						minesNumber: isNumber ? multiplierOrColorOrOption : 0,
+						minesNumber: isNumberBetOption(
+							multiplierOrColorOrOption,
+						)
+							? multiplierOrColorOrOption
+							: 0,
+						cashoutMultiplier: 0,
+					});
+				break;
+			}
+			case OriginalGame.Keno: {
+				await (gamePage as KenoGamePage)
+					.assertThat()
+					.startPlayingButtonIsDisplayed();
+				await (gamePage as KenoGamePage)
+					.steps()
+					.startManualBet(betAmount);
+				break;
+			}
+			default: {
+				throw new Error(`Unhandled game type: ${String(game)}`);
+			}
+		}
+	}
+
+	@step("Place bet - v4")
+	public async placeBetV4(
+		game: OriginalGames,
+		betAmount: number,
+		multiplierOrColorOrOption?: BetOption,
+	): Promise<void> {
+		const gamePage = this.gamesMap[game];
+		const defaultMultiplier = 1.1;
+
+		switch (game) {
+			case OriginalGame.Crash: {
+				const crashMultiplier = isNumberBetOption(
+					multiplierOrColorOrOption,
+				)
+					? multiplierOrColorOrOption
+					: defaultMultiplier;
+				await (gamePage as CrashGamePage).placeBetV4(
+					betAmount,
+					crashMultiplier,
+				);
+				break;
+			}
+			case OriginalGame.Dice: {
+				const diceMultiplier = isNumberBetOption(
+					multiplierOrColorOrOption,
+				)
+					? multiplierOrColorOrOption
+					: defaultMultiplier;
+				await (gamePage as DiceGamePage).placeBetV4(
+					betAmount,
+					diceMultiplier,
+				);
+				break;
+			}
+			case OriginalGame.Roulette: {
+				const betColor = isStringBetOption(multiplierOrColorOrOption)
+					? (multiplierOrColorOrOption as RouletteBetColor)
+					: RouletteBetColor.RED;
+				await (gamePage as RouletteGamePage).placeBetV4(
+					betAmount,
+					betColor,
+				);
+				break;
+			}
+			case OriginalGame.HiLo: {
+				const betOption = isStringBetOption(multiplierOrColorOrOption)
+					? (multiplierOrColorOrOption as HiloBetOption)
+					: HiloBetOption.RED;
+				await (gamePage as HiloGamePage).placeBetV4(
+					betAmount,
+					betOption,
+				);
+				break;
+			}
+			case OriginalGame.Plinko: {
+				const plinkoOptions = isObjectBetOptions(
+					multiplierOrColorOrOption,
+				)
+					? (multiplierOrColorOrOption as {
+							rowsValue?: PlinkoRowsOption;
+							riskValue?: PlinkoRiskOption;
+					  })
+					: {};
+				await (gamePage as PlinkoGamePage).startManualBet(
+					betAmount.toString(),
+					plinkoOptions,
+				);
+				break;
+			}
+			case OriginalGame.Mines: {
+				await (gamePage as MinesGamePage)
+					.assertThat()
+					.startPlayingButtonIsDisplayed();
+				await (gamePage as MinesGamePage)
+					.steps()
+					.placeManualBetWithRandomTile({
+						betAmount: betAmount,
+						minesNumber: isNumberBetOption(
+							multiplierOrColorOrOption,
+						)
+							? multiplierOrColorOrOption
+							: 0,
 						cashoutMultiplier: 0,
 					});
 				break;
@@ -414,6 +528,26 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 		if (toastGames.includes(game)) {
 			await this.placeBet(game, betAmount);
 			await this.assertThat().selfExclusionToastMessageIsDisplayed();
+		} else {
+			await this.assertThat().selfExclusionPageTextIsDisplayed();
+		}
+	}
+
+	@step("Verify self-exclusion message is displayed - v4")
+	public async verifySelfExclusionMessageIsDisplayedV4(
+		game: OriginalGames,
+		betAmount: number,
+	): Promise<void> {
+		const toastGames = [
+			OriginalGame.Dice,
+			OriginalGame.Roulette,
+			OriginalGame.HiLo,
+			OriginalGame.Crash,
+		];
+
+		if (toastGames.includes(game)) {
+			await this.placeBetV4(game, betAmount);
+			await this.assertThat().selfExclusionToastMessageIsDisplayedV4();
 		} else {
 			await this.assertThat().selfExclusionPageTextIsDisplayed();
 		}
