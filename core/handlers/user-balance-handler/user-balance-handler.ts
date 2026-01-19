@@ -32,10 +32,10 @@ export class UserBalanceHandler extends BaseComponent<BaseMap> {
 	private readonly header: AuthenticatedHeader;
 	private readonly currencyApi: CurrencyApi;
 
-	constructor(page: Page) {
+	constructor(page: Page, currencyApi?: CurrencyApi) {
 		super(page, {} as BaseMap);
 		this.header = new AuthenticatedHeader(page);
-		this.currencyApi = new CurrencyApi(undefined, page);
+		this.currencyApi = currencyApi ?? new CurrencyApi(undefined, page);
 	}
 
 	/** Not implemented for this handler. */

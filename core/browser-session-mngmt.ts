@@ -20,6 +20,7 @@ import {
 	BrowserSessionLoginOptions,
 	SessionContextOptions,
 } from "./types/browser-session-mngmt-types";
+import { UserBalanceHandler } from "./handlers/user-balance-handler/user-balance-handler";
 
 function isStorageStateAwareApi(api: unknown): api is StorageStateAwareApi {
 	if (typeof api !== "object" || api === null) {
@@ -36,6 +37,8 @@ function isStorageStateAwareApi(api: unknown): api is StorageStateAwareApi {
 export class BrowserUserSession {
 	private apiCache: Partial<Record<keyof AllApisType, Promise<unknown>>> = {};
 	private pageCache: Partial<Record<keyof AllGamdomPagesType, unknown>> = {};
+
+	private _userBalanceHandler?: UserBalanceHandler;
 
 	constructor(
 		public role: TestUserRole,
@@ -131,6 +134,17 @@ export class BrowserUserSession {
 		});
 	}
 
+	public async userBalanceHandler(): Promise<UserBalanceHandler> {
+		if (this._userBalanceHandler) return this._userBalanceHandler;
+
+		const currencyApi = await this.apis.currencyApi;
+
+		const handler = new UserBalanceHandler(this.page, currencyApi);
+		this._userBalanceHandler = handler;
+
+		return handler;
+	}
+
 	public async disposeApis(): Promise<void> {
 		for (const apiPromise of Object.values(this.apiCache)) {
 			try {
@@ -160,6 +174,10 @@ export class BrowserSessionManager {
 		this.sessions.set(TestUserRole.ANONYMOUS, anon);
 		this._active = anon;
 		this.gamdomApiDbFacade = new GamdomApiDbFacade();
+	}
+
+	public async userBalanceHandler(): Promise<UserBalanceHandler> {
+		return this.active.userBalanceHandler();
 	}
 
 	public async loginAs(
@@ -270,6 +288,7 @@ export class BrowserSessionManager {
 					await this.gamdomApiDbFacade.createSingleUserDbAndAuth(
 						options?.regularUserOptions,
 					);
+				await this.setUserWalletOptions(userAuth, options);
 				await setAuthenticationCookies(page, userAuth.cookie);
 				return userAuth;
 			}
@@ -277,6 +296,7 @@ export class BrowserSessionManager {
 			case TestUserRole.SUPERADMIN: {
 				const userAuth =
 					await this.gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
+				await this.setUserWalletOptions(userAuth, options);
 				await setAuthenticationCookies(page, userAuth.cookie);
 				return userAuth;
 			}
@@ -294,6 +314,7 @@ export class BrowserSessionManager {
 						],
 						userClass: UserClasses.Admin,
 					});
+				await this.setUserWalletOptions(userAuth, options);
 				await setAuthenticationCookies(page, userAuth.cookie);
 				return userAuth;
 			}
@@ -306,6 +327,7 @@ export class BrowserSessionManager {
 						tags: UserTags.UserInfoAdmin,
 						userClass: UserClasses.Admin,
 					});
+				await this.setUserWalletOptions(userAuth, options);
 				await setAuthenticationCookies(page, userAuth.cookie);
 				return userAuth;
 			}
@@ -318,6 +340,7 @@ export class BrowserSessionManager {
 						tags: UserTags.SportsBlogAdmin,
 						userClass: UserClasses.Admin,
 					});
+				await this.setUserWalletOptions(userAuth, options);
 				await setAuthenticationCookies(page, userAuth.cookie);
 				return userAuth;
 			}
@@ -330,6 +353,7 @@ export class BrowserSessionManager {
 						tags: UserTags.PromotionAdmin,
 						userClass: UserClasses.Admin,
 					});
+				await this.setUserWalletOptions(userAuth, options);
 				await setAuthenticationCookies(page, userAuth.cookie);
 				return userAuth;
 			}
@@ -338,6 +362,19 @@ export class BrowserSessionManager {
 				throw new Error(
 					`Unsupported user role for authentication detected`,
 				);
+		}
+	}
+
+	private async setUserWalletOptions(
+		userAuth: AuthenticatedUser,
+		options?: BrowserSessionLoginOptions,
+	): Promise<void> {
+		if (options?.regularUserWalletOptions) {
+			await this.gamdomApiDbFacade.upsertUserWalletsDb(
+				userAuth.user.userId,
+				options.regularUserWalletOptions.walletUnits,
+				options.regularUserWalletOptions.amount,
+			);
 		}
 	}
 

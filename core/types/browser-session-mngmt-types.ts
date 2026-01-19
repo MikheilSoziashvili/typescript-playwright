@@ -27,4 +27,7 @@ export type BrowserSessionLoginOptions = SessionContextOptions & {
 	regularUserOptions?: Parameters<
 		GamdomApiDbFacade["createSingleUserDbAndAuth"]
 	>[0];
+	regularUserWalletOptions?: Parameters<
+		GamdomApiDbFacade["createUserWithWalletsAndAuth"]
+	>[0];
 };

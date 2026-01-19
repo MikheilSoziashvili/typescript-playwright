@@ -3,11 +3,7 @@ import {
 	toCurrencyEnum,
 	toWalletUnit,
 } from "@core/utils/currency-wallet-utils";
-import {
-	encodeCookieHeader,
-	getCookieHeader,
-	setAuthenticationCookies,
-} from "@core/utils/utils";
+import { getCookieHeader, setAuthenticationCookies } from "@core/utils/utils";
 import { PlinkoBetTestData, RegisterTestData } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { Feature } from "@enums/feature";
@@ -222,30 +218,21 @@ test.describe(
 							.withAuthor(JiraUser.RALUCA_ARITON)
 							.withTags(TestTag.ORIGINALS)
 							.apply(),
-						async ({
-							gamdomApiDbFacade,
-							plinkoGamePage,
-							homePage,
-							userBalanceHandler,
-							page,
-						}) => {
-							const { cookie } =
-								await gamdomApiDbFacade.createUserWithWalletsAndAuth(
+						async ({ browserSessionManager }) => {
+							const regularUser =
+								await browserSessionManager.loginAs(
+									TestUserRole.REGULAR,
 									{
-										walletUnits: walletUnits,
-										amount: SUPER_HIGH_USER_AMOUNT,
+										reuseContext: true,
+										regularUserWalletOptions: {
+											walletUnits: walletUnits,
+											amount: SUPER_HIGH_USER_AMOUNT,
+										},
 									},
 								);
 
-							await setAuthenticationCookies(page, cookie);
-
-							await plinkoGamePage.navigate();
-
-							const headers = {
-								Cookie: await encodeCookieHeader(cookie),
-							};
-
-							await homePage.authenticatedHeader.changeWalletAndCurrency(
+							await regularUser.pages.plinkoGamePage.navigate();
+							await regularUser.pages.homePage.authenticatedHeader.changeWalletAndCurrency(
 								record.Wallet,
 								record.BetCurrency,
 							);
@@ -255,63 +242,68 @@ test.describe(
 								record.BetCurrency,
 							);
 
-							await plinkoGamePage
+							await regularUser.pages.plinkoGamePage
 								.assertThat()
 								.betAmountCurrencyChanged(betCurrency);
 
-							const coinsBefore =
-								await userBalanceHandler.walletBalanceInCoins(
-									walletUnit,
-									WalletType.DEFAULT,
-									headers,
-								);
+							const coinsBefore = await (
+								await regularUser.userBalanceHandler()
+							).walletBalanceInCoins(
+								walletUnit,
+								WalletType.DEFAULT,
+							);
 
-							await plinkoGamePage.startManualBet(
+							await regularUser.pages.plinkoGamePage.startManualBet(
 								record.BetAmount.toString(),
 							);
 
-							await plinkoGamePage
+							await regularUser.pages.plinkoGamePage
 								.steps()
 								.waitForSlidersToBeActive();
 
-							const betWinMultiplier = await plinkoGamePage
-								.steps()
-								.getInGameChipsHistoryButtonValue();
+							const betWinMultiplier =
+								await regularUser.pages.plinkoGamePage
+									.steps()
+									.getInGameChipsHistoryButtonValue();
 
-							const stakeCoins =
-								await userBalanceHandler.convertDisplayCurrencyToCoins(
-									Number(record.BetAmount),
-									betCurrency,
-									headers,
-								);
+							const stakeCoins = await (
+								await regularUser.userBalanceHandler()
+							).convertDisplayCurrencyToCoins(
+								Number(record.BetAmount),
+								betCurrency,
+							);
 
-							const payoutCoins =
-								userBalanceHandler.calculatePayoutCoins(
-									stakeCoins,
-									betWinMultiplier,
-								);
+							const payoutCoins = (
+								await regularUser.userBalanceHandler()
+							).calculatePayoutCoins(
+								stakeCoins,
+								betWinMultiplier,
+							);
 
-							const expectedCoinsAfter = await plinkoGamePage
-								.steps()
-								.calculateExpectedBalance(
-									coinsBefore,
-									stakeCoins,
-									payoutCoins,
-								);
+							const expectedCoinsAfter =
+								await regularUser.pages.plinkoGamePage
+									.steps()
+									.calculateExpectedBalance(
+										coinsBefore,
+										stakeCoins,
+										payoutCoins,
+									);
 
-							await homePage.map.waitForStableXPosition({
-								locator:
-									await homePage.authenticatedHeader.map.getLoadedAccountBalance(),
-							});
+							await regularUser.pages.homePage.map.waitForStableXPosition(
+								{
+									locator:
+										await regularUser.pages.homePage.authenticatedHeader.map.getLoadedAccountBalance(),
+								},
+							);
 
-							const coinsAfter =
-								await userBalanceHandler.walletBalanceInCoins(
-									walletUnit,
-									WalletType.DEFAULT,
-									headers,
-								);
+							const coinsAfter = await (
+								await regularUser.userBalanceHandler()
+							).walletBalanceInCoins(
+								walletUnit,
+								WalletType.DEFAULT,
+							);
 
-							await plinkoGamePage
+							await regularUser.pages.plinkoGamePage
 								.assertThat()
 								.verifyBalanceWithTolerance(
 									coinsAfter,
@@ -368,8 +360,12 @@ test.describe(
 					`Balances array after playing: ${JSON.stringify(balances)}`,
 				);
 
-				const totalWagered = await plinkoGamePage.steps()
-					.calculateTotalWagered(plinkoBetData.betAmount, numberOfGames);
+				const totalWagered = await plinkoGamePage
+					.steps()
+					.calculateTotalWagered(
+						plinkoBetData.betAmount,
+						numberOfGames,
+					);
 
 				await userInfoAdminPage
 					.steps()
