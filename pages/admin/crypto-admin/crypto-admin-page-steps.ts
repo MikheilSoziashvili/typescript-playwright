@@ -25,7 +25,7 @@ export class CryptoAdminSteps extends BasePageStep<CryptoAdminPage> {
 		value = "0.00001",
 	): Promise<void> {
 		this.gamdomPage.acceptDialog({
-			expectedMessage: "Enter new minimum",
+			expectedMessage: "Enter new minimum min",
 			inputText: value,
 			times: 2,
 		});
@@ -34,6 +34,25 @@ export class CryptoAdminSteps extends BasePageStep<CryptoAdminPage> {
 			await this.gamdomPage.clickMinDepositButton(nodeTitle);
 		} else {
 			await this.gamdomPage.clickMinWithdrawButton(nodeTitle);
+		}
+	}
+
+	@step("Set maximum deposit or withdraw")
+	public async setDepositOrWithdrawMax(
+		action: TransactionType.DEPOSIT | TransactionType.WITHDRAWAL,
+		nodeTitle: CryptoNode,
+		value = "10000.00",
+	): Promise<void> {
+		this.gamdomPage.acceptDialog({
+			expectedMessage: "Enter new minimum max",
+			inputText: value,
+			times: 2,
+		});
+
+		if (action === TransactionType.DEPOSIT) {
+			await this.gamdomPage.clickMaxDepositButton(nodeTitle);
+		} else {
+			await this.gamdomPage.clickMaxWithdrawButton(nodeTitle);
 		}
 	}
 
@@ -77,6 +96,25 @@ export class CryptoAdminSteps extends BasePageStep<CryptoAdminPage> {
 			TransactionType.WITHDRAWAL,
 			nodeTitle,
 			minWithdrawValue,
+		);
+	}
+
+	@step("Set maximum deposit and withdraw")
+	public async setMaxDepositAndWithdraw(
+		nodeTitle: CryptoNode,
+		maxDepositValue = "10000.00",
+		maxWithdrawValue = "10000.00",
+	): Promise<void> {
+		await this.setDepositOrWithdrawMax(
+			TransactionType.DEPOSIT,
+			nodeTitle,
+			maxDepositValue,
+		);
+
+		await this.setDepositOrWithdrawMax(
+			TransactionType.WITHDRAWAL,
+			nodeTitle,
+			maxWithdrawValue,
 		);
 	}
 }

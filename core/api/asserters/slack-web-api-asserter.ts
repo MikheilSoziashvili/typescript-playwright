@@ -2,6 +2,7 @@ import { SlackWebApiFacade } from "@core/facades/slack-web-api/slack-web-api-fac
 import { expect } from "@playwright/test";
 import { step } from "decorators/step";
 import { LowHotWalletBalanceNotification } from "@enums/crypto/slack-notifications/low-hot-wallet-balance-notification";
+import { LowWalletBalanceOnWithdrawalNotification } from "@enums/crypto/slack-notifications/low-wallet-balance-on-withdrawal-notification";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { CryptoTicker } from "@enums/cryptocurrencies";
 import { SlackMessageResponse } from "@dtos/responses/slack-web-api";
@@ -9,6 +10,7 @@ import { logger } from "@logger/logger";
 import { waitForSeconds } from "@core/utils/utils";
 import { EarlyNotificationError } from "@core/errors/slack-web-api-notification-errors";
 import { NotificationTimeWindow } from "@core/types/types";
+import { escapeRegexSpecialChars } from "@support/regex-patterns";
 
 export class SlackWebApiAsserter {
 	public constructor(private readonly slackWebApiFacade: SlackWebApiFacade) {}
@@ -255,5 +257,98 @@ export class SlackWebApiAsserter {
 		cryptoTicker: CryptoTicker,
 	): string {
 		return text.replace("{cryptoTicker}", cryptoTicker);
+	}
+
+	@step("Assert low wallet balance on withdrawal notification received")
+	public async lowWalletBalanceOnWithdrawalNotificationReceived(options: {
+		cryptoTicker: CryptoTicker;
+		userId?: string | number;
+		address?: string;
+		messagesCount?: number;
+		timeoutSeconds?: number;
+		pollIntervalSeconds?: number;
+	}): Promise<void> {
+		const {
+			cryptoTicker,
+			userId,
+			address,
+			messagesCount = 20,
+			timeoutSeconds = TimeoutSeconds.THIRTY,
+			pollIntervalSeconds = TimeoutSeconds.TWO,
+		} = options;
+
+		const client = this.slackWebApiFacade.getClient();
+
+		const notification = await client.waitForMessage(
+			(message) =>
+				this.isLowWalletBalanceOnWithdrawalNotification(
+					message,
+					cryptoTicker,
+				),
+			messagesCount,
+			timeoutSeconds,
+			pollIntervalSeconds,
+		);
+
+		this.assertWithdrawalNotificationText(
+			notification.text,
+			cryptoTicker,
+			userId,
+			address,
+		);
+	}
+
+	private isLowWalletBalanceOnWithdrawalNotification(
+		message: SlackMessageResponse,
+		cryptoTicker: CryptoTicker,
+	): boolean {
+		const text = message.text.toLowerCase();
+		const requiredKeywords = [
+			"low wallet balance on withdrawal",
+			"not enough balance for withdrawal",
+		];
+
+		const containsKeywords = requiredKeywords.some((keyword) =>
+			text.includes(keyword),
+		);
+		const containsTicker = text.includes(cryptoTicker.toLowerCase());
+
+		return containsKeywords && containsTicker;
+	}
+
+	private assertWithdrawalNotificationText(
+		notificationText: string,
+		ticker: CryptoTicker,
+		userId?: string | number,
+		address?: string,
+	): void {
+		const title = this.buildNotificationText(
+			LowWalletBalanceOnWithdrawalNotification.TITLE,
+			ticker,
+		);
+
+		let description = this.buildNotificationText(
+			LowWalletBalanceOnWithdrawalNotification.DESCRIPTION,
+			ticker,
+		);
+
+		if (userId !== undefined) {
+			description = description.replace("{userId}", String(userId));
+		} else {
+			description = description.replace("{userId}", "\\d+");
+		}
+
+		if (address !== undefined) {
+			const escapedAddress = escapeRegexSpecialChars(address);
+			description = description.replace(
+				"to_address: .+",
+				`to_address: ${escapedAddress}`,
+			);
+		}
+
+		expect(notificationText).toContain(title);
+
+		const descriptionRegex = new RegExp(description);
+		expect(notificationText).toMatch(descriptionRegex);
 	}
 }

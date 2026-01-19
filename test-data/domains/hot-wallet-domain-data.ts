@@ -9,6 +9,12 @@ export class HotWalletDomainData {
 		monitorHotWalletBalanceIntervalMin: 1,
 	};
 
+	public readonly lowBalanceOnWithdrawalScenario: HotWalletConfigScenario = {
+		isLowWalletBalanceAlertTest: false,
+		lowWalletBalanceNotificationIntervalMin: 2,
+		monitorHotWalletBalanceIntervalMin: 1,
+	};
+
 	public readonly defaults: SetHotWalletE2EConfigRequest = {
 		isLowWalletBalanceAlertTest: false,
 		lowWalletBalanceNotificationIntervalMin: 0,

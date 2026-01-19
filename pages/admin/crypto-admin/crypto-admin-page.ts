@@ -10,6 +10,7 @@ import {
 } from "@core/types/types";
 import { step } from "decorators/step";
 import { Cryptocurrency, CryptoTicker } from "@enums/cryptocurrencies";
+import { parseBalance } from "@core/utils/utils";
 
 export class CryptoAdminPage extends BasePage<CryptoAdminMap> {
 	public constructor(page: Page) {
@@ -46,6 +47,16 @@ export class CryptoAdminPage extends BasePage<CryptoAdminMap> {
 	@step("Click min withdraw button")
 	public async clickMinWithdrawButton(nodeTitle: string): Promise<void> {
 		await this.map.minWithdrawButton(nodeTitle).click();
+	}
+
+	@step("Click max deposit button")
+	public async clickMaxDepositButton(nodeTitle: string): Promise<void> {
+		await this.map.maxDepositButton(nodeTitle).click();
+	}
+
+	@step("Click max withdraw button")
+	public async clickMaxWithdrawButton(nodeTitle: string): Promise<void> {
+		await this.map.maxWithdrawButton(nodeTitle).click();
 	}
 
 	@step("Send queued withdrawals")
@@ -124,5 +135,14 @@ export class CryptoAdminPage extends BasePage<CryptoAdminMap> {
 			this.acceptDialog();
 			await this.map.saveButton(nodeTitle).click();
 		}
+	}
+
+	@step("Get USD amount by crypto ticker")
+	public async getUsdAmountByCryptoTicker(
+		cryptoTicker: CryptoTicker,
+	): Promise<number> {
+		const amountLocator = this.map.amountUsdByCryptoCurrency(cryptoTicker);
+		const amountText = (await amountLocator.textContent()) ?? "";
+		return parseBalance(amountText);
 	}
 }

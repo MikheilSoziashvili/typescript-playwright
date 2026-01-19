@@ -81,9 +81,13 @@ export const tagPrefixPattern = /^@/;
 
 export const freeSpinsMessagePattern = (expectedSpins: number): RegExp =>
 	new RegExp(`You have ${expectedSpins} spin(s)?`, "i");
+export const regexSpecialCharsPattern = /[.*+?^${}()|[\]\\]/g;
+export const escapeRegexSpecialChars = (text: string): string =>
+	text.replace(regexSpecialCharsPattern, "\\$&");
 
-
-export const selfExclusionTimerV4Pattern = (days: SelfExclusionDays): RegExp => {
+export const selfExclusionTimerV4Pattern = (
+	days: SelfExclusionDays,
+): RegExp => {
 	switch (days) {
 		case SelfExclusionDays.ONE_DAY:
 			return /^0d\s+23h\s+59m\s+\d{1,2}s$/;
@@ -95,4 +99,3 @@ export const selfExclusionTimerV4Pattern = (days: SelfExclusionDays): RegExp => 
 			return /^\d+d\s+\d{1,2}h\s+\d{1,2}m\s+\d{1,2}s$/;
 	}
 };
-

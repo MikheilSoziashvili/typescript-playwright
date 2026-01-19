@@ -1,4 +1,5 @@
 import { HourlyCryptoBalancesColumn } from "@enums/admin/hourly-crypto-balances-table-columns";
+import { CryptoTicker } from "@enums/cryptocurrencies";
 import { BaseMap } from "@pages/base/base-map";
 import { Locator, Page } from "playwright";
 
@@ -37,6 +38,22 @@ export class CryptoAdminMap extends BaseMap {
 			.filter({ has: this.page.getByText(nodeTitle, { exact: true }) })
 			.locator("td img")
 			.nth(2);
+	}
+
+	public maxDepositButton(nodeTitle: string): Locator {
+		return this.page
+			.locator("tr")
+			.filter({ has: this.page.getByText(nodeTitle, { exact: true }) })
+			.locator("td img")
+			.nth(1);
+	}
+
+	public maxWithdrawButton(nodeTitle: string): Locator {
+		return this.page
+			.locator("tr")
+			.filter({ has: this.page.getByText(nodeTitle, { exact: true }) })
+			.locator("td img")
+			.nth(3);
 	}
 
 	public get cryptoTableContainer(): Locator {
@@ -155,5 +172,25 @@ export class CryptoAdminMap extends BaseMap {
 		return this.getRow(nodeTitle)
 			.locator('button:has-text("Save")')
 			.first();
+	}
+
+	public rowByCryptoCurrency(cryptoTicker: CryptoTicker): Locator {
+		return this.hourlyCryptoBalancesTableBody
+			.locator("[class*='MuiTableRow']")
+			.filter({
+				has: this.page.locator(
+					`[class*='MuiTableCell-body']:text-is("${cryptoTicker}")`,
+				),
+			});
+	}
+
+	public amountUsdByCryptoCurrency(cryptoTicker: CryptoTicker): Locator {
+		return this.rowByCryptoCurrency(cryptoTicker)
+			.locator("[class*='MuiTableCell-body']")
+			.nth(
+				this.hourlyCryptoBalancesColumnIndex[
+					HourlyCryptoBalancesColumn.AMOUNT_USD
+				],
+			);
 	}
 }
