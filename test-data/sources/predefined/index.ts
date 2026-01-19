@@ -59,7 +59,7 @@ export const predefined = {
 	usdtAmountToDeposit: {
 		amountToDeposit: "0.02",
 		amountToDepositLarger: "0.4",
-		amountToWithdraw: 0.3,
+		amountToWithdraw: 0.6,
 		withdrawalAddress: "0x88190Ef584BD63E320693133f01c0cfcdA24bB8e",
 	},
 	xrpAmountToDeposit: {
