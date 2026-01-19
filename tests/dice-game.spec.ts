@@ -15,6 +15,7 @@ test.describe("Dice tests", () => {
 		testDetails()
 			.withTags(TestTag.SMOKE, JiraComponent.GAMDOM_ORIGINALS)
 			.withAuthor(JiraUser.NIKOLAY_GENOV)
+			.withJiraBugTickets("ENG-13879")
 			.apply(),
 		async ({ browserSessionManager, diceGamePage }) => {
 			await browserSessionManager.loginAs(TestUserRole.REGULAR, {
@@ -24,6 +25,7 @@ test.describe("Dice tests", () => {
 			await diceGamePage
 				.assertThat()
 				.diceMessageIs(DiceGameResultMessage.PLACE_YOUR_BETS);
+			await diceGamePage.assertThat().multiplierDefaultValueIsCorrect();
 
 			const diceData = testData().fromPredefined().data.dice;
 			const diceBetData = new DiceBetTestData({

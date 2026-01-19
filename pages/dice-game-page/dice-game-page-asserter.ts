@@ -8,6 +8,7 @@ import { DiceAutobetTestData } from "@dtos/test-data";
 import { step } from "decorators/step";
 import { sanitizeAmount } from "@support/regex-patterns";
 import { IntervalMs } from "@enums/interval-millisecond";
+import { testData } from "test-data/test-data-manager";
 
 export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 	public constructor(page: DiceGamePage) {
@@ -247,6 +248,18 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 	public async stopAutobetButtonIsVisible(): Promise<void> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.stopAutobetButton,
+		]);
+	}
+
+	@step("Verify multiplier default value")
+	public async multiplierDefaultValueIsCorrect(): Promise<void> {
+		await this.checkElementsHaveValue([
+			{
+				locator: this.gamdomPage.map.manualMultiplierField,
+				expectedValue: testData()
+					.fromPredefined()
+					.data.dice.defaultMultiplier.toString(),
+			},
 		]);
 	}
 }
