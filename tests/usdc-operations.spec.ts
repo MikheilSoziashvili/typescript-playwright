@@ -65,6 +65,11 @@ test.describe(
 					.setMinDepositAndWithdraw(CryptoNode.fireUSDC_SOL);
 
 				await cryptoAdminPage.setUserPayWd(
+					CryptoNode.fireUSDC_SOL,
+					true,
+				);
+
+				await cryptoAdminPage.setUserPayWd(
 					CryptoNode.fireUSDC_ETH,
 					true,
 				);
@@ -247,6 +252,178 @@ test.describe(
 					);
 			},
 		);
+
+		for (const speed of cryptoWithdrawalDomainData.withdrawalSpeeds) {
+			test(
+				`[ENG-13741] USDC_SOL - withdraw with vip user - ${speed.toLowerCase()}`,
+				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+				async ({
+					cryptoAdminPage,
+					homePage,
+					walletModal,
+					transactionsPage,
+					transactionDetailsModal,
+					userBalanceHandler,
+					gamdomApi,
+					testDataPredefined,
+					gamdomApiDbFacade,
+					page,
+					usdcSolClient,
+					toast,
+					diceGamePage,
+					userInfoAdminPage,
+					transactionsAdminPage,
+					gamdomDb,
+				}) => {
+					// Setup user and test data
+					const { cookie: superAdminCookie, user: superAdmin } =
+						await gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
+					const { user, cookie } =
+						await gamdomApiDbFacade.createSingleUserDbAndAuth({
+							wagered: 100000,
+						});
+					await gamdomDb.insertVipUser(
+						user.userId,
+						superAdmin.userId,
+						VipUserStatus.BASIC_VIP,
+					);
+					await setAuthenticationCookies(page, cookie);
+
+					const {
+						withdrawalAddress,
+						amountToWithdraw,
+						amountToDeposit,
+					} = testDataPredefined.data.usdcSolAmountToDeposit;
+					const vaultId = fireblocks.vaultId;
+
+					// Deposit USDC_SOL
+					await homePage.navigateToWallet();
+					await walletModal.selectPaymentMethod(Cryptocurrency.USDC);
+
+					await walletModal.selectDepositNetwork(
+						CryptoTicker.USDC_SOL,
+					);
+					const userDepositAddress =
+						await walletModal.getDepositAddress();
+					const depositTransaction =
+						await usdcSolClient.sendToAddress(
+							vaultId,
+							userDepositAddress,
+							amountToDeposit,
+						);
+
+					await usdcSolClient.waitForCompletion(
+						depositTransaction.id,
+					);
+					await transactionsPage
+						.steps()
+						.verifyDepositTransactionStatusIs(
+							TransactionState.COMPLETE,
+						);
+
+					// Meet wager requirement
+					await diceGamePage.navigate();
+					await diceGamePage.rollDiceWithAmount(50);
+
+					// Withdraw USDC_SOL
+					await homePage.navigateToWallet();
+
+					const initialBalanceUSD =
+						await userBalanceHandler.walletBalanceInFiatRounded();
+					const withdrawalFee = await walletModal.withdrawCrypto({
+						cryptocurrency: Cryptocurrency.USDC,
+						address: withdrawalAddress,
+						amount: amountToWithdraw,
+						speed: speed,
+						network: CryptoTicker.USDC_SOL,
+						isVip: true,
+					});
+
+					await toast.assertThat().titleIs(ToastTitle.SUCCESS);
+
+					// Verify balance
+					await homePage.navigate();
+					const balanceAfterWithdrawUSD =
+						await userBalanceHandler.walletBalanceInFiatRounded();
+
+					await homePage
+						.assertThat()
+						.verifyBalanceWithTolerance(
+							balanceAfterWithdrawUSD,
+							initialBalanceUSD - amountToWithdraw,
+						);
+
+					const withdrawnAmountAfterFee =
+						amountToWithdraw - parseFloat(withdrawalFee);
+
+					// Process withdrawal as superadmin
+					await setAuthenticationCookies(page, superAdminCookie);
+					await cryptoAdminPage.sendQueuedWithdrawals();
+
+					// Verify withdrawal transaction flow
+					await setAuthenticationCookies(page, cookie);
+					await transactionsPage
+						.steps()
+						.verifyWithdrawTransactionStatusIs(
+							TransactionState.SENT,
+						);
+
+					await transactionsPage
+						.steps()
+						.verifyWithdrawTransactionStatusIs(
+							TransactionState.CONFIRMED,
+						);
+
+					// Verify transaction details
+					await transactionsPage.clickTransactionDetailsButton();
+					await transactionDetailsModal
+						.assertThat()
+						.withdrawalTransactionDetailsAre(
+							withdrawnAmountAfterFee,
+							withdrawalFee,
+							true,
+							speed,
+						);
+
+					const withdrawTransactionId =
+						await transactionDetailsModal.getBlockchainTransactionId();
+
+					// Verify admin panel shows correct amounts
+					const superAdminCookieHeader =
+						getCookieHeader(superAdminCookie);
+					const withdrawnAmountAfterFeeInCoins =
+						userBalanceHandler.usdToCoinsTrunc(
+							withdrawnAmountAfterFee,
+						);
+
+					await cryptoAdminPage
+						.assertThat()
+						.assertTransactionCoinsAmount(
+							gamdomApi,
+							superAdminCookieHeader,
+							withdrawTransactionId,
+							withdrawnAmountAfterFeeInCoins,
+						);
+
+					// Verify user info transactions tab as superadmin
+					await setAuthenticationCookies(page, superAdminCookie);
+					const expectedFeeLevel = withdrawalSpeedToFeeLevel[speed];
+
+					await userInfoAdminPage
+						.steps()
+						.navigateAndShowUserDetails(user.username);
+					await userInfoAdminPage.clickUserInfoTab(
+						UserInfoTabs.Transactions,
+					);
+					await transactionsAdminPage
+						.steps()
+						.fetchDataForRecordWithBalanceAndVerifyFeeLevel(
+							TransactionType.WITHDRAWAL,
+							expectedFeeLevel,
+						);
+				},
+			);
+		}
 
 		for (const speed of cryptoWithdrawalDomainData.withdrawalSpeeds) {
 			test(

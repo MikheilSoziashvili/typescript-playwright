@@ -109,6 +109,9 @@ export const predefined = {
 	},
 	usdcSolAmountToDeposit: {
 		amountToDeposit: "0.02",
+		amountToDepositLarger: "0.07",
+		amountToWithdraw: 0.4,
+		withdrawalAddress: "HswznJARBiyV3YKQSEGm1g7nidBtwYnMxbaMtF8cDSv",
 	},
 	dogeAmountToDeposit: {
 		amountToDeposit: "0.10",
