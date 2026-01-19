@@ -41,6 +41,7 @@ import { WithdrawLimitsSettingsValues } from "@enums/db/withdraw-settings-values
 import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { Unit } from "@enums/units";
 import { VipUserStatus } from "@enums/vip-user-statuses";
+import { WalletType } from "@enums/wallet-types";
 import { QueryResultRow } from "pg";
 import { BaseDB } from "./base-db";
 import {
@@ -186,6 +187,23 @@ export class GamdomDb extends BaseDB {
 				[WalletsColumns.UserId]: userId,
 				[WalletsColumns.Unit]: unit,
 				[WalletsColumns.Balance]: balance,
+			},
+			hasLogMessage,
+		);
+	}
+
+	public async insertUserVaultWallet(
+		userId: number,
+		balance = 18000,
+		hasLogMessage = true,
+	): Promise<QueryResultRow> {
+		return this.insert(
+			DbTables.Wallets,
+			{
+				[WalletsColumns.UserId]: userId,
+				[WalletsColumns.Unit]: Unit.COINS,
+				[WalletsColumns.Balance]: balance,
+				[WalletsColumns.WalletType]: WalletType.VAULT,
 			},
 			hasLogMessage,
 		);

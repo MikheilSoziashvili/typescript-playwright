@@ -144,6 +144,7 @@ test.describe(
 						userInfoAdminPage,
 						userInfoEditInfoAdminPage,
 						gamdomApiDbFacade,
+						gamdomDb,
 					}) => {
 						const [user] = await gamdomApiDbFacade.createUsersDb({
 							usersCount: 1,
@@ -158,6 +159,8 @@ test.describe(
 							cryptoUnits,
 							SUPER_HIGH_USER_AMOUNT,
 						);
+
+						await gamdomDb.insertUserVaultWallet(user.userId);
 
 						const expectedTags = parseExpectedTags(
 							recordVisibility.userTags,
