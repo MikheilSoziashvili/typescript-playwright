@@ -14,7 +14,7 @@ test.describe("OBT E-Sports tests", () => {
 		})
 		.forEach((record) => {
 			test(
-				`[ENG-1158] Verify OBT E-Sports '${record.esportSidebarItemName}' page is loaded successfully and 'Success' status code is returned`,
+				`[ENG-4830] Verify OBT E-Sports '${record.esportSidebarItemName}' page is loaded successfully and 'Success' status code is returned`,
 				testDetails()
 					.withTags(
 						JiraComponent.SEO,
