@@ -103,6 +103,9 @@ export const predefined = {
 	},
 	usdcEthAmountToDeposit: {
 		amountToDeposit: "0.02",
+		amountToDepositLarger: "0.7",
+		amountToWithdraw: 0.3,
+		withdrawalAddress: "0xE8047993dfddd6579f56206d03c444add030e800",
 	},
 	usdcSolAmountToDeposit: {
 		amountToDeposit: "0.02",
