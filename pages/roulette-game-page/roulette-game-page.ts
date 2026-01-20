@@ -111,6 +111,12 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 		const roundResultNum = Number(
 			await this.getRoundResultNumber(waitTimeout),
 		);
+		return this.getColorFromResultNumber(roundResultNum);
+	}
+
+	public getColorFromResultNumber(
+		roundResultNum: number,
+	): RouletteNumberColor {
 		if (roundResultNum === RouletteNumberColor.GREEN.valueOf()) {
 			return RouletteNumberColor.GREEN;
 		} else if (roundResultNum >= 1 && roundResultNum <= 50) {

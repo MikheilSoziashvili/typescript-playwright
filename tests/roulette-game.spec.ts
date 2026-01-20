@@ -49,6 +49,8 @@ test.describe("Roulette tests", () => {
 
 				await rouletteGamePage.betOnColor(RouletteBetColor.BLACK);
 
+				const waitForResult = rouletteGamePage.getRoundResultNumber();
+
 				await rouletteGamePage
 					.assertThat()
 					.potentialBenefitValueIs(
@@ -72,9 +74,10 @@ test.describe("Roulette tests", () => {
 				accountBalanceLeft =
 					await userBalanceHandler.walletBalanceInFiatRounded();
 
-				rouletteResultNumber =
-					await rouletteGamePage.getRoundResultNumber();
-				isWin = await rouletteGamePage.getRoundResultColor();
+				rouletteResultNumber = await waitForResult;
+				isWin = rouletteGamePage.getColorFromResultNumber(
+					Number(rouletteResultNumber),
+				);
 
 				logger.info(`Roulette result: ${RouletteNumberColor[isWin]}`);
 			} while (isWin !== RouletteNumberColor.BLACK);
