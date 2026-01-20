@@ -80,7 +80,7 @@ on:
                 description: "Doge Testnet Private Key"
 
 concurrency:
-    group: detect-modified-tests-${{ github.workflow }}-${{ github.ref }}
+    group: premerge-${{ github.event.pull_request.number || github.ref }}
     cancel-in-progress: true
 
 env:
