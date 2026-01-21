@@ -10,7 +10,11 @@ import {
 } from "@core/utils/utils";
 import { BetIncreaseCondition } from "@enums/dice-autobet-section-name";
 import { step } from "decorators/step";
-import { getExpectedDiceBetValues } from "@formulas/betting-calculations";
+import {
+	getExpectedDiceBalanceAfterRoll,
+	getExpectedDiceBetValues,
+	isDiceWin,
+} from "@formulas/betting-calculations";
 import { expect } from "@playwright/test";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { Timeout } from "@enums/timeout";
@@ -73,7 +77,7 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 				if (diceBetData.multiplier != undefined) {
 					const expectedBalance = isWin
 						? accountBalanceBeforeBet +
-						  diceBetData.betAmount * (diceBetData.multiplier - 1)
+							diceBetData.betAmount * (diceBetData.multiplier - 1)
 						: accountBalanceBeforeBet - diceBetData.betAmount;
 					await this.gamdomPage.authenticatedHeader
 						.assertThat()
@@ -211,9 +215,8 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 		let shouldContinue = true;
 
 		while (shouldContinue) {
-			const winConditionNotMet = !(await this.isWinningConditionMet(
-				gameResultMessage,
-			));
+			const winConditionNotMet =
+				!(await this.isWinningConditionMet(gameResultMessage));
 			const diceConditionNotMet =
 				!(await this.checkLastBetsAgainstRollOver(diceBetData, type));
 
@@ -353,6 +356,7 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 
 		return { parsedDiceResult, parsedHistoryResult };
 	}
+
 	@step("Place winning bet")
 	public async placeWinningBet(
 		diceBetData: DiceBetTestData,
@@ -361,5 +365,267 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 		await this.assertDiceBetValuesAreCorrect(diceBetData);
 
 		await this.playUntilNumberOfWins(diceBetData, expectedWins);
+	}
+
+	@step("Play until number of wins - v4")
+	public async playUntilNumberOfWinsV4(
+		diceBetData: DiceBetTestData,
+		expectedWins: number,
+	): Promise<void> {
+		let winCounter = 0;
+		let previousDiceResult: number | null = null;
+		let previousHistoryResult: number | null = null;
+
+		while (winCounter < expectedWins) {
+			const roundResult = await this.rollUntilWinV4(
+				diceBetData,
+				previousDiceResult,
+				previousHistoryResult,
+			);
+
+			previousDiceResult = roundResult.previousDiceResult;
+			previousHistoryResult = roundResult.previousHistoryResult;
+
+			winCounter++;
+			logger.info(`Win #${winCounter} of ${expectedWins} achieved`);
+		}
+	}
+
+	@step("Roll dice until win - v4")
+	private async rollUntilWinV4(
+		diceBetData: DiceBetTestData,
+		previousDiceResult: number | null,
+		previousHistoryResult: number | null,
+	): Promise<{
+		previousDiceResult: number | null;
+		previousHistoryResult: number | null;
+	}> {
+		let isWin = false;
+
+		while (!isWin) {
+			const accountBalanceBeforeBet =
+				await this.gamdomPage.authenticatedHeader.getAccountBalanceV4();
+
+			await this.playOneDiceRoundV4(diceBetData);
+			await this.waitForManualBetInputToBeEnabledV4();
+			await this.gamdomPage.assertThat().diceResultIsDisplayedV4();
+
+			const updatedResults = await this.updatePreviousDiceResultsV4(
+				previousDiceResult,
+				previousHistoryResult,
+			);
+			previousDiceResult = updatedResults.previousDiceResult;
+			previousHistoryResult = updatedResults.previousHistoryResult;
+
+			isWin = await this.isDiceWinV4(diceBetData);
+			await this.assertExpectedBalanceAfterRollV4(
+				diceBetData,
+				accountBalanceBeforeBet,
+				isWin,
+			);
+
+			if (!isWin) {
+				logger.info("Dice game lost! Rolling dice again...");
+			}
+		}
+
+		return {
+			previousDiceResult: previousDiceResult,
+			previousHistoryResult: previousHistoryResult,
+		};
+	}
+
+	@step("Play one dice round - v4")
+	private async playOneDiceRoundV4(
+		diceBetData: DiceBetTestData,
+	): Promise<void> {
+		await this.assertDiceBetValuesAreCorrectV4(diceBetData);
+		await this.gamdomPage.rollDiceV4();
+	}
+
+	@step("Wait for manual bet input to be enabled - v4")
+	private async waitForManualBetInputToBeEnabledV4(): Promise<void> {
+		await expect
+			.poll(
+				async () => this.gamdomPage.isManualBetInputFieldDisabledV4(),
+				{
+					message:
+						"Input value should be enabled after rolling dice.",
+					intervals: [IntervalMs.SHORT],
+					timeout: Timeout.SHORT,
+				},
+			)
+			.toBe(false);
+	}
+
+	@step("Update previous dice results - v4")
+	private async updatePreviousDiceResultsV4(
+		previousDiceResult: number | null,
+		previousHistoryResult: number | null,
+	): Promise<{
+		previousDiceResult: number | null;
+		previousHistoryResult: number | null;
+	}> {
+		const newResults = await this.waitForNewDiceResultV4(
+			previousDiceResult,
+			previousHistoryResult,
+		);
+
+		return {
+			previousDiceResult: newResults.newDiceResult,
+			previousHistoryResult: newResults.newHistoryResult,
+		};
+	}
+
+	@step("Check if dice roll is a win - v4")
+	private async isDiceWinV4(diceBetData: DiceBetTestData): Promise<boolean> {
+		const { parsedDiceResult } = await this.getParsedDiceResultsV4();
+		const expectedValues = getExpectedDiceBetValues(diceBetData);
+		const rollOver = parseFloat(expectedValues.rollOver);
+
+		return isDiceWin(parsedDiceResult, rollOver);
+	}
+
+	@step("Assert expected balance after roll - v4")
+	private async assertExpectedBalanceAfterRollV4(
+		diceBetData: DiceBetTestData,
+		accountBalanceBeforeBet: number,
+		isWin: boolean,
+	): Promise<void> {
+		const expectedBalance = getExpectedDiceBalanceAfterRoll({
+			accountBalanceBeforeBet: accountBalanceBeforeBet,
+			betAmount: diceBetData.betAmount,
+			multiplier: diceBetData.multiplier,
+			isWin: isWin,
+		});
+
+		if (expectedBalance === null) {
+			return;
+		}
+
+		await this.gamdomPage.authenticatedHeader
+			.assertThat()
+			.accountBalanceIs(expectedBalance);
+	}
+
+	@step("Assert dice bet values are correct - v4")
+	public async assertDiceBetValuesAreCorrectV4(
+		diceBetData: DiceBetTestData,
+	): Promise<void> {
+		await this.gamdomPage.fillInManualBetDataV4(
+			diceBetData.betAmount,
+			diceBetData.multiplier,
+		);
+		await this.gamdomPage.map.manualMultiplierFieldV4.blur();
+		const expectedValues = getExpectedDiceBetValues(diceBetData);
+		await this.gamdomPage
+			.assertThat()
+			.manualBetValuesAreCorrectV4(
+				expectedValues.rollOver,
+				expectedValues.multiplier,
+				expectedValues.winChance,
+				expectedValues.profitOnWin,
+			);
+	}
+
+	@step("Place winning bet - v4")
+	public async placeWinningBetV4(
+		diceBetData: DiceBetTestData,
+		expectedWins: number,
+	): Promise<void> {
+		await this.assertDiceBetValuesAreCorrectV4(diceBetData);
+
+		await this.playUntilNumberOfWinsV4(diceBetData, expectedWins);
+	}
+
+	@step("wait for dice result to be updated - v4")
+	async waitForNewDiceResultV4(
+		previousDiceResult: number | null,
+		previousHistoryResult: number | null,
+	): Promise<{
+		newDiceResult: number | null;
+		newHistoryResult: number | null;
+	}> {
+		let newDiceResult: number | null = null;
+		let newHistoryResult: number | null = null;
+
+		await waitUntil(
+			async () => {
+				const currentResults = await this.getCurrentDiceResultsV4();
+
+				if (
+					await this.areDiceResultsSameV4(
+						{
+							dice: previousDiceResult,
+							history: previousHistoryResult,
+						},
+						currentResults,
+					)
+				) {
+					logger.info(
+						`Dice result '${currentResults.dice}' is same as previous. Waiting for change.`,
+					);
+					return false;
+				}
+
+				newDiceResult = currentResults.dice;
+				newHistoryResult = currentResults.history;
+
+				logger.info(`New dice result found: ${newDiceResult}`);
+				return true;
+			},
+			{
+				errorMessage: `Current dice result did not change after rolling.`,
+				intervalSeconds: TimeoutSeconds.HALF,
+				timeoutSeconds: TimeoutSeconds.FIVE,
+			},
+		);
+
+		return { newDiceResult, newHistoryResult };
+	}
+
+	@step("Compare dice results - v4")
+	private async areDiceResultsSameV4(
+		previous: { dice: number | null; history: number | null },
+		current: { dice: number; history: number },
+	): Promise<boolean> {
+		const hasPrevious = previous.dice !== null && previous.history !== null;
+		return (
+			hasPrevious &&
+			current.dice === previous.dice &&
+			current.history === previous.history
+		);
+	}
+
+	@step("Get current dice results - v4")
+	private async getCurrentDiceResultsV4(): Promise<{
+		dice: number;
+		history: number;
+	}> {
+		const { parsedDiceResult, parsedHistoryResult } =
+			await this.getParsedDiceResultsV4();
+
+		return { dice: parsedDiceResult, history: parsedHistoryResult };
+	}
+
+	@step("Get parsed dice results - v4")
+	private async getParsedDiceResultsV4(): Promise<{
+		parsedDiceResult: number;
+		parsedHistoryResult: number;
+	}> {
+		const tempDiceText =
+			await this.gamdomPage.map.diceResultNumberGameAreaV4
+				.first()
+				.textContent();
+		const tempHistoryText =
+			await this.gamdomPage.map.diceLastResultNumberV4.textContent();
+
+		const parsedDiceResult = parseFloat(tempDiceText ?? "0");
+		const parsedHistoryResult = parseFloat(tempHistoryText ?? "0");
+
+		logger.info(`Current dice result: ${parsedDiceResult}`);
+		logger.info(`Current dice history result: ${parsedHistoryResult}`);
+
+		return { parsedDiceResult, parsedHistoryResult };
 	}
 }

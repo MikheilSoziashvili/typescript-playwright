@@ -131,4 +131,11 @@ export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 		const raw = await this.map.accountBalanceValueInCasinoGame.innerText();
 		return accounting.unformat(raw);
 	}
+
+	@step("Get account balance - v4")
+	public async getAccountBalanceV4(): Promise<number> {
+		return parseBalance(
+			await (await this.map.getLoadedAccountBalanceV4()).innerText(),
+		);
+	}
 }

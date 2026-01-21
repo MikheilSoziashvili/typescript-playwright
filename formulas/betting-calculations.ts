@@ -1,3 +1,4 @@
+import { DiceExpectedBalanceAfterRollParams } from "@core/types/types";
 import { parseToFloat } from "@core/utils/utils";
 import { DiceBetTestData } from "@dtos/test-data";
 import { expect } from "@playwright/test";
@@ -63,3 +64,26 @@ export const calculateBalanceAfterProfit = (
 	betAmount: number,
 	multiplier: number,
 ): number => initialBalance + betAmount * (multiplier - 1);
+
+export function isDiceWin(parsedDiceResult: number, rollOver: number): boolean {
+	return parsedDiceResult > rollOver;
+}
+
+/**
+ * Returns the expected balance after a roll when multiplier is known.
+ * If multiplier is undefined, returns null because balance changes are not deterministic.
+ */
+export function getExpectedDiceBalanceAfterRoll(
+	params: DiceExpectedBalanceAfterRollParams,
+): number | null {
+	const { accountBalanceBeforeBet, betAmount, multiplier, isWin } = params;
+
+	if (multiplier === undefined) {
+		return null;
+	}
+
+	const profit = betAmount * (multiplier - 1);
+	return isWin
+		? accountBalanceBeforeBet + profit
+		: accountBalanceBeforeBet - betAmount;
+}

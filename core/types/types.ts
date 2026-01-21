@@ -288,3 +288,10 @@ export const isStringBetOption = (
 export const isObjectBetOptions = (
 	option?: BetOption,
 ): option is PlinkoBetOptions => typeof option === "object";
+
+export type DiceExpectedBalanceAfterRollParams = {
+	accountBalanceBeforeBet: number;
+	betAmount: number;
+	multiplier?: number;
+	isWin: boolean;
+};

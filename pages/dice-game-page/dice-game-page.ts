@@ -166,4 +166,9 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 		await this.fillInManualBetDataV4(betAmount, multiplier);
 		await this.rollDiceV4();
 	}
+
+	@step("Check if manual bet input field is disabled - v4")
+	public async isManualBetInputFieldDisabledV4(): Promise<boolean> {
+		return this.map.manualBetFieldV4.isDisabled();
+	}
 }

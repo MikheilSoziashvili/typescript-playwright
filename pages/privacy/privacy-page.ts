@@ -6,10 +6,14 @@ import { PrivacyPageMap } from "./privacy-page-map";
 import { PrivacyPageAsserter } from "./privacy-page-asserter";
 import { PrivacyPageSteps } from "./privacy-page-steps";
 import { step } from "decorators/step";
+import { ToastV4 } from "@pages/components/toastV4/toast-v4";
 
 export class PrivacyPage extends BasePage<PrivacyPageMap> {
+	public readonly toastV4: ToastV4;
+
 	public constructor(page: Page) {
 		super(page, new PrivacyPageMap(page));
+		this.toastV4 = new ToastV4(this.page);
 	}
 
 	public override async navigate(

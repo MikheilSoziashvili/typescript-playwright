@@ -262,4 +262,81 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 			},
 		]);
 	}
+
+	@step("Manual bet value are correct - v4")
+	public async manualBetValuesAreCorrectV4(
+		rollover: string,
+		multiplier: string,
+		winChance: string,
+		profitOnWin: string,
+	): Promise<void> {
+		const fieldValues = [
+			{
+				field: this.gamdomPage.map.manualRollOverFieldV4,
+				value: rollover,
+			},
+			{
+				field: this.gamdomPage.map.manualMultiplierFieldV4,
+				value: multiplier,
+			},
+			{
+				field: this.gamdomPage.map.manualWinChanceFieldV4,
+				value: winChance,
+			},
+			{
+				field: this.gamdomPage.map.manualProfitOnWinFieldV4,
+				value: profitOnWin,
+			},
+		];
+
+		for (const { field, value } of fieldValues) {
+			await expect(field).toHaveValue(value);
+		}
+	}
+
+	@step("Dice slider value is correct - v4")
+	public async diceSliderValueIsCorrectV4(diceValue: string): Promise<void> {
+		await expect(this.gamdomPage.map.diceSliderValueV4).toHaveText(
+			diceValue,
+		);
+	}
+
+	@step("Dice result is displayed - v4")
+	public async diceResultIsDisplayedV4(): Promise<void> {
+		const diceResultGameArea =
+			await this.gamdomPage.map.diceResultNumberGameAreaV4
+				.first()
+				.textContent();
+
+		expect(parseFloat(diceResultGameArea ?? "0")).toBeGreaterThanOrEqual(0);
+
+		const diceResultHistory =
+			await this.gamdomPage.map.diceLastResultNumberV4.textContent();
+
+		const expectedDiceResult = parseFloat(diceResultHistory ?? "0");
+
+		expect(
+			expectedDiceResult,
+			"Dice result history must be a valid number and not empty",
+		).toBeGreaterThanOrEqual(0);
+
+		await expect
+			.poll(
+				async () => {
+					const rawCurrent =
+						await this.gamdomPage.map.diceAllLastResultsNumberV4
+							.first()
+							.textContent();
+
+					return parseFloat(rawCurrent ?? "0");
+				},
+				{
+					message:
+						"Dice result history is not the same as current dice result",
+					timeout: Timeout.SHORT,
+					intervals: [IntervalMs.SHORT],
+				},
+			)
+			.toBeCloseTo(expectedDiceResult, 2);
+	}
 }

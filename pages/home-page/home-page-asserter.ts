@@ -273,6 +273,7 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		);
 	}
 
+	//same for v3 and v4
 	@step("Verify total bets are not 0")
 	private async verifySectionTotalBetsAreNotZero(
 		locator: Locator,
@@ -386,6 +387,7 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 			.loggedInUserElementsAreVisibleV4();
 	}
 
+	//same for v3 and v4
 	@step("Verify all usernames are hidden")
 	public async allUsernamesAreHidden(
 		list: Locator,
@@ -437,5 +439,35 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		await this.gamdomPage
 			.assertThat()
 			.checkElementsAreVisible([this.gamdomPage.map.headerContainer]);
+	}
+
+	@step("Verify total bets are not 0 and updated in time - v4")
+	public async verifyTotalBetsAreNotZeroAndUpdatedInTimeV4(): Promise<void> {
+		await this.verifySectionTotalBetsAreNotZero(
+			this.gamdomPage.map.liveBetsSectionTotalBetsV4,
+			"Live Bets section",
+		);
+	}
+
+	@step(
+		"Verify username is masked as Hidden user in section: {sectionName} - v4",
+	)
+	public async usernameIsMaskedInSectionV4(
+		sectionName: HomePageSection,
+	): Promise<void> {
+		const list = this.gamdomPage.map.liveBetsRowsV4;
+		const getUsername = (row: Locator) =>
+			this.gamdomPage.map.liveBetsUsernameCellV4(row);
+
+		await this.allUsernamesAreHidden(list, getUsername, sectionName);
+	}
+
+	@step("Verify username is masked as Hidden user in multiple sections - v4")
+	public async usernameIsMaskedInSectionsV4(
+		...sections: HomePageSection[]
+	): Promise<void> {
+		for (const section of sections) {
+			await this.usernameIsMaskedInSectionsV4(section);
+		}
 	}
 }

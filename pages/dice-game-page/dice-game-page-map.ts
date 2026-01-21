@@ -193,4 +193,58 @@ export class DiceGamePageMap extends BaseMap {
 	public get rollDiceBtnV4(): Locator {
 		return this.page.getByTestId("dice-roll-dice-btn");
 	}
+
+	public get manualRollOverContainerV4(): Locator {
+		return this.page.getByTestId("dice-game-area-roll-over-container");
+	}
+
+	public get manualRollOverFieldV4(): Locator {
+		return this.manualRollOverContainerV4.getByTestId(
+			"dice-game-area-roll-over-input",
+		);
+	}
+
+	public get manualWinChanceContainerV4(): Locator {
+		return this.page.getByTestId("dice-game-area-win-chance-container");
+	}
+
+	public get manualWinChanceFieldV4(): Locator {
+		return this.manualWinChanceContainerV4.getByTestId(
+			"dice-game-area-win-chance-input",
+		);
+	}
+
+	public get manualProfitOnWinContainerV4(): Locator {
+		return this.page.getByTestId("dice-profit-on-win-container");
+	}
+
+	public get manualProfitOnWinFieldV4(): Locator {
+		return this.manualProfitOnWinContainerV4.getByTestId(
+			"dice-profit-on-win-input",
+		);
+	}
+
+	public get diceSliderValueV4(): Locator {
+		return this.page
+			.getByTestId("diceSlider")
+			.locator("div[class*='DiceSliderPinResultNumber']");
+	}
+
+	public get diceResultNumberGameAreaV4(): Locator {
+		return this.page.locator(
+			"div[class*='DiceSlider-styled__SliderPinResultNumber-sc']",
+		);
+	}
+
+	public get diceResultsHistoryV4(): Locator {
+		return this.page.getByTestId("diceRollHistoryResults");
+	}
+
+	public get diceAllLastResultsNumberV4(): Locator {
+		return this.diceResultsHistory.locator("div");
+	}
+
+	public get diceLastResultNumberV4(): Locator {
+		return this.diceAllLastResultsNumberV4.first();
+	}
 }

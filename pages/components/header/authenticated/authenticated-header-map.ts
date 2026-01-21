@@ -7,6 +7,7 @@ import { Timeout } from "@enums/timeout";
 import { Attributes } from "@enums/playwright/htmlAttributes";
 import { AttributesValues } from "@enums/playwright/htmlAttributesValues";
 import { UserMenuOption } from "@enums/user-menu-options";
+import { VisibilityState } from "@enums/playwright/visibility-states";
 
 export class AuthenticatedHeaderMap extends BaseMap {
 	public constructor(page: Page) {
@@ -171,6 +172,10 @@ export class AuthenticatedHeaderMap extends BaseMap {
 		);
 	}
 
+	public get accountBalanceAnimationFinishedV4(): Locator {
+		return this.accountBalanceV4.locator(":scope.animation-finished");
+	}
+
 	public get userAccountMenuAvatarV4(): Locator {
 		return this.authenticatedHeaderContainerV4.getByTestId(
 			"full-account-widget-avatar",
@@ -193,5 +198,29 @@ export class AuthenticatedHeaderMap extends BaseMap {
 		return this.authenticatedHeaderContainerV4.getByTestId(
 			"nav-wallet-action-btn",
 		);
+	}
+
+	public async getLoadedAccountBalanceV4(): Promise<Locator> {
+		const accountBalanceLocator = this.accountBalanceV4;
+		const accountBalanceAnimationFinishedLocator =
+			this.accountBalanceAnimationFinishedV4;
+
+		await accountBalanceAnimationFinishedLocator.waitFor({
+			state: VisibilityState.VISIBLE,
+			timeout: Timeout.LONG,
+		});
+
+		await accountBalanceLocator.hover({ trial: true });
+		await accountBalanceLocator.focus();
+
+		try {
+			// workaround for $0 balance on page load bug
+			return await this.waitUntilContainsText(
+				accountBalanceLocator,
+				decimalNumber,
+			);
+		} catch (error) {
+			throwError(error, "Error resolving account balance");
+		}
 	}
 }

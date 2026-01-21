@@ -27,9 +27,35 @@ export class PrivacyPageMap extends BaseMap {
 	}
 
 	public getUnignoreButtonV4(username: string): Locator {
-		const row = this.getIgnoredUserV4(username)
-			.locator("..")
-			.locator("..");
+		const row = this.getIgnoredUserV4(username).locator("..").locator("..");
 		return row.locator('svg[class*="StyledCloseIcon"]');
+	}
+
+	public get hideDetailsRowV4(): Locator {
+		return this.page.getByTestId("hide-details-from-users").locator("..");
+	}
+
+	public get hideStatisticsRowV4(): Locator {
+		return this.page.getByTestId("hide-statistics-from-users").locator("..");
+	}
+
+	public get hideDetailsToggleV4(): Locator {
+		return this.hideDetailsRowV4.locator(
+			"input[type='checkbox'][role='switch']",
+		);
+	}
+
+	public get hideDetailsToggleClickTargetV4(): Locator {
+		return this.hideDetailsRowV4.locator("label");
+	}
+
+	public get hideStatisticsToggleV4(): Locator {
+		return this.hideStatisticsRowV4.locator(
+			"input[type='checkbox'][role='switch']",
+		);
+	}
+
+	public get hideStatisticsToggleClickTargetV4(): Locator {
+		return this.hideStatisticsRowV4.locator("label");
 	}
 }

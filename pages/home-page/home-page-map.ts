@@ -256,4 +256,20 @@ export class HomePageMap extends BaseMap {
 	public get walletButtonV4(): Locator {
 		return this.page.getByTestId("nav-wallet-action-btn");
 	}
+
+	public get gamdomLogoButtonV4(): Locator {
+		return this.page.locator("a[class*='TopNavDesktopLogo-']");
+	}
+
+	public get liveBetsSectionTotalBetsV4(): Locator {
+		return this.page.getByTestId("general-stats-total-bets-container");
+	}
+
+	public get liveBetsRowsV4(): Locator {
+		return this.page.locator('[data-testid^="general-stats-table-row-"]');
+	}
+
+	public liveBetsUsernameCellV4(row: Locator): Locator {
+		return row.locator('[data-testid$="-username"]');
+	}
 }

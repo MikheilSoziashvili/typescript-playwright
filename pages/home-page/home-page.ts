@@ -221,4 +221,10 @@ export class HomePage extends BasePage<HomePageMap> {
 	public async clickWalletButtonV4(): Promise<void> {
 		await this.map.walletButtonV4.click();
 	}
+
+	@step("Click gamdom logo - v4")
+	public async clickGamdomLogoV4(): Promise<void> {
+		await this.map.gamdomLogoButtonV4.click();
+		await this.page.waitForLoadState(WaitUntilState.LOAD);
+	}
 }
