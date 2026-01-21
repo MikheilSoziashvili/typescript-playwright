@@ -4,6 +4,7 @@ import { CompositeAttributeBuilder } from "../builders/composite-attribute-build
 import { TagAttributeBuilder } from "../builders/tag-attribute-builder";
 import { AuthorAttributeBuilder } from "../builders/author-attribute-builder";
 import { ArbitraryAnnotationAttributeBuilder } from "../builders/arbitrary-annotation-builder";
+import { DefectAttributeBuilder } from "../builders/defect-attribute-builder";
 import { ReportPortalService } from "../services/reportportal-service";
 import { ConfigExtractor } from "../extractors/config-extractor";
 import { JiraIssueExtractor } from "../extractors/jira-issue-extractor";
@@ -26,6 +27,7 @@ export class ReportPortalSetupHandler {
 				new TagAttributeBuilder(),
 				new AuthorAttributeBuilder(),
 				new ArbitraryAnnotationAttributeBuilder(),
+				new DefectAttributeBuilder(),
 			]);
 		this.reportPortalService =
 			reportPortalService ?? new ReportPortalService();

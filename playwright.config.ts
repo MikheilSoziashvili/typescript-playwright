@@ -86,6 +86,12 @@ const rpConfig = {
 	uploadVideo: true,
 	uploadTrace: true,
 
+	// Enable auto-analysis to link similar failures
+	autoAnalysis: true,
+
+	// Link to existing defects by test case ID
+	autoDefectLink: true,
+
 	// HTTP client configuration (optional)
 	restClientConfig: {
 		// Request timeout in milliseconds

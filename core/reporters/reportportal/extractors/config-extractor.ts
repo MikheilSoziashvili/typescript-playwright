@@ -11,9 +11,12 @@ import { REPORTPORTAL_CONFIG_ANNOTATION_TYPE } from "../constants/reportportal-c
  */
 export class ConfigExtractor {
 	static extract(testInfo: TestInfo): ConfigExtractionResult {
-		const annotation = testInfo.annotations.find(
-			(a) => a.type === REPORTPORTAL_CONFIG_ANNOTATION_TYPE,
-		);
+		/** Get the most specific annotation (test level overrides describe level).
+		 * Focus on last occurrence, which is the most specific (innermost test).
+		 */
+		const annotation = [...testInfo.annotations]
+			.reverse()
+			.find((a) => a.type === REPORTPORTAL_CONFIG_ANNOTATION_TYPE);
 
 		if (!annotation?.description) {
 			return {

@@ -18,6 +18,7 @@ export { TagAttributeBuilder } from "./builders/tag-attribute-builder";
 export { AuthorAttributeBuilder } from "./builders/author-attribute-builder";
 export { ArbitraryAnnotationAttributeBuilder } from "./builders/arbitrary-annotation-builder";
 export { CompositeAttributeBuilder } from "./builders/composite-attribute-builder";
+export { DefectAttributeBuilder } from "./builders/defect-attribute-builder";
 
 export { ReportPortalService } from "./services/reportportal-service";
 

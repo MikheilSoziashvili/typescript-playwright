@@ -31,4 +31,48 @@ export class ReportPortalService {
 			logger.warn("Failed to set test case ID in ReportPortal:", error);
 		}
 	}
+
+	/**
+	 * Marks test with known "defect"
+	 * This helps ReportPortal's auto-analysis link similar failures
+	 */
+	markKnownDefect(bugTickets: readonly string[]): void {
+		if (bugTickets.length === 0) {
+			return;
+		}
+
+		try {
+			const defectMessage = `Known Issue(s): ${bugTickets.join(", ")}`;
+			ReportingApi.warn(defectMessage);
+
+			const defectAttributes = bugTickets.map((ticket) => ({
+				key: "defect",
+				value: ticket,
+			}));
+			ReportingApi.addAttributes(defectAttributes);
+		} catch (error) {
+			logger.warn("Failed to mark known defect in ReportPortal:", error);
+		}
+	}
+
+	/**
+	 * Sets test status and description for known issues
+	 */
+	setKnownIssueStatus(bugTickets: readonly string[]): void {
+		if (bugTickets.length === 0) {
+			return;
+		}
+
+		try {
+			const description = `This test has known issue(s): ${bugTickets.join(
+				", ",
+			)}. 
+Test is skipped in nightly runs until the issue is resolved.`;
+
+			ReportingApi.setDescription(description);
+			ReportingApi.setStatusInfo();
+		} catch (error) {
+			logger.warn("Failed to set known issue status:", error);
+		}
+	}
 }
