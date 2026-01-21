@@ -122,4 +122,7 @@ export const predefined = {
 		amountToWithdraw: 1.5,
 		feeRate: 50,
 	},
+	amountTolerance: {
+		amountToleranceUsd: 0.1,
+	},
 };

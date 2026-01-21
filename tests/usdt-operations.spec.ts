@@ -14,6 +14,7 @@ import { TransactionType } from "@enums/transaction-types";
 import { withdrawalSpeedToFeeLevel } from "@enums/withdrawal-speeds";
 import { testData } from "test-data/test-data-manager";
 import { VipUserStatus } from "@enums/vip-user-statuses";
+import { Currency } from "@enums/currencies";
 
 test.describe(
 	"USDT tests",
@@ -272,13 +273,11 @@ test.describe(
 						await gamdomApiDbFacade.createSingleUserDbAndAuth({
 							wagered: 100000,
 						});
+					const userCookie = getCookieHeader(cookie);
 					await setAuthenticationCookies(page, cookie);
 
-					const {
-						withdrawalAddress,
-						amountToWithdraw,
-						amountToDepositLarger,
-					} = testDataPredefined.data.usdtAmountToDeposit;
+					const { withdrawalAddress, amountToDepositLarger } =
+						testDataPredefined.data.usdtAmountToDeposit;
 					const vaultId = fireblocks.vaultId;
 
 					// Deposit USDT_ETH
@@ -306,10 +305,27 @@ test.describe(
 					await diceGamePage.navigate();
 					await diceGamePage.rollDiceWithAmount(50);
 
-					// Withdraw USDT_ETH
 					const initialBalanceUSD =
 						await userBalanceHandler.walletBalanceInFiatRounded();
+
+					// Get withdrawal fee
 					await homePage.navigateToWallet();
+					const fees = await gamdomApi.getWithdrawalFees(
+						CryptoTicker.USDT,
+						{ cookie: userCookie },
+					);
+					const feeInCoins =
+						fees[withdrawalSpeedToFeeLevel[speed]].totalFeeInCoins;
+					const feeInUsd =
+						await userBalanceHandler.coinsToFiatRounded(
+							feeInCoins,
+							Currency.USD,
+						);
+					const amountToWithdraw =
+						feeInUsd +
+						testDataPredefined.data.amountTolerance
+							.amountToleranceUsd;
+					// Withdraw USDT_ETH
 					const withdrawalFee = await walletModal.withdrawCrypto({
 						cryptocurrency: Cryptocurrency.Tether,
 						address: withdrawalAddress,
@@ -432,6 +448,7 @@ test.describe(
 						await gamdomApiDbFacade.createSingleUserDbAndAuth({
 							wagered: 100000,
 						});
+					const userCookie = getCookieHeader(cookie);
 					await gamdomDb.insertVipUser(
 						user.userId,
 						superAdmin.userId,
@@ -439,11 +456,8 @@ test.describe(
 					);
 					await setAuthenticationCookies(page, cookie);
 
-					const {
-						withdrawalAddress,
-						amountToWithdraw,
-						amountToDepositLarger,
-					} = testDataPredefined.data.usdtAmountToDeposit;
+					const { withdrawalAddress, amountToDepositLarger } =
+						testDataPredefined.data.usdtAmountToDeposit;
 					const vaultId = fireblocks.vaultId;
 
 					// Deposit USDT_ETH
@@ -472,11 +486,27 @@ test.describe(
 					await diceGamePage.navigate();
 					await diceGamePage.rollDiceWithAmount(50);
 
-					// Withdraw USDT_ETH
+					// Get withdrawal fee
 					await homePage.navigateToWallet();
-
+					const fees = await gamdomApi.getWithdrawalFees(
+						CryptoTicker.USDT,
+						{ cookie: userCookie },
+					);
+					const feeInCoins =
+						fees[withdrawalSpeedToFeeLevel[speed]].totalFeeInCoins;
+					const feeInUsd =
+						await userBalanceHandler.coinsToFiatRounded(
+							feeInCoins,
+							Currency.USD,
+						);
+					const amountToWithdraw =
+						feeInUsd +
+						testDataPredefined.data.amountTolerance
+							.amountToleranceUsd;
 					const initialBalanceUSD =
 						await userBalanceHandler.walletBalanceInFiatRounded();
+
+					// Withdraw USDT_ETH
 					const withdrawalFee = await walletModal.withdrawCrypto({
 						cryptocurrency: Cryptocurrency.Tether,
 						address: withdrawalAddress,
@@ -597,13 +627,11 @@ test.describe(
 						await gamdomApiDbFacade.createSingleUserDbAndAuth({
 							wagered: 100000,
 						});
+					const userCookie = getCookieHeader(cookie);
 					await setAuthenticationCookies(page, cookie);
 
-					const {
-						withdrawalAddress,
-						amountToWithdraw,
-						amountToDepositLarger,
-					} = testDataPredefined.data.usdtTrxAmountToDeposit;
+					const { withdrawalAddress, amountToDepositLarger } =
+						testDataPredefined.data.usdtTrxAmountToDeposit;
 					const vaultId = fireblocks.vaultId;
 
 					// Deposit USDT_TRX
@@ -637,10 +665,27 @@ test.describe(
 					await diceGamePage.navigate();
 					await diceGamePage.rollDiceWithAmount(50);
 
-					// Withdraw USDT_TRX
 					const initialBalanceUSD =
 						await userBalanceHandler.walletBalanceInFiatRounded();
+
+					// Get withdrawal fee
 					await homePage.navigateToWallet();
+					const fees = await gamdomApi.getWithdrawalFees(
+						CryptoTicker.USDT_TRX,
+						{ cookie: userCookie },
+					);
+					const feeInCoins =
+						fees[withdrawalSpeedToFeeLevel[speed]].totalFeeInCoins;
+					const feeInUsd =
+						await userBalanceHandler.coinsToFiatRounded(
+							feeInCoins,
+							Currency.USD,
+						);
+					const amountToWithdraw =
+						feeInUsd +
+						testDataPredefined.data.amountTolerance
+							.amountToleranceUsd;
+					// Withdraw USDT_TRX
 					const withdrawalFee = await walletModal.withdrawCrypto({
 						cryptocurrency: Cryptocurrency.Tether,
 						address: withdrawalAddress,
@@ -765,6 +810,7 @@ test.describe(
 						await gamdomApiDbFacade.createSingleUserDbAndAuth({
 							wagered: 100000,
 						});
+					const userCookie = getCookieHeader(cookie);
 					await gamdomDb.insertVipUser(
 						user.userId,
 						superAdmin.userId,
@@ -772,11 +818,8 @@ test.describe(
 					);
 					await setAuthenticationCookies(page, cookie);
 
-					const {
-						withdrawalAddress,
-						amountToWithdraw,
-						amountToDeposit,
-					} = testDataPredefined.data.usdtTrxAmountToDeposit;
+					const { withdrawalAddress, amountToDeposit } =
+						testDataPredefined.data.usdtTrxAmountToDeposit;
 					const vaultId = fireblocks.vaultId;
 
 					// Deposit USDT_TRX
@@ -810,11 +853,27 @@ test.describe(
 					await diceGamePage.navigate();
 					await diceGamePage.rollDiceWithAmount(50);
 
-					// Withdraw USDT_TRX
+					// Get withdrawal fee
 					await homePage.navigateToWallet();
-
+					const fees = await gamdomApi.getWithdrawalFees(
+						CryptoTicker.USDT_TRX,
+						{ cookie: userCookie },
+					);
+					const feeInCoins =
+						fees[withdrawalSpeedToFeeLevel[speed]].totalFeeInCoins;
+					const feeInUsd =
+						await userBalanceHandler.coinsToFiatRounded(
+							feeInCoins,
+							Currency.USD,
+						);
+					const amountToWithdraw =
+						feeInUsd +
+						testDataPredefined.data.amountTolerance
+							.amountToleranceUsd;
 					const initialBalanceUSD =
 						await userBalanceHandler.walletBalanceInFiatRounded();
+
+					// Withdraw USDT_TRX
 					const withdrawalFee = await walletModal.withdrawCrypto({
 						cryptocurrency: Cryptocurrency.Tether,
 						address: withdrawalAddress,

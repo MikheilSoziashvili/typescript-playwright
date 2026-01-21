@@ -15,7 +15,7 @@ import { UserInfoTabs } from "@enums/admin/user-info-tabs";
 import { TransactionType } from "@enums/transaction-types";
 import { testData } from "test-data/test-data-manager";
 import { VipUserStatus } from "@enums/vip-user-statuses";
-import { logger } from "@logger/logger";
+import { Currency } from "@enums/currencies";
 
 test.describe(
 	"ETH tests",
@@ -177,13 +177,11 @@ test.describe(
 						await gamdomApiDbFacade.createSingleUserDbAndAuth({
 							wagered: 100000,
 						});
+					const userCookie = getCookieHeader(cookie);
 					await setAuthenticationCookies(page, cookie);
 
-					const {
-						withdrawalAddress,
-						amountToWithdraw,
-						amountToDeposit,
-					} = testDataPredefined.data.ethAmountToDeposit;
+					const { withdrawalAddress, amountToDeposit } =
+						testDataPredefined.data.ethAmountToDeposit;
 					const vaultId = fireblocks.vaultId;
 
 					// Deposit ETH
@@ -213,8 +211,25 @@ test.describe(
 					await diceGamePage.navigate();
 					await diceGamePage.rollDiceWithAmount(50);
 
-					// Withdraw ETH
+					// Get withdrawal fee
 					await homePage.navigateToWallet();
+					const fees = await gamdomApi.getWithdrawalFees(
+						CryptoTicker.ETH,
+						{ cookie: userCookie },
+					);
+					const feeInCoins =
+						fees[withdrawalSpeedToFeeLevel[speed]].totalFeeInCoins;
+					const feeInUsd =
+						await userBalanceHandler.coinsToFiatRounded(
+							feeInCoins,
+							Currency.USD,
+						);
+					const amountToWithdraw =
+						feeInUsd +
+						testDataPredefined.data.amountTolerance
+							.amountToleranceUsd;
+
+					// Withdraw ETH
 					const withdrawalFee = await walletModal.withdrawCrypto({
 						cryptocurrency: Cryptocurrency.Ethereum,
 						address: withdrawalAddress,
@@ -338,6 +353,7 @@ test.describe(
 						await gamdomApiDbFacade.createSingleUserDbAndAuth({
 							wagered: 100000,
 						});
+					const userCookie = getCookieHeader(cookie);
 					await gamdomDb.insertVipUser(
 						user.userId,
 						superAdmin.userId,
@@ -345,11 +361,8 @@ test.describe(
 					);
 					await setAuthenticationCookies(page, cookie);
 
-					const {
-						withdrawalAddress,
-						amountToWithdraw,
-						amountToDeposit,
-					} = testDataPredefined.data.ethAmountToDeposit;
+					const { withdrawalAddress, amountToDeposit } =
+						testDataPredefined.data.ethAmountToDeposit;
 					const vaultId = fireblocks.vaultId;
 
 					// Deposit ETH
@@ -379,9 +392,24 @@ test.describe(
 					await diceGamePage.navigate();
 					await diceGamePage.rollDiceWithAmount(50);
 
-					// Withdraw ETH
 					await homePage.navigateToWallet();
+					const fees = await gamdomApi.getWithdrawalFees(
+						CryptoTicker.ETH,
+						{ cookie: userCookie },
+					);
+					const feeInCoins =
+						fees[withdrawalSpeedToFeeLevel[speed]].totalFeeInCoins;
+					const feeInUsd =
+						await userBalanceHandler.coinsToFiatRounded(
+							feeInCoins,
+							Currency.USD,
+						);
+					const amountToWithdraw =
+						feeInUsd +
+						testDataPredefined.data.amountTolerance
+							.amountToleranceUsd;
 
+					// Withdraw ETH
 					const withdrawalFee = await walletModal.withdrawCrypto({
 						cryptocurrency: Cryptocurrency.Ethereum,
 						address: withdrawalAddress,
@@ -389,7 +417,6 @@ test.describe(
 						speed: speed,
 						isVip: true,
 					});
-					logger.info(`Withdrawal fee: ${withdrawalFee}`);
 					await toast.assertThat().titleIs(ToastTitle.SUCCESS);
 
 					// Verify balance
@@ -398,10 +425,7 @@ test.describe(
 						await userBalanceHandler.walletBalanceInFiatRounded(
 							Unit.ETH_GWEI,
 						);
-					logger.info(`Initial balance USD: ${initialBalanceUSD}`);
-					logger.info(
-						`Balance after withdraw USD: ${balanceAfterWithdrawUSD}`,
-					);
+
 					await homePage
 						.assertThat()
 						.verifyBalanceWithTolerance(

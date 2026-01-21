@@ -16,6 +16,7 @@ import { withdrawalSpeedToFeeLevel } from "@enums/withdrawal-speeds";
 import { testData } from "test-data/test-data-manager";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
+import { Currency } from "@enums/currencies";
 
 test.describe(
 	"UTXO tests",
@@ -290,9 +291,10 @@ test.describe(
 						await gamdomApiDbFacade.createSingleUserDbAndAuth({
 							wagered: 100000,
 						});
+					const userCookie = getCookieHeader(cookie);
 					await setAuthenticationCookies(page, cookie);
 
-					const { feeRate, amountToWithdraw, amountToDepositLarger } =
+					const { feeRate, amountToDepositLarger } =
 						testDataPredefined.data.btcAmountToDeposit;
 
 					// Deposit BTC
@@ -334,8 +336,24 @@ test.describe(
 					await diceGamePage.navigate();
 					await diceGamePage.rollDiceWithAmount(50);
 
-					// Withdraw BTC
+					// Get withdrawal fee
 					await homePage.navigateToWallet();
+					const fees = await gamdomApi.getWithdrawalFees(
+						CryptoTicker.BTC,
+						{ cookie: userCookie },
+					);
+					const feeInCoins =
+						fees[withdrawalSpeedToFeeLevel[speed]].totalFeeInCoins;
+					const feeInUsd =
+						await userBalanceHandler.coinsToFiatRounded(
+							feeInCoins,
+							Currency.USD,
+						);
+					const amountToWithdraw =
+						feeInUsd +
+						testDataPredefined.data.amountTolerance
+							.amountToleranceUsd;
+					// Withdraw BTC
 					const withdrawalFee = await walletModal.withdrawCrypto({
 						cryptocurrency: Cryptocurrency.Bitcoin,
 						address: addressDetails.address,

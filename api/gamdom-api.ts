@@ -37,6 +37,9 @@ import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { HourlyCryptoBalancesRequest } from "@dtos/requests/gamdom-api/hourly-crypto-balances-request";
 import { HourlyCryptoBalancesResponse } from "@dtos/responses/gamdom-api/get-hourly-crypto-balances-response";
 import { FINGERPRINT } from "@constants/fingerprint-details";
+import { CryptoTicker } from "@enums/cryptocurrencies";
+import { GetWithdrawalFeesResponse } from "@dtos/responses/gamdom-api/get-withdrawal-fees-response";
+import { FeeLevel } from "@enums/withdrawal-speeds";
 
 export class GamdomApi extends BaseApi {
 	private gamdomDb: GamdomDb;
@@ -795,5 +798,24 @@ export class GamdomApi extends BaseApi {
 		);
 		const response = await this.post(parameters);
 		return response.json() as Promise<HourlyCryptoBalancesResponse>;
+	}
+
+	public async getWithdrawalFees(
+		crypto: CryptoTicker,
+		_headers: Record<string, string> = {},
+	): Promise<GetWithdrawalFeesResponse> {
+		const payload = {
+			currency: crypto,
+			lowestFeeLevel: FeeLevel.LOW,
+		};
+
+		const parameters = this.buildParameters(
+			ApiEndpoints.GET_WITHDRAWAL_FEES,
+			payload,
+			_headers,
+		);
+
+		const response = await this.post(parameters);
+		return response.json() as Promise<GetWithdrawalFeesResponse>;
 	}
 }

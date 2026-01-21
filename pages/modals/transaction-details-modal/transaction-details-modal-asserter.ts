@@ -5,6 +5,7 @@ import { step } from "decorators/step";
 import { CryptoTicker } from "@enums/cryptocurrencies";
 import { sanitizeAmount } from "@support/regex-patterns";
 import { WithdrawalSpeed } from "@enums/withdrawal-speeds";
+import { formatNumber } from "@core/utils/utils";
 
 export class TransactionDetailsModalAsserter extends BaseAsserter<TransactionDetailsModal> {
 	public constructor(page: TransactionDetailsModal) {
@@ -16,17 +17,17 @@ export class TransactionDetailsModalAsserter extends BaseAsserter<TransactionDet
 		crypto: CryptoTicker,
 		expectedValue: number,
 	): Promise<void> {
-		const actualValue = await this.gamdomPage.getDepositAmountInCryptoValue(
-			crypto,
-		);
+		const actualValue =
+			await this.gamdomPage.getDepositAmountInCryptoValue(crypto);
 		expect(parseFloat(actualValue)).toBe(expectedValue);
 	}
 
 	@step("Assert withdrawal amount in USD")
 	public async withdrawalAmountInUsdIs(expectedValue: number): Promise<void> {
 		const actualValue = await this.gamdomPage.getWithdrawalAmountInUsd();
-		const cleanedValue = actualValue.replace(sanitizeAmount, "");
-		expect(parseFloat(cleanedValue)).toBeCloseTo(expectedValue, 2);
+		const actual = Number(actualValue.replace(sanitizeAmount, ""));
+
+		expect(formatNumber(actual)).toBe(formatNumber(expectedValue));
 	}
 
 	@step("Assert network transaction fee amount")
@@ -34,8 +35,11 @@ export class TransactionDetailsModalAsserter extends BaseAsserter<TransactionDet
 		expectedValue: string,
 	): Promise<void> {
 		const actualValue = await this.gamdomPage.getNetworkTransactionFee();
-		const cleanedValue = actualValue.replace(sanitizeAmount, "");
-		expect(parseFloat(cleanedValue)).toBe(parseFloat(expectedValue));
+
+		const actual = Number(actualValue.replace(sanitizeAmount, ""));
+		const expected = Number(expectedValue);
+
+		expect(formatNumber(actual)).toBe(formatNumber(expected));
 	}
 
 	@step("Assert network transaction speed")

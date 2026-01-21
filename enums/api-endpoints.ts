@@ -29,4 +29,5 @@ export enum ApiEndpoints {
 	GET_USER_AUDIT_LOG = "/client-api/admin/user/getUserAuditLog",
 	SET_E2E_HOT_WALLET_CONFIG = "/client-api/crypto/setE2EConfig",
 	ENTIDAD = "/entidad?IdProveedor",
+	GET_WITHDRAWAL_FEES = "/client-api/crypto/getWithdrawalFees",
 }

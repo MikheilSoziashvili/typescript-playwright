@@ -14,6 +14,7 @@ import { TransactionType } from "@enums/transaction-types";
 import { withdrawalSpeedToFeeLevel } from "@enums/withdrawal-speeds";
 import { testData } from "test-data/test-data-manager";
 import { VipUserStatus } from "@enums/vip-user-statuses";
+import { Currency } from "@enums/currencies";
 
 test.describe(
 	"USDC tests",
@@ -282,6 +283,7 @@ test.describe(
 						await gamdomApiDbFacade.createSingleUserDbAndAuth({
 							wagered: 100000,
 						});
+					const userCookie = getCookieHeader(cookie);
 					await gamdomDb.insertVipUser(
 						user.userId,
 						superAdmin.userId,
@@ -289,11 +291,8 @@ test.describe(
 					);
 					await setAuthenticationCookies(page, cookie);
 
-					const {
-						withdrawalAddress,
-						amountToWithdraw,
-						amountToDeposit,
-					} = testDataPredefined.data.usdcSolAmountToDeposit;
+					const { withdrawalAddress, amountToDeposit } =
+						testDataPredefined.data.usdcSolAmountToDeposit;
 					const vaultId = fireblocks.vaultId;
 
 					// Deposit USDC_SOL
@@ -325,11 +324,27 @@ test.describe(
 					await diceGamePage.navigate();
 					await diceGamePage.rollDiceWithAmount(50);
 
-					// Withdraw USDC_SOL
+					// Get withdrawal fee
 					await homePage.navigateToWallet();
-
+					const fees = await gamdomApi.getWithdrawalFees(
+						CryptoTicker.USDC_SOL,
+						{ cookie: userCookie },
+					);
+					const feeInCoins =
+						fees[withdrawalSpeedToFeeLevel[speed]].totalFeeInCoins;
+					const feeInUsd =
+						await userBalanceHandler.coinsToFiatRounded(
+							feeInCoins,
+							Currency.USD,
+						);
+					const amountToWithdraw =
+						feeInUsd +
+						testDataPredefined.data.amountTolerance
+							.amountToleranceUsd;
 					const initialBalanceUSD =
 						await userBalanceHandler.walletBalanceInFiatRounded();
+
+					// Withdraw USDC_SOL
 					const withdrawalFee = await walletModal.withdrawCrypto({
 						cryptocurrency: Cryptocurrency.USDC,
 						address: withdrawalAddress,
@@ -454,6 +469,7 @@ test.describe(
 						await gamdomApiDbFacade.createSingleUserDbAndAuth({
 							wagered: 100000,
 						});
+					const userCookie = getCookieHeader(cookie);
 					await gamdomDb.insertVipUser(
 						user.userId,
 						superAdmin.userId,
@@ -461,11 +477,8 @@ test.describe(
 					);
 					await setAuthenticationCookies(page, cookie);
 
-					const {
-						withdrawalAddress,
-						amountToWithdraw,
-						amountToDepositLarger,
-					} = testDataPredefined.data.usdcEthAmountToDeposit;
+					const { withdrawalAddress, amountToDepositLarger } =
+						testDataPredefined.data.usdcEthAmountToDeposit;
 					const vaultId = fireblocks.vaultId;
 
 					// Deposit USDC_ETH
@@ -499,9 +512,24 @@ test.describe(
 					await diceGamePage.navigate();
 					await diceGamePage.rollDiceWithAmount(50);
 
-					// Withdraw USDC_ETH
+					// Get withdrawal fee
 					await homePage.navigateToWallet();
-
+					const fees = await gamdomApi.getWithdrawalFees(
+						CryptoTicker.USDC_ETH,
+						{ cookie: userCookie },
+					);
+					const feeInCoins =
+						fees[withdrawalSpeedToFeeLevel[speed]].totalFeeInCoins;
+					const feeInUsd =
+						await userBalanceHandler.coinsToFiatRounded(
+							feeInCoins,
+							Currency.USD,
+						);
+					const amountToWithdraw =
+						feeInUsd +
+						testDataPredefined.data.amountTolerance
+							.amountToleranceUsd;
+					// Withdraw USDC_ETH
 					const withdrawalFee = await walletModal.withdrawCrypto({
 						cryptocurrency: Cryptocurrency.USDC,
 						address: withdrawalAddress,

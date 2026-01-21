@@ -450,7 +450,7 @@ export function generateEmailAndInbox(overrideEmail?: string): {
 			: generateRandomString({
 					prefix: "gmdverify",
 					length: 10,
-			  })
+				})
 	}@${MAILINATOR_DOMAIN}`;
 	const inbox = email.split("@")[0];
 
@@ -1687,3 +1687,6 @@ export function createSecret(secretContent: string, secretPath: string): void {
 		mode: 0o600,
 	});
 }
+
+export const formatNumber = (value: number, decimals = 2): string =>
+	value.toFixed(decimals);

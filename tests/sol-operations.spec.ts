@@ -15,6 +15,7 @@ import { TransactionType } from "@enums/transaction-types";
 import { withdrawalSpeedToFeeLevel } from "@enums/withdrawal-speeds";
 import { testData } from "test-data/test-data-manager";
 import { VipUserStatus } from "@enums/vip-user-statuses";
+import { Currency } from "@enums/currencies";
 
 test.describe(
 	"SOL tests",
@@ -176,13 +177,11 @@ test.describe(
 						await gamdomApiDbFacade.createSingleUserDbAndAuth({
 							wagered: 100000,
 						});
+					const userCookie = getCookieHeader(cookie);
 					await setAuthenticationCookies(page, cookie);
 
-					const {
-						withdrawalAddress,
-						amountToWithdraw,
-						amountToDepositLarger,
-					} = testDataPredefined.data.solAmountToDeposit;
+					const { withdrawalAddress, amountToDepositLarger } =
+						testDataPredefined.data.solAmountToDeposit;
 					const vaultId = fireblocks.vaultId;
 
 					// Deposit SOL
@@ -212,8 +211,24 @@ test.describe(
 					await diceGamePage.navigate();
 					await diceGamePage.rollDiceWithAmount(50);
 
-					// Withdraw ETH
+					// Get withdrawal fee
 					await homePage.navigateToWallet();
+					const fees = await gamdomApi.getWithdrawalFees(
+						CryptoTicker.SOL,
+						{ cookie: userCookie },
+					);
+					const feeInCoins =
+						fees[withdrawalSpeedToFeeLevel[speed]].totalFeeInCoins;
+					const feeInUsd =
+						await userBalanceHandler.coinsToFiatRounded(
+							feeInCoins,
+							Currency.USD,
+						);
+					const amountToWithdraw =
+						feeInUsd +
+						testDataPredefined.data.amountTolerance
+							.amountToleranceUsd;
+					// Withdraw SOL
 					const withdrawalFee = await walletModal.withdrawCrypto({
 						cryptocurrency: Cryptocurrency.Solana,
 						address: withdrawalAddress,
@@ -337,6 +352,7 @@ test.describe(
 						await gamdomApiDbFacade.createSingleUserDbAndAuth({
 							wagered: 100000,
 						});
+					const userCookie = getCookieHeader(cookie);
 					await gamdomDb.insertVipUser(
 						user.userId,
 						superAdmin.userId,
@@ -344,11 +360,8 @@ test.describe(
 					);
 					await setAuthenticationCookies(page, cookie);
 
-					const {
-						withdrawalAddress,
-						amountToWithdraw,
-						amountToDeposit,
-					} = testDataPredefined.data.solAmountToDeposit;
+					const { withdrawalAddress, amountToDeposit } =
+						testDataPredefined.data.solAmountToDeposit;
 					const vaultId = fireblocks.vaultId;
 
 					// Deposit SOL
@@ -378,9 +391,24 @@ test.describe(
 					await diceGamePage.navigate();
 					await diceGamePage.rollDiceWithAmount(50);
 
-					// Withdraw SOL
+					// Get withdrawal fee
 					await homePage.navigateToWallet();
-
+					const fees = await gamdomApi.getWithdrawalFees(
+						CryptoTicker.SOL,
+						{ cookie: userCookie },
+					);
+					const feeInCoins =
+						fees[withdrawalSpeedToFeeLevel[speed]].totalFeeInCoins;
+					const feeInUsd =
+						await userBalanceHandler.coinsToFiatRounded(
+							feeInCoins,
+							Currency.USD,
+						);
+					const amountToWithdraw =
+						feeInUsd +
+						testDataPredefined.data.amountTolerance
+							.amountToleranceUsd;
+					// Withdraw SOL
 					const withdrawalFee = await walletModal.withdrawCrypto({
 						cryptocurrency: Cryptocurrency.Solana,
 						address: withdrawalAddress,

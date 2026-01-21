@@ -15,6 +15,7 @@ import { TransactionType } from "@enums/transaction-types";
 import { VipUserStatus } from "@enums/vip-user-statuses";
 import { withdrawalSpeedToFeeLevel } from "@enums/withdrawal-speeds";
 import { testData } from "test-data/test-data-manager";
+import { Currency } from "@enums/currencies";
 
 test.describe(
 	"TRX tests",
@@ -176,6 +177,7 @@ test.describe(
 						await gamdomApiDbFacade.createSingleUserDbAndAuth({
 							wagered: 100000,
 						});
+					const userCookie = getCookieHeader(cookie);
 					await gamdomDb.insertVipUser(
 						user.userId,
 						superAdmin.userId,
@@ -183,11 +185,8 @@ test.describe(
 					);
 					await setAuthenticationCookies(page, cookie);
 
-					const {
-						withdrawalAddress,
-						amountToWithdraw,
-						amountToDeposit,
-					} = testDataPredefined.data.trxAmountToDeposit;
+					const { withdrawalAddress, amountToDeposit } =
+						testDataPredefined.data.trxAmountToDeposit;
 					const vaultId = fireblocks.vaultId;
 
 					// Deposit TRX
@@ -215,9 +214,24 @@ test.describe(
 					await diceGamePage.navigate();
 					await diceGamePage.rollDiceWithAmount(50);
 
-					// Withdraw TRX
+					// Get withdrawal fee
 					await homePage.navigateToWallet();
-
+					const fees = await gamdomApi.getWithdrawalFees(
+						CryptoTicker.TRX,
+						{ cookie: userCookie },
+					);
+					const feeInCoins =
+						fees[withdrawalSpeedToFeeLevel[speed]].totalFeeInCoins;
+					const feeInUsd =
+						await userBalanceHandler.coinsToFiatRounded(
+							feeInCoins,
+							Currency.USD,
+						);
+					const amountToWithdraw =
+						feeInUsd +
+						testDataPredefined.data.amountTolerance
+							.amountToleranceUsd;
+					// Withdraw TRX
 					const withdrawalFee = await walletModal.withdrawCrypto({
 						cryptocurrency: Cryptocurrency.Tron,
 						address: withdrawalAddress,
@@ -340,13 +354,11 @@ test.describe(
 						await gamdomApiDbFacade.createSingleUserDbAndAuth({
 							wagered: 100000,
 						});
+					const userCookie = getCookieHeader(cookie);
 					await setAuthenticationCookies(page, cookie);
 
-					const {
-						withdrawalAddress,
-						amountToWithdraw,
-						amountToDeposit,
-					} = testDataPredefined.data.trxAmountToDeposit;
+					const { withdrawalAddress, amountToDeposit } =
+						testDataPredefined.data.trxAmountToDeposit;
 					const vaultId = fireblocks.vaultId;
 
 					// Deposit TRX
@@ -374,9 +386,24 @@ test.describe(
 					await diceGamePage.navigate();
 					await diceGamePage.rollDiceWithAmount(50);
 
-					// Withdraw TRX
+					// Get withdrawal fee
 					await homePage.navigateToWallet();
-
+					const fees = await gamdomApi.getWithdrawalFees(
+						CryptoTicker.TRX,
+						{ cookie: userCookie },
+					);
+					const feeInCoins =
+						fees[withdrawalSpeedToFeeLevel[speed]].totalFeeInCoins;
+					const feeInUsd =
+						await userBalanceHandler.coinsToFiatRounded(
+							feeInCoins,
+							Currency.USD,
+						);
+					const amountToWithdraw =
+						feeInUsd +
+						testDataPredefined.data.amountTolerance
+							.amountToleranceUsd;
+					// Withdraw TRX
 					const withdrawalFee = await walletModal.withdrawCrypto({
 						cryptocurrency: Cryptocurrency.Tron,
 						address: withdrawalAddress,
