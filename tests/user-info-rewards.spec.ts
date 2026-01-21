@@ -1,3 +1,5 @@
+import { BrowserUserSession } from "@core/browser-session-mngmt";
+import { AuthenticatedUser } from "@core/facades/gamdom-api-db/interfaces";
 import { buildTipUserSubTitle } from "@core/helpers/asserter-helpers/text-asserters";
 import { testDetails } from "@core/helpers/test-details-helper";
 import {
@@ -20,9 +22,9 @@ import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { NotificationSubTitle } from "@enums/notification-subtitles";
 import { NotificationTitle } from "@enums/notification-titles";
+import { TestUserRole } from "@enums/test-user-roles";
 import { storageStateNewSuperAdminUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
-import { DiceGamePage } from "@pages/dice-game-page/dice-game-page";
 import { HomePage } from "@pages/home-page/home-page";
 import { WalletModal } from "@pages/modals/wallet/wallet-modal";
 import { RewardsPage } from "@pages/rewards/rewards-page";
@@ -1039,65 +1041,64 @@ test.describe(
 		.withTags(JiraComponent.REWARDS, JiraComponent.ADMIN_PANEL)
 		.apply(),
 	() => {
-		test.fixme(
-			true,
-			"Temporary skipped until test cases are adjusted to use casino games, then the automation code will be adjusted to align",
-		);
-		test.use(storageStateNewSuperAdminUserDB());
-
 		const royaltyUpAmount = "$5.00";
-		const instantRewardAmount = "$2.50";
+		const instantRewardAmount = "$26.25";
+		const userBeXpBronze3 = 15000000;
+		let user: AuthenticatedUser;
+		let superAdminSession: BrowserUserSession;
 
-		test(
-			`[ENG-7179] Rewards history - Royalty up and instant`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+		test.beforeEach(
 			async ({
-				gamdomApi,
-				gamdomDb,
-				browser,
-				userInfoAdminPage,
-				userInfoRewardsHistoryAdminPage,
+				gamdomApiDbFacade,
+				page,
+				diceGamePage,
+				rewardsPage,
 				testDataObject,
+				browserSessionManager,
 			}) => {
-				const newUserData = testDataObject.register.random();
-				await gamdomDb.createNewUser(newUserData);
-				const userCookie = await gamdomApi.authenticateWithExistingUser(
-					newUserData.username,
-					newUserData.password,
+				user = await gamdomApiDbFacade.createSingleUserDbAndAuth({
+					emailVerified: true,
+					startingXp: userBeXpBronze3 - 1,
+				});
+				await setAuthenticationCookies(page, user.cookie);
+
+				const betTestData = testDataObject.bet.build(
+					{ username: user.user.username },
+					{ betAmount: 5000, autoCashoutMultiplier: 2 },
 				);
-
-				// Create a new browser context for the user
-				const userContext = await browser.newContext();
-				const userPage = await userContext.newPage();
-				await setAuthenticationCookies(userPage, userCookie);
-
-				// Navigate to the Dice game and play one round
-				const diceGamePage = new DiceGamePage(userPage);
 				await diceGamePage.navigate();
-				await diceGamePage.rollDiceWithAmount(5000);
+				await diceGamePage.rollDiceWithAmount(betTestData.betAmount);
 
-				const rewardsPage = new RewardsPage(userPage);
 				await rewardsPage.navigate();
-
 				// Assert that the Instant and Royalty Up rewards are available
 				await rewardsPage
 					.assertThat()
 					.instantAndRoyaltyUpRewardsAreAvailable();
 
-				await userInfoAdminPage
-					.steps()
-					.navigateAndShowUserDetails(newUserData.username);
+				superAdminSession = await browserSessionManager.loginAs(
+					TestUserRole.SUPERADMIN,
+				);
 
-				await userInfoAdminPage.clickUserInfoTab(
+				await superAdminSession.pages.userInfoAdminPage
+					.steps()
+					.navigateAndShowUserDetails(user.user.username);
+			},
+		);
+
+		test(
+			`[ENG-7179] Rewards history - Royalty up and instant`,
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			async ({ rewardsPage }) => {
+				await superAdminSession.pages.userInfoAdminPage.clickUserInfoTab(
 					UserInfoTabs.RewardHistory,
 				);
 
-				await userInfoRewardsHistoryAdminPage
+				await superAdminSession.pages.userInfoRewardsHistoryAdminPage
 					.assertThat()
 					.rewardsHistoryTableVisible();
 
 				// Assert that the Instant and Royalty Up rewards are visible in the history
-				await userInfoRewardsHistoryAdminPage
+				await superAdminSession.pages.userInfoRewardsHistoryAdminPage
 					.assertThat()
 					.rewardStatusIs(
 						RewardsSource.REWARDS,
@@ -1106,7 +1107,7 @@ test.describe(
 						RewardStatus.PENDING,
 					);
 
-				await userInfoRewardsHistoryAdminPage
+				await superAdminSession.pages.userInfoRewardsHistoryAdminPage
 					.assertThat()
 					.rewardStatusIs(
 						RewardsSource.REWARDS,
@@ -1119,10 +1120,10 @@ test.describe(
 				await rewardsPage.claimReward(RewardType.INSTANT);
 				await rewardsPage.claimSingleRoyaltyUpReward();
 
-				await userInfoRewardsHistoryAdminPage.refresh();
+				await superAdminSession.pages.userInfoRewardsHistoryAdminPage.refresh();
 
 				// Assert that the Instant and Royalty Up rewards are Claimed in the history
-				await userInfoRewardsHistoryAdminPage
+				await superAdminSession.pages.userInfoRewardsHistoryAdminPage
 					.assertThat()
 					.rewardStatusIs(
 						RewardsSource.REWARDS,
@@ -1131,7 +1132,7 @@ test.describe(
 						RewardStatus.CLAIMED,
 					);
 
-				await userInfoRewardsHistoryAdminPage
+				await superAdminSession.pages.userInfoRewardsHistoryAdminPage
 					.assertThat()
 					.rewardStatusIs(
 						RewardsSource.REWARDS,
@@ -1139,78 +1140,40 @@ test.describe(
 						royaltyUpAmount,
 						RewardStatus.CLAIMED,
 					);
-
-				await userContext.close();
 			},
 		);
 
 		test(
 			`[ENG-7179] Rewards history - Royalty up and instant - cancel`,
 			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
-			async ({
-				gamdomApi,
-				gamdomDb,
-				browser,
-				userInfoAdminPage,
-				userInfoRewardsHistoryAdminPage,
-				userInfoRewardsAdminPage,
-				testDataObject,
-			}) => {
-				const newUserData = testDataObject.register.random();
-				await gamdomDb.createNewUser(newUserData);
-				const userCookie = await gamdomApi.authenticateWithExistingUser(
-					newUserData.username,
-					newUserData.password,
+			async () => {
+				await superAdminSession.pages.userInfoAdminPage.clickUserInfoTab(
+					UserInfoTabs.Rewards,
 				);
-
-				// Create a new browser context for the user
-				const userContext = await browser.newContext();
-				const userPage = await userContext.newPage();
-				await setAuthenticationCookies(userPage, userCookie);
-
-				// Navigate to the Dice game and play one round
-				const diceGamePage = new DiceGamePage(userPage);
-				await diceGamePage.navigate();
-				await diceGamePage.rollDiceWithAmount(5000);
-
-				const rewardsPage = new RewardsPage(userPage);
-				await rewardsPage.navigate();
-
-				// Assert that the Instant and Royalty Up rewards are available
-				await rewardsPage
-					.assertThat()
-					.instantAndRoyaltyUpRewardsAreAvailable();
-
-				await userInfoAdminPage
-					.steps()
-					.navigateAndShowUserDetails(newUserData.username);
-
-				await userInfoAdminPage.clickUserInfoTab(UserInfoTabs.Rewards);
-
 				// Revoke the Instant and Royalty Up rewards
-				await userInfoRewardsAdminPage
+				await superAdminSession.pages.userInfoRewardsAdminPage
 					.steps()
 					.clickRevokeRewardButton(
 						RewardStatus.PENDING,
 						CustomRewardType.INSTANT_RAKEBACK_LABEL,
 					);
-				await userInfoRewardsAdminPage
+				await superAdminSession.pages.userInfoRewardsAdminPage
 					.steps()
 					.clickRevokeRewardButton(
 						RewardStatus.PENDING,
 						CustomRewardType.ROYALTY_UP_LABEL,
 					);
 
-				await userInfoAdminPage.clickUserInfoTab(
+				await superAdminSession.pages.userInfoAdminPage.clickUserInfoTab(
 					UserInfoTabs.RewardHistory,
 				);
 
-				await userInfoRewardsHistoryAdminPage
+				await superAdminSession.pages.userInfoRewardsHistoryAdminPage
 					.assertThat()
 					.rewardsHistoryTableVisible();
 
 				// Assert that the Instant and Royalty Up rewards are Canceled in the history
-				await userInfoRewardsHistoryAdminPage
+				await superAdminSession.pages.userInfoRewardsHistoryAdminPage
 					.assertThat()
 					.rewardStatusIs(
 						RewardsSource.REWARDS,
@@ -1219,7 +1182,7 @@ test.describe(
 						RewardStatus.CANCELED,
 					);
 
-				await userInfoRewardsHistoryAdminPage
+				await superAdminSession.pages.userInfoRewardsHistoryAdminPage
 					.assertThat()
 					.rewardStatusIs(
 						RewardsSource.REWARDS,
@@ -1227,8 +1190,6 @@ test.describe(
 						royaltyUpAmount,
 						RewardStatus.CANCELED,
 					);
-
-				await userContext.close();
 			},
 		);
 	},
