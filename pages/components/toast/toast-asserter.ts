@@ -58,9 +58,8 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 			await expect
 				.poll(
 					async () => {
-						lastSeenTexts = await this.getTextFromLocators(
-							locators,
-						);
+						lastSeenTexts =
+							await this.getTextFromLocators(locators);
 						this.logToastStatus(
 							expectedText,
 							lastSeenTexts,
@@ -169,6 +168,24 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 		subTitle?: string;
 	}): Promise<void> {
 		await expect(this.gamdomPage.map.toastContainer(options)).toBeHidden();
+	}
+
+	@step("Check toast with title is not displayed")
+	public async titleIsNotDisplayed(title: string): Promise<void> {
+		const toastWithTitle = this.gamdomPage.map.toastContainer({ title });
+
+		const isVisible = await toastWithTitle.isVisible();
+		if (isVisible) {
+			const subTitle = await this.gamdomPage.map
+				.toastSubTitleLocator()
+				.last()
+				.innerText();
+			throw new Error(
+				`Toast with title "${title}" is visible. Subtitle: "${subTitle}"`,
+			);
+		}
+
+		await this.checkElementsAreNotVisible([toastWithTitle]);
 	}
 
 	@step("Toast message is")

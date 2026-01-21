@@ -355,6 +355,9 @@ test.describe(
 					});
 
 					await toast.assertThat().titleIs(ToastTitle.SUCCESS);
+					await toast
+						.assertThat()
+						.titleIsNotDisplayed(ToastTitle.FAILED);
 
 					// Verify balance
 					await homePage.navigate();
@@ -540,6 +543,9 @@ test.describe(
 					});
 
 					await toast.assertThat().titleIs(ToastTitle.SUCCESS);
+					await toast
+						.assertThat()
+						.titleIsNotDisplayed(ToastTitle.FAILED);
 
 					// Verify balance
 					await homePage.navigate();

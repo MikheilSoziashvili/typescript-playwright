@@ -9,6 +9,7 @@ export class ToastMap extends BaseMap {
 	public toastContainer(options?: {
 		index?: number;
 		subTitle?: string;
+		title?: string;
 	}): Locator {
 		if (options?.index) {
 			return this.page
@@ -18,6 +19,12 @@ export class ToastMap extends BaseMap {
 			return this.page
 				.locator(
 					`*[data-testid=toastContainer]:has(*[data-testid=toastSubTitle]:text-is("${options.subTitle}"))`,
+				)
+				.first();
+		} else if (options?.title) {
+			return this.page
+				.locator(
+					`*[data-testid=toastContainer]:has(*[data-testid=toastTitle]:text-is("${options.title}"))`,
 				)
 				.first();
 		} else {
