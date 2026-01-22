@@ -47,3 +47,7 @@ export interface PromotionTitlesGenerator {
 export interface UsernameGenerator {
 	username(): string;
 }
+
+export interface ChatMessageGenerator {
+	message(): string;
+}

@@ -7,6 +7,7 @@ import { BlogPostCategories } from "@enums/post-categories";
 import {
 	BlogPostsGenerator,
 	CasinoGamesGenerator,
+	ChatMessageGenerator,
 	MailinatorGenerator,
 	PromoCampaignCodesGenerator,
 	PromoCodesGenerators,
@@ -151,5 +152,14 @@ export class RandomDataSourceGenerator {
 					length: 6,
 				}),
 		};
+	}
+
+	public get chatMessage(): ChatMessageGenerator {
+		return {
+			message: () => 
+				generateRandomString({
+					prefix: "automation_msg_",
+				}),
+		}
 	}
 }

@@ -1,9 +1,9 @@
 import { step } from "decorators/step";
 import { BaseAsserter } from "@base/base-asserter";
-import { UnblockUserModal } from "./unblock-user-modal-v4";
+import { UnblockUserModalV4 } from "./unblock-user-modal-v4";
 
-export class UnblockUserModalAsserter extends BaseAsserter<UnblockUserModal> {
-	public constructor(page: UnblockUserModal) {
+export class UnblockUserModalAsserterV4 extends BaseAsserter<UnblockUserModalV4> {
+	public constructor(page: UnblockUserModalV4) {
 		super(page);
 	}
 

@@ -55,4 +55,19 @@ export class PrivacyPageSteps extends BasePageStep<PrivacyPage> {
 				ToastSubTitle.HIDEN_DETAILS_ENABLED,
 			);
 	}
+
+	@step("Enable Hidden Statistics privacy and verify toast message - v4")
+	public async enableHiddenStatisticsV4(): Promise<void> {
+		await this.toggleUserPrivacyV4(
+			UserPrivacyOption.STATISTICS,
+			ToggleOptions.ON,
+		);
+
+		await this.gamdomPage.toastV4
+			.assertThat()
+			.toastMessageIsV4(
+				ToastTitle.SUCCESS_V4,
+				ToastSubTitle.HIDEN_STATISTICS_ENABLED,
+			);
+	}
 }

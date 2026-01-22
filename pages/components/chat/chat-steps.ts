@@ -333,4 +333,16 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 			CommonUserPopupOption.IGNORE,
 		);
 	}
+
+	@step("Open user profile modal - v4")
+	public async openUserProfileModalV4(
+		options?: ChatMessageOptions,
+	): Promise<void> {
+		const messageUserLevel =
+			this.component.map.messageUserAvatarV4(options);
+		await this.component.map.waitForVisibility({
+			locator: messageUserLevel,
+		});
+		await messageUserLevel.click();
+	}
 }

@@ -342,4 +342,10 @@ export class ChatMap extends BaseMap {
 		}
 		return infoLocator;
 	}
+
+	public messageUserAvatarV4(options?: ChatMessageOptions): Locator {
+		return this.messageLocatorV4(options).locator(
+			'[data-testid^="message-say-"][data-testid$="-avatar"]',
+		);
+	}
 }

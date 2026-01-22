@@ -358,7 +358,7 @@ test.describe(
 					await user2.pages.privacyPage.clickUnignoreUserV4(
 						user1Username,
 					);
-					await user2.pages.unblockUserModal.clickUnblockButtonV4();
+					await user2.pages.unblockUserModalV4.clickUnblockButtonV4();
 					await user2.pages.chat
 						.assertThat()
 						.isMessageVisibleV4(pair1.info);

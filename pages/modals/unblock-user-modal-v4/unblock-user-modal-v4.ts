@@ -1,16 +1,16 @@
 import { Page } from "@playwright/test";
 import { BaseModal } from "@base/base-modal";
-import { UnblockUserModalMap as UnblockUserModalMap } from "./unblock-user-modal-map-v4";
+import { UnblockUserModalMapV4 as UnblockUserModalMapV4 } from "./unblock-user-modal-map-v4";
 import { step } from "decorators/step";
-import { UnblockUserModalAsserter as UnblockUserModalAsserter } from "./unblock-user-modal-asserter-v4";
+import { UnblockUserModalAsserterV4 as UnblockUserModalAsserterV4 } from "./unblock-user-modal-asserter-v4";
 
-export class UnblockUserModal extends BaseModal<UnblockUserModalMap> {
+export class UnblockUserModalV4 extends BaseModal<UnblockUserModalMapV4> {
 	constructor(page: Page) {
-		super(page, new UnblockUserModalMap(page));
+		super(page, new UnblockUserModalMapV4(page));
 	}
 
-	public assertThat(): UnblockUserModalAsserter {
-		return new UnblockUserModalAsserter(this);
+	public assertThat(): UnblockUserModalAsserterV4 {
+		return new UnblockUserModalAsserterV4(this);
 	}
 
 	@step("Click continue button - v4")

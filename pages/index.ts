@@ -111,7 +111,8 @@ import { SportsBlogAdminPage } from "./admin/sports-blog-admin/sports-blog-admin
 import { SportsBlogModal } from "./modals/sports-blog-modal/sports-blog-modal";
 import { SweetBonanzaPage } from "./casino-games/pragmatic-play/sweet-bonanza/sweet-bonanza-page";
 import { ToastV4 } from "./components/toastV4/toast-v4";
-import { UnblockUserModal } from "./modals/unblock-user-modal-v4/unblock-user-modal-v4";
+import { UnblockUserModalV4 } from "./modals/unblock-user-modal-v4/unblock-user-modal-v4";
+import { UserProfileModalV4 } from "./modals/user-profile-modal-v4/user-profile-modal-v4";
 
 export const GamdomPages = {
 	homePage: HomePage,
@@ -231,6 +232,7 @@ export const ExternalPages = {
 export const Modals = {
 	tipUserModal: TipUserModal,
 	userProfileModal: UserProfileModal,
+	userProfileModalV4: UserProfileModalV4,
 	liveSupportModal: LiveSupportModal,
 	walletModal: WalletModal,
 	twoFactorAuthModal: TwoFactorAuthModal,
@@ -242,7 +244,7 @@ export const Modals = {
 	newRedirectModal: NewRedirectModal,
 	promotionsModal: PromotionsModal,
 	sportsBlogModal: SportsBlogModal,
-	unblockUserModal: UnblockUserModal,
+	unblockUserModalV4: UnblockUserModalV4,
 };
 
 export const AllGamdomPages = {
