@@ -146,7 +146,8 @@ export class CryptoAdminMap extends BaseMap {
 			[HourlyCryptoBalancesColumn.AMOUNT_CRYPTO]: 2,
 			[HourlyCryptoBalancesColumn.PRICE_USD]: 3,
 			[HourlyCryptoBalancesColumn.AMOUNT_USD]: 4,
-			[HourlyCryptoBalancesColumn.TIME]: 5,
+			[HourlyCryptoBalancesColumn.STATE]: 5,
+			[HourlyCryptoBalancesColumn.TIME]: 6,
 		};
 	}
 

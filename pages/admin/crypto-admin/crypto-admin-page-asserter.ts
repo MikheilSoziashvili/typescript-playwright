@@ -48,6 +48,9 @@ export class CryptoAdminAsserter extends BaseAsserter<CryptoAdminPage> {
 					NumberSeparators.DECIMAL,
 				),
 		},
+		state: {
+			col: HourlyCryptoBalancesColumn.STATE,
+		},
 		snapshot_time: { col: HourlyCryptoBalancesColumn.TIME },
 	};
 

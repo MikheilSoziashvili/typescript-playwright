@@ -4,5 +4,6 @@ export enum HourlyCryptoBalancesColumn {
 	AMOUNT_CRYPTO = "Amount Crypto",
 	PRICE_USD = "Price USD",
 	AMOUNT_USD = "Amount USD",
+	STATE = "State",
 	TIME = "Time",
 }
