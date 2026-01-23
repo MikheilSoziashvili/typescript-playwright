@@ -88,6 +88,13 @@ export class UserBalanceHandler extends BaseComponent<BaseMap> {
 		return Math.trunc(usd * COINS_PER_USD);
 	}
 
+	public usdToCoinsNetAfterFeeTrunc(
+		amountUsd: number,
+		feeUsd: number,
+	): number {
+		return this.usdToCoinsTrunc(amountUsd) - this.usdToCoinsTrunc(feeUsd);
+	}
+
 	/**
 	 * Converts coins to USD, floored to 2 decimals.
 	 * @param coins - Amount in coins.
@@ -120,9 +127,8 @@ export class UserBalanceHandler extends BaseComponent<BaseMap> {
 		headers?: Record<string, string>,
 	): Promise<GetWalletsResponse[number]> {
 		await this.currencyApi.sharePageStorageState();
-		const wallets: GetWalletsResponse = await this.currencyApi.getWallets(
-			headers,
-		);
+		const wallets: GetWalletsResponse =
+			await this.currencyApi.getWallets(headers);
 		const entry = wallets.find(
 			(w) => w.unit === unit && w.wallet_type === type,
 		);

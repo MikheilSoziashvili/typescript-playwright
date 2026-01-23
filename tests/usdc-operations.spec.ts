@@ -410,8 +410,9 @@ test.describe(
 					const superAdminCookieHeader =
 						getCookieHeader(superAdminCookie);
 					const withdrawnAmountAfterFeeInCoins =
-						userBalanceHandler.usdToCoinsTrunc(
-							withdrawnAmountAfterFee,
+						userBalanceHandler.usdToCoinsNetAfterFeeTrunc(
+							amountToWithdraw,
+							parseFloat(withdrawalFee),
 						);
 
 					await cryptoAdminPage
@@ -598,8 +599,9 @@ test.describe(
 					const superAdminCookieHeader =
 						getCookieHeader(superAdminCookie);
 					const withdrawnAmountAfterFeeInCoins =
-						userBalanceHandler.usdToCoinsTrunc(
-							withdrawnAmountAfterFee,
+						userBalanceHandler.usdToCoinsNetAfterFeeTrunc(
+							amountToWithdraw,
+							parseFloat(withdrawalFee),
 						);
 
 					await cryptoAdminPage

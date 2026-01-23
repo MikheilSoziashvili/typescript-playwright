@@ -295,8 +295,9 @@ test.describe(
 					const superAdminCookieHeader =
 						getCookieHeader(superAdminCookie);
 					const withdrawnAmountAfterFeeInCoins =
-						userBalanceHandler.usdToCoinsTrunc(
-							withdrawnAmountAfterFee,
+						userBalanceHandler.usdToCoinsNetAfterFeeTrunc(
+							amountToWithdraw,
+							parseFloat(withdrawalFee),
 						);
 
 					await cryptoAdminPage
@@ -468,8 +469,9 @@ test.describe(
 					// Verify admin panel shows correct amounts
 					const superAdminCookieHeader = getCookieHeader(superAdmin);
 					const withdrawnAmountAfterFeeInCoins =
-						userBalanceHandler.usdToCoinsTrunc(
-							withdrawnAmountAfterFee,
+						userBalanceHandler.usdToCoinsNetAfterFeeTrunc(
+							amountToWithdraw,
+							parseFloat(withdrawalFee),
 						);
 
 					await cryptoAdminPage

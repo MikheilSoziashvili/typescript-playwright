@@ -83,8 +83,8 @@ export class CryptoAdminSteps extends BasePageStep<CryptoAdminPage> {
 	@step("Set minimum deposit and withdraw")
 	public async setMinDepositAndWithdraw(
 		nodeTitle: CryptoNode,
-		minDepositValue = "0.00001",
-		minWithdrawValue = "0.00001",
+		minDepositValue = "0.000001",
+		minWithdrawValue = "0.000001",
 	): Promise<void> {
 		await this.setDepositOrWithdrawMin(
 			TransactionType.DEPOSIT,

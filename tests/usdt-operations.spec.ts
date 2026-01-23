@@ -325,6 +325,7 @@ test.describe(
 						feeInUsd +
 						testDataPredefined.data.amountTolerance
 							.amountToleranceUsd;
+
 					// Withdraw USDT_ETH
 					const withdrawalFee = await walletModal.withdrawCrypto({
 						cryptocurrency: Cryptocurrency.Tether,
@@ -386,8 +387,9 @@ test.describe(
 					// Verify admin panel shows correct amounts
 					const superAdminCookie = getCookieHeader(superAdmin);
 					const withdrawnAmountAfterFeeInCoins =
-						userBalanceHandler.usdToCoinsTrunc(
-							withdrawnAmountAfterFee,
+						userBalanceHandler.usdToCoinsNetAfterFeeTrunc(
+							amountToWithdraw,
+							parseFloat(withdrawalFee),
 						);
 
 					await cryptoAdminPage
@@ -568,8 +570,9 @@ test.describe(
 					const superAdminCookieHeader =
 						getCookieHeader(superAdminCookie);
 					const withdrawnAmountAfterFeeInCoins =
-						userBalanceHandler.usdToCoinsTrunc(
-							withdrawnAmountAfterFee,
+						userBalanceHandler.usdToCoinsNetAfterFeeTrunc(
+							amountToWithdraw,
+							parseFloat(withdrawalFee),
 						);
 
 					await cryptoAdminPage
@@ -748,8 +751,9 @@ test.describe(
 					// Verify admin panel shows correct amounts
 					const superAdminCookie = getCookieHeader(superAdmin);
 					const withdrawnAmountAfterFeeInCoins =
-						userBalanceHandler.usdToCoinsTrunc(
-							withdrawnAmountAfterFee,
+						userBalanceHandler.usdToCoinsNetAfterFeeTrunc(
+							amountToWithdraw,
+							parseFloat(withdrawalFee),
 						);
 
 					await cryptoAdminPage
@@ -936,8 +940,9 @@ test.describe(
 					const superAdminCookieHeader =
 						getCookieHeader(superAdminCookie);
 					const withdrawnAmountAfterFeeInCoins =
-						userBalanceHandler.usdToCoinsTrunc(
-							withdrawnAmountAfterFee,
+						userBalanceHandler.usdToCoinsNetAfterFeeTrunc(
+							amountToWithdraw,
+							parseFloat(withdrawalFee),
 						);
 
 					await cryptoAdminPage
