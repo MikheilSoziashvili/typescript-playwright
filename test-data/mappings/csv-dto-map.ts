@@ -26,6 +26,7 @@ import {
 	PromotionCombinationForLabelDisplayV4Csv,
 	RoyaltyUpLevelRanksCsv,
 	ObtEsportsPagesStatusCodeCsv,
+	EnableDisableCryptoCurrenciesStatusesCsv,
 } from "@dtos/csv";
 import { HomePageBannerCarouselCsv } from "@dtos/csv/home-page-banner-carousel-csv";
 import { OriginalsSelfExclusionCsv } from "@dtos/csv/originals-self-exclusion";
@@ -67,4 +68,5 @@ export type CsvDtoMap = {
 	[CsvFilesName.PROMOTION_COMBINATIONS_FOR_LABEL_DISPLAY_V4]: PromotionCombinationForLabelDisplayV4Csv;
 	[CsvFilesName.ROYALTY_UP_LEVEL_RANKS]: RoyaltyUpLevelRanksCsv;
 	[CsvFilesName.OBT_ESPORTS_PAGES_STATUS_CODE]: ObtEsportsPagesStatusCodeCsv;
+	[CsvFilesName.ENABLE_DISABLE_CRYPTO_CURRENCIES_STATUSES]: EnableDisableCryptoCurrenciesStatusesCsv;
 };

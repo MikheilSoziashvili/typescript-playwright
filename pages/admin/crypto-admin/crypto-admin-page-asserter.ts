@@ -10,6 +10,7 @@ import { CurrencySymbol } from "@enums/currenciesSymbols";
 import { NumberSeparators } from "@enums/number-separators";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { TransactionType } from "@enums/transaction-types";
+import { Cryptocurrency, CryptoTicker } from "@enums/cryptocurrencies";
 
 export class CryptoAdminAsserter extends BaseAsserter<CryptoAdminPage> {
 	public constructor(page: CryptoAdminPage) {
@@ -185,4 +186,32 @@ export class CryptoAdminAsserter extends BaseAsserter<CryptoAdminPage> {
 			}
 		}
 	}
+
+	@step("Assert crypto operations toggle status")
+	public async cryptoOperationsToggleStatus(
+		operations: {
+			cryptoName: Cryptocurrency | CryptoTicker;
+			deposit: boolean;
+			withdraw: boolean;
+		}[],
+	): Promise<void> {
+		const items = operations.flatMap(
+			({ cryptoName, deposit, withdraw }) => [
+				{
+					locator: this.gamdomPage.map.depositToggle(cryptoName),
+					checked: deposit,
+					label: `deposit toggle for ${cryptoName}`,
+				},
+				{
+					locator: this.gamdomPage.map.withdrawToggle(cryptoName),
+					checked: withdraw,
+					label: `withdraw toggle for ${cryptoName}`,
+				},
+			],
+		);
+
+		await this.assertCheckedState(items);
+	}
+
+	
 }

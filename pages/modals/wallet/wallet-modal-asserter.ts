@@ -6,7 +6,7 @@ import { step } from "decorators/step";
 import { Unit } from "@enums/units";
 import { WalletType } from "@enums/wallet-types";
 import { Currency } from "@enums/currencies";
-import { Cryptocurrency } from "@enums/cryptocurrencies";
+import { Cryptocurrency, CryptoTicker } from "@enums/cryptocurrencies";
 import { cryptocurrencyTickerMap } from "@core/mappings/crypto/cryptocurrency-ticker-map";
 import { WalletModalContent } from "@constants/wallet-modal-content";
 import { BankPaymentMethod } from "@enums/bank-payment-methods";
@@ -208,5 +208,26 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 				expectedText: "Deposits Disabled",
 			},
 		]);
+	}
+
+	@step("Crypto payment method is present")
+	public async cryptoPaymentMethodIsPresent(
+		cryptoCurrency: Cryptocurrency | CryptoTicker,
+		expectedPresence: boolean,
+	): Promise<void> {
+		const paymentMethodLocator =
+			this.gamdomPage.map.cryptoPaymentMethod(cryptoCurrency);
+
+		if (expectedPresence) {
+			await this.checkElementsAreVisible(
+				[paymentMethodLocator],
+				Timeout.SHORT,
+			);
+		} else {
+			await this.checkElementsAreNotVisible(
+				[paymentMethodLocator],
+				Timeout.SHORT,
+			);
+		}
 	}
 }

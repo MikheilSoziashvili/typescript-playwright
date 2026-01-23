@@ -31,6 +31,10 @@ export class WalletModalMap extends BaseMap {
 		return this.walletHeaderTabsContainer.getByTestId("withdrawButton");
 	}
 
+	public get depositTabButton(): Locator {
+		return this.walletHeaderTabsContainer.getByTestId("depositButton");
+	}
+
 	public get vaultTabButton(): Locator {
 		return this.walletHeaderTabsContainer.getByTestId("vaultButton");
 	}

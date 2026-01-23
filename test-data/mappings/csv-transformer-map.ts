@@ -12,6 +12,7 @@ import {
 	PromotionCombinationForLabelDisplayV4CsvRecord,
 	RoyaltyUpLevelRanksCsvRecord,
 	ObtEsportsPagesStatusCodeCsvRecord,
+	EnableDisableCryptoCurrenciesStatusesCsvRecord,
 } from "@dtos/csv";
 import { OriginalsSelfExclusionCsvRecord } from "@dtos/csv/originals-self-exclusion";
 import { PlinkoTestDataCsvRecord } from "@dtos/csv/plinko-test-data-csv";
@@ -81,6 +82,10 @@ import {
 	parseObtEsportsPagesStatusCodeCsvRow,
 	ObtEsportsPagesStatusCodeCsvParsedRecord,
 } from "test-data/parsers/obt-esports-pages-status-code-csv-parser";
+import {
+	parseEnableDisableCryptoCurrenciesStatusesCsvRow,
+	EnableDisableCryptoCurrenciesStatusesCsvParsedRecord,
+} from "test-data/parsers/enable-disable-crypto-currencies-statuses-csv-parser";
 
 export type CsvTransformerExistingType<T> =
 	T extends keyof CsvTransformerMapType ? CsvTransformerMapType[T] : never;
@@ -164,6 +169,10 @@ export type CsvTransformerMapType = {
 	[CsvFilesName.OBT_ESPORTS_PAGES_STATUS_CODE]: (
 		row: ObtEsportsPagesStatusCodeCsvRecord,
 	) => ObtEsportsPagesStatusCodeCsvParsedRecord;
+
+	[CsvFilesName.ENABLE_DISABLE_CRYPTO_CURRENCIES_STATUSES]: (
+		row: EnableDisableCryptoCurrenciesStatusesCsvRecord,
+	) => EnableDisableCryptoCurrenciesStatusesCsvParsedRecord;
 };
 
 export const CsvTransformerMap: CsvTransformerMapType = {
@@ -193,4 +202,6 @@ export const CsvTransformerMap: CsvTransformerMapType = {
 	[CsvFilesName.ROYALTY_UP_LEVEL_RANKS]: parseRoyaltyUpLevelRanksCsvRow,
 	[CsvFilesName.OBT_ESPORTS_PAGES_STATUS_CODE]:
 		parseObtEsportsPagesStatusCodeCsvRow,
+	[CsvFilesName.ENABLE_DISABLE_CRYPTO_CURRENCIES_STATUSES]:
+		parseEnableDisableCryptoCurrenciesStatusesCsvRow,
 } as const;

@@ -7,7 +7,7 @@ import { ToastSubTitle } from "@enums/toast-subtitles";
 import { Unit } from "@enums/units";
 import { WalletType } from "@enums/wallet-types";
 import { Currency } from "@enums/currencies";
-import { Cryptocurrency } from "@enums/cryptocurrencies";
+import { Cryptocurrency, CryptoTicker } from "@enums/cryptocurrencies";
 import { CountryCodeISO3166 } from "@enums/country-codes-iso3166";
 import { BankPaymentMethod } from "@enums/bank-payment-methods";
 import { CountryAvailableBankPaymentMethods } from "test-data/interfaces/domain/user-wallet-domain-interfaces";
@@ -274,5 +274,27 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 	private async getVaultAmountMinusOneV4(): Promise<number> {
 		const rawAmountText = await this.gamdomPage.getVaultWalletAmountV4();
 		return parseFloat(rawAmountText) - 1;
+	}
+
+	@step("Open withdraw tab and verify crypto currency method presence")
+	public async openWithdrawTabAndVerifyCryptoCurrencyPresence(
+		cryptoCurrency: Cryptocurrency | CryptoTicker,
+		expectedPresence: boolean,
+	): Promise<void> {
+		await this.gamdomPage.openWithdrawTab();
+		await this.gamdomPage
+			.assertThat()
+			.cryptoPaymentMethodIsPresent(cryptoCurrency, expectedPresence);
+	}
+
+	@step("Open deposit tab and verify crypto currency method presence")
+	public async openDepositTabAndVerifyCryptoCurrencyPresence(
+		cryptoCurrency: Cryptocurrency | CryptoTicker,
+		expectedPresence: boolean,
+	): Promise<void> {
+		await this.gamdomPage.openDepositTab();
+		await this.gamdomPage
+			.assertThat()
+			.cryptoPaymentMethodIsPresent(cryptoCurrency, expectedPresence);
 	}
 }

@@ -732,6 +732,29 @@ export class BaseAsserter<
 		expect(box.y + box.height).toBeLessThanOrEqual(viewport.height);
 	}
 
+	@step("Assert checkbox / toggle checked state")
+	public async assertCheckedState(
+		items: {
+			locator: Locator;
+			checked: boolean;
+			label?: string;
+		}[],
+	): Promise<void> {
+		await Promise.all(
+			items.map(({ locator, checked, label }) => {
+				const message = label
+					? `Expected ${label} to be ${checked ? "checked" : "unchecked"}`
+					: undefined;
+
+				if (checked) {
+					return expect(locator, message).toBeChecked();
+				} else {
+					return expect(locator, message).not.toBeChecked();
+				}
+			}),
+		);
+	}
+
 	@step("Wait until checked")
 	public async waitUntilChecked(locator: Locator): Promise<void> {
 		await expect(locator).toHaveAttribute(

@@ -3,12 +3,14 @@ import { CryptoAdminPage } from "./crypto-admin-page";
 import { TransactionType } from "@enums/transaction-types";
 import { CryptoNode } from "@enums/crypto-nodes";
 import { step } from "decorators/step";
-import { pollOrSkip } from "@core/utils/utils";
+import { pollOrSkip, waitForSeconds } from "@core/utils/utils";
 import { Timeout } from "@enums/timeout";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { Toast } from "@pages/components/toast/toast";
 import { TestInfo } from "@playwright/test";
+import { Cryptocurrency, CryptoTicker } from "@enums/cryptocurrencies";
+import { logger } from "@logger/logger";
 
 export class CryptoAdminSteps extends BasePageStep<CryptoAdminPage> {
 	private readonly toast: Toast;
@@ -116,5 +118,22 @@ export class CryptoAdminSteps extends BasePageStep<CryptoAdminPage> {
 			nodeTitle,
 			maxWithdrawValue,
 		);
+	}
+
+	@step("Wait for crypto processing if needed")
+	public async waitForCryptoProcessingIfNeeded(
+		crypto: Cryptocurrency | CryptoTicker,
+	): Promise<void> {
+		if (crypto === Cryptocurrency.Bitcoin || crypto === CryptoTicker.BTC) {
+			logger.info(
+				`Waiting 30 seconds for ${crypto} processing to complete...`,
+			);
+			await waitForSeconds(30);
+			logger.info(`${crypto} processing wait completed.`);
+		} else {
+			logger.info(
+				`No wait needed for ${crypto} - proceeding immediately.`,
+			);
+		}
 	}
 }
