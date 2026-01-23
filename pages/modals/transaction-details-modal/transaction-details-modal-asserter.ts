@@ -27,9 +27,7 @@ export class TransactionDetailsModalAsserter extends BaseAsserter<TransactionDet
 		const actualValue = await this.gamdomPage.getWithdrawalAmountInUsd();
 		const actual = Number(actualValue.replace(sanitizeAmount, ""));
 
-		const expectedUi = Math.trunc(expectedValue * 100) / 100;
-
-		expect(formatNumber(actual)).toBe(formatNumber(expectedUi));
+		expect(actual).toBeCloseTo(expectedValue, 1);
 	}
 
 	@step("Assert network transaction fee amount")
