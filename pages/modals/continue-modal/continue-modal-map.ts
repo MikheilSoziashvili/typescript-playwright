@@ -25,4 +25,16 @@ export class ContinueModalMap extends BaseMap {
 			"confirmation-modal-cancel-button",
 		);
 	}
+
+	public get modalLocatorV4(): Locator {
+		return this.page.getByTestId("logout-modal-dialog-dialog");
+	}
+
+	public get logoutButtonV4(): Locator {
+		return this.page.getByTestId("logout-modal-dialog-action-button");
+	}
+
+	public get cancelButtonV4(): Locator {
+		return this.page.getByTestId("logout-modal-dialog-cancel-button");
+	}
 }

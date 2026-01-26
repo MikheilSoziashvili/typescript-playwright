@@ -27,7 +27,9 @@ export class LoginModalAsserter extends BaseAsserter<LoginModal> {
 
 	@step("Check login button is disabled")
 	public async loginBtnIsDisabled(): Promise<void> {
-		await expect(this.gamdomPage.map.loginBtn).toBeDisabled();
+		await this.checkElementsAreDisabled([
+			this.gamdomPage.map.loginBtn,
+		]);
 	}
 
 	@step("Check username field error tooltip")
@@ -54,9 +56,9 @@ export class LoginModalAsserter extends BaseAsserter<LoginModal> {
 
 	@step("Assert password reset email is sent")
 	public async assertPasswordResetEmailIsSent(): Promise<void> {
-		await expect(
+		await this.checkElementsAreVisible([
 			this.gamdomPage.map.passwordResetConfirmationText,
-		).toBeVisible();
+		]);
 	}
 
 	@step("Check login modal elements are visible - v4")
@@ -156,5 +158,12 @@ export class LoginModalAsserter extends BaseAsserter<LoginModal> {
 			this.gamdomPage.map.passwordErrorTooltipV4,
 			expectedText,
 		);
+	}
+
+	@step("Assert password reset email is sent - v4")
+	public async assertPasswordResetEmailIsSentV4(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.forgotPasswordConfirmationTextV4,
+		]);
 	}
 }

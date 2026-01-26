@@ -129,4 +129,11 @@ export class LoginModal extends BaseModal<LoginModalMap> {
 	public async closeForgotPasswordFormV4(): Promise<void> {
 		await this.map.forgotPasswordCloseButtonV4.click();
 	}
+
+	@step("Set new password - v4")
+	public async setNewPasswordV4(password: string): Promise<void> {
+		await this.map.newPasswordInput.fill(password);
+		await this.map.newPasswordConfirmationInput.fill(password);
+		await this.map.setNewPasswordButtonV4.click();
+	}
 }

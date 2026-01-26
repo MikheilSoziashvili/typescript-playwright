@@ -1,4 +1,3 @@
-import { expect } from "@playwright/test";
 import { step } from "decorators/step";
 import { BaseAsserter } from "@base/base-asserter";
 import { ContinueModal } from "./continue-modal";
@@ -9,12 +8,12 @@ export class ContinueModalAsserter extends BaseAsserter<ContinueModal> {
 	}
 
 	@step("Check modal is displayed")
-	public async isDisplayed(): Promise<void> {
-		await expect(this.gamdomPage.map.modalLocator).toBeVisible();
+	public async isModalDisplayed(): Promise<void> {
+		await this.checkElementsAreVisible([this.gamdomPage.map.modalLocator]);
 	}
 
 	@step("Check modal is not displayed")
-	public async isNotDisplayed(): Promise<void> {
+	public async isModalNotDisplayed(): Promise<void> {
 		await this.checkElementsAreNotVisible([
 			this.gamdomPage.map.modalLocator,
 			this.gamdomPage.map.continueButton,
@@ -27,6 +26,13 @@ export class ContinueModalAsserter extends BaseAsserter<ContinueModal> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.continueButton,
 			this.gamdomPage.map.cancelButton,
+		]);
+	}
+
+	@step("Check modal is displayed - v4")
+	public async isModalDisplayedV4(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.modalLocatorV4,
 		]);
 	}
 }

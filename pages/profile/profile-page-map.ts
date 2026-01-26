@@ -93,10 +93,20 @@ export class ProfilePageMap extends BaseMap {
 	}
 
 	public get saveUsernameButtonV4(): Locator {
-		return this.page.getByTestId("profile-page-change-user-info-save-username");
+		return this.page.getByTestId(
+			"profile-page-change-user-info-save-username",
+		);
 	}
 
 	public get changeUsernameInputV4(): Locator {
 		return this.getInputField("displayUsername", this.usernameContainerV4);
+	}
+
+	public get leftMenuContainerV4(): Locator {
+		return this.page.getByTestId("profile-layout-tabs-container");
+	}
+
+	public get logOutButtonV4(): Locator {
+		return this.leftMenuContainerV4.getByTestId("prof-ttl");
 	}
 }

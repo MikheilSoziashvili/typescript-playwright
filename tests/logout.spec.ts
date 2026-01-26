@@ -15,13 +15,13 @@ test.describe("Logout tests", () => {
 		async ({ profilePage, homePage }) => {
 			await profilePage.navigate();
 			await profilePage.steps().cancelLogout();
-			await profilePage.continueModal.assertThat().isNotDisplayed();
+			await profilePage.continueModal.assertThat().isModalNotDisplayed();
 			await homePage.authenticatedHeader
 				.assertThat()
 				.loggedInUserElementsAreVisible();
 
 			await profilePage.logout();
-			await profilePage.continueModal.assertThat().isNotDisplayed();
+			await profilePage.continueModal.assertThat().isModalNotDisplayed();
 			await homePage.unauthenticatedHeader
 				.assertThat()
 				.loggedOutUserElementsAreVisible();

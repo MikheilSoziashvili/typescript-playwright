@@ -134,7 +134,7 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 
 	@step("Complete and verify email change")
 	public async completeAndVerifyEmailChange(): Promise<void> {
-		await this.gamdomPage.continueModal.assertThat().isDisplayed();
+		await this.gamdomPage.continueModal.assertThat().isModalDisplayed();
 		await this.gamdomPage.continueModal.clickContinueButton();
 		await this.gamdomPage.assertThat().assertChangeEmailButtonVisible();
 	}
@@ -157,13 +157,13 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		await this.gamdomPage.map.changeUsernameButton.click();
 		await this.gamdomPage.map.changeUsernameInput.fill(username);
 		await this.gamdomPage.clickSaveUsername();
-		await this.gamdomPage.continueModal.assertThat().isDisplayed();
+		await this.gamdomPage.continueModal.assertThat().isModalDisplayed();
 		await this.gamdomPage.continueModal.clickContinueButton();
 	}
 
 	@step("Complete and verify phone change")
 	public async completeAndVerifyPhoneChange(): Promise<void> {
-		await this.gamdomPage.continueModal.assertThat().isDisplayed();
+		await this.gamdomPage.continueModal.assertThat().isModalDisplayed();
 		await this.gamdomPage.continueModal.clickContinueButton();
 		await this.gamdomPage.assertThat().assertChangePhoneButtonVisible();
 	}
@@ -250,5 +250,24 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		await expect(this.gamdomPage.map.changeUsernameInputV4).toHaveValue(
 			username,
 		);
+	}
+
+	@step("Logout - v4")
+	public async logoutV4(): Promise<void> {
+		await this.gamdomPage.map.logOutButtonV4.click();
+		await this.gamdomPage.continueModal.assertThat().isModalDisplayedV4();
+		await this.gamdomPage.continueModal.clickLogoutButtonV4();
+	}
+
+	@step("Logout user successfully - v4")
+	public async logoutUserSuccessfullyV4(): Promise<void> {
+		await this.gamdomPage.navigate();
+		await this.logoutV4();
+		await this.gamdomPage.authenticatedHeader
+			.assertThat()
+			.loggedInUserElementsAreNotVisibleV4();
+		await this.gamdomPage.unauthenticatedHeader
+			.assertThat()
+			.loggedOutUserElementsAreVisibleV4();
 	}
 }

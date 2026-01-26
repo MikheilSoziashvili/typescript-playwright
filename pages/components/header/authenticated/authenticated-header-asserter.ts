@@ -143,4 +143,13 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 
 		expect(receivedUsername?.trim()).toBe(username);
 	}
+
+	@step("Logged in user elements are not visible - v4")
+	async loggedInUserElementsAreNotVisibleV4(): Promise<void> {
+		await this.checkElementsAreNotVisible([
+			this.gamdomPage.map.walletButtonV4,
+			this.gamdomPage.map.accountBalanceV4,
+			this.gamdomPage.map.userAccountMenuAvatarV4,
+		]);
+	}
 }

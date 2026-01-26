@@ -52,9 +52,8 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 		password: string,
 		qrCode2FAImagePath: string,
 	): Promise<void> {
-		const code2FA = await generate2FACodeFromQRCodeImage(
-			qrCode2FAImagePath,
-		);
+		const code2FA =
+			await generate2FACodeFromQRCodeImage(qrCode2FAImagePath);
 		await this.loginUserWith2FaCodeSuccessfully(
 			username,
 			password,
@@ -314,7 +313,7 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 					const gameTile =
 						this.gamdomPage.map.originalsGameFromSubNav(game);
 					await gameTile.click();
-			  })()
+				})()
 			: await this.clickGameInOriginalsSlider(game);
 	}
 
@@ -335,5 +334,62 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 	public async navigateAndExpandChat(): Promise<void> {
 		await this.gamdomPage.navigate();
 		await this.gamdomPage.authenticatedHeader.expandChatIfNotVisible();
+	}
+
+	@step("Reset password - v4")
+	public async resetPasswordV4(email: string): Promise<void> {
+		await this.gamdomPage.loginModal.clickForgotPasswordButtonV4();
+		await this.gamdomPage.loginModal.fillInEmailForForgotPasswordV4(email);
+		await this.gamdomPage.loginModal.clickSendButtonForForgotPasswordV4();
+		await this.gamdomPage.loginModal
+			.assertThat()
+			.assertPasswordResetEmailIsSentV4();
+	}
+
+	@step("Change password from email - v4")
+	public async changePasswordFromEmailV4(
+		newPassword: string,
+		mailinatorApi: MailinatorApi,
+		domain: string,
+		inbox: string,
+		page: Page,
+		{ messageIndex = 1 }: { messageIndex?: number } = {},
+		subjectIncludes?: string,
+		timeout = Timeout.LONG,
+		interval = Timeout.EXTRA_SHORT,
+	): Promise<void> {
+		const message = await mailinatorApi.pollForMessages(
+			domain,
+			inbox,
+			timeout,
+			interval,
+			messageIndex,
+			subjectIncludes,
+		);
+		const resetPasswordEmailId = message.id;
+
+		const emailLinks = await mailinatorApi.getEmailLinks(
+			domain,
+			inbox,
+			resetPasswordEmailId,
+		);
+		const changePasswordLink = emailLinks.links[0];
+
+		await page.goto(changePasswordLink);
+		await this.gamdomPage.loginModal.setNewPasswordV4(newPassword);
+	}
+
+	@step("Login user- v4")
+	public async loginUserV4(
+		username: string,
+		password: string,
+		options?: { expectErrors?: boolean },
+	): Promise<void> {
+		await this.gamdomPage.unauthenticatedHeader.openLoginModalV4();
+
+		await this.gamdomPage.loginModal.loginV4(username, password);
+		if (!options?.expectErrors) {
+			await this.gamdomPage.assertThat().userIsLoggedInV4();
+		}
 	}
 }

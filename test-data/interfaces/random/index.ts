@@ -48,6 +48,10 @@ export interface UsernameGenerator {
 	username(): string;
 }
 
+export interface NewPasswordGenerator {
+	password(): string;
+}
+
 export interface ChatMessageGenerator {
 	message(): string;
 }

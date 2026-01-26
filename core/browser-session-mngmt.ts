@@ -55,6 +55,17 @@ export class BrowserUserSession {
 		return this.authenticatedUser;
 	}
 
+	public reset(
+		context: BrowserContext,
+		page: Page,
+		authenticatedUser?: AuthenticatedUser,
+	): void {
+		this.context = context;
+		this.page = page;
+		this.authenticatedUser = authenticatedUser;
+		this.pageCache = {};
+	}
+
 	get apis(): ApiPromises {
 		return new Proxy({} as ApiPromises, {
 			get: <K extends keyof AllApisType>(
@@ -185,7 +196,16 @@ export class BrowserSessionManager {
 		options?: BrowserSessionLoginOptions,
 	): Promise<BrowserUserSession> {
 		const existingSession = this.sessions.get(role);
-		if (existingSession && !options?.proxyCredentials) {
+		const hasRegularUserOverrides =
+			role === TestUserRole.REGULAR &&
+			options?.regularUserOptions !== undefined;
+
+		const canReuseExistingSession =
+			existingSession !== undefined &&
+			!options?.proxyCredentials &&
+			!hasRegularUserOverrides;
+
+		if (canReuseExistingSession) {
 			this._active = existingSession;
 			return this._active;
 		}
@@ -196,6 +216,12 @@ export class BrowserSessionManager {
 			page,
 			options,
 		);
+
+		if (existingSession !== undefined && !options?.proxyCredentials) {
+			existingSession.reset(context, page, authenticatedUser);
+			this._active = existingSession;
+			return existingSession;
+		}
 
 		const session = this.createSession(
 			role,

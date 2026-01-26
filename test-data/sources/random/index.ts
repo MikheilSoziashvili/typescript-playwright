@@ -9,6 +9,7 @@ import {
 	CasinoGamesGenerator,
 	ChatMessageGenerator,
 	MailinatorGenerator,
+	NewPasswordGenerator,
 	PromoCampaignCodesGenerator,
 	PromoCodesGenerators,
 	PromotionTitlesGenerator,
@@ -16,6 +17,8 @@ import {
 	UsernameGenerator,
 } from "test-data/interfaces/random";
 import { PredefinedData, PredefinedRandomData } from "test-data/types";
+import { faker } from "@faker-js/faker";
+import { passwordPattern } from "@support/regex-patterns";
 
 export class RandomDataSourceGenerator {
 	private predefined: PredefinedData;
@@ -55,8 +58,8 @@ export class RandomDataSourceGenerator {
 				finalStatus: string,
 			) => `auto_${promoType.toLowerCase()}
 						_${finalStatus.toLowerCase()}_${
-				this.predefinedRandom.promoCodes.campaignName
-			}${generateRandomString({ length: 3 })}`,
+							this.predefinedRandom.promoCodes.campaignName
+						}${generateRandomString({ length: 3 })}`,
 			codeValue: () =>
 				`${
 					this.predefinedRandom.promoCodes.campaignCode
@@ -150,6 +153,16 @@ export class RandomDataSourceGenerator {
 			username: () =>
 				generateRandomString({
 					length: 6,
+				}),
+		};
+	}
+
+	public get password(): NewPasswordGenerator {
+		return {
+			password: () =>
+				faker.internet.password({
+					length: 15,
+					pattern: passwordPattern,
 				}),
 		};
 	}

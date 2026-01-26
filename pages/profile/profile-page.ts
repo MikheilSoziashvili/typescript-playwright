@@ -43,7 +43,7 @@ export class ProfilePage extends BasePage<ProfilePageMap> {
 	@step("Logout")
 	public async logout(): Promise<void> {
 		await this.map.logOutButton.click();
-		await this.continueModal.assertThat().isDisplayed();
+		await this.continueModal.assertThat().isModalDisplayed();
 		await this.continueModal.clickContinueButton();
 		await this.unauthenticatedHeader
 			.assertThat()

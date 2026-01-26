@@ -101,7 +101,7 @@ export class LoginModalMap extends BaseMap {
 	}
 
 	public get loginDialogV4(): Locator {
-		return this.page.getByTestId("auth-modal-login-dialog");
+		return this.page.getByTestId("auth-modal-form-container");
 	}
 
 	public get loginFormV4(): Locator {
@@ -172,5 +172,9 @@ export class LoginModalMap extends BaseMap {
 
 	public get passwordErrorTooltipV4(): Locator {
 		return this.passwordContainerV4.getByTestId("signin-password-error");
+	}
+
+	public get setNewPasswordButtonV4(): Locator {
+		return this.page.getByTestId("reset-pwd-sbt-btn");
 	}
 }
