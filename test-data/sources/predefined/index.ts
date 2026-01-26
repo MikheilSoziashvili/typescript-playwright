@@ -69,6 +69,7 @@ export const predefined = {
 	},
 	ltcAmountToDeposit: {
 		amountToDeposit: 0.0004,
+		withdrawalAddress: "tltc1qjl0npgpydwmw3hux7q2ks24rrnqwnkvrhvyktx",
 	},
 	ethAmountToDeposit: {
 		amountToDeposit: "0.0002",
