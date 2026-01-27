@@ -73,7 +73,7 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 				ToastStatus.ASSERT_FAILED,
 			);
 			throw new Error(
-				`Toast with exact ${logLabel} "${expectedText}" not found.`,
+				`Toast V4 with exact ${logLabel} "${expectedText}" not found.`,
 			);
 		}
 	}
