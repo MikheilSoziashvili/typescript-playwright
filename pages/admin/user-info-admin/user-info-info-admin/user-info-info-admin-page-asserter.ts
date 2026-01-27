@@ -13,6 +13,7 @@ import {
 } from "@support/regex-patterns";
 import { BanTypeOptions } from "@enums/admin/ban-type-options";
 import { BanCategories } from "@enums/admin/ban-categories";
+import { ALL_BAN_REASON_OPTIONS } from "@enums/admin/ban-reason-options";
 import { getItemsInnerText } from "@core/utils/utils";
 import { WithdrawalStatus } from "@enums/admin/withdrawal-status";
 
@@ -88,6 +89,28 @@ export class UserInfoInfoAdminPageAsserter extends BaseAsserter<UserInfoInfoAdmi
 		await this.checkElementsAreEnabled([
 			this.gamdomPage.map.confirmBanButton,
 		]);
+	}
+
+	@step("All ban type options are visible")
+	public async allBanTypeOptionsAreVisible(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.getBanTypeOption(BanTypeOptions.HARD),
+			this.gamdomPage.map.getBanTypeOption(BanTypeOptions.SOFT),
+			this.gamdomPage.map.getBanTypeOption(BanTypeOptions.CATEGORY),
+		]);
+	}
+
+	@step("All ban reason options are visible")
+	public async allBanReasonOptionsAreVisible(): Promise<void> {
+		const banReasonLocators = ALL_BAN_REASON_OPTIONS.map((reason) =>
+			this.gamdomPage.map.getBanReasonOption(reason),
+		);
+		await this.checkElementsAreVisible(banReasonLocators);
+	}
+
+	@step("Custom ban reason input is visible")
+	public async customBanReasonInputIsVisible(): Promise<void> {
+		await this.checkElementsAreVisible([this.gamdomPage.map.banUserInput]);
 	}
 
 	@step("Check if ban user from linking platform button is displayed")

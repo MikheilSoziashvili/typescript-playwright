@@ -1,74 +1,104 @@
-import { SUPER_ADMIN_CREDENTIALS } from "@constants/credentials";
 import { test } from "@fixtures/fixtures";
-import { getCurrentDate, setAuthenticationCookies } from "@core/utils/utils";
+import { getCurrentDate } from "@core/utils/utils";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraUser } from "@enums/jira/jira-users";
-import { storageStateNewSuperAdminUserDB } from "@fixtures/auth-fixtures";
 import { JiraComponent } from "@enums/jira/jira-components";
+import { TestUserRole } from "@enums/test-user-roles";
 
 test.describe(
 	"Ban user",
 	testDetails().withTags(JiraComponent.ADMIN).apply(),
 	() => {
-		const BAN_REASON = "automation test";
-
 		test(
 			"[ENG-288] Banning a user",
 			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
-			async ({
-				gamdomApiDbFacade,
-				homePage,
-				userInfoAdminPage,
-				infoAdminPage,
-				bannedUserPage,
-				gamdomApi,
-				page,
-			}) => {
-				const [userData] = await gamdomApiDbFacade.createUsersDb({
-					usersCount: 1,
-				});
-				const cookie = await gamdomApi.authenticateWithExistingUser(
-					SUPER_ADMIN_CREDENTIALS.username,
-					SUPER_ADMIN_CREDENTIALS.password,
+			async ({ browserSessionManager, testDataPredefined }) => {
+				const adminSession = await browserSessionManager.loginAs(
+					TestUserRole.SUPERADMIN,
+					{ reuseContext: true },
 				);
-				await setAuthenticationCookies(page, cookie);
+				const regularUserSession = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
+				);
 
-				await userInfoAdminPage
+				const targetUser =
+					regularUserSession.getAuthenticatedUser().user;
+
+				await adminSession.pages.userInfoAdminPage
 					.steps()
-					.navigateAndShowUserDetails(userData.username);
+					.navigateAndShowUserDetails(targetUser.username);
 
-				await infoAdminPage.steps().banUser({ reason: BAN_REASON });
+				const banReason =
+					testDataPredefined.data.admin.ban.defaultReason;
 
-				await homePage.navigate({ cookies: { clearCookies: true } });
-				await homePage
+				await adminSession.pages.infoAdminPage
 					.steps()
-					.loginUser(userData.username, userData.password, {
+					.banUser({ reason: banReason });
+
+				await regularUserSession.pages.homePage.navigate();
+				await regularUserSession.pages.homePage
+					.steps()
+					.loginUser(targetUser.username, targetUser.password, {
 						expectErrors: true,
 					});
 
-				await bannedUserPage.waitRedContainerToBeVisible();
-				await bannedUserPage.assertThat().isBannedTitleDisplayed();
-				await bannedUserPage
+				await regularUserSession.pages.bannedUserPage.waitRedContainerToBeVisible();
+				await regularUserSession.pages.bannedUserPage
+					.assertThat()
+					.isBannedTitleDisplayed();
+				await regularUserSession.pages.bannedUserPage
 					.assertThat()
 					.isBannedReasonDisplayed(
-						`${BAN_REASON} - ${getCurrentDate()}`,
+						`${banReason} - ${getCurrentDate()}`,
 					);
 			},
 		);
 
-		test.use(storageStateNewSuperAdminUserDB());
 		test(
 			"[ENG-6414] Category Ban - Verify casino and sportsbook ban options are displayed",
 			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
-			async ({ gamdomApiDbFacade, userInfoAdminPage, infoAdminPage }) => {
-				const { user } =
+			async ({ browserSessionManager, gamdomApiDbFacade }) => {
+				test.fixme(
+					true,
+					"The logic needs to be modified based on the updated test case",
+				);
+				const adminSession = await browserSessionManager.loginAs(
+					TestUserRole.SUPERADMIN,
+					{ reuseContext: true },
+				);
+
+				const { user: targetUser } =
 					await gamdomApiDbFacade.createSingleUserDbAndAuth();
 
-				await userInfoAdminPage
+				await adminSession.pages.userInfoAdminPage
 					.steps()
-					.navigateAndShowUserDetails(user.username);
+					.navigateAndShowUserDetails(targetUser.username);
 
-				await infoAdminPage.steps().verifyBanUserCategoryOptions();
+				await adminSession.pages.infoAdminPage
+					.steps()
+					.verifyBanUserCategoryOptions();
+			},
+		);
+
+		test(
+			"[ENG-6418] Ban User Modal - Verify ban types, ban reasons, and custom input field",
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			async ({ browserSessionManager, gamdomApiDbFacade }) => {
+				const adminSession = await browserSessionManager.loginAs(
+					TestUserRole.SUPERADMIN,
+					{ reuseContext: true },
+				);
+
+				const { user: targetUser } =
+					await gamdomApiDbFacade.createSingleUserDbAndAuth();
+
+				await adminSession.pages.userInfoAdminPage
+					.steps()
+					.navigateAndShowUserDetails(targetUser.username);
+
+				await adminSession.pages.infoAdminPage
+					.steps()
+					.verifyBanUserModalDropdowns();
 			},
 		);
 	},

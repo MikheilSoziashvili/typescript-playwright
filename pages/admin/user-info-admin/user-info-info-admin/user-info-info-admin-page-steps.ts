@@ -16,35 +16,31 @@ export class UserInfoInfoAdminPageSteps extends BasePageStep<UserInfoInfoAdminPa
 
 	@step("Ban user")
 	public async banUser(options?: { reason?: string }): Promise<void> {
-		await this.gamdomPage.assertThat().pageElementsAreVisible();
-		await this.gamdomPage.assertThat().adminInfoTableVisibleScrolled();
-		await this.gamdomPage.clickBanUserButton();
+		await this.waitForPageLoadAndBanUser();
 
 		await this.gamdomPage.map
 			.banModalDropdownByLabel(BanDropdowns.BAN_TYPE)
 			.click();
 		await this.gamdomPage.map.getBanTypeOption(BanTypeOptions.HARD).click();
-
 		await this.gamdomPage.map
 			.banModalDropdownByLabel(BanDropdowns.BAN_REASON)
 			.click({ delay: Delay.MAX_SHORT });
 		await this.gamdomPage.map
 			.getBanReasonOption(BanReasonOptions.CUSTOM)
 			.click({ delay: Delay.MAX_SHORT });
+
 		if (options?.reason) {
 			await this.gamdomPage.map.banUserInput.fill(options.reason);
 		}
 		await this.gamdomPage.map.confirmBanButton.click();
+
 		await this.gamdomPage.assertThat().isUserBanned(BanTypeOptions.HARD);
 		await this.gamdomPage.assertThat().isUnbanButtonDisplayed();
 	}
 
 	@step("Ban user - verify category options")
 	public async verifyBanUserCategoryOptions(): Promise<void> {
-		await this.gamdomPage.assertThat().pageElementsAreVisible();
-		await this.gamdomPage.assertThat().adminInfoTableVisibleScrolled();
-
-		await this.gamdomPage.clickBanUserButton();
+		await this.waitForPageLoadAndBanUser();
 
 		await this.gamdomPage.map
 			.banModalDropdownByLabel(BanDropdowns.BAN_TYPE)
@@ -52,7 +48,6 @@ export class UserInfoInfoAdminPageSteps extends BasePageStep<UserInfoInfoAdminPa
 		await this.gamdomPage.map
 			.getBanTypeOption(BanTypeOptions.CATEGORY)
 			.click();
-
 		await this.gamdomPage.assertThat().categoryBanOptionsDisplayed();
 		await this.gamdomPage.assertThat().isConfirmBanButtonEnabled();
 
@@ -60,7 +55,17 @@ export class UserInfoInfoAdminPageSteps extends BasePageStep<UserInfoInfoAdminPa
 		await this.gamdomPage.toggleBanCategoryOptions(
 			BanCategories.SPORTSBOOK,
 		);
+
 		await this.gamdomPage.assertThat().isConfirmBanButtonDisabled();
+	}
+
+	@step("Verify ban user modal dropdowns")
+	public async verifyBanUserModalDropdowns(): Promise<void> {
+		await this.waitForPageLoadAndBanUser();
+
+		await this.verifyBanTypeDropdownOptions();
+		await this.verifyBanReasonDropdownWithCustomInput();
+		await this.verifyCategoryBanOptionsAndButtonState();
 	}
 
 	@step("Tip user")
@@ -163,5 +168,51 @@ export class UserInfoInfoAdminPageSteps extends BasePageStep<UserInfoInfoAdminPa
 	public async pinNoteAndAssertItsPinned(noteText: string): Promise<void> {
 		await this.gamdomPage.pinNoteByText(noteText);
 		await this.gamdomPage.assertThat().noteIsPinned(noteText);
+	}
+
+	@step("Wait for page load and select ban user")
+	private async waitForPageLoadAndBanUser(): Promise<void> {
+		await this.gamdomPage.assertThat().pageElementsAreVisible();
+		await this.gamdomPage.assertThat().adminInfoTableVisibleScrolled();
+		await this.gamdomPage.clickBanUserButton();
+	}
+
+	@step("Verify ban type dropdown options")
+	private async verifyBanTypeDropdownOptions(): Promise<void> {
+		await this.gamdomPage.map
+			.banModalDropdownByLabel(BanDropdowns.BAN_TYPE)
+			.click();
+		await this.gamdomPage.assertThat().allBanTypeOptionsAreVisible();
+		await this.gamdomPage.map.getBanTypeOption(BanTypeOptions.HARD).click();
+	}
+
+	@step("Verify ban reason dropdown with custom input")
+	private async verifyBanReasonDropdownWithCustomInput(): Promise<void> {
+		await this.gamdomPage.map
+			.banModalDropdownByLabel(BanDropdowns.BAN_REASON)
+			.click({ delay: Delay.MAX_SHORT });
+		await this.gamdomPage.assertThat().allBanReasonOptionsAreVisible();
+
+		await this.gamdomPage.map
+			.getBanReasonOption(BanReasonOptions.CUSTOM)
+			.click({ delay: Delay.MAX_SHORT });
+		await this.gamdomPage.assertThat().customBanReasonInputIsVisible();
+	}
+
+	@step("Verify category ban options and button state")
+	private async verifyCategoryBanOptionsAndButtonState(): Promise<void> {
+		await this.gamdomPage.map
+			.banModalDropdownByLabel(BanDropdowns.BAN_TYPE)
+			.click();
+		await this.gamdomPage.map
+			.getBanTypeOption(BanTypeOptions.CATEGORY)
+			.click();
+
+		await this.gamdomPage.assertThat().categoryBanOptionsDisplayed();
+		await this.gamdomPage.toggleBanCategoryOptions(BanCategories.CASINO);
+		await this.gamdomPage.toggleBanCategoryOptions(
+			BanCategories.SPORTSBOOK,
+		);
+		await this.gamdomPage.assertThat().isConfirmBanButtonDisabled();
 	}
 }

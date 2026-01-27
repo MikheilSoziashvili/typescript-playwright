@@ -9,6 +9,9 @@ export const predefined = {
 				endUserID: 450,
 			},
 		},
+		ban: {
+			defaultReason: "automation test",
+		},
 	},
 	datetime: {
 		dateOffset: DateOffset,
