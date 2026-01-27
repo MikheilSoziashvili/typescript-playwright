@@ -148,6 +148,11 @@ export const xrpTestnet = {
 	walletSeed: asString(process.env.XRP_TESTNET_WALLET_SEED),
 	rpcUrl: asString(process.env.XRP_TESTNET_RPC_URL),
 	faucetUrl: asString(process.env.XRP_TESTNET_FAUCET_URL),
+	walletSeedWorker0: process.env.XRP_TESTNET_WALLET_SEED_WORKER_0 || "",
+	walletSeedWorker1: process.env.XRP_TESTNET_WALLET_SEED_WORKER_1 || "",
+	walletSeedWorker2: process.env.XRP_TESTNET_WALLET_SEED_WORKER_2 || "",
+	walletSeedWorker3: process.env.XRP_TESTNET_WALLET_SEED_WORKER_3 || "",
+	walletSeedWorker4: process.env.XRP_TESTNET_WALLET_SEED_WORKER_4 || "",
 };
 
 export const dogeTestnet = {

@@ -67,6 +67,16 @@ on:
                 required: true
             FIREBLOCKS_USDT_ASSET_ID:
                 required: true
+            XRP_TESTNET_WALLET_SEED_WORKER_0:
+                required: true
+            XRP_TESTNET_WALLET_SEED_WORKER_1:
+                required: true
+            XRP_TESTNET_WALLET_SEED_WORKER_2:
+                required: true
+            XRP_TESTNET_WALLET_SEED_WORKER_3:
+                required: true
+            XRP_TESTNET_WALLET_SEED_WORKER_4:
+                required: true
             XRP_TESTNET_WALLET_SEED:
                 required: true
             VERIFF_PRIVATE_KEY:
@@ -123,6 +133,11 @@ env:
     FIREBLOCKS_USDT_ASSET_ID: ${{ secrets.FIREBLOCKS_USDT_ASSET_ID }}
     FIREBLOCKS_VAULT_ID: ${{ vars.FIREBLOCKS_VAULT_ID }}
     XRP_TESTNET_WALLET_SEED: ${{ secrets.XRP_TESTNET_WALLET_SEED }}
+    XRP_TESTNET_WALLET_SEED_WORKER_0: ${{ secrets.XRP_TESTNET_WALLET_SEED_WORKER_0 }}
+    XRP_TESTNET_WALLET_SEED_WORKER_1: ${{ secrets.XRP_TESTNET_WALLET_SEED_WORKER_1 }}
+    XRP_TESTNET_WALLET_SEED_WORKER_2: ${{ secrets.XRP_TESTNET_WALLET_SEED_WORKER_2 }}
+    XRP_TESTNET_WALLET_SEED_WORKER_3: ${{ secrets.XRP_TESTNET_WALLET_SEED_WORKER_3 }}
+    XRP_TESTNET_WALLET_SEED_WORKER_4: ${{ secrets.XRP_TESTNET_WALLET_SEED_WORKER_4 }}
     XRP_TESTNET_RPC_URL: ${{ vars.XRP_TESTNET_RPC_URL }}
     XRP_TESTNET_FAUCET_URL: ${{ vars.XRP_TESTNET_FAUCET_URL }}
     LITECOIN_RPC_PORT: ${{ vars.LITECOIN_RPC_PORT }}

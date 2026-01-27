@@ -34,8 +34,8 @@ export const cryptoFixtures = base.extend<CryptoClients>({
 		await use(createUsdtClient());
 	},
 
-	xrpTestnetClient: async ({}, use) => {
-		await use(createXrpTestnetClient());
+	xrpTestnetClient: async ({}, use, workerInfo) => {
+		await use(createXrpTestnetClient(workerInfo.workerIndex));
 	},
 	btcClient: async ({}, use) => {
 		await use(UtxoNodeClient.bitcoin());
