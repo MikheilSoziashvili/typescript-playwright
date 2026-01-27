@@ -81,7 +81,7 @@ test.describe(
 				await toastV4
 					.assertThat()
 					.toastMessageIsV4(
-						ToastTitle.SUCCESS_V4,
+						ToastTitle.SUCCESS,
 						ToastSubTitle.RESEND_EMAIL,
 					);
 			},

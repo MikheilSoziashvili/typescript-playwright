@@ -51,7 +51,7 @@ export class PrivacyPageSteps extends BasePageStep<PrivacyPage> {
 		await this.gamdomPage.toastV4
 			.assertThat()
 			.toastMessageIsV4(
-				ToastTitle.SUCCESS_V4,
+				ToastTitle.SUCCESS,
 				ToastSubTitle.HIDEN_DETAILS_ENABLED,
 			);
 	}
@@ -66,7 +66,7 @@ export class PrivacyPageSteps extends BasePageStep<PrivacyPage> {
 		await this.gamdomPage.toastV4
 			.assertThat()
 			.toastMessageIsV4(
-				ToastTitle.SUCCESS_V4,
+				ToastTitle.SUCCESS,
 				ToastSubTitle.HIDEN_STATISTICS_ENABLED,
 			);
 	}

@@ -13,12 +13,12 @@ export class Toast extends BaseComponent<ToastMap> {
 		return new ToastAsserter(this);
 	}
 
-	@step("Click here button")
-	public async clickHereButton(options?: {
+	@step("Click close button in toast")
+	public async clickCloseButton(options?: {
 		index?: number;
-		subTitle: string;
+		subTitle?: string;
 	}): Promise<void> {
-		await this.map.toastHereButtonLocator(options).click();
+		await this.map.toastCloseButtonLocator(options).click();
 	}
 
 	@step("Get toast message")

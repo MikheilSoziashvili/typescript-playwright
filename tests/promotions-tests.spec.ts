@@ -916,7 +916,7 @@ test.describe(
 					await promotionsAdminUser.pages.toastV4
 						.assertThat()
 						.toastMessageIsV4(
-							ToastTitle.SUCCESS_V4,
+							ToastTitle.SUCCESS,
 							ToastSubTitle.PROMOTION_CREATED_SUCCESSFULLY,
 						);
 

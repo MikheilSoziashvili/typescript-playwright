@@ -15,13 +15,7 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 
 	@step("Get text from locators")
 	private async getTextFromLocators(locators: Locator): Promise<string[]> {
-		const count = await locators.count();
-		const texts: string[] = [];
-		for (let i = 0; i < count; i++) {
-			const text = (await locators.nth(i).innerText()).trim();
-			texts.push(text);
-		}
-		return texts;
+		return (await locators.allInnerTexts()).map((text) => text.trim());
 	}
 
 	private logToastStatus(
@@ -98,7 +92,7 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 		await this.pollToastForExpectedText({
 			locators: toastLocators,
 			expectedText: title,
-			timeout: options?.timeout ?? Timeout.LONG,
+			timeout: options?.timeout ?? Timeout.MEDIUM,
 			logLabel: "title",
 		});
 	}
@@ -118,7 +112,7 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 			await this.pollToastForExpectedText({
 				locators: toastLocators,
 				expectedText: toast.title,
-				timeout: toast.timeout ?? Timeout.LONG,
+				timeout: toast.timeout ?? Timeout.MEDIUM,
 				logLabel: "title",
 			});
 		}
@@ -130,9 +124,9 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 		options: {
 			index?: number;
 			timeout?: number;
-		} = { timeout: Timeout.LONG },
+		} = { timeout: Timeout.MEDIUM },
 	): Promise<void> {
-		const timeout = options.timeout ?? Timeout.LONG;
+		const timeout = options.timeout ?? Timeout.MEDIUM;
 
 		if (options.index !== undefined) {
 			await expect(
@@ -157,9 +151,10 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 		subTitle?: string;
 		timeout?: number;
 	}): Promise<void> {
-		await expect(this.gamdomPage.map.toastContainer(options)).toBeVisible({
-			timeout: options?.timeout,
-		});
+		await this.checkElementsAreVisible(
+			[this.gamdomPage.map.toastContainer(options)],
+			options?.timeout,
+		);
 	}
 
 	@step("Check toast is not displayed")
@@ -167,7 +162,21 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 		index?: number;
 		subTitle?: string;
 	}): Promise<void> {
-		await expect(this.gamdomPage.map.toastContainer(options)).toBeHidden();
+		await this.checkElementsAreHidden([
+			this.gamdomPage.map.toastContainer(options),
+		]);
+	}
+
+	@step("Toast message is")
+	public async toastMessageIs(
+		title: ToastTitle,
+		subtitle: ToastSubTitle,
+	): Promise<void> {
+		await Promise.all([
+			this.isDisplayed(),
+			this.titleIs(title),
+			this.subTitleIs(subtitle),
+		]);
 	}
 
 	@step("Check toast with title is not displayed")
@@ -186,14 +195,5 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 		}
 
 		await this.checkElementsAreNotVisible([toastWithTitle]);
-	}
-
-	@step("Toast message is")
-	public async toastMessageIs(
-		title: ToastTitle,
-		subtitle: ToastSubTitle,
-	): Promise<void> {
-		await this.titleIs(title);
-		await this.subTitleIs(subtitle);
 	}
 }

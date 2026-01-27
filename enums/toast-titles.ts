@@ -1,8 +1,6 @@
 export enum ToastTitle {
-	SUCCESS = "Success!",
-	FAILED = "Failed!",
+	FAILED = "FAILED",
 	PENDING = "Pending",
 	SYSTEM = "System",
-	SUCCESS_V4 = "SUCCESS",
-	FAILED_V4 = "FAILED",
+	SUCCESS = "SUCCESS",
 }

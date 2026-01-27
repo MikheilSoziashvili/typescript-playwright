@@ -6,55 +6,72 @@ export class ToastMap extends BaseMap {
 		super(page);
 	}
 
+	private get toastContainers(): Locator {
+		return this.page.getByTestId("toast-message-container");
+	}
+
 	public toastContainer(options?: {
 		index?: number;
 		subTitle?: string;
 		title?: string;
 	}): Locator {
 		if (options?.index) {
-			return this.page
-				.getByTestId("toastContainer")
-				.nth(options.index - 1);
-		} else if (options?.subTitle) {
-			return this.page
-				.locator(
-					`*[data-testid=toastContainer]:has(*[data-testid=toastSubTitle]:text-is("${options.subTitle}"))`,
-				)
-				.first();
-		} else if (options?.title) {
-			return this.page
-				.locator(
-					`*[data-testid=toastContainer]:has(*[data-testid=toastTitle]:text-is("${options.title}"))`,
-				)
-				.first();
-		} else {
-			return this.page.getByTestId("toastContainer").first();
+			return this.toastContainers.nth(options.index - 1);
 		}
+		let result = this.toastContainers;
+
+		const filters = [
+			{
+				condition: options?.subTitle,
+				testId: "toast-message-message",
+			},
+			{
+				condition: options?.title,
+				testId: "toast-message-status-title",
+			},
+		];
+
+		for (const { condition, testId } of filters) {
+			if (condition) {
+				result = result.filter({
+					has: this.page
+						.getByTestId(testId)
+						.getByText(condition, { exact: true }),
+				});
+			}
+		}
+
+		return result.first();
 	}
 
 	public toastTitleLocator(options?: {
 		index?: number;
 		subTitle?: string;
 	}): Locator {
-		return this.toastContainer(options).getByTestId("toastTitle");
+		return this.toastContainer(options).getByTestId(
+			"toast-message-status-title",
+		);
 	}
 
 	public toastSubTitleLocator(options?: { index?: number }): Locator {
-		if (options?.index) {
-			return this.toastContainer(options).getByTestId("toastSubTitle");
-		} else {
-			return this.page
-				.getByTestId(`toastContainer`)
-				.getByTestId("toastSubTitle");
-		}
+		return this.toastContainer(options).getByTestId(
+			"toast-message-message",
+		);
 	}
 
-	public toastHereButtonLocator(options?: {
+	public toastIconLocator(options?: {
 		index?: number;
 		subTitle?: string;
 	}): Locator {
-		return this.toastSubTitleLocator(options).locator(
-			"span:text-is('here')",
+		return this.toastContainer(options).getByTestId("toast-message-icon");
+	}
+
+	public toastCloseButtonLocator(options?: {
+		index?: number;
+		subTitle?: string;
+	}): Locator {
+		return this.toastContainer(options).getByTestId(
+			"close-btn-undefined-close-btn",
 		);
 	}
 }
