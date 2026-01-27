@@ -4,7 +4,9 @@ import { DiceGameResultMessage } from "@enums/dice-result-messages";
 import { logger } from "@logger/logger";
 import { DiceGamePage } from "./dice-game-page";
 import {
+	formatNumber,
 	parseToFloat,
+	truncateToDecimals,
 	validateNumericValues,
 	waitUntil,
 } from "@core/utils/utils";
@@ -367,28 +369,48 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 		await this.playUntilNumberOfWins(diceBetData, expectedWins);
 	}
 
+	@step("Open Dice and verify default state - v4")
+	public async openDefaultGameStateV4(): Promise<void> {
+		await this.gamdomPage.navigate();
+		await this.gamdomPage.assertThat().defaultGameStateIsCorrectV4();
+	}
+
 	@step("Play until number of wins - v4")
 	public async playUntilNumberOfWinsV4(
 		diceBetData: DiceBetTestData,
 		expectedWins: number,
-	): Promise<void> {
+	): Promise<number> {
 		let winCounter = 0;
 		let previousDiceResult: number | null = null;
 		let previousHistoryResult: number | null = null;
+		let lastWinResult: number | null = null;
 
 		while (winCounter < expectedWins) {
-			const roundResult = await this.rollUntilWinV4(
+			const {
+				previousDiceResult: newPreviousDiceResult,
+				previousHistoryResult: newPreviousHistoryResult,
+				winResult,
+			} = await this.rollUntilWinV4(
 				diceBetData,
 				previousDiceResult,
 				previousHistoryResult,
 			);
 
-			previousDiceResult = roundResult.previousDiceResult;
-			previousHistoryResult = roundResult.previousHistoryResult;
+			previousDiceResult = newPreviousDiceResult;
+			previousHistoryResult = newPreviousHistoryResult;
+			lastWinResult = winResult;
 
 			winCounter++;
 			logger.info(`Win #${winCounter} of ${expectedWins} achieved`);
 		}
+
+		if (lastWinResult === null) {
+			throw new Error(
+				`Expected to achieve ${expectedWins} wins but lastWinResult was null`,
+			);
+		}
+
+		return lastWinResult;
 	}
 
 	@step("Roll dice until win - v4")
@@ -399,8 +421,10 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 	): Promise<{
 		previousDiceResult: number | null;
 		previousHistoryResult: number | null;
+		winResult: number;
 	}> {
 		let isWin = false;
+		let winResult = 0;
 
 		while (!isWin) {
 			const accountBalanceBeforeBet =
@@ -409,6 +433,7 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 			await this.playOneDiceRoundV4(diceBetData);
 			await this.waitForManualBetInputToBeEnabledV4();
 			await this.gamdomPage.assertThat().diceResultIsDisplayedV4();
+			const { parsedDiceResult } = await this.getParsedDiceResultsV4();
 
 			const updatedResults = await this.updatePreviousDiceResultsV4(
 				previousDiceResult,
@@ -418,6 +443,9 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 			previousHistoryResult = updatedResults.previousHistoryResult;
 
 			isWin = await this.isDiceWinV4(diceBetData);
+			if (isWin) {
+				winResult = parsedDiceResult;
+			}
 			await this.assertExpectedBalanceAfterRollV4(
 				diceBetData,
 				accountBalanceBeforeBet,
@@ -432,6 +460,7 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 		return {
 			previousDiceResult: previousDiceResult,
 			previousHistoryResult: previousHistoryResult,
+			winResult: winResult,
 		};
 	}
 
@@ -627,5 +656,41 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 		logger.info(`Current dice history result: ${parsedHistoryResult}`);
 
 		return { parsedDiceResult, parsedHistoryResult };
+	}
+
+	@step("Verify Fairness table contains win value - v4")
+	public async fairnessTableContainsWinValueV4(
+		expectedRolledValue: number,
+	): Promise<void> {
+		await this.gamdomPage.openFairnessTabV4();
+
+		await this.gamdomPage.assertThat().fairnessTableIsVisibleV4();
+
+		const expected = formatNumber(expectedRolledValue, 2);
+
+		await expect
+			.poll(
+				async () => {
+					const texts =
+						await this.gamdomPage.map.fairnessRolledCellsV4.allTextContents();
+
+					const numericValues = validateNumericValues(
+						texts,
+						"Invalid fairness rolled value",
+					);
+
+					const truncated = numericValues.map((value) =>
+						parseToFloat(truncateToDecimals(value, 2), 2),
+					);
+
+					return truncated.includes(expected);
+				},
+				{
+					message: `Fairness results should include rolled value ${expected}`,
+					timeout: Timeout.SHORT,
+					intervals: [IntervalMs.SHORT],
+				},
+			)
+			.toBe(true);
 	}
 }

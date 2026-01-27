@@ -41,6 +41,8 @@ export const predefined = {
 		betAmount: 1,
 		multiplier: 1.5,
 		defaultMultiplier: 2.0,
+		defaultRollover: 50.500000,	//default rollover is dependant of default multiplier
+		defaultWinChance: 49.50, //default win chance is dependant of default multiplier
 	},
 	sokAutobet: {
 		betAmount: 1,

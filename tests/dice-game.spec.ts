@@ -77,3 +77,35 @@ test.describe("Dice tests", () => {
 		);
 	});
 });
+
+test.describe("Dice tests - v4", () => {
+	test(
+		"[ENG-13728] Place a single bet on Dice and try to win - v4",
+		testDetails()
+			.withTags(TestTag.SMOKE, JiraComponent.GAMDOM_ORIGINALS)
+			.withAuthor(JiraUser.RALUCA_ARITON)
+			.apply(),
+		async ({ browserSessionManager, diceGamePage, testDataObject }) => {
+			await browserSessionManager.loginAs(TestUserRole.REGULAR, {
+				reuseContext: true,
+			});
+			await diceGamePage.steps().openDefaultGameStateV4();
+
+			const diceData = testData().fromPredefined().data.dice;
+			const diceBetData = testDataObject.diceBet.build({
+				betAmount: diceData.betAmount,
+				multiplier: diceData.multiplier,
+			});
+
+			await diceGamePage.fillInManualBetDataV4(diceBetData.betAmount);
+
+			const winResult = await diceGamePage
+				.steps()
+				.playUntilNumberOfWinsV4(diceBetData, 1);
+
+			await diceGamePage
+				.steps()
+				.fairnessTableContainsWinValueV4(winResult);
+		},
+	);
+});

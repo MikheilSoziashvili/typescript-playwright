@@ -247,4 +247,20 @@ export class DiceGamePageMap extends BaseMap {
 	public get diceLastResultNumberV4(): Locator {
 		return this.diceAllLastResultsNumberV4.first();
 	}
+
+	public get fairnessButtonV4(): Locator {
+		return this.page.locator('[data-testid="tabs-txt-tab"]', {
+			hasText: "Fairness",
+		});
+	}
+
+	public get fairnessTableBodyV4(): Locator {
+		return this.page.getByTestId("crash-history-table-tbody");
+	}
+
+	public get fairnessRolledCellsV4(): Locator {
+		return this.page.locator(
+			'[data-testid^="crash-history-table-cell-"][data-testid$="_rolled"]',
+		);
+	}
 }

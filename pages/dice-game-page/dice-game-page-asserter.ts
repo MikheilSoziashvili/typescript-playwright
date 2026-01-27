@@ -3,12 +3,13 @@ import { BaseAsserter } from "@base/base-asserter";
 import { DiceGamePage } from "./dice-game-page";
 import { DiceGameResultMessage } from "@enums/dice-result-messages";
 import { Timeout } from "@enums/timeout";
-import { parseToFloat } from "@core/utils/utils";
+import { formatNumber, parseToFloat } from "@core/utils/utils";
 import { DiceAutobetTestData } from "@dtos/test-data";
 import { step } from "decorators/step";
 import { sanitizeAmount } from "@support/regex-patterns";
 import { IntervalMs } from "@enums/interval-millisecond";
 import { testData } from "test-data/test-data-manager";
+import { Button } from "@enums/buttons-texts";
 
 export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 	public constructor(page: DiceGamePage) {
@@ -256,9 +257,10 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		await this.checkElementsHaveValue([
 			{
 				locator: this.gamdomPage.map.manualMultiplierField,
-				expectedValue: testData()
-					.fromPredefined()
-					.data.dice.defaultMultiplier.toString(),
+				expectedValue: formatNumber(
+					testData().fromPredefined().data.dice.defaultMultiplier,
+					2,
+				),
 			},
 		]);
 	}
@@ -302,7 +304,7 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 	}
 
 	@step("Dice result is displayed - v4")
-	public async diceResultIsDisplayedV4(): Promise<void> {
+	public async diceResultIsDisplayedV4(): Promise<number> {
 		const diceResultGameArea =
 			await this.gamdomPage.map.diceResultNumberGameAreaV4
 				.first()
@@ -338,5 +340,50 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 				},
 			)
 			.toBeCloseTo(expectedDiceResult, 2);
+
+		return expectedDiceResult;
+	}
+
+	@step("Verify dice default values - v4")
+	public async defaultValuesAreCorrectV4(): Promise<void> {
+		const diceDefaults = testData().fromPredefined().data.dice;
+
+		await this.checkElementsHaveValue([
+			{
+				locator: this.gamdomPage.map.manualMultiplierFieldV4,
+				expectedValue: formatNumber(diceDefaults.defaultMultiplier, 2),
+			},
+			{
+				locator: this.gamdomPage.map.manualRollOverFieldV4,
+				expectedValue: formatNumber(diceDefaults.defaultRollover, 6),
+			},
+			{
+				locator: this.gamdomPage.map.manualWinChanceFieldV4,
+				expectedValue: formatNumber(diceDefaults.defaultWinChance, 2),
+			},
+		]);
+	}
+
+	@step("Roll dice button is visible - v4")
+	public async rollDiceButtonIsVisibleV4(): Promise<void> {
+		await this.checkElementsHaveText([
+			{
+				locator: this.gamdomPage.map.rollDiceBtnV4,
+				expectedText: Button.ROLL_DICE,
+			},
+		]);
+	}
+
+	@step("Verify that fairness table is visible - v4")
+	public async fairnessTableIsVisibleV4(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.fairnessTableBodyV4,
+		]);
+	}
+
+	@step("Verify Dice default game state - v4")
+	public async defaultGameStateIsCorrectV4(): Promise<void> {
+		await this.defaultValuesAreCorrectV4();
+		await this.rollDiceButtonIsVisibleV4();
 	}
 }

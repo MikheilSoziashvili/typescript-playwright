@@ -171,4 +171,9 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 	public async isManualBetInputFieldDisabledV4(): Promise<boolean> {
 		return this.map.manualBetFieldV4.isDisabled();
 	}
+
+	@step("Open Fairness tab - v4")
+	public async openFairnessTabV4(): Promise<void> {
+		await this.map.fairnessButtonV4.click();
+	}
 }
