@@ -43,7 +43,9 @@ class TestDetailsBuilder {
 	/**
 	 * Builds tags for the test/test suite
 	 *
-	 * @param tags Note: tags must be JiraComponent or strings starting with @
+	 * @param tags Can be TestTag (test categories) or JiraComponent (product areas)
+	 * - TestTag values → attribute key: "tag"
+	 * - JiraComponent values → attribute key: "component"
 	 * @returns TestDetailsBuilder
 	 */
 	public withTags(...tags: AnyTag[]): TestDetailsBuilder {
@@ -51,11 +53,22 @@ class TestDetailsBuilder {
 			throw new Error("Tags must not be empty");
 		}
 
-		const normalized = tags.map(this.normalizeTag.bind(this));
-		const unique = Array.from(new Set(normalized));
+		const playwrightTags = tags.map((tag) => this.normalizeTag(tag));
+		const uniquePlaywrightTags = Array.from(new Set(playwrightTags));
 
-		this._tags = unique;
-		this._testDetails.tag = unique;
+		const reportPortalTags = tags.map((tag) => {
+			const isComponent = this.isJiraComponent(tag);
+			const normalizedValue = this.normalizeTag(tag);
+
+			return isComponent
+				? `__component__${normalizedValue}`
+				: normalizedValue;
+		});
+		const uniqueReportPortalTags = Array.from(new Set(reportPortalTags));
+
+		this._tags = uniqueReportPortalTags;
+		this._testDetails.tag = uniquePlaywrightTags;
+
 		return this;
 	}
 

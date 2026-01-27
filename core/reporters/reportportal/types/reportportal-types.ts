@@ -29,3 +29,14 @@ export interface ReportPortalAttribute {
 export type ConfigExtractionResult =
 	| { readonly success: true; readonly config: ReportPortalConfig }
 	| { readonly success: false; readonly reason: string };
+
+/**
+ * Mutable accumulator type for merging configs
+ */
+export type ConfigAccumulator = {
+	jiraIssueId: string | undefined;
+	tags: string[];
+	author: JiraUser | undefined;
+	arbitraryAnnotations: { type: AnnotationType; description: string }[];
+	bugTickets: string[];
+};
