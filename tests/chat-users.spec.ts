@@ -89,7 +89,7 @@ test.describe(
 			const userRoles = [TestUserRole.REGULAR, TestUserRole.ANONYMOUS];
 
 			userRoles.forEach((userRole) => {
-				test(`[ENG-5915] Chat Disabled Countries - Verify country-based access restrictions for ${userRole} users`, async ({
+				test(`[ENG-5940] Chat Disabled Countries - Verify country-based access restrictions for ${userRole} users`, async ({
 					browserSessionManager,
 				}) => {
 					const plProxySession = await browserSessionManager.loginAs(

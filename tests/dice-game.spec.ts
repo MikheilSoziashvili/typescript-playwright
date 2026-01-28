@@ -82,7 +82,7 @@ test.describe("Dice tests - v4", () => {
 	test(
 		"[ENG-13728] Place a single bet on Dice and try to win - v4",
 		testDetails()
-			.withTags(TestTag.SMOKE, JiraComponent.GAMDOM_ORIGINALS)
+			.withTags(TestTag.SMOKE, TestTag.V4, JiraComponent.GAMDOM_ORIGINALS)
 			.withAuthor(JiraUser.RALUCA_ARITON)
 			.apply(),
 		async ({ browserSessionManager, diceGamePage, testDataObject }) => {
