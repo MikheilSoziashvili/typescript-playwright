@@ -43,7 +43,9 @@ test.describe(
 					.steps()
 					.waitUntilCryptoDataRefreshed(testInfo);
 
-				await cryptoAdminPage.setUserPayWd(CryptoNode.fireSOL, true);
+				await cryptoAdminPage.setUserPayWd(CryptoNode.fireSOL, {
+					enabled: true,
+				});
 
 				await cryptoAdminPage
 					.steps()

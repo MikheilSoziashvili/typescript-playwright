@@ -43,7 +43,9 @@ test.describe(
 					.steps()
 					.waitUntilCryptoDataRefreshed(testInfo);
 
-				await cryptoAdminPage.setUserPayWd(CryptoNode.fireETH, true);
+				await cryptoAdminPage.setUserPayWd(CryptoNode.fireETH, {
+					enabled: true,
+				});
 
 				await cryptoAdminPage
 					.steps()

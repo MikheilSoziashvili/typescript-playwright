@@ -230,4 +230,12 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 			);
 		}
 	}
+
+	@step("Network fee matches expected value")
+	public async networkFeeMatchesExpected(
+		expectedFeeInUsd: number,
+		actualFeeInUsd: number,
+	): Promise<void> {
+		expect(actualFeeInUsd).toBe(expectedFeeInUsd);
+	}
 }

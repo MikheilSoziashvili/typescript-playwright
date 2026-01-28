@@ -261,6 +261,7 @@ export class WalletModal extends BasePage<WalletModalMap> {
 		network?: string;
 		destinationTag?: string;
 		isVip?: boolean;
+		expectedCustomFee?: number;
 	}): Promise<string> {
 		const {
 			cryptocurrency,
@@ -270,6 +271,7 @@ export class WalletModal extends BasePage<WalletModalMap> {
 			network,
 			destinationTag,
 			isVip,
+			expectedCustomFee,
 		} = params;
 
 		await this.openWithdrawTab();
@@ -300,7 +302,15 @@ export class WalletModal extends BasePage<WalletModalMap> {
 		}
 
 		await this.fillWithdrawalAmount(amount);
+
 		const networkFee = await this.getNetworkFeeAmount(isVip, speed);
+
+		if (expectedCustomFee) {
+			await this.assertThat().networkFeeMatchesExpected(
+				expectedCustomFee,
+				parseFloat(networkFee),
+			);
+		}
 
 		await this.clickCryptoWithdrawButton();
 		return networkFee;

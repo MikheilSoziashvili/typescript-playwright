@@ -65,15 +65,13 @@ test.describe(
 					.steps()
 					.setMinDepositAndWithdraw(CryptoNode.fireUSDC_SOL);
 
-				await cryptoAdminPage.setUserPayWd(
-					CryptoNode.fireUSDC_SOL,
-					true,
-				);
+				await cryptoAdminPage.setUserPayWd(CryptoNode.fireUSDC_SOL, {
+					enabled: true,
+				});
 
-				await cryptoAdminPage.setUserPayWd(
-					CryptoNode.fireUSDC_ETH,
-					true,
-				);
+				await cryptoAdminPage.setUserPayWd(CryptoNode.fireUSDC_ETH, {
+					enabled: true,
+				});
 
 				await cryptoAdminPage
 					.steps()

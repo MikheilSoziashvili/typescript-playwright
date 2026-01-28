@@ -162,6 +162,22 @@ export class CryptoAdminMap extends BaseMap {
 		return this.getRow(nodeTitle).locator('input[type="checkbox"]').first();
 	}
 
+	public customWdFeeToggle(nodeTitle: string): Locator {
+		return this.getRow(nodeTitle).getByLabel("Custom Wd Fee");
+	}
+
+	public customFeeLowInput(nodeTitle: string): Locator {
+		return this.getRow(nodeTitle).getByLabel("Custom Fee$ Low");
+	}
+
+	public customFeeMidInput(nodeTitle: string): Locator {
+		return this.getRow(nodeTitle).getByLabel("Custom Fee$ Mid");
+	}
+
+	public customFeeHighInput(nodeTitle: string): Locator {
+		return this.getRow(nodeTitle).getByLabel("Custom Fee$ High");
+	}
+
 	public feeLevelDropdown(nodeTitle: string): Locator {
 		return this.getRow(nodeTitle).getByTestId("titleDropdownInput").first();
 	}

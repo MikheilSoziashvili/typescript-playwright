@@ -7,6 +7,8 @@ import { CRYPTO_ADMIN_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import {
 	BasePageNavigationParametersType,
 	CryptoOperationOptions,
+	CustomFeesOptions,
+	SetUserPayWdOptions,
 } from "@core/types/types";
 import { step } from "decorators/step";
 import { Cryptocurrency, CryptoTicker } from "@enums/cryptocurrencies";
@@ -123,18 +125,30 @@ export class CryptoAdminPage extends BasePage<CryptoAdminMap> {
 	@step("Set user pay withdrawals")
 	public async setUserPayWd(
 		nodeTitle: string,
-		enabled: boolean,
+		{ enabled, customFees }: SetUserPayWdOptions,
 	): Promise<void> {
 		const checkbox = this.map.userPayWdCheckbox(nodeTitle);
 		const isChecked = await checkbox.isChecked();
+		const isCustomWdFeeChecked = await this.map
+			.customWdFeeToggle(nodeTitle)
+			.isChecked();
+
+		if (isChecked === enabled && !customFees) {
+			return;
+		}
 
 		if (isChecked !== enabled) {
 			await checkbox.click();
-			await this.map.feeLevelDropdown(nodeTitle).click();
-			await this.map.selectLowestFeeLevelOption.click();
-			this.acceptDialog();
-			await this.map.saveButton(nodeTitle).click();
 		}
+
+		if (customFees && !isCustomWdFeeChecked) {
+			await this.setCustomFees(nodeTitle, customFees);
+		}
+
+		await this.map.feeLevelDropdown(nodeTitle).click();
+		await this.map.selectLowestFeeLevelOption.click();
+		this.acceptDialog();
+		await this.map.saveButton(nodeTitle).click();
 	}
 
 	@step("Get USD amount by crypto ticker")
@@ -144,5 +158,26 @@ export class CryptoAdminPage extends BasePage<CryptoAdminMap> {
 		const amountLocator = this.map.amountUsdByCryptoCurrency(cryptoTicker);
 		const amountText = (await amountLocator.textContent()) ?? "";
 		return parseBalance(amountText);
+	}
+
+	@step("Set custom fees")
+	private async setCustomFees(
+		nodeTitle: string,
+		options: CustomFeesOptions,
+	): Promise<void> {
+		await this.map.customWdFeeToggle(nodeTitle).click();
+
+		const feeInputs = {
+			lowFee: (node: string) => this.map.customFeeLowInput(node),
+			midFee: (node: string) => this.map.customFeeMidInput(node),
+			highFee: (node: string) => this.map.customFeeHighInput(node),
+		};
+
+		for (const [key, locator] of Object.entries(feeInputs)) {
+			const value = options[key as keyof CustomFeesOptions];
+			if (value !== undefined) {
+				await locator(nodeTitle).fill(String(value));
+			}
+		}
 	}
 }

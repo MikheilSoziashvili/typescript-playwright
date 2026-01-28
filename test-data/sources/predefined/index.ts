@@ -44,7 +44,9 @@ export const predefined = {
 		betAmount: 1,
 		multiplier: 1.5,
 		defaultMultiplier: 2.0,
-		defaultRollover: 50.500000,	//default rollover is dependant of default multiplier
+		// prettier-ignore
+		defaultRollover: 50.500000, //default rollover is dependant of default multiplier
+		// prettier-ignore
 		defaultWinChance: 49.50, //default win chance is dependant of default multiplier
 	},
 	sokAutobet: {
@@ -64,7 +66,9 @@ export const predefined = {
 	usdtAmountToDeposit: {
 		amountToDeposit: "0.02",
 		amountToDepositLarger: "0.4",
-		amountToWithdraw: 0.6,
+		customLowFee: 0.1,
+		customMidFee: 0.3,
+		customHighFee: 0.5,
 		withdrawalAddress: "0x88190Ef584BD63E320693133f01c0cfcdA24bB8e",
 	},
 	xrpAmountToDeposit: {

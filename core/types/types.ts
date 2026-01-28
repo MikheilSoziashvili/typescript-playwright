@@ -186,6 +186,17 @@ export type CryptoOperationOptions = {
 	withdraw?: boolean;
 };
 
+export type CustomFeesOptions = {
+	lowFee?: number;
+	midFee?: number;
+	highFee?: number;
+};
+
+export type SetUserPayWdOptions = {
+	enabled: boolean;
+	customFees?: CustomFeesOptions;
+};
+
 export type WalletUnit = `${Unit}`;
 
 export type NullableString = string | null;

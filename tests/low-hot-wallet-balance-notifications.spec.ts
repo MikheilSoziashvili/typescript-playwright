@@ -22,7 +22,9 @@ test.describe("Low Hot Wallet Balance notifications tests", () => {
 			await cryptoAdminPage
 				.steps()
 				.waitUntilCryptoDataRefreshed(testInfo);
-			await cryptoAdminPage.setUserPayWd(CryptoNode.fireUSDT, true);
+			await cryptoAdminPage.setUserPayWd(CryptoNode.fireUSDT, {
+				enabled: true,
+			});
 			await cryptoAdminPage
 				.steps()
 				.waitUntilCryptoDataRefreshed(testInfo);

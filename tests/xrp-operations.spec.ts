@@ -42,7 +42,9 @@ test.describe(
 					.steps()
 					.waitUntilCryptoDataRefreshed(testInfo);
 
-				await cryptoAdminPage.setUserPayWd(CryptoNode.fireXRP, true);
+				await cryptoAdminPage.setUserPayWd(CryptoNode.fireXRP, {
+					enabled: true,
+				});
 
 				await cryptoAdminPage
 					.steps()

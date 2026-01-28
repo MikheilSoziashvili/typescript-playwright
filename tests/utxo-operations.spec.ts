@@ -57,8 +57,15 @@ test.describe(
 					.steps()
 					.setMinDepositAndWithdraw(CryptoNode.nodeLTC1);
 
-				await cryptoAdminPage.setUserPayWd(CryptoNode.nodeBTC1, true);
-				await cryptoAdminPage.setUserPayWd(CryptoNode.nodeLTC1, true);
+				await cryptoAdminPage.setUserPayWd(CryptoNode.nodeBTC1, {
+					enabled: true,
+				});
+				/*
+				Uncomment when LTC wallet is topped up
+				await cryptoAdminPage.setUserPayWd(CryptoNode.nodeLTC1, {
+					enabled: true,
+				});
+				*/
 
 				await cryptoAdminPage
 					.steps()
