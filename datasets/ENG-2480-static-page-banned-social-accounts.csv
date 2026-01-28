@@ -1,5 +1,5 @@
 static_page,social_account,external_url,social_media,socialMedia_UrlPart,gamdom_UrlPart,locator
-/banned?reason=Example%20reason,X,https://twitter.com/Gamdom,twitter,x.com,Gamdom,twitter
-/banned?reason=Example%20reason,Instagram,https://www.instagram.com/gamdom/,instagram,instagram.com,gamdom,instagram
+/banned?reason=Example%20reason,X,https://x.com/Gamdom,x,x.com,Gamdom,x
+/banned?reason=Example%20reason,Instagram,https://www.instagram.com/gamdomhq,instagram,instagram.com,gamdomhq,instagram
 /banned?reason=Example%20reason,Telegram,https://t.me/+JrVfUQipUmM0OGM0,t.me,t.me,JrVfUQipUmM0OGM0,telegram
-/banned?reason=Example%20reason,Facebook,https://www.facebook.com/gamdomcasino,facebook,facebook.com,GamdomCasino,facebook
+/banned?reason=Example%20reason,Facebook,https://www.facebook.com/GamdomHQ,facebook,facebook.com,GamdomHQ,facebook

@@ -1,6 +1,6 @@
 static_page,social_account,external_url,social_media,socialMedia_UrlPart,gamdom_UrlPart,locator
-/geoblocked?country=USA,Twitter,//twitter.com/Gamdom,twitter,x.com,Gamdom,Twitter
-/geoblocked?country=USA,Instagram,//www.instagram.com/gamdom/,instagram,instagram.com,gamdom,Instagram
-/geoblocked?country=USA,Telegram,//t.me/+JrVfUQipUmM0OGM0,t.me,t.me,JrVfUQipUmM0OGM0,Telegram
-/geoblocked?country=USA,Facebook,//www.facebook.com/gamdomcasino,facebook,facebook.com,GamdomCasino,Facebook
+/geoblocked?country=USA,Twitter,https://x.com/Gamdom,twitter,x.com,Gamdom,Twitter
+/geoblocked?country=USA,Instagram,https://www.instagram.com/gamdomhq,instagram,instagram.com,gamdomhq,Instagram
+/geoblocked?country=USA,Telegram,https://t.me/+JrVfUQipUmM0OGM0,t.me,t.me,JrVfUQipUmM0OGM0,Telegram
+/geoblocked?country=USA,Facebook,https://www.facebook.com/GamdomHQ,facebook,facebook.com,GamdomHQ,Facebook
 
