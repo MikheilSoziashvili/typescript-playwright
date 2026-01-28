@@ -6,17 +6,50 @@ export class NotificationsPageMap extends BaseMap {
 		super(page);
 	}
 
-	public getNotificationByTitle(title: string): Locator {
-		return this.page
-			.locator("h6", { hasText: title })
-			.locator("xpath=ancestor::div[4]");
+	private get notificationToggleButton(): Locator {
+		return this.page.getByTestId("notification-id");
+	}
+
+	private get notificationContentWrapper(): Locator {
+		return this.page.getByTestId("footer-info-accordion-v4-content");
+	}
+
+	private get notificationTitleElements(): Locator {
+		return this.page.locator('p[data-testid^="notification-title-"]');
+	}
+
+	private get notificationDescriptionElements(): Locator {
+		return this.page.locator('p[data-testid^="notification-content-"]');
+	}
+
+	public getNotificationContainer(title: string): Locator {
+		const notificationTitleAnchor = this.notificationTitleElements.getByText(
+			title,
+			{ exact: true },
+		);
+		const titleAncestorDivs = notificationTitleAnchor.locator("xpath=ancestor::div");
+
+		return titleAncestorDivs
+			.filter({ has: this.notificationToggleButton })
+			.filter({ has: this.notificationContentWrapper })
+			.first();
 	}
 
 	public getNotificationTitle(title: string): Locator {
-		return this.getNotificationByTitle(title).locator("h6").first();
+		return this.getNotificationContainer(title).locator(
+			this.notificationTitleElements,
+		);
+	}
+
+	public expandNotificationButton(title: string): Locator {
+		return this.getNotificationContainer(title).locator(
+			this.notificationToggleButton,
+		);
 	}
 
 	public getNotificationDescription(title: string): Locator {
-		return this.getNotificationByTitle(title).locator("p").first();
+		return this.getNotificationContainer(title).locator(
+			this.notificationDescriptionElements,
+		);
 	}
 }

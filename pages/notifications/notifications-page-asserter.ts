@@ -9,6 +9,7 @@ export class NotificationsPageAsserter extends BaseAsserter<NotificationsPage> {
 
 	@step("Assert notification is visible")
 	public async notificationIsVisible(title: string): Promise<void> {
+		await this.gamdomPage.expandNotification(title);
 		const titleLocator = this.gamdomPage.map.getNotificationTitle(title);
 		const descriptionLocator =
 			this.gamdomPage.map.getNotificationDescription(title);
@@ -21,6 +22,7 @@ export class NotificationsPageAsserter extends BaseAsserter<NotificationsPage> {
 		title: string,
 		description: string,
 	): Promise<void> {
+		await this.gamdomPage.expandNotification(title);
 		const titleLocator = this.gamdomPage.map.getNotificationTitle(title);
 		const descriptionLocator =
 			this.gamdomPage.map.getNotificationDescription(title);

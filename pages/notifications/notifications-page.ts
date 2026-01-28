@@ -6,6 +6,7 @@ import { NotificationsPageMap } from "./notifications-page-map";
 import { NotificationsPageSteps } from "./notifications-page-steps";
 import { NotificationsPageAsserter } from "./notifications-page-asserter";
 import { Notification } from "@pages/components/notification/notification";
+import { step } from "decorators/step";
 
 export class NotificationsPage extends BasePage<NotificationsPageMap> {
 	private readonly notification: Notification;
@@ -34,5 +35,10 @@ export class NotificationsPage extends BasePage<NotificationsPageMap> {
 
 	public getNotification(): Notification {
 		return this.notification;
+	}
+
+	@step("Expand notification by title")
+	public async expandNotification(title: string): Promise<void> {
+		await this.map.expandNotificationButton(title).click();
 	}
 }
