@@ -129,20 +129,18 @@ export class CryptoAdminPage extends BasePage<CryptoAdminMap> {
 	): Promise<void> {
 		const checkbox = this.map.userPayWdCheckbox(nodeTitle);
 		const isChecked = await checkbox.isChecked();
-		const isCustomWdFeeChecked = await this.map
-			.customWdFeeToggle(nodeTitle)
-			.isChecked();
-
-		if (isChecked === enabled && !customFees) {
-			return;
-		}
 
 		if (isChecked !== enabled) {
 			await checkbox.click();
 		}
 
+		const customWdFeeToggle = this.map.customWdFeeToggle(nodeTitle);
+		const isCustomWdFeeChecked = await customWdFeeToggle.isChecked();
+
 		if (customFees && !isCustomWdFeeChecked) {
 			await this.setCustomFees(nodeTitle, customFees);
+		} else if (!customFees && isCustomWdFeeChecked) {
+			await customWdFeeToggle.click();
 		}
 
 		await this.map.feeLevelDropdown(nodeTitle).click();
