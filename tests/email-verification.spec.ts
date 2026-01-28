@@ -10,6 +10,7 @@ import { testDetails } from "@core/helpers/test-details-helper";
 import { TestUserRole } from "@enums/test-user-roles";
 import { testData } from "test-data/test-data-manager";
 import { JiraComponent } from "@enums/jira/jira-components";
+import { isScheduledRun } from "configuration";
 
 test.describe("Email Verification Tests", () => {
 	test.use({ storageState: { cookies: [], origins: [] } });
@@ -101,9 +102,11 @@ test.describe("Email Verification Tests", () => {
 		`[ENG-7516] [Wallet] Verify e-mail verification restriction on Withdraw tab`,
 		testDetails()
 			.withTags(JiraComponent.WALLET, JiraComponent.WITHDRAWAL)
+			.withJiraBugTickets("ENG-13989")
 			.withAuthor(JiraUser.YUKSEL_CHAUSH)
 			.apply(),
 		async ({ browserSessionManager, mailinatorApi, testDataRandom }) => {
+			test.fixme(isScheduledRun);
 			const regularUserEmailNotVerified =
 				await browserSessionManager.loginAs(TestUserRole.REGULAR, {
 					reuseContext: true,

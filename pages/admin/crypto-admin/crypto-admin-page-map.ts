@@ -21,7 +21,8 @@ export class CryptoAdminMap extends BaseMap {
 	public get refreshButton(): Locator {
 		return this.page
 			.getByTestId("currentCryptoDataContainer")
-			.locator('span[class*="MuiTypography-body"]');
+			.locator('span[class*="MuiTypography-body"]')
+			.filter({ hasText: "Refresh" });
 	}
 
 	public minDepositButton(nodeTitle: string): Locator {
