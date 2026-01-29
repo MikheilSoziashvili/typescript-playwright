@@ -9,10 +9,43 @@ import { Attributes } from "@enums/playwright/htmlAttributes";
 import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
+import { Timeout } from "@enums/timeout";
 
 export class CasinoPageAsserter extends BaseAsserter<CasinoPage> {
 	public constructor(page: CasinoPage) {
 		super(page);
+	}
+
+	@step("Title has text")
+	public async titleHasText(title: string): Promise<void> {
+		await expect(this.gamdomPage.page).toHaveTitle(title, {
+			timeout: Timeout.MAX,
+		});
+	}
+
+	@step("Verify provider option displayed in belt")
+	public async verifyProviderOptionDisplayedInBelt(
+		option: GameProvider,
+		shouldBeVisible: boolean,
+	): Promise<void> {
+		const providerOption =
+			this.gamdomPage.map.providerOptionInProvidersBelt(option);
+
+		shouldBeVisible
+			? await expect(providerOption).toBeVisible()
+			: await expect(providerOption).toBeHidden();
+	}
+
+	@step("Verify provider option state in belt")
+	public async verifyProviderOptionStateInBelt(
+		provider: GameProvider,
+		expectedResult: VisibilityResult,
+	): Promise<void> {
+		const shouldBeVisible = expectedResult === VisibilityOptions.VISIBLE;
+		await this.verifyProviderOptionDisplayedInBelt(
+			provider,
+			shouldBeVisible,
+		);
 	}
 
 	@step("Verify dropdown option visibility")
@@ -21,7 +54,7 @@ export class CasinoPageAsserter extends BaseAsserter<CasinoPage> {
 		shouldBeVisible: boolean,
 	): Promise<void> {
 		const providerOption =
-			this.gamdomPage.map.providerDropdownOption(option);
+			this.gamdomPage.map.providerOptionInProvidersDropdown(option);
 
 		shouldBeVisible
 			? await expect(providerOption).toBeVisible()
@@ -105,9 +138,6 @@ export class CasinoPageAsserter extends BaseAsserter<CasinoPage> {
 	public async selfExclusionToastMessageIsDisplayedV4(): Promise<void> {
 		await this.gamdomPage.toastV4
 			.assertThat()
-			.toastMessageIsV4(
-				ToastTitle.FAILED_V4,
-				ToastSubTitle.SELF_EXCLUSION,
-			);
+			.toastMessageIsV4(ToastTitle.FAILED, ToastSubTitle.SELF_EXCLUSION);
 	}
 }

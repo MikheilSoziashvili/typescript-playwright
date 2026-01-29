@@ -1,24 +1,21 @@
-import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
 import { GameProvider } from "@enums/game-providers";
-import { whiteSpacePattern } from "@support/regex-patterns";
+import { Locator, Page } from "@playwright/test";
 
 export class ProvidersPageMap extends BaseMap {
 	public constructor(page: Page) {
 		super(page);
 	}
 
-	public providerOptionInContainer(gameProvider: GameProvider): Locator {
-		// Replacing spaces with dash, because href is '/providers/OneTouch-Table-Game'
-		const formattedProvider = gameProvider.replace(whiteSpacePattern, "-");
-		return this.providersContainer.locator(
-			`div a[href='/providers/${formattedProvider}']`,
+	public get providersContainer(): Locator {
+		return this.page.locator(
+			"div[class*='Providers-page-styled__Container']",
 		);
 	}
 
-	public get providersContainer(): Locator {
-		return this.page.locator(
-			"div[class*='ContainerAnimate'] > div[class*='MuiGrid2-container']",
+	public providerInProvidersContainer(gameProvider: GameProvider): Locator {
+		return this.providersContainer.getByTestId(
+			`providers-page-item-${gameProvider}`,
 		);
 	}
 }

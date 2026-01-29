@@ -1,21 +1,19 @@
 import { MailpitApi } from "@api/mailpit-api";
 import { RegisterTestDataParams } from "@core/interfaces";
-import { VisibilityResult } from "@core/types/types";
 import { generate2FACodeFromQRCodeImage, waitUntil } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
-import { GameProvider } from "@enums/game-providers";
 import { HomePageBannerCarouselSlideTitle } from "@enums/homepage-banner-carousel-slide-title";
 import { LaunchLocation } from "@enums/homepage-launch-locations";
 import { Timeout } from "@enums/timeout";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { ToastTitle } from "@enums/toast-titles";
+import { logger } from "@logger/logger";
 import { BasePageStep } from "@pages/base/base-page-step";
 import { Toast } from "@pages/components/toast/toast";
 import { step } from "decorators/step";
-import { Locator, Page } from "playwright";
-import { HomePage } from "./home-page";
-import { logger } from "@logger/logger";
+import { Page } from "playwright";
 import { RegisterTestDataObjectFactory } from "test-data/objects/factories/register-test-data-object-factory";
+import { HomePage } from "./home-page";
 
 export class HomePageSteps extends BasePageStep<HomePage> {
 	public toast: Toast;
@@ -107,112 +105,6 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 			srcPartial,
 		);
 		await this.gamdomPage.clickCarouselSlide(slideName, srcPartial);
-	}
-
-	@step("Find provider in casino hover")
-	public async findProviderInCasinoHover(
-		providerName: string,
-	): Promise<Locator> {
-		const nextButton = this.gamdomPage.map.nextPageButton;
-
-		await waitUntil(
-			async () => {
-				await this.gamdomPage.refresh();
-				await this.gamdomPage.map.casinoMenuLocator.hover();
-
-				let providerLocator =
-					this.gamdomPage.map.providerInCasinoMenu(providerName);
-
-				while (
-					(await providerLocator.count()) === 0 &&
-					(await nextButton.isEnabled())
-				) {
-					await this.gamdomPage.map.waitForVisibility({
-						locator: nextButton,
-						timeout: Timeout.MEDIUM,
-					});
-					await nextButton.click();
-					providerLocator =
-						this.gamdomPage.map.providerInCasinoMenu(providerName);
-				}
-
-				return (await providerLocator.count()) > 0;
-			},
-			{
-				errorMessage: `Provider '${providerName}' not found in casino menu after full pagination + retries`,
-				timeoutSeconds: TimeoutSeconds.NINETY,
-			},
-		);
-
-		return this.gamdomPage.map.providerInCasinoMenu(providerName);
-	}
-
-	@step("Verify provider visibility")
-	public async verifyProviderVisibility(provider: string): Promise<void> {
-		await this.gamdomPage.map.casinoMenuLocator.hover();
-
-		await this.findProviderInCasinoHover(provider);
-
-		await this.gamdomPage
-			.assertThat()
-			.checkElementsAreVisible([
-				this.gamdomPage.map.providerInCasinoMenu(provider),
-			]);
-	}
-
-	@step("Verify provider invisibility")
-	public async verifyProviderInvisibility(provider: string): Promise<void> {
-		await this.gamdomPage.map.casinoMenuLocator.hover();
-
-		const maxAttempts = 5;
-		const nextButton = this.gamdomPage.map.nextPageButton;
-
-		for (let attempt = 0; attempt < maxAttempts; attempt++) {
-			const providerLocator =
-				this.gamdomPage.map.providerInCasinoMenu(provider);
-			if ((await providerLocator.count()) > 0) {
-				throw new Error(
-					`Provider '${provider}' should not be visible, but was found.`,
-				);
-			}
-			if (!(await nextButton.isEnabled())) {
-				break;
-			}
-			await nextButton.click();
-		}
-	}
-
-	@step(
-		`Navigating to home page and checking provider visibility based on configuration`,
-	)
-	public async verifyProviderOptionStateInBelt(
-		homePage: HomePage,
-		providerName: GameProvider,
-		expectedResult: VisibilityResult,
-	): Promise<void> {
-		await homePage.navigateAndCheckTitle();
-
-		await waitUntil(
-			async () => {
-				await homePage.refresh();
-				try {
-					await homePage
-						.assertThat()
-						.verifyProviderOptionStateInBelt(
-							providerName,
-							expectedResult,
-						);
-					return true;
-				} catch {
-					return false;
-				}
-			},
-			{
-				errorMessage: `Provider ${providerName} was not ${expectedResult} in the belt on the home page in time`,
-				intervalSeconds: 2,
-				timeoutSeconds: TimeoutSeconds.ONE_EIGHTY,
-			},
-		);
 	}
 
 	@step("Reset password")

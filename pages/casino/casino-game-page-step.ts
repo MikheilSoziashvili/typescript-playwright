@@ -13,26 +13,33 @@ export class CasinoPageSteps extends BasePageStep<CasinoPage> {
 		super(gamdomPage);
 	}
 
-	@step("Verify provider displayed in dropdown")
-	public async verifyProviderDisplayedInDropdown(
-		provider: GameProvider,
+	@step(
+		`Navigating to home page and checking provider visibility based on configuration`,
+	)
+	public async verifyProviderOptionStateInBelt(
+		casinoPage: CasinoPage,
+		providerName: GameProvider,
 		expectedResult: VisibilityResult,
 	): Promise<void> {
+		await casinoPage.navigateAndCheckTitle();
+
 		await waitUntil(
 			async () => {
-				await this.gamdomPage.refresh();
-				await this.gamdomPage.clickProvidersDropdown();
+				await casinoPage.refresh();
 				try {
-					await this.gamdomPage
+					await casinoPage
 						.assertThat()
-						.verifyOptionState(provider, expectedResult);
+						.verifyProviderOptionStateInBelt(
+							providerName,
+							expectedResult,
+						);
 					return true;
 				} catch {
 					return false;
 				}
 			},
 			{
-				errorMessage: `Provider ${provider} was not ${expectedResult} in the dropdown in time`,
+				errorMessage: `Provider ${providerName} was not ${expectedResult} in the belt on the home page in time`,
 				intervalSeconds: 2,
 				timeoutSeconds: TimeoutSeconds.ONE_EIGHTY,
 			},

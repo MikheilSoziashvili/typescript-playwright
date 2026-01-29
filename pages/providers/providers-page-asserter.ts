@@ -17,7 +17,7 @@ export class ProvidersPageAsserter extends BaseAsserter<ProvidersPage> {
 		shouldBeVisible: boolean,
 	): Promise<void> {
 		const providerOption =
-			this.gamdomPage.map.providerOptionInContainer(option);
+			this.gamdomPage.map.providerInProvidersContainer(option);
 
 		shouldBeVisible
 			? await expect(providerOption).toBeVisible()

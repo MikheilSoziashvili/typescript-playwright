@@ -21,9 +21,6 @@ export class SportsAsserter extends BaseAsserter<SportsPage> {
 	public async selfExclusionToastMessageIsDisplayedV4(): Promise<void> {
 		await this.gamdomPage.toastV4
 			.assertThat()
-			.toastMessageIsV4(
-				ToastTitle.FAILED_V4,
-				ToastSubTitle.SELF_EXCLUSION,
-			);
+			.toastMessageIsV4(ToastTitle.FAILED, ToastSubTitle.SELF_EXCLUSION);
 	}
 }

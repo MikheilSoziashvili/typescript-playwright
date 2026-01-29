@@ -27,9 +27,7 @@ export class LoginModalAsserter extends BaseAsserter<LoginModal> {
 
 	@step("Check login button is disabled")
 	public async loginBtnIsDisabled(): Promise<void> {
-		await this.checkElementsAreDisabled([
-			this.gamdomPage.map.loginBtn,
-		]);
+		await this.checkElementsAreDisabled([this.gamdomPage.map.loginBtn]);
 	}
 
 	@step("Check username field error tooltip")
@@ -117,7 +115,7 @@ export class LoginModalAsserter extends BaseAsserter<LoginModal> {
 		await this.gamdomPage.toast
 			.assertThat()
 			.toastMessageIsV4(
-				ToastTitle.FAILED_V4,
+				ToastTitle.FAILED,
 				ToastSubTitle.USER_DOES_NOT_EXIST,
 			);
 	}

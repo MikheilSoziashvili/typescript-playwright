@@ -1,28 +1,25 @@
 import { BaseAsserter } from "@base/base-asserter";
-import { VisibilityResult } from "@core/types/types";
 import { waitUntil } from "@core/utils/utils";
-import { GameProvider } from "@enums/game-providers";
+import { CasinoGameUrl } from "@enums/casino-game";
+import { HomePageSection } from "@enums/homepage-launch-locations";
 import { IntervalMs } from "@enums/interval-millisecond";
 import { Timeout } from "@enums/timeout";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
-import { VisibilityOptions } from "@enums/visibility-options";
 import { logger } from "@logger/logger";
+import { Footer } from "@pages/components/footer/footer";
 import { expect, Locator, TestInfo } from "@playwright/test";
 import {
 	digitsOnlyPattern,
 	plainAmount,
 	shortScaled,
 } from "@support/regex-patterns";
+import * as Configuration from "configuration";
 import { step } from "decorators/step";
 import { HomePage } from "./home-page";
-import { CasinoGameUrl } from "@enums/casino-game";
-import * as Configuration from "configuration";
-import { Footer } from "@pages/components/footer/footer";
-import { HomePageSection } from "@enums/homepage-launch-locations";
 import { BannerMessages } from "@constants/banner-messages";
 import { ToastTitle } from "@enums/toast-titles";
-import { ToastSubTitle } from "@enums/toast-subtitles";
 import { DomEvent } from "@enums/playwright/dom-events";
+import { ToastSubTitle } from "@enums/toast-subtitles";
 
 export class HomePageAsserter extends BaseAsserter<HomePage> {
 	public fromCsv: boolean;
@@ -202,62 +199,6 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 			currencyContainer,
 			initialX,
 			"KOTH Header Currency",
-		);
-	}
-
-	@step("Verify provider state")
-	public async verifyProviderState(
-		provider: string,
-		expectedResult: VisibilityResult,
-	): Promise<void> {
-		await waitUntil(
-			async () => {
-				await this.gamdomPage.refresh();
-				try {
-					if (expectedResult === VisibilityOptions.VISIBLE) {
-						await this.gamdomPage
-							.steps()
-							.verifyProviderVisibility(provider);
-					} else {
-						await this.gamdomPage
-							.steps()
-							.verifyProviderInvisibility(provider);
-					}
-					return true;
-				} catch {
-					return false;
-				}
-			},
-			{
-				errorMessage: `Provider ${provider} did not reach expected visibility state: ${expectedResult}`,
-				intervalSeconds: 2,
-				timeoutSeconds: TimeoutSeconds.ONE_EIGHTY,
-			},
-		);
-	}
-
-	@step("Verify provider option displayed in belt")
-	public async verifyProviderOptionDisplayedInBelt(
-		option: GameProvider,
-		shouldBeVisible: boolean,
-	): Promise<void> {
-		const providerOption =
-			this.gamdomPage.map.providerOptionInProvidersBelt(option);
-
-		shouldBeVisible
-			? await expect(providerOption).toBeVisible()
-			: await expect(providerOption).toBeHidden();
-	}
-
-	@step("Verify provider option state in belt")
-	public async verifyProviderOptionStateInBelt(
-		provider: GameProvider,
-		expectedResult: VisibilityResult,
-	): Promise<void> {
-		const shouldBeVisible = expectedResult === VisibilityOptions.VISIBLE;
-		await this.verifyProviderOptionDisplayedInBelt(
-			provider,
-			shouldBeVisible,
 		);
 	}
 

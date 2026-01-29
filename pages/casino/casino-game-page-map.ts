@@ -2,10 +2,24 @@ import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
 import { GameProvider } from "@enums/game-providers";
 import { CasinoGameName } from "@enums/casino-game";
+import { whiteSpacePattern } from "@support/regex-patterns";
 
 export class CasinoPageMap extends BaseMap {
 	public constructor(page: Page) {
 		super(page);
+	}
+
+	public get providersBelt(): Locator {
+		return this.page
+			.getByTestId("lobby-providers-section")
+			.locator(".swiper-wrapper");
+	}
+
+	public providerOptionInProvidersBelt(providerName: string): Locator {
+		const formattedProvider = providerName.replace(whiteSpacePattern, "-");
+		return this.providersBelt.locator(
+			`a[href='/casino/providers/${formattedProvider}']`,
+		);
 	}
 
 	public providerDropdownOption(gameProvider: GameProvider): Locator {
@@ -19,12 +33,25 @@ export class CasinoPageMap extends BaseMap {
 	}
 
 	public get settingsButton(): Locator {
-		return this.page.getByTestId("pickRandomSettings");
+		return this.page.getByTestId(
+			"casino-layout-pick-random-desktop-settings-btn-pick-random-game-casino",
+		);
 	}
 
 	public get providersDropdownInSettingsModal(): Locator {
-		return this.page.locator(
-			'div[class*="RandomPickSettingsModal-styled__ModalBody"] div[role="combobox"]',
+		return this.page.getByTestId(
+			"pick-random-modal-providers-selector-button",
+		);
+	}
+
+	public get providersDropdownListboxInSettingsModal(): Locator {
+		return this.page.getByRole("listbox");
+	}
+
+	public providerOptionInProvidersDropdown(providerName: string): Locator {
+		return this.providersDropdownListboxInSettingsModal.locator(
+			"div[role='option']",
+			{ hasText: providerName },
 		);
 	}
 

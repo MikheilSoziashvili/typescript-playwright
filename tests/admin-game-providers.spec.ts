@@ -202,7 +202,6 @@ adminEnableGames.forEach((record) => {
 				async ({
 					gamdomApi,
 					gamdomDb,
-					homePage,
 					casinoPage,
 					providersPage,
 					page,
@@ -261,7 +260,6 @@ adminEnableGames.forEach((record) => {
 						tags: UserTags.QaUser,
 					});
 
-					// ----- Gamdom home page casino hover menu ----- //
 					// Authenticate with the qa user and verify provider visibility
 					const qaUserCookie =
 						await gamdomApi.authenticateWithExistingUser(
@@ -271,14 +269,15 @@ adminEnableGames.forEach((record) => {
 
 					// Set authentication cookies in the browser for the qa user
 					await setAuthenticationCookies(page, qaUserCookie);
-					await homePage.navigateAndCheckTitle();
 
+					// ---- Providers page ---- //
 					// Verify that the provider is visible or not as expected for the qa user
-					await homePage
-						.assertThat()
-						.verifyProviderState(
-							providerEnum.providerName,
+					await providersPage
+						.steps()
+						.verifyProviderOptionState(
+							providersPage,
 							record.qa_user_result,
+							providerEnum.providerName as GameProvider,
 						);
 
 					// Authenticate with the regular user and verify provider visibility
@@ -289,40 +288,40 @@ adminEnableGames.forEach((record) => {
 							regularUserData.password,
 						);
 					await setAuthenticationCookies(page, regularUserCookie);
-					await homePage.navigateAndCheckTitle();
 
 					// Verify that the provider is visible or not as expected for the regular user
-					await homePage
-						.assertThat()
-						.verifyProviderState(
-							providerEnum.providerName,
+					await providersPage
+						.steps()
+						.verifyProviderOptionState(
+							providersPage,
 							record.regular_user_result,
+							providerEnum.providerName as GameProvider,
 						);
 
-					// ---- Casino page provider filter dropdown ---- //
-					// Navigate to the casino page as the regular user and verify provider visibility in the dropdown
+					// ---- Casino provider belt ---- //
+					// Verify that the provider is visible or not as expected for the qa user
 					await casinoPage.navigate();
 					await casinoPage
 						.steps()
-						.verifyProviderDisplayedInDropdown(
+						.verifyProviderOptionStateInBelt(
+							casinoPage,
 							providerEnum.providerName as GameProvider,
 							record.regular_user_result,
 						);
 
-					// Switch to the qa user and verify provider visibility in the dropdown
+					// Verify that the provider is visible or not as expected for the regular user
 					await setAuthenticationCookies(page, qaUserCookie);
-
 					await casinoPage.navigate();
 					await casinoPage
 						.steps()
-						.verifyProviderDisplayedInDropdown(
+						.verifyProviderOptionStateInBelt(
+							casinoPage,
 							providerEnum.providerName as GameProvider,
 							record.qa_user_result,
 						);
 
 					// ---- Casino page provider filter dropdown in "Pick Random" feature settings ---- //
 					// Verify provider visibility in the "Pick Random" settings modal for the qa user
-					await casinoPage.navigate();
 					await casinoPage
 						.steps()
 						.verifyProviderDisplayedInSettingsModalDropdown(
@@ -333,50 +332,9 @@ adminEnableGames.forEach((record) => {
 					// Switch back to the regular user and verify provider visibility in the settings modal
 					await setAuthenticationCookies(page, regularUserCookie);
 
-					await casinoPage.navigate();
 					await casinoPage
 						.steps()
-						.verifyProviderDisplayedInDropdown(
-							providerEnum.providerName as GameProvider,
-							record.regular_user_result,
-						);
-
-					// ---- Providers page ---- //
-					// Navigate to the providers page as the regular user and verify provider option state
-					await providersPage
-						.steps()
-						.verifyProviderOptionState(
-							providersPage,
-							record.regular_user_result,
-							providerEnum.providerName as GameProvider,
-						);
-
-					// Switch to the qa user and verify provider option state
-					await setAuthenticationCookies(page, qaUserCookie);
-					await providersPage
-						.steps()
-						.verifyProviderOptionState(
-							providersPage,
-							record.qa_user_result,
-							providerEnum.providerName as GameProvider,
-						);
-
-					// ---- Homepage provider belt ---- //
-					// Verify that the provider is visible or not as expected for the qa user
-					await homePage
-						.steps()
-						.verifyProviderOptionStateInBelt(
-							homePage,
-							providerEnum.providerName as GameProvider,
-							record.qa_user_result,
-						);
-
-					// Verify that the provider is visible or not as expected for the regular user
-					await setAuthenticationCookies(page, regularUserCookie);
-					await homePage
-						.steps()
-						.verifyProviderOptionStateInBelt(
-							homePage,
+						.verifyProviderDisplayedInSettingsModalDropdown(
 							providerEnum.providerName as GameProvider,
 							record.regular_user_result,
 						);

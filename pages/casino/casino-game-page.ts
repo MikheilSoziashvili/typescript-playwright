@@ -36,6 +36,14 @@ export class CasinoPage extends BasePage<CasinoPageMap> {
 		return new CasinoPageSteps(this);
 	}
 
+	@step("Navigate and check title")
+	public async navigateAndCheckTitle(): Promise<void> {
+		await this.navigate();
+		await this.assertThat().titleHasText(
+			"Casino Games Online - Play Slots, Table & Live Games",
+		);
+	}
+
 	@step("Click providers dropdown")
 	public async clickProvidersDropdown(): Promise<void> {
 		await this.map.providersDropdown.click();
