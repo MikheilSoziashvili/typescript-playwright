@@ -14,6 +14,10 @@ export class DatepickerMap extends BaseMap {
 		return this.page.locator(".rdtPicker:visible .rdtPrev");
 	}
 
+	public get datepickerNextButton(): Locator {
+		return this.page.locator(".rdtPicker:visible .rdtNext");
+	}
+
 	public datepickerCell(
 		day: number | string,
 		month: number | string,

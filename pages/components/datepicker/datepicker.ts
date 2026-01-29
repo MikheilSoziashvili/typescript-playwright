@@ -42,7 +42,6 @@ export class Datepicker extends BaseComponent<DatepickerMap> {
 			visibleYear,
 			month,
 			year,
-			targetDate,
 		);
 
 		await this.selectDateCell(day, month, year);
@@ -65,29 +64,30 @@ export class Datepicker extends BaseComponent<DatepickerMap> {
 		return { visibleMonth, visibleYear };
 	}
 
+	private toMonthIndex(year: number, month: number): number {
+		return year * 12 + month;
+	}
+
 	@step("Navigate to target month and year")
 	private async navigateToTargetMonthYear(
 		visibleMonth: number,
 		visibleYear: number,
 		targetMonth: number,
 		targetYear: number,
-		targetDate: Date,
 	): Promise<void> {
-		if (targetMonth === visibleMonth && targetYear === visibleYear) {
+		const visibleIndex = this.toMonthIndex(visibleYear, visibleMonth);
+		const targetIndex = this.toMonthIndex(targetYear, targetMonth);
+		const diff = targetIndex - visibleIndex;
+
+		if (diff === 0) {
 			return;
 		}
+		const navButton: Locator =
+			diff > 0
+				? this.map.datepickerNextButton
+				: this.map.datepickerPrevButton;
 
-		const prevButton = this.map.datepickerPrevButton;
-		const targetLabel = `${targetDate.toLocaleString("default", {
-			month: "long",
-		})} ${targetYear}`;
-
-		while (
-			(await this.map.datepickerHeader.textContent())?.trim() !==
-			targetLabel
-		) {
-			await prevButton.click();
-		}
+		await navButton.click();
 	}
 
 	@step("Select date cell in calendar grid")
