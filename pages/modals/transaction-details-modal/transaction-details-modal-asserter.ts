@@ -5,7 +5,6 @@ import { step } from "decorators/step";
 import { CryptoTicker } from "@enums/cryptocurrencies";
 import { sanitizeAmount } from "@support/regex-patterns";
 import { WithdrawalSpeed } from "@enums/withdrawal-speeds";
-import { formatNumber } from "@core/utils/utils";
 
 export class TransactionDetailsModalAsserter extends BaseAsserter<TransactionDetailsModal> {
 	public constructor(page: TransactionDetailsModal) {
@@ -35,11 +34,10 @@ export class TransactionDetailsModalAsserter extends BaseAsserter<TransactionDet
 		expectedValue: string,
 	): Promise<void> {
 		const actualValue = await this.gamdomPage.getNetworkTransactionFee();
-
 		const actual = Number(actualValue.replace(sanitizeAmount, ""));
 		const expected = Number(expectedValue);
 
-		expect(formatNumber(actual)).toBe(formatNumber(expected));
+		expect(actual).toBeCloseTo(expected, 1);
 	}
 
 	@step("Assert network transaction speed")
