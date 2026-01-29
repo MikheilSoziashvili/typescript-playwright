@@ -87,7 +87,16 @@ on:
                 required: true
             DOGE_TESTNET_PRIVATE_KEY:
                 required: true
-                description: "Doge Testnet Private Key"
+            FIREBLOCKS_USD1_ETH_ASSET_ID:
+                required: true
+            FIREBLOCKS_USD1_SOL_ASSET_ID:
+                required: true
+            FIREBLOCKS_USDT_BSC_ASSET_ID:
+                required: true
+            FIREBLOCKS_USDC_BSC_ASSET_ID:
+                required: true
+            FIREBLOCKS_BNB_ASSET_ID:
+                required: true
 
 concurrency:
     group: premerge-${{ github.event.pull_request.number || github.ref }}
@@ -154,6 +163,11 @@ env:
     FIREBLOCKS_USDC_SOL_ASSET_ID: ${{ vars.FIREBLOCKS_USDC_SOL_ASSET_ID }}
     DOGE_TESTNET_ADDRESS: ${{ vars.DOGE_TESTNET_ADDRESS }}
     DOGE_TESTNET_PRIVATE_KEY: ${{ secrets.DOGE_TESTNET_PRIVATE_KEY }}
+    FIREBLOCKS_USD1_ETH_ASSET_ID: ${{ secrets.FIREBLOCKS_USD1_ETH_ASSET_ID }}
+    FIREBLOCKS_USD1_SOL_ASSET_ID: ${{ secrets.FIREBLOCKS_USD1_SOL_ASSET_ID }}
+    FIREBLOCKS_USDT_BSC_ASSET_ID: ${{ secrets.FIREBLOCKS_USDT_BSC_ASSET_ID }}
+    FIREBLOCKS_USDC_BSC_ASSET_ID: ${{ secrets.FIREBLOCKS_USDC_BSC_ASSET_ID }}
+    FIREBLOCKS_BNB_ASSET_ID: ${{ secrets.FIREBLOCKS_BNB_ASSET_ID }}
 
 jobs:
     detect-new-modified-tests:

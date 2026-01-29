@@ -2,11 +2,16 @@ import { DogeTestnetClient } from "@core/crypto/doge/doge-testnet-client";
 import { createDogeTestnetClient } from "@core/crypto/doge/doge-testnet-factory";
 import { FireblocksClient } from "@core/crypto/fireblocks/fireblocks-client";
 import {
+	createBnbClient,
 	createEthClient,
 	createSolClient,
 	createTrxClient,
+	createUsd1EthClient,
+	createUsd1SolClient,
+	createUsdcBscClient,
 	createUsdcEthClient,
 	createUsdcSolClient,
+	createUsdtBscClient,
 	createUsdtClient,
 	createUsdtTrxClient,
 } from "@core/crypto/fireblocks/fireblocks-factory";
@@ -27,6 +32,11 @@ export type CryptoClients = {
 	usdcEthClient: FireblocksClient;
 	usdcSolClient: FireblocksClient;
 	dogeClient: DogeTestnetClient;
+	usd1EthCleint: FireblocksClient;
+	usd1SolClient: FireblocksClient;
+	usdtBscClient: FireblocksClient;
+	usdcBscClient: FireblocksClient;
+	bnbClient: FireblocksClient;
 };
 
 export const cryptoFixtures = base.extend<CryptoClients>({
@@ -63,5 +73,20 @@ export const cryptoFixtures = base.extend<CryptoClients>({
 	},
 	dogeClient: async ({}, use) => {
 		await use(createDogeTestnetClient());
+	},
+	usd1EthCleint: async ({}, use) => {
+		await use(createUsd1EthClient());
+	},
+	usd1SolClient: async ({}, use) => {
+		await use(createUsd1SolClient());
+	},
+	usdtBscClient: async ({}, use) => {
+		await use(createUsdtBscClient());
+	},
+	usdcBscClient: async ({}, use) => {
+		await use(createUsdcBscClient());
+	},
+	bnbClient: async ({}, use) => {
+		await use(createBnbClient());
 	},
 });

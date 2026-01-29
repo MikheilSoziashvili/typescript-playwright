@@ -213,6 +213,21 @@ on:
             DOGE_TESTNET_PRIVATE_KEY:
                 required: true
                 description: "Doge Testnet Private Key"
+            FIREBLOCKS_USD1_ETH_ASSET_ID:
+                required: true
+                description: "Fireblocks USD1 ETH asset ID"
+            FIREBLOCKS_USD1_SOL_ASSET_ID:
+                required: true
+                description: "Fireblocks USD1 SOL asset ID"
+            FIREBLOCKS_USDT_BSC_ASSET_ID:
+                required: true
+                description: "Fireblocks USDT BSC asset ID"
+            FIREBLOCKS_USDC_BSC_ASSET_ID:
+                required: true
+                description: "Fireblocks USDC BSC asset ID"
+            FIREBLOCKS_BNB_ASSET_ID:
+                required: true
+                description: "Fireblocks BNB asset ID"
 
 concurrency:
     group: ${{ github.event_name == 'repository_dispatch' && format('auto-deploy-env-{0}', github.event.client_payload.pr_number) || format('playwright-e2e-{0}', github.ref) }}
@@ -302,6 +317,11 @@ jobs:
             FIREBLOCKS_SOL_ASSET_ID: ${{ vars.FIREBLOCKS_SOL_ASSET_ID }}
             FIREBLOCKS_TRX_ASSET_ID: ${{ vars.FIREBLOCKS_TRX_ASSET_ID }}
             FIREBLOCKS_USDT_TRX_ASSET_ID: ${{ vars.FIREBLOCKS_USDT_TRX_ASSET_ID }}
+            FIREBLOCKS_USD1_ETH_ASSET_ID: ${{ secrets.FIREBLOCKS_USD1_ETH_ASSET_ID }}
+            FIREBLOCKS_USD1_SOL_ASSET_ID: ${{ secrets.FIREBLOCKS_USD1_SOL_ASSET_ID }}
+            FIREBLOCKS_USDT_BSC_ASSET_ID: ${{ secrets.FIREBLOCKS_USDT_BSC_ASSET_ID }}
+            FIREBLOCKS_USDC_BSC_ASSET_ID: ${{ secrets.FIREBLOCKS_USDC_BSC_ASSET_ID }}
+            FIREBLOCKS_BNB_ASSET_ID: ${{ secrets.FIREBLOCKS_BNB_ASSET_ID }}
             VERIFF_PUBLISHABLE_KEY: ${{ vars.VERIFF_PUBLISHABLE_KEY }}
             VERIFF_PRIVATE_KEY: ${{ secrets.VERIFF_PRIVATE_KEY }}
             VERIFF_USERNAME: ${{ vars.VERIFF_USERNAME }}

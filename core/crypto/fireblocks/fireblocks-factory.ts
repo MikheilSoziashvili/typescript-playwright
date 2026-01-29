@@ -69,3 +69,23 @@ export function createUsdcEthClient(): FireblocksClient {
 export function createUsdcSolClient(): FireblocksClient {
 	return createFireblocksClient(fireblocksConfig.usdcSolAssetId);
 }
+
+export function createUsd1EthClient(): FireblocksClient {
+	return createFireblocksClient(fireblocksConfig.usd1EthAssetId);
+}
+
+export function createUsd1SolClient(): FireblocksClient {
+	return createFireblocksClient(fireblocksConfig.usd1SolAssetId);
+}
+
+export function createUsdtBscClient(): FireblocksClient {
+	return createFireblocksClient(fireblocksConfig.usdtBscAssetId);
+}
+
+export function createUsdcBscClient(): FireblocksClient {
+	return createFireblocksClient(fireblocksConfig.usdcBscAssetId);
+}
+
+export function createBnbClient(): FireblocksClient {
+	return createFireblocksClient(fireblocksConfig.bnbAssetId);
+}

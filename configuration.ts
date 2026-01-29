@@ -142,6 +142,11 @@ export const fireblocks: FireblocksConfig = {
 	usdtTrxAssetId: asString(process.env.FIREBLOCKS_USDT_TRX_ASSET_ID),
 	usdcEthAssetId: asString(process.env.FIREBLOCKS_USDC_ETH_ASSET_ID),
 	usdcSolAssetId: asString(process.env.FIREBLOCKS_USDC_SOL_ASSET_ID),
+	usd1EthAssetId: asString(process.env.FIREBLOCKS_USD1_ETH_ASSET_ID),
+	usd1SolAssetId: asString(process.env.FIREBLOCKS_USD1_SOL_ASSET_ID),
+	usdtBscAssetId: asString(process.env.FIREBLOCKS_USDT_BSC_ASSET_ID),
+	usdcBscAssetId: asString(process.env.FIREBLOCKS_USDC_BSC_ASSET_ID),
+	bnbAssetId: asString(process.env.FIREBLOCKS_BNB_ASSET_ID),
 };
 
 export const xrpTestnet = {
