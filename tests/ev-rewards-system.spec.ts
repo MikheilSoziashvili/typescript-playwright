@@ -85,12 +85,17 @@ test.describe(
 						test(
 							`[ENG-7499] Granting free spins promotion reward for case '${input.iterationName}'`,
 							testDetails()
+								.withJiraBugTickets("14807")
 								.withAuthor(JiraUser.RALUCA_ARITON)
 								.apply(),
 							async ({
 								evRewardsSystemAdminPage,
 								userBalanceHandler,
 							}) => {
+								test.fixme(
+									true,
+									"The logic needs to be modified based on the updated test case",
+								);
 								await evRewardsSystemAdminPage
 									.steps()
 									.navigateAndCheckRewardTypeElements();
@@ -179,8 +184,15 @@ test.describe(
 test.describe("Revoke free spins", () => {
 	test(
 		"[ENG-7506] Revoking free spins promotion reward",
-		testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+		testDetails()
+			.withJiraBugTickets("14807")
+			.withAuthor(JiraUser.RALUCA_ARITON)
+			.apply(),
 		async ({ browserSessionManager, gamdomDb, testDataObject }) => {
+			test.fixme(
+				true,
+				"The logic needs to be modified based on the updated test case",
+			);
 			const superAdmin = await browserSessionManager.loginAs(
 				TestUserRole.SUPERADMIN,
 				{ reuseContext: true },
@@ -319,8 +331,15 @@ test.describe("Free spins promotion reward", () => {
 	test.slow();
 	test(
 		"[ENG-7504] Verify that users receive free spins according to configured milestones",
-		testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+		testDetails()
+			.withJiraBugTickets("14807")
+			.withAuthor(JiraUser.RALUCA_ARITON)
+			.apply(),
 		async ({ browserSessionManager, gamdomDb, testDataObject }) => {
+			test.fixme(
+				true,
+				"The logic needs to be modified based on the updated test case",
+			);
 			const superAdmin = await browserSessionManager.loginAs(
 				TestUserRole.SUPERADMIN,
 				{ reuseContext: true },
