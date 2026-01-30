@@ -2,9 +2,8 @@ import { BaseAsserter } from "@base/base-asserter";
 import { SettingsPage } from "./settings-page";
 import { step } from "decorators/step";
 import { SelfExclusionDays } from "@enums/self-exlusion-days";
-import { SELF_EXCLUSION_TIMER_MAP } from "@constants/timers";
-import { selfExclusionTimerV4Pattern } from "@support/regex-patterns";
 import { expect } from "@playwright/test";
+import { selfExclusionTimerPattern } from "@support/regex-patterns";
 
 export class SettingsPageAsserter extends BaseAsserter<SettingsPage> {
 	public constructor(page: SettingsPage) {
@@ -40,45 +39,8 @@ export class SettingsPageAsserter extends BaseAsserter<SettingsPage> {
 			this.gamdomPage.map.selfExclusionTimer,
 		]);
 
-		await this.checkElementsContainText([
-			{
-				locator: this.gamdomPage.map.selfExclusionTimer,
-				expectedText: SELF_EXCLUSION_TIMER_MAP[days],
-			},
-		]);
-	}
-
-	@step("Verify self exclusion tabs are visible - v4")
-	public async selfExclusionTabsVisibleV4(): Promise<void> {
-		await this.checkElementsAreVisible([
-			this.gamdomPage.map.selfExclusionTabsV4,
-		]);
-	}
-
-	@step("Verify self exclusion tab is not visible - v4")
-	public async selfExclusionTabNotVisibleV4(): Promise<void> {
-		await this.checkElementsAreNotVisible([
-			this.gamdomPage.map.selfExclusionTabsV4,
-		]);
-	}
-
-	@step("Verify self exclusion modal heading is visible - v4")
-	public async selfExclusionModalHeadingVisibleV4(): Promise<void> {
-		await this.checkElementsAreVisible([
-			this.gamdomPage.map.confirmModalHeadingV4,
-		]);
-	}
-
-	@step("Verify self exclusion timer is displayed - v4")
-	public async selfExclusionTimerDisplayedV4(
-		days: SelfExclusionDays,
-	): Promise<void> {
-		await this.checkElementsAreVisible([
-			this.gamdomPage.map.selfExclusionTimerV4,
-		]);
-
-		await expect(this.gamdomPage.map.selfExclusionTimerV4).toContainText(
-			selfExclusionTimerV4Pattern(days),
+		await expect(this.gamdomPage.map.selfExclusionTimer).toContainText(
+			selfExclusionTimerPattern(days),
 		);
 	}
 }

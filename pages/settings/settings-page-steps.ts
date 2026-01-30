@@ -31,6 +31,7 @@ export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 		await this.gamdomPage.takeQRCodeImageScreenshot(screenshotPath);
 		const code2FA = await generate2FACodeFromQRCodeImage(screenshotPath);
 		await this.gamdomPage.fill2FACodeInputs(code2FA);
+		await this.gamdomPage.clickConfirmButton();
 		await this.gamdomPage
 			.assertThat()
 			.checkElementsAreNotVisible([
@@ -92,9 +93,8 @@ export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 			attempts++;
 			await this.gamdomPage.refresh();
 			await this.gamdomPage.open2FADisableModal();
-			const code2FA2 = await generate2FACodeFromQRCodeImage(
-				screenshotPath,
-			);
+			const code2FA2 =
+				await generate2FACodeFromQRCodeImage(screenshotPath);
 			await this.gamdomPage.fill2FACodeInputs(code2FA2);
 			await this.gamdomPage.map.continueDisable2FaButton.dblclick();
 			// eslint-disable-next-line playwright/no-wait-for-timeout
@@ -119,17 +119,4 @@ export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 		await this.gamdomPage.assertThat().selfExclusionTimerDisplayed(days);
 	}
 
-	@step("Enable self exclusion - v4")
-	public async navigateAndEnableSelfExclusionV4(
-		days: SelfExclusionDays,
-	): Promise<void> {
-		await this.gamdomPage.navigate();
-		await this.gamdomPage.assertThat().selfExclusionTabsVisibleV4();
-		await this.gamdomPage.map.selfExclusionTimeV4(days).click();
-		await this.gamdomPage.assertThat().selfExclusionModalHeadingVisibleV4();
-		await this.gamdomPage.map.confirmModalContinueButtonV4.click();
-		await this.gamdomPage.refresh();
-		await this.gamdomPage.assertThat().selfExclusionTabNotVisibleV4();
-		await this.gamdomPage.assertThat().selfExclusionTimerDisplayedV4(days);
-	}
 }

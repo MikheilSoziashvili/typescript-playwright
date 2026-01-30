@@ -86,12 +86,4 @@ export class UnauthenticatedHeaderAsserter extends BaseAsserter<UnauthenticatedH
 		await this.oAuthIsEnabled(oAuthAccount.GOOGLE, expects.google);
 		await this.oAuthIsEnabled(oAuthAccount.TELEGRAM, expects.telegram);
 	}
-
-	@step("Check logged out user elements are visible - v4")
-	async loggedOutUserElementsAreVisibleV4(): Promise<void> {
-		await this.checkElementsAreVisible([
-			this.gamdomPage.map.loginBtnV4,
-			this.gamdomPage.map.signUpBtnV4,
-		]);
-	}
 }

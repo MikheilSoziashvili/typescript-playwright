@@ -20,27 +20,33 @@ test.describe(
 			})
 			.forEach((record) => {
 				test(
-					`[ENG-4422] Verify self exclusion for ${record.period} in game - ${record.game}`,
+					`[ENG-11763] Verify self exclusion for ${record.period} in game - ${record.game}`,
 					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
-					async ({
-						settingsPage,
-						originalsPage,
-						browserSessionManager,
-					}) => {
-						const betAmount = 10;
-						await browserSessionManager.loginAs(
+					async ({ testDataObject, browserSessionManager }) => {
+						const regularUser = await browserSessionManager.loginAs(
 							TestUserRole.REGULAR,
 							{
 								reuseContext: true,
 							},
 						);
-						await settingsPage
+
+						const betTestData = testDataObject.bet.build(
+							{
+								username:
+									regularUser.getAuthenticatedUser().user
+										.username,
+							},
+							{ betAmount: 10 },
+						);
+						await regularUser.pages.settingsPage
 							.steps()
 							.navigateAndEnableSelfExclusion(record.period);
-						await originalsPage.navigateToGame(record.game);
-						await originalsPage.verifySelfExclusionMessageIsDisplayed(
+						await regularUser.pages.originalsPage.navigateToGame(
 							record.game,
-							betAmount,
+						);
+						await regularUser.pages.originalsPage.verifySelfExclusionMessageIsDisplayed(
+							record.game,
+							betTestData.betAmount,
 						);
 					},
 				);
@@ -49,7 +55,7 @@ test.describe(
 		const exclusionPeriods = Object.values(SelfExclusionDays);
 		exclusionPeriods.forEach((period) => {
 			test(
-				`[ENG-4422] Verify self exclusion in Casino for ${period}`,
+				`[ENG-11763] Verify self exclusion in Casino for ${period}`,
 				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({ settingsPage, casinoPage, browserSessionManager }) => {
 					await browserSessionManager.loginAs(TestUserRole.REGULAR, {
@@ -74,7 +80,7 @@ test.describe(
 
 		exclusionPeriods.forEach((period) => {
 			test(
-				`[ENG-4422] Verify self exclusion in Sports for ${period}`,
+				`[ENG-11763] Verify self exclusion in Sports for ${period}`,
 				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({ settingsPage, sportsPage, browserSessionManager }) => {
 					await browserSessionManager.loginAs(TestUserRole.REGULAR, {
@@ -93,7 +99,7 @@ test.describe(
 
 		exclusionPeriods.forEach((period) => {
 			test(
-				`[ENG-4422] Verify self exclusion in Wallet Deposit tab for ${period}`,
+				`[ENG-11763] Verify self exclusion in Wallet Deposit tab for ${period}`,
 				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({ browserSessionManager }) => {
 					const adminUser = await browserSessionManager.loginAs(
@@ -131,26 +137,11 @@ test.describe(
 
 		exclusionPeriods.forEach((period) => {
 			test(
-				`[ENG-4422] Verify self exclusion in Wallet Buy crypto tab for ${period}`,
+				`[ENG-11763] Verify self exclusion in Wallet Buy crypto tab for ${period}`,
 				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({ browserSessionManager }) => {
-					const adminUser = await browserSessionManager.loginAs(
-						TestUserRole.SUPERADMIN,
-						{ reuseContext: true },
-					);
 					const regularUser = await browserSessionManager.loginAs(
 						TestUserRole.REGULAR,
-					);
-
-					await adminUser.pages.cryptoAdminPage.navigate();
-					await adminUser.pages.cryptoAdminPage.toggleCryptoOperations(
-						[
-							{
-								cryptoName: Cryptocurrency.Bitcoin,
-								deposit: true,
-								withdraw: true,
-							},
-						],
 					);
 
 					await regularUser.pages.settingsPage
@@ -158,9 +149,7 @@ test.describe(
 						.navigateAndEnableSelfExclusion(period);
 					await regularUser.pages.homePage.navigateToWallet();
 					await regularUser.pages.walletModal.openBuyCryptoTab();
-					await regularUser.pages.walletModal.selectPaymentMethod(
-						Cryptocurrency.Bitcoin,
-					);
+
 					await regularUser.pages.walletModal
 						.assertThat()
 						.verifyDepositDisabledTextIsDisplayed();
@@ -170,7 +159,7 @@ test.describe(
 
 		exclusionPeriods.forEach((period) => {
 			test(
-				`[ENG-4422] Verify self exclusion in Wallet Redeem tab for ${period}`,
+				`[ENG-11763] Verify self exclusion in Wallet Redeem tab for ${period}`,
 				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					settingsPage,
@@ -195,4 +184,3 @@ test.describe(
 		});
 	},
 );
-

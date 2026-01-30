@@ -80,10 +80,9 @@ export class OriginalsAsserter extends BaseAsserter<OriginalsPage> {
 
 	@step("Self exclusion toast message is displayed")
 	public async selfExclusionToastMessageIsDisplayed(): Promise<void> {
-		await this.gamdomPage.toast.assertThat().titleIs(ToastTitle.FAILED);
 		await this.gamdomPage.toast
 			.assertThat()
-			.subTitleIs(ToastSubTitle.SELF_EXCLUSION);
+			.toastMessageIs(ToastTitle.FAILED, ToastSubTitle.SELF_EXCLUSION);
 	}
 
 	@step("Verify self exclusion page text is displayed")

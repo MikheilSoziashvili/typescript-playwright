@@ -94,9 +94,7 @@ export const regexSpecialCharsPattern = /[.*+?^${}()|[\]\\]/g;
 export const escapeRegexSpecialChars = (text: string): string =>
 	text.replace(regexSpecialCharsPattern, "\\$&");
 
-export const selfExclusionTimerV4Pattern = (
-	days: SelfExclusionDays,
-): RegExp => {
+export const selfExclusionTimerPattern = (days: SelfExclusionDays): RegExp => {
 	switch (days) {
 		case SelfExclusionDays.ONE_DAY:
 			return /^0d\s+23h\s+59m\s+\d{1,2}s$/;

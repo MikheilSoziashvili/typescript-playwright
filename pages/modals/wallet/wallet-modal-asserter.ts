@@ -159,8 +159,11 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 
 	@step("Verify deposit Disabled text is displayed")
 	public async verifyDepositDisabledTextIsDisplayed(): Promise<void> {
-		await this.checkElementsAreVisible([
-			this.gamdomPage.map.depositDisabledText,
+		await this.checkElementsHaveText([
+			{
+				locator: this.gamdomPage.map.depositDisabledText,
+				expectedText: "Deposits Disabled",
+			},
 		]);
 	}
 
@@ -219,16 +222,6 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 		).toContainText(
 			`${amount} has been transferred from your Vault to your Wallet`,
 		);
-	}
-
-	@step("Verify deposit Disabled text is displayed - v4")
-	public async verifyDepositDisabledTextIsDisplayedV4(): Promise<void> {
-		await this.checkElementsHaveText([
-			{
-				locator: this.gamdomPage.map.depositDisabledTextV4,
-				expectedText: "Deposits Disabled",
-			},
-		]);
 	}
 
 	@step("Crypto payment method is present")

@@ -29,10 +29,4 @@ export class ContinueModalAsserter extends BaseAsserter<ContinueModal> {
 		]);
 	}
 
-	@step("Check modal is displayed - v4")
-	public async isModalDisplayedV4(): Promise<void> {
-		await this.checkElementsAreVisible([
-			this.gamdomPage.map.modalLocatorV4,
-		]);
-	}
 }

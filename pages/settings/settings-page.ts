@@ -48,12 +48,19 @@ export class SettingsPage extends BasePage<SettingsPageMap> {
 
 	@step("Fill 2FA code inputs")
 	public async fill2FACodeInputs(code2FA: string): Promise<void> {
-		const inputCount = await this.map.fields2FACodeInputs.count();
+		const inputCount =
+			await this.map.fields2FACodeInputsActivationModal.count();
 		expect(inputCount).toBe(code2FA.length);
 		for (let i = 0; i < inputCount; i++) {
-			const inputElement = this.map.fields2FACodeInputs.nth(i);
+			const inputElement =
+				this.map.fields2FACodeInputsActivationModal.nth(i);
 			await inputElement.click();
 			await inputElement.fill(code2FA[i]);
 		}
+	}
+
+	@step("Click confirm button")
+	public async clickConfirmButton(): Promise<void> {
+		await this.map.confirm2FAActivationCodeButton.click();
 	}
 }

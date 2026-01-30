@@ -49,11 +49,13 @@ test.describe(
 				await userInfoAdminPage.clickUserInfoTab(UserInfoTabs.Sessions);
 				await userInfoSessionsAdminPage.endSessionById(userSessionId);
 
-				await toast.assertThat().titleIs(ToastTitle.SUCCESS);
 				await toast
 					.assertThat()
-					.subTitleIs(ToastSubTitle.SESSION_ENDED);
-
+					.toastMessageIs(
+						ToastTitle.SUCCESS,
+						ToastSubTitle.SESSION_ENDED,
+					);
+				
 				await user2HomePage.refresh();
 				await user2HomePage.assertThat().userIsLoggedOut();
 			},

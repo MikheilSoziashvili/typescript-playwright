@@ -71,11 +71,16 @@ export class CasinoPageMap extends BaseMap {
 		return this.page.locator("div[class*='Head-styled__HeadImageBox']");
 	}
 
+	public get searchInputContainer(): Locator {
+		return this.page.getByTestId("external-games-search-field-container");
+	}
+
 	public get searchInputField(): Locator {
-		return this.page
-			.getByTestId("searchInputFieldContainer")
-			.locator("input")
-			.first();
+		return this.page.getByTestId("external-games-search-field-input");
+	}
+
+	public get searchQuickSearchInputField(): Locator {
+		return this.page.getByTestId("search-input-input");
 	}
 
 	public casinoGameDropdownItem(game: CasinoGameName): Locator {
@@ -101,14 +106,11 @@ export class CasinoPageMap extends BaseMap {
 
 	public casinoGameInDropdown(game: CasinoGameName): Locator {
 		return this.page
-			.locator("li[class*='DropdownItem-styled__List']")
+			.locator(
+				'[data-testid^="quick-search-carousel-item-"][data-testid$="-container"]',
+			)
 			.filter({
-				has: this.page.locator(
-					"div[class*='DropdownItem-styled__OptionTitle']",
-					{
-						hasText: new RegExp(`^${game}$`),
-					},
-				),
+				has: this.page.locator(`img[alt="${game}"]`),
 			})
 			.first();
 	}
@@ -194,30 +196,5 @@ export class CasinoPageMap extends BaseMap {
 	}
 	public get gameProviderLabel(): Locator {
 		return this.page.getByTestId("game-provider");
-	}
-
-	public get searchInputFieldV4(): Locator {
-		return this.page.getByTestId("external-games-search-field-input");
-	}
-
-	public get searchQuickSearchInputFieldV4(): Locator {
-		return this.page.getByTestId("search-input-input");
-	}
-
-	public get casinoGamesDropdownListboxV4(): Locator {
-		return this.page.getByRole("listbox");
-	}
-
-	public casinoGameInDropdownV4(game: CasinoGameName): Locator {
-		return this.page
-			.locator(
-				'[data-testid^="quick-search-carousel-item-"][data-testid$="-container"]',
-			)
-			.filter({
-				has: this.page.locator('[data-testid$="-title"]', {
-					hasText: new RegExp(`^${game}$`),
-				}),
-			})
-			.first();
 	}
 }

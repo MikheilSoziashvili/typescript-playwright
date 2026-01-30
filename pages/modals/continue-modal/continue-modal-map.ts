@@ -7,7 +7,7 @@ export class ContinueModalMap extends BaseMap {
 	}
 
 	public get modalLocator(): Locator {
-		return this.page.getByTestId("confirmation-modal-body");
+		return this.page.getByTestId("logout-modal-dialog-dialog");
 	}
 
 	public get modalFooterContainer(): Locator {
@@ -24,10 +24,6 @@ export class ContinueModalMap extends BaseMap {
 		return this.modalFooterContainer.getByTestId(
 			"confirmation-modal-cancel-button",
 		);
-	}
-
-	public get modalLocatorV4(): Locator {
-		return this.page.getByTestId("logout-modal-dialog-dialog");
 	}
 
 	public get logoutButtonV4(): Locator {

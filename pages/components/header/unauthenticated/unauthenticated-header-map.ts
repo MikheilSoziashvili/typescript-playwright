@@ -7,11 +7,11 @@ export class UnauthenticatedHeaderMap extends BaseMap {
 	}
 
 	public get loginBtn(): Locator {
-		return this.page.getByTestId("signin-nav");
+		return this.page.getByTestId("signin-nav-btn");
 	}
 
 	public get signUpBtn(): Locator {
-		return this.page.getByTestId("signup-nav");
+		return this.page.getByTestId("signup-nav-btn");
 	}
 
 	public get steamSignInButton(): Locator {
@@ -24,13 +24,5 @@ export class UnauthenticatedHeaderMap extends BaseMap {
 
 	public get telegramSignInButton(): Locator {
 		return this.page.getByTestId("telegramSignInButton");
-	}
-
-	public get loginBtnV4(): Locator {
-		return this.page.getByTestId("signin-nav-btn");
-	}
-
-	public get signUpBtnV4(): Locator {
-		return this.page.getByTestId("signup-nav-btn");
 	}
 }

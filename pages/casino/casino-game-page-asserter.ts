@@ -91,10 +91,9 @@ export class CasinoPageAsserter extends BaseAsserter<CasinoPage> {
 
 	@step("Self exclusion toast message is displayed")
 	public async selfExclusionToastMessageIsDisplayed(): Promise<void> {
-		await this.gamdomPage.toast.assertThat().titleIs(ToastTitle.FAILED);
 		await this.gamdomPage.toast
 			.assertThat()
-			.subTitleIs(ToastSubTitle.SELF_EXCLUSION);
+			.toastMessageIs(ToastTitle.FAILED, ToastSubTitle.SELF_EXCLUSION);
 	}
 
 	@step("Verify all visible games are from provider(s)")
@@ -134,10 +133,4 @@ export class CasinoPageAsserter extends BaseAsserter<CasinoPage> {
 		).toBeTruthy();
 	}
 
-	@step("Self exclusion toast message is displayed - v4")
-	public async selfExclusionToastMessageIsDisplayedV4(): Promise<void> {
-		await this.gamdomPage.toastV4
-			.assertThat()
-			.toastMessageIsV4(ToastTitle.FAILED, ToastSubTitle.SELF_EXCLUSION);
-	}
 }

@@ -8,104 +8,80 @@ export class SettingsPageMap extends BaseMap {
 	}
 
 	public get settingsContainer(): Locator {
-		return this.page.getByTestId("userSettingsPageContent");
+		return this.page.locator(
+			`[class^="ProfileLayout-styled__ProfileMainContainer-sc-"]`,
+		);
 	}
 
 	public get imageQRCode(): Locator {
 		return this.page.locator(`[class="qrcode"]`);
 	}
 
-	public action2FaButtonByPlaceholder(placeholderText: string): Locator {
-		return this.settingsContainer.locator(
-			`//button[@type="button" and normalize-space()='${placeholderText}']`,
-		);
-	}
-
 	public get enable2FAButton(): Locator {
-		return this.action2FaButtonByPlaceholder(`Enable 2FA`);
+		return this.settingsContainer.getByTestId("enable-2fa");
 	}
 
 	public get disable2FAButton(): Locator {
-		return this.action2FaButtonByPlaceholder(`Disable 2FA`);
-	}
-
-	public twoFactoryModalsByPlaceholder(placeholderText: string): Locator {
-		return this.page.locator(
-			`//h5[text()='${placeholderText}']//ancestor::div[contains(@class,'open')]`,
-		);
+		return this.settingsContainer.getByTestId("disable-2fa");
 	}
 
 	public get activation2FAPopup(): Locator {
-		return this.twoFactoryModalsByPlaceholder(`2FA Activation`);
+		return this.page.getByTestId("enable-2fa-v4-container");
 	}
 
 	public get verification2FAPopup(): Locator {
-		return this.twoFactoryModalsByPlaceholder(`2FA Verification`);
+		return this.page.getByTestId("verify-2fa-v4-container");
 	}
 
-	public get fields2FACodeInputs(): Locator {
-		return this.page.locator(`input[id*="2fa-"]`);
+	public get fields2FACodeInputsActivationModal(): Locator {
+		return this.activation2FAPopup.locator(
+			'[data-testid^="enable-2fa-v4-pin-code-input-"]',
+		);
+	}
+
+	public get fields2FACodeInputsVerificationModal(): Locator {
+		return this.verification2FAPopup.locator(
+			'[data-testid^="verify-2fa-v4-pin-code-input-"]',
+		);
 	}
 
 	public get confirm2FAActivationCodeButton(): Locator {
-		return this.activation2FAPopup.locator(
-			`//button[@type='button' and normalize-space()='Confirm']`,
+		return this.activation2FAPopup.getByTestId(
+			"enable-2fa-v4-confirm-button",
+		);
+	}
+
+	public get confirm2FAVerificationCodeButton(): Locator {
+		return this.verification2FAPopup.getByTestId(
+			"verify-2fa-v4-confirm-button",
 		);
 	}
 
 	public get disable2FaModalLocator(): Locator {
-		return this.page.locator(
-			`//img[@alt='Warning sign']//following-sibling::p[normalize-space()='Are you sure you want to disable your 2FA?']//ancestor::div[contains(@class,'MuiPaper-elevation')]`,
+		return this.page.getByTestId(
+			"deactivate-confirmation-2fa-v4-container",
 		);
 	}
 
 	public get continueDisable2FaButton(): Locator {
-		return this.disable2FaModalLocator.locator(
-			"//button[normalize-space()='Continue']",
+		return this.disable2FaModalLocator.getByTestId(
+			"deactivate-confirmation-2fa-v4-continue-button",
 		);
 	}
 
 	public get cancelDisable2FaButton(): Locator {
-		return this.disable2FaModalLocator.locator(
-			"//button[normalize-space()='Cancel']",
+		return this.disable2FaModalLocator.getByTestId(
+			"deactivate-confirmation-2fa-v4-cancel-button",
 		);
 	}
 
 	public get selfExclusionTabs(): Locator {
-		return this.settingsContainer.getByTestId("gam-tabs");
-	}
-
-	public selfExclusionTime(days: SelfExclusionDays): Locator {
-		return this.settingsContainer.getByRole("tab", { name: days });
-	}
-
-	public get confirmModalHeading(): Locator {
-		return this.page.getByTestId("confirmation-modal-heading");
-	}
-
-	public get confirmModalContinueButton(): Locator {
-		return this.page.getByTestId("confirmation-modal-continue-button");
-	}
-
-	public get selfExclusionTimer(): Locator {
 		return this.settingsContainer
-			.locator("h5", { hasText: "Self exclusion" })
-			.locator("+ div h4");
-	}
-
-	public get settingsContainerV4(): Locator {
-		return this.page.locator(
-			`[class^="ProfileLayout-styled__ProfileMainContainer-sc-"]`,
-		);
-	}
-
-	public get selfExclusionTabsV4(): Locator {
-		return this.settingsContainerV4
 			.getByTestId("self-exclusion-inactive-panel-1day-button")
 			.locator("..");
 	}
 
-	private selfExclusionDayKeyV4(days: SelfExclusionDays): string {
+	private selfExclusionDayKey(days: SelfExclusionDays): string {
 		switch (days) {
 			case SelfExclusionDays.ONE_DAY:
 				return "1day";
@@ -118,26 +94,26 @@ export class SettingsPageMap extends BaseMap {
 		}
 	}
 
-	public selfExclusionTimeV4(days: SelfExclusionDays): Locator {
-		const dayKey = this.selfExclusionDayKeyV4(days);
+	public selfExclusionTime(days: SelfExclusionDays): Locator {
+		const dayKey = this.selfExclusionDayKey(days);
 
-		return this.settingsContainerV4.getByTestId(
+		return this.settingsContainer.getByTestId(
 			`self-exclusion-inactive-panel-${dayKey}-button`,
 		);
 	}
 
-	public get confirmModalHeadingV4(): Locator {
+	public get confirmModalHeading(): Locator {
 		return this.page.getByTestId(
 			"self-exclusion-modal-v4-continue-description",
 		);
 	}
 
-	public get confirmModalContinueButtonV4(): Locator {
+	public get confirmModalContinueButton(): Locator {
 		return this.page.getByTestId("self-exclusion-modal-v4-continue-button");
 	}
 
-	public get selfExclusionTimerV4(): Locator {
-		return this.settingsContainerV4.getByTestId(
+	public get selfExclusionTimer(): Locator {
+		return this.settingsContainer.getByTestId(
 			"self-exclusion-active-panel-",
 		);
 	}
