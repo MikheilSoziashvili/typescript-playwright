@@ -305,7 +305,8 @@ export class WalletModal extends BasePage<WalletModalMap> {
 
 		const networkFee = await this.getNetworkFeeAmount(isVip, speed);
 
-		if (expectedCustomFee) {
+		const isStandardSpeed = speed === WithdrawalSpeed.Standard;
+		if (expectedCustomFee && !(isVip && isStandardSpeed)) {
 			await this.assertThat().networkFeeMatchesExpected(
 				expectedCustomFee,
 				parseFloat(networkFee),

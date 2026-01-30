@@ -1183,5 +1183,169 @@ test.describe(
 				},
 			);
 		}
+
+		for (const speed of cryptoWithdrawalDomainData.withdrawalSpeeds) {
+			test(
+				`[ENG-14775] USDT_ETH - withdraw with vip user and custom fees - ${speed.toLowerCase()}`,
+				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+				async ({
+					cryptoAdminPage,
+					homePage,
+					walletModal,
+					transactionsPage,
+					transactionDetailsModal,
+					userBalanceHandler,
+					gamdomApi,
+					testDataPredefined,
+					gamdomApiDbFacade,
+					page,
+					toast,
+					diceGamePage,
+					userInfoAdminPage,
+					transactionsAdminPage,
+					gamdomDb,
+				}) => {
+					const { withdrawalAddress } =
+						testDataPredefined.data.usdtAmountToDeposit;
+
+					// Setup user and test data
+					const { cookie: superAdminCookie, user: superAdmin } =
+						await gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
+					const { user, cookie } =
+						await gamdomApiDbFacade.createSingleUserDbAndAuth({
+							wagered: 100000,
+						});
+					const userCookie = getCookieHeader(cookie);
+					await gamdomDb.insertVipUser(
+						user.userId,
+						superAdmin.userId,
+						VipUserStatus.BASIC_VIP,
+					);
+					await setAuthenticationCookies(page, cookie);
+
+					// Meet wager requirement
+					await diceGamePage.navigate();
+					await diceGamePage.rollDiceWithAmount(50);
+
+					// Get withdrawal fee
+					await homePage.navigateToWallet();
+					const fees = await gamdomApi.getWithdrawalFees(
+						CryptoTicker.USDT,
+						{ cookie: userCookie },
+					);
+					const feeInCoins =
+						fees[withdrawalSpeedToFeeLevel[speed]].totalFeeInCoins;
+					const feeInUsd =
+						await userBalanceHandler.coinsToFiatRounded(
+							feeInCoins,
+							Currency.USD,
+						);
+					const amountToWithdraw =
+						feeInUsd +
+						testDataPredefined.data.amountTolerance
+							.amountToleranceUsd;
+
+					const initialBalanceUSD =
+						await userBalanceHandler.walletBalanceInFiatRounded();
+
+					// Withdraw USDT_ETH and verify custom fee is applied
+					const withdrawalFee = await walletModal.withdrawCrypto({
+						cryptocurrency: Cryptocurrency.Tether,
+						address: withdrawalAddress,
+						amount: amountToWithdraw,
+						speed: speed,
+						expectedCustomFee: feeInUsd,
+						isVip: true,
+					});
+
+					await toast.assertThat().titleIs(ToastTitle.SUCCESS);
+					await toast
+						.assertThat()
+						.titleIsNotDisplayed(ToastTitle.FAILED);
+
+					// Verify balance
+					await homePage.navigate();
+					const balanceAfterWithdrawUSD =
+						await userBalanceHandler.walletBalanceInFiatRounded();
+
+					await homePage
+						.assertThat()
+						.verifyBalanceWithTolerance(
+							balanceAfterWithdrawUSD,
+							initialBalanceUSD - amountToWithdraw,
+						);
+
+					const withdrawnAmountAfterFee =
+						amountToWithdraw - parseFloat(withdrawalFee);
+
+					// Process withdrawal as superadmin
+					await setAuthenticationCookies(page, superAdminCookie);
+					await cryptoAdminPage.sendQueuedWithdrawals();
+
+					// Verify withdrawal transaction flow
+					await setAuthenticationCookies(page, cookie);
+					await transactionsPage
+						.steps()
+						.verifyWithdrawTransactionStatusIs(
+							TransactionState.SENT,
+						);
+
+					await transactionsPage
+						.steps()
+						.verifyWithdrawTransactionStatusIs(
+							TransactionState.CONFIRMED,
+						);
+
+					// Verify transaction details
+					await transactionsPage.clickTransactionDetailsButton();
+					await transactionDetailsModal
+						.assertThat()
+						.withdrawalTransactionDetailsAre(
+							withdrawnAmountAfterFee,
+							withdrawalFee,
+							true,
+							speed,
+						);
+
+					const withdrawTransactionId =
+						await transactionDetailsModal.getBlockchainTransactionId();
+
+					// Verify admin panel shows correct amounts
+					const superAdminCookieHeader =
+						getCookieHeader(superAdminCookie);
+					const withdrawnAmountAfterFeeInCoins =
+						userBalanceHandler.usdToCoinsNetAfterFeeTrunc(
+							amountToWithdraw,
+							parseFloat(withdrawalFee),
+						);
+
+					await cryptoAdminPage
+						.assertThat()
+						.assertTransactionCoinsAmount(
+							gamdomApi,
+							superAdminCookieHeader,
+							withdrawTransactionId,
+							withdrawnAmountAfterFeeInCoins,
+						);
+
+					// Verify user info transactions tab as superadmin
+					await setAuthenticationCookies(page, superAdminCookie);
+					const expectedFeeLevel = withdrawalSpeedToFeeLevel[speed];
+
+					await userInfoAdminPage
+						.steps()
+						.navigateAndShowUserDetails(user.username);
+					await userInfoAdminPage.clickUserInfoTab(
+						UserInfoTabs.Transactions,
+					);
+					await transactionsAdminPage
+						.steps()
+						.fetchDataForRecordWithBalanceAndVerifyFeeLevel(
+							TransactionType.WITHDRAWAL,
+							expectedFeeLevel,
+						);
+				},
+			);
+		}
 	},
 );
