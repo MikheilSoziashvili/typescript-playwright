@@ -143,6 +143,8 @@ Make sure you have the following installed:
 │   ├── custom-exceptions.ts                      # Test data custom exceptions
 │   ├── test-data-manager.ts                      # Test data manager
 │   ├── types.ts                                  # Test data type definitions
+├── test-flows                                    # Test flow layer
+│   ├── base                                      # Test flow layer base classes
 ├── tests                                         # Test suites
 │   ├── visual                                    # Visual test suites
 │   │   ├── homepage-visual.spec.ts               # Visual test suite (example)

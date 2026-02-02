@@ -1,8 +1,4 @@
 import { testDetails } from "@core/helpers/test-details-helper";
-import {
-	toCurrencyEnum,
-	toWalletUnit,
-} from "@core/utils/currency-wallet-utils";
 import { getCookieHeader, setAuthenticationCookies } from "@core/utils/utils";
 import { PlinkoBetTestData, RegisterTestData } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
@@ -16,7 +12,6 @@ import { TestTag } from "@enums/test-tags";
 import { Unit } from "@enums/units";
 import { UserMenuOption } from "@enums/user-menu-options";
 import { UserType } from "@enums/user-types";
-import { WalletType } from "@enums/wallet-types";
 import { storageStateNewSuperAdminUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import { logger } from "@logger/logger";
@@ -218,97 +213,14 @@ test.describe(
 							.withAuthor(JiraUser.RALUCA_ARITON)
 							.withTags(TestTag.ORIGINALS)
 							.apply(),
-						async ({ browserSessionManager }) => {
-							const regularUser =
-								await browserSessionManager.loginAs(
-									TestUserRole.REGULAR,
-									{
-										reuseContext: true,
-										regularUserWalletOptions: {
-											walletUnits: walletUnits,
-											amount: SUPER_HIGH_USER_AMOUNT,
-										},
-									},
-								);
-
-							await regularUser.pages.plinkoGamePage.navigate();
-							await regularUser.pages.homePage.authenticatedHeader.changeWalletAndCurrency(
-								record.Wallet,
-								record.BetCurrency,
-							);
-
-							const walletUnit = toWalletUnit(record.Wallet);
-							const betCurrency = toCurrencyEnum(
-								record.BetCurrency,
-							);
-
-							await regularUser.pages.plinkoGamePage
-								.assertThat()
-								.betAmountCurrencyChanged(betCurrency);
-
-							const coinsBefore = await (
-								await regularUser.userBalanceHandler()
-							).walletBalanceInCoins(
-								walletUnit,
-								WalletType.DEFAULT,
-							);
-
-							await regularUser.pages.plinkoGamePage.startManualBet(
-								record.BetAmount.toString(),
-							);
-
-							await regularUser.pages.plinkoGamePage
-								.steps()
-								.waitForSlidersToBeActive();
-
-							const betWinMultiplier =
-								await regularUser.pages.plinkoGamePage
-									.steps()
-									.getInGameChipsHistoryButtonValue();
-
-							const stakeCoins = await (
-								await regularUser.userBalanceHandler()
-							).convertDisplayCurrencyToCoins(
-								Number(record.BetAmount),
-								betCurrency,
-							);
-
-							const payoutCoins = (
-								await regularUser.userBalanceHandler()
-							).calculatePayoutCoins(
-								stakeCoins,
-								betWinMultiplier,
-							);
-
-							const expectedCoinsAfter =
-								await regularUser.pages.plinkoGamePage
-									.steps()
-									.calculateExpectedBalance(
-										coinsBefore,
-										stakeCoins,
-										payoutCoins,
-									);
-
-							await regularUser.pages.homePage.map.waitForStableXPosition(
-								{
-									locator:
-										await regularUser.pages.homePage.authenticatedHeader.map.getLoadedAccountBalance(),
-								},
-							);
-
-							const coinsAfter = await (
-								await regularUser.userBalanceHandler()
-							).walletBalanceInCoins(
-								walletUnit,
-								WalletType.DEFAULT,
-							);
-
-							await regularUser.pages.plinkoGamePage
-								.assertThat()
-								.verifyBalanceWithTolerance(
-									coinsAfter,
-									expectedCoinsAfter,
-								);
+						async ({ plinkoBetTestFlow }) => {
+							await plinkoBetTestFlow.placeBetAcrossWallets({
+								wallet: record.Wallet,
+								betCurrency: record.BetCurrency,
+								betAmount: record.BetAmount,
+								walletUnits: walletUnits,
+								initialAmount: SUPER_HIGH_USER_AMOUNT,
+							});
 						},
 					);
 				});

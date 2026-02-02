@@ -10,48 +10,22 @@
 		"resolveJsonModule": true,
 		"baseUrl": ".",
 		"paths": {
-			"@api/*": [
-				"./api/*",
-			],
-			"@constants/*": [
-				"./constants/*",
-			],
-			"@core/*": [
-				"./core/*",
-			],
-			"@datesets/*": [
-				"./datesets/*",
-			],
-			"@dtos/*": [
-				"./dtos/*",
-			],
-			"@enums/*": [
-				"./enums/*",
-			],
-			"@fixtures/*": [
-				"./fixtures/*",
-			],
-			"@formulas/*": [
-				"./formulas/*",
-			],
-			"@logger/*": [
-				"./logger/*",
-			],
-			"@pages/*": [
-				"./pages/*",
-			],
-			"@base/*": [
-				"./pages/base/*",
-			],
-			"@components/*": [
-				"./pages/components/*",
-			],
-			"@modals/*": [
-				"./pages/modals/*",
-			],
-			"@support/*": [
-				"./support/*",
-			]
+			"@api/*": ["./api/*"],
+			"@constants/*": ["./constants/*"],
+			"@core/*": ["./core/*"],
+			"@datesets/*": ["./datesets/*"],
+			"@dtos/*": ["./dtos/*"],
+			"@enums/*": ["./enums/*"],
+			"@fixtures/*": ["./fixtures/*"],
+			"@formulas/*": ["./formulas/*"],
+			"@logger/*": ["./logger/*"],
+			"@pages/*": ["./pages/*"],
+			"@base/*": ["./pages/base/*"],
+			"@components/*": ["./pages/components/*"],
+			"@modals/*": ["./pages/modals/*"],
+			"@support/*": ["./support/*"],
+			"@test-flows": ["./test-flows/index.ts"],
+			"@test-flows/*": ["./test-flows/*"]
 		}
 	}
 }
