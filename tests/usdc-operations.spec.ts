@@ -465,6 +465,7 @@ test.describe(
 					transactionsAdminPage,
 					gamdomDb,
 				}) => {
+					test.fixme(true, "Skipped until wallet is topped up");
 					// Setup user and test data
 					const { cookie: superAdminCookie, user: superAdmin } =
 						await gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
