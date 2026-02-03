@@ -14,17 +14,12 @@ export class ContinueModal extends BaseModal<ContinueModalMap> {
 	}
 
 	@step("Click continue button")
-	public async clickContinueButton(): Promise<void> {
-		await this.map.continueButton.click();
+	public async clickLogoutButton(): Promise<void> {
+		await this.map.logoutButton.click();
 	}
 
 	@step("Click cancel button")
 	public async clickCancelButton(): Promise<void> {
 		await this.map.cancelButton.click();
-	}
-
-	@step("Click logout button - v4")
-	public async clickLogoutButtonV4(): Promise<void> {
-		await this.map.logoutButtonV4.click();
 	}
 }

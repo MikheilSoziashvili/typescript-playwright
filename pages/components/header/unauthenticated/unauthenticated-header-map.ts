@@ -15,14 +15,14 @@ export class UnauthenticatedHeaderMap extends BaseMap {
 	}
 
 	public get steamSignInButton(): Locator {
-		return this.page.getByTestId("steamSignInButton");
+		return this.page.getByTestId("auth-social-steam-button");
 	}
 
 	public get googleSignInButton(): Locator {
-		return this.page.getByTestId("googleSignInButton");
+		return this.page.getByTestId("auth-social-google-button");
 	}
 
 	public get telegramSignInButton(): Locator {
-		return this.page.getByTestId("telegramSignInButton");
+		return this.page.getByTestId("auth-social-telegram-button");
 	}
 }

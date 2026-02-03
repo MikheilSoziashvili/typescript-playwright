@@ -7,23 +7,23 @@ export class LoginModalSteps extends BaseModalStep<LoginModal> {
 		super(gamdomModal);
 	}
 
-	@step("Send forgot password email successfully - v4")
-	public async sendForgotPasswordEmailSuccessfullyV4(
+	@step("Send forgot password email successfully")
+	public async sendForgotPasswordEmailSuccessfully(
 		email: string,
 		expectedText: string,
 	): Promise<void> {
-		await this.gamdomModal.clickForgotPasswordButtonV4();
-		await this.gamdomModal.fillInEmailForForgotPasswordV4(email);
-		await this.gamdomModal.clickSendButtonForForgotPasswordV4();
+		await this.gamdomModal.clickForgotPasswordLink();
+		await this.gamdomModal.fillInEmailForForgotPassword(email);
+		await this.gamdomModal.clickSendButtonForForgotPassword();
 		await this.gamdomModal
 			.assertThat()
-			.forgotPasswordConfirmationTextAndVisibilityV4(expectedText);
+			.forgotPasswordConfirmationTextAndVisibility(expectedText);
 	}
 
-	@step("Close forgot password form - v4")
-	public async closeForgotPasswordFormAndVerifyV4(): Promise<void> {
-		await this.gamdomModal.closeForgotPasswordFormV4();
-		await this.gamdomModal.assertThat().forgotPasswordFormIsNotVisibleV4();
-		await this.gamdomModal.assertThat().loginModalIsDisplayedV4();
+	@step("Close forgot password form")
+	public async closeForgotPasswordFormAndVerify(): Promise<void> {
+		await this.gamdomModal.closeForgotPasswordForm();
+		await this.gamdomModal.assertThat().forgotPasswordFormIsNotVisible();
+		await this.gamdomModal.assertThat().loginModalIsDisplayed();
 	}
 }

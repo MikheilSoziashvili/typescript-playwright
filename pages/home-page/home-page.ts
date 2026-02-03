@@ -71,7 +71,6 @@ export class HomePage extends BasePage<HomePageMap> {
 		return new HomePageSteps(this);
 	}
 
-	// Works for both new (v4) and old design
 	@step("Navigate and check title")
 	public async navigateAndCheckTitle(): Promise<void> {
 		await this.navigate();
@@ -216,23 +215,5 @@ export class HomePage extends BasePage<HomePageMap> {
 	public async navigateAndExpandChat(): Promise<void> {
 		await this.navigate();
 		await this.authenticatedHeader.expandChatIfNotVisible();
-	}
-
-	@step("Navigate to wallet - v4")
-	public async navigateToWalletV4(): Promise<void> {
-		await this.navigate();
-		await this.page.waitForLoadState();
-		await this.clickWalletButtonV4();
-	}
-
-	@step("Click wallet button - v4")
-	public async clickWalletButtonV4(): Promise<void> {
-		await this.map.walletButtonV4.click();
-	}
-
-	@step("Click gamdom logo - v4")
-	public async clickGamdomLogoV4(): Promise<void> {
-		await this.map.gamdomLogoButtonV4.click();
-		await this.page.waitForLoadState(WaitUntilState.LOAD);
 	}
 }

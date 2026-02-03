@@ -6,19 +6,20 @@ export class FaqPageMap extends BaseMap {
 		super(page);
 	}
 
-	public get affiliateCodeRegisterContainer(): Locator {
-		return this.page.getByTestId("accordion-affiliate");
+	public get faqAccordionContainer(): Locator {
+		return this.page.getByTestId("accordion-header-txt");
 	}
 
-	public get expandAffiliateCodeRegisterButtonLocator(): Locator {
-		return this.affiliateCodeRegisterContainer
-			.getByTestId("accordion-summary-affiliate")
-			.filter({ hasText: "What affiliate code am I registered under?" });
+	public get expandAffiliateCodeToggle(): Locator {
+		return this.faqAccordionContainer
+			.filter({ hasText: "What affiliate code am I registered under?" })
+			.locator("xpath=..")
+			.getByTestId("faq-affiliate-code-toggle");
 	}
 
 	public get affiliateUnderCodeLinkButtonLocator(): Locator {
 		return this.page
-			.getByTestId("text-block-wrapper-affiliate-code-2")
-			.locator("[class*='FAQ-styled__LinkText']");
+			.getByTestId("faq-affiliate-code-accordion-content")
+			.getByRole("link");
 	}
 }

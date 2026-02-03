@@ -7,11 +7,11 @@ export class ProfilePageMap extends BaseMap {
 		super(page);
 	}
 	public get leftMenu(): Locator {
-		return this.page.getByTestId("profileLeftMenu");
+		return this.page.getByTestId("profile-layout-tabs-container");
 	}
 
 	public get logOutButton(): Locator {
-		return this.leftMenu.getByTestId("logoutButton");
+		return this.leftMenu.getByTestId("prof-ttl");
 	}
 
 	public get hideStatisticsToggle(): Locator {
@@ -35,7 +35,9 @@ export class ProfilePageMap extends BaseMap {
 	}
 
 	public get usernameContainer(): Locator {
-		return this.page.getByTestId("profileUsernameContainer");
+		return this.page.getByTestId(
+			"profile-page-change-user-info-username-container",
+		);
 	}
 
 	public get changeUsernameButton(): Locator {
@@ -43,11 +45,13 @@ export class ProfilePageMap extends BaseMap {
 	}
 
 	public get changeUsernameInput(): Locator {
-		return this.getInputField("username", this.usernameContainer);
+		return this.getInputField("displayUsername", this.usernameContainer);
 	}
 
 	public get saveUsernameButton(): Locator {
-		return this.usernameContainer.getByTestId("saveButton");
+		return this.page.getByTestId(
+			"profile-page-change-user-info-save-username",
+		);
 	}
 
 	public get changeEmailButton(): Locator {
@@ -84,39 +88,5 @@ export class ProfilePageMap extends BaseMap {
 		return this.leftMenu.locator(`a`, {
 			hasText: `${dropdownItem}`,
 		});
-	}
-
-	public get usernameContainerV4(): Locator {
-		return this.page.getByTestId(
-			"profile-page-change-user-info-username-container",
-		);
-	}
-
-	public get saveUsernameButtonV4(): Locator {
-		return this.page.getByTestId(
-			"profile-page-change-user-info-save-username",
-		);
-	}
-
-	public get changeUsernameInputV4(): Locator {
-		return this.getInputField("displayUsername", this.usernameContainerV4);
-	}
-
-	public get leftMenuContainerV4(): Locator {
-		return this.page.getByTestId("profile-layout-tabs-container");
-	}
-
-	public get logOutButtonV4(): Locator {
-		return this.leftMenuContainerV4.getByTestId("prof-ttl");
-	}
-
-	public get profileUserInfoContainer(): Locator {
-		return this.page.getByTestId("profileUserIncoContainer");
-	}
-
-	public get changePasswordButton(): Locator {
-		return this.profileUserInfoContainer.getByTestId(
-			"change-password-button",
-		);
 	}
 }

@@ -60,20 +60,6 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		await expect(this.gamdomPage.map.toastMessage).toContainText(text);
 	}
 
-	@step("User is registered")
-	public async userIsRegistered(username: string): Promise<void> {
-		await this.gamdomPage.authenticatedHeader
-			.assertThat()
-			.loggedInUserElementsAreVisible();
-
-		const receivedUsername =
-			await this.gamdomPage.map.welcomeBackMessage.textContent({
-				timeout: Timeout.MAX,
-			});
-
-		expect(receivedUsername?.trim()).toBe(`${username}!`);
-	}
-
 	@step("Is banner carousel displayed")
 	public async isBannerCarouselDisplayed(): Promise<void> {
 		await expect(this.gamdomPage.map.bannerCarousel).toBeVisible();
@@ -250,7 +236,6 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		);
 	}
 
-	//same for v3 and v4
 	@step("Verify total bets are not 0")
 	private async verifySectionTotalBetsAreNotZero(
 		locator: Locator,
@@ -357,14 +342,6 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		);
 	}
 
-	@step("User is logged in - v4")
-	public async userIsLoggedInV4(): Promise<void> {
-		await this.gamdomPage.authenticatedHeader
-			.assertThat()
-			.loggedInUserElementsAreVisibleV4();
-	}
-
-	//same for v3 and v4
 	@step("Verify all usernames are hidden")
 	public async allUsernamesAreHidden(
 		list: Locator,

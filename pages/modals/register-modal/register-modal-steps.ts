@@ -8,8 +8,8 @@ export class RegisterModalSteps extends BaseModalStep<RegisterModal> {
 		super(modal);
 	}
 
-	@step("Fill in credentials successfully - v4")
-	public async fillInCredentialsSuccessfullyV4(
+	@step("Fill in credentials successfully")
+	public async fillInCredentialsSuccessfully(
 		registerData: RegisterTestData,
 		options: {
 			acceptTermsOfService?: boolean;
@@ -19,16 +19,16 @@ export class RegisterModalSteps extends BaseModalStep<RegisterModal> {
 		const { acceptTermsOfService = true, acceptNewsOffers = false } =
 			options;
 
-		await this.gamdomModal.map.usernameFieldV4.fill(registerData.username);
-		await this.gamdomModal.map.passwordFieldV4.fill(registerData.password);
-		await this.gamdomModal.map.emailFieldV4.fill(registerData.email);
+		await this.gamdomModal.map.usernameField.fill(registerData.username);
+		await this.gamdomModal.map.passwordField.fill(registerData.password);
+		await this.gamdomModal.map.emailField.fill(registerData.email);
 
 		if (acceptTermsOfService) {
 			await this.gamdomModal
 				.steps()
 				.checkCheckbox(
-					this.gamdomModal.map.termsOfServiceCheckboxVisualV4,
-					this.gamdomModal.map.termsOfServiceCheckboxInputV4,
+					this.gamdomModal.map.termsOfServiceCheckboxVisual,
+					this.gamdomModal.map.termsOfServiceCheckboxInput,
 					true,
 				);
 		}
@@ -37,8 +37,8 @@ export class RegisterModalSteps extends BaseModalStep<RegisterModal> {
 			await this.gamdomModal
 				.steps()
 				.checkCheckbox(
-					this.gamdomModal.map.newsAndOffersCheckboxVisualV4,
-					this.gamdomModal.map.newsAndOffersCheckboxInputV4,
+					this.gamdomModal.map.newsAndOffersCheckboxVisual,
+					this.gamdomModal.map.newsAndOffersCheckboxInput,
 					true,
 				);
 		}

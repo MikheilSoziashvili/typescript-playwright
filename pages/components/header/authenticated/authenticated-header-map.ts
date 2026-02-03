@@ -15,22 +15,24 @@ export class AuthenticatedHeaderMap extends BaseMap {
 	}
 
 	public get authenticatedHeaderContainer(): Locator {
-		return this.page.locator("[class*='HeaderContainer']");
+		return this.page.locator("header[class*=HeaderNavPanel]");
 	}
 
 	public get balanceDropdownArrow(): Locator {
 		return this.authenticatedHeaderContainer.locator(
-			"i.bal-arrow.icon-angle-down",
+			'div[role="button"][aria-expanded]:has([data-testid="nav-wallet-action-btn"]) svg.dropdown-toggle-icon',
 		);
 	}
 
-	public get walletBtn(): Locator {
-		return this.authenticatedHeaderContainer.locator("a[href='/wallet']");
+	public get walletButton(): Locator {
+		return this.authenticatedHeaderContainer.getByTestId(
+			"nav-wallet-action-btn",
+		);
 	}
 
-	public get userAvatarMenuButton(): Locator {
+	public get userAccountMenuAvatar(): Locator {
 		return this.authenticatedHeaderContainer.getByTestId(
-			"userAvatarWithMenu",
+			"full-account-widget-avatar",
 		);
 	}
 
@@ -162,12 +164,8 @@ export class AuthenticatedHeaderMap extends BaseMap {
 		return this.page.getByTestId("balanceAmoutLabel");
 	}
 
-	public get authenticatedHeaderContainerV4(): Locator {
-		return this.page.locator("header[class*=HeaderNavPanel]");
-	}
-
 	public get accountBalanceV4(): Locator {
-		return this.authenticatedHeaderContainerV4.getByTestId(
+		return this.authenticatedHeaderContainer.getByTestId(
 			"headerUserBalance",
 		);
 	}
@@ -176,27 +174,15 @@ export class AuthenticatedHeaderMap extends BaseMap {
 		return this.accountBalanceV4.locator(":scope.animation-finished");
 	}
 
-	public get userAccountMenuAvatarV4(): Locator {
-		return this.authenticatedHeaderContainerV4.getByTestId(
-			"full-account-widget-avatar",
-		);
-	}
-
-	public get userAccountMenuStackV4(): Locator {
-		return this.authenticatedHeaderContainerV4.getByTestId(
+	public get userAccountMenuStack(): Locator {
+		return this.authenticatedHeaderContainer.getByTestId(
 			"full-account-widget-stack",
 		);
 	}
 
-	public get userAccountUsernameV4(): Locator {
-		return this.userAccountMenuStackV4.getByTestId(
+	public get userAccountUsername(): Locator {
+		return this.userAccountMenuStack.getByTestId(
 			"full-account-widget-username",
-		);
-	}
-
-	public get walletButtonV4(): Locator {
-		return this.authenticatedHeaderContainerV4.getByTestId(
-			"nav-wallet-action-btn",
 		);
 	}
 

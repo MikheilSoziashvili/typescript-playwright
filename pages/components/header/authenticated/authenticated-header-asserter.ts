@@ -1,6 +1,5 @@
 import { BaseAsserter } from "@base/base-asserter";
 import { formatBalance } from "@core/utils/utils";
-import { Timeout } from "@enums/timeout";
 import { expect, TestInfo } from "@playwright/test";
 import { step } from "decorators/step";
 import { AuthenticatedHeader } from "./authenticated-header";
@@ -27,26 +26,20 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 
 	@step("Logged in user elements are visible")
 	async loggedInUserElementsAreVisible(): Promise<void> {
-		await this.checkElementsAreVisible(
-			[
-				this.gamdomPage.map.walletBtn,
-				this.gamdomPage.map.balanceDropdownArrow,
-				this.gamdomPage.map.userAvatar,
-			],
-			Timeout.MAX,
-		);
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.walletButton,
+			this.gamdomPage.map.balanceDropdownArrow,
+			this.gamdomPage.map.userAccountMenuAvatar,
+		]);
 	}
 
 	@step("Logged in user elements are not visible")
 	async loggedInUserElementsAreNotVisible(): Promise<void> {
-		await this.checkElementsAreNotVisible(
-			[
-				this.gamdomPage.map.walletBtn,
-				this.gamdomPage.map.balanceDropdownArrow,
-				this.gamdomPage.map.userAvatar,
-			],
-			Timeout.MAX,
-		);
+		await this.checkElementsAreNotVisible([
+			this.gamdomPage.map.walletButton,
+			this.gamdomPage.map.balanceDropdownArrow,
+			this.gamdomPage.map.userAccountMenuAvatar,
+		]);
 	}
 
 	@step("Account balance is")
@@ -125,32 +118,14 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 		]);
 	}
 
-	@step("Logged in user elements are visible - v4")
-	async loggedInUserElementsAreVisibleV4(): Promise<void> {
-		await this.checkElementsAreVisible([
-			this.gamdomPage.map.walletButtonV4,
-			this.gamdomPage.map.accountBalanceV4,
-			this.gamdomPage.map.userAccountMenuAvatarV4,
-		]);
-	}
-
-	@step("User is registered - v4")
-	public async userIsRegisteredV4(username: string): Promise<void> {
-		await this.loggedInUserElementsAreVisibleV4();
+	@step("User is registered")
+	public async userIsRegistered(username: string): Promise<void> {
+		await this.loggedInUserElementsAreVisible();
 
 		const receivedUsername =
-			await this.gamdomPage.map.userAccountUsernameV4.textContent();
+			await this.gamdomPage.map.userAccountUsername.textContent();
 
 		expect(receivedUsername?.trim()).toBe(username);
-	}
-
-	@step("Logged in user elements are not visible - v4")
-	async loggedInUserElementsAreNotVisibleV4(): Promise<void> {
-		await this.checkElementsAreNotVisible([
-			this.gamdomPage.map.walletButtonV4,
-			this.gamdomPage.map.accountBalanceV4,
-			this.gamdomPage.map.userAccountMenuAvatarV4,
-		]);
 	}
 
 	@step("Verify Support and Rewards navigation buttons are visible")

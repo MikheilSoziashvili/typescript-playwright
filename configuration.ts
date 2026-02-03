@@ -26,7 +26,7 @@ export const enableNewDesignV4Feature =
 
 export const environment_url = process.env.CI
 	? asString(process.env.ENVIRONMENT_URL)
-	: "https://staging-for-e2e-tests.teamgamdom.com";
+	: "https://qa-for-e2e-tests.teamgamdom.com";
 export const logLevel = isCI ? LogLevel.WARN : LogLevel.INFO;
 export const createExecution: boolean =
 	isScheduledRun || (isCI && shouldCreateExecution);

@@ -1,19 +1,19 @@
+import { BaseModal } from "@base/base-modal";
+import { TestUserConfigurationObject } from "@core/types/types";
+import { findUser } from "@core/utils/utils";
+import { Toast } from "@pages/components/toast/toast";
 import { expect, Page } from "@playwright/test";
 import { step } from "decorators/step";
-import { BaseModal } from "@base/base-modal";
-import { LoginModalMap } from "./login-modal-map";
 import { LoginModalAsserter } from "./login-modal-asserter";
-import { findUser } from "@core/utils/utils";
-import { TestUserConfigurationObject } from "@core/types/types";
+import { LoginModalMap } from "./login-modal-map";
 import { LoginModalSteps } from "./login-modal-steps";
-import { ToastV4 } from "@pages/components/toastV4/toast-v4";
 
 export class LoginModal extends BaseModal<LoginModalMap> {
-	public toast: ToastV4;
+	public toast: Toast;
 
 	constructor(page: Page) {
 		super(page, new LoginModalMap(page));
-		this.toast = new ToastV4(page);
+		this.toast = new Toast(page);
 	}
 
 	public assertThat(fromCsv = false): LoginModalAsserter {
@@ -82,8 +82,13 @@ export class LoginModal extends BaseModal<LoginModalMap> {
 	}
 
 	@step("Click reset password button")
-	public async clickResetPasswordButton(): Promise<void> {
-		await this.map.forgotPasswordButton.click();
+	public async clickForgotPasswordLink(): Promise<void> {
+		await this.map.forgotPasswordLink.click();
+	}
+
+	@step("Fill in email for forgot password")
+	public async fillInEmailForForgotPassword(email: string): Promise<void> {
+		await this.map.forgotPasswordEmailField.fill(email);
 	}
 
 	@step("Fill in email")
@@ -92,8 +97,8 @@ export class LoginModal extends BaseModal<LoginModalMap> {
 	}
 
 	@step("Click send new password button")
-	public async clickSendNewPasswordButton(): Promise<void> {
-		await this.map.sendNewPasswordButton.click();
+	public async clickSendButtonForForgotPassword(): Promise<void> {
+		await this.map.forgotPasswordSendButton.click();
 	}
 
 	@step("Set new password")
@@ -103,37 +108,8 @@ export class LoginModal extends BaseModal<LoginModalMap> {
 		await this.map.setNewPasswordButton.click();
 	}
 
-	@step("Login with credentials - v4")
-	public async loginV4(username: string, password: string): Promise<void> {
-		await this.map.usernameFieldV4.fill(username);
-		await this.map.passwordFieldV4.fill(password);
-		await this.map.loginBtnV4.click();
-	}
-
-	@step("Click forgot password button - v4")
-	public async clickForgotPasswordButtonV4(): Promise<void> {
-		await this.map.forgotPasswordButtonV4.click();
-	}
-
-	@step("Fill in email for forgot password - v4")
-	public async fillInEmailForForgotPasswordV4(email: string): Promise<void> {
-		await this.map.forgotPasswordEmailFieldV4.fill(email);
-	}
-
-	@step("Click send button for forgot password - v4")
-	public async clickSendButtonForForgotPasswordV4(): Promise<void> {
-		await this.map.forgotPasswordSendButtonV4.click();
-	}
-
-	@step("Close forgot password form - v4")
-	public async closeForgotPasswordFormV4(): Promise<void> {
-		await this.map.forgotPasswordCloseButtonV4.click();
-	}
-
-	@step("Set new password - v4")
-	public async setNewPasswordV4(password: string): Promise<void> {
-		await this.map.newPasswordInput.fill(password);
-		await this.map.newPasswordConfirmationInput.fill(password);
-		await this.map.setNewPasswordButtonV4.click();
+	@step("Close forgot password form")
+	public async closeForgotPasswordForm(): Promise<void> {
+		await this.map.forgotPasswordCloseButton.click();
 	}
 }

@@ -16,7 +16,7 @@ export class ContinueModalAsserter extends BaseAsserter<ContinueModal> {
 	public async isModalNotDisplayed(): Promise<void> {
 		await this.checkElementsAreNotVisible([
 			this.gamdomPage.map.modalLocator,
-			this.gamdomPage.map.continueButton,
+			this.gamdomPage.map.logoutButton,
 			this.gamdomPage.map.cancelButton,
 		]);
 	}
@@ -24,9 +24,8 @@ export class ContinueModalAsserter extends BaseAsserter<ContinueModal> {
 	@step("Check continue and cancel buttons are displayed")
 	public async continueAndCancelButtonsDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible([
-			this.gamdomPage.map.continueButton,
+			this.gamdomPage.map.logoutButton,
 			this.gamdomPage.map.cancelButton,
 		]);
 	}
-
 }

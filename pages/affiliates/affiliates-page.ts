@@ -36,12 +36,12 @@ export class AffiliatesPage extends BasePage<AffiliatesPageMap> {
 		await this.map.newAffilitatesCodeField.fill(code, {
 			timeout: Timeout.LONG, // To be removed when issues in e2e environment are resolved
 		});
-		await this.map.saveAffiliatesCodeButton.click();
+		await this.map.createAffiliatesCodeButton.click();
 	}
 
 	@step("Get affiliate link")
 	public async getAffiliateLink(): Promise<string> {
-		return (await this.map.copyCodeToClipboardField.getAttribute(
+		return (await this.map.createdAffiliatesCodeField.getAttribute(
 			Attributes.VALUE,
 		)) as string;
 	}

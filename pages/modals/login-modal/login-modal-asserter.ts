@@ -1,5 +1,4 @@
 import { BaseAsserter } from "@base/base-asserter";
-import { Timeout } from "@enums/timeout";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { expect, Locator } from "@playwright/test";
@@ -11,18 +10,6 @@ export class LoginModalAsserter extends BaseAsserter<LoginModal> {
 	public constructor(page: LoginModal, fromCsv = false) {
 		super(page);
 		this.fromCsv = fromCsv;
-	}
-
-	@step("Check login modal elements are visible")
-	async loginModalElementsAreVisible(): Promise<void> {
-		await this.checkElementsAreVisible(
-			[
-				this.gamdomPage.map.loginBtn,
-				this.gamdomPage.map.usernameField,
-				this.gamdomPage.map.passwordField,
-			],
-			Timeout.MAX,
-		);
 	}
 
 	@step("Check login button is disabled")
@@ -55,73 +42,59 @@ export class LoginModalAsserter extends BaseAsserter<LoginModal> {
 	@step("Assert password reset email is sent")
 	public async assertPasswordResetEmailIsSent(): Promise<void> {
 		await this.checkElementsAreVisible([
-			this.gamdomPage.map.passwordResetConfirmationText,
+			this.gamdomPage.map.forgotPasswordConfirmationText,
 		]);
 	}
 
-	@step("Check login modal elements are visible - v4")
-	async loginModalElementsAreVisibleV4(): Promise<void> {
+	@step("Check login modal elements are visible")
+	async loginModalElementsAreVisible(): Promise<void> {
 		await this.checkElementsAreVisible([
-			this.gamdomPage.map.usernameContainerV4,
-			this.gamdomPage.map.passwordContainerV4,
-			this.gamdomPage.map.loginBtnV4,
+			this.gamdomPage.map.usernameContainer,
+			this.gamdomPage.map.passwordContainer,
+			this.gamdomPage.map.loginBtn,
 		]);
 	}
 
 	@step("Check login modal is displayed")
-	public async loginModalIsDisplayedV4(): Promise<void> {
-		await this.checkElementsAreVisible([this.gamdomPage.map.loginDialogV4]);
-	}
-
-	@step("Check login modal is not displayed")
-	public async loginModalIsNotDisplayedV4(): Promise<void> {
-		await this.checkElementsAreNotVisible([
-			this.gamdomPage.map.loginDialogV4,
-		]);
-	}
-
-	@step("Check forgot password form is visible")
-	public async forgotPasswordFormIsVisibleV4(): Promise<void> {
-		await this.checkElementsAreVisible([
-			this.gamdomPage.map.forgotPasswordFormV4,
-		]);
+	public async loginModalIsDisplayed(): Promise<void> {
+		await this.checkElementsAreVisible([this.gamdomPage.map.loginDialog]);
 	}
 
 	@step("Check forgot password form is not visible")
-	public async forgotPasswordFormIsNotVisibleV4(): Promise<void> {
+	public async forgotPasswordFormIsNotVisible(): Promise<void> {
 		await this.checkElementsAreNotVisible([
-			this.gamdomPage.map.forgotPasswordFormV4,
+			this.gamdomPage.map.forgotPasswordForm,
 		]);
 	}
 
 	@step("Verify forgot password confirmation text and visibility")
-	public async forgotPasswordConfirmationTextAndVisibilityV4(
+	public async forgotPasswordConfirmationTextAndVisibility(
 		expectedText: string,
 	): Promise<void> {
 		await this.checkElementsAreVisible([
-			this.gamdomPage.map.forgotPasswordConfirmationTextV4,
+			this.gamdomPage.map.forgotPasswordConfirmationText,
 		]);
 
 		await this.checkElementsHaveText([
 			{
-				locator: this.gamdomPage.map.forgotPasswordConfirmationTextV4,
+				locator: this.gamdomPage.map.forgotPasswordConfirmationText,
 				expectedText: expectedText,
 			},
 		]);
 	}
 
-	@step("Assert failed login toast message - v4")
-	public async assertFailedLoginToastMessageV4(): Promise<void> {
+	@step("Assert failed login toast message")
+	public async assertFailedLoginToastMessage(): Promise<void> {
 		await this.gamdomPage.toast
 			.assertThat()
-			.toastMessageIsV4(
+			.toastMessageIs(
 				ToastTitle.FAILED,
-				ToastSubTitle.USER_DOES_NOT_EXIST,
+				ToastSubTitle.INCORRECT_CREDENTIALS,
 			);
 	}
 
-	@step("Check field error text - v4")
-	private async checkFieldErrorV4(
+	@step("Check field error text")
+	private async checkFieldError(
 		locator: Locator,
 		expectedText: string,
 	): Promise<void> {
@@ -138,30 +111,19 @@ export class LoginModalAsserter extends BaseAsserter<LoginModal> {
 		]);
 	}
 
-	@step("Check username field error text - v4")
-	public async usernameFieldErrorTextIsV4(
-		expectedText: string,
-	): Promise<void> {
-		await this.checkFieldErrorV4(
-			this.gamdomPage.map.usernameErrorTooltipV4,
+	@step("Check username field error text")
+	public async usernameFieldErrorTextIs(expectedText: string): Promise<void> {
+		await this.checkFieldError(
+			this.gamdomPage.map.usernameErrorTooltip,
 			expectedText,
 		);
 	}
 
-	@step("Check password field error text - v4")
-	public async passwordFieldErrorTextIsV4(
-		expectedText: string,
-	): Promise<void> {
-		await this.checkFieldErrorV4(
-			this.gamdomPage.map.passwordErrorTooltipV4,
+	@step("Check password field error text")
+	public async passwordFieldErrorTextIs(expectedText: string): Promise<void> {
+		await this.checkFieldError(
+			this.gamdomPage.map.passwordErrorTooltip,
 			expectedText,
 		);
-	}
-
-	@step("Assert password reset email is sent - v4")
-	public async assertPasswordResetEmailIsSentV4(): Promise<void> {
-		await this.checkElementsAreVisible([
-			this.gamdomPage.map.forgotPasswordConfirmationTextV4,
-		]);
 	}
 }

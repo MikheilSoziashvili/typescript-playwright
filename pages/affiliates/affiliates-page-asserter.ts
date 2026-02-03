@@ -26,9 +26,9 @@ export class AffiliatesPageAsserter extends BaseAsserter<AffiliatesPage> {
 		affiliateCode: string,
 	): Promise<void> {
 		expect(
-			await this.gamdomPage.map.copyCodeToClipboardField.getAttribute(
+			await this.gamdomPage.map.createdAffiliatesCodeField.getAttribute(
 				Attributes.VALUE,
 			),
-		).toContain(`/r/${affiliateCode}`);
+		).toContain(`${affiliateCode}`);
 	}
 }

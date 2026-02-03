@@ -14,23 +14,11 @@ export class ContinueModalMap extends BaseMap {
 		return this.page.getByTestId("confirmation-modal-footer");
 	}
 
-	public get continueButton(): Locator {
-		return this.modalFooterContainer.getByTestId(
-			"confirmation-modal-continue-button",
-		);
-	}
-
-	public get cancelButton(): Locator {
-		return this.modalFooterContainer.getByTestId(
-			"confirmation-modal-cancel-button",
-		);
-	}
-
-	public get logoutButtonV4(): Locator {
+	public get logoutButton(): Locator {
 		return this.page.getByTestId("logout-modal-dialog-action-button");
 	}
 
-	public get cancelButtonV4(): Locator {
+	public get cancelButton(): Locator {
 		return this.page.getByTestId("logout-modal-dialog-cancel-button");
 	}
 }

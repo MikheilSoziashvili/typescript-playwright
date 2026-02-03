@@ -21,12 +21,12 @@ export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 
 	@step("Click user profile button")
 	public async clickUserProfileButton(): Promise<void> {
-		await this.map.userAvatarMenuButton.click();
+		await this.map.userAccountMenuAvatar.click();
 	}
 
 	@step("Hover on user profile button")
 	public async hoverOnUserProfileButton(): Promise<void> {
-		await this.map.userAvatarMenuButton.hover();
+		await this.map.userAccountMenuAvatar.hover();
 	}
 
 	@step("Click user profile dropdown item")

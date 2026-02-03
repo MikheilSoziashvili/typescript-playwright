@@ -6,115 +6,83 @@ export class RegisterModalMap extends BaseMap {
 		super(page);
 	}
 
+	public get registerDialog(): Locator {
+		return this.page.getByTestId("auth-modal-signup-dialog");
+	}
+
+	public get registerForm(): Locator {
+		return this.page.getByTestId("signup-form");
+	}
+
 	public get singUpModal(): Locator {
 		return this.page.getByTestId("signUpFormModalAuthPopup");
 	}
 
 	public get usernameContainer(): Locator {
-		return this.singUpModal.getByTestId("username-signup");
+		return this.registerForm.getByTestId("sup-username");
 	}
 
 	public get passwordContainer(): Locator {
-		return this.singUpModal.getByTestId("passwordInputContainer");
+		return this.registerForm.getByTestId("sup-password");
 	}
 
 	public get emailContainer(): Locator {
-		return this.singUpModal.getByTestId("email-signup");
+		return this.registerForm.getByTestId("sup-email");
 	}
 
 	public get usernameField(): Locator {
-		return this.getInputField("username", this.usernameContainer);
+		return this.usernameContainer.getByTestId("sup-username-input");
 	}
 
 	public get passwordField(): Locator {
-		return this.getInputField("password", this.passwordContainer);
+		return this.passwordContainer.getByTestId("sup-password-input");
 	}
 
 	public get emailField(): Locator {
-		return this.getInputField("email", this.emailContainer);
+		return this.emailContainer.getByTestId("sup-email-input");
+	}
+
+	public get termsOfServiceCheckboxContainer(): Locator {
+		return this.registerForm.getByTestId("sup-age-consent-chk");
+	}
+
+	public get newsAndOffersCheckboxContainer(): Locator {
+		return this.registerForm.getByTestId("sup-email-consent-chk");
 	}
 
 	public get termsOfServiceCheckbox(): Locator {
-		return this.page.getByTestId("agree-terms-signup").locator("span");
-	}
-
-	public get startPlayingBtn(): Locator {
-		return this.page.getByTestId("start-playing-signup");
-	}
-
-	public get registerDialogV4(): Locator {
-		return this.page.getByTestId("auth-modal-signup-dialog");
-	}
-
-	public get registerFormV4(): Locator {
-		return this.registerDialogV4.getByTestId("signup-form");
-	}
-
-	public get usernameContainerV4(): Locator {
-		return this.registerFormV4.getByTestId("sup-username");
-	}
-
-	public get passwordContainerV4(): Locator {
-		return this.registerFormV4.getByTestId("sup-password");
-	}
-
-	public get emailContainerV4(): Locator {
-		return this.registerFormV4.getByTestId("sup-email");
-	}
-
-	public get usernameFieldV4(): Locator {
-		return this.usernameContainerV4.getByTestId("sup-username-input");
-	}
-
-	public get passwordFieldV4(): Locator {
-		return this.passwordContainerV4.getByTestId("sup-password-input");
-	}
-
-	public get emailFieldV4(): Locator {
-		return this.emailContainerV4.getByTestId("sup-email-input");
-	}
-
-	public get termsOfServiceCheckboxContainerV4(): Locator {
-		return this.registerFormV4.getByTestId("sup-age-consent-chk");
-	}
-
-	public get newsAndOffersCheckboxContainerV4(): Locator {
-		return this.registerFormV4.getByTestId("sup-email-consent-chk");
-	}
-
-	public get termsOfServiceCheckboxV4(): Locator {
-		return this.termsOfServiceCheckboxContainerV4.getByTestId(
+		return this.termsOfServiceCheckboxContainer.getByTestId(
 			"sup-age-consent-chk-container",
 		);
 	}
 
-	public get newsAndOffersCheckboxV4(): Locator {
-		return this.newsAndOffersCheckboxContainerV4.getByTestId(
+	public get newsAndOffersCheckbox(): Locator {
+		return this.newsAndOffersCheckboxContainer.getByTestId(
 			"sup-email-consent-chk-container",
 		);
 	}
 
-	public get termsOfServiceCheckboxInputV4(): Locator {
-		return this.toggleCheckbox(this.termsOfServiceCheckboxV4);
+	public get termsOfServiceCheckboxInput(): Locator {
+		return this.toggleCheckbox(this.termsOfServiceCheckbox);
 	}
 
-	public get newsAndOffersCheckboxInputV4(): Locator {
-		return this.toggleCheckbox(this.newsAndOffersCheckboxV4);
+	public get newsAndOffersCheckboxInput(): Locator {
+		return this.toggleCheckbox(this.newsAndOffersCheckbox);
 	}
 
-	public get termsOfServiceCheckboxVisualV4(): Locator {
-		return this.termsOfServiceCheckboxContainerV4.getByTestId(
+	public get termsOfServiceCheckboxVisual(): Locator {
+		return this.termsOfServiceCheckboxContainer.getByTestId(
 			"sup-age-consent-chk-visual",
 		);
 	}
 
-	public get newsAndOffersCheckboxVisualV4(): Locator {
-		return this.newsAndOffersCheckboxContainerV4.getByTestId(
+	public get newsAndOffersCheckboxVisual(): Locator {
+		return this.newsAndOffersCheckboxContainer.getByTestId(
 			"sup-email-consent-chk-visual",
 		);
 	}
 
-	public get startPlayingBtnV4(): Locator {
-		return this.registerFormV4.getByTestId("signup-submit-button");
+	public get startPlayingBtn(): Locator {
+		return this.registerForm.getByTestId("signup-submit-button");
 	}
 }

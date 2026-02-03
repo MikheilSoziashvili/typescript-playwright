@@ -11,28 +11,30 @@ export class AffiliatesPageMap extends BaseMap {
 	}
 
 	public get affiliatesEnterCodeContainer(): Locator {
-		return this.page.getByTestId("afiliatesEnterCodeContainer");
+		return this.page.getByTestId("create-affiliate-input-container");
 	}
 
 	public get newAffilitatesCodeField(): Locator {
-		return this.affiliatesEnterCodeContainer.locator("input");
-	}
-
-	public get saveAffiliatesCodeButton(): Locator {
 		return this.affiliatesEnterCodeContainer.getByTestId(
-			"afiliatesSaveCodeButton",
+			"create-affiliate-input-input",
 		);
 	}
 
+	public get createAffiliatesCodeButton(): Locator {
+		return this.page.getByTestId("create-affiliate-button");
+	}
+
+	public get createdAffiliatesCodeContainer(): Locator {
+		return this.page.getByTestId("your-affiliate-code-container");
+	}
+
 	public get createdAffiliatesCodeField(): Locator {
-		return this.affiliatesBox
-			.getByTestId("affiliatesCodeInputContainer")
-			.locator("input");
+		return this.createdAffiliatesCodeContainer.getByTestId(
+			"your-affiliate-code-input",
+		);
 	}
 
 	public get copyCodeToClipboardField(): Locator {
-		return this.affiliatesBox
-			.getByTestId("affiliatesCopyCodeContainer")
-			.locator("input");
+		return this.page.getByTestId("your-affiliate-code-copy-button");
 	}
 }

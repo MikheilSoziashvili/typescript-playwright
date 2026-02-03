@@ -1,5 +1,5 @@
 import { testDetails } from "@core/helpers/test-details-helper";
-import { generateRandomString } from "@core/utils/utils";
+import { buildFullUrl, generateRandomString } from "@core/utils/utils";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { ToastTitle } from "@enums/toast-titles";
@@ -19,7 +19,9 @@ test.describe("Register with affiliate link", () => {
 	test.beforeEach(async ({ affiliatesPage }) => {
 		await affiliatesPage.navigate();
 		await affiliatesPage.steps().addCode(AUTOMATION_AFFILIATES_CODE);
-		affiliateLink = await affiliatesPage.getAffiliateLink();
+		const affiliateCode = await affiliatesPage.getAffiliateLink();
+
+		affiliateLink = buildFullUrl(`/r/${affiliateCode}`);
 	});
 
 	test(
@@ -36,9 +38,9 @@ test.describe("Register with affiliate link", () => {
 
 			const affiliate_user_register_data =
 				testDataObject.register.random();
-			await homePage.registerModal.fillInCredentials(
-				affiliate_user_register_data,
-				{
+			await homePage.registerModal
+				.steps()
+				.fillInCredentialsSuccessfully(affiliate_user_register_data, {
 					acceptTermsOfService: true,
 				},
 			);
@@ -46,7 +48,7 @@ test.describe("Register with affiliate link", () => {
 				homePage.steps().verifyToastMessage(ToastTitle.SUCCESS),
 				homePage.registerModal.clickStartPlayingBtn(),
 			]);
-			await homePage
+			await homePage.authenticatedHeader
 				.assertThat()
 				.userIsRegistered(affiliate_user_register_data.username);
 

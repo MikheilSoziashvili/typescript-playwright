@@ -22,9 +22,7 @@ export class HomePageMap extends BaseMap {
 	}
 
 	public get walletButton(): Locator {
-		return this.page.locator("button", {
-			hasText: "Wallet",
-		});
+		return this.page.getByTestId("nav-wallet-action-btn");
 	}
 
 	public get bannerCarousel(): Locator {
@@ -172,9 +170,7 @@ export class HomePageMap extends BaseMap {
 	}
 
 	public get gamdomLogoButton(): Locator {
-		return this.page.locator(
-			"div[class*='GamdomLogoWithIconButton-styled_']",
-		);
+		return this.page.locator("a[class*='TopNavDesktopLogo-']");
 	}
 
 	public get originalsNavButton(): Locator {
@@ -223,10 +219,6 @@ export class HomePageMap extends BaseMap {
 
 	public get walletButtonV4(): Locator {
 		return this.page.getByTestId("nav-wallet-action-btn");
-	}
-
-	public get gamdomLogoButtonV4(): Locator {
-		return this.page.locator("a[class*='TopNavDesktopLogo-']");
 	}
 
 	public get liveBetsSectionTotalBetsV4(): Locator {

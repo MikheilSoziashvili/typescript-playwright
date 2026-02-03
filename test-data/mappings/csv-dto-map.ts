@@ -21,8 +21,8 @@ import {
 	KycLevel2SubmissionsCsv,
 	CasinoGamesAggregatorProviderCsv,
 	EsportsCategoriesCsv,
-	LoginRejectedV4Csv,
-	LoginInputValidationV4Csv,
+	LoginRejectedCsv as LoginRejectedCsv,
+	LoginInputValidationCsv as LoginInputValidationCsv,
 	PromotionCombinationForLabelDisplayV4Csv,
 	RoyaltyUpLevelRanksCsv,
 	RoyaltyUpSkippingLevelsCsv,
@@ -52,7 +52,6 @@ import { UserInfoSendNotificationCsv } from "@dtos/csv/user-info-send-notificati
 import { CsvFilesName } from "@enums/csv-file-name";
 
 export type CsvDtoMap = {
-	[CsvFilesName.LOGIN_NOT_POSSIBLE]: LoginNotPossibleCsv;
 	[CsvFilesName.ORIGINALS_QUICK_SELECT_BUTTONS]: OriginalsQuickSelectButtonsCsv;
 	[CsvFilesName.HOMEPAGE_ORIGINALS_LAUNCH]: OriginalsLaunchFromHomepageCsv;
 	[CsvFilesName.HOMEPAGE_TOP_LINE_HEADER_LINKS]: HomepageTopLineHeaderLinksCsv;
@@ -79,8 +78,8 @@ export type CsvDtoMap = {
 	[CsvFilesName.KYC_LEVEL2_SUBMISSIONS]: KycLevel2SubmissionsCsv;
 	[CsvFilesName.CASINO_GAMES_AGGREGATOR_PROVIDER]: CasinoGamesAggregatorProviderCsv;
 	[CsvFilesName.ESPORTS_CATEGORIES]: EsportsCategoriesCsv;
-	[CsvFilesName.LOGIN_REJECTED_V4]: LoginRejectedV4Csv;
-	[CsvFilesName.LOGIN_INPUT_VALIDATION_V4]: LoginInputValidationV4Csv;
+	[CsvFilesName.LOGIN_INPUT_VALIDATION]: LoginInputValidationCsv;
+	[CsvFilesName.LOGIN_REJECTED]: LoginRejectedCsv;
 	[CsvFilesName.PROMOTION_COMBINATIONS_FOR_LABEL_DISPLAY_V4]: PromotionCombinationForLabelDisplayV4Csv;
 	[CsvFilesName.ROYALTY_UP_LEVEL_RANKS]: RoyaltyUpLevelRanksCsv;
 	[CsvFilesName.ROYALTY_UP_SKIPPING_LEVELS]: RoyaltyUpSkippingLevelsCsv;

@@ -30,17 +30,17 @@ export class FaqPage extends BasePage<FaqPageMap> {
 	@step("Expand affiliate code registered under section")
 	public async expandAffiliateCodeRegisteredUnderSection(): Promise<void> {
 		await this.map.waitForVisibility({
-			locator: this.map.expandAffiliateCodeRegisterButtonLocator,
+			locator: this.map.expandAffiliateCodeToggle,
 		});
 		const sectionAriaExpandedAttribute =
-			await this.map.expandAffiliateCodeRegisterButtonLocator.getAttribute(
+			await this.map.expandAffiliateCodeToggle.getAttribute(
 				Attributes.ARIA_EXPANDED,
 			);
 		if (sectionAriaExpandedAttribute !== BooleanValueString.TRUE) {
-			await this.map.expandAffiliateCodeRegisterButtonLocator.click();
+			await this.map.expandAffiliateCodeToggle.click();
 		} else {
 			logger.info(
-				"Affilaite code registered under section already expanded",
+				"Affiliate code registered under section already expanded",
 			);
 		}
 	}

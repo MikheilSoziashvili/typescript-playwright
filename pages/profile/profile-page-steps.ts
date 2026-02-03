@@ -147,7 +147,7 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 	@step("Complete and verify email change")
 	public async completeAndVerifyEmailChange(): Promise<void> {
 		await this.gamdomPage.continueModal.assertThat().isModalDisplayed();
-		await this.gamdomPage.continueModal.clickContinueButton();
+		await this.gamdomPage.continueModal.clickLogoutButton();
 		await this.gamdomPage.assertThat().assertChangeEmailButtonVisible();
 	}
 
@@ -170,20 +170,20 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		await this.gamdomPage.map.changeUsernameInput.fill(username);
 		await this.gamdomPage.clickSaveUsername();
 		await this.gamdomPage.continueModal.assertThat().isModalDisplayed();
-		await this.gamdomPage.continueModal.clickContinueButton();
+		await this.gamdomPage.continueModal.clickLogoutButton();
 	}
 
 	@step("Complete and verify phone change")
 	public async completeAndVerifyPhoneChange(): Promise<void> {
 		await this.gamdomPage.continueModal.assertThat().isModalDisplayed();
-		await this.gamdomPage.continueModal.clickContinueButton();
+		await this.gamdomPage.continueModal.clickLogoutButton();
 		await this.gamdomPage.assertThat().assertChangePhoneButtonVisible();
 	}
 
 	@step("Logout user successfully")
 	public async logoutUserSuccessfully(): Promise<void> {
 		await this.gamdomPage.navigate();
-		await this.gamdomPage.logout();
+		await this.logout();
 		await this.gamdomPage.authenticatedHeader
 			.assertThat()
 			.loggedInUserElementsAreNotVisible();
@@ -267,29 +267,17 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 
 	@step("Change username - v4")
 	public async changeUsernameV4(username: string): Promise<void> {
-		await this.gamdomPage.map.changeUsernameInputV4.fill(username);
+		await this.gamdomPage.map.changeUsernameInput.fill(username);
 		await this.gamdomPage.clickSaveUsernameV4();
-		await expect(this.gamdomPage.map.changeUsernameInputV4).toHaveValue(
+		await expect(this.gamdomPage.map.changeUsernameInput).toHaveValue(
 			username,
 		);
 	}
 
-	@step("Logout - v4")
-	public async logoutV4(): Promise<void> {
-		await this.gamdomPage.map.logOutButtonV4.click();
-		await this.gamdomPage.continueModal.assertThat().isModalDisplayedV4();
-		await this.gamdomPage.continueModal.clickLogoutButtonV4();
-	}
-
-	@step("Logout user successfully - v4")
-	public async logoutUserSuccessfullyV4(): Promise<void> {
-		await this.gamdomPage.navigate();
-		await this.logoutV4();
-		await this.gamdomPage.authenticatedHeader
-			.assertThat()
-			.loggedInUserElementsAreNotVisibleV4();
-		await this.gamdomPage.unauthenticatedHeader
-			.assertThat()
-			.loggedOutUserElementsAreVisibleV4();
+	@step("Logout")
+	public async logout(): Promise<void> {
+		await this.gamdomPage.map.logOutButton.click();
+		await this.gamdomPage.continueModal.assertThat().isModalDisplayed();
+		await this.gamdomPage.continueModal.clickLogoutButton();
 	}
 }

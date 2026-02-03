@@ -6,24 +6,32 @@ export class LoginModalMap extends BaseMap {
 		super(page);
 	}
 
+	public get loginDialog(): Locator {
+		return this.page.getByTestId("auth-modal-form-container");
+	}
+
+	public get loginForm(): Locator {
+		return this.loginDialog.getByTestId("signin-form");
+	}
+
 	public get usernameContainer(): Locator {
-		return this.page.getByTestId("username-login");
+		return this.loginForm.getByTestId("signin-username");
 	}
 
 	public get passwordContainer(): Locator {
-		return this.page.getByTestId("passwordInputContainer");
+		return this.loginForm.getByTestId("signin-password");
 	}
 
 	public get usernameField(): Locator {
-		return this.getInputField("username", this.usernameContainer);
+		return this.usernameContainer.getByTestId("signin-username-input");
 	}
 
 	public get passwordField(): Locator {
-		return this.getInputField("password", this.passwordContainer);
+		return this.passwordContainer.getByTestId("signin-password-input");
 	}
 
 	public get loginBtn(): Locator {
-		return this.page.getByTestId("start-playing-login");
+		return this.loginDialog.getByTestId("signin-sbt-btn");
 	}
 
 	public get usernameFieldErrorIcon(): Locator {
@@ -38,21 +46,19 @@ export class LoginModalMap extends BaseMap {
 		return this.page.locator("*[role='tooltip']");
 	}
 
-	public get signInOptionsContainer(): Locator {
-		return this.page.locator(
-			"//div[contains(@class,'SignInOptionsContainer')]",
-		);
+	public get socialOptionsContainer(): Locator {
+		return this.page.getByTestId("auth-social-buttons-container");
 	}
 
 	public get steamButton(): Locator {
-		return this.signInOptionsContainer.locator(
-			"//i[contains(@class,'icon-steam')]//ancestor::button",
+		return this.socialOptionsContainer.getByTestId(
+			"auth-social-steam-button",
 		);
 	}
 
 	public get googleButton(): Locator {
-		return this.signInOptionsContainer.locator(
-			"//i[contains(@class,'icon-google')]//ancestor::button",
+		return this.socialOptionsContainer.getByTestId(
+			"auth-social-google-button",
 		);
 	}
 
@@ -72,24 +78,46 @@ export class LoginModalMap extends BaseMap {
 		);
 	}
 
-	public get forgotPasswordButton(): Locator {
-		return this.page.getByTestId("forgot-password-login");
+	public get forgotPasswordDialog(): Locator {
+		return this.page.getByTestId("auth-modal-forgot-password-dialog");
 	}
 
-	public get sendNewPasswordButton(): Locator {
-		return this.page.getByTestId("sendButton");
+	public get forgotPasswordForm(): Locator {
+		return this.forgotPasswordDialog.getByTestId("forgot-password-form");
+	}
+
+	public get forgotPasswordEmailContainer(): Locator {
+		return this.forgotPasswordForm.getByTestId(
+			"forgot-password-email-container",
+		);
+	}
+
+	public get forgotPasswordEmailField(): Locator {
+		return this.forgotPasswordEmailContainer.getByTestId(
+			"forgot-password-email-input",
+		);
+	}
+
+	public get forgotPasswordLink(): Locator {
+		return this.loginForm.getByTestId("forgot-pwd-link-btn");
+	}
+
+	public get forgotPasswordSendButton(): Locator {
+		return this.forgotPasswordForm.getByTestId("forgot-pwd-sbt-btn");
 	}
 
 	public get emailInput(): Locator {
 		return this.page.locator('input[placeholder="Enter your email"]');
 	}
 
-	public get passwordResetConfirmationText(): Locator {
-		return this.page.getByTestId("descriptionMessageText");
+	public get forgotPasswordConfirmationText(): Locator {
+		return this.forgotPasswordForm.getByTestId(
+			"forgot-password-success-message",
+		);
 	}
 
 	public get setNewPasswordButton(): Locator {
-		return this.page.getByTestId("resetPasswordButton");
+		return this.page.getByTestId("reset-pwd-sbt-btn");
 	}
 
 	public get newPasswordConfirmationInput(): Locator {
@@ -100,81 +128,15 @@ export class LoginModalMap extends BaseMap {
 		return this.page.locator('input[name="newPassword"]');
 	}
 
-	public get loginDialogV4(): Locator {
-		return this.page.getByTestId("auth-modal-form-container");
+	public get forgotPasswordCloseButton(): Locator {
+		return this.forgotPasswordForm.getByTestId("forgot-pwd-close-btn");
 	}
 
-	public get loginFormV4(): Locator {
-		return this.loginDialogV4.getByTestId("signin-form");
+	public get usernameErrorTooltip(): Locator {
+		return this.usernameContainer.getByTestId("signin-username-error");
 	}
 
-	public get usernameContainerV4(): Locator {
-		return this.loginFormV4.getByTestId("signin-username");
-	}
-
-	public get passwordContainerV4(): Locator {
-		return this.loginFormV4.getByTestId("signin-password");
-	}
-
-	public get usernameFieldV4(): Locator {
-		return this.usernameContainerV4.getByTestId("signin-username-input");
-	}
-
-	public get passwordFieldV4(): Locator {
-		return this.passwordContainerV4.getByTestId("signin-password-input");
-	}
-
-	public get loginBtnV4(): Locator {
-		return this.loginDialogV4.getByTestId("signin-sbt-btn");
-	}
-
-	public get forgotPasswordDialogV4(): Locator {
-		return this.page.getByTestId("auth-modal-forgot-password-dialog");
-	}
-
-	public get forgotPasswordButtonV4(): Locator {
-		return this.loginFormV4.getByTestId("forgot-pwd-link-btn");
-	}
-
-	public get forgotPasswordFormV4(): Locator {
-		return this.forgotPasswordDialogV4.getByTestId("forgot-password-form");
-	}
-
-	public get forgotPasswordEmailContainerV4(): Locator {
-		return this.forgotPasswordFormV4.getByTestId(
-			"forgot-password-email-container",
-		);
-	}
-
-	public get forgotPasswordEmailFieldV4(): Locator {
-		return this.forgotPasswordEmailContainerV4.getByTestId(
-			"forgot-password-email-input",
-		);
-	}
-
-	public get forgotPasswordSendButtonV4(): Locator {
-		return this.forgotPasswordFormV4.getByTestId("forgot-pwd-sbt-btn");
-	}
-
-	public get forgotPasswordConfirmationTextV4(): Locator {
-		return this.forgotPasswordFormV4.getByTestId(
-			"forgot-password-success-message",
-		);
-	}
-
-	public get forgotPasswordCloseButtonV4(): Locator {
-		return this.forgotPasswordFormV4.getByTestId("forgot-pwd-close-btn");
-	}
-
-	public get usernameErrorTooltipV4(): Locator {
-		return this.usernameContainerV4.getByTestId("signin-username-error");
-	}
-
-	public get passwordErrorTooltipV4(): Locator {
-		return this.passwordContainerV4.getByTestId("signin-password-error");
-	}
-
-	public get setNewPasswordButtonV4(): Locator {
-		return this.page.getByTestId("reset-pwd-sbt-btn");
+	public get passwordErrorTooltip(): Locator {
+		return this.passwordContainer.getByTestId("signin-password-error");
 	}
 }

@@ -51,7 +51,7 @@ export enum ToastSubTitle {
 	HIDEN_DETAILS_DISABLED = "Hidden details mode disabled!",
 	HIDEN_DETAILS_ENABLED = "Hidden details mode enabled!",
 	ARTICLE_CREATED_SUCCESSFULLY = "Article created successfully",
-	USER_DOES_NOT_EXIST = "User does not exist",
+	INCORRECT_CREDENTIALS = "Incorrect credentials",
 	DOCUMENTS_APPROVED = "Documents approved successfully",
 	DOCUMENTS_REJECTED = "Documents rejected successfully",
 	DICE_POTENTIAL_WIN_TOO_HIGH = "Potential Win must be lower than $800000. Please decrease your bet size",

@@ -22,29 +22,29 @@ export class RegisterModalAsserter extends BaseAsserter<RegisterModal> {
 		);
 	}
 
-	@step("Verify register form is displayed - v4")
-	public async registerFormIsDisplayedV4(): Promise<void> {
+	@step("Verify register form is displayed")
+	public async registerFormIsDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible([
-			this.gamdomPage.map.registerDialogV4,
-			this.gamdomPage.map.registerFormV4,
+			this.gamdomPage.map.registerDialog,
+			this.gamdomPage.map.registerForm,
 		]);
 	}
 
-	@step("Verify register form elements are visible - v4")
-	public async registerFormElementsAreVisibleV4(): Promise<void> {
+	@step("Verify register form elements are visible")
+	public async registerFormElementsAreVisible(): Promise<void> {
 		await this.checkElementsAreVisible([
-			this.gamdomPage.map.usernameContainerV4,
-			this.gamdomPage.map.passwordContainerV4,
-			this.gamdomPage.map.emailContainerV4,
-			this.gamdomPage.map.termsOfServiceCheckboxV4,
-			this.gamdomPage.map.newsAndOffersCheckboxV4,
-			this.gamdomPage.map.startPlayingBtnV4,
+			this.gamdomPage.map.usernameContainer,
+			this.gamdomPage.map.passwordContainer,
+			this.gamdomPage.map.emailContainer,
+			this.gamdomPage.map.termsOfServiceCheckbox,
+			this.gamdomPage.map.newsAndOffersCheckbox,
+			this.gamdomPage.map.startPlayingBtn,
 		]);
 	}
 
-	@step("Verify register form with register elements are displayed - v4")
-	public async registerFormWithRegisterElementsAreDisplayedV4(): Promise<void> {
-		await this.registerFormIsDisplayedV4();
-		await this.registerFormElementsAreVisibleV4();
+	@step("Verify register form with register elements are displayed")
+	public async registerFormWithRegisterElementsAreDisplayed(): Promise<void> {
+		await this.registerFormIsDisplayed();
+		await this.registerFormElementsAreVisible();
 	}
 }

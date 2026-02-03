@@ -88,7 +88,7 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 			this.gamdomPage.steps().verifyToastMessage(ToastTitle.SUCCESS),
 			this.gamdomPage.registerModal.clickStartPlayingBtn(),
 		]);
-		await this.gamdomPage
+		await this.gamdomPage.authenticatedHeader
 			.assertThat()
 			.userIsRegistered(registeredData.username);
 
@@ -109,9 +109,9 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 
 	@step("Reset password")
 	public async resetPassword(email: string): Promise<void> {
-		await this.gamdomPage.loginModal.clickResetPasswordButton();
+		await this.gamdomPage.loginModal.clickForgotPasswordLink();
 		await this.gamdomPage.loginModal.fillInEmail(email);
-		await this.gamdomPage.loginModal.clickSendNewPasswordButton();
+		await this.gamdomPage.loginModal.clickSendButtonForForgotPassword();
 		await this.gamdomPage.loginModal
 			.assertThat()
 			.assertPasswordResetEmailIsSent();
@@ -218,55 +218,5 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 	public async navigateAndExpandChat(): Promise<void> {
 		await this.gamdomPage.navigate();
 		await this.gamdomPage.authenticatedHeader.expandChatIfNotVisible();
-	}
-
-	@step("Reset password - v4")
-	public async resetPasswordV4(email: string): Promise<void> {
-		await this.gamdomPage.loginModal.clickForgotPasswordButtonV4();
-		await this.gamdomPage.loginModal.fillInEmailForForgotPasswordV4(email);
-		await this.gamdomPage.loginModal.clickSendButtonForForgotPasswordV4();
-		await this.gamdomPage.loginModal
-			.assertThat()
-			.assertPasswordResetEmailIsSentV4();
-	}
-
-	@step("Change password from email - v4")
-	public async changePasswordFromEmailV4(
-		newPassword: string,
-		mailpitApi: MailpitApi,
-		email: string,
-		page: Page,
-		{ messageIndex = 1 }: { messageIndex?: number } = {},
-		subjectIncludes?: string,
-		timeout = TimeoutSeconds.TEN,
-		interval = TimeoutSeconds.FIVE,
-	): Promise<void> {
-		const message = await mailpitApi.pollForMessages(
-			email,
-			timeout,
-			interval,
-			messageIndex,
-			subjectIncludes,
-		);
-
-		const links = await mailpitApi.getMessageLinks(message.ID);
-		const changePasswordLink = links[0];
-
-		await page.goto(changePasswordLink);
-		await this.gamdomPage.loginModal.setNewPasswordV4(newPassword);
-	}
-
-	@step("Login user- v4")
-	public async loginUserV4(
-		username: string,
-		password: string,
-		options?: { expectErrors?: boolean },
-	): Promise<void> {
-		await this.gamdomPage.unauthenticatedHeader.openLoginModalV4();
-
-		await this.gamdomPage.loginModal.loginV4(username, password);
-		if (!options?.expectErrors) {
-			await this.gamdomPage.assertThat().userIsLoggedInV4();
-		}
 	}
 }
