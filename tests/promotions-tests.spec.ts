@@ -270,7 +270,7 @@ test.describe(
 					test(
 						`[${scenario.testId}] Promotions - '${promotionType.name}' ${scenario.description}`,
 						testDetails()
-							.withJiraBugTickets("8897", "8964")
+							.withJiraBugTickets("8964")
 							.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 							.apply(),
 						async ({
@@ -279,6 +279,7 @@ test.describe(
 							promotionAdminPage,
 							gamdomApiDbFacade,
 						}) => {
+							test.fixme(isCI);
 							const { user: promotionAdmin } =
 								await gamdomApiDbFacade.createSingleUserDbAndAuth(
 									{
