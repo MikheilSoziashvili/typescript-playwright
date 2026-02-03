@@ -25,7 +25,7 @@ export class FooterAsserter extends BaseAsserter<Footer> {
 	): Promise<void> {
 		await this.checkElementVisualCorrect(
 			testInfo,
-			this.gamdomPage.map.socialMediaFooterIconsContainer,
+			this.gamdomPage.map.footerSocialButtons,
 		);
 	}
 

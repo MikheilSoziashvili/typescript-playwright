@@ -7,42 +7,48 @@ export class FooterMap extends BaseMap {
 	}
 
 	public get footerContainer(): Locator {
-		return this.page.getByTestId("footerContainer");
+		return this.page.getByTestId("footer-v4");
+	}
+
+	public get footerLinksSection(): Locator {
+		return this.footerContainer.getByTestId("footer-links-section");
 	}
 
 	public footerLinkByPlaceholder(placeholderText: string): Locator {
-		return this.footerContainer.locator("a, button", {
+		return this.footerLinksSection.locator("a, button", {
 			hasText: placeholderText,
 		});
+	}
+
+	public get footerSocialButtons(): Locator {
+		return this.page.getByTestId("footer-social-buttons");
 	}
 
 	public socialMediaFooterLinkByPlaceholder(
 		socialMediaText: string,
 	): Locator {
-		return this.footerContainer.locator(
-			`//img[@alt='${socialMediaText}']//parent::a[contains(@class,'IconButton')]`,
+		return this.footerSocialButtons.getByTestId(
+			`footer-social-buttons-${socialMediaText.trim().toLowerCase()}-link`,
 		);
 	}
 
 	public socialMediaFooterIconByPlaceholder(
 		socialMediaText: string,
 	): Locator {
-		return this.footerContainer.locator(
-			`//a[contains(@class,'IconButton')]//img[@alt='${socialMediaText}']`,
-		);
-	}
-
-	public get socialMediaFooterIconsContainer(): Locator {
-		return this.footerContainer.locator(
-			`//a[contains(@class,'IconButton')]//ancestor::div[contains(@class,"MuiBox-root")]`,
+		return this.footerSocialButtons.getByTestId(
+			`footer-social-buttons-${socialMediaText.trim().toLowerCase()}-icon`,
 		);
 	}
 
 	public get liveSupportButton(): Locator {
-		return this.footerContainer.getByTestId("footerLinkLiveSupport");
+		return this.footerLinksSection.locator(
+			'button[data-testid="footer-support-link-live-support"]',
+		);
 	}
 
 	public get affiliatesFooterButton(): Locator {
-		return this.footerContainer.getByTestId("footerLinkAffiliates");
+		return this.footerLinksSection.locator(
+			'a[data-testid="footer-promotional-link-affiliates"]',
+		);
 	}
 }

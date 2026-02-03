@@ -9,36 +9,30 @@ export class RewardsPageMap extends BaseMap {
 	}
 
 	public get rewardsBlock(): Locator {
-		return this.page.locator(
-			`//p[text()='Rewards']//ancestor::div[@data-testid="rewardsContainer"]`,
-		);
+		return this.page.getByTestId("RakeBackSlider");
 	}
 
 	public get royaltyUpBlock(): Locator {
-		return this.page.locator(
-			`//p[text()='Royalty Up']//ancestor::div[contains(@class,'SectionBody')]`,
-		);
+		return this.page.getByTestId("RoyaltyUpSlider");
 	}
 
 	public get specialOffersList(): Locator {
-		return this.page.locator(
-			`//p[text()='Special Rewards']//ancestor::div[contains(@class,"SpecialRewards-styled__SectionBody")]//*[@class="swiper-wrapper"]`,
-		);
+		return this.page.getByTestId("SpecialRewardsSlider");
 	}
 
 	public get rewardsOffersList(): Locator {
-		return this.page.getByTestId("rewardsContainer");
+		return this.page.getByTestId("RakeBackSlider-content-swiper");
 	}
 
 	public get rewardsSpecialOfferCard(): Locator {
 		return this.specialOffersList.locator(
-			`//*[contains(@class,"ItemWrapper")]`,
+			'[data-testid^="SpecialRewardsSlider-content-swiper-slide-"].swiper-slide-active',
 		);
 	}
 
 	public get specialOfferActivateNowButton(): Locator {
-		return this.rewardsSpecialOfferCard.locator(
-			`//button[normalize-space()="Activate"]`,
+		return this.rewardsSpecialOfferCard.getByTestId(
+			"SpecialRewardCardWelcomeButton",
 		);
 	}
 
