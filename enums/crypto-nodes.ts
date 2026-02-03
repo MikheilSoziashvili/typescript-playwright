@@ -11,4 +11,5 @@ export enum CryptoNode {
 	fireUSDC_ETH = "USDC_ETH - fireUSDC_ETH",
 	fireUSDC_SOL = "USDC_SOL - fireUSDC_SOL",
 	fireDOGE = "DOGE - fireDOGE",
+	fireUSD1_SOL = "USD1_SOL - fireUSD1_SOL",
 }

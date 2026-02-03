@@ -138,4 +138,8 @@ export const predefined = {
 	amountTolerance: {
 		amountToleranceUsd: 0.1,
 	},
+	usd1SolAmountToDeposit: {
+		amountToDeposit: "0.1",
+		amountToDepositLarger: "0.4",
+	},
 };

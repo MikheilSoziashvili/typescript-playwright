@@ -8,6 +8,7 @@ export enum Cryptocurrency {
 	Doge = "Doge",
 	Solana = "Solana",
 	USDC = "USDC",
+	USD1 = "USD1",
 }
 
 export enum CryptoTicker {
@@ -24,4 +25,5 @@ export enum CryptoTicker {
 	USDT_TRON = "USDT_TRON",
 	USDC_ETH = "USDC_ETH",
 	USDC_SOL = "USDC_SOL",
+	USD1_SOL = "USD1_SOL",
 }
