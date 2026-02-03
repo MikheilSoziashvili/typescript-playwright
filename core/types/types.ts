@@ -311,3 +311,5 @@ export type DiceExpectedBalanceAfterRollParams = {
 	multiplier?: number;
 	isWin: boolean;
 };
+
+export const DISABLE_RETRIES_ANNOTATION_TYPE = "disable-retries";

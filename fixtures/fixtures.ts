@@ -17,6 +17,7 @@ import { visualAutomationFixtures } from "./visual-automation-fixtures";
 import { slackWebApisFixtures } from "./slack-web-api-fixtures";
 import { reporterFixtures } from "./reportportal-fixtures";
 import { testFlowsFixtures } from "./test-flows-fixtures";
+import { retryFixtures } from "./retry-fixtures";
 
 export const test = mergeTests(
 	gamdomPagesFixtures,
@@ -36,4 +37,5 @@ export const test = mergeTests(
 	slackWebApisFixtures,
 	reporterFixtures,
 	testFlowsFixtures,
+	retryFixtures,
 );

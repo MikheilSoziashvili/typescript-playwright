@@ -1,6 +1,6 @@
 import { REPORTPORTAL_CONFIG_ANNOTATION_TYPE } from "@core/reporters/reportportal";
 import { JiraIssueExtractor } from "@core/reporters/reportportal/extractors/jira-issue-extractor";
-import { AnyTag } from "@core/types/types";
+import { AnyTag, DISABLE_RETRIES_ANNOTATION_TYPE } from "@core/types/types";
 import { jiraIssueId } from "@core/utils/utils";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraIssueType } from "@enums/jira/jira-issue-types";
@@ -203,6 +203,13 @@ class TestDetailsBuilder {
 				description: JSON.stringify(config),
 			},
 		];
+
+		if (this._bugTickets.length > 0) {
+			this._testDetails.annotation.push({
+				type: DISABLE_RETRIES_ANNOTATION_TYPE,
+				description: "Test has known bug tickets",
+			});
+		}
 
 		return this._testDetails;
 	}
