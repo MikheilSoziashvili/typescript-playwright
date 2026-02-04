@@ -284,6 +284,8 @@ export class WalletModal extends BasePage<WalletModalMap> {
 				CryptoTicker.USDT,
 				Cryptocurrency.USDC,
 				CryptoTicker.USDC,
+				Cryptocurrency.USD1,
+				CryptoTicker.USD1,
 			].includes(cryptocurrency) &&
 			network
 		) {

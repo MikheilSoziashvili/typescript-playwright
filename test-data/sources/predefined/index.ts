@@ -141,5 +141,6 @@ export const predefined = {
 	usd1SolAmountToDeposit: {
 		amountToDeposit: "0.1",
 		amountToDepositLarger: "0.4",
+		withdrawalAddress: "HswznJARBiyV3YKQSEGm1g7nidBtwYnMxbaMtF8cDSv",
 	},
 };
