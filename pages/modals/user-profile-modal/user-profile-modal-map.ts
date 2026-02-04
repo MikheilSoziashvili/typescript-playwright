@@ -7,23 +7,37 @@ export class UserProfileModalMap extends BaseMap {
 	}
 
 	public get userProfileModalContainer(): Locator {
-		return this.page.getByTestId("profileModalContainer");
+		return this.page.getByTestId("user-details-modal-dialog-dialog");
 	}
 
 	public get userProfileContainer(): Locator {
 		return this.userProfileModalContainer.getByTestId(
-			"profileModalUserProfile",
+			"user-details-modal-dialog-wrapper",
 		);
 	}
 
 	public get userProfilePrivateStatisticsContainer(): Locator {
 		return this.userProfileModalContainer.getByTestId(
-			"profileModalPrivateStatisticsContainer",
+			"user-details-statistics-private-stats",
+		);
+	}
+
+	public get userProfilePrivateStatisticsMessage(): Locator {
+		return this.userProfilePrivateStatisticsContainer.getByTestId(
+			"user-details-statistics-private-message",
 		);
 	}
 
 	public get userAvatar(): Locator {
-		return this.userProfileContainer.getByTestId("avatarContainer");
+		return this.userProfileContainer.getByTestId(
+			"with-name-account-widget-avatar",
+		);
+	}
+
+	public get userProfileUsername(): Locator {
+		return this.userProfileContainer.getByTestId(
+			"with-name-account-widget-username",
+		);
 	}
 
 	public get userProfileTitle(): Locator {

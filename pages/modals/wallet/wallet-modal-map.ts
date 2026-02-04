@@ -9,18 +9,6 @@ export class WalletModalMap extends BaseMap {
 		super(page);
 	}
 
-	public get vaultDepositToastMessage(): Locator {
-		return this.page
-			.getByTestId("toastSubTitle")
-			.getByText("transferred from your Wallet to your Vault");
-	}
-
-	public get vaultWithdrawToastMessage(): Locator {
-		return this.page
-			.getByTestId("toastSubTitle")
-			.getByText("transferred from your Vault to your Wallet");
-	}
-
 	public get walletHeaderTabsContainer(): Locator {
 		return this.page
 			.getByTestId("walletModalHeaderContainer")
@@ -35,16 +23,8 @@ export class WalletModalMap extends BaseMap {
 		return this.walletHeaderTabsContainer.getByTestId("depositButton");
 	}
 
-	public get vaultTabButton(): Locator {
-		return this.walletHeaderTabsContainer.getByTestId("vaultButton");
-	}
-
 	public get redeemTabButton(): Locator {
 		return this.page.getByTestId("wallet-menu-redeem");
-	}
-
-	public get buyCryptoTabButton(): Locator {
-		return this.page.getByTestId("wallet-menu-buycrypto");
 	}
 
 	public get vaultButtonInWithdrawTab(): Locator {
@@ -57,10 +37,6 @@ export class WalletModalMap extends BaseMap {
 
 	public get vaultLeftPanel(): Locator {
 		return this.page.getByTestId("vaultLeftPanelContainer");
-	}
-
-	public get walletLeftPanel(): Locator {
-		return this.page.getByTestId("LeftPanelContainer");
 	}
 
 	public get walletLeftPanelCryptoWithdrawHeader(): Locator {
@@ -89,46 +65,6 @@ export class WalletModalMap extends BaseMap {
 
 	public get leftPanelVaultActionButtonsContainer(): Locator {
 		return this.vaultLeftPanel.getByTestId("walletVaultActionsContainer");
-	}
-
-	public get vaultWithdrawTab(): Locator {
-		return this.leftPanelVaultActionButtonsContainer.getByTestId(
-			"vaultWithdrawButton",
-		);
-	}
-
-	public get vaultDepositTab(): Locator {
-		return this.leftPanelVaultActionButtonsContainer.getByTestId(
-			"vaultDepositButton",
-		);
-	}
-
-	public get walletDepositWithdrawContainer(): Locator {
-		return this.vaultLeftPanel.getByTestId(
-			"vaultWithdrawDespositActionsContainer",
-		);
-	}
-
-	public get walletDropdown(): Locator {
-		return this.walletDepositWithdrawContainer.locator(
-			"[data-testid*='WalletDropdownOption']",
-		);
-	}
-
-	public walletDropdownOption(optionText: string): Locator {
-		return this.page
-			.getByRole("listbox")
-			.locator(`h6[data-testid="walletDropdownSelectedValueContainer"]`, {
-				hasText: optionText,
-			});
-	}
-
-	public get vaultWalletAmount(): Locator {
-		return this.vaultLeftPanel.locator("h6 > span");
-	}
-
-	public get vaultInputField(): Locator {
-		return this.walletDepositWithdrawContainer.getByTestId("Input");
 	}
 
 	public get depositButton(): Locator {
@@ -317,87 +253,87 @@ export class WalletModalMap extends BaseMap {
 		);
 	}
 
-	public get walletLeftPanelV4(): Locator {
+	public get walletLeftPanel(): Locator {
 		return this.page.getByTestId("wallet-left-panel");
 	}
 
-	public get vaultTabButtonV4(): Locator {
-		return this.walletLeftPanelV4.getByTestId("wallet-menu-vault");
+	public get vaultTabButton(): Locator {
+		return this.walletLeftPanel.getByTestId("wallet-menu-vault");
 	}
 
-	public get walletDepositWithdrawContainerV4(): Locator {
+	public get walletDepositWithdrawContainer(): Locator {
 		return this.page.getByTestId("vault-tabs-container");
 	}
 
-	public get walletDropdownV4(): Locator {
-		return this.walletDepositWithdrawContainerV4.getByTestId(
+	public get walletDropdown(): Locator {
+		return this.walletDepositWithdrawContainer.getByTestId(
 			"vault-wallet-list-select-button",
 		);
 	}
 
-	private get walletDropdownListboxV4(): Locator {
+	private get walletDropdownListbox(): Locator {
 		return this.page.getByRole("listbox");
 	}
 
-	private get walletDropdownSelectOptionsV4(): Locator {
-		return this.walletDropdownListboxV4.locator(
+	private get walletDropdownSelectOptions(): Locator {
+		return this.walletDropdownListbox.locator(
 			'[data-testid^="vault-wallet-list-select-option-"]',
 		);
 	}
 
-	public walletDropdownOptionV4(optionText: string): Locator {
-		return this.walletDropdownSelectOptionsV4.filter({
+	public walletDropdownOption(optionText: string): Locator {
+		return this.walletDropdownSelectOptions.filter({
 			hasText: optionText,
 		});
 	}
 
-	private get selectedWalletButtonV4(): Locator {
-		return this.walletDepositWithdrawContainerV4.getByTestId(
+	private get selectedWalletButton(): Locator {
+		return this.walletDepositWithdrawContainer.getByTestId(
 			"vault-wallet-list-select-button",
 		);
 	}
 
-	public get vaultWalletAmountV4(): Locator {
-		return this.selectedWalletButtonV4
+	public get vaultWalletAmount(): Locator {
+		return this.selectedWalletButton
 			.locator('p[data-testid="wallet-sec-txt"]')
 			.filter({ hasText: currencyAmountPattern() });
 	}
 
-	public get vaultInputFieldV4(): Locator {
-		return this.walletDepositWithdrawContainerV4.getByTestId(
+	public get vaultInputField(): Locator {
+		return this.walletDepositWithdrawContainer.getByTestId(
 			"vault-amount-field-input-input",
 		);
 	}
 
-	public get vaultSubmitButtonV4(): Locator {
+	public get vaultSubmitButton(): Locator {
 		return this.page.getByTestId("vault-submit-button");
 	}
 
-	public get vaultWithdrawTabV4(): Locator {
-		return this.walletDepositWithdrawContainerV4.getByTestId(
+	public get vaultWithdrawTab(): Locator {
+		return this.walletDepositWithdrawContainer.getByTestId(
 			"vault-withdraw-tab",
 		);
 	}
 
-	public get vaultDepositTabV4(): Locator {
-		return this.walletDepositWithdrawContainerV4.getByTestId(
+	public get vaultDepositTab(): Locator {
+		return this.walletDepositWithdrawContainer.getByTestId(
 			"vault-deposit-tab",
 		);
 	}
 
-	public get vaultDepositToastMessageV4(): Locator {
+	public get vaultDepositToastMessage(): Locator {
 		return this.page
 			.getByTestId("toast-message-message")
 			.getByText("transferred from your Wallet to your Vault");
 	}
 
-	public get vaultWithdrawToastMessageV4(): Locator {
+	public get vaultWithdrawToastMessage(): Locator {
 		return this.page
 			.getByTestId("toast-message-message")
 			.getByText("transferred from your Vault to your Wallet");
 	}
 
-	public get buyCryptoTabButtonV4(): Locator {
+	public get buyCryptoTabButton(): Locator {
 		return this.page.getByTestId("wallet-menu-buycrypto");
 	}
 }

@@ -12,11 +12,4 @@ export class PrivacyPageAsserter extends BaseAsserter<PrivacyPage> {
 		const ignoredUserLocator = this.gamdomPage.map.getIgnoredUser(username);
 		await this.checkElementsAreVisible([ignoredUserLocator]);
 	}
-
-	@step("Verify user is ignored - v4")
-	public async userIsIgnoredV4(username: string): Promise<void> {
-		const ignoredUserLocator =
-			this.gamdomPage.map.getIgnoredUserV4(username);
-		await this.checkElementsAreVisible([ignoredUserLocator]);
-	}
 }

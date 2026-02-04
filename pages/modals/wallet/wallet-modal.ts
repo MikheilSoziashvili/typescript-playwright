@@ -44,11 +44,6 @@ export class WalletModal extends BasePage<WalletModalMap> {
 		await this.map.depositTabButton.click();
 	}
 
-	@step("Open vault tab")
-	public async openVaultTab(): Promise<void> {
-		await this.map.vaultTabButton.click({ timeout: Timeout.LONG });
-	}
-
 	@step("Open redeem tab")
 	public async openRedeemTab(): Promise<void> {
 		await this.map.redeemTabButton.click();
@@ -57,27 +52,6 @@ export class WalletModal extends BasePage<WalletModalMap> {
 	@step("Open Buy crypto tab")
 	public async openBuyCryptoTab(): Promise<void> {
 		await this.map.buyCryptoTabButton.click();
-	}
-
-	@step("Open withdraw tab in vault")
-	public async openWithdrawTabInVault(): Promise<void> {
-		await this.map.vaultWithdrawTab.click();
-	}
-
-	@step("Open deposit tab in vault")
-	public async openDepositTabInVault(): Promise<void> {
-		await this.map.vaultDepositTab.click();
-	}
-
-	@step("Select wallet option")
-	public async selectWalletOption(option: string): Promise<void> {
-		await this.map.walletDropdown.click();
-		await this.map.walletDropdownOption(option).click();
-	}
-
-	@step("Fill vault amount")
-	public async fillVaultAmount(amount: number): Promise<void> {
-		await this.map.vaultInputField.fill(`${amount}`);
 	}
 
 	@step("Fill promo code")
@@ -104,13 +78,6 @@ export class WalletModal extends BasePage<WalletModalMap> {
 	@step("Click crypto withdraw button")
 	public async clickCryptoWithdrawButton(): Promise<void> {
 		await this.map.cryptoWithdrawButton.click();
-	}
-
-	@step("Get vault wallet amount")
-	public async getVaultWalletAmount(): Promise<string> {
-		const amountLocator = this.map.vaultWalletAmount;
-		const amountText = (await amountLocator.textContent()) ?? "";
-		return amountText.replace(sanitizeAmount, "");
 	}
 
 	@step("Withdraw in vault")
@@ -346,41 +313,41 @@ export class WalletModal extends BasePage<WalletModalMap> {
 		return feeAmount.trim();
 	}
 
-	@step("Open vault tab - v4")
-	public async openVaultTabV4(): Promise<void> {
-		await this.map.vaultTabButtonV4.click({ timeout: Timeout.LONG });
+	@step("Open vault tab")
+	public async openVaultTab(): Promise<void> {
+		await this.map.vaultTabButton.click({ timeout: Timeout.LONG });
 	}
 
-	@step("Open withdraw tab in vault - v4")
-	public async openWithdrawTabInVaultV4(): Promise<void> {
-		await this.map.vaultWithdrawTabV4.click();
+	@step("Open withdraw tab in vault")
+	public async openWithdrawTabInVault(): Promise<void> {
+		await this.map.vaultWithdrawTab.click();
 	}
 
-	@step("Open deposit tab in vault - v4")
-	public async openDepositTabInVaultV4(): Promise<void> {
-		await this.map.vaultDepositTabV4.click();
+	@step("Open deposit tab in vault")
+	public async openDepositTabInVault(): Promise<void> {
+		await this.map.vaultDepositTab.click();
 	}
 
-	@step("Select wallet option - v4")
-	public async selectWalletOptionV4(option: string): Promise<void> {
-		await this.map.walletDropdownV4.click();
-		await this.map.walletDropdownOptionV4(option).click();
+	@step("Select wallet option")
+	public async selectWalletOption(option: string): Promise<void> {
+		await this.map.walletDropdown.click();
+		await this.map.walletDropdownOption(option).click();
 	}
 
-	@step("Get vault wallet amount - v4")
-	public async getVaultWalletAmountV4(): Promise<string> {
-		const amountLocator = this.map.vaultWalletAmountV4;
+	@step("Get vault wallet amount")
+	public async getVaultWalletAmount(): Promise<string> {
+		const amountLocator = this.map.vaultWalletAmount;
 		const amountText = (await amountLocator.textContent()) ?? "";
 		return amountText.replace(sanitizeAmount, "");
 	}
 
-	@step("Fill vault amount - v4")
-	public async fillVaultAmountV4(amount: number): Promise<void> {
-		await this.map.vaultInputFieldV4.fill(`${amount}`);
+	@step("Fill vault amount")
+	public async fillVaultAmount(amount: number): Promise<void> {
+		await this.map.vaultInputField.fill(`${amount}`);
 	}
 
-	@step("Click vault deposit button - v4")
-	public async clickVaultSubmitButtonV4(): Promise<void> {
-		await this.map.vaultSubmitButtonV4.click();
+	@step("Click vault deposit button")
+	public async clickVaultSubmitButton(): Promise<void> {
+		await this.map.vaultSubmitButton.click();
 	}
 }

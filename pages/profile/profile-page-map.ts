@@ -14,14 +14,6 @@ export class ProfilePageMap extends BaseMap {
 		return this.leftMenu.getByTestId("prof-ttl");
 	}
 
-	public get hideStatisticsToggle(): Locator {
-		return this.page.getByTestId("profileHideStatistics").locator("input");
-	}
-
-	public get hideDetailsToggle(): Locator {
-		return this.page.getByTestId("profileHideDetails").locator("input");
-	}
-
 	public get verifyButton(): Locator {
 		return this.page.locator("button:has-text('Verify')");
 	}

@@ -15,15 +15,12 @@ import {
 	BrowserSessionManager,
 	sessionAwarePage,
 } from "@core/browser-session-mngmt";
-import { UnblockUserModalV4 } from "@pages/modals/unblock-user-modal-v4/unblock-user-modal-v4";
-import { UserProfileModalV4 } from "@pages/modals/user-profile-modal-v4/user-profile-modal-v4";
-import { ChangePasswordModal } from "@pages/modals/change-password-modal/change-password-modal";
+import { UnblockUserModal } from "@pages/modals/unblock-user-modal/unblock-user-modal";
 
 export type Modals = {
 	browserSessionManager: BrowserSessionManager;
 	tipUserModal: TipUserModal;
 	userProfileModal: UserProfileModal;
-	userProfileModalV4: UserProfileModalV4;
 	liveSupportModal: LiveSupportModal;
 	walletModal: WalletModal;
 	twoFactorAuthModal: TwoFactorAuthModal;
@@ -34,8 +31,7 @@ export type Modals = {
 	softblockModal: SoftblockModalPage;
 	newRedirectModal: NewRedirectModal;
 	promotionsModal: PromotionsModal;
-	changePasswordModal: ChangePasswordModal;
-	unblockUserModalV4: UnblockUserModalV4;
+	unblockUserModal: UnblockUserModal;
 };
 
 export const modalsFixtures = base.extend<Modals>({
@@ -46,7 +42,6 @@ export const modalsFixtures = base.extend<Modals>({
 	},
 	tipUserModal: sessionAwarePage(TipUserModal),
 	userProfileModal: sessionAwarePage(UserProfileModal),
-	userProfileModalV4: sessionAwarePage(UserProfileModalV4),
 	liveSupportModal: sessionAwarePage(LiveSupportModal),
 	walletModal: sessionAwarePage(WalletModal),
 	twoFactorAuthModal: sessionAwarePage(TwoFactorAuthModal),
@@ -57,6 +52,5 @@ export const modalsFixtures = base.extend<Modals>({
 	softblockModal: sessionAwarePage(SoftblockModalPage),
 	newRedirectModal: sessionAwarePage(NewRedirectModal),
 	promotionsModal: sessionAwarePage(PromotionsModal),
-	changePasswordModal: sessionAwarePage(ChangePasswordModal),
-	unblockUserModalV4: sessionAwarePage(UnblockUserModalV4),
+	unblockUserModal: sessionAwarePage(UnblockUserModal),
 });

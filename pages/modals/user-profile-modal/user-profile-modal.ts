@@ -19,7 +19,7 @@ export class UserProfileModal extends BaseModal<UserProfileModalMap> {
 			locator: this.map.userAvatar,
 		});
 		await this.map.waitForVisibility({
-			locator: this.map.userProfileTitle,
+			locator: this.map.userProfileUsername,
 		});
 	}
 }

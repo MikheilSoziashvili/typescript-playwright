@@ -1,23 +1,23 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
 
-export class UnblockUserModalMapV4 extends BaseMap {
+export class UnblockUserModalMap extends BaseMap {
 	public constructor(page: Page) {
 		super(page);
 	}
 
-	public get modalLocatorV4(): Locator {
+	public get modalLocator(): Locator {
 		return this.page.getByTestId("unblock-user-modal-dialog-wrapper");
 	}
 
-	public get unblockButtonV4(): Locator {
-		return this.modalLocatorV4.getByTestId(
+	public get unblockButton(): Locator {
+		return this.modalLocator.getByTestId(
 			"unblock-user-modal-dialog-unblock-button",
 		);
 	}
 
-	public get cancelButtonV4(): Locator {
-		return this.modalLocatorV4.getByTestId(
+	public get cancelButton(): Locator {
+		return this.modalLocator.getByTestId(
 			"unblock-user-modal-dialog-cancel-button",
 		);
 	}

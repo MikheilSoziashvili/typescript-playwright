@@ -6,10 +6,6 @@ import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { BasePageStep } from "@pages/base/base-page-step";
 import { expect, Page } from "@playwright/test";
 import { ProfilePage } from "./profile-page";
-import { UserPrivacyOption } from "@enums/user-privacy-options";
-import { ToggleOptions } from "@enums/visibility-options";
-import { ToastTitle } from "@enums/toast-titles";
-import { ToastSubTitle } from "@enums/toast-subtitles";
 import { Toast } from "@pages/components/toast/toast";
 
 export class ProfilePageSteps extends BasePageStep<ProfilePage> {
@@ -17,44 +13,6 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 	public constructor(gamdomPage: ProfilePage) {
 		super(gamdomPage);
 		this.toast = new Toast(gamdomPage.page);
-	}
-
-	@step("Toggle user privacy setting: {setting} -> {mode}")
-	public async toggleUserPrivacy(
-		setting: UserPrivacyOption,
-		mode: ToggleOptions,
-	): Promise<void> {
-		const toggles = {
-			[UserPrivacyOption.STATISTICS]:
-				this.gamdomPage.map.hideStatisticsToggle,
-			[UserPrivacyOption.DETAILS]: this.gamdomPage.map.hideDetailsToggle,
-		} as const;
-
-		const toggle = toggles[setting];
-
-		const shouldBeChecked = mode === ToggleOptions.ON;
-		const isChecked = await toggle.isChecked();
-
-		if (isChecked === shouldBeChecked) {
-			return;
-		}
-
-		await toggle.click();
-	}
-
-	@step("Enable Hidden Details privacy and verify toast message")
-	public async enableHiddenDetails(): Promise<void> {
-		await this.toggleUserPrivacy(
-			UserPrivacyOption.DETAILS,
-			ToggleOptions.ON,
-		);
-
-		await this.toast
-			.assertThat()
-			.toastMessageIs(
-				ToastTitle.SUCCESS,
-				ToastSubTitle.HIDEN_DETAILS_ENABLED,
-			);
 	}
 
 	@step("Complete verification flow")
@@ -164,15 +122,6 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		await this.gamdomPage.clickSavePhone();
 	}
 
-	@step("Change username")
-	public async changeUsername(username: string): Promise<void> {
-		await this.gamdomPage.map.changeUsernameButton.click();
-		await this.gamdomPage.map.changeUsernameInput.fill(username);
-		await this.gamdomPage.clickSaveUsername();
-		await this.gamdomPage.continueModal.assertThat().isModalDisplayed();
-		await this.gamdomPage.continueModal.clickLogoutButton();
-	}
-
 	@step("Complete and verify phone change")
 	public async completeAndVerifyPhoneChange(): Promise<void> {
 		await this.gamdomPage.continueModal.assertThat().isModalDisplayed();
@@ -265,10 +214,10 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		}
 	}
 
-	@step("Change username - v4")
-	public async changeUsernameV4(username: string): Promise<void> {
+	@step("Change username")
+	public async changeUsername(username: string): Promise<void> {
 		await this.gamdomPage.map.changeUsernameInput.fill(username);
-		await this.gamdomPage.clickSaveUsernameV4();
+		await this.gamdomPage.clickSaveUsername();
 		await expect(this.gamdomPage.map.changeUsernameInput).toHaveValue(
 			username,
 		);

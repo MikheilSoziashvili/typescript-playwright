@@ -11,11 +11,11 @@ import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { Locale } from "@enums/locale";
 import { SelfExclusionDays } from "@enums/self-exlusion-days";
-import { TestTag } from "@enums/test-tags";
 import { Unit } from "@enums/units";
 import { Wallet } from "@enums/wallets";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
+import { TestTag } from "@enums/test-tags";
 
 const walletDataset = parse_csv(DATASETS_DIR, CsvFilesName.WALLET) as {
 	wallet: string;
@@ -83,17 +83,26 @@ test.describe(
 
 		walletDataset.forEach((record) => {
 			test.describe(`Vault wallet tests: ${record.wallet}`, () => {
-				test.use(
-					storageStateNewUserDB({
-						unit: record.unit,
-						amount: 5000000000,
-					}),
-				);
-
 				test(
-					`[ENG-2861] Vault - make a deposit from [${record.wallet}] wallet`,
-					testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
-					async ({ homePage, walletModal }) => {
+					`[ENG-8805] Vault - make a deposit from [${record.wallet}] wallet`,
+					testDetails()
+						.withAuthor(JiraUser.RALUCA_ARITON)
+						.withTags(JiraComponent.WALLET, TestTag.ACCEPTANCE)
+						.apply(),
+					async ({
+						gamdomApiDbFacade,
+						page,
+						homePage,
+						walletModal,
+					}) => {
+						const { cookie } =
+							await gamdomApiDbFacade.createSingleUserDbAndAuth({
+								unit: record.unit,
+								amount: 5000000000,
+							});
+						await setAuthenticationCookies(page, cookie);
+
+
 						await homePage.navigateToWallet();
 						await walletModal
 							.steps()
@@ -105,77 +114,29 @@ test.describe(
 				);
 
 				test(
-					`[ENG-2860] Vault - make a withdrawal from [${record.wallet}] wallet`,
-					testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
-					async ({ homePage, walletModal }) => {
+					`[ENG-8804] Vault - make a withdrawal from [${record.wallet}] wallet`,
+					testDetails()
+						.withAuthor(JiraUser.RALUCA_ARITON)
+						.withTags(JiraComponent.WALLET, TestTag.ACCEPTANCE)
+						.apply(),
+					async ({
+						gamdomApiDbFacade,
+						page,
+						homePage,
+						walletModal,
+					}) => {
+						const { cookie } =
+							await gamdomApiDbFacade.createSingleUserDbAndAuth({
+								unit: record.unit,
+								amount: 5000000000,
+							});
+						await setAuthenticationCookies(page, cookie);
+
+
 						await homePage.navigateToWallet();
 						await walletModal
 							.steps()
 							.withdrawFromVaultAndVerify(
-								record.wallet,
-								record.unit,
-							);
-					},
-				);
-			});
-		});
-	},
-);
-
-test.describe(
-	"Vault tests - v4",
-	testDetails()
-		.withTags(TestTag.V4, JiraComponent.VAULT, JiraComponent.WALLET)
-		.apply(),
-	() => {
-		walletDataset.forEach((record) => {
-			test.describe(`Vault wallet tests: ${record.wallet} - v4`, () => {
-				test(
-					`[ENG-8805] Vault - make a deposit from [${record.wallet}] wallet`,
-					testDetails().withAuthor(JiraUser.RALUCA_ARITON).withTags(TestTag.ACCEPTANCE).apply(),
-					async ({
-						gamdomApiDbFacade,
-						page,
-						homePage,
-						walletModal,
-					}) => {
-						const { cookie } =
-							await gamdomApiDbFacade.createSingleUserDbAndAuth({
-								unit: record.unit,
-								amount: 5000000000,
-							});
-						await setAuthenticationCookies(page, cookie);
-
-						await homePage.navigateToWalletV4();
-						await walletModal
-							.steps()
-							.depositFromWalletAndVerifyV4(
-								record.wallet,
-								record.unit,
-							);
-					},
-				);
-
-				test(
-					`[ENG-8804] Vault - make a withdrawal from [${record.wallet}] wallet - v4`,
-					testDetails().withAuthor(JiraUser.RALUCA_ARITON).withTags(TestTag.ACCEPTANCE).apply(),
-					async ({
-						gamdomApiDbFacade,
-						page,
-						homePage,
-						walletModal,
-					}) => {
-						const { cookie } =
-							await gamdomApiDbFacade.createSingleUserDbAndAuth({
-								unit: record.unit,
-								amount: 5000000000,
-							});
-						await setAuthenticationCookies(page, cookie);
-
-						await homePage.navigateToWalletV4();
-						await walletModal
-							.steps()
-							.withdrawFromVaultAndVerifyV4(
 								record.wallet,
 								record.unit,
 							);

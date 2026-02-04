@@ -11,23 +11,22 @@ export class PrivacyPageSteps extends BasePageStep<PrivacyPage> {
 		super(gamdomPage);
 	}
 
-	@step("Toggle user privacy setting: {setting} -> {mode} - v4")
-	public async toggleUserPrivacyV4(
+	@step("Toggle user privacy setting: {setting} -> {mode}")
+	public async toggleUserPrivacy(
 		setting: UserPrivacyOption,
 		mode: ToggleOptions,
 	): Promise<void> {
 		const toggles = {
 			[UserPrivacyOption.STATISTICS]:
-				this.gamdomPage.map.hideStatisticsToggleV4,
-			[UserPrivacyOption.DETAILS]:
-				this.gamdomPage.map.hideDetailsToggleV4,
+				this.gamdomPage.map.hideStatisticsToggle,
+			[UserPrivacyOption.DETAILS]: this.gamdomPage.map.hideDetailsToggle,
 		} as const;
 
 		const clickTargets = {
 			[UserPrivacyOption.STATISTICS]:
-				this.gamdomPage.map.hideStatisticsToggleClickTargetV4,
+				this.gamdomPage.map.hideStatisticsToggleClickTarget,
 			[UserPrivacyOption.DETAILS]:
-				this.gamdomPage.map.hideDetailsToggleClickTargetV4,
+				this.gamdomPage.map.hideDetailsToggleClickTarget,
 		} as const;
 
 		const toggle = toggles[setting];
@@ -41,31 +40,31 @@ export class PrivacyPageSteps extends BasePageStep<PrivacyPage> {
 		await clickTarget.click();
 	}
 
-	@step("Enable Hidden Details privacy and verify toast message - v4")
-	public async enableHiddenDetailsV4(): Promise<void> {
-		await this.toggleUserPrivacyV4(
+	@step("Enable Hidden Details privacy and verify toast message")
+	public async enableHiddenDetails(): Promise<void> {
+		await this.toggleUserPrivacy(
 			UserPrivacyOption.DETAILS,
 			ToggleOptions.ON,
 		);
 
-		await this.gamdomPage.toastV4
+		await this.gamdomPage.toast
 			.assertThat()
-			.toastMessageIsV4(
+			.toastMessageIs(
 				ToastTitle.SUCCESS,
 				ToastSubTitle.HIDEN_DETAILS_ENABLED,
 			);
 	}
 
-	@step("Enable Hidden Statistics privacy and verify toast message - v4")
-	public async enableHiddenStatisticsV4(): Promise<void> {
-		await this.toggleUserPrivacyV4(
+	@step("Enable Hidden Statistics privacy and verify toast message")
+	public async enableHiddenStatistics(): Promise<void> {
+		await this.toggleUserPrivacy(
 			UserPrivacyOption.STATISTICS,
 			ToggleOptions.ON,
 		);
 
-		await this.gamdomPage.toastV4
+		await this.gamdomPage.toast
 			.assertThat()
-			.toastMessageIsV4(
+			.toastMessageIs(
 				ToastTitle.SUCCESS,
 				ToastSubTitle.HIDEN_STATISTICS_ENABLED,
 			);

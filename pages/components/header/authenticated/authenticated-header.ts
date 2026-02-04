@@ -44,13 +44,6 @@ export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 		await this.clickUserProfileDropdownItem(userMenuOption);
 	}
 
-	@step("Get account balance")
-	public async getAccountBalance(): Promise<number> {
-		return parseBalance(
-			await (await this.map.getLoadedAccountBalance()).innerText(),
-		);
-	}
-
 	@step("Hover on wallet dropdown")
 	public async hoverOnWalletDropdown(): Promise<void> {
 		await this.map.inGameAccountBalanceContainer.hover();
@@ -132,10 +125,10 @@ export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 		return accounting.unformat(raw);
 	}
 
-	@step("Get account balance - v4")
-	public async getAccountBalanceV4(): Promise<number> {
+	@step("Get account balance")
+	public async getAccountBalance(): Promise<number> {
 		return parseBalance(
-			await (await this.map.getLoadedAccountBalanceV4()).innerText(),
+			await (await this.map.getLoadedAccountBalance()).innerText(),
 		);
 	}
 }

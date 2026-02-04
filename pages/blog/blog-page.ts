@@ -31,6 +31,6 @@ export class BlogPage extends BasePage<BlogPageMap> {
 
 	@step("Click on the View Article button")
 	public async clickViewArticleButton(): Promise<void> {
-		await this.map.viewArticleHeaderButton.click();
+		await this.map.primaryArticleReadMoreButton.click();
 	}
 }

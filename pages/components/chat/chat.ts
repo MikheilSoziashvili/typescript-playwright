@@ -62,8 +62,8 @@ export class Chat extends BaseComponent<ChatMap> {
 		}
 	}
 
-	@step("Expand chat - v4")
-	public async expandChatV4(): Promise<void> {
-		await this.map.chatButtonV4.click();
+	@step("Expand chat")
+	public async expandChat(): Promise<void> {
+		await this.map.chatButton.click();
 	}
 }

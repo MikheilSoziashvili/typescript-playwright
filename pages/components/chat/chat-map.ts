@@ -30,18 +30,6 @@ export class ChatMap extends BaseMap {
 		return this.page.getByTestId("chatSectionContainer-closed");
 	}
 
-	public get chatLocator(): Locator {
-		return this.chatOpenedContainerLocator.getByTestId("chatSection");
-	}
-
-	public get chatHeader(): Locator {
-		return this.chatLocator.getByTestId("chatHeader");
-	}
-
-	public get chatMessagesList(): Locator {
-		return this.chatLocator.locator("ul#chat-messages");
-	}
-
 	public get chatMessagesContainer(): Locator {
 		return this.chatLocator.getByTestId("chatMessagesContainer");
 	}
@@ -72,40 +60,6 @@ export class ChatMap extends BaseMap {
 		);
 	}
 
-	public get usernameInMessage(): Locator {
-		return this.page.locator('[data-testid*="messageSay-userName"]');
-	}
-
-	public get textInMessage(): Locator {
-		return this.page.locator(
-			'[data-testid*="messageSay-messageContainer"]',
-		);
-	}
-
-	public messageLocator(options?: ChatMessageOptions): Locator {
-		const messageLocator = this.chatMessagesList.locator(
-			`li[data-testid*="messageSay-container-"]`,
-		);
-		if (options?.index) {
-			return messageLocator.nth(options.index - 1);
-		} else if (options?.username && options.message) {
-			return messageLocator
-				.filter({
-					has: this.usernameInMessage.filter({
-						hasText: options.username,
-					}),
-				})
-				.filter({
-					has: this.textInMessage.filter({
-						hasText: options.message,
-					}),
-				})
-				.last();
-		} else {
-			return messageLocator.last();
-		}
-	}
-
 	public pinnedMessageLocator(options?: ChatMessageOptions): Locator {
 		if (options?.index) {
 			return this.pinnedLocator.nth(options.index - 1);
@@ -121,12 +75,6 @@ export class ChatMap extends BaseMap {
 
 	public get pinnedMessagesContainer(): Locator {
 		return this.page.locator('ul[class*="PinnedChatMessageContainer"]');
-	}
-
-	public messageUserAvatar(options?: ChatMessageOptions): Locator {
-		return this.messageLocator(options).locator(
-			`[data-testid*="messageSay-userProfile"]`,
-		);
 	}
 
 	public pinnedMessageAvatar(options?: ChatMessageOptions): Locator {
@@ -155,26 +103,6 @@ export class ChatMap extends BaseMap {
 
 	public get vipTooltip(): Locator {
 		return this.page.locator("role=tooltip >> p");
-	}
-
-	public get infoMessageContainer(): Locator {
-		return this.chatMessagesList.locator(
-			`li[data-testid*="messageClient-container"]`,
-		);
-	}
-
-	public get infoMessages(): Locator {
-		return this.infoMessageContainer.locator(
-			`[data-testid*="messageClient-message"]`,
-		);
-	}
-
-	public infoMessageLocator(index?: number): Locator {
-		const infoLocator = this.infoMessages;
-		if (index) {
-			return infoLocator.nth(index - 1);
-		}
-		return infoLocator;
 	}
 
 	/**
@@ -218,20 +146,8 @@ export class ChatMap extends BaseMap {
 		);
 	}
 
-	public get chatFooter(): Locator {
-		return this.chatLocator.getByTestId("chatFooter");
-	}
-
-	public get chatTextBox(): Locator {
-		return this.chatFooter.getByTestId("chatInput-editable");
-	}
-
 	public get chatTextBoxPlaceholder(): Locator {
 		return this.chatFooter.getByTestId("chatInput-placeholder");
-	}
-
-	public get sendMessageButton(): Locator {
-		return this.chatFooter.getByTestId("chatInput-sendButton");
 	}
 
 	public get chatroomsDropdownContainer(): Locator {
@@ -249,52 +165,52 @@ export class ChatMap extends BaseMap {
 		return this.chatHeader.getByTestId("Input");
 	}
 
-	public get chatButtonV4(): Locator {
+	public get chatButton(): Locator {
 		return this.page.getByTestId("chat-toggle-btn");
 	}
 
-	public get chatFooterV4(): Locator {
-		return this.chatLocatorV4.getByTestId("chat-footer");
+	public get chatFooter(): Locator {
+		return this.chatLocator.getByTestId("chat-footer");
 	}
 
-	public get chatTextBoxV4(): Locator {
-		return this.chatFooterV4.getByTestId("chat-input-editable");
+	public get chatTextBox(): Locator {
+		return this.chatFooter.getByTestId("chat-input-editable");
 	}
 
-	public get sendMessageButtonV4(): Locator {
-		return this.chatFooterV4.getByTestId("chat-input-send-button");
+	public get sendMessageButton(): Locator {
+		return this.chatFooter.getByTestId("chat-input-send-button");
 	}
 
-	public get chatLocatorV4(): Locator {
+	public get chatLocator(): Locator {
 		return this.page.getByTestId("chat-container");
 	}
 
-	public get chatHeaderV4(): Locator {
-		return this.chatLocatorV4.getByTestId("chat-header");
+	public get chatHeader(): Locator {
+		return this.chatLocator.getByTestId("chat-header");
 	}
 
-	public get chatMessagesListV4(): Locator {
-		return this.chatLocatorV4.getByTestId("chat-messages");
+	public get chatMessagesList(): Locator {
+		return this.chatLocator.getByTestId("chat-messages");
 	}
 
-	public get chatMessagesWithContentListV4(): Locator {
-		return this.chatMessagesListV4.getByTestId("chatMessages-withContent");
+	public get chatMessagesWithContentList(): Locator {
+		return this.chatMessagesList.getByTestId("chatMessages-withContent");
 	}
 
-	public get usernameInMessageV4(): Locator {
+	public get usernameInMessage(): Locator {
 		return this.page.locator(
 			'[data-testid^="message-say-"][data-testid$="-chatUserName-inner"]',
 		);
 	}
 
-	public get textInMessageV4(): Locator {
+	public get textInMessage(): Locator {
 		return this.page.locator(
 			'[data-testid^="message-say-"][data-testid$="-messageContainer"]',
 		);
 	}
 
-	public messageLocatorV4(options?: ChatMessageOptions): Locator {
-		const messageLocator = this.chatMessagesWithContentListV4.locator(
+	public messageLocator(options?: ChatMessageOptions): Locator {
+		const messageLocator = this.chatMessagesWithContentList.locator(
 			'li[data-testid^="message-say-"][data-testid$="-container"]',
 		);
 		if (options?.index) {
@@ -302,12 +218,12 @@ export class ChatMap extends BaseMap {
 		} else if (options?.username && options.message) {
 			return messageLocator
 				.filter({
-					has: this.usernameInMessageV4.filter({
+					has: this.usernameInMessage.filter({
 						hasText: options.username,
 					}),
 				})
 				.filter({
-					has: this.textInMessageV4.filter({
+					has: this.textInMessage.filter({
 						hasText: options.message,
 					}),
 				})
@@ -317,34 +233,34 @@ export class ChatMap extends BaseMap {
 		}
 	}
 
-	public messageActionsTriggerV4(options?: ChatMessageOptions): Locator {
-		return this.messageLocatorV4(options).locator(
+	public messageActionsTrigger(options?: ChatMessageOptions): Locator {
+		return this.messageLocator(options).locator(
 			'[data-testid^="message-say-"][data-testid$="-messageActionsTrigger"]',
 		);
 	}
 
-	public get infoMessageContainerV4(): Locator {
-		return this.chatMessagesWithContentListV4.locator(
+	public get infoMessageContainer(): Locator {
+		return this.chatMessagesWithContentList.locator(
 			'[data-testid^="message-client_message-"][data-testid$="-client_message"]',
 		);
 	}
 
-	public get infoMessagesV4(): Locator {
-		return this.infoMessageContainerV4.locator(
+	public get infoMessages(): Locator {
+		return this.infoMessageContainer.locator(
 			'[data-testid$="-client_message-text"]',
 		);
 	}
 
-	public infoMessageLocatorV4(index?: number): Locator {
-		const infoLocator = this.infoMessagesV4;
+	public infoMessageLocator(index?: number): Locator {
+		const infoLocator = this.infoMessages;
 		if (index) {
 			return infoLocator.nth(index - 1);
 		}
 		return infoLocator;
 	}
 
-	public messageUserAvatarV4(options?: ChatMessageOptions): Locator {
-		return this.messageLocatorV4(options).locator(
+	public messageUserAvatar(options?: ChatMessageOptions): Locator {
+		return this.messageLocator(options).locator(
 			'[data-testid^="message-say-"][data-testid$="-avatar"]',
 		);
 	}

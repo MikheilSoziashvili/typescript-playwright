@@ -50,11 +50,6 @@ export class ProfilePage extends BasePage<ProfilePageMap> {
 		await this.map.savePhoneButton.click();
 	}
 
-	@step("Click save username")
-	public async clickSaveUsername(): Promise<void> {
-		await this.map.saveUsernameButton.click();
-	}
-
 	@step("Navigate to user menu option")
 	public async navigateToUserMenuOption(
 		menuItem: UserMenuOption,
@@ -62,13 +57,8 @@ export class ProfilePage extends BasePage<ProfilePageMap> {
 		await this.map.userProfileLeftMenuItem(menuItem).click();
 	}
 
-	@step("Click change password button")
-	public async clickChangePasswordButton(): Promise<void> {
-		await this.map.changePasswordButton.click();
-	}
-
-	@step("Click save username - v4")
-	public async clickSaveUsernameV4(): Promise<void> {
+	@step("Click save username")
+	public async clickSaveUsername(): Promise<void> {
 		await this.map.saveUsernameButton.click();
 	}
 }

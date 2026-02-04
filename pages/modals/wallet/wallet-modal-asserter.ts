@@ -26,7 +26,6 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 		);
 	}
 
-	//Same in v3 and v4
 	@step("Vault wallet amount is")
 	public async vaultWalletAmountIs(
 		expectedUsd: number,
@@ -60,17 +59,6 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 		);
 		expect(actualBalance).toBeLessThanOrEqual(
 			Math.ceil(expectedBalance + tolerance),
-		);
-	}
-
-	@step("Vault deposit toast message is displayed")
-	public async vaultDepositToastMessageIsDisplayed(
-		amount: string,
-	): Promise<void> {
-		await expect(
-			this.gamdomPage.map.vaultDepositToastMessage,
-		).toContainText(
-			`${amount} has been transferred from your Wallet to your Vault`,
 		);
 	}
 
@@ -146,17 +134,6 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 		}
 	}
 
-	@step("Vault withdraw toast message is displayed")
-	public async vaultWithdrawToastMessageIsDisplayed(
-		amount: string,
-	): Promise<void> {
-		await expect(
-			this.gamdomPage.map.vaultWithdrawToastMessage,
-		).toContainText(
-			`${amount} has been transferred from your Vault to your Wallet`,
-		);
-	}
-
 	@step("Verify deposit Disabled text is displayed")
 	public async verifyDepositDisabledTextIsDisplayed(): Promise<void> {
 		await this.checkElementsHaveText([
@@ -202,23 +179,23 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 		]);
 	}
 
-	@step("Vault deposit toast message is displayed - v4")
-	public async vaultDepositToastMessageIsDisplayedV4(
+	@step("Vault deposit toast message is displayed")
+	public async vaultDepositToastMessageIsDisplayed(
 		amount: string,
 	): Promise<void> {
 		await expect(
-			this.gamdomPage.map.vaultDepositToastMessageV4,
+			this.gamdomPage.map.vaultDepositToastMessage,
 		).toContainText(
 			`${amount} has been transferred from your Wallet to your Vault`,
 		);
 	}
 
-	@step("Vault withdraw toast message is displayed - v4")
-	public async vaultWithdrawToastMessageIsDisplayedV4(
+	@step("Vault withdraw toast message is displayed")
+	public async vaultWithdrawToastMessageIsDisplayed(
 		amount: string,
 	): Promise<void> {
 		await expect(
-			this.gamdomPage.map.vaultWithdrawToastMessageV4,
+			this.gamdomPage.map.vaultWithdrawToastMessage,
 		).toContainText(
 			`${amount} has been transferred from your Vault to your Wallet`,
 		);

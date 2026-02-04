@@ -7,19 +7,17 @@ export class BlogPostPageMap extends BaseMap {
 	}
 
 	public get blogPostPageContent(): Locator {
-		return this.page
-			.getByTestId("page-content")
-			.locator('[class*="BlogContainer-sc"]');
+		return this.page.getByTestId("blog-article-article-details");
 	}
 
 	public get blogPostSectionContainer(): Locator {
-		return this.blogPostPageContent.locator('[class*="BlogSection-sc"]');
+		return this.page.getByTestId(
+			"blog-article-article-details-content-container",
+		);
 	}
 
 	public get blogPostTitle(): Locator {
-		return this.blogPostSectionContainer.locator(
-			"p[class*='ArticleTitle-sc']",
-		);
+		return this.page.getByTestId("blog-article-article-details-title");
 	}
 
 	public get blogPostSubTitle(): Locator {
@@ -29,8 +27,8 @@ export class BlogPostPageMap extends BaseMap {
 	}
 
 	public socialShareButtonByAlt(alt: string): Locator {
-		return this.blogPostSectionContainer.locator(
-			`a:has(img[alt="${alt}"])`,
+		return this.blogPostPageContent.getByTestId(
+			`blog-article-article-details-${alt.toLowerCase()}`,
 		);
 	}
 }

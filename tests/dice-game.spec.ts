@@ -1,6 +1,5 @@
 import { DiceGameResultMessage } from "@enums/dice-result-messages";
 import { test } from "@fixtures/fixtures";
-import { DiceBetTestData } from "@dtos/test-data";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { TestTag } from "@enums/test-tags";
 import { JiraUser } from "@enums/jira/jira-users";
@@ -13,35 +12,31 @@ import { isScheduledRun } from "configuration";
 test.describe("Dice tests", () => {
 	const diceGameDomainData = testData().fromDomain().diceGame;
 	test(
-		"[ENG-299] Place a single bet on Dice and try to win",
+		"[ENG-13728] Place a single bet on Dice and try to win",
 		testDetails()
 			.withTags(TestTag.SMOKE, JiraComponent.GAMDOM_ORIGINALS, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.NIKOLAY_GENOV)
 			.withJiraBugTickets("ENG-13879")
 			.apply(),
-		async ({ browserSessionManager, diceGamePage }) => {
+		async ({ browserSessionManager, diceGamePage, testDataObject }) => {
 			await browserSessionManager.loginAs(TestUserRole.REGULAR, {
 				reuseContext: true,
 			});
-			await diceGamePage.navigate();
-			await diceGamePage
-				.assertThat()
-				.diceMessageIs(DiceGameResultMessage.PLACE_YOUR_BETS);
-			await diceGamePage.assertThat().multiplierDefaultValueIsCorrect();
+			await diceGamePage.steps().openDefaultGameState();
 
 			const diceData = testData().fromPredefined().data.dice;
-			const diceBetData = new DiceBetTestData({
+			const diceBetData = testDataObject.diceBet.build({
 				betAmount: diceData.betAmount,
 				multiplier: diceData.multiplier,
 			});
 
 			await diceGamePage.fillInManualBetData(diceBetData.betAmount);
 
-			await diceGamePage.steps().playUntilNumberOfWins(diceBetData, 1);
+			const winResult = await diceGamePage
+				.steps()
+				.playUntilNumberOfWins(diceBetData, 1);
 
-			await diceGamePage
-				.assertThat()
-				.diceMessageIs(DiceGameResultMessage.WIN);
+			await diceGamePage.steps().fairnessTableContainsWinValue(winResult);
 		},
 	);
 
@@ -79,36 +74,4 @@ test.describe("Dice tests", () => {
 			},
 		);
 	});
-});
-
-test.describe("Dice tests - v4", () => {
-	test(
-		"[ENG-13728] Place a single bet on Dice and try to win - v4",
-		testDetails()
-			.withTags(TestTag.SMOKE, TestTag.V4, JiraComponent.GAMDOM_ORIGINALS, TestTag.ACCEPTANCE)
-			.withAuthor(JiraUser.RALUCA_ARITON)
-			.apply(),
-		async ({ browserSessionManager, diceGamePage, testDataObject }) => {
-			await browserSessionManager.loginAs(TestUserRole.REGULAR, {
-				reuseContext: true,
-			});
-			await diceGamePage.steps().openDefaultGameStateV4();
-
-			const diceData = testData().fromPredefined().data.dice;
-			const diceBetData = testDataObject.diceBet.build({
-				betAmount: diceData.betAmount,
-				multiplier: diceData.multiplier,
-			});
-
-			await diceGamePage.fillInManualBetDataV4(diceBetData.betAmount);
-
-			const winResult = await diceGamePage
-				.steps()
-				.playUntilNumberOfWinsV4(diceBetData, 1);
-
-			await diceGamePage
-				.steps()
-				.fairnessTableContainsWinValueV4(winResult);
-		},
-	);
 });

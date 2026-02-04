@@ -1,7 +1,7 @@
+import { Notification } from "@components/notification/notification";
 import { ActionsAdminPage } from "./admin/actions-admin/actions-admin-page";
 import { AffiliatesAdminPage } from "./admin/affiliates-admin/affiliates-admin-page";
 import { BaseAdminPage } from "./admin/base-admin/base-admin-page";
-import { SlotsArenaAdmin } from "./admin/slots-arena-admin/slots-arena-admin-page";
 import { BotsAdminPage } from "./admin/bots-admin/bots-admin-page";
 import { BulkActionsAdminPage } from "./admin/bulk-actions-admin/bulk-actions-admin-page";
 import { CasinoGamesAdminPage } from "./admin/casino-games-admin/casino-games-admin-page";
@@ -32,6 +32,8 @@ import { PromotionAdminPage } from "./admin/promotion-admin/promotion-admin-page
 import { RainAdminPage } from "./admin/rain-admin/rain-admin-page";
 import { SecurityAdminPage } from "./admin/security-admin/security-admin-page";
 import { SeoRedirectsAdminPage } from "./admin/seo-redirects-admin/seo-redirects-admin-page";
+import { SlotsArenaAdmin } from "./admin/slots-arena-admin/slots-arena-admin-page";
+import { SportsBlogAdminPage } from "./admin/sports-blog-admin/sports-blog-admin-page";
 import { StatsAdminPage } from "./admin/stats-admin/stats-admin-page";
 import { SystemAdminPage } from "./admin/system-admin/system-admin-page";
 import { TestingAdminPage } from "./admin/testing-admin/testing-admin-page";
@@ -44,19 +46,21 @@ import { UserInfoRewardsHistoryAdminPage } from "./admin/user-info-admin/user-in
 import { UserInfoSessionsAdminPage } from "./admin/user-info-admin/user-info-sessions-admin/user-info-sessions-admin-page";
 import { UserInfoTransactionsAdminPage } from "./admin/user-info-admin/user-info-transactions-admin/user-info-transactions-admin-page";
 import { VipManagerAdminPage } from "./admin/vip-manager/vip-manager-page";
-import { WriterAdminPage } from "./admin/writer-admin/writer-admin-page";
 import { WriterAdminNewPage } from "./admin/writer-admin-new/writer-admin-new-page";
+import { WriterAdminPage } from "./admin/writer-admin/writer-admin-page";
 import { AffiliatesPage } from "./affiliates/affiliates-page";
 import { BannedUserPage } from "./banned-user/banned-user-page";
 import { BlogPage } from "./blog/blog-page";
 import { BlogCategoryPage } from "./blog/category/blog-category-page";
 import { BlogPostPage } from "./blog/post/blog-post-page";
 import { BookOfPyramidsPage } from "./casino-games/bgaming/book-of-pyramids/book-of-pyramids-page";
-import { CashVaultIPage } from "./casino-games/hacksaw-gaming/cash-vault-i/cash-vault-i-page";
-import { LiveBaccaratSqueezePage } from "./casino-games/evolution-gaming/live-baccarat-squeeze/live-baccarat-squeeze-page";
 import { CasinoGamesUnifiedPage } from "./casino-games/casino-games-page";
+import { ZuluGoldPage } from "./casino-games/elk-studios/zulu-gold/zulu-gold-page";
+import { LiveBaccaratSqueezePage } from "./casino-games/evolution-gaming/live-baccarat-squeeze/live-baccarat-squeeze-page";
+import { CashVaultIPage } from "./casino-games/hacksaw-gaming/cash-vault-i/cash-vault-i-page";
+import { SweetBonanzaPage } from "./casino-games/pragmatic-play/sweet-bonanza/sweet-bonanza-page";
+import { BookOfArabiaPage } from "./casino-games/wickedgames/book-of-arabia/book-of-arabia-page";
 import { CasinoPage } from "./casino/casino-game-page";
-import { Notification } from "@components/notification/notification";
 import { Chat } from "./components/chat/chat";
 import { Footer } from "./components/footer/footer";
 import { Toast } from "./components/toast/toast";
@@ -83,15 +87,18 @@ import { NewRedirectModal } from "./modals/new-redirect-modal/new-redirect-modal
 import { PromoCodeModal } from "./modals/promo-code-modal/promo-code-modal";
 import { PromotionsModal } from "./modals/promotions-modal/promotions-modal";
 import { SoftblockModalPage } from "./modals/softblock-modal/softblock-modal";
+import { SportsBlogModal } from "./modals/sports-blog-modal/sports-blog-modal";
 import { TipRainModal } from "./modals/tip-rain-modal/tip-rain-modal";
 import { TipUserModal } from "./modals/tip-user-modal/tip-user-modal";
 import { TransactionDetailsModal } from "./modals/transaction-details-modal/transaction-details-modal";
 import { TwoFactorAuthModal } from "./modals/two-factor-authentication-modal/two-factor-auth-modal";
+import { UnblockUserModal } from "./modals/unblock-user-modal/unblock-user-modal";
 import { UserProfileModal } from "./modals/user-profile-modal/user-profile-modal";
 import { WalletModal } from "./modals/wallet/wallet-modal";
 import { NotificationsPage } from "./notifications/notifications-page";
 import { OriginalsPage } from "./originals/originals-page";
 import { PlinkoGamePage } from "./plinko-game-page/plinko-game-page";
+import { PocketDicePage } from "./pocket-dice-game/pocket-dice-page";
 import { PrivacyPage } from "./privacy/privacy-page";
 import { ProfilePage } from "./profile/profile-page";
 import { PromotionPage } from "./promotion/promotion-page";
@@ -106,16 +113,7 @@ import { SportsPage } from "./sports/sports-page";
 import { StatisticsPage } from "./statistics/statistics-page";
 import { TransactionsPage } from "./transactions/transactions-page";
 import { VerificationPage } from "./verification/verification-page";
-import { BookOfArabiaPage } from "./casino-games/wickedgames/book-of-arabia/book-of-arabia-page";
-import { PocketDicePage } from "./pocket-dice-game/pocket-dice-page";
-import { ZuluGoldPage } from "./casino-games/elk-studios/zulu-gold/zulu-gold-page";
-import { SportsBlogAdminPage } from "./admin/sports-blog-admin/sports-blog-admin-page";
-import { SportsBlogModal } from "./modals/sports-blog-modal/sports-blog-modal";
-import { SweetBonanzaPage } from "./casino-games/pragmatic-play/sweet-bonanza/sweet-bonanza-page";
 import { SweetBonanzaCandyLandPage } from "./casino-games/pragmatic-play-live/sweet-bonanza-candy-land/sweet-bonanza-candy-land-page";
-import { ToastV4 } from "./components/toastV4/toast-v4";
-import { UnblockUserModalV4 } from "./modals/unblock-user-modal-v4/unblock-user-modal-v4";
-import { UserProfileModalV4 } from "./modals/user-profile-modal-v4/user-profile-modal-v4";
 import { LimboGamePage } from "./limbo-game-page/limbo-game-page";
 
 export const GamdomPages = {
@@ -226,7 +224,6 @@ export const GamePages = {
 export const Components = {
 	notifications: Notification,
 	toast: Toast,
-	toastV4: ToastV4,
 	chat: Chat,
 	footer: Footer,
 };
@@ -240,7 +237,6 @@ export const ExternalPages = {
 export const Modals = {
 	tipUserModal: TipUserModal,
 	userProfileModal: UserProfileModal,
-	userProfileModalV4: UserProfileModalV4,
 	liveSupportModal: LiveSupportModal,
 	walletModal: WalletModal,
 	twoFactorAuthModal: TwoFactorAuthModal,
@@ -252,7 +248,7 @@ export const Modals = {
 	newRedirectModal: NewRedirectModal,
 	promotionsModal: PromotionsModal,
 	sportsBlogModal: SportsBlogModal,
-	unblockUserModalV4: UnblockUserModalV4,
+	unblockUserModal: UnblockUserModal,
 };
 
 export const AllGamdomPages = {

@@ -21,10 +21,6 @@ export class HomePageMap extends BaseMap {
 		);
 	}
 
-	public get walletButton(): Locator {
-		return this.page.getByTestId("nav-wallet-action-btn");
-	}
-
 	public get bannerCarousel(): Locator {
 		return this.page.locator(
 			`div[class*="swiper-horizontal HomePageSlider"]`,
@@ -149,18 +145,6 @@ export class HomePageMap extends BaseMap {
 		);
 	}
 
-	public get liveBetsSectionTotalBets(): Locator {
-		return this.page.locator("span[class*='MuiTypography-liveSelection']");
-	}
-
-	public get liveBetsRows(): Locator {
-		return this.page.locator("div[role='tabpanel'] table tbody tr");
-	}
-
-	public liveBetsUsernameCell(row: Locator): Locator {
-		return row.locator("td").nth(1).locator("span").last();
-	}
-
 	public get recentWinsItems(): Locator {
 		return this.page.locator("div[class*='RecentWins-styled__Item']");
 	}
@@ -217,19 +201,19 @@ export class HomePageMap extends BaseMap {
 		});
 	}
 
-	public get walletButtonV4(): Locator {
+	public get walletButton(): Locator {
 		return this.page.getByTestId("nav-wallet-action-btn");
 	}
 
-	public get liveBetsSectionTotalBetsV4(): Locator {
+	public get liveBetsSectionTotalBets(): Locator {
 		return this.page.getByTestId("general-stats-total-bets-container");
 	}
 
-	public get liveBetsRowsV4(): Locator {
+	public get liveBetsRows(): Locator {
 		return this.page.locator('[data-testid^="general-stats-table-row-"]');
 	}
 
-	public liveBetsUsernameCellV4(row: Locator): Locator {
+	public liveBetsUsernameCell(row: Locator): Locator {
 		return row.locator('[data-testid$="-username"]');
 	}
 }

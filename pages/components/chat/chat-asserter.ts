@@ -85,20 +85,6 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 		);
 	}
 
-	@step("Check message is visible")
-	public async isMessageVisible(
-		messageInfo: ChatMessageOptions,
-		retries = 3,
-	): Promise<void> {
-		const locator = this.gamdomPage.map.messageLocator(messageInfo);
-		await this.retryWithPageReload(
-			(_attempt) => this.checkElementsAreVisible([locator]),
-			`Message from "${messageInfo.username}" with text "${messageInfo.message}" is visible`,
-			retries,
-		);
-		await expect(locator).toBeAttached();
-	}
-
 	@step("Check message is pinned and is visible")
 	public async isPinnedMessageVisible(
 		messageInfo: ChatMessageOptions,
@@ -143,34 +129,6 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 			`VIP diamond icon visibility matches expected state for "${messageInfo.username}" on message "${messageInfo.message}"`,
 			retries,
 		);
-	}
-
-	@step("Check message is not visible")
-	public async messageIsNotVisible(
-		messageInfo: ChatMessageOptions,
-		retries = 3,
-	): Promise<void> {
-		const locator = this.gamdomPage.map.messageLocator(messageInfo);
-		await this.retryWithPageReload(
-			(_attempt) => this.checkElementsAreHidden([locator]),
-			`Message from "${messageInfo.username}" with text "${messageInfo.message}" is not visible`,
-			retries,
-		);
-	}
-
-	@step("Check info message is visible")
-	public async isInfoMessageVisible(
-		infoMessage: string,
-		username?: string,
-		index?: number,
-	): Promise<void> {
-		let locator = this.gamdomPage.map.infoMessageLocator(index);
-
-		if (username) {
-			locator = locator.filter({ hasText: username });
-		}
-
-		await expect(locator.last()).toHaveText(infoMessage);
 	}
 
 	@step("Check info message is visible by text")
@@ -307,12 +265,12 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 		]);
 	}
 
-	@step("Check message is visible - v4")
-	public async isMessageVisibleV4(
+	@step("Check message is visible")
+	public async isMessageVisible(
 		messageInfo: ChatMessageOptions,
 		retries = 3,
 	): Promise<void> {
-		const locator = this.gamdomPage.map.messageLocatorV4(messageInfo);
+		const locator = this.gamdomPage.map.messageLocator(messageInfo);
 		await this.retryWithPageReload(
 			(_attempt) => this.checkElementsAreVisible([locator]),
 			`Message from "${messageInfo.username}" with text "${messageInfo.message}" is visible`,
@@ -321,13 +279,13 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 		await expect(locator).toBeAttached();
 	}
 
-	@step("Check info message is visible - v4")
-	public async isInfoMessageVisibleV4(
+	@step("Check info message is visible")
+	public async isInfoMessageVisible(
 		infoMessage: string,
 		username?: string,
 		index?: number,
 	): Promise<void> {
-		let locator = this.gamdomPage.map.infoMessageLocatorV4(index);
+		let locator = this.gamdomPage.map.infoMessageLocator(index);
 
 		if (username) {
 			locator = locator.filter({ hasText: username });
@@ -336,12 +294,12 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 		await expect(locator.last()).toHaveText(infoMessage);
 	}
 
-	@step("Check message is not visible - v4")
-	public async messageIsNotVisibleV4(
+	@step("Check message is not visible")
+	public async messageIsNotVisible(
 		messageInfo: ChatMessageOptions,
 		retries = 3,
 	): Promise<void> {
-		const locator = this.gamdomPage.map.messageLocatorV4(messageInfo);
+		const locator = this.gamdomPage.map.messageLocator(messageInfo);
 		await this.retryWithPageReload(
 			(_attempt) => this.checkElementsAreHidden([locator]),
 			`Message from "${messageInfo.username}" with text "${messageInfo.message}" is not visible`,

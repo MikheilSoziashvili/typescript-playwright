@@ -6,15 +6,14 @@ import { Timeout } from "@enums/timeout";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { logger } from "@logger/logger";
 import { TipUserModal } from "@modals/tip-user-modal/tip-user-modal";
-import { UserProfileModal } from "@modals/user-profile-modal/user-profile-modal";
 import { BaseComponentStep } from "@pages/base/base-component-step";
 import { expect } from "@playwright/test";
 import { step } from "decorators/step";
 import { AuthenticatedHeader } from "../header/authenticated/authenticated-header";
-import { CommonUserOptionsPopup } from "../popups/common-user-options-popup";
 import { Chat } from "./chat";
 import { ChatMessageOptions } from "./chat-map";
 import { FAQ_PAGE_ENDPOINT } from "@constants/page-endpoints";
+import { CommonUserOptionsPopup } from "../popups/common-user-options-popup";
 
 export class ChatSteps extends BaseComponentStep<Chat> {
 	private authenticatedHeader: AuthenticatedHeader;
@@ -44,72 +43,6 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		await this.sendMessage(message);
 	}
 
-	@step("Send a message and verify it is visible")
-	public async sendMessageAndVerifyItsVisible(
-		message: string,
-		messageInfo: ChatMessageOptions,
-	): Promise<void> {
-		await this.sendMessage(message);
-		await this.component.assertThat().isMessageVisible(messageInfo);
-	}
-
-	@step("Send message")
-	public async sendMessage(message: string): Promise<void> {
-		let retryCount = 0;
-		const maxRetries = 3;
-
-		while (retryCount < maxRetries) {
-			try {
-				await this.component.map.waitForAttributeToHaveValue(
-					this.component.map.chatTextBox,
-					Attributes.CONTENTEDITABLE,
-					BooleanValueString.TRUE,
-					Timeout.LONG,
-				);
-				await this.component.map.chatTextBox.clear();
-				await this.component.map.chatTextBox.click();
-				await this.component.map.chatTextBox.pressSequentially(
-					message,
-					{ delay: 30 },
-				);
-
-				await expect
-					.poll(
-						async () => {
-							await this.component.map.sendMessageButton.click();
-							const currentMessage =
-								await this.component.map.chatTextBox.innerText();
-							return currentMessage.trim() !== message.trim();
-						},
-						{
-							message:
-								"Message was not sent successfully after multiple click attempts",
-							timeout: Timeout.EXTRA_LONG,
-						},
-					)
-					.toBeTruthy();
-				break;
-			} catch (error) {
-				const e = error as Error;
-
-				if (e.name === "TimeoutError") {
-					logger.info(
-						`Retrying sendMessage. Attempt ${retryCount + 1}`,
-					);
-					retryCount++;
-
-					if (retryCount >= maxRetries) {
-						throw e;
-					}
-
-					await this.authenticatedHeader.map.chatButton.click();
-				} else {
-					throw e; // Rethrow non-TimeoutError exceptions in order not to miss another potential issues
-				}
-			}
-		}
-	}
-
 	@step("Open tip user modal")
 	public async openTipUserModal(
 		options?: ChatMessageOptions,
@@ -135,46 +68,6 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 			const tipUserModal = new TipUserModal(this.component.page);
 			await tipUserModal.assertThat().isDisplayed();
 		}
-	}
-
-	@step("Open user profile modal")
-	public async openUserProfileModal(
-		options?: ChatMessageOptions,
-	): Promise<void> {
-		const messageUserLevel = this.component.map.messageUserAvatar(options);
-		await this.component.map.waitForVisibility({
-			locator: messageUserLevel,
-		});
-
-		await messageUserLevel.click();
-
-		const commonUserOptionsPopup = new CommonUserOptionsPopup(
-			this.component.page,
-		);
-		await commonUserOptionsPopup.assertThat().isDisplayed();
-
-		await commonUserOptionsPopup.clickOption(CommonUserPopupOption.PROFILE);
-
-		const userProfileModal = new UserProfileModal(this.component.page);
-		await userProfileModal.waitContentToLoad();
-		await userProfileModal.assertThat().isDisplayed();
-	}
-
-	@step("Ignore user from chat")
-	public async ignoreUserFromChat(
-		options?: ChatMessageOptions,
-	): Promise<void> {
-		const messageUserLevel = this.component.map.messageUserAvatar(options);
-		await this.component.map.waitForVisibility({
-			locator: messageUserLevel,
-		});
-
-		await messageUserLevel.click();
-
-		await this.commonUserOptionsPopup.assertThat().isDisplayed();
-		await this.commonUserOptionsPopup.clickOption(
-			CommonUserPopupOption.IGNORE,
-		);
 	}
 
 	@step("Verify message and open tip user modal")
@@ -253,17 +146,17 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		await this.component.assertThat().messageIsUnpinned(options);
 	}
 
-	@step("Send a message and verify it is visible -v4")
-	public async sendMessageAndVerifyItsVisibleV4(
+	@step("Send a message and verify it is visible")
+	public async sendMessageAndVerifyItsVisible(
 		message: string,
 		messageInfo: ChatMessageOptions,
 	): Promise<void> {
-		await this.sendMessageV4(message);
-		await this.component.assertThat().isMessageVisibleV4(messageInfo);
+		await this.sendMessage(message);
+		await this.component.assertThat().isMessageVisible(messageInfo);
 	}
 
-	@step("Send message - v4")
-	public async sendMessageV4(message: string): Promise<void> {
+	@step("Send message")
+	public async sendMessage(message: string): Promise<void> {
 		const maxRetries = 3;
 
 		for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -280,7 +173,7 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 				}
 
 				logger.info(`Retrying sendMessage. Attempt ${attempt}`);
-				await this.component.expandChatV4();
+				await this.component.expandChat();
 			}
 		}
 	}
@@ -288,24 +181,24 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 	@step("Send message attempt")
 	private async sendMessageAttempt(message: string): Promise<void> {
 		await this.component.map.waitForAttributeToHaveValue(
-			this.component.map.chatTextBoxV4,
+			this.component.map.chatTextBox,
 			Attributes.CONTENTEDITABLE,
 			BooleanValueString.TRUE,
 			Timeout.LONG,
 		);
 
-		await this.component.map.chatTextBoxV4.clear();
-		await this.component.map.chatTextBoxV4.click();
-		await this.component.map.chatTextBoxV4.pressSequentially(message, {
+		await this.component.map.chatTextBox.clear();
+		await this.component.map.chatTextBox.click();
+		await this.component.map.chatTextBox.pressSequentially(message, {
 			delay: 30,
 		});
 
 		await expect
 			.poll(
 				async () => {
-					await this.component.map.sendMessageButtonV4.click();
+					await this.component.map.sendMessageButton.click();
 					const currentMessage =
-						await this.component.map.chatTextBoxV4.innerText();
+						await this.component.map.chatTextBox.innerText();
 					return currentMessage.trim() !== message.trim();
 				},
 				{
@@ -317,30 +210,29 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 			.toBeTruthy();
 	}
 
-	@step("Ignore user from chat - v4")
-	public async ignoreUserFromChatV4(
+	@step("Ignore user from chat")
+	public async ignoreUserFromChat(
 		options?: ChatMessageOptions,
 	): Promise<void> {
 		const messageUserLevel =
-			this.component.map.messageActionsTriggerV4(options);
+			this.component.map.messageActionsTrigger(options);
 		await this.component.map.waitForVisibility({
 			locator: messageUserLevel,
 		});
 
 		await messageUserLevel.click();
 
-		await this.commonUserOptionsPopup.assertThat().isDisplayedV4();
-		await this.commonUserOptionsPopup.clickOptionV4(
+		await this.commonUserOptionsPopup.assertThat().isDisplayed();
+		await this.commonUserOptionsPopup.clickOption(
 			CommonUserPopupOption.IGNORE,
 		);
 	}
 
-	@step("Open user profile modal - v4")
-	public async openUserProfileModalV4(
+	@step("Open user profile modal")
+	public async openUserProfileModal(
 		options?: ChatMessageOptions,
 	): Promise<void> {
-		const messageUserLevel =
-			this.component.map.messageUserAvatarV4(options);
+		const messageUserLevel = this.component.map.messageUserAvatar(options);
 		await this.component.map.waitForVisibility({
 			locator: messageUserLevel,
 		});

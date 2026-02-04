@@ -6,14 +6,14 @@ import { PrivacyPageMap } from "./privacy-page-map";
 import { PrivacyPageAsserter } from "./privacy-page-asserter";
 import { PrivacyPageSteps } from "./privacy-page-steps";
 import { step } from "decorators/step";
-import { ToastV4 } from "@pages/components/toastV4/toast-v4";
+import { Toast } from "@pages/components/toast/toast";
 
 export class PrivacyPage extends BasePage<PrivacyPageMap> {
-	public readonly toastV4: ToastV4;
+	public readonly toast: Toast;
 
 	public constructor(page: Page) {
 		super(page, new PrivacyPageMap(page));
-		this.toastV4 = new ToastV4(this.page);
+		this.toast = new Toast(this.page);
 	}
 
 	public override async navigate(
@@ -38,8 +38,8 @@ export class PrivacyPage extends BasePage<PrivacyPageMap> {
 		await this.map.getUnignoreButton(username).click();
 	}
 
-	@step("Click unignore user icon - v4")
-	public async clickUnignoreUserV4(username: string): Promise<void> {
-		await this.map.getUnignoreButtonV4(username).click();
+	@step("Click unignore user icon")
+	public async clickUnignoreUser(username: string): Promise<void> {
+		await this.map.getUnignoreButton(username).click();
 	}
 }

@@ -1,13 +1,11 @@
-import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
-import { decimalNumber, currencyAmountPattern } from "@support/regex-patterns";
-import { OriginalGame } from "@enums/original-games";
 import { throwError } from "@core/utils/utils";
-import { Timeout } from "@enums/timeout";
-import { Attributes } from "@enums/playwright/htmlAttributes";
-import { AttributesValues } from "@enums/playwright/htmlAttributesValues";
-import { UserMenuOption } from "@enums/user-menu-options";
+import { OriginalGame } from "@enums/original-games";
 import { VisibilityState } from "@enums/playwright/visibility-states";
+import { Timeout } from "@enums/timeout";
+import { UserMenuOption } from "@enums/user-menu-options";
+import { Locator, Page } from "@playwright/test";
+import { currencyAmountPattern, decimalNumber } from "@support/regex-patterns";
 
 export class AuthenticatedHeaderMap extends BaseMap {
 	public constructor(page: Page) {
@@ -56,36 +54,6 @@ export class AuthenticatedHeaderMap extends BaseMap {
 
 	public get chatButton(): Locator {
 		return this.authenticatedHeaderContainer.getByTestId("iconChatButton");
-	}
-
-	public async getLoadedAccountBalance(): Promise<Locator> {
-		const accountBalanceLocator = await this.accountBalance();
-
-		await this.waitForAttributeToHaveValue(
-			accountBalanceLocator,
-			Attributes.CLASS,
-			AttributesValues.ANIMATION_FINISHED,
-			Timeout.LONG,
-		);
-
-		await accountBalanceLocator.hover({ trial: true });
-		await accountBalanceLocator.focus();
-
-		try {
-			// workaround for $0 balance on page load bug
-			return await this.waitUntilContainsText(
-				accountBalanceLocator,
-				decimalNumber,
-			);
-		} catch (error) {
-			throwError(error, "Error resolving account balance");
-		}
-	}
-
-	public async accountBalance(): Promise<Locator> {
-		return this.page.locator(
-			"div[class*='header'] > div:nth-child(2) > div:nth-child(2) div[style*='tabular']",
-		);
 	}
 
 	public get inGameAccountBalanceContainer(): Locator {
@@ -164,14 +132,14 @@ export class AuthenticatedHeaderMap extends BaseMap {
 		return this.page.getByTestId("balanceAmoutLabel");
 	}
 
-	public get accountBalanceV4(): Locator {
+	public get accountBalance(): Locator {
 		return this.authenticatedHeaderContainer.getByTestId(
 			"headerUserBalance",
 		);
 	}
 
-	public get accountBalanceAnimationFinishedV4(): Locator {
-		return this.accountBalanceV4.locator(":scope.animation-finished");
+	public get accountBalanceAnimationFinished(): Locator {
+		return this.accountBalance.locator(":scope.animation-finished");
 	}
 
 	public get userAccountMenuStack(): Locator {
@@ -186,10 +154,10 @@ export class AuthenticatedHeaderMap extends BaseMap {
 		);
 	}
 
-	public async getLoadedAccountBalanceV4(): Promise<Locator> {
-		const accountBalanceLocator = this.accountBalanceV4;
+	public async getLoadedAccountBalance(): Promise<Locator> {
+		const accountBalanceLocator = this.accountBalance;
 		const accountBalanceAnimationFinishedLocator =
-			this.accountBalanceAnimationFinishedV4;
+			this.accountBalanceAnimationFinished;
 
 		await accountBalanceAnimationFinishedLocator.waitFor({
 			state: VisibilityState.VISIBLE,

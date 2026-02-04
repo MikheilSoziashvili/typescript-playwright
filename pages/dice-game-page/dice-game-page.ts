@@ -34,27 +34,6 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 		return new DiceGamePageSteps(this);
 	}
 
-	@step("Fill in manual bet data")
-	public async fillInManualBetData(
-		betAmount: number,
-		multiplier?: number,
-	): Promise<void> {
-		await this.map.manualBetField.fill(`${betAmount}`);
-		multiplier !== undefined &&
-			(await this.map.manualMultiplierField.fill(`${multiplier}`));
-	}
-
-	@step("Roll dice")
-	public async rollDice(): Promise<void> {
-		await this.map.rollDiceBtn.click();
-	}
-
-	@step("Place bet")
-	public async placeBet(betAmount: number, multiplier = 1.1): Promise<void> {
-		await this.fillInManualBetData(betAmount, multiplier);
-		await this.rollDice();
-	}
-
 	@step("Switch to autobet section")
 	public async switchToAutobetSection(): Promise<void> {
 		await this.map.diceAutobetTabButton.click();
@@ -133,47 +112,39 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 		await this.rollDice();
 	}
 
-	@step("Check if manual bet input field is disabled")
-	public async isManualBetInputFieldDisabled(): Promise<boolean> {
-		return this.map.manualBetField.isDisabled();
-	}
-
 	@step("Check if auto bet input field is disabled")
 	public async isAutoBetInputFieldDisabled(): Promise<boolean> {
 		return this.map.autobetYourBetInput.isDisabled();
 	}
 
-	@step("Fill in manual bet data - v4")
-	public async fillInManualBetDataV4(
+	@step("Fill in manual bet data")
+	public async fillInManualBetData(
 		betAmount: number,
 		multiplier?: number,
 	): Promise<void> {
-		await this.map.manualBetFieldV4.fill(`${betAmount}`);
+		await this.map.manualBetField.fill(`${betAmount}`);
 		multiplier !== undefined &&
-			(await this.map.manualMultiplierFieldV4.fill(`${multiplier}`));
+			(await this.map.manualMultiplierField.fill(`${multiplier}`));
 	}
 
-	@step("Roll dice - v4")
-	public async rollDiceV4(): Promise<void> {
-		await this.map.rollDiceBtnV4.click();
+	@step("Roll dice")
+	public async rollDice(): Promise<void> {
+		await this.map.rollDiceBtn.click();
 	}
 
-	@step("Place bet - v4")
-	public async placeBetV4(
-		betAmount: number,
-		multiplier = 1.1,
-	): Promise<void> {
-		await this.fillInManualBetDataV4(betAmount, multiplier);
-		await this.rollDiceV4();
+	@step("Place bet")
+	public async placeBet(betAmount: number, multiplier = 1.1): Promise<void> {
+		await this.fillInManualBetData(betAmount, multiplier);
+		await this.rollDice();
 	}
 
-	@step("Check if manual bet input field is disabled - v4")
-	public async isManualBetInputFieldDisabledV4(): Promise<boolean> {
-		return this.map.manualBetFieldV4.isDisabled();
+	@step("Check if manual bet input field is disabled")
+	public async isManualBetInputFieldDisabled(): Promise<boolean> {
+		return this.map.manualBetField.isDisabled();
 	}
 
-	@step("Open Fairness tab - v4")
-	public async openFairnessTabV4(): Promise<void> {
-		await this.map.fairnessButtonV4.click();
+	@step("Open Fairness tab")
+	public async openFairnessTab(): Promise<void> {
+		await this.map.fairnessButton.click();
 	}
 }

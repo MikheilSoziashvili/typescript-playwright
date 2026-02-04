@@ -7,15 +7,19 @@ export class BannedUserPageMap extends BaseMap {
 	}
 
 	private get restrictedContainer(): Locator {
-		return this.page.getByTestId("restrictedContainer");
+		return this.page.locator(
+			'div[class^="ErrorPageLayout-styled__Container"]',
+		);
 	}
 
 	public get redContainer(): Locator {
-		return this.restrictedContainer.getByTestId("containerRed");
+		return this.restrictedContainer.locator(
+			'div[class^="ErrorPageLayout-styled__BannerContainer"]',
+		);
 	}
 
 	public get restrictionTitle(): Locator {
-		return this.redContainer.getByTestId("ban-message");
+		return this.redContainer.getByText("Your account has been Banned!");
 	}
 
 	public get bannedReason(): Locator {
@@ -23,18 +27,20 @@ export class BannedUserPageMap extends BaseMap {
 	}
 
 	public get socialMediaFooterContainer(): Locator {
-		return this.restrictedContainer.getByTestId("socials");
+		return this.restrictedContainer.locator(
+			'div[class^="ErrorPageLayout-styled__SocialsContainer"]',
+		);
 	}
 
 	public socialMediaFooterLinkByPlaceholder(socialMedia: string): Locator {
-		return this.socialMediaFooterContainer.getByTestId(
-			`${socialMedia}-link`,
+		return this.socialMediaFooterContainer.locator(
+			`a[href*="${socialMedia.toLowerCase()}"]`,
 		);
 	}
 
 	public socialMediaFooterIconByPlaceholder(socialMedia: string): Locator {
-		return this.socialMediaFooterContainer.getByTestId(
-			`${socialMedia}-button`,
+		return this.socialMediaFooterLinkByPlaceholder(socialMedia).locator(
+			"svg",
 		);
 	}
 }

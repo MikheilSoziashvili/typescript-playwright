@@ -1,4 +1,4 @@
 export enum SocialMedia {
 	Facebook = "Facebook",
-	Twitter = "Twitter",
+	X = "X",
 }

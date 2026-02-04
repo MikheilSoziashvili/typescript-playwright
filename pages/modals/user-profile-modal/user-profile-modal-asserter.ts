@@ -18,8 +18,15 @@ export class UserProfileModalAsserter extends BaseAsserter<UserProfileModal> {
 	public async isPrivateUserModeDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.userProfilePrivateStatisticsContainer,
-			this.gamdomPage.map.tipUserButton,
-			this.gamdomPage.map.ignoreButton,
+			this.gamdomPage.map.userProfilePrivateStatisticsMessage,
+		]);
+
+		await this.checkElementsHaveText([
+			{
+				locator:
+					this.gamdomPage.map.userProfilePrivateStatisticsMessage,
+				expectedText: "This user has Private Statistics",
+			},
 		]);
 	}
 }

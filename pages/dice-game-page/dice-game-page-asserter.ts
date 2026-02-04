@@ -79,11 +79,6 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		}
 	}
 
-	@step("Dice slider value is correct")
-	public async diceSliderValueIsCorrect(diceValue: string): Promise<void> {
-		await expect(this.gamdomPage.map.diceSliderValue).toHaveText(diceValue);
-	}
-
 	@step("Dice message is not empty")
 	public async diceMessageIsNotEmpty(): Promise<void> {
 		await expect(this.gamdomPage.map.diceGameAreaMessage).not.toBeEmpty();
@@ -100,39 +95,6 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 				timeout: Timeout.SHORT,
 			},
 		);
-	}
-
-	@step("Dice result is displayed")
-	public async diceResultIsDisplayed(): Promise<void> {
-		const diceResultGameArea =
-			await this.gamdomPage.map.diceResultNumberGameArea
-				.first()
-				.textContent();
-
-		expect(parseFloat(diceResultGameArea ?? "0")).toBeGreaterThanOrEqual(0);
-
-		const diceResultHistory =
-			await this.gamdomPage.map.diceLastResultNumber.textContent();
-
-		expect(
-			parseFloat(diceResultHistory ?? "0"),
-			"Dice result history must be a valid number and not empty",
-		).toBeGreaterThanOrEqual(0);
-
-		await expect
-			.poll(
-				() =>
-					this.gamdomPage.map.diceResultNumberGameArea
-						.first()
-						.textContent(),
-				{
-					message:
-						"Dice result history is not the same as current dice result",
-					timeout: Timeout.SHORT,
-					intervals: [IntervalMs.SHORT],
-				},
-			)
-			.toBe(diceResultHistory);
 	}
 
 	@step("Autobet values are correct")
@@ -265,8 +227,8 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		]);
 	}
 
-	@step("Manual bet value are correct - v4")
-	public async manualBetValuesAreCorrectV4(
+	@step("Manual bet value are correct")
+	public async manualBetValuesAreCorrect(
 		rollover: string,
 		multiplier: string,
 		winChance: string,
@@ -274,19 +236,19 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 	): Promise<void> {
 		const fieldValues = [
 			{
-				field: this.gamdomPage.map.manualRollOverFieldV4,
+				field: this.gamdomPage.map.manualRollOverField,
 				value: rollover,
 			},
 			{
-				field: this.gamdomPage.map.manualMultiplierFieldV4,
+				field: this.gamdomPage.map.manualMultiplierField,
 				value: multiplier,
 			},
 			{
-				field: this.gamdomPage.map.manualWinChanceFieldV4,
+				field: this.gamdomPage.map.manualWinChanceField,
 				value: winChance,
 			},
 			{
-				field: this.gamdomPage.map.manualProfitOnWinFieldV4,
+				field: this.gamdomPage.map.manualProfitOnWinField,
 				value: profitOnWin,
 			},
 		];
@@ -296,24 +258,22 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		}
 	}
 
-	@step("Dice slider value is correct - v4")
-	public async diceSliderValueIsCorrectV4(diceValue: string): Promise<void> {
-		await expect(this.gamdomPage.map.diceSliderValueV4).toHaveText(
-			diceValue,
-		);
+	@step("Dice slider value is correct")
+	public async diceSliderValueIsCorrect(diceValue: string): Promise<void> {
+		await expect(this.gamdomPage.map.diceSliderValue).toHaveText(diceValue);
 	}
 
-	@step("Dice result is displayed - v4")
-	public async diceResultIsDisplayedV4(): Promise<number> {
+	@step("Dice result is displayed")
+	public async diceResultIsDisplayed(): Promise<number> {
 		const diceResultGameArea =
-			await this.gamdomPage.map.diceResultNumberGameAreaV4
+			await this.gamdomPage.map.diceResultNumberGameArea
 				.first()
 				.textContent();
 
 		expect(parseFloat(diceResultGameArea ?? "0")).toBeGreaterThanOrEqual(0);
 
 		const diceResultHistory =
-			await this.gamdomPage.map.diceLastResultNumberV4.textContent();
+			await this.gamdomPage.map.diceLastResultNumber.textContent();
 
 		const expectedDiceResult = parseFloat(diceResultHistory ?? "0");
 
@@ -326,7 +286,7 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 			.poll(
 				async () => {
 					const rawCurrent =
-						await this.gamdomPage.map.diceAllLastResultsNumberV4
+						await this.gamdomPage.map.diceAllLastResultsNumber
 							.first()
 							.textContent();
 
@@ -344,46 +304,46 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		return expectedDiceResult;
 	}
 
-	@step("Verify dice default values - v4")
-	public async defaultValuesAreCorrectV4(): Promise<void> {
+	@step("Verify dice default values")
+	public async defaultValuesAreCorrect(): Promise<void> {
 		const diceDefaults = testData().fromPredefined().data.dice;
 
 		await this.checkElementsHaveValue([
 			{
-				locator: this.gamdomPage.map.manualMultiplierFieldV4,
+				locator: this.gamdomPage.map.manualMultiplierField,
 				expectedValue: formatNumber(diceDefaults.defaultMultiplier, 2),
 			},
 			{
-				locator: this.gamdomPage.map.manualRollOverFieldV4,
+				locator: this.gamdomPage.map.manualRollOverField,
 				expectedValue: formatNumber(diceDefaults.defaultRollover, 6),
 			},
 			{
-				locator: this.gamdomPage.map.manualWinChanceFieldV4,
+				locator: this.gamdomPage.map.manualWinChanceField,
 				expectedValue: formatNumber(diceDefaults.defaultWinChance, 2),
 			},
 		]);
 	}
 
-	@step("Roll dice button is visible - v4")
-	public async rollDiceButtonIsVisibleV4(): Promise<void> {
+	@step("Roll dice button is visible")
+	public async rollDiceButtonIsVisible(): Promise<void> {
 		await this.checkElementsHaveText([
 			{
-				locator: this.gamdomPage.map.rollDiceBtnV4,
+				locator: this.gamdomPage.map.rollDiceBtn,
 				expectedText: Button.ROLL_DICE,
 			},
 		]);
 	}
 
-	@step("Verify that fairness table is visible - v4")
-	public async fairnessTableIsVisibleV4(): Promise<void> {
+	@step("Verify that fairness table is visible")
+	public async fairnessTableIsVisible(): Promise<void> {
 		await this.checkElementsAreVisible([
-			this.gamdomPage.map.fairnessTableBodyV4,
+			this.gamdomPage.map.fairnessTableBody,
 		]);
 	}
 
-	@step("Verify Dice default game state - v4")
-	public async defaultGameStateIsCorrectV4(): Promise<void> {
-		await this.defaultValuesAreCorrectV4();
-		await this.rollDiceButtonIsVisibleV4();
+	@step("Verify Dice default game state")
+	public async defaultGameStateIsCorrect(): Promise<void> {
+		await this.defaultValuesAreCorrect();
+		await this.rollDiceButtonIsVisible();
 	}
 }

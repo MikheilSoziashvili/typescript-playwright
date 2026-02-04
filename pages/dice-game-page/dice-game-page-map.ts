@@ -7,64 +7,8 @@ export class DiceGamePageMap extends BaseMap {
 		super(page);
 	}
 
-	public get manualYourBetContainer(): Locator {
-		return this.page.getByTestId("diceYourBetContainer");
-	}
-
-	public get manualBetField(): Locator {
-		return this.manualYourBetContainer.locator("input");
-	}
-
-	public get manualProfitOnWinContainer(): Locator {
-		return this.page.getByTestId("diceProfitOnWinContainer");
-	}
-
-	public get manualProfitOnWinField(): Locator {
-		return this.manualProfitOnWinContainer.locator("input");
-	}
-
-	public get manualMultiplierContainer(): Locator {
-		return this.page.getByTestId("diceRollMultiplierContainer");
-	}
-
-	public get manualMultiplierField(): Locator {
-		return this.manualMultiplierContainer.locator("input");
-	}
-
-	public get manualRollOverContainer(): Locator {
-		return this.page.getByTestId("diceRollOverContainer");
-	}
-
-	public get manualRollOverField(): Locator {
-		return this.manualRollOverContainer.locator("input");
-	}
-
-	public get manualWinChanceContainer(): Locator {
-		return this.page.getByTestId("diceRollWinChanceContainer");
-	}
-
-	public get manualWinChanceField(): Locator {
-		return this.manualWinChanceContainer.locator("input");
-	}
-
-	public get rollDiceBtn(): Locator {
-		return this.page.getByTestId("rollDiceBtn");
-	}
-
-	public get diceSliderValue(): Locator {
-		return this.getSpanByClassContains("MuiSlider-valueLabelLabel");
-	}
-
 	public get diceGameAreaMessage(): Locator {
 		return this.page.getByTestId("diceGameAreaMessage");
-	}
-
-	public get diceResultNumberGameArea(): Locator {
-		return this.page.getByTestId("diceResult");
-	}
-
-	public get diceResultsHistory(): Locator {
-		return this.page.getByTestId("diceRollHistoryResults");
 	}
 
 	public get diceRollHistoryContainer(): Locator {
@@ -73,14 +17,6 @@ export class DiceGamePageMap extends BaseMap {
 
 	public get diceRollHistoryButton(): Locator {
 		return this.diceRollHistoryContainer.locator("img");
-	}
-
-	public get diceLastResultNumber(): Locator {
-		return this.diceAllLastResultsNumber.first();
-	}
-
-	public get diceAllLastResultsNumber(): Locator {
-		return this.diceResultsHistory.locator("div");
 	}
 
 	public get diceLastResultBetValue(): Locator {
@@ -172,93 +108,93 @@ export class DiceGamePageMap extends BaseMap {
 		return this.getInputLocatorByLabel(/^On Loss$/);
 	}
 
-	public get manualYourBetContainerV4(): Locator {
+	public get manualYourBetContainer(): Locator {
 		return this.page.getByTestId("dice-your-bet-container");
 	}
 
-	public get manualBetFieldV4(): Locator {
-		return this.manualYourBetContainerV4.getByTestId("dice-your-bet-input");
+	public get manualBetField(): Locator {
+		return this.manualYourBetContainer.getByTestId("dice-your-bet-input");
 	}
 
-	public get manualMultiplierContainerV4(): Locator {
+	public get manualMultiplierContainer(): Locator {
 		return this.page.getByTestId("dice-game-area-multiplier-container");
 	}
 
-	public get manualMultiplierFieldV4(): Locator {
-		return this.manualMultiplierContainerV4.getByTestId(
+	public get manualMultiplierField(): Locator {
+		return this.manualMultiplierContainer.getByTestId(
 			"dice-game-area-multiplier-input",
 		);
 	}
 
-	public get rollDiceBtnV4(): Locator {
+	public get rollDiceBtn(): Locator {
 		return this.page.getByTestId("dice-roll-dice-btn");
 	}
 
-	public get manualRollOverContainerV4(): Locator {
+	public get manualRollOverContainer(): Locator {
 		return this.page.getByTestId("dice-game-area-roll-over-container");
 	}
 
-	public get manualRollOverFieldV4(): Locator {
-		return this.manualRollOverContainerV4.getByTestId(
+	public get manualRollOverField(): Locator {
+		return this.manualRollOverContainer.getByTestId(
 			"dice-game-area-roll-over-input",
 		);
 	}
 
-	public get manualWinChanceContainerV4(): Locator {
+	public get manualWinChanceContainer(): Locator {
 		return this.page.getByTestId("dice-game-area-win-chance-container");
 	}
 
-	public get manualWinChanceFieldV4(): Locator {
-		return this.manualWinChanceContainerV4.getByTestId(
+	public get manualWinChanceField(): Locator {
+		return this.manualWinChanceContainer.getByTestId(
 			"dice-game-area-win-chance-input",
 		);
 	}
 
-	public get manualProfitOnWinContainerV4(): Locator {
+	public get manualProfitOnWinContainer(): Locator {
 		return this.page.getByTestId("dice-profit-on-win-container");
 	}
 
-	public get manualProfitOnWinFieldV4(): Locator {
-		return this.manualProfitOnWinContainerV4.getByTestId(
+	public get manualProfitOnWinField(): Locator {
+		return this.manualProfitOnWinContainer.getByTestId(
 			"dice-profit-on-win-input",
 		);
 	}
 
-	public get diceSliderValueV4(): Locator {
+	public get diceSliderValue(): Locator {
 		return this.page
 			.getByTestId("diceSlider")
 			.locator("div[class*='DiceSliderPinResultNumber']");
 	}
 
-	public get diceResultNumberGameAreaV4(): Locator {
+	public get diceResultNumberGameArea(): Locator {
 		return this.page.locator(
 			"div[class*='DiceSlider-styled__SliderPinResultNumber-sc']",
 		);
 	}
 
-	public get diceResultsHistoryV4(): Locator {
+	public get diceResultsHistory(): Locator {
 		return this.page.getByTestId("diceRollHistoryResults");
 	}
 
-	public get diceAllLastResultsNumberV4(): Locator {
+	public get diceAllLastResultsNumber(): Locator {
 		return this.diceResultsHistory.locator("div");
 	}
 
-	public get diceLastResultNumberV4(): Locator {
-		return this.diceAllLastResultsNumberV4.first();
+	public get diceLastResultNumber(): Locator {
+		return this.diceAllLastResultsNumber.first();
 	}
 
-	public get fairnessButtonV4(): Locator {
+	public get fairnessButton(): Locator {
 		return this.page.locator('[data-testid="tabs-txt-tab"]', {
 			hasText: "Fairness",
 		});
 	}
 
-	public get fairnessTableBodyV4(): Locator {
+	public get fairnessTableBody(): Locator {
 		return this.page.getByTestId("crash-history-table-tbody");
 	}
 
-	public get fairnessRolledCellsV4(): Locator {
+	public get fairnessRolledCells(): Locator {
 		return this.page.locator(
 			'[data-testid^="crash-history-table-cell-"][data-testid$="_rolled"]',
 		);
