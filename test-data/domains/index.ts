@@ -14,6 +14,7 @@ import { HotWalletDomainData } from "./hot-wallet-domain-data";
 import { DiceGameDomainData } from "./dice-game-domain-data";
 import { RewardsDomainData } from "./rewards-domain-data";
 import { ChatDomainData } from "./chat-domain-data";
+import { CryptoDomainData } from "./crypto-domain-data";
 
 export const domainRegistry = {
 	originals: OriginalsDomainData,
@@ -32,4 +33,5 @@ export const domainRegistry = {
 	hotWallet: HotWalletDomainData,
 	rewards: RewardsDomainData,
 	chat: ChatDomainData,
+	crypto: CryptoDomainData,
 };

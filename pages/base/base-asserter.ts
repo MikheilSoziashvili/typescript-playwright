@@ -755,6 +755,29 @@ export class BaseAsserter<
 		);
 	}
 
+	@step("Assert element enabled / disabled state")
+	public async assertEnabledState(
+		items: {
+			locator: Locator;
+			enabled: boolean;
+			label?: string;
+		}[],
+	): Promise<void> {
+		await Promise.all(
+			items.map(({ locator, enabled, label }) => {
+				const message = label
+					? `Expected ${label} to be ${enabled ? "enabled" : "disabled"}`
+					: undefined;
+
+				if (enabled) {
+					return expect(locator, message).toBeEnabled();
+				} else {
+					return expect(locator, message).toBeDisabled();
+				}
+			}),
+		);
+	}
+
 	@step("Wait until checked")
 	public async waitUntilChecked(locator: Locator): Promise<void> {
 		await expect(locator).toHaveAttribute(

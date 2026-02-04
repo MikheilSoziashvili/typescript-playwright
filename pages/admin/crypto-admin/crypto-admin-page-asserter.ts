@@ -213,5 +213,31 @@ export class CryptoAdminAsserter extends BaseAsserter<CryptoAdminPage> {
 		await this.assertCheckedState(items);
 	}
 
-	
+	@step("Assert crypto status toggle status")
+	public async cryptoStatusToggleStatus(
+		cryptoName: Cryptocurrency | CryptoTicker,
+		expectedStatus: boolean,
+	): Promise<void> {
+		await this.assertCheckedState([
+			{
+				locator: this.gamdomPage.map.statusToggle(cryptoName),
+				checked: expectedStatus,
+				label: `status toggle for ${cryptoName}`,
+			},
+		]);
+	}
+
+	@step("Assert crypto status toggle state")
+	public async cryptoStatusToggleStatusState(
+		cryptoName: Cryptocurrency | CryptoTicker,
+		expectedStatusState: boolean,
+	): Promise<void> {
+		await this.assertEnabledState([
+			{
+				locator: this.gamdomPage.map.statusToggle(cryptoName),
+				enabled: expectedStatusState,
+				label: `status state toggle for ${cryptoName}`,
+			},
+		]);
+	}
 }

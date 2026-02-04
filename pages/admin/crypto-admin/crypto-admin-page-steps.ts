@@ -136,4 +136,30 @@ export class CryptoAdminSteps extends BasePageStep<CryptoAdminPage> {
 			);
 		}
 	}
+
+	@step("Wait until crypto status toggle reaches expected state")
+	public async waitUntilCryptoStatusToggleState(
+		cryptoName: Cryptocurrency | CryptoTicker,
+		expectedStatus: boolean,
+		testInfo: TestInfo,
+	): Promise<void> {
+		await pollOrSkip(
+			async () => {
+				try {
+					await this.gamdomPage
+						.assertThat()
+						.cryptoStatusToggleStatus(cryptoName, expectedStatus);
+					return true;
+				} catch {
+					return false;
+				}
+			},
+			{
+				timeout: Timeout.EXTRA_LONG,
+				interval: Timeout.EXTRA_SHORT,
+				reason: `Crypto status toggle for ${cryptoName} did not reach expected state (${expectedStatus ? "checked" : "unchecked"}) in time`,
+				testInfo: testInfo,
+			},
+		);
+	}
 }

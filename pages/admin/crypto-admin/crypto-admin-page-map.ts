@@ -211,4 +211,17 @@ export class CryptoAdminMap extends BaseMap {
 				],
 			);
 	}
+
+	public cryptoRowByCryptoName(cryptoName: string): Locator {
+		return this.cryptoTableContainer.locator("tbody tr").filter({
+			has: this.page.locator(`th:has-text("${cryptoName}")`),
+		});
+	}
+
+	public statusToggle(cryptoName: string): Locator {
+		return this.cryptoRowByCryptoName(cryptoName)
+			.locator("td")
+			.nth(2)
+			.locator('input[type="checkbox"]');
+	}
 }
