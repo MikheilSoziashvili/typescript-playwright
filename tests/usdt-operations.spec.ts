@@ -51,6 +51,11 @@ test.describe(
 						deposit: true,
 						withdraw: true,
 					},
+					{
+						cryptoName: CryptoTicker.USDT_BSC,
+						deposit: true,
+						withdraw: true,
+					},
 				]);
 
 				await cryptoAdminPage.refreshCryptoData();
@@ -66,6 +71,10 @@ test.describe(
 					enabled: true,
 				});
 
+				await cryptoAdminPage.setUserPayWd(CryptoNode.fireUSDT_BSC, {
+					enabled: true,
+				});
+
 				await cryptoAdminPage
 					.steps()
 					.waitUntilCryptoDataRefreshed(testInfo);
@@ -76,6 +85,9 @@ test.describe(
 				await cryptoAdminPage
 					.steps()
 					.setMinDepositAndWithdraw(CryptoNode.fireTRX_USDT);
+				await cryptoAdminPage
+					.steps()
+					.setMinDepositAndWithdraw(CryptoNode.fireUSDT_BSC);
 				await homePage.navigate({
 					cookies: { clearCookies: true },
 				});
@@ -227,6 +239,86 @@ test.describe(
 					.verifyBalance(balanceAfterDeposit, expectedBalance);
 
 				const fullTransactionId = await usdtTrxClient.getTransaction(
+					depositTransaction.id,
+				);
+
+				const superAdmin = await browserSessionManager.loginAs(
+					TestUserRole.SUPERADMIN,
+				);
+
+				const superAdminCookie = getCookieHeader(
+					superAdmin.getAuthenticatedUser().cookie,
+				);
+
+				await cryptoAdminPage
+					.assertThat()
+					.assertTransactionCryptoAmount(
+						gamdomApi,
+						superAdminCookie,
+						fullTransactionId.txHash,
+						parseFloat(amountToDeposit),
+					);
+			},
+		);
+
+		test(
+			"[ENG-14995] USDT_BSC - deposit",
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			async ({
+				usdtBscClient,
+				cryptoAdminPage,
+				homePage,
+				walletModal,
+				transactionsPage,
+				transactionDetailsModal,
+				userBalanceHandler,
+				gamdomApi,
+				testDataPredefined,
+				browserSessionManager,
+			}) => {
+				const initialBalance =
+					await userBalanceHandler.walletBalanceInFiatRounded();
+
+				await walletModal.selectDepositNetwork(CryptoTicker.USDT_BSC);
+				const userDepositAddress =
+					await walletModal.getDepositAddress();
+				const amountToDeposit =
+					testDataPredefined.data.usdtBscAmountToDeposit
+						.amountToDeposit;
+				const vaultId = fireblocks.vaultId;
+
+				const depositTransaction = await usdtBscClient.sendToAddress(
+					vaultId,
+					userDepositAddress,
+					amountToDeposit,
+				);
+
+				await usdtBscClient.waitForCompletion(depositTransaction.id);
+
+				await transactionsPage
+					.steps()
+					.verifyDepositTransactionStatusIs(
+						TransactionState.COMPLETE,
+					);
+				await transactionsPage.clickTransactionDetailsButton();
+				await transactionDetailsModal
+					.assertThat()
+					.assertDepositAmountIn(
+						CryptoTicker.USDT_BSC,
+						parseFloat(amountToDeposit),
+					);
+
+				await homePage.navigate();
+
+				const balanceAfterDeposit =
+					await userBalanceHandler.walletBalanceInFiatRounded();
+				const expectedBalance =
+					initialBalance + parseFloat(amountToDeposit);
+				await homePage
+					.assertThat()
+					.verifyBalance(balanceAfterDeposit, expectedBalance);
+
+				const fullTransactionId = await usdtBscClient.getTransaction(
 					depositTransaction.id,
 				);
 
