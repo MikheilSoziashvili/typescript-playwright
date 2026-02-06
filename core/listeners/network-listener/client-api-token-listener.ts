@@ -20,9 +20,7 @@ export class ClientApiInitListener extends BaseNetworkListener {
 	}
 
 	public async getLastDisplayCurrency(): Promise<Currency | undefined> {
-		const latestPayloads = await Promise.all(
-			this.responses.map((r) => r.json() as Promise<GetGameInitResponse>),
-		);
-		return latestPayloads.at(-1)?.wallet.info.displayCurrency;
+		const lastPayload = await this.getLastJson<GetGameInitResponse>();
+		return lastPayload?.wallet.info.displayCurrency;
 	}
 }

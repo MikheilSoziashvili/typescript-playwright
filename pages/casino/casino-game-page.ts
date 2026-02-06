@@ -8,6 +8,7 @@ import { step } from "decorators/step";
 import { CasinoPageAsserter } from "./casino-game-page-asserter";
 import { CasinoPageMap } from "./casino-game-page-map";
 import { CasinoPageSteps } from "./casino-game-page-step";
+import { KeyboardKey } from "@enums/keyboard";
 
 export class CasinoPage extends BasePage<CasinoPageMap> {
 	public readonly toast: Toast;
@@ -75,16 +76,16 @@ export class CasinoPage extends BasePage<CasinoPageMap> {
 	@step("Search for a game")
 	public async searchForGame(gameName: string): Promise<void> {
 		await this.map.searchInputContainer.click();
-		await this.map.searchQuickSearchInputField.click();
 		await this.map.searchInputField.fill(gameName);
+		await this.map.searchInputField.press(KeyboardKey.ENTER);
 	}
 
 	@step("Add game from dropdown to favorites")
 	public async addGameFromDropdownToFavorites(
-		game: CasinoGameName,
+		gameIndex: number,
 	): Promise<void> {
-		await this.map.dropdownHeartIcon(game).click();
-		await this.map.titleImage.click();
+		await this.map.dropdownHeartIconByIndex(gameIndex).click();
+		await this.map.quickSearchCloseButton.click();
 	}
 
 	@step("Open favorites tab")

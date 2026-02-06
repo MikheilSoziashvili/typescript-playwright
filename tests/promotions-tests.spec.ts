@@ -913,9 +913,9 @@ test.describe(
 						.steps()
 						.fillPromotionSuccessfully(promotionTestDataV4);
 
-					await promotionsAdminUser.pages.toastV4
+					await promotionsAdminUser.pages.toast
 						.assertThat()
-						.toastMessageIsV4(
+						.toastMessageIs(
 							ToastTitle.SUCCESS,
 							ToastSubTitle.PROMOTION_CREATED_SUCCESSFULLY,
 						);

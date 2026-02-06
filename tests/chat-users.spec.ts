@@ -72,7 +72,7 @@ test.describe(
 								await setAuthenticationCookies(page, cookie);
 
 								await homePage.navigate();
-								await chat.steps().openChatAndVerify();
+								await chat.expandChat();
 								await chat.steps().sendMessage(message);
 								await chat
 									.assertThat()

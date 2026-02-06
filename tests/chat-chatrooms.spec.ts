@@ -44,18 +44,18 @@ test.describe(
 						};
 
 						await homePage.navigate();
-						await chat.steps().openChatAndVerify();
+						await chat.expandChat();
 						await chat
 							.steps()
 							.selectChatroomSuccessfully(input.chatroom);
 						await chat.steps().sendMessage(message);
 						await profilePage.navigate();
-						await profilePage.logout();
+						await profilePage.steps().logout();
 						await homePage.unauthenticatedHeader
 							.assertThat()
 							.loggedOutUserElementsAreVisible();
 						await homePage.navigate();
-						await chat.steps().openChatAndVerify();
+						await chat.expandChat();
 						await chat
 							.steps()
 							.selectChatroomSuccessfully(input.chatroom);

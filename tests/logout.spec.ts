@@ -21,7 +21,7 @@ test.describe("Logout tests", () => {
 				.assertThat()
 				.loggedInUserElementsAreVisible();
 
-			await profilePage.logout();
+			await profilePage.steps().logout();
 			await profilePage.continueModal.assertThat().isModalNotDisplayed();
 			await homePage.unauthenticatedHeader
 				.assertThat()

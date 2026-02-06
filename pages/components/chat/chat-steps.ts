@@ -31,12 +31,6 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		return new AuthenticatedHeader(this.component.page);
 	}
 
-	@step("Open chat and verify")
-	public async openChatAndVerify(): Promise<void> {
-		await this.authenticatedHeader.expandChatIfNotVisible();
-		await this.component.assertThat().chatIsDisplayed();
-	}
-
 	@step("Verify chat and send message")
 	public async verifyChatAndSendMessage(message: string): Promise<void> {
 		await this.component.assertThat().chatIsDisplayed();

@@ -1,9 +1,8 @@
+import { HourlyCryptoBalancesResponse } from "@dtos/responses/gamdom-api/get-hourly-crypto-balances-response";
+import { ApiEndpoints } from "@enums/api-endpoints";
+import { Timeout } from "@enums/timeout";
 import type { Page } from "@playwright/test";
 import { BaseNetworkListener } from "./base-listener";
-import { ApiEndpoints } from "@enums/api-endpoints";
-import { HourlyCryptoBalancesResponse } from "@dtos/responses/gamdom-api/get-hourly-crypto-balances-response";
-import { waitUntil } from "@core/utils/utils";
-import { Timeout } from "@enums/timeout";
 
 export class HourlyCryptoBalancesListener extends BaseNetworkListener {
 	constructor(page: Page) {
@@ -22,38 +21,6 @@ export class HourlyCryptoBalancesListener extends BaseNetworkListener {
 				"Timed out while waiting for hourly crypto balances response",
 		},
 	): Promise<HourlyCryptoBalancesResponse> {
-		let latestPayload: HourlyCryptoBalancesResponse | undefined;
-
-		await waitUntil(
-			async () => {
-				if (this.responses.length === 0) {
-					return false;
-				}
-
-				const payloads = await Promise.all(
-					this.responses.map(
-						(r) =>
-							r.json() as Promise<HourlyCryptoBalancesResponse>,
-					),
-				);
-
-				latestPayload = payloads.at(-1) ?? undefined;
-
-				return latestPayload !== undefined;
-			},
-			{
-				errorMessage: options.errorMessage,
-				intervalSeconds: options.intervalSeconds,
-				timeoutSeconds: options.timeoutSeconds,
-			},
-		);
-
-		if (!latestPayload) {
-			throw new Error(
-				"Unexpected: no latestPayload after waitUntil succeeded",
-			);
-		}
-
-		return latestPayload;
+		return this.waitForLastJson<HourlyCryptoBalancesResponse>(options);
 	}
 }

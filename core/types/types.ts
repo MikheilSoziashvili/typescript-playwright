@@ -325,3 +325,8 @@ export type DiceExpectedBalanceAfterRollParams = {
 
 export const DISABLE_RETRIES_ANNOTATION_TYPE = "disable-retries";
 
+export type WaitOptions = {
+	intervalSeconds: number;
+	timeoutSeconds: number;
+	errorMessage: string;
+};

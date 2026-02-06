@@ -1,7 +1,9 @@
 import { BrowserSessionManager } from "@core/browser-session-mngmt";
 import { ErrorConsoleAsserter } from "@core/listeners/console-listener/error-console-asserter";
 import { ErrorConsoleListener } from "@core/listeners/console-listener/error-console-listener";
+import { CasinoGamesSearchListener } from "@core/listeners/network-listener/casino-games-search-listener";
 import { ClientApiInitListener } from "@core/listeners/network-listener/client-api-token-listener";
+import { FavoritesGamesListListener } from "@core/listeners/network-listener/favorites-games-list-listener";
 import { HourlyCryptoBalancesListener } from "@core/listeners/network-listener/hourly-crypto-balances-listener";
 import { UserAuditLogListener } from "@core/listeners/network-listener/user-audit-log-listener";
 import { test as base } from "@playwright/test";
@@ -13,6 +15,8 @@ export type Listeners = {
 	hourlyCryptoBalancesListener: HourlyCryptoBalancesListener;
 	errorConsoleAsserter: ErrorConsoleAsserter;
 	userAuditLogListener: UserAuditLogListener;
+	favoritesGamesListListener: FavoritesGamesListListener;
+	casinoGamesSearchListener: CasinoGamesSearchListener;
 };
 
 export const listenersFixtures = base.extend<Listeners>({
@@ -41,6 +45,16 @@ export const listenersFixtures = base.extend<Listeners>({
 	userAuditLogListener: async ({ browserSessionManager }, use) => {
 		const page = browserSessionManager.active.page;
 		const listener = new UserAuditLogListener(page);
+		await use(listener);
+	},
+	favoritesGamesListListener: async ({ browserSessionManager }, use) => {
+		const page = browserSessionManager.active.page;
+		const listener = new FavoritesGamesListListener(page);
+		await use(listener);
+	},
+	casinoGamesSearchListener: async ({ browserSessionManager }, use) => {
+		const page = browserSessionManager.active.page;
+		const listener = new CasinoGamesSearchListener(page);
 		await use(listener);
 	},
 });

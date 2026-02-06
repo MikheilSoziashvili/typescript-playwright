@@ -1,13 +1,13 @@
 import { BaseAsserter } from "@base/base-asserter";
 import { formatBalance } from "@core/utils/utils";
-import { expect, TestInfo } from "@playwright/test";
-import { step } from "decorators/step";
-import { AuthenticatedHeader } from "./authenticated-header";
+import { Currency } from "@enums/currencies";
 import { CurrencySymbol } from "@enums/currenciesSymbols";
 import { NumberSeparators } from "@enums/number-separators";
 import { Unit } from "@enums/units";
 import { WalletType } from "@enums/wallet-types";
-import { Currency } from "@enums/currencies";
+import { expect, TestInfo } from "@playwright/test";
+import { step } from "decorators/step";
+import { AuthenticatedHeader } from "./authenticated-header";
 
 export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeader> {
 	public constructor(authenticatedHeader: AuthenticatedHeader) {

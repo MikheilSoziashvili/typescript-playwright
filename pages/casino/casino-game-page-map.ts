@@ -115,19 +115,32 @@ export class CasinoPageMap extends BaseMap {
 			.first();
 	}
 
-	public dropdownHeartIcon(game: CasinoGameName): Locator {
-		return this.casinoGameDropdownItem(game)
-			.locator("div[class*='DropdownItem-styled__LikesWrapper']")
-			.first();
+	public quickSearchCarouselItemByIndex(index: number): Locator {
+		return this.page.getByTestId(
+			`quick-search-carousel-item-${index}-container`,
+		);
+	}
+
+	public quickSearchCarouselItemLikeButtonByIndex(index: number): Locator {
+		return this.page.getByTestId(
+			`quick-search-carousel-item-${index}-like-button`,
+		);
+	}
+
+	public dropdownHeartIconByIndex(index: number): Locator {
+		return this.quickSearchCarouselItemLikeButtonByIndex(index);
+	}
+
+	public get quickSearchCloseButton(): Locator {
+		return this.page.getByTestId(
+			"close-btn-games-search-modal-header-close",
+		);
 	}
 
 	public get newGamesSlider(): Locator {
-		return this.page
-			.locator("div[class*='Slider-styled__GameSwiperContainer']")
-			.filter({
-				hasText: "New Games",
-				has: this.page.locator(".swiper-wrapper"),
-			});
+		return this.page.getByTestId("lobby-carousel-content-swiper").filter({
+			has: this.page.getByText("New Games", { exact: true }),
+		});
 	}
 
 	public get topGamesSlider(): Locator {
@@ -140,7 +153,9 @@ export class CasinoPageMap extends BaseMap {
 	}
 
 	public get firstGameInSlider(): Locator {
-		return this.newGamesSlider.locator(".swiper-slide").first();
+		return this.newGamesSlider
+			.locator('[data-testid^="lobby-carousel-slide-"]')
+			.first();
 	}
 
 	public get sliderHeartIcon(): Locator {
@@ -153,8 +168,18 @@ export class CasinoPageMap extends BaseMap {
 		return this.topGamesSlider.locator(".swiper-slide").nth(1);
 	}
 
+	public get casinoTabsContainer(): Locator {
+		return this.page.getByTestId("casino-layout-tabs-tablist");
+	}
+
+	public casinoTabByName(tabName: string): Locator {
+		return this.casinoTabsContainer
+			.getByRole("link")
+			.filter({ hasText: tabName.trim() });
+	}
+
 	public get favoritesTab(): Locator {
-		return this.page.getByRole("tab", { name: "Favorite" });
+		return this.casinoTabByName("Favorites");
 	}
 
 	public get favoritedGamesList(): Locator {
@@ -162,7 +187,7 @@ export class CasinoPageMap extends BaseMap {
 	}
 
 	public get inGameHeartIcon(): Locator {
-		return this.page.locator("i[class*='icon-heart']");
+		return this.page.getByTestId("game-like-button");
 	}
 
 	public get allVisibleGameCards(): Locator {

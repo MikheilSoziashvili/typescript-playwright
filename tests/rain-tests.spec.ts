@@ -109,7 +109,7 @@ test.describe("Rain tests", () => {
 				}
 
 				await homePage.navigate();
-				await chat.steps().openChatAndVerify();
+				await chat.expandChat();
 
 				const initialAccountBalance =
 					await userBalanceHandler.walletBalanceInFiatRounded();

@@ -10,6 +10,7 @@ import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { Timeout } from "@enums/timeout";
+import { FavoritesGamesListResponse } from "@dtos/responses/gamdom-api/get-favorites-games-list-response";
 
 export class CasinoPageAsserter extends BaseAsserter<CasinoPage> {
 	public constructor(page: CasinoPage) {
@@ -81,12 +82,29 @@ export class CasinoPageAsserter extends BaseAsserter<CasinoPage> {
 		);
 	}
 
-	@step("Game is added to favorites")
-	public async gameIsAddedToFavorites(gameName: string): Promise<void> {
-		const gameInFavorites = this.gamdomPage.map.favoritedGamesList.filter({
-			hasText: gameName,
-		});
-		await this.checkElementsAreVisible([gameInFavorites]);
+	@step("Favorite games list contains game")
+	public async favoritesGamesListContainsGame(
+		favoritesGamesList: FavoritesGamesListResponse,
+		expectedGameName: string,
+	): Promise<void> {
+		const games = this.extractFavoriteGameNames(favoritesGamesList);
+
+		const found = games.some((name) => name === expectedGameName);
+
+		if (!found) {
+			throw new Error(
+				`Expected favorites games-list response to contain "${expectedGameName}", but it didn't.\n` +
+					`Received games: ${games.join(", ")}`,
+			);
+		}
+	}
+
+	private extractFavoriteGameNames(
+		favoritesGamesList: FavoritesGamesListResponse,
+	): string[] {
+		return favoritesGamesList.games
+			.flatMap((group) => group.gamesList)
+			.map((g) => g.staticData.name);
 	}
 
 	@step("Self exclusion toast message is displayed")
@@ -132,5 +150,4 @@ export class CasinoPageAsserter extends BaseAsserter<CasinoPage> {
 			)}`,
 		).toBeTruthy();
 	}
-
 }
