@@ -99,7 +99,7 @@ on:
                 required: true
 
 concurrency:
-    group: premerge-${{ github.event.pull_request.number || github.ref }}
+    group: detect-modified-tests-${{ github.workflow }}-${{ github.ref }}
     cancel-in-progress: true
 
 env:
