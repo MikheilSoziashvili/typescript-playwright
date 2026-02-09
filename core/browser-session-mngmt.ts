@@ -98,10 +98,10 @@ export class BrowserUserSession {
 				prop in ApiFactories
 					? (ApiFactories[prop as keyof typeof ApiFactories](
 							this.page,
-					  ) as InstanceType<AllApisType[K]>)
+						) as InstanceType<AllApisType[K]>)
 					: new (AllApis[prop] as unknown as new () => InstanceType<
 							AllApisType[K]
-					  >)();
+						>)();
 
 			const storageState = await this.context.storageState();
 			if (isStorageStateAwareApi(api)) {
@@ -176,7 +176,11 @@ export class BrowserSessionManager {
 	private _active: BrowserUserSession;
 	private gamdomApiDbFacade: GamdomApiDbFacade;
 
-	constructor(private browser: Browser, context: BrowserContext, page: Page) {
+	constructor(
+		private browser: Browser,
+		context: BrowserContext,
+		page: Page,
+	) {
 		const anon = new BrowserUserSession(
 			TestUserRole.ANONYMOUS,
 			context,
@@ -377,6 +381,23 @@ export class BrowserSessionManager {
 						emailVerified: true,
 						useGamdomEmailDomain: false,
 						tags: UserTags.PromotionAdmin,
+						userClass: UserClasses.Admin,
+					});
+				await this.setUserWalletOptions(userAuth, options);
+				await setAuthenticationCookies(page, userAuth.cookie);
+				return userAuth;
+			}
+
+			case TestUserRole.EV_REWARDS_SYSTEM_SUPERADMIN_WITH_USER_INFO: {
+				const userAuth =
+					await this.gamdomApiDbFacade.createAdminUserDbAndAuth({
+						emailVerified: true,
+						useGamdomEmailDomain: false,
+						tags: [
+							UserTags.EvRewardsSystemSuperAdmin,
+							UserTags.EvRewardsSystemAdmin,
+							UserTags.UserInfoAdmin,
+						],
 						userClass: UserClasses.Admin,
 					});
 				await this.setUserWalletOptions(userAuth, options);

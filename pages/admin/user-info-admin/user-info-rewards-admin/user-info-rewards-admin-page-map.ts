@@ -28,11 +28,17 @@ export class UserInfoRewardsAdminPageMap extends BaseMap {
 	}
 
 	public get setRewardAmountInput(): Locator {
-		return this.page.locator("input[type='text']");
+		return this.customRewardModalBody.getByLabel("Reward Amount");
 	}
 
 	public get xpChallengeEvRequiredInput(): Locator {
-		return this.page.getByLabel("EV Required");
+		return this.customRewardModalBody.getByLabel("EV Required");
+	}
+
+	public get xpChallengeChallengeDurationInput(): Locator {
+		return this.customRewardModalBody.getByLabel(
+			"Challenge Duration (days)",
+		);
 	}
 
 	public get setRewardButton(): Locator {

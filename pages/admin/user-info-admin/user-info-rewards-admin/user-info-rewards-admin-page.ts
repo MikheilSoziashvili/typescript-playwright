@@ -4,6 +4,7 @@ import { UserInfoRewardsAdminPageAsserter } from "./user-info-rewards-admin-page
 import { UserInfoRewardsAdminPageMap } from "./user-info-rewards-admin-page-map";
 import { UserInfoRewardsAdminPageSteps } from "./user-info-rewards-admin-page-steps";
 import { step } from "decorators/step";
+import { CustomRewardType } from "@enums/admin/custom-reward-type";
 
 export class UserInfoRewardsAdminPage extends BasePage<UserInfoRewardsAdminPageMap> {
 	public constructor(page: Page) {
@@ -37,5 +38,32 @@ export class UserInfoRewardsAdminPage extends BasePage<UserInfoRewardsAdminPageM
 	@step("Click on Set Reward button")
 	public async clickSetRewardButton(): Promise<void> {
 		await this.map.setRewardButton.click();
+	}
+
+	@step("Set XP Challenge Challenge Duration")
+	public async setXPChallengeChallengeDuration(days: number): Promise<void> {
+		await this.map.xpChallengeChallengeDurationInput.fill(days.toString());
+	}
+
+	@step("Set reward amount")
+	public async setRewardAmount(amount: number): Promise<void> {
+		await this.map.setRewardAmountInput.fill(amount.toString());
+	}
+
+	@step(
+		"Set custom xp_challange reward with challenge duration, ev required and reward amount",
+	)
+	public async setCustomXpChallengeReward(
+		evRequired: number,
+		challengeDuration: number,
+		rewardAmount: number,
+	): Promise<void> {
+		this.acceptDialog();
+		await this.clickNewCustomRewardButton();
+		await this.selectRewardType(CustomRewardType.XP_CHALLENGE);
+		await this.setXPChallengeEvRequired(evRequired);
+		await this.setXPChallengeChallengeDuration(challengeDuration);
+		await this.setRewardAmount(rewardAmount);
+		await this.clickSetRewardButton();
 	}
 }

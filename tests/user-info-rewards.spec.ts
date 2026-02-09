@@ -1455,3 +1455,50 @@ test.describe(
 		);
 	},
 );
+
+test.describe(
+	"User info - Rewards - Custom xp_challenge reward",
+	testDetails()
+		.withTags(
+			JiraComponent.REWARDS,
+			JiraComponent.ADMIN_PANEL,
+			JiraComponent.USER_INFO,
+		)
+		.apply(),
+	() => {
+		test(
+			`[ENG-11140] Create and claim xp_challenge reward`,
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			async ({
+				browserSessionManager,
+				testDataPredefined,
+				xpChallengeTestFlow,
+			}) => {
+				const evRewardsSystemSuperAdmin =
+					await browserSessionManager.loginAs(
+						TestUserRole.EV_REWARDS_SYSTEM_SUPERADMIN_WITH_USER_INFO,
+						{ reuseContext: true },
+					);
+				const regularUser = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
+				);
+				const xpChallengeData = testDataPredefined.data.xpChallenge;
+
+				await xpChallengeTestFlow.adminCreateXpChallenge({
+					adminUser: evRewardsSystemSuperAdmin,
+					targetUsername:
+						regularUser.getAuthenticatedUser().user.username,
+					evRequired: xpChallengeData.evRequired,
+					challengeDuration: xpChallengeData.challengeDuration,
+					rewardAmount: xpChallengeData.rewardAmount,
+				});
+
+				await xpChallengeTestFlow.userActivateAndClaimXpChallenge({
+					user: regularUser,
+					betAmount: xpChallengeData.betAmount,
+					rewardAmount: xpChallengeData.rewardAmount,
+				});
+			},
+		);
+	},
+);
