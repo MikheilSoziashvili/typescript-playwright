@@ -73,7 +73,7 @@ export class KothAsserter extends BaseAsserter<KothPage> {
 		gamdomApi: GamdomApi,
 		cookie: string,
 	): Promise<void> {
-		const lastKothEventName = await gamdomApi.getLastKothEventName({
+		const lastKothEventName = await gamdomApi.getKothEventName({
 			Cookie: cookie,
 		});
 		const formattedExpectedUrl =

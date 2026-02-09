@@ -10,12 +10,25 @@ Dice,/dice
 Roulette,/roulette
 Hilo,/hilo
 Plinko,/plinko
+Mines,/mines
 Casino,/casino
-Slots Arena,/slots-arena
+Battles,/slots-arena
+Lobby,/casino
+Favorites,/casino/favorite
+Originals,/casino/providers/Gamdom-Originals
+Exclusive,/casino/category/gamdom-exclusives
+Live Games,/casino/live-games
+Slots,/casino/slots
+Table Games,/casino/table-games
+Providers,/casino/providers
 E-Sport Betting,/sports/esports
 Match Betting,/sports
 Rewards,/rewards
 Affiliates,/affiliates
+Promotions,/promotions
 Contact Us,/help/support
 FAQ,/help/faq
-Redeem Code,/?modal=wallet&tab=redeem
+Deposit Methods,/help/about-us
+How to Deposit,/help/about-us
+How to Withdraw,/help/about-us
+Supported Chains,/help/about-us

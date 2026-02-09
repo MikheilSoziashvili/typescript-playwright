@@ -14,6 +14,7 @@ export class TwoFactorAuthModalSteps extends BasePageStep<TwoFactorAuthModal> {
 	): Promise<void> {
 		await this.gamdomPage.assertThat().modal2FaDisplayed();
 		await this.gamdomPage.enter2FaCode(twoFactorAuthenticationCode);
+		await this.gamdomPage.map.confirm2FAActivationCodeButton.click();
 		await this.gamdomPage.assertThat().modal2FaNotDisplayed();
 	}
 
@@ -21,9 +22,8 @@ export class TwoFactorAuthModalSteps extends BasePageStep<TwoFactorAuthModal> {
 	public async generateAndEnter2FaCodeSuccessfully(
 		qrCode2FAImagePath: string,
 	): Promise<void> {
-		const code2FA = await generate2FACodeFromQRCodeImage(
-			qrCode2FAImagePath,
-		);
+		const code2FA =
+			await generate2FACodeFromQRCodeImage(qrCode2FAImagePath);
 		await this.enter2FaCodeSuccessfully(code2FA);
 	}
 }

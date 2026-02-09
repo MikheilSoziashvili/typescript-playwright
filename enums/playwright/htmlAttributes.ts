@@ -28,4 +28,5 @@ export enum Attributes {
 	SPAN = "span",
 	DATA_SELECTED = "data-selected",
 	DISABLED = "disabled",
+	ARIA_CURRENT = "aria-current",
 }

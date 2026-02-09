@@ -54,6 +54,7 @@ import { GetEvReportPeriodIdentifiersRequest } from "@dtos/requests/gamdom-api/g
 import { BulkRewardResponse } from "@dtos/responses/gamdom-api/bulk-reward-response";
 import { GetEvReportPeriodIdentifiersResponse } from "@dtos/responses/gamdom-api/get-ev-report-period-identifiers-response";
 import { RewardType } from "@enums/admin/reward-type";
+import { KothIndex } from "@enums/koth_indexes";
 
 export class GamdomApi extends BaseApi {
 	private gamdomDb: GamdomDb;
@@ -695,7 +696,7 @@ export class GamdomApi extends BaseApi {
 		return response.json() as Promise<KothEventDTO[]>;
 	}
 
-	public async getLastKothEventName(
+	public async getKothEventName(
 		headers: Record<string, string>,
 	): Promise<string> {
 		const events = await this.getCurrentKothEventsBasicInfo(headers);
@@ -704,7 +705,7 @@ export class GamdomApi extends BaseApi {
 			throw new Error("No KOTH events found");
 		}
 
-		return events[events.length - 1].event_name;
+		return events[KothIndex.MONTHLY].event_name;
 	}
 
 	public async getCryptoAdminTransactions(

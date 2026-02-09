@@ -7,29 +7,27 @@ export class HelpPageMap extends BaseMap {
 	}
 
 	public get helpPageContainer(): Locator {
-		return this.page.getByTestId("page-container-animate");
+		return this.page.getByTestId("main-layout-content");
 	}
 
-	public get helpPageTitle(): Locator {
-		return this.helpPageContainer
-			.getByTestId("help-page-header-wrapper")
-			.locator("h1");
+	public get helpPageSidebarContainer(): Locator {
+		return this.helpPageContainer.getByTestId("help-sidebar-container");
 	}
 
-	public get helpPageContent(): Locator {
-		return this.helpPageContainer.getByTestId("help-page-content-wrapper");
-	}
-
-	public get helpPageHeaderTabsContainer(): Locator {
-		return this.helpPageContainer.getByTestId(
-			"help-page-header-tabs-container",
+	public get helpPageSidebarTabList(): Locator {
+		return this.helpPageSidebarContainer.getByTestId(
+			"help-sidebar-tablist",
 		);
 	}
 
-	public tabNameByPlaceholder(placeholderText: string): Locator {
-		return this.helpPageHeaderTabsContainer.getByTestId(
-			`${placeholderText}-tab`,
-		);
+	public helpSidebarTabLink(tabName: string): Locator {
+		return this.helpPageSidebarTabList.getByRole("link", { name: tabName });
+	}
+
+	public helpPageTitle(tabName: string): Locator {
+		return this.helpPageSidebarTabList
+			.locator("a[aria-current='page']")
+			.filter({ hasText: tabName });
 	}
 
 	public get howToVerifySection(): Locator {

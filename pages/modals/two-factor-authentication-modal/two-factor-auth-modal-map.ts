@@ -7,18 +7,18 @@ export class TwoFactorAuthModalMap extends BaseMap {
 	}
 
 	public get popup2FaContainer(): Locator {
-		return this.page.locator(
-			"//h5[normalize-space()='2FA Verification']//ancestor::div[contains(@class,'MuiPaper-root')]",
-		);
+		return this.page.getByTestId("verify-2fa-v4-container");
 	}
 
 	public get inputFields2FACode(): Locator {
-		return this.popup2FaContainer.locator(`input[id*="2fa-"]`);
+		return this.popup2FaContainer.locator(
+			`input[data-testid^="verify-2fa-v4-pin-code-input-"]`,
+		);
 	}
 
 	public get confirm2FAActivationCodeButton(): Locator {
-		return this.popup2FaContainer.locator(
-			`//button[normalize-space()='Confirm']`,
+		return this.popup2FaContainer.getByTestId(
+			"verify-2fa-v4-confirm-button",
 		);
 	}
 }
