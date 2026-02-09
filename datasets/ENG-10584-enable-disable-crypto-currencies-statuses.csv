@@ -2,8 +2,8 @@ cryptoCurrency,cryptoTicker,isDepositEnabled,isWithdrawalEnabled
 Bitcoin,Bitcoin,true,true
 Litecoin,Litecoin,true,true
 Ethereum,Ethereum,true,true
-USDT|USDT_TRON,TETHER,true,true
-USDC_ETH|USDC_SOL,USDC,true,true
+USDT|USDT_TRON|USDT_BSC,TETHER,true,true
+USDC_ETH|USDC_SOL|USDC_BSC,USDC,true,true
 TRON,TRON,true,true
 Ripple,Ripple,true,true
 Doge,Doge,true,true
@@ -11,8 +11,8 @@ Solana,Solana,true,true
 Bitcoin,Bitcoin,false,true
 Litecoin,Litecoin,false,true
 Ethereum,Ethereum,false,true
-USDT|USDT_TRON,TETHER,false,true
-USDC_ETH|USDC_SOL,USDC,false,true
+USDT|USDT_TRON|USDT_BSC,TETHER,false,true
+USDC_ETH|USDC_SOL|USDC_BSC,USDC,false,true
 TRON,TRON,false,true
 Ripple,Ripple,false,true
 Doge,Doge,false,true
@@ -20,8 +20,8 @@ Solana,Solana,false,true
 Bitcoin,Bitcoin,false,false
 Litecoin,Litecoin,false,false
 Ethereum,Ethereum,false,false
-USDT|USDT_TRON,TETHER,false,false
-USDC_ETH|USDC_SOL,USDC,false,false
+USDT|USDT_TRON|USDT_BSC,TETHER,false,false
+USDC_ETH|USDC_SOL|USDC_BSC,USDC,false,false
 TRON,TRON,false,false
 Ripple,Ripple,false,false
 Doge,Doge,false,false
@@ -29,8 +29,8 @@ Solana,Solana,false,false
 Bitcoin,Bitcoin,true,false
 Litecoin,Litecoin,true,false
 Ethereum,Ethereum,true,false
-USDT|USDT_TRON,TETHER,true,false
-USDC_ETH|USDC_SOL,USDC,true,false
+USDT|USDT_TRON|USDT_BSC,TETHER,true,false
+USDC_ETH|USDC_SOL|USDC_BSC,USDC,true,false
 TRON,TRON,true,false
 Ripple,Ripple,true,false
 Doge,Doge,true,false
