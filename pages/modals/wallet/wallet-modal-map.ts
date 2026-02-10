@@ -1,4 +1,5 @@
 import { WalletModalContent } from "@constants/wallet-modal-content";
+import { Button } from "@enums/buttons-texts";
 import { WithdrawalSpeed } from "@enums/withdrawal-speeds";
 import { BaseMap } from "@pages/base/base-map";
 import { currencyAmountPattern } from "@support/regex-patterns";
@@ -9,106 +10,128 @@ export class WalletModalMap extends BaseMap {
 		super(page);
 	}
 
-	public get walletHeaderTabsContainer(): Locator {
-		return this.page
-			.getByTestId("walletModalHeaderContainer")
-			.getByTestId("walletModalTabsContainer");
+	public get walletLeftPanel(): Locator {
+		return this.page.getByTestId("wallet-left-panel");
 	}
 
-	public get withdrawTabButton(): Locator {
-		return this.walletHeaderTabsContainer.getByTestId("withdrawButton");
+	public get walletRightPanel(): Locator {
+		return this.page.getByTestId("wallet-modal-main-grid");
+	}
+
+	public get walletMenu(): Locator {
+		return this.walletLeftPanel.getByTestId("wallet-menu");
 	}
 
 	public get depositTabButton(): Locator {
-		return this.walletHeaderTabsContainer.getByTestId("depositButton");
+		return this.walletMenu.getByTestId("wallet-menu-deposit");
+	}
+
+	public get withdrawTabButton(): Locator {
+		return this.walletMenu.getByTestId("wallet-menu-withdraw");
+	}
+
+	public get buyCryptoTabButton(): Locator {
+		return this.walletMenu.getByTestId("wallet-menu-buycrypto");
+	}
+
+	public get vaultTabButton(): Locator {
+		return this.walletMenu.getByTestId("wallet-menu-vault");
 	}
 
 	public get redeemTabButton(): Locator {
-		return this.page.getByTestId("wallet-menu-redeem");
+		return this.walletMenu.getByTestId("wallet-menu-redeem");
 	}
 
 	public get vaultButtonInWithdrawTab(): Locator {
-		return this.page.getByTestId("vaultPaymentMethodContainer");
-	}
-
-	public get vaultTabHeading(): Locator {
-		return this.vaultLeftPanel.getByTestId("headerContainer");
-	}
-
-	public get vaultLeftPanel(): Locator {
-		return this.page.getByTestId("vaultLeftPanelContainer");
-	}
-
-	public get walletLeftPanelCryptoWithdrawHeader(): Locator {
-		return this.walletLeftPanel.locator(
-			'[class^="CryptoWithdrawPanel-styled__Head-"]',
+		return this.page.getByTestId(
+			"withdraw-other-section-vaultPaymentMethodContainer",
 		);
 	}
 
-	public get walletLeftPanelBankWithdrawHeader(): Locator {
-		return this.walletLeftPanel.locator(
+	public get vaultTabHeading(): Locator {
+		return this.vaultPanel.getByTestId("vault-wallet-title");
+	}
+
+	public get vaultPanel(): Locator {
+		return this.page.getByTestId("vault");
+	}
+
+	public get depositTabContainer(): Locator {
+		return this.page.getByTestId("deposit-sections-container");
+	}
+
+	public get withdrawTabContainer(): Locator {
+		return this.page.getByTestId("withdraw-container-content");
+	}
+
+	public get cryptoWithdrawContainer(): Locator {
+		return this.page.getByTestId("crypto-withdraw");
+	}
+
+	public get withdrawPanelCryptoHeaderTitle(): Locator {
+		return this.cryptoWithdrawContainer.getByTestId(
+			"crypto-withdraw-wallet-title",
+		);
+	}
+
+	public get withdrawPanelCryptoCurrency(): Locator {
+		return this.withdrawTabContainer.getByTestId(
+			"wallet-sec-wallet-info-txt",
+		);
+	}
+
+	//not present on withdraw panel - WIP
+	public get withdrawPanelBankWithdrawHeader(): Locator {
+		return this.withdrawTabContainer.locator(
 			'[class*="WithDrawPanel-styled__Head-"]',
 		);
 	}
 
-	public get walletLeftPanelCryptoWithdrawHeaderTitle(): Locator {
-		return this.walletLeftPanelCryptoWithdrawHeader.locator(
-			'[class^="CryptoWithdrawPanel-styled__HeadWrapper"]',
-		);
-	}
-
+	//not present on withdraw panel - WIP
 	public get walletLeftPanelBankWithdrawHeaderTitle(): Locator {
-		return this.walletLeftPanelBankWithdrawHeader.locator(
+		return this.withdrawPanelBankWithdrawHeader.locator(
 			'[class*="WithDrawPanel-styled__HeadWrapper"]',
 		);
 	}
 
-	public get leftPanelVaultActionButtonsContainer(): Locator {
-		return this.vaultLeftPanel.getByTestId("walletVaultActionsContainer");
+	public get vaultPanelActionButtonsContainer(): Locator {
+		return this.vaultPanel.getByTestId("vault-tabs-list");
 	}
 
 	public get depositButton(): Locator {
-		return this.walletDepositWithdrawContainer.getByTestId(
-			"depositToVaultButton",
-		);
+		return this.vaultPanel.getByTestId("vault-deposit-tab");
 	}
 
 	public get withdrawButton(): Locator {
-		return this.walletDepositWithdrawContainer.getByTestId(
-			"withdrawFromVaultButton",
-		);
-	}
-
-	public get withdrawTabContainer(): Locator {
-		return this.page.locator(
-			'[class^="Withdraw-styled__WithdrawContainer"]',
-		);
+		return this.vaultPanel.getByTestId("vault-withdraw-tab");
 	}
 
 	public get withdrawEmailNotConfirmedContainer(): Locator {
-		return this.walletLeftPanel.locator(
-			'[class^="EmailNotVerifiedForWithdraw-styled__Container"]',
+		return this.walletRightPanel.getByTestId(
+			"email-not-verified-withdraw-main-container",
 		);
 	}
 
 	public get withdrawEmailNotConfirmedIcon(): Locator {
-		return this.withdrawEmailNotConfirmedContainer.locator(
-			'g[clip-path="url(#email-not-verified_icon_svg__a)"]',
-		);
+		return this.withdrawEmailNotConfirmedContainer.locator("picture img");
 	}
 
 	public get withdrawEmailNotConfirmedTextSection(): Locator {
-		return this.withdrawEmailNotConfirmedContainer.locator(
-			'[class^="EmailNotVerifiedForWithdraw-styled__TextSection"]',
+		return this.withdrawEmailNotConfirmedContainer.getByTestId(
+			"email-not-verified-withdraw-content",
 		);
 	}
 
 	public get withdrawEmailNotConfirmedTextSectionHeader(): Locator {
-		return this.withdrawEmailNotConfirmedTextSection.locator("h5");
+		return this.withdrawEmailNotConfirmedTextSection.getByTestId(
+			"email-not-verified-withdraw-label",
+		);
 	}
 
 	public get withdrawEmailNotConfirmedTextSectionContent(): Locator {
-		return this.withdrawEmailNotConfirmedTextSection.locator("p");
+		return this.withdrawEmailNotConfirmedTextSection.getByTestId(
+			"email-not-verified-withdraw-text",
+		);
 	}
 
 	public get withdrawEmailNotConfirmedResendEmailButton(): Locator {
@@ -124,7 +147,7 @@ export class WalletModalMap extends BaseMap {
 	}
 
 	public get withdrawCountryDropdownContainer(): Locator {
-		return this.withdrawTabContainer.locator(
+		return this.depositTabContainer.locator(
 			'[class^="Withdraw-styled__CountriesSelectorWrapper"]',
 		);
 	}
@@ -151,19 +174,29 @@ export class WalletModalMap extends BaseMap {
 		return this.walletLeftPanel.locator("button", { hasText: "Redeem" });
 	}
 
+	private vaultSubmitButtonByText(actionText: Button): Locator {
+		return this.page
+			.getByTestId("vault-submit-button")
+			.filter({ hasText: actionText });
+	}
+
 	public get vaultDepositButton(): Locator {
-		return this.page.getByTestId("depositToVaultButton");
+		return this.vaultSubmitButtonByText(Button.DEPOSIT_TO_VAULT);
 	}
 
 	public get vaultWithdrawButton(): Locator {
-		return this.page.getByTestId("withdrawFromVaultButton");
+		return this.vaultSubmitButtonByText(Button.WITHDRAW_FROM_VAULT);
 	}
 
 	public get cryptoWithdrawButton(): Locator {
 		return this.page.getByTestId("LeftPanelMainButton");
 	}
 
-	public cryptoPaymentMethod(paymentMethod: string): Locator {
+	public withdrawCryptoPaymentMethod(paymentMethod: string): Locator {
+		return this.page.getByTestId(`witdrawal-crypto-${paymentMethod}`);
+	}
+
+	public depositCryptoPaymentMethod(paymentMethod: string): Locator {
 		return this.page.getByTestId(`deposit-crypto-${paymentMethod}`);
 	}
 
@@ -253,14 +286,6 @@ export class WalletModalMap extends BaseMap {
 		);
 	}
 
-	public get walletLeftPanel(): Locator {
-		return this.page.getByTestId("wallet-left-panel");
-	}
-
-	public get vaultTabButton(): Locator {
-		return this.walletLeftPanel.getByTestId("wallet-menu-vault");
-	}
-
 	public get walletDepositWithdrawContainer(): Locator {
 		return this.page.getByTestId("vault-tabs-container");
 	}
@@ -331,9 +356,5 @@ export class WalletModalMap extends BaseMap {
 		return this.page
 			.getByTestId("toast-message-message")
 			.getByText("transferred from your Vault to your Wallet");
-	}
-
-	public get buyCryptoTabButton(): Locator {
-		return this.page.getByTestId("wallet-menu-buycrypto");
 	}
 }

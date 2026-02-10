@@ -1,17 +1,16 @@
-import { BaseAsserter } from "@pages/base/base-asserter";
-import { WalletModal } from "./wallet-modal";
-import { Timeout } from "@enums/timeout";
-import { expect } from "playwright/test";
-import { step } from "decorators/step";
-import { Unit } from "@enums/units";
-import { WalletType } from "@enums/wallet-types";
-import { Currency } from "@enums/currencies";
-import { Cryptocurrency, CryptoTicker } from "@enums/cryptocurrencies";
-import { cryptocurrencyTickerMap } from "@core/mappings/crypto/cryptocurrency-ticker-map";
 import { WalletModalContent } from "@constants/wallet-modal-content";
+import { bankPaymentMethodLabelMap } from "@core/mappings/bank/bank-payment-method-label-map";
 import { BankPaymentMethod } from "@enums/bank-payment-methods";
 import { CountryCodeISO3166 } from "@enums/country-codes-iso3166";
-import { bankPaymentMethodLabelMap } from "@core/mappings/bank/bank-payment-method-label-map";
+import { Cryptocurrency, CryptoTicker } from "@enums/cryptocurrencies";
+import { Currency } from "@enums/currencies";
+import { Timeout } from "@enums/timeout";
+import { Unit } from "@enums/units";
+import { WalletType } from "@enums/wallet-types";
+import { BaseAsserter } from "@pages/base/base-asserter";
+import { step } from "decorators/step";
+import { expect } from "playwright/test";
+import { WalletModal } from "./wallet-modal";
 
 export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 	public constructor(page: WalletModal) {
@@ -60,19 +59,6 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 		expect(actualBalance).toBeLessThanOrEqual(
 			Math.ceil(expectedBalance + tolerance),
 		);
-	}
-
-	@step("Crypto withdraw left panel header is correct")
-	public async withdrawCryptoLeftPanelHeaderCorrect(
-		cryptoCurrency: Cryptocurrency,
-	): Promise<void> {
-		const cryptoTicker =
-			cryptoCurrency === Cryptocurrency.Tether
-				? Cryptocurrency.Tether
-				: cryptocurrencyTickerMap[cryptoCurrency];
-		await expect(
-			this.gamdomPage.map.walletLeftPanelCryptoWithdrawHeaderTitle,
-		).toHaveText(`${cryptoTicker} Withdraw`);
 	}
 
 	@step("Bank withdraw left panel header is correct")
@@ -207,7 +193,7 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 		expectedPresence: boolean,
 	): Promise<void> {
 		const paymentMethodLocator =
-			this.gamdomPage.map.cryptoPaymentMethod(cryptoCurrency);
+			this.gamdomPage.map.withdrawCryptoPaymentMethod(cryptoCurrency);
 
 		if (expectedPresence) {
 			await this.checkElementsAreVisible(

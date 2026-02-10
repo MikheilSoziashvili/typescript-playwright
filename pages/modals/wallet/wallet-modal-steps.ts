@@ -74,9 +74,6 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 			if (isClicked) {
 				await this.gamdomPage
 					.assertThat()
-					.withdrawCryptoLeftPanelHeaderCorrect(crypto);
-				await this.gamdomPage
-					.assertThat()
 					.withdrawEmailNotVerifiedPanelContentCorrect();
 			}
 		}

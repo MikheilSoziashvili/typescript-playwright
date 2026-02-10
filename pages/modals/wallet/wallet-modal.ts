@@ -96,7 +96,8 @@ export class WalletModal extends BasePage<WalletModalMap> {
 		paymentMethod: string,
 		options?: { skipIfMissing?: boolean },
 	): Promise<boolean> {
-		const cryptoPayMethod = this.map.cryptoPaymentMethod(paymentMethod);
+		const cryptoPayMethod =
+			this.map.withdrawCryptoPaymentMethod(paymentMethod);
 
 		if (options?.skipIfMissing) {
 			return this.clickIfPresent(cryptoPayMethod, {
