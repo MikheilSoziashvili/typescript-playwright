@@ -74,7 +74,7 @@ export class TransactionsPage extends BasePage<TransactionsMap> {
 			},
 		);
 
-		const status = await this.map.transactionStatus.textContent();
+		const status = await this.map.transactionStatus.last().textContent();
 		if (status === null) {
 			throw new Error("Transaction status could not be retrieved.");
 		}

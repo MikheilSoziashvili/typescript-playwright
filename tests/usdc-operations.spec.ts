@@ -51,9 +51,30 @@ test.describe(
 						deposit: true,
 						withdraw: true,
 					},
+					{
+						cryptoName: CryptoTicker.USDC_BSC,
+						deposit: true,
+						withdraw: true,
+					},
 				]);
 
 				await cryptoAdminPage.refreshCryptoData();
+				await cryptoAdminPage
+					.steps()
+					.waitUntilCryptoDataRefreshed(testInfo);
+
+				await cryptoAdminPage.setUserPayWd(CryptoNode.fireUSDC_SOL, {
+					enabled: true,
+				});
+
+				await cryptoAdminPage.setUserPayWd(CryptoNode.fireUSDC_ETH, {
+					enabled: true,
+				});
+
+				await cryptoAdminPage.setUserPayWd(CryptoNode.fireUSDC_BSC, {
+					enabled: true,
+				});
+
 				await cryptoAdminPage
 					.steps()
 					.waitUntilCryptoDataRefreshed(testInfo);
@@ -66,17 +87,9 @@ test.describe(
 					.steps()
 					.setMinDepositAndWithdraw(CryptoNode.fireUSDC_SOL);
 
-				await cryptoAdminPage.setUserPayWd(CryptoNode.fireUSDC_SOL, {
-					enabled: true,
-				});
-
-				await cryptoAdminPage.setUserPayWd(CryptoNode.fireUSDC_ETH, {
-					enabled: true,
-				});
-
 				await cryptoAdminPage
 					.steps()
-					.waitUntilCryptoDataRefreshed(testInfo);
+					.setMinDepositAndWithdraw(CryptoNode.fireUSDC_BSC);
 
 				await homePage.navigate({
 					cookies: { clearCookies: true },
@@ -231,6 +244,86 @@ test.describe(
 					.verifyBalance(balanceAfterDeposit, expectedBalance);
 
 				const fullTransactionId = await usdcSolClient.getTransaction(
+					depositTransaction.id,
+				);
+
+				const superAdmin = await browserSessionManager.loginAs(
+					TestUserRole.SUPERADMIN,
+				);
+
+				const superAdminCookie = getCookieHeader(
+					superAdmin.getAuthenticatedUser().cookie,
+				);
+
+				await cryptoAdminPage
+					.assertThat()
+					.assertTransactionCryptoAmount(
+						gamdomApi,
+						superAdminCookie,
+						fullTransactionId.txHash,
+						parseFloat(amountToDeposit),
+					);
+			},
+		);
+
+		test(
+			"[ENG-15126] USDC_BSC - deposit",
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			async ({
+				usdcBscClient,
+				cryptoAdminPage,
+				homePage,
+				walletModal,
+				transactionsPage,
+				transactionDetailsModal,
+				userBalanceHandler,
+				gamdomApi,
+				browserSessionManager,
+				testDataPredefined,
+			}) => {
+				const initialBalance =
+					await userBalanceHandler.walletBalanceInFiatRounded();
+
+				await walletModal.selectDepositNetwork(CryptoTicker.USDC_BSC);
+				const userDepositAddress =
+					await walletModal.getDepositAddress();
+				const amountToDeposit =
+					testDataPredefined.data.usdcBscAmountToDeposit
+						.amountToDeposit;
+				const vaultId = fireblocks.vaultId;
+
+				const depositTransaction = await usdcBscClient.sendToAddress(
+					vaultId,
+					userDepositAddress,
+					amountToDeposit,
+				);
+
+				await usdcBscClient.waitForCompletion(depositTransaction.id);
+
+				await transactionsPage
+					.steps()
+					.verifyDepositTransactionStatusIs(
+						TransactionState.COMPLETE,
+					);
+				await transactionsPage.clickTransactionDetailsButton();
+				await transactionDetailsModal
+					.assertThat()
+					.assertDepositAmountIn(
+						CryptoTicker.USDC_BSC,
+						parseFloat(amountToDeposit),
+					);
+
+				await homePage.navigate();
+
+				const balanceAfterDeposit =
+					await userBalanceHandler.walletBalanceInFiatRounded();
+				const expectedBalance =
+					initialBalance + parseFloat(amountToDeposit);
+				await homePage
+					.assertThat()
+					.verifyBalance(balanceAfterDeposit, expectedBalance);
+
+				const fullTransactionId = await usdcBscClient.getTransaction(
 					depositTransaction.id,
 				);
 
