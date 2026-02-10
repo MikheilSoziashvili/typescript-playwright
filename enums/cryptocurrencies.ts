@@ -9,6 +9,7 @@ export enum Cryptocurrency {
 	Solana = "Solana",
 	USDC = "USDC",
 	USD1 = "USD1",
+	BNB = "BNB",
 }
 
 export enum CryptoTicker {
@@ -29,4 +30,5 @@ export enum CryptoTicker {
 	USD1_SOL = "USD1_SOL",
 	USDT_BSC = "USDT_BSC",
 	USDC_BSC = "USDC_BSC",
+	BNB = "BNB",
 }

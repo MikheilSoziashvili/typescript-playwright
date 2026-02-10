@@ -7,4 +7,5 @@ export enum Unit {
 	XRP_DROP = "XRP_DROP",
 	DOGE_SHIBE = "DOGE_SHIBE",
 	SOL_LAMPORT = "SOL_LAMPORT",
+	BNB_JAGER = "BNB_JAGER",
 }

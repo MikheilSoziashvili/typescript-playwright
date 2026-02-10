@@ -154,4 +154,7 @@ export const predefined = {
 		amountToDepositLarger: "0.4",
 		withdrawalAddress: "0xE8047993dfddd6579f56206d03c444add030e800",
 	},
+	bnbAmountToDeposit: {
+		amountToDeposit: "0.0001",
+	},
 };
