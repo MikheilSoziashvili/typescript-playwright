@@ -17,9 +17,8 @@ export const retryFixtures = base.extend<{
 			);
 
 			if (hasBugTickets && testInfo.retry > 0) {
-				testInfo.skip(
-					true,
-					"Test has known bug tickets - skipping retry",
+				throw new Error(
+					"Test has known bug ticket(s) - retry disabled",
 				);
 			}
 
