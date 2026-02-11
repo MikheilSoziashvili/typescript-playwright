@@ -196,19 +196,19 @@ test.describe(
 							);
 							await vipManagerAdminPage.uploadUpdateRemoveBatchVipPlayersFile();
 
-							await toast.assertThat().titlesAre([
-								{
-									title: ToastTitle.SYSTEM,
-									subTitle:
-										buildFreeSpinsBatchProcessedWithErrorsToastSubTitle(
-											0,
-										),
-								},
-								{
-									title: ToastTitle.SUCCESS,
-									subTitle: expectedSuccessToastMessage,
-								},
-							]);
+						await toast.assertThat().toastMessagesAre([
+							{
+								title: ToastTitle.SUCCESS,
+								subTitle: expectedSuccessToastMessage,
+							},
+							{
+								title: ToastTitle.SYSTEM,
+								subTitle:
+									buildFreeSpinsBatchProcessedWithErrorsToastSubTitle(
+										0,
+									),
+							},
+						]);
 
 							await vipManagerAdminPage
 								.assertThat()

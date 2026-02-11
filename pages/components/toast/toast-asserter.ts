@@ -118,6 +118,22 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 		}
 	}
 
+	@step("Check toast subtitles")
+	public async subTitlesAre(
+		subTitles: {
+			subTitle: string;
+			timeout?: number;
+			index?: number;
+		}[],
+	): Promise<void> {
+		for (const toast of subTitles) {
+			await this.subTitleIs(toast.subTitle, {
+				index: toast.index,
+				timeout: toast.timeout ?? Timeout.MEDIUM,
+			});
+		}
+	}
+
 	@step("Check toast subtitle")
 	public async subTitleIs(
 		subTitle: string,
@@ -177,6 +193,47 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 			this.titleIs(title),
 			this.subTitleIs(subtitle),
 		]);
+	}
+
+	@step("Toast messages are")
+	public async toastMessagesAre(
+		toasts: {
+			title: ToastTitle;
+			subTitle: string;
+			timeout?: number;
+		}[],
+	): Promise<void> {
+		const timeout = Math.max(
+			...toasts.map((toast) => toast.timeout ?? Timeout.MEDIUM),
+		);
+
+		await expect
+			.poll(
+				async () =>
+					this.gamdomPage.map
+						.toastContainer({ index: toasts.length })
+						.isVisible(),
+				{
+					timeout,
+				},
+			)
+			.toBeTruthy();
+
+		await this.titlesAre(
+			toasts.map((toast, index) => ({
+				title: toast.title,
+				timeout: toast.timeout,
+				index: index + 1,
+			})),
+		);
+
+		await this.subTitlesAre(
+			toasts.map((toast, index) => ({
+				subTitle: toast.subTitle,
+				timeout: toast.timeout,
+				index: index + 1,
+			})),
+		);
 	}
 
 	@step("Check toast with title is not displayed")
