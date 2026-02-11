@@ -2,7 +2,7 @@ import { BasePage } from "@base/base-page";
 import { step } from "decorators/step";
 import { SETTINGS_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
-import { expect, Page } from "@playwright/test";
+import { expect, Locator, Page } from "@playwright/test";
 import { SettingsPageAsserter } from "./settings-page-asserter";
 import { SettingsPageMap } from "./settings-page-map";
 import { SettingsPageSteps } from "./settings-page-steps";
@@ -47,20 +47,50 @@ export class SettingsPage extends BasePage<SettingsPageMap> {
 	}
 
 	@step("Fill 2FA code inputs")
-	public async fill2FACodeInputs(code2FA: string): Promise<void> {
-		const inputCount =
-			await this.map.fields2FACodeInputsActivationModal.count();
+	private async fill2FACodeInputs(
+		inputs: Locator,
+		code2FA: string,
+	): Promise<void> {
+		const inputCount = await inputs.count();
 		expect(inputCount).toBe(code2FA.length);
+
 		for (let i = 0; i < inputCount; i++) {
-			const inputElement =
-				this.map.fields2FACodeInputsActivationModal.nth(i);
+			const inputElement = inputs.nth(i);
 			await inputElement.click();
 			await inputElement.fill(code2FA[i]);
 		}
 	}
 
 	@step("Click confirm button")
-	public async clickConfirmButton(): Promise<void> {
-		await this.map.confirm2FAActivationCodeButton.click();
+	private async clickConfirmButton(button: Locator): Promise<void> {
+		await button.click();
+	}
+
+	@step("Fill 2FA activation code inputs")
+	public async fill2FAActivationCodeInputs(code2FA: string): Promise<void> {
+		await this.fill2FACodeInputs(
+			this.map.fields2FACodeInputsActivationModal,
+			code2FA,
+		);
+	}
+
+	@step("Click confirm activation button")
+	public async clickConfirmActivationButton(): Promise<void> {
+		await this.clickConfirmButton(this.map.confirm2FAActivationCodeButton);
+	}
+
+	@step("Fill 2FA deactivation code inputs")
+	public async fill2FADeactivationCodeInputs(code2FA: string): Promise<void> {
+		await this.fill2FACodeInputs(
+			this.map.fields2FACodeInputsDeactivationModal,
+			code2FA,
+		);
+	}
+
+	@step("Click confirm deactivation button")
+	public async clickConfirmDeactivation2FAButton(): Promise<void> {
+		await this.clickConfirmButton(
+			this.map.confirm2FADeactivationCodeButton,
+		);
 	}
 }

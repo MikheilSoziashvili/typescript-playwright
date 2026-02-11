@@ -29,19 +29,9 @@ export class SettingsPageMap extends BaseMap {
 		return this.page.getByTestId("enable-2fa-v4-container");
 	}
 
-	public get verification2FAPopup(): Locator {
-		return this.page.getByTestId("verify-2fa-v4-container");
-	}
-
 	public get fields2FACodeInputsActivationModal(): Locator {
 		return this.activation2FAPopup.locator(
 			'[data-testid^="enable-2fa-v4-pin-code-input-"]',
-		);
-	}
-
-	public get fields2FACodeInputsVerificationModal(): Locator {
-		return this.verification2FAPopup.locator(
-			'[data-testid^="verify-2fa-v4-pin-code-input-"]',
 		);
 	}
 
@@ -51,27 +41,53 @@ export class SettingsPageMap extends BaseMap {
 		);
 	}
 
-	public get confirm2FAVerificationCodeButton(): Locator {
-		return this.verification2FAPopup.getByTestId(
-			"verify-2fa-v4-confirm-button",
-		);
-	}
-
-	public get disable2FaModalLocator(): Locator {
+	public get deactivation2FaPopup(): Locator {
 		return this.page.getByTestId(
 			"deactivate-confirmation-2fa-v4-container",
 		);
 	}
 
-	public get continueDisable2FaButton(): Locator {
-		return this.disable2FaModalLocator.getByTestId(
+	public get confirm2FADeactivationCodeButton(): Locator {
+		return this.deactivation2FaPopup.getByTestId(
 			"deactivate-confirmation-2fa-v4-continue-button",
 		);
 	}
 
-	public get cancelDisable2FaButton(): Locator {
-		return this.disable2FaModalLocator.getByTestId(
+	public get cancel2FADeactivationCodeButton(): Locator {
+		return this.deactivation2FaPopup.getByTestId(
 			"deactivate-confirmation-2fa-v4-cancel-button",
+		);
+	}
+
+	public get deactivation2FACodeEntryModal(): Locator {
+		return this.page.getByTestId("deactivate-2fa-v4-container");
+	}
+
+	public get continue2FADeactivationCodeButton(): Locator {
+		return this.deactivation2FACodeEntryModal.getByTestId(
+			"deactivate-2fa-v4-continue-button",
+		);
+	}
+
+	public get fields2FACodeInputsDeactivationModal(): Locator {
+		return this.deactivation2FACodeEntryModal.locator(
+			'[data-testid^="deactivate-2fa-v4-pin-code-input-"]',
+		);
+	}
+
+	public get verification2FAPopup(): Locator {
+		return this.page.getByTestId("verify-2fa-v4-container");
+	}
+
+	public get fields2FACodeInputsVerificationModal(): Locator {
+		return this.verification2FAPopup.locator(
+			'[data-testid^="verify-2fa-v4-pin-code-input-"]',
+		);
+	}
+
+	public get confirm2FAVerificationCodeButton(): Locator {
+		return this.verification2FAPopup.getByTestId(
+			"verify-2fa-v4-confirm-button",
 		);
 	}
 

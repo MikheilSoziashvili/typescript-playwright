@@ -63,19 +63,17 @@ export class LoginModalMap extends BaseMap {
 	}
 
 	public get login2FaContainer(): Locator {
-		return this.page.locator(
-			"//*[text()='2FA Code']//ancestor::div[contains(@class,'MuiBox-root')]",
-		);
+		return this.page.getByTestId("auth-modal-form-container");
 	}
 
 	public get inputFields2FACode(): Locator {
-		return this.login2FaContainer.locator(`input[id*="2fa-"]`);
+		return this.login2FaContainer.locator(
+			`input[data-testid^="signin-2fa-code-input-"]`,
+		);
 	}
 
 	public get confirm2FAActivationCodeButton(): Locator {
-		return this.login2FaContainer.locator(
-			`//..//..//button[@type='button' and normalize-space()='Confirm']`,
-		);
+		return this.login2FaContainer.getByTestId("signin-2fa-sbt-btn");
 	}
 
 	public get forgotPasswordDialog(): Locator {

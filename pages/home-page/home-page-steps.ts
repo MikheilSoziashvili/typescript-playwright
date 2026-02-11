@@ -70,6 +70,7 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 		await this.gamdomPage.loginModal.enter2FaCode(
 			twoFactorAuthenticationCode,
 		);
+		await this.gamdomPage.loginModal.map.confirm2FAActivationCodeButton.click();
 		await this.gamdomPage.assertThat().userIsLoggedIn();
 	}
 

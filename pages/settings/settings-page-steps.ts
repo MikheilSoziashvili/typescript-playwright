@@ -30,8 +30,8 @@ export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 			.checkElementsAreVisible([this.gamdomPage.map.activation2FAPopup]);
 		await this.gamdomPage.takeQRCodeImageScreenshot(screenshotPath);
 		const code2FA = await generate2FACodeFromQRCodeImage(screenshotPath);
-		await this.gamdomPage.fill2FACodeInputs(code2FA);
-		await this.gamdomPage.clickConfirmButton();
+		await this.gamdomPage.fill2FAActivationCodeInputs(code2FA);
+		await this.gamdomPage.clickConfirmActivationButton();
 		await this.gamdomPage
 			.assertThat()
 			.checkElementsAreNotVisible([
@@ -56,10 +56,11 @@ export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 		await this.gamdomPage
 			.assertThat()
 			.checkElementsAreVisible([
-				this.gamdomPage.map.verification2FAPopup,
+				this.gamdomPage.map.deactivation2FaPopup,
 			]);
+		await this.gamdomPage.map.confirm2FADeactivationCodeButton.click();
 		const code2FA = await generate2FACodeFromQRCodeImage(screenshotPath);
-		await this.gamdomPage.fill2FACodeInputs(code2FA);
+		await this.gamdomPage.fill2FADeactivationCodeInputs(code2FA);
 		await this.gamdomPage
 			.assertThat()
 			.checkElementsAreNotVisible([
@@ -68,16 +69,16 @@ export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 		await this.gamdomPage
 			.assertThat()
 			.checkElementsAreVisible([
-				this.gamdomPage.map.disable2FaModalLocator,
+				this.gamdomPage.map.deactivation2FaPopup,
 			]);
-		await this.gamdomPage.map.continueDisable2FaButton.dblclick();
+		await this.gamdomPage.map.continue2FADeactivationCodeButton.click();
 
 		await this.disable2FaWorkaround(screenshotPath);
 
 		await this.gamdomPage
 			.assertThat()
 			.checkElementsAreNotVisible([
-				this.gamdomPage.map.disable2FaModalLocator,
+				this.gamdomPage.map.deactivation2FaPopup,
 			]);
 	}
 
@@ -87,7 +88,7 @@ export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 	private async disable2FaWorkaround(screenshotPath: string): Promise<void> {
 		let attempts = 0;
 		while (
-			(await this.gamdomPage.map.disable2FaModalLocator.isVisible()) &&
+			(await this.gamdomPage.map.deactivation2FaPopup.isVisible()) &&
 			attempts < 5
 		) {
 			attempts++;
@@ -95,8 +96,8 @@ export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 			await this.gamdomPage.open2FADisableModal();
 			const code2FA2 =
 				await generate2FACodeFromQRCodeImage(screenshotPath);
-			await this.gamdomPage.fill2FACodeInputs(code2FA2);
-			await this.gamdomPage.map.continueDisable2FaButton.dblclick();
+			await this.gamdomPage.fill2FADeactivationCodeInputs(code2FA2);
+			await this.gamdomPage.map.confirm2FADeactivationCodeButton.dblclick();
 			// eslint-disable-next-line playwright/no-wait-for-timeout
 			await this.gamdomPage.page.waitForTimeout(1000);
 		}
@@ -118,5 +119,4 @@ export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 		await this.gamdomPage.assertThat().selfExclusionTabNotVisible();
 		await this.gamdomPage.assertThat().selfExclusionTimerDisplayed(days);
 	}
-
 }

@@ -192,7 +192,9 @@ export class HomePageMap extends BaseMap {
 	}
 
 	public get headerContainer(): Locator {
-		return this.page.getByTestId("headerContainer");
+		return this.page.locator(
+			'div[class*="MainLayoutV4Container__Container"][class*="HeaderNavPanel"]',
+		);
 	}
 
 	public topLineHeaderLink(tab: string): Locator {
