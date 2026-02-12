@@ -1,4 +1,4 @@
 username,password,expected_username_warning,expected_password_warning,expected_button_status,expected_result,expected_feedback_location,expected_feedback_warning
-aaaaa,aaaaa,,,enabled,Login is rejected as the credentials are not valid,the username field,User does not exist
-user1,aaaaa,,,enabled,Login is rejected as the credentials are not valid,the password field,User does not exist
+aaaaa,aaaaa,,,enabled,Login is rejected as the credentials are not valid,the username field,Incorrect credentials
+user1,aaaaa,,,enabled,Login is rejected as the credentials are not valid,the password field,Incorrect credentials
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa,password,,,enabled,Login is not successful.,on a toast message,Invalid login request
