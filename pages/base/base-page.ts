@@ -22,6 +22,8 @@ import { logger } from "@logger/logger";
 import { BrowserName } from "@enums/playwright/project-browser-names";
 import { VisibilityState } from "@enums/playwright/visibility-states";
 import { Attributes } from "@enums/playwright/htmlAttributes";
+import { AttributesValues } from "@enums/playwright/htmlAttributesValues";
+import { SliderNavigationDirection } from "@enums/playwright/slider-navigation-direction";
 import { step } from "decorators/step";
 import {
 	boundValue,
@@ -582,9 +584,8 @@ export abstract class BasePage<T extends BaseMap> {
 	@step("Get slider value")
 	public async getSliderValue(sliderContainer: Locator): Promise<number> {
 		const sliderThumb = this.map.getSliderThumb(sliderContainer);
-		const { currentValue, minValue, maxValue } = await this.getSliderBounds(
-			sliderThumb,
-		);
+		const { currentValue, minValue, maxValue } =
+			await this.getSliderBounds(sliderThumb);
 		return getDisplayValue(currentValue, minValue, maxValue);
 	}
 
@@ -601,9 +602,8 @@ export abstract class BasePage<T extends BaseMap> {
 		targetValue: number,
 	): Promise<void> {
 		const sliderThumb = this.map.getSliderThumb(sliderContainer);
-		const { currentValue, minValue, maxValue } = await this.getSliderBounds(
-			sliderThumb,
-		);
+		const { currentValue, minValue, maxValue } =
+			await this.getSliderBounds(sliderThumb);
 
 		const adjustedTargetValue = getAdjustedTargetValue(
 			targetValue,
@@ -655,5 +655,126 @@ export abstract class BasePage<T extends BaseMap> {
 		]);
 
 		await fileChooser.setFiles(filePath || []);
+	}
+
+	/**
+	 * Find the index of the currently active (centered) slide in a Swiper slider
+	 * @param slideLocators - Array of locators for each slide element
+	 * @param activeClassName - The CSS class name that indicates an active slide (default: "swiper-slide-active")
+	 * @returns The index of the currently active slide, or -1 if not found
+	 */
+	@step("Find currently active slide index in slider")
+	public async findCurrentActiveSlideIndex(
+		slideLocators: Locator[],
+		activeClassName: string = AttributesValues.SWIPER_SLIDE_ACTIVE,
+	): Promise<number> {
+		for (let i = 0; i < slideLocators.length; i++) {
+			const slideLocator = slideLocators[i];
+
+			try {
+				const exists = await slideLocator.count();
+				if (exists === 0) {
+					continue;
+				}
+
+				const classAttribute = await slideLocator.getAttribute(
+					Attributes.CLASS,
+				);
+
+				if (classAttribute?.includes(activeClassName)) {
+					logger.info(`Currently active slide is at index ${i}`);
+					return i;
+				}
+			} catch {
+				continue;
+			}
+		}
+
+		logger.warn(
+			"Could not determine currently active slide, defaulting to previous direction",
+		);
+		return -1;
+	}
+
+	/**
+	 * Determine which direction to navigate in a slider based on target and current positions
+	 * @param targetIndex - The index of the target slide
+	 * @param currentActiveIndex - The index of the currently active slide
+	 * @param targetLabel - Optional label for the target (for logging)
+	 * @param currentLabel - Optional label for the current active item (for logging)
+	 * @returns The direction to navigate (NEXT or PREVIOUS)
+	 */
+	public determineSliderNavigationDirection(
+		targetIndex: number,
+		currentActiveIndex: number,
+		targetLabel?: string,
+		currentLabel?: string,
+	): SliderNavigationDirection {
+		if (currentActiveIndex === -1) {
+			return SliderNavigationDirection.PREVIOUS;
+		}
+
+		if (targetIndex < currentActiveIndex) {
+			if (targetLabel && currentLabel) {
+				logger.info(
+					`Target ${targetLabel} (index ${targetIndex}) is to the left of current ${currentLabel} (index ${currentActiveIndex}), clicking previous`,
+				);
+			}
+			return SliderNavigationDirection.PREVIOUS;
+		} else {
+			if (targetLabel && currentLabel) {
+				logger.info(
+					`Target ${targetLabel} (index ${targetIndex}) is to the right of current ${currentLabel} (index ${currentActiveIndex}), clicking next`,
+				);
+			}
+			return SliderNavigationDirection.NEXT;
+		}
+	}
+
+	/**
+	 * Navigate a slider in the specified direction by clicking the appropriate button
+	 * @param direction - The direction to navigate (NEXT or PREVIOUS)
+	 * @param nextButton - The locator for the "next" button
+	 * @param previousButton - The locator for the "previous" button
+	 * @param targetLabel - Optional label for the target (for logging)
+	 * @param attemptNumber - Optional attempt number (for logging)
+	 * @returns true if navigation was successful, false if button is disabled
+	 */
+	@step("Navigate slider in direction")
+	public async navigateSliderInDirection(
+		direction: SliderNavigationDirection,
+		nextButton: Locator,
+		previousButton: Locator,
+		targetLabel?: string,
+		attemptNumber?: number,
+	): Promise<boolean> {
+		const button =
+			direction === SliderNavigationDirection.NEXT
+				? nextButton
+				: previousButton;
+
+		const isDisabled = await button.isDisabled();
+		if (isDisabled) {
+			const directionText =
+				direction === SliderNavigationDirection.NEXT
+					? "Next"
+					: "Previous";
+			const targetText = targetLabel ? ` to ${targetLabel}` : "";
+			logger.warn(
+				`${directionText} button is disabled, cannot navigate${targetText}`,
+			);
+			return false;
+		}
+
+		const directionText =
+			direction === SliderNavigationDirection.NEXT ? "next" : "previous";
+		const targetText = targetLabel ? ` ${targetLabel}` : "";
+		const attemptText = attemptNumber ? ` (attempt ${attemptNumber})` : "";
+		logger.info(
+			`Clicking ${directionText} button to find${targetText}${attemptText}`,
+		);
+
+		await button.click();
+		return true;
 	}
 }

@@ -4,19 +4,31 @@ import { RewardsRoyaltyUpRanksValues } from "@constants/rewards-royalty-up-rank-
 import { SPECIAL_OFFER_RATEBACK } from "@constants/specialoffers";
 import { buildClaimedAmountSubTitle } from "@core/helpers/asserter-helpers/text-asserters";
 import { BasePageNavigationParametersType } from "@core/types/types";
+import { parseShortScaledCurrency, waitForSeconds } from "@core/utils/utils";
 import { RatebackHouseEdge } from "@enums/rateback-house-edge-options";
 import { RewardsRoyaltyUpRanks } from "@enums/rewards-royalty-up-ranks";
 import { Timeout } from "@enums/timeout";
 import { calculateRakeback } from "@formulas/rakeback";
 import { WelcomeBonusModal } from "@pages/modals/welcome-bonus-modal/welcome-bonus-modal";
 import { Toast } from "@pages/components/toast/toast";
-import { Page, expect } from "@playwright/test";
+import { Locator, Page, expect } from "@playwright/test";
 import { step } from "decorators/step";
 import { RewardsPageAsserter } from "./rewards-page-asserter";
 import { RewardsPageMap } from "./rewards-page-map";
 import { RewardsPageSteps } from "./rewards-page-steps";
 import { RewardType } from "@enums/admin/reward-type";
 import { logger } from "@logger/logger";
+import {
+	numericAmountPattern,
+	shortScaledAmountPattern,
+} from "@support/regex-patterns";
+import {
+	BRONZE_EDGE_RANKS,
+	CLAIMABLE_ROYALTY_UP_RANKS,
+	OPAL_EDGE_RANKS,
+} from "@constants/rewards-royalty-up-rank-groups";
+import { Attributes } from "@enums/playwright/htmlAttributes";
+import { AttributesValues } from "@enums/playwright/htmlAttributesValues";
 
 export class RewardsPage extends BasePage<RewardsPageMap> {
 	public constructor(page: Page) {
@@ -165,5 +177,211 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 	@step("Claim reward")
 	async claimReward(rewardType: RewardType): Promise<void> {
 		await this.map.getRewardClaimButton(rewardType).click();
+	}
+
+	@step("Click a specific reward card's button by index")
+	public async clickRewardCardButtonByIndex(
+		reward: string,
+		buttonText: string,
+		index: number,
+	): Promise<void> {
+		const button = this.map.rewardCardButton(reward, buttonText).nth(index);
+		await button.scrollIntoViewIfNeeded();
+		await button.click();
+	}
+
+	@step("Extract reward amount from claim button text")
+	public async extractRewardAmount(
+		claimButton: Locator,
+		reward: RewardsRoyaltyUpRanks,
+	): Promise<number> {
+		await this.assertThat().checkElementsAreEnabled([claimButton]);
+
+		const buttonText = (await claimButton.textContent()) || "";
+
+		const amountMatch =
+			buttonText.match(shortScaledAmountPattern) ??
+			buttonText.match(numericAmountPattern);
+
+		expect(
+			amountMatch,
+			`Could not extract amount from button text: ${buttonText}`,
+		).not.toBeNull();
+
+		const extractedAmount = parseShortScaledCurrency(
+			amountMatch?.[0] ?? "",
+		);
+
+		logger.info(
+			`Claiming reward ${reward} with amount: $${extractedAmount}`,
+		);
+
+		return extractedAmount;
+	}
+
+	@step("Navigate to reward in slider")
+	public async navigateToRewardInSlider(
+		reward: RewardsRoyaltyUpRanks,
+	): Promise<void> {
+		const isBronzeEdge = BRONZE_EDGE_RANKS.includes(reward);
+		const isOpalEdge = OPAL_EDGE_RANKS.includes(reward);
+		await this.map.royaltyUpBlock.scrollIntoViewIfNeeded();
+
+		if (isBronzeEdge) {
+			logger.info(
+				`${reward} is a Bronze edge rank, attempting to make it clickable`,
+			);
+			await this.navigateToBronzeEdgeRank(reward);
+			return;
+		}
+
+		if (isOpalEdge) {
+			logger.info(
+				`${reward} is an Opal edge rank, attempting to make it clickable`,
+			);
+			await this.navigateToOpalEdgeRank(reward);
+			return;
+		}
+
+		await this.navigateToNonEdgeRank(reward);
+	}
+
+	@step("Navigate to Bronze edge rank")
+	private async navigateToBronzeEdgeRank(
+		reward: RewardsRoyaltyUpRanks,
+	): Promise<void> {
+		await this.navigateToEdgeRank(
+			reward,
+			RewardsRoyaltyUpRanks.SILVER_1,
+			RewardsRoyaltyUpRanks.DIAMOND_3,
+		);
+	}
+
+	@step("Navigate to Opal edge rank")
+	private async navigateToOpalEdgeRank(
+		reward: RewardsRoyaltyUpRanks,
+	): Promise<void> {
+		await this.navigateToEdgeRank(
+			reward,
+			RewardsRoyaltyUpRanks.DIAMOND_3,
+			RewardsRoyaltyUpRanks.SILVER_1,
+		);
+	}
+
+	@step("Navigate to edge rank")
+	private async navigateToEdgeRank(
+		reward: RewardsRoyaltyUpRanks,
+		primaryFallback: RewardsRoyaltyUpRanks,
+		secondaryFallback: RewardsRoyaltyUpRanks,
+	): Promise<void> {
+		const rewardButton = this.map.royaltyUpRewardsItemButton(reward);
+
+		logger.info(
+			`Attempting to navigate to ${primaryFallback} to make ${reward} clickable`,
+		);
+		await this.navigateToNonEdgeRank(primaryFallback);
+
+		const isClickable = await rewardButton.isEnabled();
+		if (isClickable) {
+			logger.info(
+				`${reward} is now clickable after centering ${primaryFallback}`,
+			);
+			return;
+		}
+
+		logger.warn(
+			`${reward} is not clickable after centering ${primaryFallback}, trying ${secondaryFallback}`,
+		);
+		await this.navigateToNonEdgeRank(secondaryFallback);
+
+		const isClickableAfterSecondary = await rewardButton.isEnabled();
+		if (isClickableAfterSecondary) {
+			logger.info(
+				`${reward} is now clickable after centering ${secondaryFallback}`,
+			);
+			return;
+		}
+
+		logger.error(
+			`${reward} is still not clickable after trying both ${primaryFallback} and ${secondaryFallback}`,
+		);
+	}
+
+	@step("Navigate to non-edge rank")
+	private async navigateToNonEdgeRank(
+		reward: RewardsRoyaltyUpRanks,
+	): Promise<void> {
+		const maxAttempts = 30;
+		const rankOrder = CLAIMABLE_ROYALTY_UP_RANKS;
+		const targetRankIndex = rankOrder.indexOf(reward);
+
+		for (let attempts = 0; attempts < maxAttempts; attempts++) {
+			logger.info(
+				`Navigation attempt ${attempts + 1} for reward ${reward}`,
+			);
+
+			if (await this.isRewardCentered(reward)) {
+				logger.info(`Reward ${reward} is now in the center (active)`);
+				return;
+			}
+
+			const currentActiveRankIndex =
+				await this.findCurrentActiveRankIndex(rankOrder);
+			const direction = this.determineSliderNavigationDirection(
+				targetRankIndex,
+				currentActiveRankIndex,
+				reward,
+				rankOrder[currentActiveRankIndex],
+			);
+
+			const navigated = await this.navigateSliderInDirection(
+				direction,
+				this.map.royaltyUpSliderNextButton,
+				this.map.royaltyUpSliderPreviousButton,
+				reward,
+				attempts + 1,
+			);
+			if (!navigated) {
+				break;
+			}
+
+			await waitForSeconds(0.3);
+		}
+
+		logger.warn(
+			`Could not find reward ${reward} in correct position after ${maxAttempts} attempts`,
+		);
+	}
+
+	@step("Check if reward is centered")
+	private async isRewardCentered(
+		reward: RewardsRoyaltyUpRanks,
+	): Promise<boolean> {
+		const swiperSlide = this.map.royaltyUpRewardsItemSwiperSlide(reward);
+
+		const exists = await swiperSlide.count();
+		if (exists === 0) {
+			logger.warn(`Reward ${reward} not found in the slider`);
+			return false;
+		}
+
+		const classAttribute = await swiperSlide.getAttribute(Attributes.CLASS);
+		return (
+			classAttribute?.includes(AttributesValues.SWIPER_SLIDE_ACTIVE) ??
+			false
+		);
+	}
+
+	@step("Find current active rank index")
+	private async findCurrentActiveRankIndex(
+		rankOrder: RewardsRoyaltyUpRanks[],
+	): Promise<number> {
+		const slideLocators = rankOrder.map((rank) =>
+			this.map.royaltyUpRewardsItemSwiperSlide(rank),
+		);
+		const activeIndex =
+			await this.findCurrentActiveSlideIndex(slideLocators);
+
+		return activeIndex;
 	}
 }

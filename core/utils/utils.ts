@@ -34,6 +34,7 @@ import { ChatMessageOptions } from "@pages/components/chat/chat-map";
 import { expect } from "@playwright/test";
 import {
 	currencyToNumberPattern,
+	currencyToNumberWithSuffixPattern,
 	escapedNewlinePattern,
 	otpAuthSecretPattern,
 	pageUrl,
@@ -1373,6 +1374,56 @@ export function parseCurrencyToNumber(currencyText: string): number {
 	const numericString = currencyText.replace(currencyToNumberPattern, "");
 
 	const result = parseFloat(numericString);
+
+	expect(
+		result,
+		`Unable to parse currency text "${currencyText}" to a valid number`,
+	).not.toBeNaN();
+
+	return result;
+}
+
+/**
+ * Converts currency text with short-scaled suffixes (e.g., "$4.8k", "$1.1m") to a numeric value.
+ * Also handles regular currency values without suffixes.
+ *
+ * @param currencyText - The currency string to convert (e.g., "$123.00", "$4.8k", "$1.1m", "$2.5b")
+ * @returns The numeric value without currency symbol (e.g., 123.00, 4800, 1100000, 2500000000)
+ * @throws Error if the input cannot be parsed to a valid number
+ *
+ * @example
+ * parseShortScaledCurrency("$123.00"); // 123.00
+ * parseShortScaledCurrency("$4.8k"); // 4800
+ * parseShortScaledCurrency("$1.1m"); // 1100000
+ * parseShortScaledCurrency("$2.5b"); // 2500000000
+ * parseShortScaledCurrency("Claim $108.00"); // 108.00
+ * parseShortScaledCurrency("Claim $4.8k"); // 4800
+ */
+export function parseShortScaledCurrency(currencyText: string): number {
+	// Remove currency symbols and whitespace, but keep digits, dots, and suffix letters (k, m, b)
+	const numericString = currencyText.replace(
+		currencyToNumberWithSuffixPattern,
+		"",
+	);
+
+	// Check if it has a suffix (k, m, b)
+	const suffix = numericString.slice(-1).toLowerCase();
+	const multipliers: Record<string, number> = {
+		k: 1000,
+		m: 1000000,
+		b: 1000000000,
+	};
+
+	let result: number;
+
+	if (multipliers[suffix]) {
+		// Remove the suffix and parse the number
+		const baseNumber = parseFloat(numericString.slice(0, -1));
+		result = baseNumber * multipliers[suffix];
+	} else {
+		// No suffix, parse as regular number
+		result = parseFloat(numericString);
+	}
 
 	expect(
 		result,

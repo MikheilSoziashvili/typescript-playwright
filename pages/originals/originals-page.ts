@@ -204,7 +204,7 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 					? (multiplierOrColorOrOption as {
 							rowsValue?: PlinkoRowsOption;
 							riskValue?: PlinkoRiskOption;
-					  })
+						})
 					: {};
 				await (gamePage as PlinkoGamePage).startManualBet(
 					betAmount.toString(),
@@ -242,6 +242,16 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 				throw new Error(`Unhandled game type: ${String(game)}`);
 			}
 		}
+	}
+
+	@step("Navigate to game and place bet")
+	public async navigateAndPlaceBet(
+		game: OriginalGames,
+		betAmount: number,
+		multiplierOrColorOrOption?: BetOption,
+	): Promise<void> {
+		await this.navigateToGame(game);
+		await this.placeBet(game, betAmount, multiplierOrColorOrOption);
 	}
 
 	@step("Place bet - v4")
@@ -305,7 +315,7 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 					? (multiplierOrColorOrOption as {
 							rowsValue?: PlinkoRowsOption;
 							riskValue?: PlinkoRiskOption;
-					  })
+						})
 					: {};
 				await (gamePage as PlinkoGamePage).startManualBet(
 					betAmount.toString(),

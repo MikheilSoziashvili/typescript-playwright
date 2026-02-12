@@ -25,6 +25,7 @@ import {
 	LoginInputValidationV4Csv,
 	PromotionCombinationForLabelDisplayV4Csv,
 	RoyaltyUpLevelRanksCsv,
+	RoyaltyUpSkippingLevelsCsv,
 	ObtEsportsPagesStatusCodeCsv,
 	EnableDisableCryptoCurrenciesStatusesCsv,
 } from "@dtos/csv";
@@ -67,6 +68,7 @@ export type CsvDtoMap = {
 	[CsvFilesName.LOGIN_INPUT_VALIDATION_V4]: LoginInputValidationV4Csv;
 	[CsvFilesName.PROMOTION_COMBINATIONS_FOR_LABEL_DISPLAY_V4]: PromotionCombinationForLabelDisplayV4Csv;
 	[CsvFilesName.ROYALTY_UP_LEVEL_RANKS]: RoyaltyUpLevelRanksCsv;
+	[CsvFilesName.ROYALTY_UP_SKIPPING_LEVELS]: RoyaltyUpSkippingLevelsCsv;
 	[CsvFilesName.OBT_ESPORTS_PAGES_STATUS_CODE]: ObtEsportsPagesStatusCodeCsv;
 	[CsvFilesName.ENABLE_DISABLE_CRYPTO_CURRENCIES_STATUSES]: EnableDisableCryptoCurrenciesStatusesCsv;
 };

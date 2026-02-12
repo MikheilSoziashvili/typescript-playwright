@@ -34,6 +34,7 @@ export const currencyAmountPattern = (
 	new RegExp(`^\\${currencySymbol}\\d{1,3}(?:,\\d{3})*(?:\\.\\d{2})?$`);
 
 export const currencyToNumberPattern = /[^\d.-]/g;
+export const currencyToNumberWithSuffixPattern = /[^\d.kmb]/gi;
 export const currencyOnlyPattern = /[^0-9.,\s]/g;
 export const betLabelPattern = /^Bet/i;
 export const urlSpecialCharactersPattern = /[^a-z0-9\s-_]/g;
@@ -99,3 +100,5 @@ export const selfExclusionTimerV4Pattern = (
 			return /^\d+d\s+\d{1,2}h\s+\d{1,2}m\s+\d{1,2}s$/;
 	}
 };
+export const numericAmountPattern = /[\d,.]+/;
+export const shortScaledAmountPattern = /[\d,.]+[kmbKMB]/;

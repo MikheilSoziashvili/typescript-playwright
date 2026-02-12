@@ -6,4 +6,5 @@ export enum EvRewardTypes {
 	XP_CHALLENGE = "xp_challenge",
 	KYC_VERIFICATION = "kyc_verification",
 	FREE_SPINS_PROMOTION = "free_spins_promotion",
+	ROYALTY_UP = "royalty_up",
 }

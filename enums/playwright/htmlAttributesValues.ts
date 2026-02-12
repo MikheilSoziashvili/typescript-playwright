@@ -10,4 +10,5 @@ export enum AttributesValues {
 	ICON_CHECKBOX_UNCHECKED = "icon-square-o",
 	CHECKED = "checked",
 	UNCHECKED = "unchecked",
+	SWIPER_SLIDE_ACTIVE = "swiper-slide-active",
 }

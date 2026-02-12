@@ -98,6 +98,16 @@ export class RewardsPageMap extends BaseMap {
 		return this.royaltyUpRewardsItem(placeholderText).locator(`//button`);
 	}
 
+	public royaltyUpRewardsItemSwiperSlide(placeholderText: string): Locator {
+		return this.royaltyUpRewardsItem(placeholderText).locator(
+			"xpath=ancestor::div[contains(@class, 'swiper-slide')]",
+		);
+	}
+
+	public royaltyUpRewardsItemButton(placeholderText: string): Locator {
+		return this.royaltyUpRewardsItem(placeholderText).locator("//button");
+	}
+
 	public get royaltyUpSliderBlock(): Locator {
 		return this.royaltyUpBlock.locator(
 			`div[class*="SliderWrapper"] div[class*="ButtonsWrapper"]`,

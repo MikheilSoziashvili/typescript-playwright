@@ -128,16 +128,17 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 
 		for (const reward of claimableRewards) {
 			if (reward === RewardsRoyaltyUpRanks.UNRANKED) {
-				logger.info("UNRANKED reward is not claimable");
+				logger.info(
+					`${reward} reward is not claimable - skipping verification`,
+				);
 				continue;
 			}
 
-			await expect(
-				this.gamdomPage.map.royaltyUpItemClaimButton(reward),
-			).toBeEnabled();
-			await expect(
-				this.gamdomPage.map.royaltyUpItemClaimButton(reward),
-			).toBeVisible();
+			const claimButton =
+				this.gamdomPage.map.royaltyUpItemClaimButton(reward);
+
+			await this.checkElementsAreEnabled([claimButton]);
+			await this.checkElementsAreVisible([claimButton]);
 
 			const key = reward
 				.replace(" ", "_")
@@ -146,9 +147,50 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 
 			const formattedValue =
 				formatCurrencyWithSuffix(expectedRewardValue);
-			await expect(
-				this.gamdomPage.map.royaltyUpItemClaimButton(reward),
-			).toHaveText(`Claim ${formattedValue}`);
+			await this.checkElementsHaveText([
+				{
+					locator: claimButton,
+					expectedText: `Claim ${formattedValue}`,
+				},
+			]);
+		}
+	}
+
+	@step("Verify royalty up rewards claimable state")
+	async verifyRoyaltyUpRewardsClaimableState(
+		claimableRewards: RewardsRoyaltyUpRanks[],
+		claimable: boolean,
+	): Promise<void> {
+		if (claimableRewards.length === 0) {
+			const rewardType = claimable ? "claimable" : "unclaimable";
+			logger.info(`No ${rewardType} rewards to verify`);
+			return;
+		}
+
+		await this.gamdomPage.map.royaltyUpBlock.scrollIntoViewIfNeeded();
+
+		for (const reward of claimableRewards) {
+			if (reward === RewardsRoyaltyUpRanks.UNRANKED) {
+				logger.info(
+					`${reward} reward is not claimable - skipping verification`,
+				);
+				continue;
+			}
+
+			const claimButton =
+				this.gamdomPage.map.royaltyUpItemClaimButton(reward);
+
+			if (claimable) {
+				await this.checkElementsAreEnabled([claimButton]);
+				logger.info(`Reward ${reward} is claimable (button enabled)`);
+			} else {
+				await this.checkElementsAreDisabled([claimButton]);
+				logger.info(
+					`Reward ${reward} is not claimable (button disabled)`,
+				);
+			}
+
+			await this.checkElementsAreVisible([claimButton]);
 		}
 	}
 

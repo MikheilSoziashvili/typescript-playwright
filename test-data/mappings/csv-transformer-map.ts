@@ -11,6 +11,7 @@ import {
 	KycLevel2SubmissionsCsvRecord,
 	PromotionCombinationForLabelDisplayV4CsvRecord,
 	RoyaltyUpLevelRanksCsvRecord,
+	RoyaltyUpSkippingLevelsCsvRecord,
 	ObtEsportsPagesStatusCodeCsvRecord,
 	EnableDisableCryptoCurrenciesStatusesCsvRecord,
 } from "@dtos/csv";
@@ -78,6 +79,10 @@ import {
 	parseRoyaltyUpLevelRanksCsvRow,
 	RoyaltyUpLevelRanksCsvParsedRecord,
 } from "test-data/parsers/royalty-up-level-ranks-csv-parser";
+import {
+	parseRoyaltyUpSkippingLevelsCsvRow,
+	RoyaltyUpSkippingLevelsCsvParsedRecord,
+} from "test-data/parsers/royalty-up-skipping-levels-csv-parser";
 import {
 	parseObtEsportsPagesStatusCodeCsvRow,
 	ObtEsportsPagesStatusCodeCsvParsedRecord,
@@ -166,6 +171,10 @@ export type CsvTransformerMapType = {
 		row: RoyaltyUpLevelRanksCsvRecord,
 	) => RoyaltyUpLevelRanksCsvParsedRecord;
 
+	[CsvFilesName.ROYALTY_UP_SKIPPING_LEVELS]: (
+		row: RoyaltyUpSkippingLevelsCsvRecord,
+	) => RoyaltyUpSkippingLevelsCsvParsedRecord;
+
 	[CsvFilesName.OBT_ESPORTS_PAGES_STATUS_CODE]: (
 		row: ObtEsportsPagesStatusCodeCsvRecord,
 	) => ObtEsportsPagesStatusCodeCsvParsedRecord;
@@ -200,6 +209,8 @@ export const CsvTransformerMap: CsvTransformerMapType = {
 	[CsvFilesName.PROMOTION_COMBINATIONS_FOR_LABEL_DISPLAY_V4]:
 		parsePromotionCombinationLabelUpdateCsvRow,
 	[CsvFilesName.ROYALTY_UP_LEVEL_RANKS]: parseRoyaltyUpLevelRanksCsvRow,
+	[CsvFilesName.ROYALTY_UP_SKIPPING_LEVELS]:
+		parseRoyaltyUpSkippingLevelsCsvRow,
 	[CsvFilesName.OBT_ESPORTS_PAGES_STATUS_CODE]:
 		parseObtEsportsPagesStatusCodeCsvRow,
 	[CsvFilesName.ENABLE_DISABLE_CRYPTO_CURRENCIES_STATUSES]:

@@ -171,8 +171,7 @@ test.describe("Royalty up rewards tests", () => {
 							{ betAmount: 1000, autoCashoutMultiplier: 2 },
 						);
 
-						await originalsPage.navigateToGame(OriginalGame.Dice);
-						await originalsPage.placeBet(
+						await originalsPage.navigateAndPlaceBet(
 							OriginalGame.Dice,
 							betTestData.betAmount,
 							betTestData.autoCashoutMultiplier,
@@ -249,8 +248,7 @@ test.describe("Royalty up rewards tests", () => {
 					{ betAmount: 1000, autoCashoutMultiplier: 2 },
 				);
 
-				await originalsPage.navigateToGame(OriginalGame.Dice);
-				await originalsPage.placeBet(
+				await originalsPage.navigateAndPlaceBet(
 					OriginalGame.Dice,
 					betTestData.betAmount,
 					betTestData.autoCashoutMultiplier,
@@ -303,5 +301,71 @@ test.describe("Royalty up rewards tests", () => {
 					);
 			},
 		);
+	});
+
+	test.describe("Royalty up skipping levels tests", () => {
+		testData()
+			.fromCsvParsed({
+				file: CsvFilesName.ROYALTY_UP_SKIPPING_LEVELS,
+			})
+			.forEach((record) => {
+				test(
+					`[ENG-10845] Royalty up skipping levels - upgrade from '${record.currentLevel}' to '${record.newLevel}' and verify claimable/unclaimable rewards`,
+					testDetails()
+						.withTags(
+							JiraComponent.ROYALTY_UP,
+							JiraComponent.REWARDS,
+						)
+						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+						.apply(),
+					async ({
+						gamdomApiDbFacade,
+						page,
+						gamdomDb,
+						rewardsPage,
+						originalsPage,
+						testDataObject,
+					}) => {
+						const { cookie, user } =
+							await gamdomApiDbFacade.createSingleUserDbAndAuth({
+								emailVerified: true,
+								startingXp: record.userBeXp - 1,
+							});
+						await setAuthenticationCookies(page, cookie);
+						await gamdomDb.insertMultipleRoyaltyUpRewards(
+							user.userId,
+							record.ranksRewards,
+						);
+						const betTestData = testDataObject.bet.build(
+							{ username: user.username },
+							{ betAmount: 1000, autoCashoutMultiplier: 2 },
+						);
+						await originalsPage.navigateAndPlaceBet(
+							OriginalGame.Dice,
+							betTestData.betAmount,
+							betTestData.autoCashoutMultiplier,
+						);
+						await rewardsPage.navigate();
+						await rewardsPage
+							.assertThat()
+							.verifyRoyaltyUpRewardsClaimableState(
+								record.claimableRewards,
+								true,
+							);
+
+						await rewardsPage
+							.assertThat()
+							.verifyRoyaltyUpRewardsClaimableState(
+								record.unclaimableRewards,
+								false,
+							);
+						await rewardsPage
+							.steps()
+							.claimClaimableRoyaltyUpRewards(
+								record.claimableRewards,
+							);
+					},
+				);
+			});
 	});
 });

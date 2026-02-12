@@ -8,4 +8,7 @@ export enum RewardsColumns {
 	Meta = "meta",
 	StartDate = "start_date",
 	EndDate = "end_date",
+	Created = "created",
+	ModifiedDate = "modified_date",
+	PromotionId = "promotion_id",
 }

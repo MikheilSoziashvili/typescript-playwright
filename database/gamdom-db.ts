@@ -1612,4 +1612,76 @@ export class GamdomDb extends BaseDB {
 
 		return reward;
 	}
+
+	public async insertRoyaltyUpReward(
+		userId: number,
+		achievedRankId: number,
+		givenByUserId: number | null = null,
+		amountCoins = 7200000,
+		type: EvRewardTypes = EvRewardTypes.ROYALTY_UP,
+		status: RewardStatus = RewardStatus.PENDING,
+		startDate: NullableDateString = null,
+		endDate: NullableDateString = null,
+		promotionId: number | null = null,
+		hasLogMessage = true,
+	): Promise<QueryResultRow> {
+		const now = getISODate();
+		const meta = JSON.stringify({
+			rewardType: type,
+			achievedRankId: achievedRankId,
+		});
+
+		const baseData = {
+			[RewardsColumns.UserId]: userId,
+			[RewardsColumns.GivenByUserId]: givenByUserId,
+			[RewardsColumns.AmountCoins]: amountCoins,
+			[RewardsColumns.Type]: type,
+			[RewardsColumns.Status]: status,
+			[RewardsColumns.Meta]: meta,
+			[RewardsColumns.StartDate]: startDate,
+			[RewardsColumns.EndDate]: endDate,
+			[RewardsColumns.Created]: now,
+			[RewardsColumns.ModifiedDate]: now,
+			[RewardsColumns.PromotionId]: promotionId,
+		};
+
+		const data = Object.fromEntries(
+			Object.entries(baseData).filter(([, value]) => value !== null),
+		);
+
+		return this.insert(DbTables.Rewards, data, hasLogMessage);
+	}
+
+	public async insertMultipleRoyaltyUpRewards(
+		userId: number,
+		achievedRankIds: number[],
+		givenByUserId: number | null = null,
+		amountCoins = 72000,
+		type: EvRewardTypes = EvRewardTypes.ROYALTY_UP,
+		status: RewardStatus = RewardStatus.PENDING,
+		startDate: NullableDateString = null,
+		endDate: NullableDateString = null,
+		promotionId: number | null = null,
+		hasLogMessage = true,
+	): Promise<QueryResultRow[]> {
+		const rewards: QueryResultRow[] = [];
+
+		for (const achievedRankId of achievedRankIds) {
+			const reward = await this.insertRoyaltyUpReward(
+				userId,
+				achievedRankId,
+				givenByUserId,
+				amountCoins,
+				type,
+				status,
+				startDate,
+				endDate,
+				promotionId,
+				hasLogMessage,
+			);
+			rewards.push(reward);
+		}
+
+		return rewards;
+	}
 }

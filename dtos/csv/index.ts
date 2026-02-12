@@ -27,4 +27,5 @@ export * from "./login-rejected-v4-csv";
 export * from "./login-input-validation-v4-csv";
 export * from "./promotion-combinations-for-label-display-v4-csv";
 export * from "./royalty-up-level-ranks-csv";
+export * from "./royalty-up-skipping-levels-csv";
 export * from "./enable-disable-crypto-currencies-statuses-csv";
