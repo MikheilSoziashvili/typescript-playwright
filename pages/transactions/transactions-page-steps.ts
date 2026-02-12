@@ -57,9 +57,9 @@ export class TransactionsSteps extends BasePageStep<TransactionsPage> {
 		userName: string,
 	): Promise<void> {
 		await this.gamdomPage.assertThat().tipSentValueIsCaptured(tipValue);
-		await this.gamdomPage.assertThat().tipSentAndSuccessStatusAreVisible();
+		await this.gamdomPage.assertThat().tipSuccessStatusIsVisible();
 
-		await this.gamdomPage.map.arrowButtonTransactionDetails.click();
+		await this.gamdomPage.clickTransactionDetailsButton();
 		await this.gamdomPage.assertThat().receivedTipUserIsDisplayed(userName);
 		await this.gamdomPage.assertThat().sentTipAmountIsDisplayed(tipValue);
 		await this.gamdomPage
@@ -75,9 +75,9 @@ export class TransactionsSteps extends BasePageStep<TransactionsPage> {
 		await this.gamdomPage.assertThat().tipReceivedValueIsCaptured(tipValue);
 		await this.gamdomPage
 			.assertThat()
-			.tipReceivedAndSuccessStatusAreVisible();
+			.tipSuccessStatusIsVisible();
 
-		await this.gamdomPage.map.arrowButtonTransactionDetails.click();
+		await this.gamdomPage.clickTransactionDetailsButton();
 		await this.gamdomPage.assertThat().sentTipUserIsDisplayed(userName);
 		await this.gamdomPage
 			.assertThat()

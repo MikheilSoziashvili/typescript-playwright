@@ -7,25 +7,27 @@ export class TransactionsMap extends BaseMap {
 	}
 
 	public get depositsTabs(): Locator {
-		return this.page.locator("button", {
-			hasText: "Deposits",
-		});
+		return this.page.getByTestId("transactions-types-tabs-deposit");
 	}
 
 	public get withdrawsTab(): Locator {
-		return this.page.locator("button", {
-			hasText: "Withdrawals",
-		});
+		return this.page.getByTestId("transactions-types-tabs-withdrawal");
 	}
 
 	public get tipsTab(): Locator {
-		return this.page.locator("button", {
-			hasText: "Tips",
-		});
+		return this.page.getByTestId("transactions-types-tabs-tip");
+	}
+
+	public get rewardsTab(): Locator {
+		return this.page.getByTestId("transactions-types-tabs-rewards");
 	}
 
 	public get transactionDetailsButton(): Locator {
-		return this.page.locator('button[class*="ArrowButton-styled"]');
+		return this.page
+			.locator(
+				'[data-testid*="tips-transactions-cell-"][data-testid$="_action"]',
+			)
+			.locator("button");
 	}
 
 	public get transactionStatus(): Locator {
@@ -33,23 +35,23 @@ export class TransactionsMap extends BaseMap {
 	}
 
 	public get userProfileWrapper(): Locator {
-		return this.page.locator("div[class*='UserProfileWrapper-styled']");
+		return this.page.locator("div[class*='ProfileMainContainer-sc']");
+	}
+
+	public get transactionsContainer(): Locator {
+		return this.userProfileWrapper.getByTestId(
+			"transactions-types-tabs-container",
+		);
 	}
 
 	public get tipAmount(): Locator {
-		return this.userProfileWrapper.locator(".currency-amount");
-	}
-
-	public get tipSentText(): Locator {
-		return this.page.locator("p", { hasText: "Tip sent" });
-	}
-
-	public get tipReceivedText(): Locator {
-		return this.page.locator("p", { hasText: "Tip received" });
+		return this.transactionsContainer.getByTestId("fiat-value");
 	}
 
 	public get successStatus(): Locator {
-		return this.page.locator('p[status="success"]');
+		return this.transactionsContainer.locator(
+			'p[data-testid^="transaction-status-"]',
+		);
 	}
 
 	public get arrowButtonTransactionDetails(): Locator {
@@ -67,14 +69,18 @@ export class TransactionsMap extends BaseMap {
 	}
 
 	public get amountValue(): Locator {
-		return this.page.getByLabel("Amount");
+		return this.page.getByTestId("tip-Tip-amount-input");
 	}
 
 	public get contactSupportButton(): Locator {
-		return this.page.locator("button", { hasText: "Contact Support" });
+		return this.page
+			.getByTestId("tip-Tip-block-chain-transaction")
+			.filter({ hasText: "Contact Support" });
 	}
 
 	public get gotItButton(): Locator {
-		return this.page.locator("button", { hasText: "Got it" });
+		return this.page
+			.getByTestId("tip-Tip-dialog-close")
+			.filter({ hasText: "Got it" });
 	}
 }

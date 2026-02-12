@@ -77,7 +77,8 @@ test.describe(
 				const user2BalanceHandler = new UserBalanceHandler(user2Page);
 				const user2TransactionsPage = new TransactionsPage(user2Page);
 
-				await user2HomePage.navigateAndExpandChat();
+				await user2HomePage.navigate();
+				await user2Chat.expandChat();
 
 				const message_1 = generateRandomString({
 					prefix: "automation_message_",
@@ -114,7 +115,8 @@ test.describe(
 				};
 				await setAuthenticationCookies(page, user1Cookie);
 
-				await homePage.navigateAndExpandChat();
+				await homePage.navigate();
+				await chat.expandChat();
 				await chat
 					.steps()
 					.verifyChatIsDisplayedAndMessageIsVisible(messageInfo_1);

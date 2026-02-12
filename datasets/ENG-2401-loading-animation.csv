@@ -6,10 +6,10 @@ Hilo,/hilo
 Roulette,/roulette
 Plinko,/plinko
 Casino,/casino
-Casino-Favorites,/casino?tab=favorite
-Casino-Slots,/casino?tab=slots
-Casino-Live games,/casino?tab=live-games
-Casino-Table games,/casino?tab=table-games
+Casino-Favorites,/casino/favorite
+Casino-Slots,/casino/slots
+Casino-Live games,/casino/live-games
+Casino-Table games,/casino/table-games
 Slot Arena,/slots-arena
 Sports,/sports
 E-Sports,/sports/sport/esports
@@ -51,6 +51,8 @@ KOTH-Monthly,/koth/monthly
 Mines,/mines
 Keno,/keno
 Promotions,/promotions
-Promotions-All,/promotions?tab=all
-Promotions-Casino,/promotions?tab=casino
-Promotions-Sportsbook,/promotions?tab=sportsbook
+Promotions-Casino,/promotions/casino
+Promotions-Sportsbook,/promotions/sportsbook
+Promotions-Archive,/promotions/archive
+Pocket Dice,/pocket-dice
+Affiliates Info,/affiliates-info

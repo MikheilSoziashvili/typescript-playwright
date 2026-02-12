@@ -1,6 +1,6 @@
 export enum CommonUserPopupOption {
 	PROFILE = "Profile",
-	TIP_USER = "Tip User",
+	TIP_USER = "Tip",
 	IGNORE = "Ignore",
 	MUTE = "Mute",
 	MENTION = "Mention",

@@ -66,7 +66,7 @@ test.describe("Tip user tests", () => {
 			const user2Chat = new Chat(user2Page);
 
 			await user2HomePage.navigate();
-			await user2HomePage.authenticatedHeader.expandChatIfNotVisible();
+			await user2Chat.expandChat();
 
 			const message_1 = generateRandomString({
 				prefix: "automation_message_",
@@ -86,7 +86,7 @@ test.describe("Tip user tests", () => {
 			const user2AccountBalance =
 				await user2HomePage.authenticatedHeader.getAccountBalance();
 			await user2HomePage.navigate({ cookies: { clearCookies: true } });
-			await user2HomePage.authenticatedHeader.expandChatIfNotVisible();
+			await user2Chat.expandChat();
 			await user2Chat.assertThat().chatIsDisplayed();
 			await user2Chat
 				.assertThat()
@@ -104,7 +104,7 @@ test.describe("Tip user tests", () => {
 			await setAuthenticationCookies(page, user1Cookie);
 
 			await homePage.navigate();
-			await homePage.authenticatedHeader.expandChatIfNotVisible();
+			await chat.expandChat();
 			await chat.assertThat().chatIsDisplayed();
 			await chat.assertThat().isMessageVisible(messageInfo_1);
 
@@ -115,10 +115,7 @@ test.describe("Tip user tests", () => {
 			await tipUserModal.insertTipValue(tipValue);
 			await tipUserModal.assertThat().isValueVisible(tipValue);
 
-			await tipUserModal.clearTipValue();
-			await tipUserModal.assertThat().isValueVisible(0);
-
-			await tipUserModal.tipUser(tipValue);
+			await tipUserModal.clickTipUserButton();
 
 			await toast.assertThat().titleIs(ToastTitle.SUCCESS);
 			await toast.assertThat().subTitleIs(

@@ -53,7 +53,7 @@ test.describe("Tip user 2FA tests", () => {
 		);
 		await setAuthenticationCookies(page, cookie);
 		await homePage.navigate();
-		await homePage.authenticatedHeader.expandChatIfNotVisible();
+		await chat.expandChat();
 		await chat.steps().sendMessage(chatMessage);
 		// need to send second message as a workaround until bug DEV-1919 is fixed by dev team
 		const workaroundMessage = generateRandomString({
@@ -114,7 +114,7 @@ test.describe("Tip user 2FA tests", () => {
 			await settingsPage
 				.steps()
 				.navigateAndEnable2FaAuthentication(qrCode2FAImagePath);
-			await homePage.authenticatedHeader.expandChatIfNotVisible();
+			await chat.expandChat();
 			await chat
 				.steps()
 				.verifyMessageAndOpenTipUserModal(chatUserMessageInfo, false);
@@ -152,7 +152,7 @@ test.describe("Tip user 2FA tests", () => {
 			);
 
 			await homePage.navigate();
-			await homePage.authenticatedHeader.expandChatIfNotVisible();
+			await chat.expandChat();
 			await chat
 				.steps()
 				.verifyMessageAndOpenTipUserModal(chatUserMessageInfo, false);

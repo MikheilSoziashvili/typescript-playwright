@@ -147,7 +147,7 @@ export class ChatMap extends BaseMap {
 	}
 
 	public get chatTextBoxPlaceholder(): Locator {
-		return this.chatFooter.getByTestId("chatInput-placeholder");
+		return this.chatFooter.getByTestId("chat-input-placeholder");
 	}
 
 	public get chatroomsDropdownContainer(): Locator {

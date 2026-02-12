@@ -46,17 +46,8 @@ export class TransactionsAsserter extends BaseAsserter<TransactionsPage> {
 	}
 
 	@step("Tip sent and Success status are visible")
-	public async tipSentAndSuccessStatusAreVisible(): Promise<void> {
+	public async tipSuccessStatusIsVisible(): Promise<void> {
 		await this.checkElementsAreVisible([
-			this.gamdomPage.map.tipSentText,
-			this.gamdomPage.map.successStatus,
-		]);
-	}
-
-	@step("Tip received and Success status are visible")
-	public async tipReceivedAndSuccessStatusAreVisible(): Promise<void> {
-		await this.checkElementsAreVisible([
-			this.gamdomPage.map.tipReceivedText,
 			this.gamdomPage.map.successStatus,
 		]);
 	}
@@ -113,6 +104,6 @@ export class TransactionsAsserter extends BaseAsserter<TransactionsPage> {
 
 	private isTipAmountSent(amount: number, isSent: boolean): string {
 		const formattedAmount = amount.toFixed(2);
-		return isSent ? `-$${formattedAmount}` : `$${formattedAmount}`;
+		return isSent ? `-${formattedAmount}` : `${formattedAmount}`;
 	}
 }

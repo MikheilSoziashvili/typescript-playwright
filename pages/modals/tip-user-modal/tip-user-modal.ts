@@ -24,9 +24,9 @@ export class TipUserModal extends BaseModal<TipUserModalMap> {
 		await this.map.tipAmountField.fill(parseToFloat(value));
 	}
 
-	@step("Clear tip value")
-	public async clearTipValue(): Promise<void> {
-		await this.map.clearAmountButton.click();
+	@step("Click tip user button")
+	async clickTipUserButton(): Promise<void> {
+		await this.map.tipButton.click();
 	}
 
 	@step("Tip user")

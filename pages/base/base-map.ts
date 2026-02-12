@@ -230,7 +230,7 @@ export class BaseMap {
 	}
 
 	public getLoadingAnimationSelector(): string {
-		return 'img[alt="gamdom-loading"]';
+		return 'img[src*="loading-animation-v4.svg"]';
 	}
 
 	public async checkboxSelection(

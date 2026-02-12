@@ -42,19 +42,16 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		options?: ChatMessageOptions,
 		isWithVerification = true,
 	): Promise<void> {
-		const messageUserLevel = this.component.map.messageUserAvatar(options);
+		const messageUserLevel =
+			this.component.map.messageActionsTrigger(options);
 		await this.component.map.waitForVisibility({
 			locator: messageUserLevel,
 		});
 
 		await messageUserLevel.click();
 
-		const commonUserOptionsPopup = new CommonUserOptionsPopup(
-			this.component.page,
-		);
-		await commonUserOptionsPopup.assertThat().isDisplayed();
-
-		await commonUserOptionsPopup.clickOption(
+		await this.commonUserOptionsPopup.assertThat().isDisplayed();
+		await this.commonUserOptionsPopup.clickOption(
 			CommonUserPopupOption.TIP_USER,
 		);
 

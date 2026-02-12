@@ -1,18 +1,16 @@
 import { BaseAsserter } from "@base/base-asserter";
 import { ChatFooterPlaceholder } from "@enums/chat-footer-palceholders";
 import { BooleanValueString } from "@enums/playwright/booleanValues";
-import { Attributes } from "@enums/playwright/htmlAttributes";
-import { AttributesValues } from "@enums/playwright/htmlAttributesValues";
+import { Timeout } from "@enums/timeout";
+import { TooltipText } from "@enums/tooltip-text";
+import { VipUserStatus } from "@enums/vip-user-statuses";
 import { logger } from "@logger/logger";
 import { expect } from "@playwright/test";
 import { step } from "decorators/step";
 import { Chat } from "./chat";
 import { ChatMessageOptions } from "./chat-map";
-import { Timeout } from "@enums/timeout";
-import { VipUserStatus } from "@enums/vip-user-statuses";
-import { TooltipText } from "@enums/tooltip-text";
-import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
+import { ToastSubTitle } from "@enums/toast-subtitles";
 
 export class ChatAsserter extends BaseAsserter<Chat> {
 	public constructor(chat: Chat) {
@@ -47,29 +45,10 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 
 	@step("Check chat is displayed")
 	public async chatIsDisplayed(): Promise<void> {
-		await this.chatIsOpenSuccessfully();
 		await this.checkElementsAreVisible([this.gamdomPage.map.chatLocator]);
 		await this.chatMessagesConnectingIsNotDisplayed();
 		await this.chatMessagesJoiningIsNotDisplayed();
 		await this.chatMessagesDisconnectedIsNotDisplayed();
-	}
-
-	@step("Check chat is opened")
-	public async chatIsOpenSuccessfully(): Promise<void> {
-		const chatState =
-			await this.gamdomPage.map.chatOpenedStateContainer.getAttribute(
-				Attributes.DATA_TESTID,
-			);
-		expect(chatState).toContain(AttributesValues.OPEN);
-	}
-
-	@step("Check chat is closed")
-	public async chatIsClosedSuccessfully(): Promise<void> {
-		const chatState =
-			await this.gamdomPage.map.chatOpenedStateContainer.getAttribute(
-				Attributes.DATA_TESTID,
-			);
-		expect(chatState).toContain(AttributesValues.CLOSED);
 	}
 
 	@step("Check placeholder is visible")

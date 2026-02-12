@@ -7,34 +7,30 @@ export class TipUserModalMap extends BaseMap {
 	}
 
 	public get modalLocator(): Locator {
-		return this.page.getByTestId("tipUserModalContent");
-	}
-
-	public get modalContainer(): Locator {
-		return this.page.getByTestId("tipUserDialogModalContainer");
+		return this.page.getByTestId("tip-user-v4-modal-dialog-wrapper");
 	}
 
 	public get titleContainer(): Locator {
-		return this.modalLocator.getByTestId("tipUserContainerTitle");
+		return this.modalLocator.getByTestId("tip-user-v4-modal-title");
 	}
 
 	public get inputContainer(): Locator {
-		return this.modalLocator.getByTestId("tipUserInputContainer");
+		return this.modalLocator.getByTestId(
+			"tip-user-v4-modal-tip-amount-container",
+		);
 	}
 
 	public get tipAmountField(): Locator {
-		return this.inputContainer.locator("input");
-	}
-
-	public get clearAmountButton(): Locator {
-		return this.inputContainer.getByTestId("clearInputButton");
+		return this.inputContainer.getByTestId(
+			"tip-user-v4-modal-tip-amount-input",
+		);
 	}
 
 	public get warningContainer(): Locator {
-		return this.modalLocator.getByTestId("tipUserWarningContainer");
+		return this.modalLocator.getByTestId("tip-user-v4-modal-warning");
 	}
 
 	public get tipButton(): Locator {
-		return this.modalContainer.getByTestId("tipUserDialogButton");
+		return this.modalLocator.getByTestId("tip-user-v4-modal-tip-button");
 	}
 }
