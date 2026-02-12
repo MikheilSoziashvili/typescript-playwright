@@ -21,7 +21,7 @@ const ATOMIC_DIVISOR: Record<Unit, number> = {
 	XRP_DROP: 1e6,
 	DOGE_SHIBE: 1e8,
 	SOL_LAMPORT: 1e9,
-	BNB_JAGER: 1e18,
+	BNB_JAGER: 1e9,
 	COINS: 1,
 };
 
