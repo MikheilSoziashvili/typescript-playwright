@@ -475,12 +475,11 @@ test.describe("Free spins promotion reward", () => {
 				.assertThat()
 				.verifyFreeSpinCardsCount(CasinoGameName.BOOK_OF_ARABIA, 1, 5);
 
-			await regular.pages.rewardsPage
-				.clickRewardCardButtonByIndex(
-					CasinoGameName.BOOK_OF_ARABIA,
-					RewardCardButton.GO_TO_GAME,
-					0,
-				);
+			await regular.pages.rewardsPage.clickRewardCardButtonByIndex(
+				CasinoGameName.BOOK_OF_ARABIA,
+				RewardCardButton.GO_TO_GAME,
+				0,
+			);
 
 			await regular.pages.bookOfArabiaPage
 				.assertThat()

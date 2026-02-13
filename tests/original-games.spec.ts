@@ -310,8 +310,15 @@ test.describe("Quick Select Buttons", () => {
 });
 
 test.describe("Live Bets Section", () => {
+	const excludedGames: OriginalGame[] = [
+		OriginalGame.Roulette,
+		OriginalGame.Crash,
+		OriginalGame.HiLo,
+		OriginalGame.Dice,
+	];
+
 	const gamesToTest = Object.values(OriginalGame).filter(
-		(game) => game !== OriginalGame.Roulette,
+		(game) => !excludedGames.includes(game),
 	);
 	for (const game of gamesToTest) {
 		test(

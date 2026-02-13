@@ -65,16 +65,47 @@ export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 		}
 	}
 
-	@step("Click balance dropdown")
-	public async clickBalanceDropdown(): Promise<void> {
-		await this.map.balanceDropdown.click();
+	@step("Open balance dropdown")
+	public async openBalanceDropdown(): Promise<void> {
+		await this.map.balanceDropdownArrow.click();
+	}
+
+	@step("Close balance dropdown")
+	public async closeBalanceDropdown(): Promise<void> {
+		await this.map.waitForVisibility({
+			locator: this.map.balanceDropdownArrow,
+		});
+
+		await this.map.balanceDropdownArrow
+			// eslint-disable-next-line playwright/no-force-option -- The wallet overlay covers the header in CI and intercepts pointer events; force is required to reliably close the dropdown.
+			.click({ force: true });
+	}
+
+	@step("Open wallet settings")
+	public async openWalletSettings(): Promise<void> {
+		await this.map.walletSettings.click();
+	}
+
+	@step("Click providers dropdown in settings modal")
+	public async clickCurrencyDropdownInWalletSettingsModal(): Promise<void> {
+		await this.map.currencyDropdownInWalletSettingsModal.click();
+	}
+
+	@step("Open wallet settings and select currency")
+	public async openWalletSettingsAndSelectCurrency(
+		currency: string,
+	): Promise<void> {
+		await this.openWalletSettings();
+		await this.clickCurrencyDropdownInWalletSettingsModal();
+		await this.map.selectCurrencyOption(currency).click();
+		await this.map.saveSettingsButton.click();
 	}
 
 	@step("Change currency")
 	public async changeCurrency(currency: string): Promise<void> {
-		await this.clickBalanceDropdown();
-		await this.map.selectCurrencyOption(currency).click();
-		await this.clickBalanceDropdown();
+		await this.openBalanceDropdown();
+		await this.openWalletSettingsAndSelectCurrency(currency);
+		await this.closeBalanceDropdown();
 	}
 
 	@step("Change multiple currencies rapidly")
@@ -82,20 +113,25 @@ export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 		currencies: string[],
 		intervalMs: number,
 	): Promise<void> {
-		await this.clickBalanceDropdown();
+		await this.openBalanceDropdown();
 
 		for (const currency of currencies) {
+			await this.openWalletSettings();
+			await this.clickCurrencyDropdownInWalletSettingsModal();
 			await this.map
 				.selectCurrencyOption(currency)
 				.click({ delay: intervalMs });
+			await this.map.saveSettingsButton.click();
 		}
+
+		await this.closeBalanceDropdown();
 	}
 
 	@step("Change wallet")
 	public async changeWallet(wallet: string): Promise<void> {
-		await this.clickBalanceDropdown();
+		await this.openBalanceDropdown();
 		await this.map.walletOption(wallet).click();
-		await this.clickBalanceDropdown();
+		await this.closeBalanceDropdown();
 	}
 
 	@step("Change wallet and currency")

@@ -22,6 +22,16 @@ export class AuthenticatedHeaderMap extends BaseMap {
 		);
 	}
 
+	public get walletSettings(): Locator {
+		return this.page.getByTestId("wallet-popover-settings-text");
+	}
+
+	public get currencyDropdownInWalletSettingsModal(): Locator {
+		return this.page.getByTestId(
+			"wallet-settings-v4-currency-select-button",
+		);
+	}
+
 	public get walletButton(): Locator {
 		return this.authenticatedHeaderContainer.getByTestId(
 			"nav-wallet-action-btn",
@@ -107,17 +117,17 @@ export class AuthenticatedHeaderMap extends BaseMap {
 	}
 
 	public selectCurrencyOption(currency: string): Locator {
-		return this.page.locator(
-			`input[type='radio'][aria-label='${currency}']`,
+		return this.page.getByTestId(
+			`wallet-settings-v4-currency-select-option-${currency}`,
 		);
 	}
 
-	public get balanceDropdown(): Locator {
-		return this.page.getByTestId("headerBalanceArrowDropdownButton");
+	public get saveSettingsButton(): Locator {
+		return this.page.getByTestId("close-modal-btn");
 	}
 
 	public walletOption(cryptoCurrency: string): Locator {
-		return this.page.locator("div[class*='navbarMain']", {
+		return this.page.locator('[data-testid^="wallet-popover-"][data-testid$="-name"]', {
 			hasText: new RegExp(`^${cryptoCurrency}$`),
 		});
 	}
