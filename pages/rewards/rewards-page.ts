@@ -250,61 +250,30 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 	private async navigateToBronzeEdgeRank(
 		reward: RewardsRoyaltyUpRanks,
 	): Promise<void> {
-		await this.navigateToEdgeRank(
-			reward,
-			RewardsRoyaltyUpRanks.SILVER_1,
-			RewardsRoyaltyUpRanks.DIAMOND_3,
-		);
+		await this.navigateToEdgeRank(reward, RewardsRoyaltyUpRanks.SILVER_1);
 	}
 
 	@step("Navigate to Opal edge rank")
 	private async navigateToOpalEdgeRank(
 		reward: RewardsRoyaltyUpRanks,
 	): Promise<void> {
-		await this.navigateToEdgeRank(
-			reward,
-			RewardsRoyaltyUpRanks.DIAMOND_3,
-			RewardsRoyaltyUpRanks.SILVER_1,
-		);
+		await this.navigateToEdgeRank(reward, RewardsRoyaltyUpRanks.DIAMOND_3);
 	}
 
 	@step("Navigate to edge rank")
 	private async navigateToEdgeRank(
 		reward: RewardsRoyaltyUpRanks,
-		primaryFallback: RewardsRoyaltyUpRanks,
-		secondaryFallback: RewardsRoyaltyUpRanks,
+		fallbackRank: RewardsRoyaltyUpRanks,
 	): Promise<void> {
-		const rewardButton = this.map.royaltyUpRewardsItemButton(reward);
+		logger.info(
+			`Attempting to navigate to ${fallbackRank} to make ${reward} visible`,
+		);
+		await this.navigateToNonEdgeRank(fallbackRank);
 
 		logger.info(
-			`Attempting to navigate to ${primaryFallback} to make ${reward} clickable`,
+			`${reward} should now be visible, navigating to it using slider buttons`,
 		);
-		await this.navigateToNonEdgeRank(primaryFallback);
-
-		const isClickable = await rewardButton.isEnabled();
-		if (isClickable) {
-			logger.info(
-				`${reward} is now clickable after centering ${primaryFallback}`,
-			);
-			return;
-		}
-
-		logger.warn(
-			`${reward} is not clickable after centering ${primaryFallback}, trying ${secondaryFallback}`,
-		);
-		await this.navigateToNonEdgeRank(secondaryFallback);
-
-		const isClickableAfterSecondary = await rewardButton.isEnabled();
-		if (isClickableAfterSecondary) {
-			logger.info(
-				`${reward} is now clickable after centering ${secondaryFallback}`,
-			);
-			return;
-		}
-
-		logger.error(
-			`${reward} is still not clickable after trying both ${primaryFallback} and ${secondaryFallback}`,
-		);
+		await this.navigateToNonEdgeRank(reward);
 	}
 
 	@step("Navigate to non-edge rank")
@@ -314,6 +283,8 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 		const maxAttempts = 30;
 		const rankOrder = CLAIMABLE_ROYALTY_UP_RANKS;
 		const targetRankIndex = rankOrder.indexOf(reward);
+		let previousActiveRankIndex = -1;
+		let stuckCount = 0;
 
 		for (let attempts = 0; attempts < maxAttempts; attempts++) {
 			logger.info(
@@ -327,6 +298,32 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 
 			const currentActiveRankIndex =
 				await this.findCurrentActiveRankIndex(rankOrder);
+
+			if (currentActiveRankIndex === previousActiveRankIndex) {
+				stuckCount++;
+				if (stuckCount >= 3) {
+					logger.warn(
+						`Slider stuck at ${rankOrder[currentActiveRankIndex]} for 3 attempts, checking if ${reward} is visible and clickable`,
+					);
+					const rewardButton =
+						this.map.royaltyUpRewardsItemButton(reward);
+					const isVisible = (await rewardButton.count()) > 0;
+					if (isVisible && (await rewardButton.isEnabled())) {
+						logger.info(
+							`${reward} is visible and clickable even though slider is stuck, stopping navigation`,
+						);
+						return;
+					}
+					logger.warn(
+						`${reward} is not visible or not clickable, stopping navigation`,
+					);
+					break;
+				}
+			} else {
+				stuckCount = 0;
+			}
+			previousActiveRankIndex = currentActiveRankIndex;
+
 			const direction = this.determineSliderNavigationDirection(
 				targetRankIndex,
 				currentActiveRankIndex,
