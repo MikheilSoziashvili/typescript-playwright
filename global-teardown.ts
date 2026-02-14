@@ -7,6 +7,7 @@ import { ALL_USER_TYPES_DISABLED } from "@constants/feature-configurations";
 import * as Configuration from "configuration";
 import { expect } from "@playwright/test";
 import { HttpStatus } from "@enums/http-status";
+import { writeFileSync } from "fs";
 
 async function globalTeardown(): Promise<void> {
 	if (Configuration.enableNewDesignV4Feature) {
@@ -30,6 +31,11 @@ async function globalTeardown(): Promise<void> {
 	}
 
 	await clearDirectoryContent(AUTH_PATH, ["auth.json"]);
+
+	if (process.env.RP_LAUNCH_UUID) {
+		writeFileSync(".rp-launch-uuid", process.env.RP_LAUNCH_UUID);
+		process.env.RP_LAUNCH_ID = process.env.RP_LAUNCH_UUID;
+	}
 }
 
 export default globalTeardown;

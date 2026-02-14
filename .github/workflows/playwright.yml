@@ -81,6 +81,14 @@ on:
                 type: boolean
                 required: false
                 default: false
+            merge_rp_launches:
+                description: "Merge ReportPortal Launches (only applies if ReportPortal is enabled)"
+                type: choice
+                required: false
+                default: "yes"
+                options:
+                    - "yes"
+                    - "no"
 
     schedule:
         - cron: "0 3 * * *"
@@ -350,6 +358,7 @@ jobs:
             RP_PROJECT: ${{ vars.RP_PROJECT || 'superadmin_personal' }}
             RP_LAUNCH_NAME: ${{ github.event_name == 'schedule' && 'Nightly E2E Tests' || format('E2E Tests - {0}', github.ref_name) }}
             RP_MODE: DEFAULT
+            RP_MERGE_LAUNCHES: ${{ (github.event_name == 'schedule' || inputs.enable_reportportal == true) && inputs.merge_rp_launches != 'no' }}
             GITHUB_REF_NAME: ${{ github.ref_name }}
             BRANCH_NAME: ${{ github.ref_name }}
 
@@ -460,12 +469,12 @@ jobs:
             - name: Capture ReportPortal Launch ID
               if: always()
               run: |
-                  # ReportPortal agent sets RP_LAUNCH_UUID environment variable
-                  if [ -n "$RP_LAUNCH_UUID" ]; then
-                    echo "Captured ReportPortal Launch ID: $RP_LAUNCH_UUID"
-                    echo "CAPTURED_RP_LAUNCH_ID=$RP_LAUNCH_UUID" >> $GITHUB_ENV
+                  if [ -f .rp-launch-uuid ]; then
+                    RP_UUID=$(cat .rp-launch-uuid)
+                    echo "Captured ReportPortal Launch ID: $RP_UUID"
+                    echo "CAPTURED_RP_LAUNCH_ID=$RP_UUID" >> $GITHUB_ENV
                   else
-                    echo "No ReportPortal Launch UUID found."
+                    echo "No ReportPortal Launch UUID file found."
                     echo "This is expected if ReportPortal is disabled for this run!"
                   fi
 
@@ -492,16 +501,17 @@ jobs:
             - name: Sequential Tests (Global Settings)
               if: always()
               env:
-                  RP_LAUNCH_ID: ${{ env.CAPTURED_RP_LAUNCH_ID }}
+                  RP_LAUNCH_ID: ${{ env.RP_MERGE_LAUNCHES == 'true' && env.CAPTURED_RP_LAUNCH_ID || '' }}
               run: |
                   if [ ${{ github.event_name }} == 'schedule' ] || [ "${{ inputs.run_sequential_tests }}" == "true" ]; then
                       echo "Running sequential tests that modify global platform settings..."
                       
                       if [ -n "$RP_LAUNCH_ID" ]; then
                         echo "Reusing ReportPortal Launch ID: $RP_LAUNCH_ID"
-                        echo "Sequential tests will be added to the same ReportPortal launch."
+                        echo "Sequential tests will be merged into the same ReportPortal launch."
                       else
-                        echo "No ReportPortal Launch ID available (ReportPortal may be disabled)."
+                        echo "ReportPortal launch merging is disabled or no Launch ID available."
+                        echo "Sequential tests will create a separate launch (if RP is enabled)."
                       fi
 
                       V4_OPTION=""
@@ -554,22 +564,22 @@ jobs:
             - name: Extract final ReportPortal Launch ID and URL
               if: always()
               run: |
-                  # Use the captured ID from first run
                   FINAL_LAUNCH_ID="${{ env.CAPTURED_RP_LAUNCH_ID }}"
 
                   if [ -n "$FINAL_LAUNCH_ID" ]; then
-                    echo "Final ReportPortal Launch ID (combined): $FINAL_LAUNCH_ID"
+                    echo "Final ReportPortal Launch ID: $FINAL_LAUNCH_ID"
                     echo "RP_LAUNCH_ID=$FINAL_LAUNCH_ID" >> $GITHUB_ENV
                     
-                    # Construct ReportPortal URL
+                    if [ "${{ env.RP_MERGE_LAUNCHES }}" == "true" ]; then
+                      echo "Launches were merged into a single ReportPortal launch."
+                    else
+                      echo "Launch merging was disabled. Sequential tests (if run) created a separate launch."
+                    fi
+
                     RP_BASE_URL="${RP_ENDPOINT%/api/v2}"
                     RP_LAUNCH_URL="$RP_BASE_URL/ui/#$RP_PROJECT/launches/all/$FINAL_LAUNCH_ID"
                     echo "RP_LAUNCH_URL=$RP_LAUNCH_URL" >> $GITHUB_ENV
-                    echo "Combined ReportPortal Launch URL: $RP_LAUNCH_URL"
-                    echo ""
-                    echo "This launch contains results from:"
-                    echo "  - Main execution (cron or manual)"
-                    echo "  - Sequential tests (if enabled)"
+                    echo "ReportPortal Launch URL: $RP_LAUNCH_URL"
                   else
                     echo "No ReportPortal Launch UUID found."
                     echo "This is expected if ReportPortal is disabled for this run!"

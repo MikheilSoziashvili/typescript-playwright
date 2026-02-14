@@ -156,3 +156,6 @@ playwright-report.zip
 *.key
 fireblocks_secret*.key
 /secrets/
+
+# ReportPortal
+.rp-launch-uuid

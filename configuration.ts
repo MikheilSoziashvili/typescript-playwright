@@ -183,8 +183,7 @@ export const branchName =
 	process.env.GITHUB_REF_NAME || process.env.BRANCH_NAME || "local";
 
 export const reportPortal = {
-	// TODO: to be changed to `process.env.RP_ENABLED === "true"`, when the RP is deployed
-	enabled: false,
+	enabled: process.env.RP_ENABLED === "true",
 	apiKey: asString(process.env.RP_API_KEY),
 	endpoint: asString(process.env.RP_ENDPOINT),
 	project: asString(process.env.RP_PROJECT),

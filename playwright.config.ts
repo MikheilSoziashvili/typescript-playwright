@@ -94,13 +94,11 @@ const rpConfig = {
 
 	// HTTP client configuration (optional)
 	restClientConfig: {
-		// Request timeout in milliseconds
-		timeout: 120000,
+		timeout: 10000,
 
-		// Retry configuration for failed requests
 		retry: {
-			retries: 3,
-			retryDelay: () => 1000,
+			retries: 1,
+			retryDelay: () => 300,
 		},
 	},
 };
