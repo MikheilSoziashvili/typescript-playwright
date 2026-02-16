@@ -352,7 +352,7 @@ jobs:
             FIREBLOCKS_USDC_SOL_ASSET_ID: ${{ vars.FIREBLOCKS_USDC_SOL_ASSET_ID }}
             DOGE_TESTNET_ADDRESS: ${{ vars.DOGE_TESTNET_ADDRESS }}
             DOGE_TESTNET_PRIVATE_KEY: ${{ secrets.DOGE_TESTNET_PRIVATE_KEY}}
-            RP_ENABLED: ${{ github.event_name == 'schedule' || inputs.enable_reportportal == true }}
+            RP_ENABLED: ${{ (github.event_name == 'schedule' && vars.RP_ENABLED_NIGHTLY != 'false') || inputs.enable_reportportal == true }}
             RP_API_KEY: ${{ secrets.RP_API_KEY }}
             RP_ENDPOINT: ${{ vars.RP_ENDPOINT }}
             RP_PROJECT: ${{ vars.RP_PROJECT || 'superadmin_personal' }}
