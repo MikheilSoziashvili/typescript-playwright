@@ -163,4 +163,9 @@ export const predefined = {
 		amountToDepositLarger: "0.4",
 		withdrawalAddress: "0xE8047993dfddd6579f56206d03c444add030e800",
 	},
+	usd1EthAmountToDeposit: {
+		amountToDeposit: "0.1",
+		amountToDepositLarger: "0.3",
+		withdrawalAddress: "0xE8047993dfddd6579f56206d03c444add030e800",
+	},
 };

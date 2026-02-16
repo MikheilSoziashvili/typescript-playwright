@@ -31,4 +31,5 @@ export enum CryptoTicker {
 	USDT_BSC = "USDT_BSC",
 	USDC_BSC = "USDC_BSC",
 	BNB = "BNB",
+	USD1_ETH = "USD1_ETH",
 }
