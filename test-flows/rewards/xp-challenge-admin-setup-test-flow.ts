@@ -47,7 +47,7 @@ export class XpChallengeAdminSetupFlow extends BaseTestFlow {
 			.assertThat()
 			.rewardVisibleInSection(
 				RewardStatus.PENDING,
-				CustomRewardType.XP_CHALLENGE,
+				CustomRewardType.XP_CHALLENGE_LABEL,
 				rewardAmount.toString(),
 			);
 	}

@@ -417,7 +417,7 @@ test.describe(
 					.assertThat()
 					.rewardVisibleInSection(
 						RewardStatus.PENDING,
-						CustomRewardType.XP_CHALLENGE,
+						CustomRewardType.XP_CHALLENGE_LABEL,
 						amount,
 					);
 
@@ -434,7 +434,7 @@ test.describe(
 					.assertThat()
 					.rewardStatusIs(
 						RewardsSource.REWARDS,
-						CustomRewardType.XP_CHALLENGE_USER,
+						CustomRewardType.XP_CHALLENGE_LABEL,
 						amount,
 						RewardStatus.PENDING,
 					);
@@ -446,13 +446,13 @@ test.describe(
 				await rewardsPage
 					.assertThat()
 					.rewardIsVisibleAndCanBeActivated(
-						CustomRewardType.XP_CHALLENGE_USER,
+						CustomRewardType.XP_CHALLENGE_LABEL,
 						RewardButton.ACTIVATE,
 					);
 
 				// Activate the reward
 				await rewardsPage.clickOnRewardButton(
-					CustomRewardType.XP_CHALLENGE_USER,
+					CustomRewardType.XP_CHALLENGE_LABEL,
 					RewardButton.ACTIVATE,
 				);
 
@@ -460,7 +460,7 @@ test.describe(
 				await rewardsPage
 					.assertThat()
 					.rewardCanBeClaimed(
-						CustomRewardType.XP_CHALLENGE_USER,
+						CustomRewardType.XP_CHALLENGE_LABEL,
 						RewardButton.CLAIM,
 						amount,
 					);
@@ -472,14 +472,14 @@ test.describe(
 					.assertThat()
 					.rewardStatusIs(
 						RewardsSource.REWARDS,
-						CustomRewardType.XP_CHALLENGE_USER,
+						CustomRewardType.XP_CHALLENGE_LABEL,
 						amount,
 						RewardStatus.ACTIVE,
 					);
 
 				// Claim the reward
 				await rewardsPage.clickOnRewardButton(
-					CustomRewardType.XP_CHALLENGE_USER,
+					CustomRewardType.XP_CHALLENGE_LABEL,
 					RewardButton.CLAIM,
 				);
 
@@ -490,7 +490,7 @@ test.describe(
 					.assertThat()
 					.rewardStatusIs(
 						RewardsSource.REWARDS,
-						CustomRewardType.XP_CHALLENGE_USER,
+						CustomRewardType.XP_CHALLENGE_LABEL,
 						amount,
 						RewardStatus.CLAIMED,
 					);
@@ -532,7 +532,7 @@ test.describe(
 					.assertThat()
 					.rewardVisibleInSection(
 						RewardStatus.PENDING,
-						CustomRewardType.XP_CHALLENGE,
+						CustomRewardType.XP_CHALLENGE_LABEL,
 						amount,
 					);
 
@@ -541,7 +541,7 @@ test.describe(
 					.steps()
 					.clickRevokeRewardButton(
 						RewardStatus.PENDING,
-						CustomRewardType.XP_CHALLENGE,
+						CustomRewardType.XP_CHALLENGE_LABEL,
 					);
 
 				await userInfoAdminPage.clickUserInfoTab(
@@ -557,7 +557,7 @@ test.describe(
 					.assertThat()
 					.rewardStatusIs(
 						RewardsSource.REWARDS,
-						CustomRewardType.XP_CHALLENGE_USER,
+						CustomRewardType.XP_CHALLENGE_LABEL,
 						amount,
 						RewardStatus.CANCELED,
 					);
@@ -609,7 +609,7 @@ test.describe(
 					.assertThat()
 					.rewardVisibleInSection(
 						RewardStatus.ACTIVE,
-						CustomRewardType.KYC_VERIFICATION,
+						CustomRewardType.KYC_VERIFICATION_LABEL,
 						amount,
 					);
 
@@ -626,7 +626,7 @@ test.describe(
 					.assertThat()
 					.rewardStatusIs(
 						RewardsSource.REWARDS,
-						CustomRewardType.KYC_VERIFICATION_USER,
+						CustomRewardType.KYC_VERIFICATION_LABEL,
 						amount,
 						RewardStatus.ACTIVE,
 					);
@@ -638,13 +638,13 @@ test.describe(
 				await rewardsPage
 					.assertThat()
 					.rewardIsVisibleAndCanBeActivated(
-						CustomRewardType.KYC_VERIFICATION_USER,
+						CustomRewardType.KYC_VERIFICATION_LABEL,
 						amount,
 					);
 
 				// Activate the reward
 				await rewardsPage.clickOnRewardButton(
-					CustomRewardType.KYC_VERIFICATION_USER,
+					CustomRewardType.KYC_VERIFICATION_LABEL,
 					amount,
 				);
 
@@ -667,14 +667,14 @@ test.describe(
 				await rewardsPage
 					.assertThat()
 					.rewardCanBeClaimed(
-						CustomRewardType.KYC_VERIFICATION_USER,
+						CustomRewardType.KYC_VERIFICATION_LABEL,
 						RewardButton.CLAIM,
 						amount,
 					);
 
 				// Claim the reward
 				await rewardsPage.clickOnRewardButton(
-					CustomRewardType.KYC_VERIFICATION_USER,
+					CustomRewardType.KYC_VERIFICATION_LABEL,
 					RewardButton.CLAIM,
 				);
 
@@ -685,7 +685,7 @@ test.describe(
 					.assertThat()
 					.rewardStatusIs(
 						RewardsSource.REWARDS,
-						CustomRewardType.KYC_VERIFICATION_USER,
+						CustomRewardType.KYC_VERIFICATION_LABEL,
 						amount,
 						RewardStatus.CLAIMED,
 					);
@@ -727,7 +727,7 @@ test.describe(
 					.assertThat()
 					.rewardVisibleInSection(
 						RewardStatus.ACTIVE,
-						CustomRewardType.KYC_VERIFICATION,
+						CustomRewardType.KYC_VERIFICATION_LABEL,
 						amount,
 					);
 
@@ -736,7 +736,7 @@ test.describe(
 					.steps()
 					.clickRevokeRewardButton(
 						RewardStatus.ACTIVE,
-						CustomRewardType.KYC_VERIFICATION,
+						CustomRewardType.KYC_VERIFICATION_LABEL,
 					);
 
 				await userInfoAdminPage.clickUserInfoTab(
@@ -752,7 +752,7 @@ test.describe(
 					.assertThat()
 					.rewardStatusIs(
 						RewardsSource.REWARDS,
-						CustomRewardType.KYC_VERIFICATION_USER,
+						CustomRewardType.KYC_VERIFICATION_LABEL,
 						amount,
 						RewardStatus.CANCELED,
 					);
@@ -1155,13 +1155,13 @@ test.describe(
 					.steps()
 					.clickRevokeRewardButton(
 						RewardStatus.PENDING,
-						CustomRewardType.INSTANT_RAKEBACK_LABEL,
+						CustomRewardType.INSTANT_RAKEBACK,
 					);
 				await superAdminSession.pages.userInfoRewardsAdminPage
 					.steps()
 					.clickRevokeRewardButton(
 						RewardStatus.PENDING,
-						CustomRewardType.ROYALTY_UP_LABEL,
+						CustomRewardType.ROYALTY_UP,
 					);
 
 				await superAdminSession.pages.userInfoAdminPage.clickUserInfoTab(

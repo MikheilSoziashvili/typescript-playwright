@@ -21,12 +21,12 @@ export class XpChallengeActivationFlow extends BaseTestFlow {
 		await user.pages.rewardsPage
 			.assertThat()
 			.rewardIsVisibleAndCanBeActivated(
-				CustomRewardType.XP_CHALLENGE_USER,
+				CustomRewardType.XP_CHALLENGE_LABEL,
 				RewardButton.ACTIVATE,
 			);
 
 		await user.pages.rewardsPage.clickOnRewardButton(
-			CustomRewardType.XP_CHALLENGE_USER,
+			CustomRewardType.XP_CHALLENGE_LABEL,
 			RewardButton.ACTIVATE,
 		);
 

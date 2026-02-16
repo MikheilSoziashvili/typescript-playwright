@@ -32,7 +32,7 @@ export class XpChallengeCompletionFlow extends BaseTestFlow {
 		);
 
 		await user.pages.rewardsPage.clickOnRewardButton(
-			CustomRewardType.XP_CHALLENGE_USER,
+			CustomRewardType.XP_CHALLENGE_LABEL,
 			RewardButton.CLAIM,
 		);
 
