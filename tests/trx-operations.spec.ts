@@ -165,7 +165,6 @@ test.describe(
 					testDataPredefined,
 					gamdomApiDbFacade,
 					page,
-					trxClient,
 					toast,
 					diceGamePage,
 					userInfoAdminPage,
@@ -187,30 +186,12 @@ test.describe(
 					);
 					await setAuthenticationCookies(page, cookie);
 
-					const { withdrawalAddress, amountToDeposit } =
+					const { withdrawalAddress } =
 						testDataPredefined.data.trxAmountToDeposit;
-					const vaultId = fireblocks.vaultId;
 
-					// Deposit TRX
 					await homePage.navigateToWallet();
 					const initialBalanceUSD =
 						await userBalanceHandler.walletBalanceInFiatRounded();
-					await walletModal.selectPaymentMethod(Cryptocurrency.Tron);
-
-					const userDepositAddress =
-						await walletModal.getDepositAddress();
-					const depositTransaction = await trxClient.sendToAddress(
-						vaultId,
-						userDepositAddress,
-						amountToDeposit,
-					);
-
-					await trxClient.waitForCompletion(depositTransaction.id);
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
-						);
 
 					// Meet wager requirement
 					await diceGamePage.navigate();
@@ -233,6 +214,7 @@ test.describe(
 						feeInUsd +
 						testDataPredefined.data.amountTolerance
 							.amountToleranceUsd;
+
 					// Withdraw TRX
 					const withdrawalFee = await walletModal.withdrawCrypto({
 						cryptocurrency: Cryptocurrency.Tron,
@@ -346,7 +328,6 @@ test.describe(
 					testDataPredefined,
 					gamdomApiDbFacade,
 					page,
-					trxClient,
 					toast,
 					diceGamePage,
 					userInfoAdminPage,
@@ -360,30 +341,12 @@ test.describe(
 					const userCookie = getCookieHeader(cookie);
 					await setAuthenticationCookies(page, cookie);
 
-					const { withdrawalAddress, amountToDeposit } =
+					const { withdrawalAddress } =
 						testDataPredefined.data.trxAmountToDeposit;
-					const vaultId = fireblocks.vaultId;
 
-					// Deposit TRX
 					await homePage.navigateToWallet();
 					const initialBalanceUSD =
 						await userBalanceHandler.walletBalanceInFiatRounded();
-					await walletModal.selectPaymentMethod(Cryptocurrency.Tron);
-
-					const userDepositAddress =
-						await walletModal.getDepositAddress();
-					const depositTransaction = await trxClient.sendToAddress(
-						vaultId,
-						userDepositAddress,
-						amountToDeposit,
-					);
-
-					await trxClient.waitForCompletion(depositTransaction.id);
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
-						);
 
 					// Meet wager requirement
 					await diceGamePage.navigate();

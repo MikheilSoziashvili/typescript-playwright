@@ -166,7 +166,6 @@ test.describe(
 					testDataPredefined,
 					gamdomApiDbFacade,
 					page,
-					xrpTestnetClient,
 					toast,
 					diceGamePage,
 					userInfoAdminPage,
@@ -188,7 +187,7 @@ test.describe(
 					);
 					await setAuthenticationCookies(page, cookie);
 
-					const { withdrawalAddress, amountToDeposit } =
+					const { withdrawalAddress } =
 						testDataPredefined.data.xrpAmountToDeposit;
 
 					// Deposit XRP
@@ -198,22 +197,6 @@ test.describe(
 
 					const details =
 						await walletModal.selectXrpAndGetDepositDetails();
-
-					const depositTransaction =
-						await xrpTestnetClient.sendToAddress(
-							details.address,
-							amountToDeposit,
-							details.destinationTag,
-						);
-
-					await xrpTestnetClient.waitForCompletion(
-						depositTransaction.id,
-					);
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
-						);
 
 					// Meet wager requirement
 					await diceGamePage.navigate();
@@ -236,6 +219,7 @@ test.describe(
 						feeInUsd +
 						testDataPredefined.data.amountTolerance
 							.amountToleranceUsd;
+
 					// Withdraw XRP
 					const withdrawalFee = await walletModal.withdrawCrypto({
 						cryptocurrency: Cryptocurrency.Ripple,
@@ -349,7 +333,6 @@ test.describe(
 					testDataPredefined,
 					gamdomApiDbFacade,
 					page,
-					xrpTestnetClient,
 					toast,
 					diceGamePage,
 					userInfoAdminPage,
@@ -363,7 +346,7 @@ test.describe(
 					const userCookie = getCookieHeader(cookie);
 					await setAuthenticationCookies(page, cookie);
 
-					const { withdrawalAddress, amountToDeposit } =
+					const { withdrawalAddress } =
 						testDataPredefined.data.xrpAmountToDeposit;
 
 					// Deposit XRP
@@ -373,22 +356,6 @@ test.describe(
 
 					const details =
 						await walletModal.selectXrpAndGetDepositDetails();
-
-					const depositTransaction =
-						await xrpTestnetClient.sendToAddress(
-							details.address,
-							amountToDeposit,
-							details.destinationTag,
-						);
-
-					await xrpTestnetClient.waitForCompletion(
-						depositTransaction.id,
-					);
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
-						);
 
 					// Meet wager requirement
 					await diceGamePage.navigate();

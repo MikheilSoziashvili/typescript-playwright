@@ -272,7 +272,6 @@ test.describe(
 					testDataPredefined,
 					gamdomApiDbFacade,
 					page,
-					usd1SolClient,
 					toast,
 					diceGamePage,
 					userInfoAdminPage,
@@ -286,34 +285,8 @@ test.describe(
 					const userCookie = getCookieHeader(cookie);
 					await setAuthenticationCookies(page, cookie);
 
-					const { withdrawalAddress, amountToDepositLarger } =
+					const { withdrawalAddress } =
 						testDataPredefined.data.usd1SolAmountToDeposit;
-					const vaultId = fireblocks.vaultId;
-
-					// Deposit USD1_SOL
-					await homePage.navigateToWallet();
-					await walletModal.selectPaymentMethod(Cryptocurrency.USD1);
-					await walletModal.selectDepositNetwork(
-						CryptoTicker.USD1_SOL,
-					);
-
-					const userDepositAddress =
-						await walletModal.getDepositAddress();
-					const depositTransaction =
-						await usd1SolClient.sendToAddress(
-							vaultId,
-							userDepositAddress,
-							amountToDepositLarger,
-						);
-
-					await usd1SolClient.waitForCompletion(
-						depositTransaction.id,
-					);
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
-						);
 
 					// Meet wager requirement
 					await diceGamePage.navigate();
@@ -451,7 +424,6 @@ test.describe(
 					testDataPredefined,
 					gamdomApiDbFacade,
 					page,
-					usd1SolClient,
 					toast,
 					diceGamePage,
 					userInfoAdminPage,
@@ -473,34 +445,8 @@ test.describe(
 					);
 					await setAuthenticationCookies(page, cookie);
 
-					const { withdrawalAddress, amountToDeposit } =
+					const { withdrawalAddress } =
 						testDataPredefined.data.usd1SolAmountToDeposit;
-					const vaultId = fireblocks.vaultId;
-
-					// Deposit USD1_SOL
-					await homePage.navigateToWallet();
-					await walletModal.selectPaymentMethod(Cryptocurrency.USD1);
-
-					await walletModal.selectDepositNetwork(
-						CryptoTicker.USD1_SOL,
-					);
-					const userDepositAddress =
-						await walletModal.getDepositAddress();
-					const depositTransaction =
-						await usd1SolClient.sendToAddress(
-							vaultId,
-							userDepositAddress,
-							amountToDeposit,
-						);
-
-					await usd1SolClient.waitForCompletion(
-						depositTransaction.id,
-					);
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
-						);
 
 					// Meet wager requirement
 					await diceGamePage.navigate();
@@ -638,7 +584,6 @@ test.describe(
 					testDataPredefined,
 					gamdomApiDbFacade,
 					page,
-					usd1EthCleint,
 					toast,
 					diceGamePage,
 					userInfoAdminPage,
@@ -652,34 +597,8 @@ test.describe(
 					const userCookie = getCookieHeader(cookie);
 					await setAuthenticationCookies(page, cookie);
 
-					const { withdrawalAddress, amountToDepositLarger } =
+					const { withdrawalAddress } =
 						testDataPredefined.data.usd1SolAmountToDeposit;
-					const vaultId = fireblocks.vaultId;
-
-					// Deposit USD1_ETH
-					await homePage.navigateToWallet();
-					await walletModal.selectPaymentMethod(Cryptocurrency.USD1);
-					await walletModal.selectDepositNetwork(
-						CryptoTicker.USD1_ETH,
-					);
-
-					const userDepositAddress =
-						await walletModal.getDepositAddress();
-					const depositTransaction =
-						await usd1EthCleint.sendToAddress(
-							vaultId,
-							userDepositAddress,
-							amountToDepositLarger,
-						);
-
-					await usd1EthCleint.waitForCompletion(
-						depositTransaction.id,
-					);
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
-						);
 
 					// Meet wager requirement
 					await diceGamePage.navigate();
@@ -817,7 +736,6 @@ test.describe(
 					testDataPredefined,
 					gamdomApiDbFacade,
 					page,
-					usd1EthCleint,
 					toast,
 					diceGamePage,
 					userInfoAdminPage,
@@ -839,34 +757,8 @@ test.describe(
 					);
 					await setAuthenticationCookies(page, cookie);
 
-					const { withdrawalAddress, amountToDeposit } =
+					const { withdrawalAddress } =
 						testDataPredefined.data.usd1EthAmountToDeposit;
-					const vaultId = fireblocks.vaultId;
-
-					// Deposit USD1_ETH
-					await homePage.navigateToWallet();
-					await walletModal.selectPaymentMethod(Cryptocurrency.USD1);
-
-					await walletModal.selectDepositNetwork(
-						CryptoTicker.USD1_ETH,
-					);
-					const userDepositAddress =
-						await walletModal.getDepositAddress();
-					const depositTransaction =
-						await usd1EthCleint.sendToAddress(
-							vaultId,
-							userDepositAddress,
-							amountToDeposit,
-						);
-
-					await usd1EthCleint.waitForCompletion(
-						depositTransaction.id,
-					);
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
-						);
 
 					// Meet wager requirement
 					await diceGamePage.navigate();

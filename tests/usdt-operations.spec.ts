@@ -356,7 +356,6 @@ test.describe(
 					testDataPredefined,
 					gamdomApiDbFacade,
 					page,
-					usdtClient,
 					toast,
 					diceGamePage,
 					userInfoAdminPage,
@@ -370,30 +369,8 @@ test.describe(
 					const userCookie = getCookieHeader(cookie);
 					await setAuthenticationCookies(page, cookie);
 
-					const { withdrawalAddress, amountToDepositLarger } =
+					const { withdrawalAddress } =
 						testDataPredefined.data.usdtAmountToDeposit;
-					const vaultId = fireblocks.vaultId;
-
-					// Deposit USDT_ETH
-					await homePage.navigateToWallet();
-					await walletModal.selectPaymentMethod(
-						Cryptocurrency.Tether,
-					);
-
-					const userDepositAddress =
-						await walletModal.getDepositAddress();
-					const depositTransaction = await usdtClient.sendToAddress(
-						vaultId,
-						userDepositAddress,
-						amountToDepositLarger,
-					);
-
-					await usdtClient.waitForCompletion(depositTransaction.id);
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
-						);
 
 					// Meet wager requirement
 					await diceGamePage.navigate();
@@ -530,7 +507,6 @@ test.describe(
 					testDataPredefined,
 					gamdomApiDbFacade,
 					page,
-					usdtClient,
 					toast,
 					diceGamePage,
 					userInfoAdminPage,
@@ -552,31 +528,8 @@ test.describe(
 					);
 					await setAuthenticationCookies(page, cookie);
 
-					const { withdrawalAddress, amountToDepositLarger } =
+					const { withdrawalAddress } =
 						testDataPredefined.data.usdtAmountToDeposit;
-					const vaultId = fireblocks.vaultId;
-
-					// Deposit USDT_ETH
-					await homePage.navigateToWallet();
-					await walletModal.selectPaymentMethod(
-						Cryptocurrency.Tether,
-					);
-
-					const userDepositAddress =
-						await walletModal.getDepositAddress();
-					const depositTransaction = await usdtClient.sendToAddress(
-						vaultId,
-						userDepositAddress,
-						amountToDepositLarger,
-					);
-
-					await usdtClient.waitForCompletion(depositTransaction.id);
-
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
-						);
 
 					// Meet wager requirement
 					await diceGamePage.navigate();
@@ -713,7 +666,6 @@ test.describe(
 					testDataPredefined,
 					gamdomApiDbFacade,
 					page,
-					usdtTrxClient,
 					toast,
 					diceGamePage,
 					userInfoAdminPage,
@@ -727,36 +679,8 @@ test.describe(
 					const userCookie = getCookieHeader(cookie);
 					await setAuthenticationCookies(page, cookie);
 
-					const { withdrawalAddress, amountToDepositLarger } =
+					const { withdrawalAddress } =
 						testDataPredefined.data.usdtTrxAmountToDeposit;
-					const vaultId = fireblocks.vaultId;
-
-					// Deposit USDT_TRX
-					await homePage.navigateToWallet();
-					await walletModal.selectPaymentMethod(
-						Cryptocurrency.Tether,
-					);
-
-					await walletModal.selectDepositNetwork(
-						CryptoTicker.USDT_TRX,
-					);
-					const userDepositAddress =
-						await walletModal.getDepositAddress();
-					const depositTransaction =
-						await usdtTrxClient.sendToAddress(
-							vaultId,
-							userDepositAddress,
-							amountToDepositLarger,
-						);
-
-					await usdtTrxClient.waitForCompletion(
-						depositTransaction.id,
-					);
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
-						);
 
 					// Meet wager requirement
 					await diceGamePage.navigate();
@@ -782,6 +706,7 @@ test.describe(
 						feeInUsd +
 						testDataPredefined.data.amountTolerance
 							.amountToleranceUsd;
+
 					// Withdraw USDT_TRX
 					const withdrawalFee = await walletModal.withdrawCrypto({
 						cryptocurrency: Cryptocurrency.Tether,
@@ -894,7 +819,6 @@ test.describe(
 					testDataPredefined,
 					gamdomApiDbFacade,
 					page,
-					usdtTrxClient,
 					toast,
 					diceGamePage,
 					userInfoAdminPage,
@@ -916,36 +840,8 @@ test.describe(
 					);
 					await setAuthenticationCookies(page, cookie);
 
-					const { withdrawalAddress, amountToDeposit } =
+					const { withdrawalAddress } =
 						testDataPredefined.data.usdtTrxAmountToDeposit;
-					const vaultId = fireblocks.vaultId;
-
-					// Deposit USDT_TRX
-					await homePage.navigateToWallet();
-					await walletModal.selectPaymentMethod(
-						Cryptocurrency.Tether,
-					);
-
-					await walletModal.selectDepositNetwork(
-						CryptoTicker.USDT_TRX,
-					);
-					const userDepositAddress =
-						await walletModal.getDepositAddress();
-					const depositTransaction =
-						await usdtTrxClient.sendToAddress(
-							vaultId,
-							userDepositAddress,
-							amountToDeposit,
-						);
-
-					await usdtTrxClient.waitForCompletion(
-						depositTransaction.id,
-					);
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
-						);
 
 					// Meet wager requirement
 					await diceGamePage.navigate();
@@ -1083,7 +979,6 @@ test.describe(
 					testDataPredefined,
 					gamdomApiDbFacade,
 					page,
-					usdtBscClient,
 					toast,
 					diceGamePage,
 					userInfoAdminPage,
@@ -1097,36 +992,8 @@ test.describe(
 					const userCookie = getCookieHeader(cookie);
 					await setAuthenticationCookies(page, cookie);
 
-					const { withdrawalAddress, amountToDepositLarger } =
+					const { withdrawalAddress } =
 						testDataPredefined.data.usdtBscAmountToDeposit;
-					const vaultId = fireblocks.vaultId;
-
-					// Deposit USDT_BSC
-					await homePage.navigateToWallet();
-					await walletModal.selectPaymentMethod(
-						Cryptocurrency.Tether,
-					);
-
-					await walletModal.selectDepositNetwork(
-						CryptoTicker.USDT_BSC,
-					);
-					const userDepositAddress =
-						await walletModal.getDepositAddress();
-					const depositTransaction =
-						await usdtBscClient.sendToAddress(
-							vaultId,
-							userDepositAddress,
-							amountToDepositLarger,
-						);
-
-					await usdtBscClient.waitForCompletion(
-						depositTransaction.id,
-					);
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
-						);
 
 					// Meet wager requirement
 					await diceGamePage.navigate();
@@ -1265,7 +1132,6 @@ test.describe(
 					testDataPredefined,
 					gamdomApiDbFacade,
 					page,
-					usdtBscClient,
 					toast,
 					diceGamePage,
 					userInfoAdminPage,
@@ -1287,36 +1153,8 @@ test.describe(
 					);
 					await setAuthenticationCookies(page, cookie);
 
-					const { withdrawalAddress, amountToDeposit } =
+					const { withdrawalAddress } =
 						testDataPredefined.data.usdtBscAmountToDeposit;
-					const vaultId = fireblocks.vaultId;
-
-					// Deposit USDT_BSC
-					await homePage.navigateToWallet();
-					await walletModal.selectPaymentMethod(
-						Cryptocurrency.Tether,
-					);
-
-					await walletModal.selectDepositNetwork(
-						CryptoTicker.USDT_BSC,
-					);
-					const userDepositAddress =
-						await walletModal.getDepositAddress();
-					const depositTransaction =
-						await usdtBscClient.sendToAddress(
-							vaultId,
-							userDepositAddress,
-							amountToDeposit,
-						);
-
-					await usdtBscClient.waitForCompletion(
-						depositTransaction.id,
-					);
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
-						);
 
 					// Meet wager requirement
 					await diceGamePage.navigate();

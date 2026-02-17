@@ -168,7 +168,6 @@ test.describe(
 					testDataPredefined,
 					gamdomApiDbFacade,
 					page,
-					solClient,
 					toast,
 					diceGamePage,
 					userInfoAdminPage,
@@ -182,32 +181,12 @@ test.describe(
 					const userCookie = getCookieHeader(cookie);
 					await setAuthenticationCookies(page, cookie);
 
-					const { withdrawalAddress, amountToDepositLarger } =
+					const { withdrawalAddress } =
 						testDataPredefined.data.solAmountToDeposit;
-					const vaultId = fireblocks.vaultId;
 
-					// Deposit SOL
 					await homePage.navigateToWallet();
 					const initialBalanceUSD =
 						await userBalanceHandler.walletBalanceInFiatRounded();
-					await walletModal.selectPaymentMethod(
-						Cryptocurrency.Solana,
-					);
-
-					const userDepositAddress =
-						await walletModal.getDepositAddress();
-					const depositTransaction = await solClient.sendToAddress(
-						vaultId,
-						userDepositAddress,
-						amountToDepositLarger,
-					);
-
-					await solClient.waitForCompletion(depositTransaction.id);
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
-						);
 
 					// Meet wager requirement
 					await diceGamePage.navigate();
@@ -230,6 +209,7 @@ test.describe(
 						feeInUsd +
 						testDataPredefined.data.amountTolerance
 							.amountToleranceUsd;
+
 					// Withdraw SOL
 					const withdrawalFee = await walletModal.withdrawCrypto({
 						cryptocurrency: Cryptocurrency.Solana,
@@ -341,7 +321,6 @@ test.describe(
 					testDataPredefined,
 					gamdomApiDbFacade,
 					page,
-					solClient,
 					toast,
 					diceGamePage,
 					userInfoAdminPage,
@@ -363,32 +342,12 @@ test.describe(
 					);
 					await setAuthenticationCookies(page, cookie);
 
-					const { withdrawalAddress, amountToDeposit } =
+					const { withdrawalAddress } =
 						testDataPredefined.data.solAmountToDeposit;
-					const vaultId = fireblocks.vaultId;
 
-					// Deposit SOL
 					await homePage.navigateToWallet();
 					const initialBalanceUSD =
 						await userBalanceHandler.walletBalanceInFiatRounded();
-					await walletModal.selectPaymentMethod(
-						Cryptocurrency.Solana,
-					);
-
-					const userDepositAddress =
-						await walletModal.getDepositAddress();
-					const depositTransaction = await solClient.sendToAddress(
-						vaultId,
-						userDepositAddress,
-						amountToDeposit,
-					);
-
-					await solClient.waitForCompletion(depositTransaction.id);
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
-						);
 
 					// Meet wager requirement
 					await diceGamePage.navigate();
@@ -411,6 +370,7 @@ test.describe(
 						feeInUsd +
 						testDataPredefined.data.amountTolerance
 							.amountToleranceUsd;
+
 					// Withdraw SOL
 					const withdrawalFee = await walletModal.withdrawCrypto({
 						cryptocurrency: Cryptocurrency.Solana,

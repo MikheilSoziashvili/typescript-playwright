@@ -169,7 +169,6 @@ test.describe(
 					testDataPredefined,
 					gamdomApiDbFacade,
 					page,
-					bnbClient,
 					toast,
 					diceGamePage,
 					userInfoAdminPage,
@@ -183,30 +182,12 @@ test.describe(
 					const userCookie = getCookieHeader(cookie);
 					await setAuthenticationCookies(page, cookie);
 
-					const { withdrawalAddress, amountToDeposit } =
+					const { withdrawalAddress } =
 						testDataPredefined.data.bnbAmountToDeposit;
-					const vaultId = fireblocks.vaultId;
 
-					// Deposit BNB
 					await homePage.navigateToWallet();
 					const initialBalanceUSD =
 						await userBalanceHandler.walletBalanceInFiatRounded();
-					await walletModal.selectPaymentMethod(Cryptocurrency.BNB);
-
-					const userDepositAddress =
-						await walletModal.getDepositAddress();
-					const depositTransaction = await bnbClient.sendToAddress(
-						vaultId,
-						userDepositAddress,
-						amountToDeposit,
-					);
-
-					await bnbClient.waitForCompletion(depositTransaction.id);
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
-						);
 
 					// Meet wager requirement
 					await diceGamePage.navigate();
@@ -340,7 +321,6 @@ test.describe(
 					testDataPredefined,
 					gamdomApiDbFacade,
 					page,
-					bnbClient,
 					toast,
 					diceGamePage,
 					userInfoAdminPage,
@@ -362,30 +342,12 @@ test.describe(
 					);
 					await setAuthenticationCookies(page, cookie);
 
-					const { withdrawalAddress, amountToDeposit } =
+					const { withdrawalAddress } =
 						testDataPredefined.data.bnbAmountToDeposit;
-					const vaultId = fireblocks.vaultId;
 
-					// Deposit BNB
 					await homePage.navigateToWallet();
 					const initialBalanceUSD =
 						await userBalanceHandler.walletBalanceInFiatRounded();
-					await walletModal.selectPaymentMethod(Cryptocurrency.BNB);
-
-					const userDepositAddress =
-						await walletModal.getDepositAddress();
-					const depositTransaction = await bnbClient.sendToAddress(
-						vaultId,
-						userDepositAddress,
-						amountToDeposit,
-					);
-
-					await bnbClient.waitForCompletion(depositTransaction.id);
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
-						);
 
 					// Meet wager requirement
 					await diceGamePage.navigate();

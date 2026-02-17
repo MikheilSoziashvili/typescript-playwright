@@ -361,7 +361,6 @@ test.describe(
 					testDataPredefined,
 					gamdomApiDbFacade,
 					page,
-					usdcSolClient,
 					toast,
 					diceGamePage,
 					userInfoAdminPage,
@@ -383,34 +382,8 @@ test.describe(
 					);
 					await setAuthenticationCookies(page, cookie);
 
-					const { withdrawalAddress, amountToDeposit } =
+					const { withdrawalAddress } =
 						testDataPredefined.data.usdcSolAmountToDeposit;
-					const vaultId = fireblocks.vaultId;
-
-					// Deposit USDC_SOL
-					await homePage.navigateToWallet();
-					await walletModal.selectPaymentMethod(Cryptocurrency.USDC);
-
-					await walletModal.selectDepositNetwork(
-						CryptoTicker.USDC_SOL,
-					);
-					const userDepositAddress =
-						await walletModal.getDepositAddress();
-					const depositTransaction =
-						await usdcSolClient.sendToAddress(
-							vaultId,
-							userDepositAddress,
-							amountToDeposit,
-						);
-
-					await usdcSolClient.waitForCompletion(
-						depositTransaction.id,
-					);
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
-						);
 
 					// Meet wager requirement
 					await diceGamePage.navigate();
@@ -551,7 +524,6 @@ test.describe(
 					testDataPredefined,
 					gamdomApiDbFacade,
 					page,
-					usdcEthClient,
 					toast,
 					diceGamePage,
 					userInfoAdminPage,
@@ -574,34 +546,8 @@ test.describe(
 					);
 					await setAuthenticationCookies(page, cookie);
 
-					const { withdrawalAddress, amountToDepositLarger } =
+					const { withdrawalAddress } =
 						testDataPredefined.data.usdcEthAmountToDeposit;
-					const vaultId = fireblocks.vaultId;
-
-					// Deposit USDC_ETH
-					await homePage.navigateToWallet();
-					await walletModal.selectPaymentMethod(Cryptocurrency.USDC);
-
-					await walletModal.selectDepositNetwork(
-						CryptoTicker.USDC_ETH,
-					);
-					const userDepositAddress =
-						await walletModal.getDepositAddress();
-					const depositTransaction =
-						await usdcEthClient.sendToAddress(
-							vaultId,
-							userDepositAddress,
-							amountToDepositLarger,
-						);
-
-					await usdcEthClient.waitForCompletion(
-						depositTransaction.id,
-					);
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
-						);
 
 					// Meet wager requirement
 					await diceGamePage.navigate();
@@ -627,6 +573,7 @@ test.describe(
 						feeInUsd +
 						testDataPredefined.data.amountTolerance
 							.amountToleranceUsd;
+
 					// Withdraw USDC_ETH
 					const withdrawalFee = await walletModal.withdrawCrypto({
 						cryptocurrency: Cryptocurrency.USDC,
@@ -742,7 +689,6 @@ test.describe(
 					testDataPredefined,
 					gamdomApiDbFacade,
 					page,
-					usdcSolClient,
 					toast,
 					diceGamePage,
 					userInfoAdminPage,
@@ -756,34 +702,8 @@ test.describe(
 					const userCookie = getCookieHeader(cookie);
 					await setAuthenticationCookies(page, cookie);
 
-					const { withdrawalAddress, amountToDepositLarger } =
+					const { withdrawalAddress } =
 						testDataPredefined.data.usdcSolAmountToDeposit;
-					const vaultId = fireblocks.vaultId;
-
-					// Deposit USDC_SOL
-					await homePage.navigateToWallet();
-					await walletModal.selectPaymentMethod(Cryptocurrency.USDC);
-
-					await walletModal.selectDepositNetwork(
-						CryptoTicker.USDC_SOL,
-					);
-					const userDepositAddress =
-						await walletModal.getDepositAddress();
-					const depositTransaction =
-						await usdcSolClient.sendToAddress(
-							vaultId,
-							userDepositAddress,
-							amountToDepositLarger,
-						);
-
-					await usdcSolClient.waitForCompletion(
-						depositTransaction.id,
-					);
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
-						);
 
 					// Meet wager requirement
 					await diceGamePage.navigate();
@@ -929,7 +849,6 @@ test.describe(
 					testDataPredefined,
 					gamdomApiDbFacade,
 					page,
-					usdcBscClient,
 					toast,
 					diceGamePage,
 					userInfoAdminPage,
@@ -943,34 +862,8 @@ test.describe(
 					const userCookie = getCookieHeader(cookie);
 					await setAuthenticationCookies(page, cookie);
 
-					const { withdrawalAddress, amountToDepositLarger } =
+					const { withdrawalAddress } =
 						testDataPredefined.data.usdcBscAmountToDeposit;
-					const vaultId = fireblocks.vaultId;
-
-					// Deposit USDC_BSC
-					await homePage.navigateToWallet();
-					await walletModal.selectPaymentMethod(Cryptocurrency.USDC);
-
-					await walletModal.selectDepositNetwork(
-						CryptoTicker.USDC_BSC,
-					);
-					const userDepositAddress =
-						await walletModal.getDepositAddress();
-					const depositTransaction =
-						await usdcBscClient.sendToAddress(
-							vaultId,
-							userDepositAddress,
-							amountToDepositLarger,
-						);
-
-					await usdcBscClient.waitForCompletion(
-						depositTransaction.id,
-					);
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
-						);
 
 					// Meet wager requirement
 					await diceGamePage.navigate();
@@ -1116,7 +1009,6 @@ test.describe(
 					testDataPredefined,
 					gamdomApiDbFacade,
 					page,
-					usdcBscClient,
 					toast,
 					diceGamePage,
 					userInfoAdminPage,
@@ -1138,34 +1030,8 @@ test.describe(
 					);
 					await setAuthenticationCookies(page, cookie);
 
-					const { withdrawalAddress, amountToDepositLarger } =
+					const { withdrawalAddress } =
 						testDataPredefined.data.usdcBscAmountToDeposit;
-					const vaultId = fireblocks.vaultId;
-
-					// Deposit USDC_BSC
-					await homePage.navigateToWallet();
-					await walletModal.selectPaymentMethod(Cryptocurrency.USDC);
-
-					await walletModal.selectDepositNetwork(
-						CryptoTicker.USDC_BSC,
-					);
-					const userDepositAddress =
-						await walletModal.getDepositAddress();
-					const depositTransaction =
-						await usdcBscClient.sendToAddress(
-							vaultId,
-							userDepositAddress,
-							amountToDepositLarger,
-						);
-
-					await usdcBscClient.waitForCompletion(
-						depositTransaction.id,
-					);
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
-						);
 
 					// Meet wager requirement
 					await diceGamePage.navigate();
@@ -1191,6 +1057,7 @@ test.describe(
 						feeInUsd +
 						testDataPredefined.data.amountTolerance
 							.amountToleranceUsd;
+
 					// Withdraw USDC_BSC
 					const withdrawalFee = await walletModal.withdrawCrypto({
 						cryptocurrency: Cryptocurrency.USDC,

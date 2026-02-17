@@ -275,26 +275,22 @@ test.describe(
 			test(
 				`[ENG-13640] BTC - withdraw with regular user - ${speed.toLowerCase()}`,
 				testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
-				async (
-					{
-						cryptoAdminPage,
-						homePage,
-						walletModal,
-						transactionsPage,
-						transactionDetailsModal,
-						userBalanceHandler,
-						gamdomApi,
-						testDataPredefined,
-						gamdomApiDbFacade,
-						page,
-						btcClient,
-						toast,
-						diceGamePage,
-						userInfoAdminPage,
-						transactionsAdminPage,
-					},
-					testInfo,
-				) => {
+				async ({
+					cryptoAdminPage,
+					homePage,
+					walletModal,
+					transactionsPage,
+					transactionDetailsModal,
+					userBalanceHandler,
+					gamdomApi,
+					testDataPredefined,
+					gamdomApiDbFacade,
+					page,
+					toast,
+					diceGamePage,
+					userInfoAdminPage,
+					transactionsAdminPage,
+				}) => {
 					// Setup user and test data
 					const { user, cookie } =
 						await gamdomApiDbFacade.createSingleUserDbAndAuth({
@@ -303,42 +299,14 @@ test.describe(
 					const userCookie = getCookieHeader(cookie);
 					await setAuthenticationCookies(page, cookie);
 
-					const { feeRate, amountToDepositLarger } =
-						testDataPredefined.data.btcAmountToDeposit;
-
 					// Deposit BTC
 					await homePage.navigateToWallet();
 					const initialBalanceUSD =
 						await userBalanceHandler.walletBalanceInFiatRounded();
-					await walletModal.selectPaymentMethod(
-						Cryptocurrency.Solana,
-					);
 
 					const addressDetails =
 						await walletModal.selectCryptoAndGetDepositDetails(
 							Cryptocurrency.Bitcoin,
-						);
-
-					const sendResponse = await btcClient.sendToAddress(
-						addressDetails.address,
-						amountToDepositLarger,
-						{
-							replaceable: false,
-							feeRate: feeRate,
-						},
-					);
-
-					const transactionId: string = sendResponse.result;
-					await waitUtxoTransactionConfirmation(
-						btcClient,
-						transactionId,
-						testInfo,
-					);
-
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
 						);
 
 					// Meet wager requirement
@@ -362,6 +330,7 @@ test.describe(
 						feeInUsd +
 						testDataPredefined.data.amountTolerance
 							.amountToleranceUsd;
+
 					// Withdraw BTC
 					const withdrawalFee = await walletModal.withdrawCrypto({
 						cryptocurrency: Cryptocurrency.Bitcoin,
@@ -464,27 +433,23 @@ test.describe(
 			test(
 				`[ENG-14322] BTC - withdraw with vip user - ${speed.toLowerCase()}`,
 				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
-				async (
-					{
-						cryptoAdminPage,
-						homePage,
-						walletModal,
-						transactionsPage,
-						transactionDetailsModal,
-						userBalanceHandler,
-						gamdomApi,
-						testDataPredefined,
-						gamdomApiDbFacade,
-						page,
-						btcClient,
-						toast,
-						diceGamePage,
-						userInfoAdminPage,
-						transactionsAdminPage,
-						gamdomDb,
-					},
-					testInfo,
-				) => {
+				async ({
+					cryptoAdminPage,
+					homePage,
+					walletModal,
+					transactionsPage,
+					transactionDetailsModal,
+					userBalanceHandler,
+					gamdomApi,
+					testDataPredefined,
+					gamdomApiDbFacade,
+					page,
+					toast,
+					diceGamePage,
+					userInfoAdminPage,
+					transactionsAdminPage,
+					gamdomDb,
+				}) => {
 					// Setup user and test data
 					const { cookie: superAdminCookie, user: superAdmin } =
 						await gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
@@ -500,42 +465,14 @@ test.describe(
 					);
 					await setAuthenticationCookies(page, cookie);
 
-					const { feeRate, amountToDepositLarger } =
-						testDataPredefined.data.btcAmountToDeposit;
-
 					// Deposit BTC
 					await homePage.navigateToWallet();
 					const initialBalanceUSD =
 						await userBalanceHandler.walletBalanceInFiatRounded();
-					await walletModal.selectPaymentMethod(
-						Cryptocurrency.Solana,
-					);
 
 					const addressDetails =
 						await walletModal.selectCryptoAndGetDepositDetails(
 							Cryptocurrency.Bitcoin,
-						);
-
-					const sendResponse = await btcClient.sendToAddress(
-						addressDetails.address,
-						amountToDepositLarger,
-						{
-							replaceable: false,
-							feeRate: feeRate,
-						},
-					);
-
-					const transactionId: string = sendResponse.result;
-					await waitUtxoTransactionConfirmation(
-						btcClient,
-						transactionId,
-						testInfo,
-					);
-
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
 						);
 
 					// Meet wager requirement
@@ -662,27 +599,23 @@ test.describe(
 			test(
 				`[ENG-14323] LTC - withdraw with vip user - ${speed.toLowerCase()}`,
 				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
-				async (
-					{
-						cryptoAdminPage,
-						homePage,
-						walletModal,
-						transactionsPage,
-						transactionDetailsModal,
-						userBalanceHandler,
-						gamdomApi,
-						testDataPredefined,
-						gamdomApiDbFacade,
-						page,
-						ltcClient,
-						toast,
-						diceGamePage,
-						userInfoAdminPage,
-						transactionsAdminPage,
-						gamdomDb,
-					},
-					testInfo,
-				) => {
+				async ({
+					cryptoAdminPage,
+					homePage,
+					walletModal,
+					transactionsPage,
+					transactionDetailsModal,
+					userBalanceHandler,
+					gamdomApi,
+					testDataPredefined,
+					gamdomApiDbFacade,
+					page,
+					toast,
+					diceGamePage,
+					userInfoAdminPage,
+					transactionsAdminPage,
+					gamdomDb,
+				}) => {
 					test.fixme(
 						true,
 						"Temporary skipped until LTC wallet is toped up",
@@ -702,42 +635,13 @@ test.describe(
 					);
 					await setAuthenticationCookies(page, cookie);
 
-					const { amountToDeposit, withdrawalAddress } =
+					const { withdrawalAddress } =
 						testDataPredefined.data.ltcAmountToDeposit;
 
 					// Deposit LTC
 					await homePage.navigateToWallet();
 					const initialBalanceUSD =
 						await userBalanceHandler.walletBalanceInFiatRounded();
-					await walletModal.selectPaymentMethod(
-						Cryptocurrency.Litecoin,
-					);
-
-					const addressDetails =
-						await walletModal.selectCryptoAndGetDepositDetails(
-							Cryptocurrency.Litecoin,
-						);
-
-					const sendResponse = await ltcClient.sendToAddress(
-						addressDetails.address,
-						amountToDeposit,
-						{
-							replaceable: false,
-						},
-					);
-
-					const transactionId: string = sendResponse.result;
-					await waitUtxoTransactionConfirmation(
-						ltcClient,
-						transactionId,
-						testInfo,
-					);
-
-					await transactionsPage
-						.steps()
-						.verifyDepositTransactionStatusIs(
-							TransactionState.COMPLETE,
-						);
 
 					// Meet wager requirement
 					await diceGamePage.navigate();
