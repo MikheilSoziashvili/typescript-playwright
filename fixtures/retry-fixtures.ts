@@ -5,8 +5,8 @@ import { test as base } from "@playwright/test";
  * Auto-use fixture that disables retries for tests with known bug tickets
  * Runs automatically for every test without explicit destructuring
  */
-// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 export const retryFixtures = base.extend<{
+	// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 	_disableRetriesForBugTickets: void;
 }>({
 	_disableRetriesForBugTickets: [
