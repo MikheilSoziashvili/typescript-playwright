@@ -1,8 +1,8 @@
-import { BasePageStep } from "@pages/base/base-page-step";
-import { PromotionAdminPage } from "./promotion-admin-page";
-import { step } from "decorators/step";
 import { PromotionCategories } from "@enums/promotion-categories";
 import { PromotionStatuses } from "@enums/promotion-statuses";
+import { BasePageStep } from "@pages/base/base-page-step";
+import { step } from "decorators/step";
+import { PromotionAdminPage } from "./promotion-admin-page";
 
 export class PromotionAdminSteps extends BasePageStep<PromotionAdminPage> {
 	public constructor(page: PromotionAdminPage) {

@@ -74,6 +74,7 @@ import { HomePage } from "./home-page/home-page";
 import { KenoGamePage } from "./keno-game/keno-game-page";
 import { KothPage } from "./koth/koth-page";
 import { MaintenancePage } from "./maintenance/maintenance-page";
+import { Error404Page } from "./error-404-page/error-404-page";
 import { MinesGamePage } from "./mines-game-page/mines-game-page";
 import { LiveSupportModal } from "./modals/live-support-intercom-modal/live-support-intercom-modal";
 import { LoginModal } from "./modals/login-modal/login-modal";
@@ -127,6 +128,7 @@ export const GamdomPages = {
 	geoblockedPage: GeoblockedPage,
 	bannedUserPage: BannedUserPage,
 	maintenancePage: MaintenancePage,
+	error404Page: Error404Page,
 	esportsPage: EsportsPage,
 	slotsBattlePage: SlotsBattlePage,
 	blogCategoryPage: BlogCategoryPage,

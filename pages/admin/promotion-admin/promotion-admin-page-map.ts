@@ -109,4 +109,28 @@ export class PromotionAdminMap extends BaseMap {
 	): Locator {
 		return this.tableRowByPromotionTitle(promotionTitle).locator(`//td[7]`);
 	}
+
+	public promotionVisibilityCheckboxContainerByPromotionTitle(
+		promotionTitle: string,
+	): Locator {
+		return this.tableRowByPromotionTitle(promotionTitle).locator(
+			`//td[13]`,
+		);
+	}
+
+	public promotionVisibilityCheckboxByPromotionTitle(
+		promotionTitle: string,
+	): Locator {
+		return this.promotionVisibilityCheckboxContainerByPromotionTitle(
+			promotionTitle,
+		).locator(`input[type="checkbox"]`);
+	}
+
+	public promotionVisibilityLabelByPromotionTitle(
+		promotionTitle: string,
+	): Locator {
+		return this.promotionVisibilityCheckboxContainerByPromotionTitle(
+			promotionTitle,
+		).locator('role="button"');
+	}
 }

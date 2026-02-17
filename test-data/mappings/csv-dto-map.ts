@@ -28,6 +28,7 @@ import {
 	RoyaltyUpSkippingLevelsCsv,
 	ObtEsportsPagesStatusCodeCsv,
 	EnableDisableCryptoCurrenciesStatusesCsv,
+	PromotionCombinationsNotForVipCsv,
 } from "@dtos/csv";
 import { HomePageBannerCarouselCsv } from "@dtos/csv/home-page-banner-carousel-csv";
 import { OriginalsSelfExclusionCsv } from "@dtos/csv/originals-self-exclusion";
@@ -71,4 +72,5 @@ export type CsvDtoMap = {
 	[CsvFilesName.ROYALTY_UP_SKIPPING_LEVELS]: RoyaltyUpSkippingLevelsCsv;
 	[CsvFilesName.OBT_ESPORTS_PAGES_STATUS_CODE]: ObtEsportsPagesStatusCodeCsv;
 	[CsvFilesName.ENABLE_DISABLE_CRYPTO_CURRENCIES_STATUSES]: EnableDisableCryptoCurrenciesStatusesCsv;
+	[CsvFilesName.PROMOTION_COMBINATIONS_NOT_FOR_VIP]: PromotionCombinationsNotForVipCsv;
 };

@@ -13,6 +13,7 @@ import { BlogCategoryPage } from "@pages/blog/category/blog-category-page";
 import { SettingsPage } from "@pages/settings/settings-page";
 import { HelpPage } from "@pages/help/help-page";
 import { MaintenancePage } from "@pages/maintenance/maintenance-page";
+import { Error404Page } from "@pages/error-404-page/error-404-page";
 import { CasinoPage } from "@pages/casino/casino-game-page";
 import { ProvidersPage } from "@pages/providers/providers-page";
 import { VerificationPage } from "@pages/verification/verification-page";
@@ -45,6 +46,7 @@ export type GamdomPages = {
 	geoblockedPage: GeoblockedPage;
 	bannedUserPage: BannedUserPage;
 	maintenancePage: MaintenancePage;
+	error404Page: Error404Page;
 	esportsPage: EsportsPage;
 	slotsBattlePage: SlotsBattlePage;
 	blogCategoryPage: BlogCategoryPage;
@@ -79,6 +81,7 @@ export const gamdomPagesFixtures = base.extend<GamdomPages>({
 	geoblockedPage: sessionAwarePage(GeoblockedPage),
 	bannedUserPage: sessionAwarePage(BannedUserPage),
 	maintenancePage: sessionAwarePage(MaintenancePage),
+	error404Page: sessionAwarePage(Error404Page),
 	esportsPage: sessionAwarePage(EsportsPage),
 	slotsBattlePage: sessionAwarePage(SlotsBattlePage),
 	blogCategoryPage: sessionAwarePage(BlogCategoryPage),

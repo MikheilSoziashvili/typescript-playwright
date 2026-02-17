@@ -7,6 +7,7 @@ import { PromotionAdminMap } from "./promotion-admin-page-map";
 import { PromotionAdminAsserter } from "./promotion-admin-page-asserter";
 import { PromotionAdminSteps } from "./promotion-admin-page-steps";
 import { step } from "decorators/step";
+import { VisibilityOptions } from "@enums/visibility-options";
 
 export class PromotionAdminPage extends BasePage<PromotionAdminMap> {
 	public constructor(page: Page) {
@@ -66,5 +67,18 @@ export class PromotionAdminPage extends BasePage<PromotionAdminMap> {
 	public async choosePromotionsTableRowsMaxPagination(): Promise<void> {
 		await this.map.promotionsTableRowsPaginationDropdown.click();
 		await this.map.promotionsTableRowsPaginationDropdownMaxOption.click();
+	}
+
+	@step("Set promotion visibility to {visibility} in the promotions table")
+	public async setPromotionVisibility(
+		promotionName: string,
+		visibility: VisibilityOptions,
+	): Promise<void> {
+		const checkbox =
+			this.map.promotionVisibilityCheckboxByPromotionTitle(promotionName);
+		await this.map.toggleState(
+			checkbox,
+			visibility === VisibilityOptions.VISIBLE,
+		);
 	}
 }

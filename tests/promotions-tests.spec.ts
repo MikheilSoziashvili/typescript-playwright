@@ -233,6 +233,13 @@ const promotionCombinations = parse_csv(
 	isForVip: keyof typeof PromotionIsVipCategories;
 }[];
 
+const promotionCombinationsNotForVip: {
+	category: PromotionCategories;
+	subCategory: PromotionSubStatuses;
+}[] = testData().fromCsvParsed({
+	file: CsvFilesName.PROMOTION_COMBINATIONS_NOT_FOR_VIP,
+});
+
 test.describe(
 	"Promotion tests",
 	testDetails()
@@ -356,6 +363,49 @@ test.describe(
 		});
 
 		test.describe("Promotion CRUD tests", () => {
+			promotionCombinationsNotForVip.forEach((record) => {
+				test(
+					`[ENG-11905] Promotions - Check that NOT FOR VIP promotion with category: '${record.category}' and subcategory: '${record.subCategory}' cannot be seen by VIP players`,
+					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+					async ({
+						browserSessionManager,
+						promotionTestFlow,
+						promotionVisibilityVerificationFlow,
+					}) => {
+						const promotionsAdminUser =
+							await browserSessionManager.loginAs(
+								TestUserRole.ADMIN_PROMOTIONS_ADMIN,
+								{ reuseContext: true },
+							);
+						const regular = await browserSessionManager.loginAs(
+							TestUserRole.REGULAR,
+						);
+						const promotionSetupResult =
+							await promotionTestFlow.setupAndCreatePromotion({
+								adminUser: promotionsAdminUser,
+								regularUser: regular,
+								category: record.category,
+								subCategory: record.subCategory,
+								isForVip: PromotionIsVipCategories.NOT_FOR_VIP,
+								vipUserStatus: VipUserStatus.BASIC_VIP,
+								promotionsToDelete: promotionsToDelete,
+							});
+						await promotionVisibilityVerificationFlow.verifyPromotionVisibility(
+							{
+								user: regular,
+								promotionName:
+									promotionSetupResult.promotionName,
+								customUrl: promotionSetupResult.customUrl,
+								shouldBeVisible: false,
+							},
+						);
+						await regular.pages.error404Page
+							.assertThat()
+							.verify404PageIsDisplayed();
+					},
+				);
+			});
+
 			promotionCombinations.forEach((combination) => {
 				test(
 					`[ENG-5576] Promotions - Create a new promotion - Promotion Category: ${combination.category} - Promotion Subcategory: ${combination.subCategory} - Is For VIP: ${combination.isForVip}`,
