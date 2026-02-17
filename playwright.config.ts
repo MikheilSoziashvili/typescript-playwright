@@ -83,8 +83,8 @@ const rpConfig = {
 
 	// Attach latest error to test description
 	extendTestDescriptionWithLastError: true,
-	uploadVideo: true,
-	uploadTrace: true,
+	uploadVideo: false,
+	uploadTrace: false,
 
 	// Enable auto-analysis to link similar failures
 	autoAnalysis: true,
@@ -94,7 +94,7 @@ const rpConfig = {
 
 	// HTTP client configuration (optional)
 	restClientConfig: {
-		timeout: 10000,
+		timeout: 30000,
 
 		retry: {
 			retries: 1,
