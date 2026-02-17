@@ -1,4 +1,5 @@
 export type GetCryptoAdminTransactionsRequest = {
 	limit?: number;
-	oldestFirst?: boolean;
+	filter?: Record<string, unknown>;
+	sorting?: Record<string, unknown>;
 };

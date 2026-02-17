@@ -696,11 +696,11 @@ export class GamdomApi extends BaseApi {
 	public async getCryptoAdminTransactions(
 		_headers?: Record<string, string>,
 		limit = 100,
-		oldestFirst = false,
 	): Promise<GetCryptoAdminTransactionsResponse[]> {
 		const payload: GetCryptoAdminTransactionsRequest = {
-			limit,
-			oldestFirst,
+			limit: limit,
+			filter: {},
+			sorting: {},
 		};
 		const parameters = this.buildParameters(
 			ApiEndpoints.GET_CRYPTO_ADMIN_TRANSACTIONS,
@@ -709,7 +709,10 @@ export class GamdomApi extends BaseApi {
 		);
 
 		const response = await this.post(parameters);
-		return response.json() as Promise<GetCryptoAdminTransactionsResponse[]>;
+		const body = (await response.json()) as {
+			data: GetCryptoAdminTransactionsResponse[];
+		};
+		return body.data;
 	}
 
 	public async getAllRedirects(

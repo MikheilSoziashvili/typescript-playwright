@@ -5,3 +5,30 @@ export { PromotionSetupFlow } from "./promotions/promotion-setup-test-flow";
 export { PromotionCreationFlow } from "./promotions/promotion-creation-test-flow";
 export { PromotionVisibilityVerificationFlow } from "./promotions/promotion-visibility-verification-test-flow";
 export { PromotionTestFlow } from "./promotions/promotion-test-flow";
+
+// Crypto flows - deposit
+export { CryptoAdminSetupTestFlow } from "./crypto/crypto-admin-setup-test-flow";
+export { CryptoDepositTestFlow } from "./crypto/crypto-deposit-test-flow";
+export { CryptoDepositVerificationTestFlow } from "./crypto/crypto-deposit-verification-test-flow";
+
+// Crypto flows - withdrawal
+export { CryptoWithdrawalSetupTestFlow } from "./crypto/crypto-withdrawal-setup-test-flow";
+export { CryptoWithdrawalProcessTestFlow } from "./crypto/crypto-withdrawal-process-test-flow";
+export { CryptoWithdrawalVerificationTestFlow } from "./crypto/crypto-withdrawal-verification-test-flow";
+
+// Crypto types
+export type {
+	CryptoClient,
+	CryptoConfig,
+	CryptoFlowDependencies,
+	DepositProcessResult,
+	WithdrawalSetupResult,
+	WithdrawalProcessResult,
+	WithdrawalUserVerificationResult,
+} from "./crypto/types/crypto-flow-types";
+export { ETH_CONFIG } from "./crypto/types/crypto-flow-types";
+
+// Crypto client adapters
+export { toFireblocksCryptoClient } from "./crypto/adapters/fireblocks-crypto-client-adapter";
+export { toUtxoCryptoClient } from "./crypto/adapters/utxo-crypto-client-adapter";
+export { toXrpCryptoClient } from "./crypto/adapters/xrp-crypto-client-adapter";

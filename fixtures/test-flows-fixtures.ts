@@ -15,12 +15,38 @@ import { PromotionVisibilityVerificationFlow } from "@test-flows/promotions/prom
 import { GamdomDb } from "database/gamdom-db";
 import { RandomDataSource } from "test-data/core/random-data-source";
 import { ObjectDataSource } from "test-data/core/object-data-source";
+import { CryptoAdminSetupTestFlow } from "@test-flows/crypto/crypto-admin-setup-test-flow";
+import { CryptoDepositTestFlow } from "@test-flows/crypto/crypto-deposit-test-flow";
+import { CryptoDepositVerificationTestFlow } from "@test-flows/crypto/crypto-deposit-verification-test-flow";
+import { CryptoWithdrawalSetupTestFlow } from "@test-flows/crypto/crypto-withdrawal-setup-test-flow";
+import { CryptoWithdrawalProcessTestFlow } from "@test-flows/crypto/crypto-withdrawal-process-test-flow";
+import { CryptoWithdrawalVerificationTestFlow } from "@test-flows/crypto/crypto-withdrawal-verification-test-flow";
+import { CryptoFlowDependencies } from "@test-flows/crypto/types/crypto-flow-types";
+import { CryptoAdminPage } from "@pages/admin/crypto-admin/crypto-admin-page";
+import { HomePage } from "@pages/home-page/home-page";
+import { WalletModal } from "@pages/modals/wallet/wallet-modal";
+import { TransactionsPage } from "@pages/transactions/transactions-page";
+import { TransactionDetailsModal } from "@pages/modals/transaction-details-modal/transaction-details-modal";
+import { Toast } from "@pages/components/toast/toast";
+import { DiceGamePage } from "@pages/dice-game-page/dice-game-page";
+import { UserInfoAdminPage } from "@pages/admin/user-info-admin/user-info-admin-page";
+import { UserInfoTransactionsAdminPage } from "@pages/admin/user-info-admin/user-info-transactions-admin/user-info-transactions-admin-page";
+import { UserBalanceHandler } from "@core/handlers/user-balance-handler/user-balance-handler";
+import { GamdomApi } from "@api/gamdom-api";
+import { PredefinedDataSource } from "test-data/core/predefined-data-source";
 
 export type TestFlowsFixtures = {
 	plinkoBetTestFlow: PlinkoBetTestFlow;
 	xpChallengeTestFlow: XpChallengeTestFlow;
 	promotionTestFlow: PromotionTestFlow;
 	promotionVisibilityVerificationFlow: PromotionVisibilityVerificationFlow;
+	cryptoAdminSetupTestFlow: CryptoAdminSetupTestFlow;
+	cryptoFlowDeps: CryptoFlowDependencies;
+	cryptoDepositTestFlow: CryptoDepositTestFlow;
+	cryptoDepositVerificationTestFlow: CryptoDepositVerificationTestFlow;
+	cryptoWithdrawalSetupTestFlow: CryptoWithdrawalSetupTestFlow;
+	cryptoWithdrawalProcessTestFlow: CryptoWithdrawalProcessTestFlow;
+	cryptoWithdrawalVerificationTestFlow: CryptoWithdrawalVerificationTestFlow;
 };
 
 type RequiredTestFlowsFixtures = {
@@ -28,6 +54,18 @@ type RequiredTestFlowsFixtures = {
 	gamdomDb: GamdomDb;
 	testDataRandom: RandomDataSource;
 	testDataObject: ObjectDataSource;
+	cryptoAdminPage: CryptoAdminPage;
+	homePage: HomePage;
+	walletModal: WalletModal;
+	transactionsPage: TransactionsPage;
+	transactionDetailsModal: TransactionDetailsModal;
+	toast: Toast;
+	diceGamePage: DiceGamePage;
+	userInfoAdminPage: UserInfoAdminPage;
+	transactionsAdminPage: UserInfoTransactionsAdminPage;
+	userBalanceHandler: UserBalanceHandler;
+	gamdomApi: GamdomApi;
+	testDataPredefined: PredefinedDataSource;
 };
 
 export const testFlowsFixtures = base.extend<
@@ -68,5 +106,70 @@ export const testFlowsFixtures = base.extend<
 	},
 	promotionVisibilityVerificationFlow: async ({}, use) => {
 		await use(new PromotionVisibilityVerificationFlow());
+	},
+	cryptoAdminSetupTestFlow: async (
+		{ browserSessionManager, cryptoAdminPage },
+		use,
+	) => {
+		await use(
+			new CryptoAdminSetupTestFlow(
+				browserSessionManager,
+				cryptoAdminPage,
+			),
+		);
+	},
+	cryptoFlowDeps: async (
+		{
+			page,
+			browserSessionManager,
+			cryptoAdminPage,
+			homePage,
+			walletModal,
+			transactionsPage,
+			transactionDetailsModal,
+			toast,
+			diceGamePage,
+			userInfoAdminPage,
+			transactionsAdminPage,
+			userBalanceHandler,
+			gamdomApi,
+			gamdomDb,
+			testDataPredefined,
+		},
+		use,
+	) => {
+		const deps: CryptoFlowDependencies = {
+			page: page,
+			browserSessionManager: browserSessionManager,
+			cryptoAdminPage: cryptoAdminPage,
+			homePage: homePage,
+			walletModal: walletModal,
+			transactionsPage: transactionsPage,
+			transactionDetailsModal: transactionDetailsModal,
+			toast: toast,
+			diceGamePage: diceGamePage,
+			userInfoAdminPage: userInfoAdminPage,
+			transactionsAdminPage: transactionsAdminPage,
+			userBalanceHandler: userBalanceHandler,
+			gamdomApi: gamdomApi,
+			gamdomDb: gamdomDb,
+			testDataPredefined: testDataPredefined,
+		};
+		await use(deps);
+	},
+	cryptoDepositTestFlow: async ({ cryptoFlowDeps }, use) => {
+		await use(new CryptoDepositTestFlow(cryptoFlowDeps));
+	},
+	cryptoDepositVerificationTestFlow: async ({ cryptoFlowDeps }, use) => {
+		await use(new CryptoDepositVerificationTestFlow(cryptoFlowDeps));
+	},
+	cryptoWithdrawalSetupTestFlow: async ({ cryptoFlowDeps }, use) => {
+		await use(new CryptoWithdrawalSetupTestFlow(cryptoFlowDeps));
+	},
+	cryptoWithdrawalProcessTestFlow: async ({ cryptoFlowDeps }, use) => {
+		await use(new CryptoWithdrawalProcessTestFlow(cryptoFlowDeps));
+	},
+	cryptoWithdrawalVerificationTestFlow: async ({ cryptoFlowDeps }, use) => {
+		await use(new CryptoWithdrawalVerificationTestFlow(cryptoFlowDeps));
 	},
 });
