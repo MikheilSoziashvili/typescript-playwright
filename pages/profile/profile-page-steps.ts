@@ -210,7 +210,6 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 						.generateAndEnter2FaCodeSuccessfully(
 							qrCode2FAImagePath,
 						);
-					await this.gamdomPage.clickSaveEmail();
 				} else {
 					await this.gamdomPage.twoFactorAuthModal
 						.assertThat()
@@ -234,8 +233,8 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 					await this.gamdomPage.twoFactorAuthModal
 						.assertThat()
 						.modal2FaNotDisplayed();
-					await this.completeAndVerifyPhoneChange();
 				}
+				await this.completeAndVerifyPhoneChange();
 				break;
 
 			default:
