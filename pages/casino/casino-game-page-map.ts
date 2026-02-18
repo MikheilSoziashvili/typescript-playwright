@@ -56,15 +56,20 @@ export class CasinoPageMap extends BaseMap {
 	}
 
 	public get casinoGamesScrollbarContainer(): Locator {
-		return this.page.locator(`div[role="tablist"]`);
+		return this.page.getByTestId("casino-layout-tabs-tablist");
 	}
 
 	public casinoGamesScrollbarItemByPlaceholder(
 		scrollbarItem: string,
 	): Locator {
-		return this.casinoGamesScrollbarContainer.locator(`a[role='tab']`, {
-			hasText: `${scrollbarItem}`,
-		});
+		return this.casinoGamesScrollbarContainer
+			.locator('[data-testid^="casino-layout-tabs-tab-"]')
+			.filter({
+				has: this.page.locator('p[data-testid="tabs-txt-tab"]', {
+					hasText: scrollbarItem.trim(),
+				}),
+			})
+			.getByRole("link");
 	}
 
 	public get titleImage(): Locator {

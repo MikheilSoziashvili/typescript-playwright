@@ -2,8 +2,6 @@ import { BasePage } from "@base/base-page";
 import { HOME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { HomePageBannerCarouselSlideTitle } from "@enums/homepage-banner-carousel-slide-title";
-import { Attributes } from "@enums/playwright/htmlAttributes";
-import { VisibilityState } from "@enums/playwright/visibility-states";
 import { Timeout } from "@enums/timeout";
 import { LoginModal } from "@modals/login-modal/login-modal";
 import { RegisterModal } from "@modals/register-modal/register-modal";
@@ -11,7 +9,6 @@ import { Page } from "@playwright/test";
 import { HomePageAsserter } from "./home-page-asserter";
 import { HomePageMap } from "./home-page-map";
 import { HomePageSteps } from "./home-page-steps";
-import { waitForSeconds } from "@core/utils/utils";
 import { WaitUntilState } from "@enums/wait-until-states";
 import { step } from "decorators/step";
 import { BoundingBoxCoordinate } from "@enums/bounding-box-coordinates";
@@ -93,30 +90,17 @@ export class HomePage extends BasePage<HomePageMap> {
 		srcPartial: string,
 		timeout = Timeout.EXTRA_LONG,
 	): Promise<void> {
-		const timeBetweenIterations = 500;
-		let isSlideActive = false;
+		const activeSlide = this.map.bannerCarouselActiveSlide
+			.filter({
+				has: this.page.locator('div[data-testid$="-title"]', {
+					hasText: slideName,
+				}),
+			})
+			.filter({
+				has: this.page.locator(`img[src*="${srcPartial}"]`),
+			});
 
-		while (timeout > 0 && isSlideActive === false) {
-			const slideLocator = this.map.getBannerCarouselSlideByName(
-				slideName,
-				srcPartial,
-			);
-			const slideClassAttribute = await slideLocator.getAttribute(
-				Attributes.CLASS,
-			);
-			if (slideClassAttribute?.includes("swiper-slide-active")) {
-				isSlideActive = true;
-			}
-			// wait between iteration, not need to use this function each second
-			await waitForSeconds(timeBetweenIterations / 1000);
-			timeout = timeout - timeBetweenIterations;
-		}
-
-		if (!isSlideActive) {
-			throw new Error(
-				`Slide ${slideName} was not active in the given time interval`,
-			);
-		}
+		await this.assertThat().checkElementsAreVisible([activeSlide], timeout);
 	}
 
 	@step("Click carousel slide")
@@ -124,7 +108,8 @@ export class HomePage extends BasePage<HomePageMap> {
 		slideName: HomePageBannerCarouselSlideTitle,
 		srcPartial: string,
 	): Promise<void> {
-		await this.map.getSlideNavigateButton(slideName, srcPartial).click();
+		await this.waitCarouselSlideToBeActive(slideName, srcPartial);
+		await this.map.bannerCarouselActiveSlide.click();
 	}
 
 	@step("Click wallet button")
@@ -147,25 +132,18 @@ export class HomePage extends BasePage<HomePageMap> {
 		await this.map.bannerCarouselActiveSlide.click();
 	}
 
-	@step("Close top banner")
-	public async closeTopBanner(): Promise<void> {
-		await this.map.topBannerCloseButton.click();
-		await this.map.waitFor({
-			locator: this.map.topBannerLocator,
-			state: VisibilityState.HIDDEN,
-		});
-	}
-
 	@step("Click on casino header button")
 	public async clickOnCasinoHeaderButton(): Promise<void> {
 		await this.authenticatedHeader.map.casinoNavigationButton.click();
 	}
 
-	@step("Click on casino games slider visit button")
+	@step("Click on casino games slider view all")
 	public async clickOnCasinoGamesSliderVisitButton(
-		buttonName: string,
+		sectionTitle: string,
 	): Promise<void> {
-		await this.map.casinoGamesSliderVisitButtonByName(buttonName).click();
+		await this.map
+			.casinoGamesSliderVisitAllButtonByTitle(sectionTitle)
+			.click();
 	}
 
 	@step("Navigate to wallet")

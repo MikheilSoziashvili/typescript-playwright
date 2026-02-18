@@ -1,7 +1,7 @@
 bannerName,srcPartial,pageEndpoint
-King of the hill,koth.,/koth
+King of the hill,kothDaily,/koth
 Record RTP on Originals,rtp-originals,/providers/Gamdom-Originals
-King of the hill,kothDaily,/koth/daily
+King of the hill,daily-koth-banner,/koth/Daily
 Claim Rewards,rewards,/rewards
 BlackJack,BlackJack,/casino
 Drop & Wins Tournament,tournament,/blog/drop-and-wins-pragmatic-play

@@ -9,7 +9,6 @@ import {
 	EsportsCategoriesCsv,
 	EvRewardFreeSpinsPromotionCsv,
 	FooterLinksAndEndpointsCsv,
-	HomepageTopLineHeaderLinksCsv,
 	KothCurrenciesSymbolsCsv,
 	KycLevel2SubmissionsCsv,
 	KycUsersLevelVerificationPageCsv,
@@ -53,7 +52,6 @@ import { CsvFilesName } from "@enums/csv-file-name";
 export type CsvDtoMap = {
 	[CsvFilesName.ORIGINALS_QUICK_SELECT_BUTTONS]: OriginalsQuickSelectButtonsCsv;
 	[CsvFilesName.HOMEPAGE_ORIGINALS_LAUNCH]: OriginalsLaunchFromHomepageCsv;
-	[CsvFilesName.HOMEPAGE_TOP_LINE_HEADER_LINKS]: HomepageTopLineHeaderLinksCsv;
 	[CsvFilesName.USER_INFO_SEND_NOTIFICATION]: UserInfoSendNotificationCsv;
 	[CsvFilesName.KOTH_CURRENCIES_SYMBOLS]: KothCurrenciesSymbolsCsv;
 	[CsvFilesName.KYC_USERS_LEVEL_VERIFICATION_PAGE]: KycUsersLevelVerificationPageCsv;

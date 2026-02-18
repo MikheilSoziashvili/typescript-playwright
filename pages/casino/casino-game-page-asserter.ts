@@ -5,12 +5,11 @@ import { GameProvider } from "@enums/game-providers";
 import { VisibilityResult } from "@core/types/types";
 import { VisibilityOptions } from "@enums/visibility-options";
 import { step } from "decorators/step";
-import { Attributes } from "@enums/playwright/htmlAttributes";
-import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { Timeout } from "@enums/timeout";
 import { FavoritesGamesListResponse } from "@dtos/responses/gamdom-api/get-favorites-games-list-response";
+import { AttributesValues } from "@enums/playwright/htmlAttributesValues";
 
 export class CasinoPageAsserter extends BaseAsserter<CasinoPage> {
 	public constructor(page: CasinoPage) {
@@ -75,10 +74,9 @@ export class CasinoPageAsserter extends BaseAsserter<CasinoPage> {
 	public async isCasinoGamesScrollbarTabSelected(
 		tabName: string,
 	): Promise<void> {
-		await this.gamdomPage.map.waitForAttributeToHaveValue(
+		await this.expectElementToHaveClass(
 			this.gamdomPage.map.casinoGamesScrollbarItemByPlaceholder(tabName),
-			Attributes.ARIA_SELECTED,
-			BooleanValueString.TRUE,
+			AttributesValues.ACTIVE,
 		);
 	}
 

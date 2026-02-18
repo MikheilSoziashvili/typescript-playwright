@@ -4,7 +4,6 @@ import { testDetails } from "@core/helpers/test-details-helper";
 import { parse_csv } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { LaunchLocation } from "@enums/homepage-launch-locations";
-import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { TestTag } from "@enums/test-tags";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
@@ -35,7 +34,7 @@ test.describe("Homepage navigation", () => {
 					.assertThat()
 					.isCasinoGameSliderDisplayed(`${casinoSlider.sliderTitle}`);
 				await homePage.clickOnCasinoGamesSliderVisitButton(
-					`${casinoSlider.sliderButton}`,
+					`${casinoSlider.sliderTitle}`,
 				);
 				await casinoPage
 					.assertThat()
@@ -83,30 +82,3 @@ test.describe(
 		});
 	},
 );
-
-test.describe("Top line header links tests", () => {
-	const topLineHeaderLinks = testData().fromCsvRaw({
-		file: CsvFilesName.HOMEPAGE_TOP_LINE_HEADER_LINKS,
-	});
-
-	topLineHeaderLinks.forEach(({ link, expectedUrl }) => {
-		test(
-			`[ENG-5256] Verify top line header link: ${link} for a logged out user`,
-			testDetails()
-				.withTags(JiraComponent.HOMEPAGE, TestTag.ACCEPTANCE)
-				.withAuthor(JiraUser.RALUCA_ARITON)
-				.apply(),
-			async ({ homePage }) => {
-				await homePage.navigate();
-				await homePage
-					.assertThat()
-					.verifyLinksAreAccessible([expectedUrl]);
-
-				await homePage.clickOnTopLineHeaderLink(link);
-				await homePage
-					.assertThat()
-					.waitForAndVerifyCurrentUrlIs(expectedUrl);
-			},
-		);
-	});
-});

@@ -22,41 +22,19 @@ export class HomePageMap extends BaseMap {
 	}
 
 	public get bannerCarousel(): Locator {
-		return this.page.locator(
-			`div[class*="swiper-horizontal HomePageSlider"]`,
+		return this.page.getByTestId(
+			"home-page-top-banner-slider-content-swiper",
 		);
 	}
 
 	public get bannerCarouselActiveSlide(): Locator {
 		return this.bannerCarousel.locator(
-			`div[class*="swiper-slide swiper-slide-active"]`,
-		);
-	}
-
-	public getBannerCarouselSlideByName(
-		slideName: HomePageBannerCarouselSlideTitle,
-		srcPartial: string,
-	): Locator {
-		return this.bannerCarousel
-			.locator(`div[class*="swiper-slide"]`)
-			.filter({
-				has: this.page.locator(
-					`img[alt="${slideName}"][src*="${srcPartial}"]`,
-				),
-			});
-	}
-
-	public getSlideNavigateButton(
-		slideName: HomePageBannerCarouselSlideTitle,
-		srcPartial: string,
-	): Locator {
-		return this.getBannerCarouselSlideByName(slideName, srcPartial).locator(
-			"button[class*=ArrowButton]",
+			'div[data-testid^="home-page-top-banner-slider-content-swiper-slide-"].swiper-slide-active',
 		);
 	}
 
 	public get topBannerLocator(): Locator {
-		return this.page.locator("div[class*=Components-styled__Container]");
+		return this.page.getByTestId("home-page-top-banner-logged-out");
 	}
 
 	public get topBannedBanner(): Locator {
@@ -89,22 +67,24 @@ export class HomePageMap extends BaseMap {
 		return this.getTopBannerButton(2);
 	}
 
-	public get casinoGamesSliderContainer(): Locator {
-		return this.page.locator(
-			`div[class*='CasinoGamesSlider-styled__Section-sc-']`,
+	private casinoGamesSliderContainerByTitle(sectionTitle: string): Locator {
+		return this.page.getByTestId("games-list-slider").filter({
+			has: this.page
+				.getByTestId("games-list-slider-header")
+				.locator("p", { hasText: sectionTitle }),
+		});
+	}
+
+	public casinoGamesSliderByName(sectionName: string): Locator {
+		return this.casinoGamesSliderContainerByTitle(sectionName);
+	}
+
+	public casinoGamesSliderVisitAllButtonByTitle(
+		sectionTitle: string,
+	): Locator {
+		return this.casinoGamesSliderContainerByTitle(sectionTitle).getByTestId(
+			"games-list-slider-view-all",
 		);
-	}
-
-	public casinoGamesSliderByName(games: string): Locator {
-		return this.casinoGamesSliderContainer.locator(`p`, {
-			hasText: `${games}`,
-		});
-	}
-
-	public casinoGamesSliderVisitButtonByName(buttonName: string): Locator {
-		return this.casinoGamesSliderContainer.locator(`button`, {
-			hasText: `${buttonName}`,
-		});
 	}
 
 	public get kothHeaderImageLocator(): Locator {
@@ -158,36 +138,42 @@ export class HomePageMap extends BaseMap {
 	}
 
 	public get originalsNavButton(): Locator {
-		return this.page.getByTestId("navLink-home");
-	}
-
-	public get originalsNavContainer(): Locator {
-		return this.page.getByTestId("hoverContainer");
+		return this.page.getByTestId("nav-desktop-Gamdom-Originals-tab");
 	}
 
 	public originalsGameFromSubNav(game: string): Locator {
-		return this.originalsNavContainer.locator(
-			`a[href='/${game.toLowerCase()}']`,
-		);
+		return this.originalsGamesListSliderSwiper
+			.locator(
+				'div[data-testid^="games-list-item-"][data-testid*="-container"]',
+			)
+			.filter({
+				has: this.page.locator(
+					`img[data-testid$="-banner-image"][alt="${game}"]`,
+				),
+			})
+			.first()
+			.locator('span[data-testid$="-play-button"]');
 	}
 
 	public get originalsSectionSliderContainer(): Locator {
-		return this.page.locator(
-			`div[class*='Originals-styled__Container-sc-']`,
-		);
+		return this.page.getByTestId("Originals-styled__Container-sc-");
+	}
+
+	public get originalsGamesListSliderSwiper(): Locator {
+		return this.page.getByTestId("games-list-slider-content-swiper");
 	}
 
 	public originalsGameFromSection(game: string): Locator {
-		return this.originalsSectionSliderContainer
+		return this.originalsGamesListSliderSwiper
 			.locator(
-				`//a[@href="/${game.toLowerCase()}"]/parent::div[contains(@class, "swiper")]`,
+				`div[data-testid^="games-list-item-"][data-testid*="-container-${game.toLowerCase()}"]`,
 			)
 			.first();
 	}
 
 	public get originalsSliderNextButton(): Locator {
-		return this.originalsSectionSliderContainer.locator(
-			`button[class*= ArrowButton] i[class*=icon-angle-right]`,
+		return this.originalsSectionSliderContainer.getByTestId(
+			"games-list-slider-slider-next",
 		);
 	}
 

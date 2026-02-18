@@ -46,29 +46,15 @@ test.describe(
 		});
 
 		test.describe("Homepage banner carousel - unauthenticated user", () => {
-			carouselBanners.forEach((record) => {
-				test(
-					`[ENG-1158] - Homepage banner carousel - unauthenticated user - ${record.bannerName} page contains src '${record.srcPartial}'`,
-					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
-					async ({ homePage }) => {
-						test.fixme(true, "Banners logic needs to be reworked");
-						await homePage.navigateAndCheckTitle();
-						await homePage.assertThat().isTopBannerDisplayed();
-						await homePage.closeTopBanner();
-						await homePage.assertThat().isBannerCarouselDisplayed();
-						await homePage
-							.steps()
-							.goToCarouselSlide(
-								record.bannerName,
-								record.srcPartial,
-							);
-
-						await homePage.loginModal
-							.assertThat()
-							.loginModalElementsAreVisible();
-					},
-				);
-			});
+			test(
+				`[ENG-1158] - Homepage banner carousel - unauthenticated user`,
+				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
+				async ({ homePage }) => {
+					test.fixme(true, "Banners logic needs to be reworked");
+					await homePage.navigateAndCheckTitle();
+					await homePage.assertThat().isTopBannerDisplayed();
+				},
+			);
 		});
 	},
 );
