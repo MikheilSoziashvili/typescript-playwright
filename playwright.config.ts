@@ -11,8 +11,48 @@ import * as Configuration from "configuration";
 /** See https://playwright.dev/docs/test-configuration. */
 
 /**
+ * Parses ReportPortal attributes from the RP_ATTRS environment variable.
+ * Expected format: "key1:value1;key2:value2;key3:value3"
+ * Falls back to default attributes if RP_ATTRS is not set.
+ */
+function getRpAttributes(): { key: string; value: string }[] {
+	const rpAttrsEnv = process.env.RP_ATTRS;
+
+	if (rpAttrsEnv) {
+		return rpAttrsEnv
+			.split(";")
+			.filter(Boolean)
+			.map((pair) => {
+				const [key, ...rest] = pair.split(":");
+				return { key: key.trim(), value: rest.join(":").trim() };
+			});
+	}
+
+	// Fallback attributes for local or non-CI runs
+	return [
+		{
+			key: "env",
+			value: Configuration.environment_url || "localhost",
+		},
+		{
+			key: "trigger",
+			value: Configuration.isScheduledRun ? "nightly" : "manual",
+		},
+		{
+			key: "branch",
+			value: Configuration.branchName || "local",
+		},
+	];
+}
+
+/**
  * ReportPortal Configuration
  * Documentation: https://github.com/reportportal/agent-js-playwright
+ *
+ * Best practices (per ReportPortal docs):
+ * - Launch names should represent WHAT is being tested, not WHEN
+ * - Timestamps, branches, and environments go into ATTRIBUTES, not the launch name
+ * - This allows ReportPortal to group launches, build trends, and run Auto-Analysis
  */
 const rpConfig = {
 	endpoint: Configuration.reportPortal.endpoint,
@@ -30,32 +70,9 @@ const rpConfig = {
 	 */
 	launchId: process.env.RP_LAUNCH_ID || Configuration.reportPortal.launchId,
 
-	attributes: [
-		{
-			key: "environment",
-			value: Configuration.environment_url || "localhost",
-		},
-		{
-			key: "ci",
-			value: Configuration.isCI ? "true" : "false",
-		},
-		{
-			key: "trigger",
-			value: Configuration.isScheduledRun ? "nightly" : "manual",
-		},
-		{
-			key: "branch",
-			value: Configuration.branchName,
-		},
-		{
-			key: "build_url",
-			value: process.env.BUILD_URL || "N/A",
-		},
-	],
+	attributes: getRpAttributes(),
 
-	description: `Automated E2E tests run on ${new Date().toISOString()} - Branch: ${
-		Configuration.branchName
-	}${process.env.RP_LAUNCH_ID ? " [Combined Results]" : ""}`,
+	description: `Automated E2E tests run on ${new Date().toISOString()}${process.env.RP_LAUNCH_ID ? " [Combined Results]" : ""}`,
 
 	// Reporting mode: 'DEFAULT' for Launches page, 'DEBUG' for Debug page
 	mode: "DEFAULT",

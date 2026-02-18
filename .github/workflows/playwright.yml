@@ -81,6 +81,10 @@ on:
                 type: boolean
                 required: false
                 default: false
+            rp_launch_name:
+                description: "Custom ReportPortal Launch Name (optional, overrides default)"
+                type: string
+                required: false
             merge_rp_launches:
                 description: "Merge ReportPortal Launches (only applies if ReportPortal is enabled)"
                 type: choice
@@ -356,13 +360,59 @@ jobs:
             RP_API_KEY: ${{ secrets.RP_API_KEY }}
             RP_ENDPOINT: ${{ vars.RP_ENDPOINT }}
             RP_PROJECT: ${{ vars.RP_PROJECT || 'superadmin_personal' }}
-            RP_LAUNCH_NAME: ${{ github.event_name == 'schedule' && 'Nightly E2E Tests' || format('E2E Tests - {0}', github.ref_name) }}
             RP_MODE: DEFAULT
             RP_MERGE_LAUNCHES: ${{ (github.event_name == 'schedule' || inputs.enable_reportportal == true) && inputs.merge_rp_launches != 'no' }}
             GITHUB_REF_NAME: ${{ github.ref_name }}
             BRANCH_NAME: ${{ github.ref_name }}
 
         steps:
+            - name: Set ReportPortal Launch Name
+              run: |
+                  CUSTOM_NAME="${{ inputs.rp_launch_name }}"
+                  BRANCH="${{ github.ref_name }}"
+
+                  if [ -n "$CUSTOM_NAME" ]; then
+                    LAUNCH_NAME="$CUSTOM_NAME"
+                  elif [ "${{ github.event_name }}" == "schedule" ]; then
+                    LAUNCH_NAME="E2E Nightly"
+                  elif echo "$BRANCH" | grep -qiE '^release'; then
+                    LAUNCH_NAME="E2E Regression"
+                  else
+                    LAUNCH_NAME="E2E Ad-hoc"
+                  fi
+
+                  echo "RP_LAUNCH_NAME=$LAUNCH_NAME" >> $GITHUB_ENV
+                  echo "ReportPortal Launch Name: $LAUNCH_NAME"
+
+            - name: Set ReportPortal Attributes
+              run: |
+                  # Trigger: how the run was initiated
+                  TRIGGER="${{ github.event_name }}"
+                  case "$TRIGGER" in
+                    schedule)            RP_TRIGGER="schedule" ;;
+                    workflow_dispatch)   RP_TRIGGER="manual" ;;
+                    repository_dispatch) RP_TRIGGER="auto-deploy" ;;
+                    pull_request)        RP_TRIGGER="pull-request" ;;
+                    *)                   RP_TRIGGER="$TRIGGER" ;;
+                  esac
+
+                  # Type: what kind of test run (mirrors launch name logic)
+                  BRANCH="${{ github.ref_name }}"
+                  if [ "${{ github.event_name }}" == "schedule" ]; then
+                    RP_TYPE="nightly"
+                  elif echo "$BRANCH" | grep -qiE '^release'; then
+                    RP_TYPE="regression"
+                  else
+                    RP_TYPE="ad-hoc"
+                  fi
+
+                  ENV_NAME="${{ inputs.environment || 'staging' }}"
+                  BUILD_NUM="${{ github.run_number }}"
+                  TAG="${{ env.TAG }}"
+
+                  echo "RP_ATTRS=type:${RP_TYPE};trigger:${RP_TRIGGER};env:${ENV_NAME};branch:${BRANCH};build:${BUILD_NUM};tag:${TAG}" >> $GITHUB_ENV
+                  echo "ReportPortal Attributes: type=${RP_TYPE}, trigger=${RP_TRIGGER}, env=${ENV_NAME}, branch=${BRANCH}, build=${BUILD_NUM}, tag=${TAG}"
+
             - name: Validate required inputs for custom environment
               if: ${{ (inputs.environment || 'staging') == 'custom' }}
               run: |
