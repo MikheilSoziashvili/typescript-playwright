@@ -8,6 +8,9 @@ import { XpChallengeTestFlow } from "@test-flows/rewards/xp-challenge-test-flow"
 import { XpChallengeAdminSetupFlow } from "@test-flows/rewards/xp-challenge-admin-setup-test-flow";
 import { XpChallengeActivationFlow } from "@test-flows/rewards/xp-challenge-activation-test-flow";
 import { XpChallengeCompletionFlow } from "@test-flows/rewards/xp-challenge-completion-test-flow";
+import { ReloadRewardTestFlow } from "@test-flows/rewards/reload-reward-test-flow";
+import { ReloadRewardAdminSetupFlow } from "@test-flows/rewards/reload-reward-admin-setup-test-flow";
+import { ReloadRewardActivationFlow } from "@test-flows/rewards/reload-reward-activation-test-flow";
 import { PromotionTestFlow } from "@test-flows/promotions/promotion-test-flow";
 import { PromotionSetupFlow } from "@test-flows/promotions/promotion-setup-test-flow";
 import { PromotionCreationFlow } from "@test-flows/promotions/promotion-creation-test-flow";
@@ -38,6 +41,7 @@ import { PredefinedDataSource } from "test-data/core/predefined-data-source";
 export type TestFlowsFixtures = {
 	plinkoBetTestFlow: PlinkoBetTestFlow;
 	xpChallengeTestFlow: XpChallengeTestFlow;
+	reloadRewardTestFlow: ReloadRewardTestFlow;
 	promotionTestFlow: PromotionTestFlow;
 	promotionVisibilityVerificationFlow: PromotionVisibilityVerificationFlow;
 	cryptoAdminSetupTestFlow: CryptoAdminSetupTestFlow;
@@ -86,6 +90,14 @@ export const testFlowsFixtures = base.extend<
 				new XpChallengeAdminSetupFlow(),
 				new XpChallengeActivationFlow(),
 				new XpChallengeCompletionFlow(),
+			),
+		);
+	},
+	reloadRewardTestFlow: async ({}, use) => {
+		await use(
+			new ReloadRewardTestFlow(
+				new ReloadRewardAdminSetupFlow(),
+				new ReloadRewardActivationFlow(),
 			),
 		);
 	},

@@ -149,6 +149,13 @@ export const predefined = {
 		rewardAmount: 100,
 		betAmount: 2000,
 	},
+	reloadReward: {
+		days: 7,
+		dailyReward: 1,
+		totalReward: 7,
+		amount: "$1.00",
+		totalAmount: "$7.00",
+	},
 	usdtBscAmountToDeposit: {
 		amountToDeposit: "0.1",
 		amountToDepositLarger: "0.4",

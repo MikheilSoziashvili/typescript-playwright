@@ -1502,3 +1502,53 @@ test.describe(
 		);
 	},
 );
+
+test.describe(
+	"User info - Rewards - Custom reload reward",
+	testDetails()
+		.withTags(
+			JiraComponent.REWARDS,
+			JiraComponent.ADMIN_PANEL,
+			JiraComponent.SPECIAL_REWARDS,
+		)
+		.apply(),
+	() => {
+		test(
+			`[ENG-10167] Reload Reward creation and activation`,
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			async ({
+				browserSessionManager,
+				testDataPredefined,
+				reloadRewardTestFlow,
+			}) => {
+				const adminUserInfoAdmin = await browserSessionManager.loginAs(
+					TestUserRole.EV_REWARDS_SYSTEM_SUPERADMIN_WITH_USER_INFO,
+					{ reuseContext: true },
+				);
+				const regularUser = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
+				);
+				const reloadRewardData = testDataPredefined.data.reloadReward;
+
+				await reloadRewardTestFlow.adminCreateReloadReward({
+					adminUser: adminUserInfoAdmin,
+					targetUsername:
+						regularUser.getAuthenticatedUser().user.username,
+					amount: reloadRewardData.amount,
+				});
+
+				await reloadRewardTestFlow.userActivateReloadReward({
+					user: regularUser,
+					amount: reloadRewardData.amount,
+				});
+
+				await reloadRewardTestFlow.adminVerifyReloadRewardIsActive({
+					adminUser: adminUserInfoAdmin,
+					targetUsername:
+						regularUser.getAuthenticatedUser().user.username,
+					totalAmount: reloadRewardData.totalAmount,
+				});
+			},
+		);
+	},
+);
