@@ -46,7 +46,6 @@ test.describe("Promo Campaign with duplicate codes of finished campaigns tests",
 			await twoFactorAuthModal
 				.steps()
 				.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
-			await promoCampaignsAdminPage.clickCreateCampaignButton();
 			await promoCodeModal.assertThat().isDisplayed();
 			await promoCodeModal
 				.steps()

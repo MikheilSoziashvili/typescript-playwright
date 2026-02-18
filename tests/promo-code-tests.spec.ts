@@ -277,7 +277,6 @@ test.describe(
 						.generateAndEnter2FaCodeSuccessfully(
 							qrCode2FAImagePath,
 						);
-					await promoCampaignsAdminPage.clickCreateCampaignButton();
 					await promoCodeModal
 						.steps()
 						.createDefaultCashPromoCodeSuccessfully(
@@ -311,9 +310,10 @@ test.describe(
 						cookies: { clearCookies: true },
 					});
 
-					const code2FA = await generate2FACodeFromQRCodeImage(
-						qrCode2FAImagePath,
-					);
+					const code2FA =
+						await generate2FACodeFromQRCodeImage(
+							qrCode2FAImagePath,
+						);
 					await homePage
 						.steps()
 						.loginUserWith2FaCodeSuccessfully(

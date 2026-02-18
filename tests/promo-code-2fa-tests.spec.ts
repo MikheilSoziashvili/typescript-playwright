@@ -54,7 +54,6 @@ test.describe("Promo Code tests", () => {
 			await twoFactorAuthModal
 				.steps()
 				.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
-			await promoCampaignsAdminPage.clickCreateCampaignButton();
 			await promoCodeModal.assertThat().isDisplayed();
 
 			await initializePageObjectsWithCookies(
@@ -73,7 +72,6 @@ test.describe("Promo Code tests", () => {
 			await twoFactorAuthModal
 				.steps()
 				.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
-			await promoCampaignsAdminPage.clickCreateCampaignButton();
 			await promoCodeModal.assertThat().isDisplayed();
 		},
 	);

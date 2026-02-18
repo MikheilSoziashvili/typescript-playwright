@@ -821,7 +821,6 @@ test.describe(
 				await twoFactorAuthModal
 					.steps()
 					.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
-				await promoCampaignsAdminPage.clickCreateCampaignButton();
 				await promoCodeModal
 					.steps()
 					.createDefaultCashPromoCodeSuccessfully(
@@ -903,7 +902,6 @@ test.describe(
 				await twoFactorAuthModal
 					.steps()
 					.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
-				await promoCampaignsAdminPage.clickCreateCampaignButton();
 				await promoCodeModal
 					.steps()
 					.createDefaultFreeSpinsPromoCodeSuccessfully(
