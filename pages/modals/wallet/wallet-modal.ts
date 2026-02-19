@@ -56,7 +56,6 @@ export class WalletModal extends BasePage<WalletModalMap> {
 
 	@step("Fill promo code")
 	public async fillPromoCode(promoCode: string): Promise<void> {
-		await this.map.promoCodeInputField.clear();
 		await this.map.promoCodeInputField.fill(`${promoCode}`);
 	}
 

@@ -12,16 +12,18 @@ export class NotificationMap extends BaseMap {
 	}): Locator {
 		if (options?.index) {
 			return this.page
-				.getByTestId("notificationContainer")
+				.getByTestId("notification-message-container")
 				.nth(options.index - 1);
 		} else if (options?.title) {
 			return this.page
 				.locator(
-					`*[data-testid=notificationContainer]:has(*[data-testid=notificationTitle]:text-is("${options.title}"))`,
+					`*[data-testid=notification-message-container]:has(*[data-testid=notification-message-title]:text-is("${options.title}"))`,
 				)
 				.first();
 		} else {
-			return this.page.getByTestId("notificationContainer").first();
+			return this.page
+				.getByTestId("notification-message-container")
+				.first();
 		}
 	}
 
@@ -30,7 +32,7 @@ export class NotificationMap extends BaseMap {
 		title?: string;
 	}): Locator {
 		return this.notificationContainer(options).getByTestId(
-			"notificationTitle",
+			"notification-message-title",
 		);
 	}
 
@@ -39,7 +41,7 @@ export class NotificationMap extends BaseMap {
 		title?: string;
 	}): Locator {
 		return this.notificationContainer(options).getByTestId(
-			"notificationSubTitle",
+			"notification-message-subtitle",
 		);
 	}
 
@@ -48,7 +50,7 @@ export class NotificationMap extends BaseMap {
 		title?: string;
 	}): Locator {
 		return this.notificationContainer(options).getByTestId(
-			"notificationGotItButton",
+			"notification-message-acknowledge-btn",
 		);
 	}
 

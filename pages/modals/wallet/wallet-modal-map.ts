@@ -167,11 +167,13 @@ export class WalletModalMap extends BaseMap {
 	}
 
 	public get promoCodeInputField(): Locator {
-		return this.walletLeftPanel.locator('input[placeholder="Enter Code"]');
+		return this.walletRightPanel.getByTestId(
+			"redeem-code-code-input-input",
+		);
 	}
 
 	public get redeemPromoCodeButton(): Locator {
-		return this.walletLeftPanel.locator("button", { hasText: "Redeem" });
+		return this.walletRightPanel.getByTestId("redeem-code-claim-button");
 	}
 
 	private vaultSubmitButtonByText(actionText: Button): Locator {
