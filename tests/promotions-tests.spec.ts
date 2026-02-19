@@ -30,7 +30,6 @@ import { ToastTitle } from "@enums/toast-titles";
 import { VipUserStatus } from "@enums/vip-user-statuses";
 import { test } from "@fixtures/fixtures";
 import { PromotionsPage } from "@pages/promotions/promotions-page";
-import { isCI } from "configuration";
 import { GamdomDb } from "database/gamdom-db";
 import { testData } from "test-data/test-data-manager";
 
@@ -277,7 +276,6 @@ test.describe(
 					test(
 						`[${scenario.testId}] Promotions - '${promotionType.name}' ${scenario.description}`,
 						testDetails()
-							.withJiraBugTickets("8964")
 							.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 							.apply(),
 						async ({
@@ -286,7 +284,6 @@ test.describe(
 							promotionAdminPage,
 							gamdomApiDbFacade,
 						}) => {
-							test.fixme(isCI);
 							const { user: promotionAdmin } =
 								await gamdomApiDbFacade.createSingleUserDbAndAuth(
 									{
@@ -412,7 +409,6 @@ test.describe(
 					testDetails()
 						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 						.withTags(TestTag.PLATFORM_BUG)
-						.withJiraBugTickets("8964")
 						.apply(),
 					async ({ promotionAdminPage, promotionsModal, toast }) => {
 						promotionName = generateRandomString({
@@ -514,7 +510,6 @@ test.describe(
 					testDetails()
 						.withAuthor(JiraUser.RALUCA_ARITON)
 						.withTags(TestTag.PLATFORM_BUG)
-						.withJiraBugTickets("8964")
 						.apply(),
 					async ({
 						browserSessionManager,
@@ -522,8 +517,6 @@ test.describe(
 						testDataObject,
 						gamdomDb,
 					}) => {
-						test.fixme(isCI);
-
 						const promotionsAdminUser =
 							await browserSessionManager.loginAs(
 								TestUserRole.ADMIN_PROMOTIONS_ADMIN,
@@ -673,7 +666,6 @@ test.describe(
 						testDetails()
 							.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 							.withTags(TestTag.PLATFORM_BUG)
-							.withJiraBugTickets("8964")
 							.apply(),
 						async ({
 							promotionAdminPage,
@@ -762,7 +754,7 @@ test.describe(
 
 			test.describe(
 				"Promotion verifications tests",
-				testDetails().withJiraBugTickets("8964").apply(),
+				testDetails().apply(),
 				() => {
 					promotionButtonTextInputValidations.forEach(
 						(validation) => {
