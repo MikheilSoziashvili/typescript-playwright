@@ -174,6 +174,10 @@ test.describe(
 					userInfoAdminPage,
 					transactionsAdminPage,
 				}) => {
+					test.fixme(
+						true,
+						"Temporary skipped until wallet is toped up",
+					);
 					// Setup user and test data
 					const { user, cookie } =
 						await gamdomApiDbFacade.createSingleUserDbAndAuth({
@@ -327,6 +331,10 @@ test.describe(
 					transactionsAdminPage,
 					gamdomDb,
 				}) => {
+					test.fixme(
+						true,
+						"Temporary skipped until wallet is toped up",
+					);
 					// Setup user and test data
 					const { cookie: superAdminCookie, user: superAdmin } =
 						await gamdomApiDbFacade.createSuperAdminUserDbAndAuth();

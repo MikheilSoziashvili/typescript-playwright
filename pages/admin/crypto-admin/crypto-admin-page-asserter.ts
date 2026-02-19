@@ -61,16 +61,44 @@ export class CryptoAdminAsserter extends BaseAsserter<CryptoAdminPage> {
 		adminCookie: string,
 		transactionId: string,
 		expectedAmount: number,
+		type?: TransactionType,
 	): Promise<void> {
-		const transactions = await gamdomApi.getCryptoAdminTransactions({
-			Cookie: adminCookie,
-		});
+		const normalizedId = transactionId.toLowerCase();
+		let cryptoAmount: number | undefined;
 
-		const matched = transactions.find((trx) =>
-			trx.txid.toLowerCase().startsWith(transactionId.toLowerCase()),
+		await waitUntil(
+			async () => {
+				const transactions = await gamdomApi.getCryptoAdminTransactions(
+					{
+						Cookie: adminCookie,
+					},
+				);
+
+				const matched = transactions.find(
+					(trx) =>
+						(!type ||
+							trx.type.toLowerCase() === type.toLowerCase()) &&
+						typeof trx.txid === "string" &&
+						trx.txid.toLowerCase().startsWith(normalizedId),
+				);
+
+				cryptoAmount =
+					matched?.amount_crypto !== undefined
+						? parseFloat(matched.amount_crypto)
+						: undefined;
+
+				return cryptoAmount !== undefined && !isNaN(cryptoAmount);
+			},
+			{
+				errorMessage: `Crypto amount not found in transaction (txid startsWith '${transactionId}')`,
+				intervalSeconds: TimeoutSeconds.FIVE,
+				timeoutSeconds: TimeoutSeconds.THIRTY,
+			},
 		);
 
-		const cryptoAmount = parseFloat(matched?.amount_crypto ?? "0");
+		if (cryptoAmount === undefined) {
+			throw new Error("Crypto amount not found in transaction");
+		}
 
 		expect(cryptoAmount).toBeCloseTo(expectedAmount, 5);
 	}
