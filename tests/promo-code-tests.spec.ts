@@ -793,7 +793,6 @@ test.describe(
 								promoCodeName,
 								input.firstAction,
 							);
-							await promoCampaignsAdminPage.searchPromoCode();
 
 							await promoCampaignsAdminPage
 								.assertThat()
@@ -806,8 +805,7 @@ test.describe(
 								promoCodeName,
 								input.finalAction,
 							);
-							await promoCampaignsAdminPage.searchPromoCode();
-
+							
 							await promoCampaignsAdminPage
 								.assertThat()
 								.verifyPromoCampaignStatus(

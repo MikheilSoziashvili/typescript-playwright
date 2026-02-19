@@ -85,7 +85,6 @@ export class PromoCampaignsAdminSteps extends BasePageStep<PromoCampaignsAdminPa
 		numberOfResults: number,
 	): Promise<void> {
 		await this.gamdomPage.map.searchPromoCodeInputField.fill(campaignCode);
-		await this.gamdomPage.searchPromoCode();
 		await this.gamdomPage.map.waitForVisibility({
 			locator: this.gamdomPage.map.clearButton,
 		});
@@ -103,7 +102,6 @@ export class PromoCampaignsAdminSteps extends BasePageStep<PromoCampaignsAdminPa
 		appendToCode: string,
 	): Promise<void> {
 		await this.gamdomPage.map.searchPromoCodeInputField.fill(campaignCode + appendToCode);
-		await this.gamdomPage.searchPromoCode();
 	}
 
 	@step("Clear search input field")

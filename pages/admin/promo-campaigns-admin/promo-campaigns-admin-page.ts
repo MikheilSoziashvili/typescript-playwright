@@ -35,11 +35,6 @@ export class PromoCampaignsAdminPage extends BasePage<PromoCampaignsAdminMap> {
 		await this.map.newPromoCodeButton.click({ timeout: Timeout.MAX });
 	}
 
-	@step("Search for a promo code")
-	public async searchPromoCode(): Promise<void> {
-		await this.map.searchButton.click();
-	}
-
 	@step("Clear search input field")
 	public async clearSearchInputField(): Promise<void> {
 		await this.map.clearButton.click();
