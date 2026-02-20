@@ -13,7 +13,6 @@ import {
 	PromoCampaignCodesGenerator,
 	PromoCodesGenerators,
 	PromotionTitlesGenerator,
-	PromotionTitlesV4Generator,
 	UsernameGenerator,
 } from "test-data/interfaces/random";
 import { PredefinedData, PredefinedRandomData } from "test-data/types";
@@ -111,7 +110,7 @@ export class RandomDataSourceGenerator {
 		};
 	}
 
-	public get promotionTitlesV4(): PromotionTitlesV4Generator {
+	public get promotionTitles(): PromotionTitlesGenerator {
 		return {
 			helperPromotionTitle: () =>
 				generateRandomString({
@@ -126,22 +125,6 @@ export class RandomDataSourceGenerator {
 				generateRandomString({
 					prefix:
 						`${category}_${subCategory}_${label}_`.toLowerCase() +
-						"promotion_",
-					length: 5,
-				}),
-		};
-	}
-
-	public get promotionTitles(): PromotionTitlesGenerator {
-		return {
-			promotionTitle: (
-				category: string,
-				subCategory: string,
-				isForVip: string,
-			) =>
-				generateRandomString({
-					prefix:
-						`${category}_${subCategory}_${isForVip}_`.toLowerCase() +
 						"promotion_",
 					length: 5,
 				}),
@@ -169,10 +152,10 @@ export class RandomDataSourceGenerator {
 
 	public get chatMessage(): ChatMessageGenerator {
 		return {
-			message: () => 
+			message: () =>
 				generateRandomString({
 					prefix: "automation_msg_",
 				}),
-		}
+		};
 	}
 }

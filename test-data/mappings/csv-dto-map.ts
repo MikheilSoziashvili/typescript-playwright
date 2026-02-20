@@ -77,7 +77,7 @@ export type CsvDtoMap = {
 	[CsvFilesName.ESPORTS_CATEGORIES]: EsportsCategoriesCsv;
 	[CsvFilesName.LOGIN_INPUT_VALIDATION]: LoginInputValidationCsv;
 	[CsvFilesName.LOGIN_REJECTED]: LoginRejectedCsv;
-	[CsvFilesName.PROMOTION_COMBINATIONS_FOR_LABEL_DISPLAY_V4]: PromotionCombinationForLabelDisplayV4Csv;
+	[CsvFilesName.PROMOTION_COMBINATIONS_FOR_LABEL_DISPLAY]: PromotionCombinationForLabelDisplayV4Csv;
 	[CsvFilesName.ROYALTY_UP_LEVEL_RANKS]: RoyaltyUpLevelRanksCsv;
 	[CsvFilesName.ROYALTY_UP_SKIPPING_LEVELS]: RoyaltyUpSkippingLevelsCsv;
 	[CsvFilesName.OBT_ESPORTS_PAGES_STATUS_CODE]: ObtEsportsPagesStatusCodeCsv;

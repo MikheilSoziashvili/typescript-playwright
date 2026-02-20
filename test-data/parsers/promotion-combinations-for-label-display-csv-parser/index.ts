@@ -1,22 +1,22 @@
-import { PromotionCombinationForLabelDisplayV4CsvRecord } from "@dtos/csv";
+import { PromotionCombinationForLabelDisplayCsvRecord } from "@dtos/csv";
 import { PromotionCategories } from "@enums/promotion-categories";
-import { PromotionLabelsV4 } from "@enums/promotion-labels";
+import { PromotionLabels } from "@enums/promotion-labels";
 import { PromotionSubStatuses } from "@enums/promotion-sub-categories";
 
-export interface PromotionCombinationForLabelDisplayV4CsvParsedRecord {
+export interface PromotionCombinationForLabelDisplayCsvParsedRecord {
 	category: PromotionCategories;
 	subcategory: PromotionSubStatuses;
-	label: PromotionLabelsV4;
+	label: PromotionLabels;
 	startDateMode: number;
 	endDateMode: number;
 }
 
 export const parsePromotionCombinationLabelUpdateCsvRow = (
-	row: PromotionCombinationForLabelDisplayV4CsvRecord,
-): PromotionCombinationForLabelDisplayV4CsvParsedRecord => ({
+	row: PromotionCombinationForLabelDisplayCsvRecord,
+): PromotionCombinationForLabelDisplayCsvParsedRecord => ({
 	category: row.category as PromotionCategories,
 	subcategory: row.subcategory as PromotionSubStatuses,
-	label: row.label as PromotionLabelsV4,
+	label: row.label as PromotionLabels,
 	startDateMode: Number(row.startDateMode),
 	endDateMode: Number(row.endDateMode),
 });

@@ -27,16 +27,8 @@ export interface BlogPostsGenerator {
 	category(): BlogPostCategories;
 }
 
-export interface PromotionTitlesV4Generator {
-	helperPromotionTitle(): string;
-	promotionTitle(
-		category: string,
-		subCategory: string,
-		label: string,
-	): string;
-}
-
 export interface PromotionTitlesGenerator {
+	helperPromotionTitle(): string;
 	promotionTitle(
 		category: string,
 		subCategory: string,

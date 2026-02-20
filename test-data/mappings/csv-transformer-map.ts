@@ -10,7 +10,7 @@ import {
 	PromoCampaignUpdateCsvRecord,
 	UserProfileItemsLinksAccessibilityCsvRecord,
 	KycLevel2SubmissionsCsvRecord,
-	PromotionCombinationForLabelDisplayV4CsvRecord,
+	PromotionCombinationForLabelDisplayCsvRecord,
 	RoyaltyUpLevelRanksCsvRecord,
 	RoyaltyUpSkippingLevelsCsvRecord,
 	ObtEsportsPagesStatusCodeCsvRecord,
@@ -82,7 +82,7 @@ import {
 } from "test-data/parsers/kyc-level2-submissions-csv-parser";
 import {
 	parsePromotionCombinationLabelUpdateCsvRow,
-	PromotionCombinationForLabelDisplayV4CsvParsedRecord,
+	PromotionCombinationForLabelDisplayCsvParsedRecord,
 } from "test-data/parsers/promotion-combinations-for-label-display-csv-parser";
 import {
 	parseRoyaltyUpLevelRanksCsvRow,
@@ -208,9 +208,9 @@ export type CsvTransformerMapType = {
 		row: KycLevel2SubmissionsCsvRecord,
 	) => KycLevel2SubmissionsCsvParsedRecord;
 
-	[CsvFilesName.PROMOTION_COMBINATIONS_FOR_LABEL_DISPLAY_V4]: (
-		row: PromotionCombinationForLabelDisplayV4CsvRecord,
-	) => PromotionCombinationForLabelDisplayV4CsvParsedRecord;
+	[CsvFilesName.PROMOTION_COMBINATIONS_FOR_LABEL_DISPLAY]: (
+		row: PromotionCombinationForLabelDisplayCsvRecord,
+	) => PromotionCombinationForLabelDisplayCsvParsedRecord;
 
 	[CsvFilesName.ROYALTY_UP_LEVEL_RANKS]: (
 		row: RoyaltyUpLevelRanksCsvRecord,
@@ -285,7 +285,7 @@ export const CsvTransformerMap: CsvTransformerMapType = {
 		parseBlogVerifySocialShareLinksCsvRow,
 	[CsvFilesName.PROMO_CAMPAIGN_UPDATE]: parsePromoCampaignUpdateCsvRecord,
 	[CsvFilesName.KYC_LEVEL2_SUBMISSIONS]: parseKycLevel2SubmissionsCsvRow,
-	[CsvFilesName.PROMOTION_COMBINATIONS_FOR_LABEL_DISPLAY_V4]:
+	[CsvFilesName.PROMOTION_COMBINATIONS_FOR_LABEL_DISPLAY]:
 		parsePromotionCombinationLabelUpdateCsvRow,
 	[CsvFilesName.ROYALTY_UP_LEVEL_RANKS]: parseRoyaltyUpLevelRanksCsvRow,
 	[CsvFilesName.ROYALTY_UP_SKIPPING_LEVELS]:

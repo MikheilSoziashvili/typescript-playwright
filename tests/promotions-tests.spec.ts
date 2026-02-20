@@ -828,11 +828,6 @@ test.describe(
 									.promotionRewardsButtonHasText(
 										customButtonText,
 									);
-								await promotionPage
-									.assertThat()
-									.promotionHowToParticipateButtonHasText(
-										customButtonText,
-									);
 							},
 						);
 					});
@@ -842,13 +837,13 @@ test.describe(
 	},
 );
 
-const promotionCombinationsV4 = testData().fromCsvParsed({
-	file: CsvFilesName.PROMOTION_COMBINATIONS_FOR_LABEL_DISPLAY_V4,
+const promotionLabelCombinations = testData().fromCsvParsed({
+	file: CsvFilesName.PROMOTION_COMBINATIONS_FOR_LABEL_DISPLAY,
 });
 
 test.describe(
-	"Promotions tests - v4",
-	testDetails().withTags(TestTag.V4, JiraComponent.PROMOTIONS).apply(),
+	"Promotions tests - label display tests",
+	testDetails().withTags(JiraComponent.PROMOTIONS).apply(),
 	() => {
 		let promotionsToDelete: string[] = [];
 
@@ -857,7 +852,7 @@ test.describe(
 			promotionsToDelete = [];
 		});
 
-		promotionCombinationsV4.forEach((combination) => {
+		promotionLabelCombinations.forEach((combination) => {
 			test(
 				`[ENG-11500] Verify promotions card labels - Promotion Category: ${combination.category} - Promotion Subcategory: ${combination.subcategory} - Label: ${combination.label}`,
 				testDetails().withAuthor(JiraUser.RALUCA_ARITON).withTags(TestTag.ACCEPTANCE).apply(),
@@ -874,44 +869,42 @@ test.describe(
 						);
 
 					const helperTitle =
-						testDataRandom.data.promotionTitlesV4.helperPromotionTitle();
+						testDataRandom.data.promotionTitles.helperPromotionTitle();
 					promotionsToDelete.push(helperTitle);
 
 					const adminUserId =
 						promotionsAdminUser.getAuthenticatedUser().user.userId;
 					await promotionsAdminUser.pages.promotionsPage
 						.steps()
-						.insertHelperPromotionV4(
+						.insertHelperPromotion(
 							helperTitle,
 							adminUserId,
 							combination.label,
 						);
 
 					const promotionName =
-						testDataRandom.data.promotionTitlesV4.promotionTitle(
+						testDataRandom.data.promotionTitles.promotionTitle(
 							combination.category,
 							combination.subcategory,
 							combination.label,
 						);
 					promotionsToDelete.push(promotionName);
 
-					const promotionTestDataV4 = testDataObject.promotions.build(
-						{
-							title: promotionName,
-							customUrl: generateCustomUrl(promotionName),
-							promotionCategory: combination.category,
-							promotionSubCategory: combination.subcategory,
-							isForVip: PromotionIsVipCategories.ALL,
-							promotionStartDate: formatDate(3),
-							promotionEndDate: formatDate(5),
-						},
-					);
+					const promotionTestData = testDataObject.promotions.build({
+						title: promotionName,
+						customUrl: generateCustomUrl(promotionName),
+						promotionCategory: combination.category,
+						promotionSubCategory: combination.subcategory,
+						isForVip: PromotionIsVipCategories.ALL,
+						promotionStartDate: formatDate(3),
+						promotionEndDate: formatDate(5),
+					});
 
 					await promotionsAdminUser.pages.promotionAdminPage.navigate();
 					await promotionsAdminUser.pages.promotionAdminPage.clickCreateNewPromotionButton();
 					await promotionsAdminUser.pages.promotionsModal
 						.steps()
-						.fillPromotionSuccessfully(promotionTestDataV4);
+						.fillPromotionSuccessfully(promotionTestData);
 
 					await promotionsAdminUser.pages.toast
 						.assertThat()
@@ -939,13 +932,13 @@ test.describe(
 					await promotionsAdminUser.pages.promotionsPage.navigate();
 					await promotionsAdminUser.pages.promotionsPage
 						.assertThat()
-						.promotionsPageIsLoadedV4();
+						.promotionsPageIsLoaded();
 					await promotionsAdminUser.pages.promotionsPage
 						.assertThat()
-						.promotionIsDisplayedInPromotionsPageV4(promotionName);
+						.promotionIsDisplayedInPromotionsPage(promotionName);
 					await promotionsAdminUser.pages.promotionsPage
 						.assertThat()
-						.promotionLabelForPromotionIsDisplayedV4(
+						.promotionLabelForPromotionIsDisplayed(
 							promotionName,
 							combination.label,
 						);

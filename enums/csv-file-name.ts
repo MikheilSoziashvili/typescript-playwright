@@ -58,7 +58,7 @@ export enum CsvFilesName {
 	CASINO_GAMES_AGGREGATOR_PROVIDER = "ENG-5015-casino-games-aggregator-provider.csv",
 	ESPORTS_CATEGORIES = "ENG-6324-esports-categories.csv",
 	OBT_ESPORTS_PAGES_STATUS_CODE = "ENG-4830-obt-esports-pages-status-code.csv",
-	PROMOTION_COMBINATIONS_FOR_LABEL_DISPLAY_V4 = "ENG-11500-promotion-combinations-for-label-display-v4.csv",
+	PROMOTION_COMBINATIONS_FOR_LABEL_DISPLAY = "ENG-11500-promotion-combinations-for-label-display.csv",
 	ROYALTY_UP_LEVEL_RANKS = "ENG-10465-royalty-up-level-ranks.csv",
 	ROYALTY_UP_SKIPPING_LEVELS = "ENG-10845-royalty-up-skipping-levels.csv",
 	ENABLE_DISABLE_CRYPTO_CURRENCIES_STATUSES = "ENG-10584-enable-disable-crypto-currencies-statuses.csv",

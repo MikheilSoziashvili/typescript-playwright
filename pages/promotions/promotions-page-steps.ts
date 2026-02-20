@@ -2,7 +2,7 @@ import { BasePageStep } from "@pages/base/base-page-step";
 import { PromotionsPage } from "./promotions-page";
 import { step } from "decorators/step";
 import { GamdomDb } from "database/gamdom-db";
-import { PromotionLabelsV4 } from "@enums/promotion-labels";
+import { PromotionLabels } from "@enums/promotion-labels";
 import { getISODate } from "@core/utils/utils";
 import { PromotionIsVipCategories } from "@enums/promotion-is-vip-categories";
 
@@ -68,12 +68,12 @@ export class PromotionsPageSteps extends BasePageStep<PromotionsPage> {
 	}
 
 	@step("Insert helper promotion for archived scenarios")
-	public async insertHelperPromotionV4(
+	public async insertHelperPromotion(
 		helperTitle: string,
 		userId: number,
 		label: string,
 	): Promise<void> {
-		if (label.toUpperCase() !== PromotionLabelsV4.ARCHIVE.toUpperCase()) {
+		if (label.toUpperCase() !== PromotionLabels.ARCHIVE.toUpperCase()) {
 			return;
 		}
 

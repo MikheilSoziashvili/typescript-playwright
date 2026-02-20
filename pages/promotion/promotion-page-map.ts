@@ -7,45 +7,35 @@ export class PromotionPageMap extends BaseMap {
 	}
 
 	public get promotionContainer(): Locator {
-		return this.page.getByTestId("page-container-animate");
+		return this.page.getByTestId("promotion-details");
 	}
 
 	public get promotionHeaderContainer(): Locator {
-		return this.promotionContainer.locator(
-			"[class*='PromotionsSingle-styled__Header-sc-']",
-		);
-	}
-
-	public get promotionBodyContainer(): Locator {
-		return this.promotionContainer.locator(
-			"[class*='PromotionsSingle-styled__GridContainer-sc-']",
+		return this.promotionContainer.getByTestId(
+			"promotion-details-detail-head-container",
 		);
 	}
 
 	public get promotionRewardsLeftBlockContainer(): Locator {
-		return this.promotionBodyContainer.locator(
-			"[class*='RewardsInfo-styled__LeftBlock-sc-']",
+		return this.promotionContainer.getByTestId(
+			"promotion-details-sticky-content-container",
 		);
 	}
 	public get promotionRewardsButton(): Locator {
-		return this.promotionRewardsLeftBlockContainer.locator("button");
+		return this.promotionRewardsLeftBlockContainer.getByTestId(
+			"promotion-details-button-link",
+		);
 	}
 
 	public get promotionRewardsRightBlockContainer(): Locator {
-		return this.promotionBodyContainer.locator(
-			"[class*='PromotionsSingle-styled__RightBottomBlock-sc-']",
+		return this.promotionContainer.getByTestId(
+			"promotion-details-content-container",
 		);
 	}
 
 	public get promotionHowToParticipateContainer(): Locator {
-		return this.promotionRewardsRightBlockContainer.locator(
-			`[class*="PromotionsSingle-styled__AccordionWrapper-sc-"]`,
-		);
-	}
-
-	public get promotionHowToParticipateButton(): Locator {
-		return this.promotionHowToParticipateContainer.locator(
-			`button[type='button']`,
+		return this.promotionRewardsRightBlockContainer.getByTestId(
+			"accordion-head-promotion-details-how-to-participate",
 		);
 	}
 }

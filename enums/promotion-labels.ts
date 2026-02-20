@@ -1,4 +1,4 @@
-export enum PromotionLabelsV4 {
+export enum PromotionLabels {
 	SOON = "Soon",
 	CASINO = "Casino",
 	LIVE_CASINO = "Live casino",
