@@ -28,7 +28,10 @@ export class CryptoDepositTestFlow extends BaseTestFlow {
 			testDataPredefined,
 		} = this.deps;
 
-		const { amountToDeposit } = getCryptoTestData(testDataPredefined, config);
+		const { amountToDeposit } = getCryptoTestData(
+			testDataPredefined,
+			config,
+		);
 
 		await browserSessionManager.loginAs(TestUserRole.REGULAR, {
 			reuseContext: true,
@@ -36,10 +39,17 @@ export class CryptoDepositTestFlow extends BaseTestFlow {
 
 		await homePage.navigateToWallet();
 
-		const initialBalanceCoins =
-			await userBalanceHandler.walletBalanceInCoins(config.unit);
+		const { unit } = config;
+		const initialBalanceCoins = unit
+			? await userBalanceHandler.walletBalanceInCoins(unit)
+			: await userBalanceHandler.walletBalanceInFiatRounded();
 
 		await walletModal.selectPaymentMethod(config.cryptocurrency);
+
+		if (config.network) {
+			await walletModal.selectDepositNetwork(config.network);
+		}
+
 		const userDepositAddress = await walletModal.getDepositAddress();
 
 		const depositTransaction = await client.sendToAddress(

@@ -18,10 +18,15 @@ export class CryptoDepositVerificationTestFlow extends BaseTestFlow {
 	public async verifyDeposit(params: {
 		config: CryptoConfig;
 		processResult: DepositProcessResult;
+		verifyBalanceAsFiat?: boolean; // optional — use for stablecoins where balance is 1:1 fiat (e.g. USDT)
 	}): Promise<void> {
-		const { config, processResult } = params;
+		const { config, processResult, verifyBalanceAsFiat = false } = params;
 
-		await this.verifyDepositAsUser({ config, processResult });
+		await this.verifyDepositAsUser({
+			config,
+			processResult,
+			verifyBalanceAsFiat,
+		});
 		await this.verifyDepositAsAdmin({ processResult });
 	}
 
@@ -29,8 +34,9 @@ export class CryptoDepositVerificationTestFlow extends BaseTestFlow {
 	private async verifyDepositAsUser(params: {
 		config: CryptoConfig;
 		processResult: DepositProcessResult;
+		verifyBalanceAsFiat: boolean;
 	}): Promise<void> {
-		const { config, processResult } = params;
+		const { config, processResult, verifyBalanceAsFiat } = params;
 		const {
 			homePage,
 			transactionsPage,
@@ -51,20 +57,39 @@ export class CryptoDepositVerificationTestFlow extends BaseTestFlow {
 
 		await homePage.navigate();
 
-		const expectedBalanceUSD = await userBalanceHandler
-			.steps()
-			.calculateExpectedBalanceAfterCryptoDeposit(
-				processResult.initialBalanceCoins,
-				processResult.amountToDeposit,
-				config.unit,
+		const { unit } = config;
+		const balanceAfterDepositUSD = unit
+			? await userBalanceHandler.walletBalanceInFiatRounded(unit)
+			: await userBalanceHandler.walletBalanceInFiatRounded();
+
+		if (verifyBalanceAsFiat) {
+			// Stablecoin path: balance delta equals deposit amount directly in USD
+			const expectedBalance = parseFloat(
+				(
+					processResult.initialBalanceCoins +
+					parseFloat(processResult.amountToDeposit)
+				).toFixed(2),
 			);
-
-		const balanceAfterDepositUSD =
-			await userBalanceHandler.walletBalanceInFiatRounded(config.unit);
-
-		await homePage
-			.assertThat()
-			.verifyBalance(balanceAfterDepositUSD, expectedBalanceUSD);
+			await homePage
+				.assertThat()
+				.verifyBalance(balanceAfterDepositUSD, expectedBalance);
+		} else {
+			// Standard path: compute expected balance via unit conversion
+			if (!unit)
+				throw new Error(
+					"CryptoConfig.unit is required for non-stablecoin deposit verification",
+				);
+			const expectedBalanceUSD = await userBalanceHandler
+				.steps()
+				.calculateExpectedBalanceAfterCryptoDeposit(
+					processResult.initialBalanceCoins,
+					processResult.amountToDeposit,
+					unit,
+				);
+			await homePage
+				.assertThat()
+				.verifyBalance(balanceAfterDepositUSD, expectedBalanceUSD);
+		}
 	}
 
 	@step("Verify deposit as admin")

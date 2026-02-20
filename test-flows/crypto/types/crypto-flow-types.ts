@@ -36,8 +36,9 @@ export interface CryptoConfig {
 	cryptocurrency: Cryptocurrency;
 	cryptoTicker: CryptoTicker;
 	cryptoNode: CryptoNode;
-	unit: Unit;
+	unit?: Unit;
 	testDataKey: string;
+	network?: CryptoTicker;
 }
 
 export function getCryptoTestData(
@@ -55,6 +56,61 @@ export const ETH_CONFIG: CryptoConfig = {
 	cryptoNode: CryptoNode.fireETH,
 	unit: Unit.ETH_GWEI,
 	testDataKey: "ethAmountToDeposit",
+};
+
+export const BNB_CONFIG: CryptoConfig = {
+	cryptocurrency: Cryptocurrency.BNB,
+	cryptoTicker: CryptoTicker.BNB,
+	cryptoNode: CryptoNode.fireBNB,
+	unit: Unit.BNB_JAGER,
+	testDataKey: "bnbAmountToDeposit",
+};
+
+export const USDT_ETH_CONFIG: CryptoConfig = {
+	cryptocurrency: Cryptocurrency.Tether,
+	cryptoTicker: CryptoTicker.USDT,
+	cryptoNode: CryptoNode.fireUSDT,
+	testDataKey: "usdtAmountToDeposit",
+};
+
+export const USDT_TRX_CONFIG: CryptoConfig = {
+	cryptocurrency: Cryptocurrency.Tether,
+	cryptoTicker: CryptoTicker.USDT_TRX,
+	cryptoNode: CryptoNode.fireTRX_USDT,
+	testDataKey: "usdtTrxAmountToDeposit",
+	network: CryptoTicker.USDT_TRX,
+};
+
+export const USDT_BSC_CONFIG: CryptoConfig = {
+	cryptocurrency: Cryptocurrency.Tether,
+	cryptoTicker: CryptoTicker.USDT_BSC,
+	cryptoNode: CryptoNode.fireUSDT_BSC,
+	testDataKey: "usdtBscAmountToDeposit",
+	network: CryptoTicker.USDT_BSC,
+};
+
+export const USD1_SOL_CONFIG: CryptoConfig = {
+	cryptocurrency: Cryptocurrency.USD1,
+	cryptoTicker: CryptoTicker.USD1_SOL,
+	cryptoNode: CryptoNode.fireUSD1_SOL,
+	testDataKey: "usd1SolAmountToDeposit",
+	network: CryptoTicker.USD1_SOL,
+};
+
+export const USD1_ETH_CONFIG: CryptoConfig = {
+	cryptocurrency: Cryptocurrency.USD1,
+	cryptoTicker: CryptoTicker.USD1_ETH,
+	cryptoNode: CryptoNode.fireUSD1_ETH,
+	testDataKey: "usd1EthAmountToDeposit",
+	network: CryptoTicker.USD1_ETH,
+};
+
+export const TRX_CONFIG: CryptoConfig = {
+	cryptocurrency: Cryptocurrency.Tron,
+	cryptoTicker: CryptoTicker.TRX,
+	cryptoNode: CryptoNode.fireTRX,
+	unit: Unit.TRX_SUN,
+	testDataKey: "trxAmountToDeposit",
 };
 
 export interface CryptoFlowDependencies {

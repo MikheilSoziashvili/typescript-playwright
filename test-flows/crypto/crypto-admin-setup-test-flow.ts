@@ -2,7 +2,7 @@ import { TestInfo } from "@playwright/test";
 import { BaseTestFlow, testFlow } from "@test-flows";
 import { BrowserSessionManager } from "@core/browser-session-mngmt";
 import { CryptoAdminPage } from "@pages/admin/crypto-admin/crypto-admin-page";
-import { CryptoOperationOptions } from "@core/types/types";
+import { CryptoOperationOptions, CustomFeesOptions } from "@core/types/types";
 import { CryptoNode } from "@enums/crypto-nodes";
 import { TestUserRole } from "@enums/test-user-roles";
 
@@ -19,8 +19,9 @@ export class CryptoAdminSetupTestFlow extends BaseTestFlow {
 		testInfo: TestInfo;
 		operations: CryptoOperationOptions[];
 		nodes: CryptoNode[];
+		customFees?: Partial<Record<CryptoNode, CustomFeesOptions>>;
 	}): Promise<void> {
-		const { testInfo, operations, nodes } = params;
+		const { testInfo, operations, nodes, customFees } = params;
 
 		await this.browserSessionManager.loginAs(TestUserRole.SUPERADMIN, {
 			reuseContext: true,
@@ -36,15 +37,14 @@ export class CryptoAdminSetupTestFlow extends BaseTestFlow {
 		for (const node of nodes) {
 			await this.cryptoAdminPage.setUserPayWd(node, {
 				enabled: true,
+				...(customFees?.[node] && { customFees: customFees[node] }),
 			});
 
 			await this.cryptoAdminPage
 				.steps()
 				.waitUntilCryptoDataRefreshed(testInfo);
 
-			await this.cryptoAdminPage
-				.steps()
-				.setMinDepositAndWithdraw(node);
+			await this.cryptoAdminPage.steps().setMinDepositAndWithdraw(node);
 		}
 	}
 }

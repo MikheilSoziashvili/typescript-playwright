@@ -6,7 +6,10 @@ import {
 	WithdrawalSetupResult,
 	getCryptoTestData,
 } from "./types/crypto-flow-types";
-import { WithdrawalSpeed, withdrawalSpeedToFeeLevel } from "@enums/withdrawal-speeds";
+import {
+	WithdrawalSpeed,
+	withdrawalSpeedToFeeLevel,
+} from "@enums/withdrawal-speeds";
 import { getCookieHeader, setAuthenticationCookies } from "@core/utils/utils";
 import { TestUserRole } from "@enums/test-user-roles";
 import { Currency } from "@enums/currencies";
@@ -28,13 +31,15 @@ export class CryptoWithdrawalProcessTestFlow extends BaseTestFlow {
 		config: CryptoConfig;
 		speed: WithdrawalSpeed;
 		setupResult: WithdrawalSetupResult;
+		expectedCustomFee?: number;
 	}): Promise<WithdrawalProcessResult> {
-		const { config, speed, setupResult } = params;
+		const { config, speed, setupResult, expectedCustomFee } = params;
 
 		const userResult = await this.submitWithdrawalAsUser({
 			config,
 			speed,
 			setupResult,
+			expectedCustomFee,
 		});
 
 		await this.processQueuedWithdrawalsAsAdmin();
@@ -54,8 +59,9 @@ export class CryptoWithdrawalProcessTestFlow extends BaseTestFlow {
 		config: CryptoConfig;
 		speed: WithdrawalSpeed;
 		setupResult: WithdrawalSetupResult;
+		expectedCustomFee?: number;
 	}): Promise<UserWithdrawalResult> {
-		const { config, speed, setupResult } = params;
+		const { config, speed, setupResult, expectedCustomFee } = params;
 		const {
 			browserSessionManager,
 			homePage,
@@ -66,7 +72,10 @@ export class CryptoWithdrawalProcessTestFlow extends BaseTestFlow {
 			testDataPredefined,
 		} = this.deps;
 
-		const { withdrawalAddress } = getCryptoTestData(testDataPredefined, config);
+		const { withdrawalAddress } = getCryptoTestData(
+			testDataPredefined,
+			config,
+		);
 
 		const userSession = await browserSessionManager.loginAs(
 			TestUserRole.REGULAR,
@@ -96,6 +105,8 @@ export class CryptoWithdrawalProcessTestFlow extends BaseTestFlow {
 			amount: amountToWithdraw,
 			speed: speed,
 			isVip: setupResult.isVip,
+			...(config.network && { network: config.network }),
+			...(expectedCustomFee !== undefined && { expectedCustomFee }),
 		});
 		await toast.assertThat().titleIs(ToastTitle.SUCCESS);
 
