@@ -42,4 +42,17 @@ export class UserInfoRewardsAdminPageAsserter extends BaseAsserter<UserInfoRewar
 				.locator("p", { hasText: "No active rewards" }),
 		]);
 	}
+
+	@step('Edit "Reload" Reward form is opened')
+	public async editReloadRewardFormIsOpened(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.editReloadRewardModalTitle,
+		]);
+		await this.checkElementsHaveText([
+			{
+				locator: this.gamdomPage.map.editReloadRewardModalTitle,
+				expectedText: 'Edit "Reload" Reward',
+			},
+		]);
+	}
 }

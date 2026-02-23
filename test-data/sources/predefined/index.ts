@@ -155,6 +155,8 @@ export const predefined = {
 		totalReward: 7,
 		amount: "$1.00",
 		totalAmount: "$7.00",
+		newTotalReward: 10,
+		newTotalAmount: "$10.00",
 	},
 	usdtBscAmountToDeposit: {
 		amountToDeposit: "0.1",

@@ -1548,5 +1548,41 @@ test.describe(
 				});
 			},
 		);
+
+		test(
+			`[ENG-10170] Change Reload Reward`,
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			async ({
+				browserSessionManager,
+				gamdomDb,
+				changeReloadRewardTestFlow,
+				testDataPredefined,
+			}) => {
+				const adminUserInfoAdmin = await browserSessionManager.loginAs(
+					TestUserRole.EV_REWARDS_SYSTEM_SUPERADMIN_WITH_USER_INFO,
+					{ reuseContext: true },
+				);
+				const regularUser = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
+				);
+
+				const regularUserId =
+					regularUser.getAuthenticatedUser().user.userId;
+				const adminUserId =
+					adminUserInfoAdmin.getAuthenticatedUser().user.userId;
+
+				const reloadRewardData = testDataPredefined.data.reloadReward;
+
+				await gamdomDb.insertReloadReward(regularUserId, adminUserId);
+
+				await changeReloadRewardTestFlow.changeReloadReward({
+					adminUser: adminUserInfoAdmin,
+					targetUsername:
+						regularUser.getAuthenticatedUser().user.username,
+					newRewardTotal: reloadRewardData.newTotalReward,
+					newTotalAmount: reloadRewardData.newTotalAmount,
+				});
+			},
+		);
 	},
 );

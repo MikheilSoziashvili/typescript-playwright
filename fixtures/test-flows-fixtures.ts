@@ -37,6 +37,7 @@ import { UserInfoTransactionsAdminPage } from "@pages/admin/user-info-admin/user
 import { UserBalanceHandler } from "@core/handlers/user-balance-handler/user-balance-handler";
 import { GamdomApi } from "@api/gamdom-api";
 import { PredefinedDataSource } from "test-data/core/predefined-data-source";
+import { ChangeReloadRewardTestFlow } from "@test-flows/rewards/change-reload-reward-test-flow";
 
 export type TestFlowsFixtures = {
 	plinkoBetTestFlow: PlinkoBetTestFlow;
@@ -51,6 +52,7 @@ export type TestFlowsFixtures = {
 	cryptoWithdrawalSetupTestFlow: CryptoWithdrawalSetupTestFlow;
 	cryptoWithdrawalProcessTestFlow: CryptoWithdrawalProcessTestFlow;
 	cryptoWithdrawalVerificationTestFlow: CryptoWithdrawalVerificationTestFlow;
+	changeReloadRewardTestFlow: ChangeReloadRewardTestFlow;
 };
 
 type RequiredTestFlowsFixtures = {
@@ -183,5 +185,8 @@ export const testFlowsFixtures = base.extend<
 	},
 	cryptoWithdrawalVerificationTestFlow: async ({ cryptoFlowDeps }, use) => {
 		await use(new CryptoWithdrawalVerificationTestFlow(cryptoFlowDeps));
+	},
+	changeReloadRewardTestFlow: async ({}, use) => {
+		await use(new ChangeReloadRewardTestFlow());
 	},
 });

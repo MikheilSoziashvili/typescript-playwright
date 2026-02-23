@@ -12,8 +12,16 @@ export class UserInfoRewardsAdminPageMap extends BaseMap {
 		});
 	}
 
+	public get customRewardModalContainer(): Locator {
+		return this.page.getByTestId("modalContainer");
+	}
+
 	public get customRewardModalBody(): Locator {
 		return this.page.getByTestId("modalBody");
+	}
+
+	public get customRewardModalTitle(): Locator {
+		return this.page.getByTestId("modalTitle");
 	}
 
 	public get rewardTypeDropdown(): Locator {
@@ -90,5 +98,29 @@ export class UserInfoRewardsAdminPageMap extends BaseMap {
 			});
 
 		return tile.locator("button", { hasText: "Revoke" });
+	}
+
+	public changeRewardButton(section: string, reward: string): Locator {
+		const tile = this.pendingRewardTiles(section)
+			.filter({ has: this.page.locator("p", { hasText: reward }) })
+			.filter({
+				has: this.page.locator("button", { hasText: "Change" }),
+			});
+
+		return tile.locator("button", { hasText: "Change" });
+	}
+
+	public get rewardTotalInput(): Locator {
+		return this.getInputField("rewardTotal", this.customRewardModalBody);
+	}
+
+	public get saveChangesButton(): Locator {
+		return this.customRewardModalBody.locator("button", {
+			hasText: "Save Changes",
+		});
+	}
+
+	public get editReloadRewardModalTitle(): Locator {
+		return this.page.getByTestId("modalTitle");
 	}
 }

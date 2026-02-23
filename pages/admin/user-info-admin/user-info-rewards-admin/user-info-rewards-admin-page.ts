@@ -66,4 +66,22 @@ export class UserInfoRewardsAdminPage extends BasePage<UserInfoRewardsAdminPageM
 		await this.setRewardAmount(rewardAmount);
 		await this.clickSetRewardButton();
 	}
+
+	@step("Click on Change reward button")
+	public async clickChangeRewardButton(
+		section: string,
+		reward: string,
+	): Promise<void> {
+		await this.map.changeRewardButton(section, reward).click();
+	}
+
+	@step("Set reward total")
+	public async setRewardTotal(total: number): Promise<void> {
+		await this.map.rewardTotalInput.fill(total.toString());
+	}
+
+	@step("Click on Save Changes button")
+	public async clickSaveChangesButton(): Promise<void> {
+		await this.map.saveChangesButton.click();
+	}
 }

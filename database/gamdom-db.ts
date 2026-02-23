@@ -15,6 +15,8 @@ import {
 	getRandomNumber,
 	getRandomPhone,
 } from "@core/utils/utils";
+import { CustomRewardType } from "@enums/admin/custom-reward-type";
+import { RewardStatus } from "@enums/admin/reward-status";
 import { PromoCampaignStatuses } from "@enums/campaign-statuses";
 import { Currency } from "@enums/currencies";
 import { AmlInfoColumns } from "@enums/db/aml-info-columns";
@@ -27,6 +29,7 @@ import { CampaignRuleType } from "@enums/db/campaign-rule-type";
 import { CampaignRulesColumns } from "@enums/db/campaign-rules-columns";
 import { CampaignsColumns } from "@enums/db/campaigns-columns";
 import { DbTables } from "@enums/db/db-tables";
+import { FreeSpinsPromotionsEventData } from "@enums/db/free-spins-promotions-event-data";
 import { KothEventColumns } from "@enums/db/koth-event-columns";
 import { KothEventName, KothEventType } from "@enums/db/koth-event-types";
 import { PromotionColumns } from "@enums/db/promotion-columns";
@@ -38,10 +41,12 @@ import { UsersColumns } from "@enums/db/users-columns";
 import { VipUsersColumns } from "@enums/db/vip-users-columns";
 import { WalletsColumns } from "@enums/db/wallets-columns";
 import { WithdrawLimitsSettingsValues } from "@enums/db/withdraw-settings-values";
+import { EvRewardTypes } from "@enums/ev-reward-types";
 import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { Unit } from "@enums/units";
 import { VipUserStatus } from "@enums/vip-user-statuses";
 import { WalletType } from "@enums/wallet-types";
+import { randomUUID } from "node:crypto";
 import { QueryResultRow } from "pg";
 import { BaseDB } from "./base-db";
 import {
@@ -55,10 +60,6 @@ import { AmlInfoOptions } from "./interfaces/aml-info-options";
 import { AmlStatusInsertOptions } from "./interfaces/aml-status-insert-options";
 import { PromotionInsertOptions } from "./interfaces/promotion-insert-options";
 import { NewUserOptions } from "./interfaces/storage-state-new-user-options";
-import { FreeSpinsPromotionsEventData } from "@enums/db/free-spins-promotions-event-data";
-import { RewardStatus } from "@enums/admin/reward-status";
-import { EvRewardTypes } from "@enums/ev-reward-types";
-import { randomUUID } from "node:crypto";
 
 export class GamdomDb extends BaseDB {
 	constructor() {
@@ -1611,6 +1612,50 @@ export class GamdomDb extends BaseDB {
 		await this.updateRewardStatus(data.userId, RewardStatus.ACTIVE);
 
 		return reward;
+	}
+
+	public async insertReloadReward(
+		userId: number,
+		givenByUserId: number,
+		reloadCoins = 1500,
+		expirationMs = 604800000,
+		claimIntervalMs = 86400000,
+		amountCoins = 0,
+		type: EvRewardTypes = EvRewardTypes.RELOAD,
+		status: RewardStatus = RewardStatus.ACTIVE,
+		daysOffset = -1,
+		daysToExpire = 6,
+		promotionId: number | null = null,
+		hasLogMessage = true,
+	): Promise<QueryResultRow> {
+		const startDate = getISODate({ daysOffset });
+		const endDate = getISODate({ daysOffset: daysToExpire });
+		const meta = JSON.stringify({
+			rewardType: CustomRewardType.RELOAD,
+			reloadCoins: reloadCoins,
+			expirationMs: expirationMs,
+			claimIntervalMs: claimIntervalMs,
+		});
+
+		const baseData = {
+			[RewardsColumns.UserId]: userId,
+			[RewardsColumns.GivenByUserId]: givenByUserId,
+			[RewardsColumns.AmountCoins]: amountCoins,
+			[RewardsColumns.Type]: type,
+			[RewardsColumns.Status]: status,
+			[RewardsColumns.Meta]: meta,
+			[RewardsColumns.StartDate]: startDate,
+			[RewardsColumns.EndDate]: endDate,
+			[RewardsColumns.Created]: startDate,
+			[RewardsColumns.ModifiedDate]: startDate,
+			[RewardsColumns.PromotionId]: promotionId,
+		};
+
+		const data = Object.fromEntries(
+			Object.entries(baseData).filter(([, value]) => value !== null),
+		);
+
+		return this.insert(DbTables.Rewards, data, hasLogMessage);
 	}
 
 	public async insertRoyaltyUpReward(
