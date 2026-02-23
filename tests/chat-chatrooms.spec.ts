@@ -49,6 +49,7 @@ test.describe(
 							.steps()
 							.selectChatroomSuccessfully(input.chatroom);
 						await chat.steps().sendMessage(message);
+						await chat.expandChat();
 						await profilePage.navigate();
 						await profilePage.steps().logout();
 						await homePage.unauthenticatedHeader
@@ -56,6 +57,7 @@ test.describe(
 							.loggedOutUserElementsAreVisible();
 						await homePage.navigate();
 						await chat.expandChat();
+						//these last steps are not working anymore on v4 - still searching for the correct flow
 						await chat
 							.steps()
 							.selectChatroomSuccessfully(input.chatroom);

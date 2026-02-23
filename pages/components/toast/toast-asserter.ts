@@ -253,4 +253,10 @@ export class ToastAsserter extends BaseAsserter<Toast> {
 
 		await this.checkElementsAreNotVisible([toastWithTitle]);
 	}
+
+	public async toastMessageContains(partialText: string): Promise<void> {
+		await expect(this.gamdomPage.map.toastSubTitleLocator()).toContainText(
+			partialText,
+		);
+	}
 }

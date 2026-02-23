@@ -62,4 +62,5 @@ export enum ToastSubTitle {
 	PASSWORD_CHANGE_CONFIRMATION_EMAIL_SENT = "Check your email for a link to confirm your password change",
 	RAIN_KYC_REQUIRED = "You need to complete level 2 KYC verification to claim rain.",
 	JURISDICTION_RESTRICTED = "Gamdom is not available in your jurisdiction",
+	SUCCESSFULLY_CLAIMED_PARTIAL = "You have successfully claimed",
 }

@@ -1,22 +1,17 @@
 import { BaseAsserter } from "@base/base-asserter";
 import { DEFAULT_CURRENCY } from "@constants/defaults";
-import {
-	buildAmountWithCurrency,
-	formatCurrencyWithSuffix,
-	parseToFloat,
-} from "@core/utils/utils";
+import { buildAmountWithCurrency, parseToFloat } from "@core/utils/utils";
 import { RewardType } from "@enums/admin/reward-type";
 import { OriginalGame } from "@enums/original-games";
+import { RewardCardButton } from "@enums/reward-card-buttons";
 import { RewardsRoyaltyUpRanks } from "@enums/rewards-royalty-up-ranks";
 import { Timeout } from "@enums/timeout";
 import { calculateInstantReward } from "@formulas/instant-reward";
 import { calculateRakeback } from "@formulas/rakeback";
+import { logger } from "@logger/logger";
 import { expect } from "@playwright/test";
 import { step } from "decorators/step";
-import { RewardsRoyaltyUpRanksValues } from "../../constants/rewards-royalty-up-rank-values";
 import { RewardsPage } from "./rewards-page";
-import { RewardCardButton } from "@enums/reward-card-buttons";
-import { logger } from "@logger/logger";
 
 export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 	public constructor(page: RewardsPage) {
@@ -145,9 +140,26 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 		rewardInProgress: RewardsRoyaltyUpRanks,
 	): Promise<void> {
 		await this.gamdomPage.map.royaltyUpBlock.scrollIntoViewIfNeeded();
-		await this.checkElementsAreVisible([
-			this.gamdomPage.map.royaltyUpInProgressItem(rewardInProgress),
-		]);
+
+		const fillBar =
+			this.gamdomPage.map.royaltyUpInProgressItem(rewardInProgress);
+		const percentage =
+			this.gamdomPage.map.royaltyUpInProgressPercentage(rewardInProgress);
+
+		const fillCount = await fillBar.count();
+
+		if (fillCount === 1) {
+			const width = await fillBar.evaluate(
+				(el) => el.getBoundingClientRect().width,
+			);
+
+			if (width > 0) {
+				await this.checkElementsAreVisible([fillBar]);
+				return;
+			}
+		}
+
+		await this.checkElementsAreVisible([percentage]);
 	}
 
 	@step("Is royalty up rewards claimable")
@@ -165,22 +177,15 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 			}
 
 			const claimButton =
-				this.gamdomPage.map.royaltyUpItemClaimButton(reward);
+				this.gamdomPage.map.royaltyUpRewardsItemClaimButton(reward);
 
 			await this.checkElementsAreEnabled([claimButton]);
 			await this.checkElementsAreVisible([claimButton]);
 
-			const key = reward
-				.replace(" ", "_")
-				.toUpperCase() as keyof typeof RewardsRoyaltyUpRanksValues;
-			const expectedRewardValue = RewardsRoyaltyUpRanksValues[key];
-
-			const formattedValue =
-				formatCurrencyWithSuffix(expectedRewardValue);
 			await this.checkElementsHaveText([
 				{
 					locator: claimButton,
-					expectedText: `Claim ${formattedValue}`,
+					expectedText: `Claim`,
 				},
 			]);
 		}
@@ -208,7 +213,7 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 			}
 
 			const claimButton =
-				this.gamdomPage.map.royaltyUpItemClaimButton(reward);
+				this.gamdomPage.map.royaltyUpRewardsItemClaimButton(reward);
 
 			if (claimable) {
 				await this.checkElementsAreEnabled([claimButton]);

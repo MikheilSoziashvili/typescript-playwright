@@ -1,38 +1,36 @@
 import { BasePage } from "@base/base-page";
 import { REWARDS_PAGE_ENDPOINT } from "@constants/page-endpoints";
-import { RewardsRoyaltyUpRanksValues } from "@constants/rewards-royalty-up-rank-values";
-import { SPECIAL_OFFER_RATEBACK } from "@constants/specialoffers";
-import { buildClaimedAmountSubTitle } from "@core/helpers/asserter-helpers/text-asserters";
-import { BasePageNavigationParametersType } from "@core/types/types";
-import { parseShortScaledCurrency, waitForSeconds } from "@core/utils/utils";
-import { RatebackHouseEdge } from "@enums/rateback-house-edge-options";
-import { RewardsRoyaltyUpRanks } from "@enums/rewards-royalty-up-ranks";
-import { Timeout } from "@enums/timeout";
-import { calculateRakeback } from "@formulas/rakeback";
-import { WelcomeBonusModal } from "@pages/modals/welcome-bonus-modal/welcome-bonus-modal";
-import { Toast } from "@pages/components/toast/toast";
-import { Locator, Page, expect } from "@playwright/test";
-import { step } from "decorators/step";
-import { RewardsPageAsserter } from "./rewards-page-asserter";
-import { RewardsPageMap } from "./rewards-page-map";
-import { RewardsPageSteps } from "./rewards-page-steps";
-import { RewardType } from "@enums/admin/reward-type";
-import { logger } from "@logger/logger";
-import {
-	numericAmountPattern,
-	shortScaledAmountPattern,
-} from "@support/regex-patterns";
 import {
 	BRONZE_EDGE_RANKS,
 	CLAIMABLE_ROYALTY_UP_RANKS,
 	OPAL_EDGE_RANKS,
 } from "@constants/rewards-royalty-up-rank-groups";
+import { RewardsRoyaltyUpRanksValues } from "@constants/rewards-royalty-up-rank-values";
+import { SPECIAL_OFFER_RATEBACK } from "@constants/specialoffers";
+import { buildClaimedAmountSubTitle } from "@core/helpers/asserter-helpers/text-asserters";
+import { BasePageNavigationParametersType } from "@core/types/types";
+import { waitForSeconds } from "@core/utils/utils";
+import { RewardType } from "@enums/admin/reward-type";
 import { Attributes } from "@enums/playwright/htmlAttributes";
 import { AttributesValues } from "@enums/playwright/htmlAttributesValues";
+import { RatebackHouseEdge } from "@enums/rateback-house-edge-options";
+import { RewardsRoyaltyUpRanks } from "@enums/rewards-royalty-up-ranks";
+import { Timeout } from "@enums/timeout";
+import { calculateRakeback } from "@formulas/rakeback";
+import { logger } from "@logger/logger";
+import { Toast } from "@pages/components/toast/toast";
+import { WelcomeBonusModal } from "@pages/modals/welcome-bonus-modal/welcome-bonus-modal";
+import { Page, expect } from "@playwright/test";
+import { step } from "decorators/step";
+import { RewardsPageAsserter } from "./rewards-page-asserter";
+import { RewardsPageMap } from "./rewards-page-map";
+import { RewardsPageSteps } from "./rewards-page-steps";
 
 export class RewardsPage extends BasePage<RewardsPageMap> {
+	public toast: Toast;
 	public constructor(page: Page) {
 		super(page, new RewardsPageMap(page));
+		this.toast = new Toast(page);
 	}
 
 	public override async navigate(
@@ -144,7 +142,9 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 			const accountBalanceInitial =
 				await this.authenticatedHeader.getAccountBalance();
 
-			await this.map.royaltyUpItemClaimButton(reward).click();
+			await this.navigateToRewardInSlider(reward);
+
+			await this.map.royaltyUpRewardsItemClaimButton(reward).click();
 
 			const toast = new Toast(this.page);
 			await toast.assertThat().isDisplayed();
@@ -152,7 +152,7 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 				.assertThat()
 				.subTitleIs(buildClaimedAmountSubTitle(expectedRewardValue));
 			await expect(
-				this.map.royaltyUpItemClaimButton(reward),
+				this.map.royaltyUpRewardsItemClaimButton(reward),
 			).toBeDisabled();
 
 			await this.authenticatedHeader
@@ -188,35 +188,6 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 		const button = this.map.rewardCardButton(reward, buttonText).nth(index);
 		await button.scrollIntoViewIfNeeded();
 		await button.click();
-	}
-
-	@step("Extract reward amount from claim button text")
-	public async extractRewardAmount(
-		claimButton: Locator,
-		reward: RewardsRoyaltyUpRanks,
-	): Promise<number> {
-		await this.assertThat().checkElementsAreEnabled([claimButton]);
-
-		const buttonText = (await claimButton.textContent()) || "";
-
-		const amountMatch =
-			buttonText.match(shortScaledAmountPattern) ??
-			buttonText.match(numericAmountPattern);
-
-		expect(
-			amountMatch,
-			`Could not extract amount from button text: ${buttonText}`,
-		).not.toBeNull();
-
-		const extractedAmount = parseShortScaledCurrency(
-			amountMatch?.[0] ?? "",
-		);
-
-		logger.info(
-			`Claiming reward ${reward} with amount: $${extractedAmount}`,
-		);
-
-		return extractedAmount;
 	}
 
 	@step("Navigate to reward in slider")
@@ -306,7 +277,7 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 						`Slider stuck at ${rankOrder[currentActiveRankIndex]} for 3 attempts, checking if ${reward} is visible and clickable`,
 					);
 					const rewardButton =
-						this.map.royaltyUpRewardsItemButton(reward);
+						this.map.royaltyUpRewardsItemClaimButton(reward);
 					const isVisible = (await rewardButton.count()) > 0;
 					if (isVisible && (await rewardButton.isEnabled())) {
 						logger.info(
@@ -354,7 +325,7 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 	private async isRewardCentered(
 		reward: RewardsRoyaltyUpRanks,
 	): Promise<boolean> {
-		const swiperSlide = this.map.royaltyUpRewardsItemSwiperSlide(reward);
+		const swiperSlide = this.map.royaltyUpRewardsItem(reward);
 
 		const exists = await swiperSlide.count();
 		if (exists === 0) {
@@ -374,7 +345,7 @@ export class RewardsPage extends BasePage<RewardsPageMap> {
 		rankOrder: RewardsRoyaltyUpRanks[],
 	): Promise<number> {
 		const slideLocators = rankOrder.map((rank) =>
-			this.map.royaltyUpRewardsItemSwiperSlide(rank),
+			this.map.royaltyUpRewardsItem(rank),
 		);
 		const activeIndex =
 			await this.findCurrentActiveSlideIndex(slideLocators);

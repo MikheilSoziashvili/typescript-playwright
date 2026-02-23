@@ -150,19 +150,14 @@ export class ChatMap extends BaseMap {
 		return this.chatFooter.getByTestId("chat-input-placeholder");
 	}
 
-	public get chatroomsDropdownContainer(): Locator {
-		return this.page.getByTestId(`ListContainer`);
-	}
-
-	public chatroomDropdownOption(value: string): Locator {
-		return this.getDropdownOptionSelector(
-			value,
-			this.chatroomsDropdownContainer,
+	public chatroomDropdownOption(chatroomName: string): Locator {
+		return this.page.getByTestId(
+			`chat-channel-selector-option-${chatroomName}`,
 		);
 	}
 
 	public get chatroomsDropdownSelectedValue(): Locator {
-		return this.chatHeader.getByTestId("Input");
+		return this.page.getByTestId("chat-channel-selector-button");
 	}
 
 	public get chatButton(): Locator {

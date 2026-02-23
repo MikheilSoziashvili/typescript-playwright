@@ -1,5 +1,4 @@
 import { BaseMap } from "@base/base-map";
-import { HomePageBannerCarouselSlideTitle } from "@enums/homepage-banner-carousel-slide-title";
 import { Locator, Page } from "@playwright/test";
 
 export class HomePageMap extends BaseMap {

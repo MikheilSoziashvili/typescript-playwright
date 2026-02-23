@@ -1,7 +1,6 @@
-import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
-import { Directions } from "@enums/directions";
 import { RewardType } from "@enums/admin/reward-type";
+import { Locator, Page } from "@playwright/test";
 
 export class RewardsPageMap extends BaseMap {
 	public constructor(page: Page) {
@@ -71,55 +70,53 @@ export class RewardsPageMap extends BaseMap {
 	}
 
 	public royaltyUpRewardsItem(placeholderText: string): Locator {
-		return this.royaltyUpBlock.locator(
-			`//div[contains(@class,"RoyaltyUpItem-styled__Item-sc") and contains(normalize-space(),"${placeholderText}")]`,
-		);
+		return this.royaltyUpBlock
+			.locator('[data-testid^="RoyaltyUpSlider-content-swiper-slide-"]')
+			.filter({
+				has: this.page
+					.getByTestId("RoyaltyUpItemName")
+					.filter({ hasText: placeholderText }),
+			});
 	}
 
 	public royaltyUpInProgressItem(placeholderText: string): Locator {
 		return this.royaltyUpRewardsItem(placeholderText).locator(
-			`//div[@class="progress-bar-inner"]//parent::div[contains(@class,'ProgressBar')]//parent::div[contains(@class,'PercentageWrapper')]`,
+			'div[class*="ProgressBarV4"] div[class*="StyledInternalBar"]',
 		);
 	}
 
 	public get royaltyUpItemsIndex(): Locator {
 		return this.royaltyUpBlock.locator(
-			`div[class*="RoyaltyUpItem-styled__Item-sc"]`,
+			'[data-testid^="RoyaltyUpSlider-content-swiper-slide-"]',
 		);
 	}
 
-	public royaltyUpItemClaimButton(placeholderText: string): Locator {
-		return this.royaltyUpRewardsItem(placeholderText).locator(`//button`);
-	}
-
-	public royaltyUpRewardsItemSwiperSlide(placeholderText: string): Locator {
-		return this.royaltyUpRewardsItem(placeholderText).locator(
-			"xpath=ancestor::div[contains(@class, 'swiper-slide')]",
-		);
-	}
-
-	public royaltyUpRewardsItemButton(placeholderText: string): Locator {
+	public royaltyUpRewardsItemClaimButton(placeholderText: string): Locator {
 		return this.royaltyUpRewardsItem(placeholderText).locator("//button");
 	}
 
 	public get royaltyUpSliderBlock(): Locator {
-		return this.royaltyUpBlock.locator(
-			`div[class*="SliderWrapper"] div[class*="ButtonsWrapper"]`,
-		);
+		return this.royaltyUpBlock
+			.getByTestId("RoyaltyUpSlider-header")
+			.locator('div[class*="HeaderButtonsContainer"]');
 	}
 
-	private royaltyUpSliderButtonsContainer(arrowButton: string): Locator {
-		return this.royaltyUpSliderBlock.locator(
-			`//i[contains(@class,'${arrowButton}')]//parent::button`,
+	public royaltyUpInProgressPercentage(placeholderText: string): Locator {
+		return this.royaltyUpRewardsItem(placeholderText).getByTestId(
+			"account-popover-rank-percentage",
 		);
 	}
 
 	public get royaltyUpSliderNextButton(): Locator {
-		return this.royaltyUpSliderButtonsContainer(Directions.RIGHT);
+		return this.royaltyUpSliderBlock.getByTestId(
+			"RoyaltyUpSlider-slider-next",
+		);
 	}
 
 	public get royaltyUpSliderPreviousButton(): Locator {
-		return this.royaltyUpSliderButtonsContainer(Directions.LEFT);
+		return this.royaltyUpSliderBlock.getByTestId(
+			"RoyaltyUpSlider-slider-prev",
+		);
 	}
 
 	public specialOfferClaimedOutOfTotal(

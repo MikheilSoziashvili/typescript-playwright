@@ -50,7 +50,6 @@ async function enableCoreFeatures(
 			{ feature: Feature.KENO, states: ALL_USER_TYPES_ENABLED },
 			{ feature: Feature.POCKET_DICE, states: ALL_USER_TYPES_ENABLED },
 			{ feature: Feature.PROMOTIONS, states: ALL_USER_TYPES_ENABLED },
-			{ feature: Feature.RECENT_WINS, states: ALL_USER_TYPES_ENABLED },
 			{
 				feature: Feature.AFFILIATES_INFO,
 				states: ALL_USER_TYPES_ENABLED,
