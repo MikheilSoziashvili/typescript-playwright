@@ -80,8 +80,16 @@ export class CasinoPageAsserter extends BaseAsserter<CasinoPage> {
 		);
 	}
 
+	@step("Game is added to favorites")
+	public async gameIsAddedToFavorites(gameName: string): Promise<void> {
+		const gameInFavorites =
+			this.gamdomPage.map.favoriteGameTileByName(gameName);
+
+		await this.checkElementsAreVisible([gameInFavorites]);
+	}
+
 	@step("Favorite games list contains game")
-	public async favoritesGamesListContainsGame(
+	public async favoritesGamesListApiContainsGame(
 		favoritesGamesList: FavoritesGamesListResponse,
 		expectedGameName: string,
 	): Promise<void> {

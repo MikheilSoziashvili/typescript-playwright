@@ -1763,3 +1763,10 @@ export function createSecret(secretContent: string, secretPath: string): void {
 
 export const formatNumber = (value: number, decimals = 2): string =>
 	value.toFixed(decimals);
+
+export function extractFirstGroup(
+	value: string | null,
+	pattern: RegExp,
+): string {
+	return value?.match(pattern)?.[1] ?? "";
+}

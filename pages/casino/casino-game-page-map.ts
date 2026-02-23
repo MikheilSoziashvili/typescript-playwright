@@ -142,9 +142,17 @@ export class CasinoPageMap extends BaseMap {
 		);
 	}
 
+	public newGamesCarouselItemByIndex(index: number): Locator {
+		return this.newGamesSlider.locator(
+			`[data-testid^="lobby-carousel-item-${index}-container-"]`,
+		);
+	}
+
 	public get newGamesSlider(): Locator {
-		return this.page.getByTestId("lobby-carousel-content-swiper").filter({
-			has: this.page.getByText("New Games", { exact: true }),
+		return this.page.getByTestId("lobby-carousel").filter({
+			has: this.page
+				.getByTestId("lobby-carousel-header-title-label")
+				.filter({ hasText: "New Games" }),
 		});
 	}
 
@@ -158,14 +166,12 @@ export class CasinoPageMap extends BaseMap {
 	}
 
 	public get firstGameInSlider(): Locator {
-		return this.newGamesSlider
-			.locator('[data-testid^="lobby-carousel-slide-"]')
-			.first();
+		return this.newGamesCarouselItemByIndex(0);
 	}
 
 	public get sliderHeartIcon(): Locator {
 		return this.firstGameInSlider.locator(
-			"div[class*='styled__LikeButton']",
+			'[data-testid^="lobby-carousel-item-"][data-testid$="-like-button"]',
 		);
 	}
 
@@ -187,8 +193,16 @@ export class CasinoPageMap extends BaseMap {
 		return this.casinoTabByName("Favorites");
 	}
 
-	public get favoritedGamesList(): Locator {
-		return this.page.locator("div[class*='styled__GameInfoWrapper']");
+	public get favoritesGamesList(): Locator {
+		return this.page.locator(
+			"div[class*='PaginatedGamesListV4-styled__ItemsContainer-sc-']",
+		);
+	}
+
+	public favoriteGameTileByName(gameName: string): Locator {
+		return this.favoritesGamesList.locator(
+			`[data-testid*="-container-${gameName}-"]`,
+		);
 	}
 
 	public get inGameHeartIcon(): Locator {

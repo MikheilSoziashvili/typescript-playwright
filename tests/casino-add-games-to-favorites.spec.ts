@@ -15,24 +15,17 @@ test.describe(
 		test(
 			"[ENG-2849] Casino - Favorite tab - add games from page to favorites",
 			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
-			async ({ casinoPage, favoritesGamesListListener }) => {
+			async ({ casinoPage }) => {
 				await casinoPage.navigate();
 
 				const gameName = await casinoPage.getFirstNewGameName();
 				await casinoPage.addFirstNewGameToFavorites();
-				favoritesGamesListListener.startListening();
 
 				await casinoPage.openFavoritesTab();
 
-				const favoritesGamesList =
-					await favoritesGamesListListener.getLastFavoritesGamesList();
-
 				await casinoPage
-					.assertThat()
-					.favoritesGamesListContainsGame(
-						favoritesGamesList,
-						gameName,
-					);
+					.steps()
+					.openFavoritesAndCheckIfGameHasBeenAdded(gameName);
 			},
 		);
 
@@ -69,7 +62,7 @@ test.describe(
 
 				await casinoPage
 					.assertThat()
-					.favoritesGamesListContainsGame(
+					.favoritesGamesListApiContainsGame(
 						favoritesGamesList,
 						CasinoGameName.BOOK_OF_ARABIA,
 					);
@@ -98,7 +91,7 @@ test.describe(
 
 				await casinoPage
 					.assertThat()
-					.favoritesGamesListContainsGame(
+					.favoritesGamesListApiContainsGame(
 						favoritesGamesList,
 						CasinoGameName.BARREL_BONANZA,
 					);

@@ -1,4 +1,4 @@
-import { VisibilityResult } from "@core/types/types";
+import { OriginalGames, VisibilityResult } from "@core/types/types";
 import { waitForSeconds, waitUntil } from "@core/utils/utils";
 import { CasinoGameName } from "@enums/casino-game";
 import { GameProvider } from "@enums/game-providers";
@@ -71,6 +71,14 @@ export class CasinoPageSteps extends BasePageStep<CasinoPage> {
 				timeoutSeconds: TimeoutSeconds.ONE_EIGHTY,
 			},
 		);
+	}
+
+	@step("Open Favorites and check if game has been added")
+	public async openFavoritesAndCheckIfGameHasBeenAdded(
+		game: OriginalGames | CasinoGameName | string,
+	): Promise<void> {
+		await this.gamdomPage.openFavoritesTab();
+		await this.gamdomPage.assertThat().gameIsAddedToFavorites(game);
 	}
 
 	@step("Search for a casino game and open it")
