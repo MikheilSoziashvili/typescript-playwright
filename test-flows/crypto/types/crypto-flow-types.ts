@@ -113,6 +113,62 @@ export const TRX_CONFIG: CryptoConfig = {
 	testDataKey: "trxAmountToDeposit",
 };
 
+export const BTC_CONFIG: CryptoConfig = {
+	cryptocurrency: Cryptocurrency.Bitcoin,
+	cryptoTicker: CryptoTicker.BTC,
+	cryptoNode: CryptoNode.nodeBTC1,
+	unit: Unit.BTC_SATOSHI,
+	testDataKey: "btcAmountToDeposit",
+};
+
+export const LTC_CONFIG: CryptoConfig = {
+	cryptocurrency: Cryptocurrency.Litecoin,
+	cryptoTicker: CryptoTicker.LTC,
+	cryptoNode: CryptoNode.nodeLTC1,
+	unit: Unit.LTC_LITOSHI,
+	testDataKey: "ltcAmountToDeposit",
+};
+
+export const XRP_CONFIG: CryptoConfig = {
+	cryptocurrency: Cryptocurrency.Ripple,
+	cryptoTicker: CryptoTicker.XRP,
+	cryptoNode: CryptoNode.fireXRP,
+	unit: Unit.XRP_DROP,
+	testDataKey: "xrpAmountToDeposit",
+};
+
+export const SOL_CONFIG: CryptoConfig = {
+	cryptocurrency: Cryptocurrency.Solana,
+	cryptoTicker: CryptoTicker.SOL,
+	cryptoNode: CryptoNode.fireSOL,
+	unit: Unit.SOL_LAMPORT,
+	testDataKey: "solAmountToDeposit",
+};
+
+export const USDC_ETH_CONFIG: CryptoConfig = {
+	cryptocurrency: Cryptocurrency.USDC,
+	cryptoTicker: CryptoTicker.USDC_ETH,
+	cryptoNode: CryptoNode.fireUSDC_ETH,
+	testDataKey: "usdcEthAmountToDeposit",
+	network: CryptoTicker.USDC_ETH,
+};
+
+export const USDC_SOL_CONFIG: CryptoConfig = {
+	cryptocurrency: Cryptocurrency.USDC,
+	cryptoTicker: CryptoTicker.USDC_SOL,
+	cryptoNode: CryptoNode.fireUSDC_SOL,
+	testDataKey: "usdcSolAmountToDeposit",
+	network: CryptoTicker.USDC_SOL,
+};
+
+export const USDC_BSC_CONFIG: CryptoConfig = {
+	cryptocurrency: Cryptocurrency.USDC,
+	cryptoTicker: CryptoTicker.USDC_BSC,
+	cryptoNode: CryptoNode.fireUSDC_BSC,
+	testDataKey: "usdcBscAmountToDeposit",
+	network: CryptoTicker.USDC_BSC,
+};
+
 export interface CryptoFlowDependencies {
 	page: Page;
 	browserSessionManager: BrowserSessionManager;

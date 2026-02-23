@@ -40,6 +40,7 @@ export class CryptoAdminSetupTestFlow extends BaseTestFlow {
 				...(customFees?.[node] && { customFees: customFees[node] }),
 			});
 
+			await this.cryptoAdminPage.refreshCryptoData();
 			await this.cryptoAdminPage
 				.steps()
 				.waitUntilCryptoDataRefreshed(testInfo);

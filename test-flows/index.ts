@@ -26,7 +26,23 @@ export type {
 	WithdrawalProcessResult,
 	WithdrawalUserVerificationResult,
 } from "./crypto/types/crypto-flow-types";
-export { ETH_CONFIG } from "./crypto/types/crypto-flow-types";
+export {
+	ETH_CONFIG,
+	BNB_CONFIG,
+	TRX_CONFIG,
+	BTC_CONFIG,
+	LTC_CONFIG,
+	XRP_CONFIG,
+	SOL_CONFIG,
+	USDC_ETH_CONFIG,
+	USDC_SOL_CONFIG,
+	USDC_BSC_CONFIG,
+	USDT_ETH_CONFIG,
+	USDT_TRX_CONFIG,
+	USDT_BSC_CONFIG,
+	USD1_SOL_CONFIG,
+	USD1_ETH_CONFIG,
+} from "./crypto/types/crypto-flow-types";
 
 // Crypto client adapters
 export { toFireblocksCryptoClient } from "./crypto/adapters/fireblocks-crypto-client-adapter";

@@ -32,14 +32,19 @@ export class CryptoWithdrawalProcessTestFlow extends BaseTestFlow {
 		speed: WithdrawalSpeed;
 		setupResult: WithdrawalSetupResult;
 		expectedCustomFee?: number;
+		destinationTag?: string;
+		verifyCustomFee?: boolean;
 	}): Promise<WithdrawalProcessResult> {
-		const { config, speed, setupResult, expectedCustomFee } = params;
+		const { config, speed, setupResult, expectedCustomFee, destinationTag, verifyCustomFee } =
+			params;
 
 		const userResult = await this.submitWithdrawalAsUser({
 			config,
 			speed,
 			setupResult,
 			expectedCustomFee,
+			destinationTag,
+			verifyCustomFee,
 		});
 
 		await this.processQueuedWithdrawalsAsAdmin();
@@ -60,8 +65,11 @@ export class CryptoWithdrawalProcessTestFlow extends BaseTestFlow {
 		speed: WithdrawalSpeed;
 		setupResult: WithdrawalSetupResult;
 		expectedCustomFee?: number;
+		destinationTag?: string;
+		verifyCustomFee?: boolean;
 	}): Promise<UserWithdrawalResult> {
-		const { config, speed, setupResult, expectedCustomFee } = params;
+		const { config, speed, setupResult, expectedCustomFee, destinationTag, verifyCustomFee } =
+			params;
 		const {
 			browserSessionManager,
 			homePage,
@@ -99,6 +107,8 @@ export class CryptoWithdrawalProcessTestFlow extends BaseTestFlow {
 			feeInUsd +
 			testDataPredefined.data.amountTolerance.amountToleranceUsd;
 
+		const resolvedCustomFee = verifyCustomFee ? feeInUsd : expectedCustomFee;
+
 		const withdrawalFee = await walletModal.withdrawCrypto({
 			cryptocurrency: config.cryptocurrency,
 			address: withdrawalAddress,
@@ -106,7 +116,8 @@ export class CryptoWithdrawalProcessTestFlow extends BaseTestFlow {
 			speed: speed,
 			isVip: setupResult.isVip,
 			...(config.network && { network: config.network }),
-			...(expectedCustomFee !== undefined && { expectedCustomFee }),
+			...(resolvedCustomFee !== undefined && { expectedCustomFee: resolvedCustomFee }),
+			...(destinationTag !== undefined && { destinationTag }),
 		});
 		await toast.assertThat().titleIs(ToastTitle.SUCCESS);
 
