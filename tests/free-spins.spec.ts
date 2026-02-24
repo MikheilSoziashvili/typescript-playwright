@@ -81,12 +81,10 @@ test.describe("Free spins tests", () => {
 					test(
 						`[ENG-5008] Granting free spins in batch - ${description}`,
 						testDetails()
-							.withJiraBugTickets("15023")
 							.withTags(JiraComponent.FREE_SPINS)
 							.withAuthor(JiraUser.RALUCA_ARITON)
 							.apply(),
 						async ({ freeSpinsAdminPage }) => {
-							test.fixme(true);
 							await freeSpinsAdminPage.navigate();
 							await freeSpinsAdminPage
 								.steps()
