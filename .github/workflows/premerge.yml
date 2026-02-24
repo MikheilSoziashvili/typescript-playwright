@@ -32,22 +32,18 @@ jobs:
             XRP_TESTNET_FAUCET_URL: ${{ vars.XRP_TESTNET_FAUCET_URL }}
             FIREBLOCKS_USDC_SOL_ASSET_ID: ${{ vars.FIREBLOCKS_USDC_SOL_ASSET_ID }}
             DOGE_TESTNET_ADDRESS: ${{ vars.DOGE_TESTNET_ADDRESS }}
-
         steps:
             - uses: actions/checkout@v4
+
             - uses: actions/setup-node@v4
               with:
                   node-version: 22
 
-            - name: Install Node.js dependencies
-              run: |
-                  if ! command -v yarn &>/dev/null; then
-                    npm install -g yarn
-                  fi
-                  yarn install
+            - name: Enable Corepack
+              run: corepack enable
 
             - name: Install dependencies
-              run: yarn install --immutable --immutable-cache --check-cache
+              run: yarn install --immutable
 
             - name: ESLint (Standard and Playwright)
               run: yarn lint

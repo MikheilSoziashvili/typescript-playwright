@@ -39,12 +39,14 @@ export class CryptoAdminSetupTestFlow extends BaseTestFlow {
 				enabled: true,
 				...(customFees?.[node] && { customFees: customFees[node] }),
 			});
+		}
 
-			await this.cryptoAdminPage.refreshCryptoData();
-			await this.cryptoAdminPage
-				.steps()
-				.waitUntilCryptoDataRefreshed(testInfo);
+		await this.cryptoAdminPage.refreshCryptoData();
+		await this.cryptoAdminPage
+			.steps()
+			.waitUntilCryptoDataRefreshed(testInfo);
 
+		for (const node of nodes) {
 			await this.cryptoAdminPage.steps().setMinDepositAndWithdraw(node);
 		}
 	}

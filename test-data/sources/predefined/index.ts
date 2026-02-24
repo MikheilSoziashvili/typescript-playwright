@@ -134,6 +134,7 @@ export const predefined = {
 		amountToDepositLarger: 0.0001,
 		amountToWithdraw: 1.5,
 		feeRate: 50,
+		withdrawalAddress: "tb1qkqnwz2zt2lq9dg4was82rxlha2gzdyhaa49py2",
 	},
 	amountTolerance: {
 		amountToleranceUsd: 0.1,
