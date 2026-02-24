@@ -151,8 +151,12 @@ export class WalletModal extends BasePage<WalletModalMap> {
 	@step("Get deposit address")
 	public async getDepositAddress(): Promise<string> {
 		await expect
-			.poll(() => this.map.cryptoDepositAddress.first().inputValue())
-			.not.toContain("retrieving");
+			.poll(() => this.map.cryptoDepositAddress.first().inputValue(), {
+				timeout: Timeout.MEDIUM,
+				message:
+					"Deposit address never resolved — stuck in retrieving or not found state",
+			})
+			.not.toMatch(/retrieving|deposit address not found/i);
 
 		return this.map.cryptoDepositAddress.first().inputValue();
 	}

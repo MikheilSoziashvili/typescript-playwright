@@ -10,11 +10,17 @@ import {
 	WithdrawalSpeed,
 	withdrawalSpeedToFeeLevel,
 } from "@enums/withdrawal-speeds";
-import { getCookieHeader, setAuthenticationCookies } from "@core/utils/utils";
+import {
+	getCookieHeader,
+	setAuthenticationCookies,
+	waitUntil,
+} from "@core/utils/utils";
 import { TestUserRole } from "@enums/test-user-roles";
 import { Currency } from "@enums/currencies";
 import { ToastTitle } from "@enums/toast-titles";
 import { step } from "decorators/step";
+import { TransactionState } from "@enums/transaction-states";
+import { TransactionType } from "@enums/transaction-types";
 
 interface UserWithdrawalResult {
 	amountToWithdraw: number;
@@ -35,8 +41,14 @@ export class CryptoWithdrawalProcessTestFlow extends BaseTestFlow {
 		destinationTag?: string;
 		verifyCustomFee?: boolean;
 	}): Promise<WithdrawalProcessResult> {
-		const { config, speed, setupResult, expectedCustomFee, destinationTag, verifyCustomFee } =
-			params;
+		const {
+			config,
+			speed,
+			setupResult,
+			expectedCustomFee,
+			destinationTag,
+			verifyCustomFee,
+		} = params;
 
 		const userResult = await this.submitWithdrawalAsUser({
 			config,
@@ -68,8 +80,14 @@ export class CryptoWithdrawalProcessTestFlow extends BaseTestFlow {
 		destinationTag?: string;
 		verifyCustomFee?: boolean;
 	}): Promise<UserWithdrawalResult> {
-		const { config, speed, setupResult, expectedCustomFee, destinationTag, verifyCustomFee } =
-			params;
+		const {
+			config,
+			speed,
+			setupResult,
+			expectedCustomFee,
+			destinationTag,
+			verifyCustomFee,
+		} = params;
 		const {
 			browserSessionManager,
 			homePage,
@@ -107,7 +125,9 @@ export class CryptoWithdrawalProcessTestFlow extends BaseTestFlow {
 			feeInUsd +
 			testDataPredefined.data.amountTolerance.amountToleranceUsd;
 
-		const resolvedCustomFee = verifyCustomFee ? feeInUsd : expectedCustomFee;
+		const resolvedCustomFee = verifyCustomFee
+			? feeInUsd
+			: expectedCustomFee;
 
 		const withdrawalFee = await walletModal.withdrawCrypto({
 			cryptocurrency: config.cryptocurrency,
@@ -116,7 +136,9 @@ export class CryptoWithdrawalProcessTestFlow extends BaseTestFlow {
 			speed: speed,
 			isVip: setupResult.isVip,
 			...(config.network && { network: config.network }),
-			...(resolvedCustomFee !== undefined && { expectedCustomFee: resolvedCustomFee }),
+			...(resolvedCustomFee !== undefined && {
+				expectedCustomFee: resolvedCustomFee,
+			}),
 			...(destinationTag !== undefined && { destinationTag }),
 		});
 		await toast.assertThat().titleIs(ToastTitle.SUCCESS);
@@ -129,16 +151,41 @@ export class CryptoWithdrawalProcessTestFlow extends BaseTestFlow {
 
 	@step("Process queued withdrawals as admin")
 	private async processQueuedWithdrawalsAsAdmin(): Promise<void> {
-		const { page, browserSessionManager, cryptoAdminPage } = this.deps;
+		const { page, browserSessionManager, cryptoAdminPage, gamdomApi } =
+			this.deps;
 
 		const superAdminSession = await browserSessionManager.loginAs(
 			TestUserRole.SUPERADMIN,
 			{ reuseContext: true },
 		);
-		await setAuthenticationCookies(
-			page,
-			superAdminSession.getAuthenticatedUser().cookie,
+		const superAdminCookie =
+			superAdminSession.getAuthenticatedUser().cookie;
+		await setAuthenticationCookies(page, superAdminCookie);
+
+		const userSession = await browserSessionManager.loginAs(
+			TestUserRole.REGULAR,
+			{ reuseContext: true },
 		);
+		const superAdminCookieHeader = getCookieHeader(superAdminCookie);
+
 		await cryptoAdminPage.sendQueuedWithdrawals();
+
+		await waitUntil(
+			async () => {
+				const transactions = await gamdomApi.getCryptoAdminTransactions(
+					{ cookie: superAdminCookieHeader },
+				);
+				return !transactions.some(
+					(tx) =>
+						tx.user_id ===
+							userSession.getAuthenticatedUser().user.userId &&
+						tx.type === TransactionType.WITHDRAWAL.toLowerCase() &&
+						tx.state === TransactionState.QUEUED.toLowerCase(),
+				);
+			},
+			{
+				errorMessage: `Withdrawal for user "${userSession.getAuthenticatedUser().user.username}" remained in queued status`,
+			},
+		);
 	}
 }
