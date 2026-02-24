@@ -205,6 +205,13 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 		]);
 	}
 
+	@step("Reward is not visible")
+	async rewardIsNotVisible(reward: string): Promise<void> {
+		await this.checkElementsAreNotVisible([
+			this.gamdomPage.map.rewardCard(reward),
+		]);
+	}
+
 	@step("Reward can be claimed")
 	async rewardCanBeClaimed(
 		reward: string,

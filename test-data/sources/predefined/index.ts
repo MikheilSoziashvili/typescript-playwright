@@ -159,6 +159,18 @@ export const predefined = {
 		newTotalReward: 10,
 		newTotalAmount: "$10.00",
 	},
+	reloadRewardWithUpdatedTotal: {
+		reloadCoins: 10500000,
+		expirationMs: 604800000,
+		claimIntervalMs: 86400000,
+		amountCoins: 0,
+		daysOffset: -6,
+		daysToExpire: 1,
+		updatedNewTotal: 10500000,
+		modifiedDateDaysOffset: 0,
+		newReloadAmount: "$7k",
+		balanceIncrease: 7000,
+	},
 	usdtBscAmountToDeposit: {
 		amountToDeposit: "0.1",
 		amountToDepositLarger: "0.4",

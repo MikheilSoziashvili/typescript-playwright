@@ -38,6 +38,8 @@ import { UserBalanceHandler } from "@core/handlers/user-balance-handler/user-bal
 import { GamdomApi } from "@api/gamdom-api";
 import { PredefinedDataSource } from "test-data/core/predefined-data-source";
 import { ChangeReloadRewardTestFlow } from "@test-flows/rewards/change-reload-reward-test-flow";
+import { ClaimReloadRewardTestFlow } from "@test-flows/rewards/claim-reload-reward-test-flow";
+import { VerifyReloadRewardPresenceTestFlow } from "@test-flows/rewards/verify-reload-reward-presence-test-flow";
 
 export type TestFlowsFixtures = {
 	plinkoBetTestFlow: PlinkoBetTestFlow;
@@ -53,6 +55,8 @@ export type TestFlowsFixtures = {
 	cryptoWithdrawalProcessTestFlow: CryptoWithdrawalProcessTestFlow;
 	cryptoWithdrawalVerificationTestFlow: CryptoWithdrawalVerificationTestFlow;
 	changeReloadRewardTestFlow: ChangeReloadRewardTestFlow;
+	claimReloadRewardTestFlow: ClaimReloadRewardTestFlow;
+	verifyReloadRewardPresenceTestFlow: VerifyReloadRewardPresenceTestFlow;
 };
 
 type RequiredTestFlowsFixtures = {
@@ -188,5 +192,11 @@ export const testFlowsFixtures = base.extend<
 	},
 	changeReloadRewardTestFlow: async ({}, use) => {
 		await use(new ChangeReloadRewardTestFlow());
+	},
+	claimReloadRewardTestFlow: async ({}, use) => {
+		await use(new ClaimReloadRewardTestFlow());
+	},
+	verifyReloadRewardPresenceTestFlow: async ({}, use) => {
+		await use(new VerifyReloadRewardPresenceTestFlow());
 	},
 });

@@ -1627,15 +1627,34 @@ export class GamdomDb extends BaseDB {
 		daysToExpire = 6,
 		promotionId: number | null = null,
 		hasLogMessage = true,
+		updatedNewTotal: number | null = null,
+		modifiedDateDaysOffset: number | null = null,
 	): Promise<QueryResultRow> {
 		const startDate = getISODate({ daysOffset });
 		const endDate = getISODate({ daysOffset: daysToExpire });
-		const meta = JSON.stringify({
+		const metaObject: {
+			rewardType: string;
+			reloadCoins: number;
+			expirationMs: number;
+			claimIntervalMs: number;
+			updatedNewTotal?: number;
+		} = {
 			rewardType: CustomRewardType.RELOAD,
 			reloadCoins: reloadCoins,
 			expirationMs: expirationMs,
 			claimIntervalMs: claimIntervalMs,
-		});
+		};
+
+		if (updatedNewTotal !== null) {
+			metaObject.updatedNewTotal = updatedNewTotal;
+		}
+
+		const meta = JSON.stringify(metaObject);
+
+		const modifiedDate =
+			modifiedDateDaysOffset !== null
+				? getISODate({ daysOffset: modifiedDateDaysOffset })
+				: startDate;
 
 		const baseData = {
 			[RewardsColumns.UserId]: userId,
@@ -1647,7 +1666,7 @@ export class GamdomDb extends BaseDB {
 			[RewardsColumns.StartDate]: startDate,
 			[RewardsColumns.EndDate]: endDate,
 			[RewardsColumns.Created]: startDate,
-			[RewardsColumns.ModifiedDate]: startDate,
+			[RewardsColumns.ModifiedDate]: modifiedDate,
 			[RewardsColumns.PromotionId]: promotionId,
 		};
 

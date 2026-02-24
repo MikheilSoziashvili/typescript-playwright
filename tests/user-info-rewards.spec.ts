@@ -16,6 +16,7 @@ import { RewardType } from "@enums/admin/reward-type";
 import { RewardButton } from "@enums/admin/rewards";
 import { RewardsSource } from "@enums/admin/rewards-source";
 import { UserInfoTabs } from "@enums/admin/user-info-tabs";
+import { EvRewardTypes } from "@enums/ev-reward-types";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
 import { JiraComponent } from "@enums/jira/jira-components";
@@ -1582,6 +1583,78 @@ test.describe(
 					newRewardTotal: reloadRewardData.newTotalReward,
 					newTotalAmount: reloadRewardData.newTotalAmount,
 				});
+			},
+		);
+
+		test(
+			`[ENG-10269] Reload update - Skipped claims logic`,
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			async ({
+				browserSessionManager,
+				gamdomDb,
+				testDataPredefined,
+				claimReloadRewardTestFlow,
+				verifyReloadRewardPresenceTestFlow,
+			}) => {
+				const adminUserInfoAdmin = await browserSessionManager.loginAs(
+					TestUserRole.EV_REWARDS_SYSTEM_SUPERADMIN_WITH_USER_INFO,
+					{ reuseContext: true },
+				);
+				const regularUser = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
+				);
+
+				const regularUserId =
+					regularUser.getAuthenticatedUser().user.userId;
+				const adminUserId =
+					adminUserInfoAdmin.getAuthenticatedUser().user.userId;
+
+				const reloadRewardData =
+					testDataPredefined.data.reloadRewardWithUpdatedTotal;
+
+				await gamdomDb.insertReloadReward(
+					regularUserId,
+					adminUserId,
+					reloadRewardData.reloadCoins,
+					reloadRewardData.expirationMs,
+					reloadRewardData.claimIntervalMs,
+					reloadRewardData.amountCoins,
+					EvRewardTypes.RELOAD,
+					RewardStatus.ACTIVE,
+					reloadRewardData.daysOffset,
+					reloadRewardData.daysToExpire,
+					null,
+					true,
+					reloadRewardData.updatedNewTotal,
+					reloadRewardData.modifiedDateDaysOffset,
+				);
+
+				await verifyReloadRewardPresenceTestFlow.verifyReloadRewardIsPresent(
+					{
+						adminUser: adminUserInfoAdmin,
+						targetUsername:
+							regularUser.getAuthenticatedUser().user.username,
+						section: RewardStatus.ACTIVE,
+					},
+				);
+
+				await claimReloadRewardTestFlow.claimReloadRewardAndVerifyBalance(
+					{
+						user: regularUser,
+						rewardAmount: reloadRewardData.newReloadAmount,
+						expectedBalanceIncrease:
+							reloadRewardData.balanceIncrease,
+					},
+				);
+
+				await verifyReloadRewardPresenceTestFlow.verifyReloadRewardIsAbsent(
+					{
+						adminUser: adminUserInfoAdmin,
+						targetUsername:
+							regularUser.getAuthenticatedUser().user.username,
+						section: RewardStatus.ACTIVE,
+					},
+				);
 			},
 		);
 	},
