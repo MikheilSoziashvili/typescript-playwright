@@ -143,15 +143,14 @@ export class HomePageMap extends BaseMap {
 	public originalsGameFromSubNav(game: string): Locator {
 		return this.originalsGamesListSliderSwiper
 			.locator(
-				'div[data-testid^="games-list-item-"][data-testid*="-container"]',
+				'a[data-testid^="games-list-item-"][data-testid*="-container-"]',
 			)
 			.filter({
 				has: this.page.locator(
 					`img[data-testid$="-banner-image"][alt="${game}"]`,
 				),
 			})
-			.first()
-			.locator('span[data-testid$="-play-button"]');
+			.first();
 	}
 
 	public get originalsSectionSliderContainer(): Locator {
@@ -165,7 +164,7 @@ export class HomePageMap extends BaseMap {
 	public originalsGameFromSection(game: string): Locator {
 		return this.originalsGamesListSliderSwiper
 			.locator(
-				`div[data-testid^="games-list-item-"][data-testid*="-container-${game.toLowerCase()}"]`,
+				`a[data-testid^="games-list-item-"][data-testid*="-container-${game.toLowerCase()}-"]`,
 			)
 			.first();
 	}

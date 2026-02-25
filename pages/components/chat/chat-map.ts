@@ -18,22 +18,6 @@ export class ChatMap extends BaseMap {
 			.getByTestId("iconChatButton");
 	}
 
-	public get chatOpenedStateContainer(): Locator {
-		return this.page.locator("[data-testid*=chatSectionContainer-]");
-	}
-
-	public get chatOpenedContainerLocator(): Locator {
-		return this.page.getByTestId("chatSectionContainer-open");
-	}
-
-	public get chatClosedContainerLocator(): Locator {
-		return this.page.getByTestId("chatSectionContainer-closed");
-	}
-
-	public get chatMessagesContainer(): Locator {
-		return this.chatLocator.getByTestId("chatMessagesContainer");
-	}
-
 	public get chatMessagesConnecting(): Locator {
 		return this.chatLocator.getByTestId("chatMessages-connecting");
 	}
@@ -54,55 +38,42 @@ export class ChatMap extends BaseMap {
 		return this.chatLocator.getByTestId("chatMessages-empty");
 	}
 
-	public get pinnedLocator(): Locator {
-		return this.chatMessagesList.locator(
-			`li[data-testid*="messagePinned-container-"]`,
-		);
+	public pinnedMessageByContent(options: ChatMessageOptions): Locator {
+		return this.pinnedMessagesContainer
+			.locator(
+				'li[data-testid^="message-say-"][data-testid$="-container"]',
+			)
+			.filter({
+				has: this.usernameInMessage.filter({
+					hasText: options.username,
+				}),
+			})
+			.filter({
+				has: this.textInMessage.filter({ hasText: options.message }),
+			})
+			.last();
 	}
 
-	public pinnedMessageLocator(options?: ChatMessageOptions): Locator {
-		if (options?.index) {
-			return this.pinnedLocator.nth(options.index - 1);
-		} else if (options?.username && options.message) {
-			return this.pinnedLocator
-				.filter({ hasText: options.username })
-				.filter({ hasText: options.message })
-				.last();
-		} else {
-			return this.pinnedLocator.last();
-		}
+	public pinnedMessageUnpinButtonByContent(
+		messageInfo: ChatMessageOptions,
+	): Locator {
+		return this.pinnedMessageByContent(messageInfo).locator(
+			'button[data-testid$="-unpin"]',
+		);
 	}
 
 	public get pinnedMessagesContainer(): Locator {
 		return this.page.locator('ul[class*="PinnedChatMessageContainer"]');
 	}
 
-	public pinnedMessageAvatar(options?: ChatMessageOptions): Locator {
-		return this.pinnedMessageLocator(options).locator(
-			'[data-testid*="messagePinned-userProfile"]',
-		);
-	}
-
-	public pinnedMessageCloseButton(options?: ChatMessageOptions): Locator {
-		return this.pinnedMessageLocator(options).locator(
-			'[data-testid*="messagePinned-closeButton-"]',
-		);
-	}
-
-	public get allPinnedCloseButtons(): Locator {
-		return this.pinnedLocator.locator(
-			'[data-testid*="messagePinned-closeButton-"]',
-		);
-	}
-
 	public diamondIcon(options?: ChatMessageOptions): Locator {
 		return this.messageLocator(options).locator(
-			`[data-testid*="messageSay-vipIcon"]`,
+			'[data-testid$="-vipIcon"]',
 		);
 	}
 
 	public get vipTooltip(): Locator {
-		return this.page.locator("role=tooltip >> p");
+		return this.page.getByRole("tooltip");
 	}
 
 	/**

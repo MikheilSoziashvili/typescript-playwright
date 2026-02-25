@@ -114,5 +114,4 @@ export const htmlHrefLinkPattern = /href="(https?:\/\/[^"]+)"/g;
 // Game tile item test id format example:
 // lobby-carousel-item-0-container-barrel-bonanza-alea15315
 // Captures the game name (e.g. "barrel-bonanza") from the data-testid.
-export const lobbyCarouselGameNameFromTestIdPattern =
-	/\bcontainer-([a-z0-9-]+)-[^-]+$/i;
+export const gameNameFromTestIdPattern = /\bcontainer-([a-z0-9-]+)-[^-]+$/i;

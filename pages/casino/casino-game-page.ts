@@ -9,7 +9,7 @@ import { CasinoPageAsserter } from "./casino-game-page-asserter";
 import { CasinoPageMap } from "./casino-game-page-map";
 import { CasinoPageSteps } from "./casino-game-page-step";
 import { KeyboardKey } from "@enums/keyboard";
-import { lobbyCarouselGameNameFromTestIdPattern } from "@support/regex-patterns";
+import { gameNameFromTestIdPattern } from "@support/regex-patterns";
 import { extractFirstGroup } from "@core/utils/utils";
 import { Attributes } from "@enums/playwright/htmlAttributes";
 
@@ -66,10 +66,7 @@ export class CasinoPage extends BasePage<CasinoPageMap> {
 			Attributes.DATA_TESTID,
 		);
 
-		const gameName = extractFirstGroup(
-			testId,
-			lobbyCarouselGameNameFromTestIdPattern,
-		);
+		const gameName = extractFirstGroup(testId, gameNameFromTestIdPattern);
 
 		return gameName;
 	}

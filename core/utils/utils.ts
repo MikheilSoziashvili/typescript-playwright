@@ -1768,5 +1768,10 @@ export function extractFirstGroup(
 	value: string | null,
 	pattern: RegExp,
 ): string {
-	return value?.match(pattern)?.[1] ?? "";
+	const match = value?.match(pattern)?.[1];
+	expect(
+		match,
+		`Could not extract first group from value "${value}" using pattern ${pattern}`,
+	).toBeDefined();
+	return match as string;
 }

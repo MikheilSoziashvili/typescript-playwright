@@ -1,4 +1,4 @@
 Userclass,Usertag,Message
-moderator,,Success!
-admin,,Success!
-admin,SuperAdmin,Failed!
+moderator,,SUCCESS
+admin,,SUCCESS
+admin,SuperAdmin,FAILED

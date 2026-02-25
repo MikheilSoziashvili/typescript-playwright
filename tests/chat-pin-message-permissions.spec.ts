@@ -58,7 +58,8 @@ test.describe(
 							message: message,
 						};
 
-						await homePage.navigateAndExpandChat();
+						await homePage.navigate();
+						await chat.expandChat();
 						await chat
 							.steps()
 							.selectChatroomSuccessfully(Chatroom.Hindi);
@@ -103,7 +104,7 @@ test.describe(
 							cookies: { clearCookies: true },
 						});
 						await setAuthenticationCookies(page, cookie);
-						await homePage.navigateAndExpandChat();
+						await homePage.navigate();
 						await chat.assertThat().chatIsDisplayed();
 						await chat.steps().unpinMessage(messageInfo);
 					},

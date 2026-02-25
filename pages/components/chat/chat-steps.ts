@@ -102,38 +102,29 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 		await this.component.assertThat().isMessageVisible(chatMessage);
 	}
 
-	@step("Toggle pin message")
-	private async togglePinMessage(
-		action:
-			| CommonUserPopupOption.PIN_MESSAGE
-			| CommonUserPopupOption.UNPIN_MESSAGE,
-		options?: ChatMessageOptions,
-	): Promise<void> {
-		if (action === CommonUserPopupOption.PIN_MESSAGE) {
-			await this.component.closeAllPinnedMessages();
-		}
-
-		const targetAvatar =
-			action === CommonUserPopupOption.UNPIN_MESSAGE
-				? this.component.map.pinnedMessageAvatar(options)
-				: this.component.map.messageUserAvatar(options);
-
-		await targetAvatar.click();
-
-		await this.commonUserOptionsPopup.clickOption(action);
-	}
-
 	@step("Pin a message in the chat")
-	public async pinMessage(options: ChatMessageOptions): Promise<void> {
-		await this.togglePinMessage(CommonUserPopupOption.PIN_MESSAGE, options);
+	public async pinMessage(options?: ChatMessageOptions): Promise<void> {
+		const messageUserLevel =
+			this.component.map.messageActionsTrigger(options);
+		await this.component.map.waitForVisibility({
+			locator: messageUserLevel,
+		});
+
+		await messageUserLevel.click();
+
+		await this.commonUserOptionsPopup.assertThat().isDisplayed();
+		await this.commonUserOptionsPopup.clickOption(
+			CommonUserPopupOption.PIN_MESSAGE,
+		);
 	}
 
 	@step("Unpin a message in the chat and assert its unpinned")
 	public async unpinMessage(options: ChatMessageOptions): Promise<void> {
-		await this.togglePinMessage(
-			CommonUserPopupOption.UNPIN_MESSAGE,
-			options,
-		);
+		const unpinButton =
+			this.component.map.pinnedMessageUnpinButtonByContent(options);
+
+		await unpinButton.click();
+
 		await this.component.assertThat().messageIsUnpinned(options);
 	}
 

@@ -69,7 +69,7 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 		messageInfo: ChatMessageOptions,
 		retries = 3,
 	): Promise<void> {
-		const locator = this.gamdomPage.map.pinnedMessageLocator(messageInfo);
+		const locator = this.gamdomPage.map.pinnedMessageByContent(messageInfo);
 		await this.retryWithPageReload(
 			(_attempt) => this.checkElementsAreVisible([locator]),
 			`Pinned message from "${messageInfo.username}" with text "${messageInfo.message}" is visible`,
@@ -233,7 +233,7 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 
 	@step("Assert that message is unpinned")
 	public async messageIsUnpinned(options: ChatMessageOptions): Promise<void> {
-		const pinned = this.gamdomPage.map.pinnedMessageLocator(options);
+		const pinned = this.gamdomPage.map.pinnedMessageByContent(options);
 		await expect(pinned).toHaveCount(0);
 	}
 

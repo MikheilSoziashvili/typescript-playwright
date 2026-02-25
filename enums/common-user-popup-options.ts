@@ -5,6 +5,5 @@ export enum CommonUserPopupOption {
 	MUTE = "Mute",
 	MENTION = "Mention",
 	ADMIN = "Admin",
-	PIN_MESSAGE = "Pin message",
-	UNPIN_MESSAGE = "Unpin message",
+	PIN_MESSAGE = "Pin",
 }
