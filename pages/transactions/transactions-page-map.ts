@@ -14,7 +14,7 @@ export class TransactionsMap extends BaseMap {
 
 	public get withdrawsTab(): Locator {
 		return this.page.locator("button", {
-			hasText: "Withdraws",
+			hasText: "Withdrawals",
 		});
 	}
 
