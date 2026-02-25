@@ -70,10 +70,9 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		inbox: string,
 		page: Page,
 		{ messageIndex = 1 }: { messageIndex?: number } = {},
-		timeout = Timeout.LONG,
-		interval = Timeout.EXTRA_SHORT,
+		timeout = Timeout.MEDIUM,
+		interval = Timeout.SHORT,
 	): Promise<void> {
-		// Poll for the verification email
 		const message = await mailinatorApi.pollForMessages(
 			domain,
 			inbox,
@@ -83,7 +82,6 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		);
 		const verificationEmailId = message.id;
 
-		// Fetch the email links and navigate to the new verification link
 		const emailLinks = await mailinatorApi.getEmailLinks(
 			domain,
 			inbox,
@@ -101,8 +99,8 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		inbox: string,
 		page: Page,
 		{ messageIndex = 1 }: { messageIndex?: number } = {},
-		timeout = Timeout.LONG,
-		interval = Timeout.EXTRA_SHORT,
+		timeout = Timeout.MEDIUM,
+		interval = Timeout.SHORT,
 	): Promise<void> {
 		await this.verifyEmail(
 			mailinatorApi,
@@ -114,7 +112,6 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 			interval,
 		);
 
-		// Assert account is already verified
 		await this.gamdomPage.navigate();
 		await this.gamdomPage.assertThat().assertVerifyButtonNotVisible();
 	}

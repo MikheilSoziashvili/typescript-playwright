@@ -235,8 +235,8 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 		page: Page,
 		{ messageIndex = 1 }: { messageIndex?: number } = {},
 		subjectIncludes?: string,
-		timeout = Timeout.LONG,
-		interval = Timeout.EXTRA_SHORT,
+		timeout = Timeout.MEDIUM,
+		interval = Timeout.SHORT,
 	): Promise<void> {
 		const message = await mailinatorApi.pollForMessages(
 			domain,
@@ -355,8 +355,8 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 		page: Page,
 		{ messageIndex = 1 }: { messageIndex?: number } = {},
 		subjectIncludes?: string,
-		timeout = Timeout.LONG,
-		interval = Timeout.EXTRA_SHORT,
+		timeout = Timeout.MEDIUM,
+		interval = Timeout.SHORT,
 	): Promise<void> {
 		const message = await mailinatorApi.pollForMessages(
 			domain,

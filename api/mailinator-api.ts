@@ -12,7 +12,7 @@ import {
 	MAILINATOR_MESSAGE_LINKS_URL,
 } from "@constants/mailinator-endpoints";
 import { Timeout } from "@enums/timeout";
-import { waitForSeconds } from "@core/utils/utils";
+import { waitForSeconds, waitUntil } from "@core/utils/utils";
 
 export class MailinatorApi extends BaseApi {
 	constructor(
@@ -46,9 +46,8 @@ export class MailinatorApi extends BaseApi {
 			domain,
 			inbox,
 		);
-		const messagesResponse = await this.executeRequest<MessagesResponse>(
-			endpoint,
-		);
+		const messagesResponse =
+			await this.executeRequest<MessagesResponse>(endpoint);
 		return messagesResponse.msgs;
 	}
 
@@ -97,30 +96,40 @@ export class MailinatorApi extends BaseApi {
 	public async pollForMessages(
 		domain: string,
 		inbox: string,
-		timeout = Timeout.LONG,
-		interval = Timeout.EXTRA_SHORT,
+		timeout = Timeout.MEDIUM,
+		interval = Timeout.SHORT,
 		messageIndex = 1,
 		subjectIncludes?: string,
 	): Promise<Message> {
-		const start = Date.now();
+		let result: Message | undefined;
 
-		while (Date.now() - start < timeout) {
-			const messages = await this.getMessages(domain, inbox);
-			const filteredMessages = subjectIncludes
-				? messages.filter((msg) =>
-						msg.subject
-							.toLowerCase()
-							.includes(subjectIncludes.toLowerCase()),
-				  )
-				: messages;
-			if (filteredMessages.length >= messageIndex) {
-				return filteredMessages[messageIndex - 1];
-			}
-			await waitForSeconds(interval / 1000);
+		await waitUntil(
+			async () => {
+				const messages = await this.getMessages(domain, inbox);
+				const filtered = subjectIncludes
+					? messages.filter((msg) =>
+							msg.subject
+								.toLowerCase()
+								.includes(subjectIncludes.toLowerCase()),
+						)
+					: messages;
+				if (filtered.length >= messageIndex) {
+					result = filtered[messageIndex - 1];
+					return true;
+				}
+				return false;
+			},
+			{
+				errorMessage: `No message found in inbox ${inbox}`,
+				intervalSeconds: interval / 1000,
+				timeoutSeconds: timeout / 1000,
+			},
+		);
+
+		if (!result) {
+			throw new Error(`No message found in inbox ${inbox}`);
 		}
 
-		throw new Error(
-			`Timeout of ${timeout}ms exceeded while polling for messages in ${inbox}`,
-		);
+		return result;
 	}
 }
