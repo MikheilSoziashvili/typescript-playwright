@@ -24,11 +24,6 @@ export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 		await this.map.userAccountMenuAvatar.click();
 	}
 
-	@step("Hover on user profile button")
-	public async hoverOnUserProfileButton(): Promise<void> {
-		await this.map.userAccountMenuAvatar.hover();
-	}
-
 	@step("Click user profile dropdown item")
 	public async clickUserProfileDropdownItem(
 		dropdownItem: UserMenuOption,
@@ -40,7 +35,7 @@ export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 	public async navigateToUserMenuOption(
 		userMenuOption: UserMenuOption,
 	): Promise<void> {
-		await this.hoverOnUserProfileButton();
+		await this.clickUserProfileButton();
 		await this.clickUserProfileDropdownItem(userMenuOption);
 	}
 

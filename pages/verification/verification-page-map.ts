@@ -9,13 +9,17 @@ export class VerificationPageMap extends BaseMap {
 	}
 
 	public get verificationPageContainer(): Locator {
-		return this.page.getByTestId("page-container");
+		return this.page.getByTestId("kyc-v4-page");
+	}
+
+	public levelTitle(level: string): Locator {
+		return this.verificationPageContainer.getByText(level, {
+			exact: true,
+		});
 	}
 
 	public get verificationPageTitle(): Locator {
-		return this.verificationPageContainer.locator("h1", {
-			hasText: "Verification",
-		});
+		return this.verificationPageContainer.getByTestId("kyc-v4-page-title");
 	}
 
 	public get veriffIFrameElement(): Locator {

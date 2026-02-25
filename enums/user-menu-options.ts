@@ -1,11 +1,10 @@
 export enum UserMenuOption {
 	PROFILE = "Profile",
-	NOTIFICATIONS = "Notifications",
-	STATISTICS = "Statistics",
+	INBOX = "Inbox",
 	AFFILIATES = "Affiliates",
-	PRIVACY = "Privacy",
-	VERIFICATION = "Verification",
+	VERIFICATIONS = "Verifications",
 	SETTINGS = "Settings",
-	TRANSACTIONS = "Transactions",
+	PRIVACY = "Privacy",
 	CONNECTIONS = "Connections",
+	TRANSACTIONS = "Transactions",
 }

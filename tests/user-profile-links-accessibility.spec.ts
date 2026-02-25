@@ -73,7 +73,7 @@ test.describe("User profile links accessibility", () => {
 						await setAuthenticationCookies(page, cookie);
 						await homePage.navigate();
 						await homePage.authenticatedHeader.navigateToUserMenuOption(
-							UserMenuOption.VERIFICATION,
+							UserMenuOption.VERIFICATIONS,
 						);
 						await verificationPage
 							.assertThat()

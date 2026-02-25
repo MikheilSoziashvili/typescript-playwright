@@ -45,14 +45,14 @@ export class AuthenticatedHeaderMap extends BaseMap {
 	}
 
 	public get userAvatarDropdownMenuContainer(): Locator {
-		return this.authenticatedHeaderContainer.locator(
-			`div[class*="UserAvatarWithMenu-styled__MenuContainer"]`,
-		);
+		return this.page.locator(`div[class*="PopoverV4__StyledPopover-sc-"]`);
 	}
 
 	public userAvatarDropdownItem(dropdownItem: UserMenuOption): Locator {
-		return this.userAvatarDropdownMenuContainer.locator(`a button`, {
-			hasText: `${dropdownItem}`,
+		return this.userAvatarDropdownMenuContainer.locator("a").filter({
+			has: this.page.getByTestId(
+				`account-popover-${dropdownItem.toLowerCase()}-name`,
+			),
 		});
 	}
 
@@ -127,9 +127,12 @@ export class AuthenticatedHeaderMap extends BaseMap {
 	}
 
 	public walletOption(cryptoCurrency: string): Locator {
-		return this.page.locator('[data-testid^="wallet-popover-"][data-testid$="-name"]', {
-			hasText: new RegExp(`^${cryptoCurrency}$`),
-		});
+		return this.page.locator(
+			'[data-testid^="wallet-popover-"][data-testid$="-name"]',
+			{
+				hasText: new RegExp(`^${cryptoCurrency}$`),
+			},
+		);
 	}
 
 	public walletBalanceValue(cryptoCurrency: string): Locator {

@@ -1,12 +1,13 @@
 import { BaseAsserter } from "@base/base-asserter";
-import { VerificationPage } from "./verification-page";
 import { getItemsAttribute } from "@core/utils/utils";
 import { Attributes } from "@enums/playwright/htmlAttributes";
-import { step } from "decorators/step";
+import { KycLevels } from "@enums/verification-enums";
 import { expect } from "@playwright/test";
+import { step } from "decorators/step";
 import type { FieldValidationScenario } from "test-data/interfaces/domain";
-import type { Toast } from "../components/toast/toast";
 import type { Notification } from "../components/notification/notification";
+import type { Toast } from "../components/toast/toast";
+import { VerificationPage } from "./verification-page";
 
 export class VerificationPageAsserter extends BaseAsserter<VerificationPage> {
 	public constructor(page: VerificationPage) {
@@ -35,8 +36,9 @@ export class VerificationPageAsserter extends BaseAsserter<VerificationPage> {
 	public async verificationPageTitleAndTabsAreVisible(): Promise<void> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.verificationPageTitle,
-			this.gamdomPage.map.verifyMeTab,
-			this.gamdomPage.map.verifyBusinessTab,
+			this.gamdomPage.map.levelTitle(KycLevels.LEVEL_1),
+			this.gamdomPage.map.levelTitle(KycLevels.LEVEL_2),
+			this.gamdomPage.map.levelTitle(KycLevels.LEVEL_3),
 		]);
 	}
 
