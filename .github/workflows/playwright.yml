@@ -698,6 +698,7 @@ jobs:
                   BRANCH_NAME: ${{ github.event_name == 'schedule' && 'master' || github.head_ref || github.ref_name }}
                   USER_NAME: ${{ github.event_name == 'schedule' && 'scheduled run' || github.actor }}
                   PULL_REQUEST_URL: ${{ github.event_name == 'schedule' && 'No PR created' || github.event.pull_request.html_url || 'No PR created' }}
+                  RP_PUBLIC_URL: ${{ vars.RP_PUBLIC_URL }}
               run: npx playwright-slack-report --config="${GITHUB_WORKSPACE}/core/reporters/slack-reporter-cli/slack-message-config-cli.json" --json-results="${GITHUB_WORKSPACE}/e2e-results.json"
 
             - name: Report failed tests to JIRA

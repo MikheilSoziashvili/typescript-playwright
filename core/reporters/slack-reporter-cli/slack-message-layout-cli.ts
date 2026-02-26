@@ -2,6 +2,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/prefer-for-of */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable @typescript-eslint/no-var-requires */
 // @ts-expect-error */Needed for slack-reporter
 
 // "due to slack-reporter-cli restrictions we can not have imports for this file and need to disable eslint as follow.
@@ -39,9 +41,17 @@ function messageLayoutSlackCli(summaryResults) {
 	});
 
 	summaryResults.meta?.push({
-		key: ":e2e_report: Detailed report:",
+		key: ":e2e_report: Playwright HTML Report:",
 		value: `<${process.env.REPORT_URL}|here>`,
 	});
+
+	const rpLaunchUrl = buildRpLaunchUrl();
+	if (rpLaunchUrl) {
+		summaryResults.meta?.push({
+			key: ":chart_with_upwards_trend: ReportPortal Launch:",
+			value: `<${rpLaunchUrl}|here>`,
+		});
+	}
 
 	summaryResults.meta?.push({
 		key: ":jira: Test Execution:",
@@ -92,4 +102,39 @@ function messageLayoutSlackCli(summaryResults) {
 		{ type: "divider" },
 	];
 }
+
+function getPublicRpBaseUrl() {
+	if (process.env.RP_PUBLIC_URL)
+		return process.env.RP_PUBLIC_URL.replace(/\/+$/, "");
+	const endpoint = process.env.RP_ENDPOINT;
+	if (!endpoint) return null;
+	return new URL(endpoint).origin;
+}
+
+function getLaunchId() {
+	const envId = process.env.RP_LAUNCH_ID || process.env.CAPTURED_RP_LAUNCH_ID;
+	if (envId) return envId;
+
+	try {
+		return String(
+			require("fs").readFileSync(".rp-launch-uuid", "utf-8"),
+		).trim();
+	} catch {
+		console.warn(
+			"Launch UUID is not available. ReportPortal link will be skipped.",
+		);
+		return null;
+	}
+}
+
+function buildRpLaunchUrl() {
+	const baseUrl = getPublicRpBaseUrl();
+	const project = process.env.RP_PROJECT;
+	const launchId = getLaunchId();
+
+	if (!baseUrl || !project || !launchId) return null;
+
+	return `${baseUrl}/ui/#${project}/launches/all/${launchId}`;
+}
+
 exports.messageLayoutSlackCli = messageLayoutSlackCli;
