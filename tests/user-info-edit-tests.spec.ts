@@ -8,6 +8,7 @@ import {
 	setAuthenticationCookies,
 } from "@core/utils/utils";
 import { BalanceEditStep } from "@dtos/test-data";
+import { UserInfoEditInfoFields } from "@enums/admin/user-info-edit-info-fields";
 import { UserInfoTabs } from "@enums/admin/user-info-tabs";
 import { ApiEndpoints } from "@enums/api-endpoints";
 import { CsvFilesName } from "@enums/csv-file-name";
@@ -467,5 +468,54 @@ test.describe(
 					);
 				});
 		});
+
+		testData()
+			.fromCsvRaw({
+				file: CsvFilesName.UNWAGERED_DEPOSITS_FIELD,
+			})
+			.forEach((input) => {
+				test(
+					`[ENG-11731] Edit Info - Verify unwagered_deposits field with ${input.staffRoleTag} account`,
+					testDetails()
+						.withTags(JiraComponent.EDIT_INFO)
+						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+						.apply(),
+					async ({
+						browserSessionManager,
+						gamdomApiDbFacade,
+						userInfoEditInfoAdminPage,
+						toast,
+						page,
+						testDataPredefined,
+						userInfoStaffUserSetupFlow,
+						userInfoEditFieldFlow,
+					}) => {
+						const { validValue, invalidValue } =
+							testDataPredefined.data.userInfoEditInfo
+								.unwageredDeposits;
+
+						await userInfoStaffUserSetupFlow.setupStaffUserAndNavigateToEditInfo(
+							{
+								browserSessionManager: browserSessionManager,
+								gamdomApiDbFacade: gamdomApiDbFacade,
+								staffTag: input.staffRoleTag,
+							},
+						);
+
+						await userInfoEditFieldFlow.editFieldAndVerifyToasts({
+							userInfoEditInfoAdminPage:
+								userInfoEditInfoAdminPage,
+							toast: toast.assertThat(),
+							page: page,
+							fieldName:
+								UserInfoEditInfoFields.UNWAGERED_DEPOSITS,
+							validValue: validValue,
+							invalidValue: invalidValue,
+							expectedErrorMessage:
+								ToastSubTitle.INVALID_UNWAGERED_DEPOSIT_VALUE,
+						});
+					},
+				);
+			});
 	},
 );

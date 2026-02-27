@@ -29,6 +29,7 @@ import {
 	ObtEsportsPagesStatusCodeCsv,
 	EnableDisableCryptoCurrenciesStatusesCsv,
 	PromotionCombinationsNotForVipCsv,
+	UnwageredDepositsFieldCsv,
 } from "@dtos/csv";
 import { HomePageBannerCarouselCsv } from "@dtos/csv/home-page-banner-carousel-csv";
 import { OriginalsSelfExclusionCsv } from "@dtos/csv/originals-self-exclusion";
@@ -73,4 +74,5 @@ export type CsvDtoMap = {
 	[CsvFilesName.OBT_ESPORTS_PAGES_STATUS_CODE]: ObtEsportsPagesStatusCodeCsv;
 	[CsvFilesName.ENABLE_DISABLE_CRYPTO_CURRENCIES_STATUSES]: EnableDisableCryptoCurrenciesStatusesCsv;
 	[CsvFilesName.PROMOTION_COMBINATIONS_NOT_FOR_VIP]: PromotionCombinationsNotForVipCsv;
+	[CsvFilesName.UNWAGERED_DEPOSITS_FIELD]: UnwageredDepositsFieldCsv;
 };

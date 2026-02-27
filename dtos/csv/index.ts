@@ -29,4 +29,5 @@ export * from "./promotion-combinations-for-label-display-v4-csv";
 export * from "./royalty-up-level-ranks-csv";
 export * from "./royalty-up-skipping-levels-csv";
 export * from "./enable-disable-crypto-currencies-statuses-csv";
+export * from "./unwagered-deposits-field-csv";
 export * from "./promotion-combinations-not-for-vip-csv";

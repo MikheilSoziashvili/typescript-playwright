@@ -48,3 +48,7 @@ export {
 export { toFireblocksCryptoClient } from "./crypto/adapters/fireblocks-crypto-client-adapter";
 export { toUtxoCryptoClient } from "./crypto/adapters/utxo-crypto-client-adapter";
 export { toXrpCryptoClient } from "./crypto/adapters/xrp-crypto-client-adapter";
+
+// User Info flows
+export { UserInfoStaffUserSetupFlow } from "./user-info/user-info-staff-user-setup-test-flow";
+export { UserInfoEditFieldFlow } from "./user-info/user-info-edit-field-test-flow";

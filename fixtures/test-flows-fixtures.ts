@@ -40,6 +40,8 @@ import { PredefinedDataSource } from "test-data/core/predefined-data-source";
 import { ChangeReloadRewardTestFlow } from "@test-flows/rewards/change-reload-reward-test-flow";
 import { ClaimReloadRewardTestFlow } from "@test-flows/rewards/claim-reload-reward-test-flow";
 import { VerifyReloadRewardPresenceTestFlow } from "@test-flows/rewards/verify-reload-reward-presence-test-flow";
+import { UserInfoStaffUserSetupFlow } from "@test-flows/user-info/user-info-staff-user-setup-test-flow";
+import { UserInfoEditFieldFlow } from "@test-flows/user-info/user-info-edit-field-test-flow";
 
 export type TestFlowsFixtures = {
 	plinkoBetTestFlow: PlinkoBetTestFlow;
@@ -57,6 +59,8 @@ export type TestFlowsFixtures = {
 	changeReloadRewardTestFlow: ChangeReloadRewardTestFlow;
 	claimReloadRewardTestFlow: ClaimReloadRewardTestFlow;
 	verifyReloadRewardPresenceTestFlow: VerifyReloadRewardPresenceTestFlow;
+	userInfoStaffUserSetupFlow: UserInfoStaffUserSetupFlow;
+	userInfoEditFieldFlow: UserInfoEditFieldFlow;
 };
 
 type RequiredTestFlowsFixtures = {
@@ -198,5 +202,11 @@ export const testFlowsFixtures = base.extend<
 	},
 	verifyReloadRewardPresenceTestFlow: async ({}, use) => {
 		await use(new VerifyReloadRewardPresenceTestFlow());
+	},
+	userInfoStaffUserSetupFlow: async ({}, use) => {
+		await use(new UserInfoStaffUserSetupFlow());
+	},
+	userInfoEditFieldFlow: async ({}, use) => {
+		await use(new UserInfoEditFieldFlow());
 	},
 });

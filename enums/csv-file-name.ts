@@ -66,4 +66,5 @@ export enum CsvFilesName {
 	ROYALTY_UP_SKIPPING_LEVELS = "ENG-10845-royalty-up-skipping-levels.csv",
 	ENABLE_DISABLE_CRYPTO_CURRENCIES_STATUSES = "ENG-10584-enable-disable-crypto-currencies-statuses.csv",
 	PROMOTION_COMBINATIONS_NOT_FOR_VIP = "ENG-11905-promotion-combinations.csv",
+	UNWAGERED_DEPOSITS_FIELD = "ENG-11731-Edit-Info-Verify-unwagered-deposits-field.csv",
 }

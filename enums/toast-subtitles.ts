@@ -57,4 +57,5 @@ export enum ToastSubTitle {
 	ROYALTY_UP_STARTED = "Congratulations on kick-starting your Royalty journey.",
 	XP_CHALLENGE_ACTIVATED = "XP challenge activated!",
 	REWARD_UPDATED_SUCCESSFULLY = "Reward updated successfully",
+	INVALID_UNWAGERED_DEPOSIT_VALUE = "Invalid unwagered deposit value provided. Please provide a non negative value.",
 }
