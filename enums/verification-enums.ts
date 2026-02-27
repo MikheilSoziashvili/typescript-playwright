@@ -54,3 +54,16 @@ export enum ProofOfFunds {
 	WAGE_SLIP = "Wage slip",
 	INVOICE = "Invoice",
 }
+
+export enum KycType {
+	PERSONAL = "personal",
+	BUSINESS = "business",
+}
+
+export enum KycStatus {
+	APPROVED = "approved",
+	IN_PROGRESS = "in_progress",
+	WAITING_REVIEW = "waiting_review",
+	NOT_TRIGGERED = "not_triggered",
+	REJECTED = "rejected",
+}

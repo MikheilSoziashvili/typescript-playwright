@@ -1,4 +1,7 @@
-import { parseToFloat, waitForOpenRain } from "@core/utils/utils";
+import {
+	parseToFloat,
+	waitForOpenRain,
+} from "@core/utils/utils";
 import { BasePage } from "@pages/base/base-page";
 import { Page } from "@playwright/test";
 import { step } from "decorators/step";

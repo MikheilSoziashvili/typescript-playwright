@@ -7,6 +7,7 @@ export enum DbTables {
 	Settings = "Public.Settings",
 	AmlInfo = "aml.info",
 	AmlStatus = "aml.status",
+	KycUserLevels = "aml.kyc_user_levels",
 	KothEvents = "koth.events",
 	Promotions = "promotions.promotions",
 	VipUsers = "public.vip_users",

@@ -3,43 +3,100 @@ import { TIP_RAIN } from "@constants/tip-rain";
 import { buildTipRainUserMessageInfo } from "@core/helpers/asserter-helpers/text-asserters";
 import { testDetails } from "@core/helpers/test-details-helper";
 import {
-	convertCoinsToUsd,
 	createBrowserContextWithProxy,
 	createPngImagePath,
 	deleteFilesWithFilePaths,
 	getCookieHeader,
-	initializePageObjects,
 	initializePageObjectsWithCookies,
 	waitUntil,
 } from "@core/utils/utils";
-import { RegisterTestData } from "@dtos/test-data";
-import { UserClasses } from "@enums/db/user-classes";
-import { UserTags } from "@enums/db/user-tags";
 import { JiraUser } from "@enums/jira/jira-users";
+import { TestUserRole } from "@enums/test-user-roles";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
-import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
+import { KycLevels } from "@enums/verification-enums";
 import { test } from "@fixtures/fixtures";
-import { rainAmount } from "global-setup";
+import { testData } from "test-data/test-data-manager";
+import { KycStatus } from "@enums/verification-enums";
 
 test.describe("Rain tests", () => {
-	const superAdminData = new RegisterTestData({
-		useGamdomEmailDomain: true,
-	});
 	let qrCode2FAImagePath: string;
-	const tipRainAmount = 10;
-	const baseRainAmount = convertCoinsToUsd(rainAmount);
+	const { tipRainAmount, baseRainAmount } =
+		testData().fromPredefined().data.rainAmounts;
 
-	test.describe("Rain claim tests", () => {
-		test.slow();
+	const rainDomainData = testData().fromDomain().rain;
 
-		test.use(storageStateNewUserDB());
+	test(
+		"[ENG-15626] Rain - cannot claim rain with no KYC level",
+		testDetails()
+			.withJiraBugTickets("5094")
+			.withAuthor(JiraUser.ANGEL_PETROV)
+			.apply(),
+		async ({ homePage, chat, browserSessionManager }) => {
+			await browserSessionManager.loginAs(TestUserRole.REGULAR, {
+				reuseContext: true,
+			});
+
+			await homePage.navigate();
+			await chat.steps().openChatAndVerify();
+			await chat.steps().waitUponRainAndClaim();
+			await chat.assertThat().rainClaimButtonShowsCannotWinMessage();
+			await chat.steps().rainClaimButtonRedirectsToFaq();
+		},
+	);
+
+	for (const kycLevel of rainDomainData.cannotClaimKycLevels) {
 		test(
-			"[ENG-2863] Rain - try to claim the rain",
+			`[ENG-15626] Rain - cannot claim rain with KYC level: ${kycLevel.level}`,
 			testDetails()
 				.withJiraBugTickets("5094")
-				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+				.withAuthor(JiraUser.ANGEL_PETROV)
 				.apply(),
-			async ({ homePage, chat }) => {
+			async ({ homePage, chat, browserSessionManager, gamdomDb }) => {
+				const regularUser = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
+					{ reuseContext: true },
+				);
+
+				await gamdomDb.insertUserKycLevel(
+					regularUser.getAuthenticatedUser().user.userId,
+					kycLevel.level,
+					kycLevel.type,
+					KycStatus.APPROVED,
+					true,
+					false,
+				);
+
+				await homePage.navigate();
+				await chat.steps().openChatAndVerify();
+				await chat.steps().waitUponRainAndClaim();
+				await chat.assertThat().rainClaimButtonShowsCannotWinMessage();
+				await chat.steps().rainClaimButtonRedirectsToFaq();
+			},
+		);
+	}
+
+	for (const kycLevel of rainDomainData.canClaimKycLevels) {
+		test(
+			`[ENG-15626] Rain - can claim rain with KYC level: ${kycLevel.level}`,
+			testDetails()
+				.withJiraBugTickets("5094")
+				.withAuthor(JiraUser.ANGEL_PETROV)
+				.apply(),
+			async ({ homePage, chat, browserSessionManager, gamdomDb }) => {
+				const regularUser = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
+					{ reuseContext: true },
+				);
+
+				await gamdomDb.insertUserKycLevel(
+					regularUser.getAuthenticatedUser().user.userId,
+					kycLevel.level,
+					kycLevel.type,
+					KycStatus.APPROVED,
+					true,
+					false,
+				);
+
 				await homePage.navigate();
 				await chat.steps().openChatAndVerify();
 
@@ -74,124 +131,116 @@ test.describe("Rain tests", () => {
 					.accountBalanceIs(expectedUserBalance);
 			},
 		);
-	});
+	}
 
-	test.describe("Tip rain tests", () => {
-		const userData = new RegisterTestData();
+	test(
+		"[ENG-2564] Tip rain - Require new 2FA code when IP of user changes",
+		testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+		async ({
+			homePage,
+			chat,
+			tipRainModal,
+			twoFactorAuthModal,
+			settingsPage,
+			browser,
+			gamdomDb,
+			browserSessionManager,
+			gamdomApi,
+		}) => {
+			const regularUser = await browserSessionManager.loginAs(
+				TestUserRole.REGULAR,
+				{ reuseContext: true },
+			);
 
-		test.use(
-			storageStateNewUserDB(
-				{
-					username: userData.username,
-					password: userData.password,
-					email: userData.email,
-				},
-				userData,
-			),
-		);
+			const userId = regularUser.getAuthenticatedUser().user.userId;
+			const username = regularUser.getAuthenticatedUser().user.username;
 
-		test(
-			"[ENG-2564] Tip rain - Require new 2FA code when IP of user changes",
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
-			async ({
+			await gamdomDb.insertUserKycLevel(
+				userId,
+				KycLevels.LEVEL_2,
+				null,
+				KycStatus.APPROVED,
+				true,
+				false,
+			);
+
+			const pages = {
 				homePage,
-				chat,
 				tipRainModal,
 				twoFactorAuthModal,
 				settingsPage,
-				gamdomApi,
-				browser,
-				gamdomDb,
-			}) => {
-				const pages = {
-					homePage,
-					tipRainModal,
-					twoFactorAuthModal,
-					settingsPage,
-					chat,
-				};
+				chat,
+			};
 
-				await gamdomDb.createNewUser({
-					username: superAdminData.username,
-					password: superAdminData.password,
-					email: superAdminData.email,
-					tags: UserTags.SuperAdmin,
-					userClass: UserClasses.Admin,
-					emailVerified: true,
-				});
-				const superAdminCookie = getCookieHeader(
-					await gamdomApi.authenticateWithExistingUser(
-						superAdminData.username,
-						superAdminData.password,
-					),
+			const superAdmin = await browserSessionManager.loginAs(
+				TestUserRole.SUPERADMIN,
+			);
+
+			const superAdminCookie = getCookieHeader(
+				superAdmin.getAuthenticatedUser().cookie,
+			);
+
+			qrCode2FAImagePath = createPngImagePath();
+			await settingsPage
+				.steps()
+				.navigateAndEnable2FaAuthentication(qrCode2FAImagePath);
+
+			await homePage.navigate();
+			await homePage.authenticatedHeader.expandChatIfNotVisible();
+			await chat.steps().verifyChatAndSendMessage(TIP_RAIN);
+			await twoFactorAuthModal
+				.steps()
+				.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
+			await tipRainModal
+				.steps()
+				.verifyModalAndTipRainSuccessfully(
+					gamdomApi,
+					superAdminCookie,
+					tipRainAmount,
 				);
-				const initialPage = await initializePageObjects(
-					await browser.newContext(),
-					...Object.values(pages),
+			await chat.assertThat().isInfoMessageVisibleByText(
+				buildTipRainUserMessageInfo({
+					username: username,
+					tipRainAmount: tipRainAmount,
+				}),
+			);
+
+			await chat.steps().verifyChatAndSendMessage(TIP_RAIN);
+			await twoFactorAuthModal.assertThat().modal2FaNotDisplayed();
+
+			await initializePageObjectsWithCookies(
+				await regularUser.context.cookies(),
+				regularUser.page,
+				await createBrowserContextWithProxy(
+					browser,
+					PT_PROXY_CREDENTIALS,
+				),
+				...Object.values(pages),
+			);
+
+			await homePage.navigate();
+			await homePage.authenticatedHeader
+				.assertThat()
+				.loggedInUserElementsAreVisible();
+			await homePage.authenticatedHeader.expandChatIfNotVisible();
+			await chat.steps().verifyChatAndSendMessage(TIP_RAIN);
+			await twoFactorAuthModal
+				.steps()
+				.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
+			await tipRainModal
+				.steps()
+				.verifyModalAndTipRainSuccessfully(
+					gamdomApi,
+					superAdminCookie,
+					tipRainAmount,
 				);
-
-				qrCode2FAImagePath = createPngImagePath();
-				await settingsPage
-					.steps()
-					.navigateAndEnable2FaAuthentication(qrCode2FAImagePath);
-
-				await homePage.navigate();
-				await homePage.authenticatedHeader.expandChatIfNotVisible();
-				await chat.steps().verifyChatAndSendMessage(TIP_RAIN);
-				await twoFactorAuthModal
-					.steps()
-					.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
-				await tipRainModal
-					.steps()
-					.verifyModalAndTipRainSuccessfully(
-						gamdomApi,
-						superAdminCookie,
-						tipRainAmount,
-					);
-				await chat.assertThat().isInfoMessageVisibleByText(
-					buildTipRainUserMessageInfo({
-						username: userData.username,
-						tipRainAmount: tipRainAmount,
-					}),
-				);
-
-				await chat.steps().verifyChatAndSendMessage(TIP_RAIN);
-				await twoFactorAuthModal.assertThat().modal2FaNotDisplayed();
-
-				await initializePageObjectsWithCookies(
-					await (await browser.newContext()).cookies(),
-					initialPage,
-					await createBrowserContextWithProxy(
-						browser,
-						PT_PROXY_CREDENTIALS,
-					),
-					...Object.values(pages),
-				);
-
-				await homePage.navigate();
-				await homePage.authenticatedHeader
-					.assertThat()
-					.loggedInUserElementsAreVisible();
-				await homePage.authenticatedHeader.expandChatIfNotVisible();
-				await chat.steps().verifyChatAndSendMessage(TIP_RAIN);
-				await twoFactorAuthModal
-					.steps()
-					.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
-				await tipRainModal
-					.steps()
-					.verifyModalAndTipRainSuccessfully(
-						gamdomApi,
-						superAdminCookie,
-						tipRainAmount,
-					);
-				await chat.assertThat().isInfoMessageVisibleByText(
-					buildTipRainUserMessageInfo({
-						username: userData.username,
-						tipRainAmount: tipRainAmount,
-					}),
-				);
-				await deleteFilesWithFilePaths([qrCode2FAImagePath]);
-			},
-		);
-	});
+			await chat.assertThat().isInfoMessageVisibleByText(
+				buildTipRainUserMessageInfo({
+					username: username,
+					tipRainAmount: tipRainAmount,
+				}),
+			);
+			await deleteFilesWithFilePaths([qrCode2FAImagePath]);
+		},
+	);
 });

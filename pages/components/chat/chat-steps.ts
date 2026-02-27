@@ -14,6 +14,7 @@ import { AuthenticatedHeader } from "../header/authenticated/authenticated-heade
 import { CommonUserOptionsPopup } from "../popups/common-user-options-popup";
 import { Chat } from "./chat";
 import { ChatMessageOptions } from "./chat-map";
+import { FAQ_PAGE_ENDPOINT } from "@constants/page-endpoints";
 
 export class ChatSteps extends BaseComponentStep<Chat> {
 	private authenticatedHeader: AuthenticatedHeader;
@@ -344,5 +345,13 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 			locator: messageUserLevel,
 		});
 		await messageUserLevel.click();
+	}
+
+	@step("Rain claim button redirects to FAQ page")
+	public async rainClaimButtonRedirectsToFaq(): Promise<void> {
+		await this.component.map.claimRainButton.click();
+		await this.commonUserOptionsPopup.page.waitForURL(
+			`**${FAQ_PAGE_ENDPOINT}`,
+		);
 	}
 }

@@ -1,5 +1,7 @@
+import { convertCoinsToUsd } from "@core/utils/utils";
 import { DateOffset } from "@enums/datetime/date-offset";
 import { Wallet } from "@enums/wallets";
+import { rainAmount } from "global-setup";
 
 export const predefined = {
 	admin: {
@@ -189,5 +191,9 @@ export const predefined = {
 		amountToDeposit: "0.1",
 		amountToDepositLarger: "0.3",
 		withdrawalAddress: "0xE8047993dfddd6579f56206d03c444add030e800",
+	},
+	rainAmounts: {
+		tipRainAmount: 10,
+		baseRainAmount: convertCoinsToUsd(rainAmount),
 	},
 };

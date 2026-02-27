@@ -60,6 +60,7 @@ import { AmlInfoOptions } from "./interfaces/aml-info-options";
 import { AmlStatusInsertOptions } from "./interfaces/aml-status-insert-options";
 import { PromotionInsertOptions } from "./interfaces/promotion-insert-options";
 import { NewUserOptions } from "./interfaces/storage-state-new-user-options";
+import { KycLevels, KycStatus, KycType } from "@enums/verification-enums";
 
 export class GamdomDb extends BaseDB {
 	constructor() {
@@ -1747,5 +1748,28 @@ export class GamdomDb extends BaseDB {
 		}
 
 		return rewards;
+	}
+
+	public async insertUserKycLevel(
+		userId: number,
+		level: KycLevels,
+		type: KycType | null,
+		status: KycStatus,
+		isActive: boolean,
+		needsReview: boolean,
+		hasLogMessage = false,
+	): Promise<QueryResultRow> {
+		return this.insert(
+			DbTables.KycUserLevels,
+			{
+				user_id: userId,
+				level: level,
+				type: type,
+				status: status,
+				is_active: isActive,
+				needs_review: needsReview,
+			},
+			hasLogMessage,
+		);
 	}
 }

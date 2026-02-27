@@ -345,4 +345,11 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 			retries,
 		);
 	}
+
+	@step("Rain claim button shows cannot win message")
+	public async rainClaimButtonShowsCannotWinMessage(): Promise<void> {
+		await expect(this.gamdomPage.map.claimRainButton).toHaveText(
+			"FIND OUT MORE",
+		);
+	}
 }
