@@ -77,7 +77,7 @@ export class LoginModalMap extends BaseMap {
 	}
 
 	public get forgotPasswordDialog(): Locator {
-		return this.page.getByTestId("auth-modal-forgot-password-dialog");
+		return this.page.getByTestId("auth-modal-login-dialog");
 	}
 
 	public get forgotPasswordForm(): Locator {

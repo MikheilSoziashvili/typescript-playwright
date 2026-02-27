@@ -31,6 +31,13 @@ export class BlogPage extends BasePage<BlogPageMap> {
 
 	@step("Click on the View Article button")
 	public async clickViewArticleButton(): Promise<void> {
-		await this.map.primaryArticleReadMoreButton.click();
+		const articleHref =
+			await this.map.primaryArticleReadMoreButton.getAttribute("href");
+
+		if (!articleHref) {
+			throw new Error("Primary article href was not found.");
+		}
+
+		await this.page.goto(articleHref);
 	}
 }

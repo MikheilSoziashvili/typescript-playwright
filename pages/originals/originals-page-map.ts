@@ -7,11 +7,13 @@ export class OriginalsMap extends BaseMap {
 	}
 
 	public get liveBetsTab(): Locator {
-		return this.page.getByLabel("live bets tab");
+		return this.page
+			.getByTestId("tabs-txt-tab")
+			.filter({ hasText: "Live Bets" });
 	}
 
 	public get liveBetsTable(): Locator {
-		return this.page.locator('table[aria-label="live bets table"]').first();
+		return this.page.getByTestId("general-stats-table-table");
 	}
 
 	public get allBetRows(): Locator {
