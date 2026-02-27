@@ -1,7 +1,13 @@
+import { expect } from "@playwright/test";
 import { BasePageStep } from "@pages/base/base-page-step";
 import { step } from "decorators/step";
+import { Timeout } from "@enums/timeout";
 import { HiloBetTestData, HiloCardsColorData } from "@dtos/test-data";
-import { HiloGameResultColor } from "@enums/hilo-result-messages";
+import {
+	HiloGameResultColor,
+	HiloGameStatusMessage,
+} from "@enums/hilo-result-messages";
+import { HiloBetOption } from "@enums/hilo-bet-options";
 import { logger } from "@logger/logger";
 import { HiloGamePage } from "./hilo-game-page";
 import { getItemsAttribute } from "@core/utils/utils";
@@ -37,30 +43,49 @@ export class HiloGamePageSteps extends BasePageStep<HiloGamePage> {
 		);
 	}
 
+	@step("Navigate to Hilo and wait for betting window")
+	public async navigateAndWaitForBettingWindow(): Promise<void> {
+		await this.gamdomPage.navigate();
+		await this.gamdomPage
+			.assertThat()
+			.gameMessageIs(HiloGameStatusMessage.SPINNING_IN);
+	}
+
+	@step("Place bet and wait for round result")
+	public async placeBetAndWaitForResult(
+		betAmount: number,
+		betOption: HiloBetOption,
+	): Promise<string> {
+		await this.gamdomPage.placeBet(betAmount, betOption);
+		return this.gamdomPage.getRoundResult();
+	}
+
 	@step("Play until result color is achieved")
 	public async playUntilResultColorIs(
 		resultColor: HiloGameResultColor,
 		testData: HiloBetTestData,
 	): Promise<number> {
-		let isWin = false;
-		let accountBalance =
-			await this.gamdomPage.authenticatedHeader.getAccountBalance();
-		logger.info(`Initial account balance: ${accountBalance}`);
+		await this.navigateAndWaitForBettingWindow();
 
-		while (!isWin) {
-			await this.gamdomPage.fillInBetAmount(testData.betAmount);
-			await this.gamdomPage.clickBetOption(testData.betOption);
+		let isWin = false;
+		let accountBalance: number;
+
+		do {
 			accountBalance =
 				await this.userBalanceHandler.walletBalanceInFiatRounded();
 
-			const roundresult = await this.gamdomPage.getRoundResult();
-			logger.info(`Current round result: ${roundresult}`);
+			const roundResult = await this.placeBetAndWaitForResult(
+				testData.betAmount,
+				testData.betOption,
+			);
+			logger.info(`Current round result: ${roundResult}`);
 
-			isWin = roundresult.includes(resultColor);
+			isWin = roundResult.includes(resultColor);
 			if (!isWin) {
 				logger.info("Hilo game lost! Trying again...");
 			}
-		}
+		} while (!isWin);
+
 		return accountBalance;
 	}
 
@@ -157,6 +182,31 @@ export class HiloGamePageSteps extends BasePageStep<HiloGamePage> {
 			blackPercentageHistoryModal,
 			jokerPercentageHistoryModal,
 		);
+	}
+
+	@step("Assert account balance is correct after a win")
+	public async assertBalanceAfterWin(
+		balanceBeforeWin: number,
+		testData: HiloBetTestData,
+	): Promise<void> {
+		const expectedBalance =
+			balanceBeforeWin -
+			testData.betAmount +
+			this.gamdomPage.calculateProfit(
+				testData.betAmount,
+				testData.betMultiplierByBetOption,
+			);
+
+		await expect
+			.poll(
+				async () =>
+					this.userBalanceHandler.walletBalanceInFiatRounded(),
+				{
+					message: `Account balance should be ${expectedBalance}`,
+					timeout: Timeout.SHORT,
+				},
+			)
+			.toBe(expectedBalance);
 	}
 
 	@step("Select last rounds dropdown values")
