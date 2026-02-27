@@ -2,6 +2,7 @@ import {
 	BlogVerifySocialShareLinksCsvRecord,
 	CasinoGamesAggregatorProviderCsvRecord,
 	ChatPinMessagePermissionsCsvRecord,
+	FeatureActivationV4CsvRecord,
 	FooterLinksAndEndpointsCsvRecord,
 	SokGamesMinBetAfterCurrencySwitchCsvRecord,
 	OriginalsQuickSelectButtonsCsvRecord,
@@ -136,6 +137,10 @@ import {
 	parseCasinoGameInstantRewardsRoyaltyUpLevelsCsvRow,
 	CasinoGameInstantRewardsRoyaltyUpLevelsCsvParsedRecord,
 } from "test-data/parsers/casino-game-instant-rewards-royalty-up-levels-csv-parser";
+import {
+	FeatureActivationV4CsvParsedRecord,
+	parseFeatureActivationV4CsvRow,
+} from "test-data/parsers/feature-activation-v4-csv-parser";
 
 export type CsvTransformerExistingType<T> =
 	T extends keyof CsvTransformerMapType ? CsvTransformerMapType[T] : never;
@@ -261,6 +266,10 @@ export type CsvTransformerMapType = {
 	[CsvFilesName.CASINO_GAME_INSTANT_REWARDS_ROYALTY_UP_LEVELS]: (
 		row: CasinoGameInstantRewardsRoyaltyUpLevelsCsvRecord,
 	) => CasinoGameInstantRewardsRoyaltyUpLevelsCsvParsedRecord;
+	
+	[CsvFilesName.FEATURE_ACTIVATION_V4]: (
+		row: FeatureActivationV4CsvRecord,
+	) => FeatureActivationV4CsvParsedRecord;
 };
 
 export const CsvTransformerMap: CsvTransformerMapType = {
@@ -309,4 +318,5 @@ export const CsvTransformerMap: CsvTransformerMapType = {
 		parseInstantRewardsRoyaltyUpLevelsCsvRow,
 	[CsvFilesName.CASINO_GAME_INSTANT_REWARDS_ROYALTY_UP_LEVELS]:
 		parseCasinoGameInstantRewardsRoyaltyUpLevelsCsvRow,
+	[CsvFilesName.FEATURE_ACTIVATION_V4]: parseFeatureActivationV4CsvRow,
 } as const;

@@ -73,6 +73,7 @@ import { CustomRewardKycTestFlow } from "@test-flows/rewards/custom-reward-kyc-t
 import { PromoRewardHistoryTestFlow } from "@test-flows/rewards/promo-reward-history-test-flow";
 import { TipRewardHistoryTestFlow } from "@test-flows/rewards/tip-reward-history-test-flow";
 import { WeeklyMonthlyRewardTestFlow } from "@test-flows/rewards/weekly-monthly-reward-test-flow";
+import { FeatureActivationV4TestFlow } from "@test-flows/feature-activation/feature-activation-v4-test-flow";
 
 export type TestFlowsFixtures = {
 	plinkoBetTestFlow: PlinkoBetTestFlow;
@@ -118,6 +119,7 @@ export type TestFlowsFixtures = {
 	promoRewardHistoryTestFlow: PromoRewardHistoryTestFlow;
 	tipRewardHistoryTestFlow: TipRewardHistoryTestFlow;
 	weeklyMonthlyRewardTestFlow: WeeklyMonthlyRewardTestFlow;
+	featureActivationV4TestFlow: FeatureActivationV4TestFlow;
 };
 
 type RequiredTestFlowsFixtures = {
@@ -266,6 +268,9 @@ export const testFlowsFixtures = base.extend<
 	},
 	userInfoEditFieldFlow: async ({}, use) => {
 		await use(new UserInfoEditFieldFlow());
+	},
+	featureActivationV4TestFlow: async ({ browserSessionManager }, use) => {
+		await use(new FeatureActivationV4TestFlow(browserSessionManager));
 	},
 	steamUserLoginLogoutFlow: async ({}, use) => {
 		await use(new SteamUserLoginLogoutFlow());

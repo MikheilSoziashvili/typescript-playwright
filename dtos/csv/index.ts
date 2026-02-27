@@ -43,3 +43,4 @@ export * from "./send-weekly-monthly-reward-csv";
 export * from "./instant-rewards-royalty-up-levels-csv";
 export * from "./casino-game-instant-rewards-royalty-up-levels-csv";
 export * from "./koth-points-calculation-csv";
+export * from "./feature-activation-v4-csv";

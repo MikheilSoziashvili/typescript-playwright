@@ -1,6 +1,8 @@
 export { BaseTestFlow } from "./base/base-test-flow";
 export { testFlow } from "../decorators/test-flow";
 
+export { FeatureActivationV4TestFlow } from "./feature-activation/feature-activation-v4-test-flow";
+
 export { PromotionSetupFlow } from "./promotions/promotion-setup-test-flow";
 export { PromotionCreationFlow } from "./promotions/promotion-creation-test-flow";
 export { PromotionVisibilityVerificationFlow } from "./promotions/promotion-visibility-verification-test-flow";

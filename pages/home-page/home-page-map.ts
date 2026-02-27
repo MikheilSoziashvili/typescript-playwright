@@ -202,4 +202,8 @@ export class HomePageMap extends BaseMap {
 	public liveBetsUsernameCell(row: Locator): Locator {
 		return row.locator('[data-testid$="-username"]');
 	}
+
+	public get chatButton(): Locator {
+		return this.page.getByTestId("chat-toggle-btn");
+	}
 }

@@ -357,6 +357,23 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 			.checkElementsAreVisible([this.gamdomPage.map.headerContainer]);
 	}
 
+	@step("Website is in expected V4 state")
+	public async websiteV4StateIs(v4Enabled: boolean): Promise<void> {
+		await expect
+			.poll(
+				async () => {
+					await this.gamdomPage.page.reload();
+					return this.gamdomPage.map.chatButton.isVisible();
+				},
+				{
+					message: `Website V4 state did not match expected: ${v4Enabled}`,
+					timeout: Timeout.EXTRA_LONG,
+					intervals: [IntervalMs.MEDIUM],
+				},
+			)
+			.toBe(v4Enabled);
+	}
+
 	@step("Verify total bets are not 0 and updated in time")
 	public async verifyTotalBetsAreNotZeroAndUpdatedInTime(): Promise<void> {
 		await this.verifySectionTotalBetsAreNotZero(
