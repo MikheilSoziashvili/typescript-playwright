@@ -6,6 +6,7 @@ import { ToastTitle } from "@enums/toast-titles";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { Unit } from "@enums/units";
 import { WalletType } from "@enums/wallet-types";
+import { TransactionType } from "@enums/transaction-types";
 import { Currency } from "@enums/currencies";
 import { Cryptocurrency, CryptoTicker } from "@enums/cryptocurrencies";
 import { CountryCodeISO3166 } from "@enums/country-codes-iso3166";
@@ -69,7 +70,7 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 			// Not each cryptocurrency is always available
 			const isClicked = await this.gamdomPage.selectPaymentMethod(
 				crypto,
-				{ skipIfMissing: true },
+				{ skipIfMissing: true, type: TransactionType.WITHDRAWAL },
 			);
 			if (isClicked) {
 				await this.gamdomPage

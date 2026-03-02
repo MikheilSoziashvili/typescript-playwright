@@ -16,15 +16,19 @@ export class TransactionDetailsModalMap extends BaseMap {
 	}
 
 	public get withdrawalAmountInUsd(): Locator {
-		return this.page.getByLabel("Withdrawal Amount", { exact: true });
+		return this.page.locator('[data-testid$="-amount-input"]');
 	}
 
 	public get networkTransactionFee(): Locator {
-		return this.page.getByLabel("Network Transaction Fee");
+		return this.page
+			.locator('[data-testid*="-network-fee-"]')
+			.locator("input");
 	}
 
 	public get networkProcessingSpeed(): Locator {
-		return this.page.getByLabel("Network Processing Spee");
+		return this.page
+			.locator('[data-testid*="-network-processing-speed-"]')
+			.locator("input");
 	}
 
 	public get blockchainTransactionLink(): Locator {

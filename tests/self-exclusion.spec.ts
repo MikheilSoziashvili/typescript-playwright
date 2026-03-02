@@ -9,6 +9,7 @@ import { CasinoGameName } from "@enums/casino-game";
 import { Cryptocurrency } from "@enums/cryptocurrencies";
 import { TestUserRole } from "@enums/test-user-roles";
 import { TestTag } from "@enums/test-tags";
+import { TransactionType } from "@enums/transaction-types";
 
 test.describe(
 	"Self Exclusion",
@@ -127,6 +128,7 @@ test.describe(
 					await regularUser.pages.homePage.navigateToWallet();
 					await regularUser.pages.walletModal.selectPaymentMethod(
 						Cryptocurrency.Bitcoin,
+						{ type: TransactionType.DEPOSIT },
 					);
 					await regularUser.pages.walletModal
 						.assertThat()

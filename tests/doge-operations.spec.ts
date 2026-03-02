@@ -9,6 +9,7 @@ import { JiraComponent } from "@enums/jira/jira-components";
 import { Unit } from "@enums/units";
 import { TestUserRole } from "@enums/test-user-roles";
 import { TestTag } from "@enums/test-tags";
+import { TransactionType } from "@enums/transaction-types";
 
 test.describe(
 	"DOGE tests",
@@ -66,7 +67,9 @@ test.describe(
 						Unit.DOGE_SHIBE,
 					);
 
-				await walletModal.selectPaymentMethod(Cryptocurrency.Doge);
+				await walletModal.selectPaymentMethod(Cryptocurrency.Doge, {
+					type: TransactionType.DEPOSIT,
+				});
 				const userDepositAddress =
 					await walletModal.getDepositAddress();
 				const amountToDeposit =

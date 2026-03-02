@@ -25,13 +25,13 @@ export class TransactionsMap extends BaseMap {
 	public get transactionDetailsButton(): Locator {
 		return this.page
 			.locator(
-				'[data-testid*="tips-transactions-cell-"][data-testid$="_action"]',
+				'[data-testid*="transactions-cell-"][data-testid$="_action"]',
 			)
 			.locator("button");
 	}
 
 	public get transactionStatus(): Locator {
-		return this.page.locator("p[status]");
+		return this.page.locator('p[data-testid^="transaction-status-"]');
 	}
 
 	public get userProfileWrapper(): Locator {

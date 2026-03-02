@@ -12,6 +12,7 @@ import { expect } from "@playwright/test";
 import { CountryCodeISO3166 } from "@enums/country-codes-iso3166";
 import { Toast } from "@pages/components/toast/toast";
 import { WithdrawalSpeed } from "@enums/withdrawal-speeds";
+import { TransactionType } from "@enums/transaction-types";
 import { logger } from "@logger/logger";
 
 export class WalletModal extends BasePage<WalletModalMap> {
@@ -93,10 +94,13 @@ export class WalletModal extends BasePage<WalletModalMap> {
 	@step("Select payment method")
 	public async selectPaymentMethod(
 		paymentMethod: string,
-		options?: { skipIfMissing?: boolean },
+		options?: { skipIfMissing?: boolean; type?: TransactionType },
 	): Promise<boolean> {
-		const cryptoPayMethod =
-			this.map.withdrawCryptoPaymentMethod(paymentMethod);
+		const type = options?.type ?? TransactionType.WITHDRAWAL;
+		const cryptoPayMethod = this.map.cryptoPaymentMethod(
+			type,
+			paymentMethod,
+		);
 
 		if (options?.skipIfMissing) {
 			return this.clickIfPresent(cryptoPayMethod, {
@@ -164,7 +168,9 @@ export class WalletModal extends BasePage<WalletModalMap> {
 		cryptoCurrency: Cryptocurrency | CryptoTicker;
 		address: string;
 	}> {
-		await this.selectPaymentMethod(cryptoCurrency);
+		await this.selectPaymentMethod(cryptoCurrency, {
+			type: TransactionType.DEPOSIT,
+		});
 
 		const address = await this.getDepositAddress();
 
@@ -176,7 +182,9 @@ export class WalletModal extends BasePage<WalletModalMap> {
 		address: string;
 		destinationTag: string | number;
 	}> {
-		await this.selectPaymentMethod(Cryptocurrency.Ripple);
+		await this.selectPaymentMethod(Cryptocurrency.Ripple, {
+			type: TransactionType.DEPOSIT,
+		});
 		const address = await this.getDepositAddress();
 		const destinationTag = await this.getDestinationTag();
 
@@ -246,7 +254,6 @@ export class WalletModal extends BasePage<WalletModalMap> {
 
 		await this.openWithdrawTab();
 		await this.selectPaymentMethod(cryptocurrency);
-		await this.selectPaymentMethod(cryptocurrency);
 
 		if (
 			[
@@ -309,7 +316,7 @@ export class WalletModal extends BasePage<WalletModalMap> {
 		if (!feeAmount) {
 			throw new Error("Network fee amount could not be retrieved.");
 		}
-		return feeAmount.trim();
+		return feeAmount.trim().replace(sanitizeAmount, "");
 	}
 
 	@step("Open vault tab")

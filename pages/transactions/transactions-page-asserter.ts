@@ -47,9 +47,7 @@ export class TransactionsAsserter extends BaseAsserter<TransactionsPage> {
 
 	@step("Tip sent and Success status are visible")
 	public async tipSuccessStatusIsVisible(): Promise<void> {
-		await this.checkElementsAreVisible([
-			this.gamdomPage.map.successStatus,
-		]);
+		await this.checkElementsAreVisible([this.gamdomPage.map.successStatus]);
 	}
 
 	@step("Received tip user is displayed in transaction details")

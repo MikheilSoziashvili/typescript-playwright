@@ -7,6 +7,7 @@ import {
 	getCryptoTestData,
 } from "./types/crypto-flow-types";
 import { TestUserRole } from "@enums/test-user-roles";
+import { TransactionType } from "@enums/transaction-types";
 
 export class CryptoDepositTestFlow extends BaseTestFlow {
 	constructor(private readonly deps: CryptoFlowDependencies) {
@@ -44,7 +45,9 @@ export class CryptoDepositTestFlow extends BaseTestFlow {
 			? await userBalanceHandler.walletBalanceInCoins(unit)
 			: await userBalanceHandler.walletBalanceInFiatRounded();
 
-		await walletModal.selectPaymentMethod(config.cryptocurrency);
+		await walletModal.selectPaymentMethod(config.cryptocurrency, {
+			type: TransactionType.DEPOSIT,
+		});
 
 		if (config.network) {
 			await walletModal.selectDepositNetwork(config.network);

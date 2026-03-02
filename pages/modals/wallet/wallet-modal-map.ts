@@ -3,6 +3,7 @@ import { Button } from "@enums/buttons-texts";
 import { WithdrawalSpeed } from "@enums/withdrawal-speeds";
 import { BaseMap } from "@pages/base/base-map";
 import { currencyAmountPattern } from "@support/regex-patterns";
+import { TransactionType } from "@enums/transaction-types";
 import { Locator, Page } from "playwright";
 
 export class WalletModalMap extends BaseMap {
@@ -185,15 +186,20 @@ export class WalletModalMap extends BaseMap {
 	}
 
 	public get cryptoWithdrawButton(): Locator {
-		return this.page.getByTestId("LeftPanelMainButton");
+		return this.page.getByTestId(
+			"wallet-crypto-withdraw-sbt-sbt-action-wallet-action-btn",
+		);
 	}
 
-	public withdrawCryptoPaymentMethod(paymentMethod: string): Locator {
-		return this.page.getByTestId(`witdrawal-crypto-${paymentMethod}`);
-	}
-
-	public depositCryptoPaymentMethod(paymentMethod: string): Locator {
-		return this.page.getByTestId(`deposit-crypto-${paymentMethod}`);
+	public cryptoPaymentMethod(
+		type: TransactionType,
+		paymentMethod: string,
+	): Locator {
+		const prefix =
+			type === TransactionType.WITHDRAWAL
+				? "witdrawal"
+				: type.toLowerCase();
+		return this.page.getByTestId(`${prefix}-crypto-${paymentMethod}`);
 	}
 
 	public bankPaymentMethod(paymentMethod: string): Locator {
@@ -201,9 +207,7 @@ export class WalletModalMap extends BaseMap {
 	}
 
 	public get cryptoDepositAddress(): Locator {
-		return this.page.locator(
-			'div[class*="CryptoDepositBody"][class*="Inputs"] input',
-		);
+		return this.page.getByTestId("crypto-deposit-add-ress-input");
 	}
 
 	public get bitcoinAddressInput(): Locator {
@@ -225,11 +229,11 @@ export class WalletModalMap extends BaseMap {
 	}
 
 	public get cryptoDestinationTag(): Locator {
-		return this.page.getByLabel("Your personal Destination Tag");
+		return this.page.getByTestId("crypto-deposit-dest-tag-input");
 	}
 
 	public get cryptoWithdrawDestinationTag(): Locator {
-		return this.page.getByLabel("Destination Tag (optional)");
+		return this.page.getByTestId("crypto-withdraw-dest-tag-input");
 	}
 
 	public get kycLevelOneCotainer(): Locator {
@@ -249,15 +253,17 @@ export class WalletModalMap extends BaseMap {
 	}
 
 	public get networkDropdown(): Locator {
-		return this.walletLeftPanel.getByTestId("Input");
+		return this.page.getByTestId("network-slct-button");
 	}
 
 	public networkDropdownOption(dataValue: string): Locator {
-		return this.page.locator(`li[data-value="${dataValue}"]`);
+		return this.page.getByTestId(`network-slct-option-${dataValue}`);
 	}
 
 	public withdrawalSpeedButton(speed: WithdrawalSpeed): Locator {
-		return this.page.locator(`button[role="tab"]:has-text("${speed}")`);
+		return this.page.locator("p[data-testid='tabs-txt-tab']", {
+			hasText: speed,
+		});
 	}
 
 	public usdWithdrawAmountInput(): Locator {
@@ -265,20 +271,20 @@ export class WalletModalMap extends BaseMap {
 	}
 
 	public withdrawAddressInput(): Locator {
-		return this.page.locator('input[type="text"][placeholder*="Address"]');
+		return this.page.locator('input[name="withdrawAddress"]');
 	}
 
 	public get networkFeeAmount(): Locator {
-		return this.page
-			.locator("span", { hasText: "The network fee is approximately" })
-			.locator("..")
-			.locator("span")
-			.nth(1);
+		return this.page.getByTestId("fee-info-amount");
 	}
 
 	public get userIsVipText(): Locator {
 		return this.page.locator(
-			"span[class*='NetworkSpeedTabs-styled__VipBadgeText']",
+			"p[data-testid='wallet-sec-wallet-info-txt']",
+			{
+				hasText:
+					"As a VIP, the fee for this withdrawal speed is on us.",
+			},
 		);
 	}
 
