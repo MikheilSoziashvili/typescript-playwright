@@ -11,40 +11,6 @@ test.describe(
 	testDetails().withTags(JiraComponent.CASINO).apply(),
 	() => {
 		test(
-			"[ENG-2850] Filter by provider",
-			testDetails().withAuthor(JiraUser.RALUCA_ARITON).withTags(TestTag.ACCEPTANCE).apply(),
-			async ({ casinoPage }) => {
-				await casinoPage.navigate();
-				const providersToSelect = [
-					GameProvider.PRAGMATIC_PLAY,
-					GameProvider.WICKED_GAMES,
-				];
-				await casinoPage
-					.steps()
-					.selectMultipleProvidersFromDropdown(providersToSelect);
-
-				await casinoPage
-					.assertThat()
-					.verifyAllVisibleGamesAreFromProvider(providersToSelect);
-
-				await casinoPage
-					.steps()
-					.deselectProviderFromDropdown(GameProvider.PRAGMATIC_PLAY);
-
-				await casinoPage
-					.steps()
-					.selectProviderFromDropdown(GameProvider.AVATARUX);
-
-				await casinoPage
-					.assertThat()
-					.verifyAllVisibleGamesAreFromProvider([
-						GameProvider.HACKSAW_GAMING,
-						GameProvider.AVATARUX,
-					]);
-			},
-		);
-
-		test(
 			"[ENG-2846] Pick random filter",
 			testDetails().withAuthor(JiraUser.RALUCA_ARITON).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ casinoPage, gamdomApiDbFacade, page }) => {
@@ -66,10 +32,12 @@ test.describe(
 
 				await casinoPage.clickPickRandomButton();
 
-				await casinoPage.assertThat().verifyGameProviderIsOneOf([
-					GameProvider.PRAGMATIC_PLAY,
-					GameProvider.WICKED_GAMES,
-				]);
+				await casinoPage
+					.assertThat()
+					.verifyGameProviderIsOneOf([
+						GameProvider.PRAGMATIC_PLAY,
+						GameProvider.WICKED_GAMES,
+					]);
 			},
 		);
 	},

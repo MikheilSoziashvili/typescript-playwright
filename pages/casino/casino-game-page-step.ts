@@ -162,6 +162,9 @@ export class CasinoPageSteps extends BasePageStep<CasinoPage> {
 		for (const provider of providers) {
 			await this.selectProviderFromDropdown(provider);
 		}
+		await this.gamdomPage.map.providersDropdownInSettingsModal
+			// eslint-disable-next-line playwright/no-force-option -- The page overlay covers the header in CI and intercepts pointer events; force is required to reliably close the dropdown.
+			.click({ force: true });
 	}
 
 	@step("Configure random game settings")
@@ -200,7 +203,6 @@ export class CasinoPageSteps extends BasePageStep<CasinoPage> {
 		toggle: Locator,
 		enable: boolean,
 	): Promise<void> {
-		const checkbox = this.gamdomPage.map.toggleCheckbox(toggle);
-		await this.gamdomPage.map.toggleState(checkbox, enable);
+		await this.gamdomPage.map.toggleState(toggle, enable);
 	}
 }

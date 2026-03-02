@@ -237,24 +237,30 @@ export class BaseMap {
 		option: Locator,
 		shouldBeSelected: boolean,
 	): Promise<void> {
-		const isSelected = await option.first().getAttribute("aria-selected");
+		const isSelected =
+			(await option.getAttribute("aria-selected")) === "true";
 
-		if (
-			(shouldBeSelected && isSelected !== "true") ||
-			(!shouldBeSelected && isSelected === "true")
-		) {
-			await option.first().click();
+		if (shouldBeSelected !== isSelected) {
+			await option.click();
+			await expect(option).toHaveAttribute(
+				"aria-selected",
+				String(shouldBeSelected),
+			);
 		}
 	}
 
 	public async toggleState(
-		checkbox: Locator,
+		toggle: Locator,
 		shouldBeChecked: boolean,
 	): Promise<void> {
+		const checkbox = this.toggleCheckbox(toggle);
 		const isChecked = await checkbox.isChecked();
 
 		if (isChecked !== shouldBeChecked) {
-			await checkbox.click();
+			await toggle.click();
+			await expect
+				.poll(async () => checkbox.isChecked())
+				.toBe(shouldBeChecked);
 		}
 	}
 
@@ -266,6 +272,6 @@ export class BaseMap {
 	}
 
 	public toggleCheckbox(toggle: Locator): Locator {
-		return toggle.locator('input[type="checkbox"]');
+		return toggle.locator('input[type="checkbox"][role="switch"]');
 	}
 }

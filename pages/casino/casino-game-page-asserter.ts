@@ -54,7 +54,7 @@ export class CasinoPageAsserter extends BaseAsserter<CasinoPage> {
 		shouldBeVisible: boolean,
 	): Promise<void> {
 		const providerOption =
-			this.gamdomPage.map.providerOptionInProvidersDropdown(option);
+			this.gamdomPage.map.providerDropdownOption(option);
 
 		shouldBeVisible
 			? await expect(providerOption).toBeVisible()

@@ -22,9 +22,13 @@ export class CasinoPageMap extends BaseMap {
 		);
 	}
 
+	public get providersDropdownListboxInSettingsModal(): Locator {
+		return this.page.getByRole("listbox");
+	}
+
 	public providerDropdownOption(gameProvider: GameProvider): Locator {
-		return this.page.locator(
-			`ul[class*='MuiMenu-list'] > li[data-value='${gameProvider}']`,
+		return this.providersDropdownListboxInSettingsModal.getByTestId(
+			`pick-random-modal-providers-selector-option-${gameProvider}`,
 		);
 	}
 
@@ -41,17 +45,6 @@ export class CasinoPageMap extends BaseMap {
 	public get providersDropdownInSettingsModal(): Locator {
 		return this.page.getByTestId(
 			"pick-random-modal-providers-selector-button",
-		);
-	}
-
-	public get providersDropdownListboxInSettingsModal(): Locator {
-		return this.page.getByRole("listbox");
-	}
-
-	public providerOptionInProvidersDropdown(providerName: string): Locator {
-		return this.providersDropdownListboxInSettingsModal.locator(
-			"div[role='option']",
-			{ hasText: providerName },
 		);
 	}
 
@@ -220,25 +213,32 @@ export class CasinoPageMap extends BaseMap {
 	}
 
 	public get saveSettingsRandomButton(): Locator {
-		return this.page.getByTestId("saveSettingsRandomButton");
+		return this.page.getByTestId("pick-random-modal-save-btn");
 	}
 
 	public get showOnlyBonusBuyGamesToggle(): Locator {
-		return this.page.getByTestId("bonusBuyGamesSwitch");
+		return this.page.getByTestId(
+			"pick-random-modal-switch-bonus-buy-games",
+		);
 	}
 
 	public get disableLiveGamesToggle(): Locator {
-		return this.page.getByTestId("disableLiveGamesSwitch");
+		return this.page.getByTestId(
+			"pick-random-modal-switch-disable-live-games",
+		);
 	}
 
 	public get disableTableGamesToggle(): Locator {
-		return this.page.getByTestId("disableTableGamesSwitch");
+		return this.page.getByTestId(
+			"pick-random-modal-switch-disable-table-games",
+		);
 	}
 
 	public get pickRandomButton(): Locator {
-		return this.page.getByTestId("pickRandomButton");
+		return this.page.getByTestId("casino-layout-pick-random-desktop-btn");
 	}
+
 	public get gameProviderLabel(): Locator {
-		return this.page.getByTestId("game-provider");
+		return this.page.getByTestId("game-page-mobile-game-provider-name");
 	}
 }
