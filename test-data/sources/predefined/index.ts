@@ -1,5 +1,6 @@
 import { convertCoinsToUsd } from "@core/utils/utils";
 import { DateOffset } from "@enums/datetime/date-offset";
+import { RouletteBetColor } from "@enums/original-games";
 import { Wallet } from "@enums/wallets";
 import { rainAmount } from "global-setup";
 
@@ -201,5 +202,16 @@ export const predefined = {
 	rainAmounts: {
 		tipRainAmount: 10,
 		baseRainAmount: convertCoinsToUsd(rainAmount),
+	},
+	roulette: {
+		autobet: {
+			betAmount: 100,
+			stopIfBalanceIsOver: 1000000,
+		},
+		greenHunt: {
+			betAmount: 100,
+			percentage: 50,
+			betColor: RouletteBetColor.RED,
+		},
 	},
 };

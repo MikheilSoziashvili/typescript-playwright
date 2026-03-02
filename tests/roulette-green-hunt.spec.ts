@@ -1,77 +1,51 @@
-import { RouletteBetColor } from "@enums/original-games";
 import { test } from "@fixtures/fixtures";
-import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { GreenHuntTypeOption } from "@enums/roulette-autobet-section";
-import { calculateGreenHuntAmountByPercentage } from "@formulas/roulette";
-import { getUserDetailsByTestTitle } from "@core/utils/utils";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
+import { TestUserRole } from "@enums/test-user-roles";
 
-test.describe("Green hunt", () => {
-	test.use(storageStateNewUserDB());
-	test(
-		"[ENG-1090] Roulette - green hunt",
-		testDetails()
-			.withTags(JiraComponent.GAMDOM_ORIGINALS)
-			.withAuthor(JiraUser.NIKOLAY_GENOV)
-			.apply(),
-		async (
-			{ rouletteGamePage, userBalanceHandler, testDataObject },
-			testInfo,
-		) => {
-			const newUserDetails = getUserDetailsByTestTitle(
-				testInfo.title,
-				testInfo.workerIndex,
-			);
-
-			const betTestData = testDataObject.bet.build(
-				{ username: newUserDetails.username },
-				{ betAmount: 100 },
-			);
-			const greenHuntPercentage = 50;
-			await rouletteGamePage.navigate();
-			await rouletteGamePage.waitBettingWindowAvailable();
-
-			await rouletteGamePage
-				.steps()
-				.startGreenHunt(
-					greenHuntPercentage,
-					GreenHuntTypeOption.PERCENT,
-				);
-			const greenHuntAmountByPercentage =
-				calculateGreenHuntAmountByPercentage(
-					betTestData.betAmount,
-					greenHuntPercentage,
+test.describe(
+	"Green hunt",
+	testDetails()
+		.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.ROULETTE)
+		.apply(),
+	() => {
+		test(
+			"[ENG-1090] Roulette - green hunt",
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			async ({
+				browserSessionManager,
+				rouletteGamePage,
+				testDataObject,
+				testDataPredefined,
+			}) => {
+				await browserSessionManager.loginAs(TestUserRole.REGULAR, {
+					reuseContext: true,
+				});
+				const { betAmount, betColor, percentage } =
+					testDataPredefined.data.roulette.greenHunt;
+				const testData = testDataObject.rouletteBet.build(
+					{
+						username:
+							browserSessionManager.activeUser.user.username,
+					},
+					{ betAmount, betColor },
 				);
 
-			const accountBalance =
-				await userBalanceHandler.walletBalanceInFiatRounded();
-			await rouletteGamePage.insertBet(betTestData.betAmount);
-			await rouletteGamePage.assertThat().betButtonsEnabled();
-			await rouletteGamePage.betOnColor(RouletteBetColor.RED);
-			await rouletteGamePage.assertThat().playersBetsDisplayed([
-				{
-					betColor: RouletteBetColor.RED,
-					username: betTestData.username,
-					betAmount: betTestData.betAmount,
-				},
-			]);
-			await rouletteGamePage
-				.assertThat()
-				.totalBetsAre(RouletteBetColor.GREEN);
-			await rouletteGamePage.authenticatedHeader
-				.assertThat()
-				.accountBalanceIs(
-					accountBalance -
-						betTestData.betAmount -
-						greenHuntAmountByPercentage,
-				);
-			const rouletteResultNumber =
-				await rouletteGamePage.getRoundResultNumber();
-			await rouletteGamePage
-				.assertThat()
-				.previousRollsHistoryUpdated(rouletteResultNumber);
-		},
-	);
-});
+				await rouletteGamePage
+					.steps()
+					.navigateAndStartGreenHunt(
+						percentage,
+						GreenHuntTypeOption.PERCENT,
+					);
+				const rouletteResultNumber = await rouletteGamePage
+					.steps()
+					.placeBetAndVerifyGreenHunt(testData, percentage);
+				await rouletteGamePage
+					.assertThat()
+					.previousRollsHistoryUpdated(rouletteResultNumber);
+			},
+		);
+	},
+);

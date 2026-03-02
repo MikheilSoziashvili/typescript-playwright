@@ -1,4 +1,4 @@
-import { Page } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
 import { step } from "decorators/step";
 import { RouletteGamePageMap } from "./roulette-game-page-map";
 import { RouletteGamePageAsserter } from "./roulette-game-page-asserter";
@@ -10,6 +10,7 @@ import { logger } from "@logger/logger";
 import { GreenHuntTypeOption } from "@enums/roulette-autobet-section";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { Timeout } from "@enums/timeout";
+import { IntervalMs } from "@enums/interval-millisecond";
 import { VisibilityState } from "@enums/playwright/visibility-states";
 
 export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
@@ -75,8 +76,25 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 	}
 
 	@step("Get round result number")
-	public async getRoundResultNumber(waitTimeout = 30): Promise<string> {
-		await this.waitRoundResultNumber(waitTimeout);
+	public async getRoundResultNumber(): Promise<string> {
+		await expect
+			.poll(
+				async () => {
+					try {
+						return await this.map.roundResultNumber.innerText({
+							timeout: Timeout.ULTRA_SHORT,
+						});
+					} catch {
+						return "";
+					}
+				},
+				{
+					message: "Round result number should be visible",
+					intervals: [IntervalMs.SHORT],
+					timeout: Timeout.LONG,
+				},
+			)
+			.not.toBe("");
 		return this.map.roundResultNumber.innerText();
 	}
 
@@ -105,12 +123,8 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 	}
 
 	@step("Get round result color")
-	public async getRoundResultColor(
-		waitTimeout = 30,
-	): Promise<RouletteNumberColor> {
-		const roundResultNum = Number(
-			await this.getRoundResultNumber(waitTimeout),
-		);
+	public async getRoundResultColor(): Promise<RouletteNumberColor> {
+		const roundResultNum = Number(await this.getRoundResultNumber());
 		return this.getColorFromResultNumber(roundResultNum);
 	}
 

@@ -10,6 +10,7 @@ import {
 	HiloBetMultiplierByBetOption,
 	OriginalGame,
 	OriginalsQuickSelectButtons,
+	RouletteBetColor,
 } from "@enums/original-games";
 import { BlogPostCategories } from "@enums/post-categories";
 import { ToastSubTitle } from "@enums/toast-subtitles";
@@ -223,6 +224,18 @@ export class HiloBetTestData {
 		this.betAmount = betAmount;
 		this.betOption = betOption;
 		this.betMultiplierByBetOption = betMultiplierByBetOption;
+	}
+}
+
+export class RouletteBetTestData {
+	public username: string;
+	public betAmount: number;
+	public betColor: RouletteBetColor;
+
+	constructor(username: string, betAmount: number, betColor: RouletteBetColor) {
+		this.username = username;
+		this.betAmount = betAmount;
+		this.betColor = betColor;
 	}
 }
 
