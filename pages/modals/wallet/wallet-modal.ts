@@ -194,7 +194,6 @@ export class WalletModal extends BasePage<WalletModalMap> {
 	@step("Resend verification email on Withdraw tab if email is not confirmed")
 	public async resendVerificationWithdrawEmailNotConfirmed(): Promise<void> {
 		await this.map.withdrawEmailNotConfirmedResendEmailButton.click();
-		await this.map.withdrawEmailNotConfirmedResendEmailContinueButton.click();
 	}
 
 	@step("Select USDT Network from dropdown")

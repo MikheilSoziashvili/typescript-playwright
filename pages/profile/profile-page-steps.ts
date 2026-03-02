@@ -7,6 +7,8 @@ import { BasePageStep } from "@pages/base/base-page-step";
 import { expect, Page } from "@playwright/test";
 import { ProfilePage } from "./profile-page";
 import { Toast } from "@pages/components/toast/toast";
+import { ToastTitle } from "@enums/toast-titles";
+import { ToastSubTitle } from "@enums/toast-subtitles";
 
 export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 	public toast: Toast;
@@ -18,7 +20,6 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 	@step("Complete verification flow")
 	public async completeVerificationFlow(): Promise<void> {
 		await this.gamdomPage.map.verifyButton.click();
-		await this.gamdomPage.map.continueVerificationButton.click();
 	}
 
 	@step("Verify email")
@@ -92,21 +93,18 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 	@step("Change email successfully")
 	public async changeEmailSuccessfully(email: string): Promise<void> {
 		await this.changeEmail(email);
-		await this.completeAndVerifyEmailChange();
+		await this.toast
+			.assertThat()
+			.toastMessageIs(
+				ToastTitle.SUCCESS,
+				ToastSubTitle.EMAIL_UPDATED_SUCCESSFULLY,
+			);
 	}
 
 	@step("Change email")
 	public async changeEmail(email: string): Promise<void> {
-		await this.gamdomPage.map.changeEmailButton.click();
 		await this.gamdomPage.map.changeEmailInput.fill(email);
 		await this.gamdomPage.clickSaveEmail();
-	}
-
-	@step("Complete and verify email change")
-	public async completeAndVerifyEmailChange(): Promise<void> {
-		await this.gamdomPage.continueModal.assertThat().isModalDisplayed();
-		await this.gamdomPage.continueModal.clickLogoutButton();
-		await this.gamdomPage.assertThat().assertChangeEmailButtonVisible();
 	}
 
 	@step("Change phone successfully")

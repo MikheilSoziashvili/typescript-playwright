@@ -120,6 +120,7 @@ test.describe("Email Verification Tests", () => {
 				.steps()
 				.verifyWithdrawCryptoEmailNotVerifiedMessage();
 
+			//this step need to be confirmed in V4 - atm we don't have withdraw bank payment available
 			await regularUserEmailNotVerified.pages.walletModal
 				.steps()
 				.verifyWithdrawBankEmailNotVerifiedMessage(

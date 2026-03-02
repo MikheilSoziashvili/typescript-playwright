@@ -13,13 +13,6 @@ export class ProfilePageAsserter extends BaseAsserter<ProfilePage> {
 		await expect(this.gamdomPage.map.verifyButton).toBeHidden();
 	}
 
-	@step("Assert change email button is visible")
-	public async assertChangeEmailButtonVisible(): Promise<void> {
-		await this.checkElementsAreVisible([
-			this.gamdomPage.map.changeEmailButton,
-		]);
-	}
-
 	@step("Assert change phone button is visible")
 	public async assertChangePhoneButtonVisible(): Promise<void> {
 		await this.checkElementsAreVisible([

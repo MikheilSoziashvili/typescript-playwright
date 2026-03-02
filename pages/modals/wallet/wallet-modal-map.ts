@@ -113,7 +113,7 @@ export class WalletModalMap extends BaseMap {
 	}
 
 	public get withdrawEmailNotConfirmedIcon(): Locator {
-		return this.withdrawEmailNotConfirmedContainer.locator("picture img");
+		return this.withdrawEmailNotConfirmedContainer.locator("img");
 	}
 
 	public get withdrawEmailNotConfirmedTextSection(): Locator {
@@ -138,12 +138,6 @@ export class WalletModalMap extends BaseMap {
 		return this.withdrawEmailNotConfirmedContainer.getByText(
 			WalletModalContent.EMAIL_NOT_VERIFIED_BUTTON,
 		);
-	}
-
-	public get withdrawEmailNotConfirmedResendEmailContinueButton(): Locator {
-		return this.page
-			.getByTestId("modalContainer")
-			.getByTestId("confirmation-modal-continue-button");
 	}
 
 	public get withdrawCountryDropdownContainer(): Locator {

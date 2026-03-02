@@ -15,15 +15,15 @@ export class ProfilePageMap extends BaseMap {
 	}
 
 	public get verifyButton(): Locator {
-		return this.page.locator("button:has-text('Verify')");
+		return this.page.getByTestId(
+			"profile-page-change-user-info-verify-email",
+		);
 	}
 
-	public get continueVerificationButton(): Locator {
-		return this.page.locator('button:has-text("Continue")');
-	}
-
-	public get emailNumberContainer(): Locator {
-		return this.page.getByTestId("profileEmailContainer");
+	public get emailContainer(): Locator {
+		return this.page.getByTestId(
+			"profile-page-change-user-info-email-container",
+		);
 	}
 
 	public get usernameContainer(): Locator {
@@ -46,18 +46,14 @@ export class ProfilePageMap extends BaseMap {
 		);
 	}
 
-	public get changeEmailButton(): Locator {
-		return this.emailNumberContainer.getByTestId("changeButton");
-	}
-
 	public get changeEmailInput(): Locator {
-		return this.getInputField("email", this.emailNumberContainer);
+		return this.getInputField("email", this.emailContainer);
 	}
 
 	public get saveEmailButton(): Locator {
-		return this.emailNumberContainer
-			.getByTestId("saveButton")
-			.filter({ hasText: "Save" });
+		return this.page.getByTestId(
+			"profile-page-change-user-info-save-email",
+		);
 	}
 
 	public get phoneNumberContainer(): Locator {
