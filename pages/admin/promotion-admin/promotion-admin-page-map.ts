@@ -40,7 +40,7 @@ export class PromotionAdminMap extends BaseMap {
 		promotionTitle: string,
 	): Locator {
 		return this.tableRowByPromotionTitle(promotionTitle).locator(
-			`//td[15]`,
+			`//td[16]`,
 		);
 	}
 
@@ -114,7 +114,7 @@ export class PromotionAdminMap extends BaseMap {
 		promotionTitle: string,
 	): Locator {
 		return this.tableRowByPromotionTitle(promotionTitle).locator(
-			`//td[13]`,
+			`//td[14]`,
 		);
 	}
 

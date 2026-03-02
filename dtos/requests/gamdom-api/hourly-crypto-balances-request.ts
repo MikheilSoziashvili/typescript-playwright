@@ -1,1 +1,8 @@
-export type HourlyCryptoBalancesRequest = { page: number; pageSize: number };
+export type HourlyCryptoBalancesRequest = {
+	pagination: {
+		page: number;
+		pageSize: number;
+	};
+	filter: Record<string, unknown>;
+	sorting: Record<string, unknown>;
+};

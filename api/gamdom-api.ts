@@ -791,7 +791,11 @@ export class GamdomApi extends BaseApi {
 		payload?: HourlyCryptoBalancesRequest;
 		headers?: Record<string, string>;
 	}): Promise<HourlyCryptoBalancesResponse> {
-		const payload = options?.payload ?? { page: 1, pageSize: 20 };
+		const payload = options?.payload ?? {
+			pagination: { page: 1, pageSize: 20 },
+			filter: {},
+			sorting: {},
+		};
 		const headers = options?.headers;
 
 		const parameters = this.buildParameters(
