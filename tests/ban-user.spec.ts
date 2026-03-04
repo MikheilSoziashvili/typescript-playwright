@@ -4,6 +4,8 @@ import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraUser } from "@enums/jira/jira-users";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { TestUserRole } from "@enums/test-user-roles";
+import * as Configuration from "configuration";
+import { BanReason } from "@enums/ban-reasons";
 
 test.describe(
 	"Ban user",
@@ -99,6 +101,54 @@ test.describe(
 				await adminSession.pages.infoAdminPage
 					.steps()
 					.verifyBanUserModalDropdowns();
+			},
+		);
+	},
+);
+
+test.describe(
+	"[Admin][Ban] Check that Support Requested and RG-banned Steam users can access the page",
+	testDetails()
+		.withTags(JiraComponent.ADMIN, JiraComponent.ADMIN_PANEL)
+		.apply(),
+	() => {
+		test(
+			"[ENG-15707] Check that Support Requested and RG-banned Steam users can access the page",
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			async ({
+				homePage,
+				steamAuthPage,
+				steamBlockedPage,
+				gamdomApi,
+				gamdomDb,
+				profilePage,
+				browserSessionManager,
+				steamUserLoginLogoutFlow,
+				banUserVerificationFlow,
+			}) => {
+				const bannedUsername = Configuration.steam.bannedUsername;
+				const usernameSteam = Configuration.steam.bannedUser;
+
+				await steamUserLoginLogoutFlow.loginAndLogout({
+					gamdomDb: gamdomDb,
+					homePage: homePage,
+					steamAuthPage: steamAuthPage,
+					steamBlockedPage: steamBlockedPage,
+					profilePage: profilePage,
+					usernameSteam: usernameSteam,
+					bannedUsername: bannedUsername,
+					password: Configuration.steam.password,
+				});
+
+				await banUserVerificationFlow.banUserAndVerifyBanner({
+					gamdomDb: gamdomDb,
+					browserSessionManager: browserSessionManager,
+					gamdomApi: gamdomApi,
+					homePage: homePage,
+					steamBlockedPage: steamBlockedPage,
+					usernameSteam: usernameSteam,
+					banReason: BanReason.SUPPORT_REQUESTED,
+				});
 			},
 		);
 	},

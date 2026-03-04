@@ -19,6 +19,7 @@ import { CasinoGameUrl } from "@enums/casino-game";
 import * as Configuration from "configuration";
 import { Footer } from "@pages/components/footer/footer";
 import { HomePageSection } from "@enums/homepage-launch-locations";
+import { BannerMessages } from "@constants/banner-messages";
 
 export class HomePageAsserter extends BaseAsserter<HomePage> {
 	public fromCsv: boolean;
@@ -81,6 +82,19 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 	@step("Is top banner displayed")
 	public async isTopBannerDisplayed(): Promise<void> {
 		await expect(this.gamdomPage.map.topBannerLocator).toBeVisible();
+	}
+
+	@step("Verify top banned banner is displayed with correct text")
+	public async isTopBannedBannerDisplayedWithText(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.topBannedBanner,
+		]);
+		await this.checkElementsHaveText([
+			{
+				locator: this.gamdomPage.map.topBannedBanner,
+				expectedText: BannerMessages.BANNED_USER,
+			},
+		]);
 	}
 
 	@step("Verify that Create Account and Social buttons are disabled")

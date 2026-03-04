@@ -66,6 +66,12 @@ export class HomePageMap extends BaseMap {
 		return this.page.locator("div[class*=Components-styled__Container]");
 	}
 
+	public get topBannedBanner(): Locator {
+		return this.page.locator(
+			"div[class*='TopBannerBanned-styled__Container']",
+		);
+	}
+
 	public get topBannerCloseButton(): Locator {
 		return this.topBannerLocator.locator("button:has(i.icon-remove)");
 	}

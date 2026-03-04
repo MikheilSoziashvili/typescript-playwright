@@ -17,6 +17,10 @@ on:
                 required: true
             STEAM_USERNAME:
                 required: true
+            STEAM_BANNED_USERNAME:
+                required: true
+            BANNED_STEAM_USER:
+                required: true
             STEAM_PASSWORD:
                 required: true
             GOOGLE_EMAIL:

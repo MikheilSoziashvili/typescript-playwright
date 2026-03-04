@@ -19,6 +19,7 @@ import { CustomRewardType } from "@enums/admin/custom-reward-type";
 import { RewardStatus } from "@enums/admin/reward-status";
 import { PromoCampaignStatuses } from "@enums/campaign-statuses";
 import { Currency } from "@enums/currencies";
+import { AdminNotesColumns } from "@enums/db/admin-notes-columns";
 import { AmlInfoColumns } from "@enums/db/aml-info-columns";
 import { AmlStatusColumns } from "@enums/db/aml-status-columns";
 import { AmlVerificationLevel } from "@enums/db/aml-verification-level";
@@ -30,8 +31,10 @@ import { CampaignRulesColumns } from "@enums/db/campaign-rules-columns";
 import { CampaignsColumns } from "@enums/db/campaigns-columns";
 import { DbTables } from "@enums/db/db-tables";
 import { FreeSpinsPromotionsEventData } from "@enums/db/free-spins-promotions-event-data";
+import { GeoipHistoryColumns } from "@enums/db/geoip-history-columns";
 import { KothEventColumns } from "@enums/db/koth-event-columns";
 import { KothEventName, KothEventType } from "@enums/db/koth-event-types";
+import { OtherAuditLogColumns } from "@enums/db/other-audit-log-columns";
 import { PromotionColumns } from "@enums/db/promotion-columns";
 import { RewardsColumns } from "@enums/db/rewards-columns";
 import { SettingsColumns } from "@enums/db/settings-columns";
@@ -88,6 +91,20 @@ export class GamdomDb extends BaseDB {
 			[username],
 			hasLogMessage,
 		);
+	}
+
+	public async getUserIdByUsername(
+		username: string,
+		hasLogMessage = true,
+	): Promise<number> {
+		const userInfo = await this.getUserInfoByUsername(
+			username,
+			hasLogMessage,
+		);
+		if (!userInfo.length) {
+			throw new Error(`User with username "${username}" not found`);
+		}
+		return userInfo[0][UsersColumns.Id] as number;
 	}
 
 	public async makeUserSuperAdmin(userId: number): Promise<QueryResultRow> {
@@ -1362,6 +1379,46 @@ export class GamdomDb extends BaseDB {
 			`${PromotionColumns.Title} = '${title}'`,
 			hasLogMessage,
 		);
+	}
+
+	public async deleteUserRelatedData(
+		userId: number,
+		hasLogMessage = true,
+	): Promise<void> {
+		await this.delete(
+			DbTables.GeoipHistory,
+			`${GeoipHistoryColumns.UserId} = ${userId}`,
+			hasLogMessage,
+		);
+		await this.delete(
+			DbTables.OtherAuditLog,
+			`${OtherAuditLogColumns.UserId} = ${userId}`,
+			hasLogMessage,
+		);
+		await this.delete(
+			DbTables.AdminNotes,
+			`${AdminNotesColumns.UserId} = ${userId}`,
+			hasLogMessage,
+		);
+	}
+
+	public async deleteUserByUsername(
+		username: string,
+		hasLogMessage = true,
+	): Promise<void> {
+		const userInfo = await this.getUserInfoByUsername(username, false);
+		if (!userInfo.length) return;
+
+		const userId = userInfo[0][UsersColumns.Id] as number;
+
+		await this.withClient(async () => {
+			await this.deleteUserRelatedData(userId, hasLogMessage);
+			await this.delete(
+				DbTables.Users,
+				`${UsersColumns.Id} = ${userId}`,
+				hasLogMessage,
+			);
+		});
 	}
 
 	public async expirePromotionByTitle(

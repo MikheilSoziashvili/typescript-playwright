@@ -42,6 +42,8 @@ import { ClaimReloadRewardTestFlow } from "@test-flows/rewards/claim-reload-rewa
 import { VerifyReloadRewardPresenceTestFlow } from "@test-flows/rewards/verify-reload-reward-presence-test-flow";
 import { UserInfoStaffUserSetupFlow } from "@test-flows/user-info/user-info-staff-user-setup-test-flow";
 import { UserInfoEditFieldFlow } from "@test-flows/user-info/user-info-edit-field-test-flow";
+import { SteamUserLoginLogoutFlow } from "@test-flows/ban/steam-user-login-logout-test-flow";
+import { BanUserVerificationFlow } from "@test-flows/ban/ban-user-verification-test-flow";
 
 export type TestFlowsFixtures = {
 	plinkoBetTestFlow: PlinkoBetTestFlow;
@@ -61,6 +63,8 @@ export type TestFlowsFixtures = {
 	verifyReloadRewardPresenceTestFlow: VerifyReloadRewardPresenceTestFlow;
 	userInfoStaffUserSetupFlow: UserInfoStaffUserSetupFlow;
 	userInfoEditFieldFlow: UserInfoEditFieldFlow;
+	steamUserLoginLogoutFlow: SteamUserLoginLogoutFlow;
+	banUserVerificationFlow: BanUserVerificationFlow;
 };
 
 type RequiredTestFlowsFixtures = {
@@ -208,5 +212,11 @@ export const testFlowsFixtures = base.extend<
 	},
 	userInfoEditFieldFlow: async ({}, use) => {
 		await use(new UserInfoEditFieldFlow());
+	},
+	steamUserLoginLogoutFlow: async ({}, use) => {
+		await use(new SteamUserLoginLogoutFlow());
+	},
+	banUserVerificationFlow: async ({}, use) => {
+		await use(new BanUserVerificationFlow());
 	},
 });

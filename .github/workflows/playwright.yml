@@ -120,6 +120,12 @@ on:
             STEAM_USERNAME:
                 required: true
                 description: "Steam authentication username"
+            STEAM_BANNED_USERNAME:
+                required: true
+                description: "Steam banned username"
+            BANNED_STEAM_USER:
+                required: true
+                description: "Banned Steam user"
             STEAM_PASSWORD:
                 required: true
                 description: "Steam authentication password"
@@ -269,6 +275,8 @@ jobs:
             XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
             XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
             STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
+            STEAM_BANNED_USERNAME: ${{ secrets.STEAM_BANNED_USERNAME }}
+            BANNED_STEAM_USER: ${{ secrets.BANNED_STEAM_USER }}
             STEAM_PASSWORD: ${{ secrets.STEAM_PASSWORD }}
             GOOGLE_EMAIL: ${{ secrets.GOOGLE_EMAIL }}
             GOOGLE_PASSWORD: ${{ secrets.GOOGLE_PASSWORD }}

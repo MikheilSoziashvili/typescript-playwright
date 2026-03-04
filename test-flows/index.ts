@@ -52,3 +52,13 @@ export { toXrpCryptoClient } from "./crypto/adapters/xrp-crypto-client-adapter";
 // User Info flows
 export { UserInfoStaffUserSetupFlow } from "./user-info/user-info-staff-user-setup-test-flow";
 export { UserInfoEditFieldFlow } from "./user-info/user-info-edit-field-test-flow";
+
+// Ban flows
+export { SteamUserLoginLogoutFlow } from "./ban/steam-user-login-logout-test-flow";
+export { BanUserVerificationFlow } from "./ban/ban-user-verification-test-flow";
+
+// Ban types
+export type {
+	BanUserVerificationParams,
+	SteamUserLoginLogoutParams,
+} from "./ban/types/ban-flow-types";

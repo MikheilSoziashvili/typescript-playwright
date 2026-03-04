@@ -66,6 +66,8 @@ jobs:
             SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
             SLACK_CRYPTO_LOW_WALLET_BALANCE_E2E_BOT_TOKEN: ${{secrets.SLACK_CRYPTO_LOW_WALLET_BALANCE_E2E_BOT_TOKEN}}
             STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
+            STEAM_BANNED_USERNAME: ${{ secrets.STEAM_BANNED_USERNAME }}
+            BANNED_STEAM_USER: ${{ secrets.BANNED_STEAM_USER }}
             STEAM_PASSWORD: ${{ secrets.STEAM_PASSWORD }}
             GOOGLE_EMAIL: ${{ secrets.GOOGLE_EMAIL }}
             GOOGLE_PASSWORD: ${{ secrets.GOOGLE_PASSWORD }}
@@ -117,6 +119,8 @@ jobs:
             XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
             XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
             STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
+            STEAM_BANNED_USERNAME: ${{ secrets.STEAM_BANNED_USERNAME }}
+            BANNED_STEAM_USER: ${{ secrets.BANNED_STEAM_USER }}
             STEAM_PASSWORD: ${{ secrets.STEAM_PASSWORD }}
             GOOGLE_EMAIL: ${{ secrets.GOOGLE_EMAIL }}
             GOOGLE_PASSWORD: ${{ secrets.GOOGLE_PASSWORD }}

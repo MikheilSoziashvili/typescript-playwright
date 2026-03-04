@@ -78,6 +78,8 @@ export const coingecko: Record<string, string> = {
 export const steam: Record<string, string> = {
 	username: asString(process.env.STEAM_USERNAME),
 	password: asString(process.env.STEAM_PASSWORD),
+	bannedUsername: asString(process.env.STEAM_BANNED_USERNAME),
+	bannedUser: asString(process.env.BANNED_STEAM_USER),
 };
 
 export const google: Record<string, string> = {

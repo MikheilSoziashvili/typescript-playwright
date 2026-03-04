@@ -40,6 +40,9 @@ import { FINGERPRINT } from "@constants/fingerprint-details";
 import { CryptoTicker } from "@enums/cryptocurrencies";
 import { GetWithdrawalFeesResponse } from "@dtos/responses/gamdom-api/get-withdrawal-fees-response";
 import { FeeLevel } from "@enums/withdrawal-speeds";
+import { AdminActionRequest } from "@dtos/requests/gamdom-api/admin-action-request";
+import { AdminActionType } from "@enums/admin-action-types";
+import { BanReason } from "@enums/ban-reasons";
 
 export class GamdomApi extends BaseApi {
 	private gamdomDb: GamdomDb;
@@ -824,5 +827,30 @@ export class GamdomApi extends BaseApi {
 
 		const response = await this.post(parameters);
 		return response.json() as Promise<GetWithdrawalFeesResponse>;
+	}
+
+	public async banUser(
+		userId: number,
+		reason: BanReason,
+		_headers: Record<string, string> = {},
+	): Promise<APIResponse> {
+		const payload: AdminActionRequest = {
+			type: AdminActionType.BAN,
+			reason: reason,
+			id: userId,
+		};
+
+		const parameters = this.buildParameters(
+			ApiEndpoints.ADMIN_ACTION,
+			payload,
+			_headers,
+		);
+
+		const response = await this.post(parameters);
+		expect(response.status(), "Ban user API should return 200").toBe(
+			HttpStatus.OK,
+		);
+
+		return response;
 	}
 }
