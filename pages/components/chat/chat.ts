@@ -4,10 +4,13 @@ import { BaseComponent } from "../../base/base-component";
 import { ChatAsserter } from "./chat-asserter";
 import { ChatMap, ChatMessageOptions } from "./chat-map";
 import { ChatSteps } from "./chat-steps";
+import { Toast } from "../toast/toast";
 
 export class Chat extends BaseComponent<ChatMap> {
+	public toast: Toast;
 	constructor(page: Page) {
 		super(page, new ChatMap(page));
+		this.toast = new Toast(page);
 	}
 
 	public assertThat(): ChatAsserter {

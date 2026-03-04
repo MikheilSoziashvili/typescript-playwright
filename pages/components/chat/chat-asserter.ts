@@ -10,6 +10,8 @@ import { ChatMessageOptions } from "./chat-map";
 import { Timeout } from "@enums/timeout";
 import { VipUserStatus } from "@enums/vip-user-statuses";
 import { TooltipText } from "@enums/tooltip-text";
+import { ToastSubTitle } from "@enums/toast-subtitles";
+import { ToastTitle } from "@enums/toast-titles";
 
 export class ChatAsserter extends BaseAsserter<Chat> {
 	public constructor(chat: Chat) {
@@ -347,7 +349,10 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 	}
 
 	@step("Rain claim button shows cannot win message")
-	public async rainClaimButtonShowsCannotWinMessage(): Promise<void> {
+	public async rainCannotBeClaimed(): Promise<void> {
+		await this.gamdomPage.toast
+			.assertThat()
+			.toastMessageIs(ToastTitle.FAILED, ToastSubTitle.RAIN_KYC_REQUIRED);
 		await expect(this.gamdomPage.map.claimRainButton).toHaveText(
 			"FIND OUT MORE",
 		);

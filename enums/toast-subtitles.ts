@@ -58,4 +58,5 @@ export enum ToastSubTitle {
 	XP_CHALLENGE_ACTIVATED = "XP challenge activated!",
 	REWARD_UPDATED_SUCCESSFULLY = "Reward updated successfully",
 	INVALID_UNWAGERED_DEPOSIT_VALUE = "Invalid unwagered deposit value provided. Please provide a non negative value.",
+	RAIN_KYC_REQUIRED = "You need to complete level 2 KYC verification to claim rain.",
 }

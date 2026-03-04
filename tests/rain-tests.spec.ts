@@ -17,6 +17,7 @@ import { KycLevels } from "@enums/verification-enums";
 import { test } from "@fixtures/fixtures";
 import { testData } from "test-data/test-data-manager";
 import { KycStatus } from "@enums/verification-enums";
+import { TestTag } from "@enums/test-tags";
 
 test.describe("Rain tests", () => {
 	let qrCode2FAImagePath: string;
@@ -27,10 +28,7 @@ test.describe("Rain tests", () => {
 
 	test(
 		"[ENG-15626] Rain - cannot claim rain with no KYC level",
-		testDetails()
-			.withJiraBugTickets("5094")
-			.withAuthor(JiraUser.ANGEL_PETROV)
-			.apply(),
+		testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
 		async ({ homePage, chat, browserSessionManager }) => {
 			await browserSessionManager.loginAs(TestUserRole.REGULAR, {
 				reuseContext: true,
@@ -39,7 +37,7 @@ test.describe("Rain tests", () => {
 			await homePage.navigate();
 			await chat.steps().openChatAndVerify();
 			await chat.steps().waitUponRainAndClaim();
-			await chat.assertThat().rainClaimButtonShowsCannotWinMessage();
+			await chat.assertThat().rainCannotBeClaimed();
 			await chat.steps().rainClaimButtonRedirectsToFaq();
 		},
 	);
@@ -47,10 +45,7 @@ test.describe("Rain tests", () => {
 	for (const kycLevel of rainDomainData.cannotClaimKycLevels) {
 		test(
 			`[ENG-15626] Rain - cannot claim rain with KYC level: ${kycLevel.level}`,
-			testDetails()
-				.withJiraBugTickets("5094")
-				.withAuthor(JiraUser.ANGEL_PETROV)
-				.apply(),
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
 			async ({ homePage, chat, browserSessionManager, gamdomDb }) => {
 				const regularUser = await browserSessionManager.loginAs(
 					TestUserRole.REGULAR,
@@ -69,39 +64,47 @@ test.describe("Rain tests", () => {
 				await homePage.navigate();
 				await chat.steps().openChatAndVerify();
 				await chat.steps().waitUponRainAndClaim();
-				await chat.assertThat().rainClaimButtonShowsCannotWinMessage();
+				await chat.assertThat().rainCannotBeClaimed();
 				await chat.steps().rainClaimButtonRedirectsToFaq();
 			},
 		);
 	}
 
-	for (const kycLevel of rainDomainData.canClaimKycLevels) {
+	for (const kycConfig of rainDomainData.canClaimKycLevels) {
 		test(
-			`[ENG-15626] Rain - can claim rain with KYC level: ${kycLevel.level}`,
+			`[ENG-15626] Rain - can claim rain with KYC level: ${kycConfig.label}`,
 			testDetails()
 				.withJiraBugTickets("5094")
 				.withAuthor(JiraUser.ANGEL_PETROV)
 				.apply(),
-			async ({ homePage, chat, browserSessionManager, gamdomDb }) => {
+			async ({
+				homePage,
+				chat,
+				browserSessionManager,
+				gamdomDb,
+				userBalanceHandler,
+			}) => {
 				const regularUser = await browserSessionManager.loginAs(
 					TestUserRole.REGULAR,
 					{ reuseContext: true },
 				);
 
-				await gamdomDb.insertUserKycLevel(
-					regularUser.getAuthenticatedUser().user.userId,
-					kycLevel.level,
-					kycLevel.type,
-					KycStatus.APPROVED,
-					true,
-					false,
-				);
+				for (const kycLevel of kycConfig.levels) {
+					await gamdomDb.insertUserKycLevel(
+						regularUser.getAuthenticatedUser().user.userId,
+						kycLevel.level,
+						kycLevel.type,
+						KycStatus.APPROVED,
+						true,
+						false,
+					);
+				}
 
 				await homePage.navigate();
 				await chat.steps().openChatAndVerify();
 
 				const initialAccountBalance =
-					await homePage.authenticatedHeader.getAccountBalance();
+					await userBalanceHandler.walletBalanceInFiatRounded();
 
 				await chat.steps().waitUponRainAndClaim();
 				await chat.assertThat().rainClaimedMessageIsDisplayed();
@@ -135,7 +138,10 @@ test.describe("Rain tests", () => {
 
 	test(
 		"[ENG-2564] Tip rain - Require new 2FA code when IP of user changes",
-		testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+		testDetails()
+			.withTags(TestTag.SEQUENTIAL)
+			.withAuthor(JiraUser.ANGEL_PETROV)
+			.apply(),
 		async ({
 			homePage,
 			chat,
