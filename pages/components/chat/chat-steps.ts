@@ -223,7 +223,7 @@ export class ChatSteps extends BaseComponentStep<Chat> {
 
 	@step("Rain claim button redirects to FAQ page")
 	public async rainClaimButtonRedirectsToFaq(): Promise<void> {
-		await this.component.map.claimRainButton.click();
+		await this.component.map.findOutMoreRainButton.click();
 		await this.commonUserOptionsPopup.page.waitForURL(
 			`**${FAQ_PAGE_ENDPOINT}`,
 		);

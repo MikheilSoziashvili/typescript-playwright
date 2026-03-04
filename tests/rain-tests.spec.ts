@@ -13,10 +13,9 @@ import {
 import { JiraUser } from "@enums/jira/jira-users";
 import { TestUserRole } from "@enums/test-user-roles";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
-import { KycLevels } from "@enums/verification-enums";
+import { KycLevels, KycStatus } from "@enums/verification-enums";
 import { test } from "@fixtures/fixtures";
 import { testData } from "test-data/test-data-manager";
-import { KycStatus } from "@enums/verification-enums";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { TestTag } from "@enums/test-tags";
 
@@ -39,7 +38,7 @@ test.describe("Rain tests", () => {
 			});
 
 			await homePage.navigate();
-			await chat.steps().openChatAndVerify();
+			await chat.expandChat();
 			await chat.steps().waitUponRainAndClaim();
 			await chat.assertThat().rainCannotBeClaimed();
 			await chat.steps().rainClaimButtonRedirectsToFaq();
@@ -69,7 +68,7 @@ test.describe("Rain tests", () => {
 				);
 
 				await homePage.navigate();
-				await chat.steps().openChatAndVerify();
+				await chat.expandChat();
 				await chat.steps().waitUponRainAndClaim();
 				await chat.assertThat().rainCannotBeClaimed();
 				await chat.steps().rainClaimButtonRedirectsToFaq();
@@ -200,7 +199,7 @@ test.describe("Rain tests", () => {
 				.navigateAndEnable2FaAuthentication(qrCode2FAImagePath);
 
 			await homePage.navigate();
-			await homePage.authenticatedHeader.expandChatIfNotVisible();
+			await chat.expandChat();
 			await chat.steps().verifyChatAndSendMessage(TIP_RAIN);
 			await twoFactorAuthModal
 				.steps()
@@ -236,7 +235,7 @@ test.describe("Rain tests", () => {
 			await homePage.authenticatedHeader
 				.assertThat()
 				.loggedInUserElementsAreVisible();
-			await homePage.authenticatedHeader.expandChatIfNotVisible();
+			await chat.expandChat();
 			await chat.steps().verifyChatAndSendMessage(TIP_RAIN);
 			await twoFactorAuthModal
 				.steps()

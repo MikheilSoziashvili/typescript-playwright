@@ -70,13 +70,11 @@ export class RewardsPageMap extends BaseMap {
 	}
 
 	public royaltyUpRewardsItem(placeholderText: string): Locator {
-		return this.royaltyUpBlock
-			.locator('[data-testid^="RoyaltyUpSlider-content-swiper-slide-"]')
-			.filter({
-				has: this.page
-					.getByTestId("RoyaltyUpItemName")
-					.filter({ hasText: placeholderText }),
-			});
+		return this.royaltyUpBlock.locator(".swiper-slide").filter({
+			has: this.page
+				.getByTestId("RoyaltyUpItemName")
+				.filter({ hasText: placeholderText }),
+		});
 	}
 
 	public royaltyUpInProgressItem(placeholderText: string): Locator {
@@ -85,14 +83,8 @@ export class RewardsPageMap extends BaseMap {
 		);
 	}
 
-	public get royaltyUpItemsIndex(): Locator {
-		return this.royaltyUpBlock.locator(
-			'[data-testid^="RoyaltyUpSlider-content-swiper-slide-"]',
-		);
-	}
-
 	public royaltyUpRewardsItemClaimButton(placeholderText: string): Locator {
-		return this.royaltyUpRewardsItem(placeholderText).locator("//button");
+		return this.royaltyUpRewardsItem(placeholderText).locator("button");
 	}
 
 	public get royaltyUpSliderBlock(): Locator {

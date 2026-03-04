@@ -88,22 +88,30 @@ export class ChatMap extends BaseMap {
 	}
 
 	public get rainBotMessageContainer(): Locator {
-		return this.page.locator(`li[data-testid*="messageRain-container-"]`);
+		return this.page.locator('li[data-testid^="message-rain-"][data-testid$="-rain-bot"]');
 	}
 
 	public get rainBotMessageLocator(): Locator {
 		return this.rainBotMessageContainer.locator(
-			`[data-testid*="messageRain-message"]`,
+			'[data-testid^="message-rain-"][data-testid$="-messageContainer"]',
 		);
 	}
 
-	public get rainTransitionGroupContainer(): Locator {
-		return this.page.getByTestId(`rainBox-transitionGroup`);
+	public get rainBannerContainer(): Locator {
+		return this.chatMessagesList.locator(
+			'[data-testid^="rain-banner-"][data-testid$="-container"]',
+		);
 	}
 
 	public get claimRainButton(): Locator {
-		return this.rainTransitionGroupContainer.locator(
-			`[data-testid*="claimRain-button"] [data-testid*="claimRain-buttonText"]`,
+		return this.rainBannerContainer.locator(
+			'[data-testid^="rain-banner-"][data-testid$="-non-joined"]',
+		);
+	}
+
+	public get findOutMoreRainButton(): Locator {
+		return this.rainBannerContainer.locator(
+			'button[data-testid^="rain-banner-"][data-testid$="-missed"]',
 		);
 	}
 
@@ -112,8 +120,8 @@ export class ChatMap extends BaseMap {
 	}
 
 	public get rainClaimedMessageLocator(): Locator {
-		return this.rainTransitionGroupContainer.locator(
-			`[data-testid*="rainBox-message"]`,
+		return this.rainBannerContainer.locator(
+			'[data-testid^="rain-banner-"][data-testid$="-content"]',
 		);
 	}
 
