@@ -4,6 +4,7 @@ import { BannedUserPageMap } from "./banned-user-page-map";
 import { BannedUserPageAsserter } from "./banned-user-page-asserter";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { step } from "decorators/step";
+import { BannedUserPageSteps } from "./banned-user-page-steps";
 
 export class BannedUserPage extends BasePage<BannedUserPageMap> {
 	public constructor(page: Page) {
@@ -30,6 +31,10 @@ export class BannedUserPage extends BasePage<BannedUserPageMap> {
 			...parameters,
 			endpoint: { paths: [bannedPageEndpoint] },
 		});
+	}
+
+	public steps(): BannedUserPageSteps {
+		return new BannedUserPageSteps(this);
 	}
 
 	public override assertThat(): BannedUserPageAsserter {

@@ -1,5 +1,5 @@
 import { test } from "@fixtures/fixtures";
-import { getCurrentDate } from "@core/utils/utils";
+import { getCookieHeader, getCurrentDate } from "@core/utils/utils";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraUser } from "@enums/jira/jira-users";
 import { JiraComponent } from "@enums/jira/jira-components";
@@ -149,6 +149,69 @@ test.describe(
 					usernameSteam: usernameSteam,
 					banReason: BanReason.SUPPORT_REQUESTED,
 				});
+			},
+		);
+	},
+);
+
+test.describe(
+	"Hard Ban Tests",
+	testDetails().withTags(JiraComponent.ADMIN_PANEL).apply(),
+	() => {
+		test(
+			"[ENG-11617] [Hard ban] 'Responsible gambling' ban for user with Unranked1 unclaimable reward",
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			async ({ browserSessionManager, gamdomDb, testDataPredefined }) => {
+				const banReason =
+					testDataPredefined.data.responsibleGamblingBan.banReason;
+				const adminUser = await browserSessionManager.loginAs(
+					TestUserRole.ADMIN_USER_INFO_ADMIN,
+					{ reuseContext: true },
+				);
+
+				const adminUserCookie = getCookieHeader(
+					adminUser.getAuthenticatedUser().cookie,
+				);
+				const regularUser = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
+					{
+						regularUserOptions: {
+							emailVerified: true,
+							startingXp:
+								testDataPredefined.data.responsibleGamblingBan
+									.unrankedXp,
+							amount: testDataPredefined.data
+								.responsibleGamblingBan.walletAmount,
+						},
+					},
+				);
+
+				const { username, password, userId } =
+					regularUser.getAuthenticatedUser().user;
+
+				await gamdomDb.insertRoyaltyUpReward(
+					userId,
+					testDataPredefined.data.responsibleGamblingBan.royaltyLevel,
+				);
+
+				await (
+					await adminUser.apis.gamdomApi
+				).banUser(userId, BanReason.RESPONSIBLE_GAMING, {
+					Cookie: adminUserCookie,
+				});
+
+				await regularUser.pages.homePage.navigate();
+				await regularUser.pages.homePage
+					.steps()
+					.loginUser(username, password, {
+						expectErrors: true,
+					});
+
+				await regularUser.pages.bannedUserPage
+					.steps()
+					.verifyBannedPageWithReason(
+						`${banReason} - ${getCurrentDate()}`,
+					);
 			},
 		);
 	},

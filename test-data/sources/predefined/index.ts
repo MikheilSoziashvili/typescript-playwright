@@ -214,4 +214,10 @@ export const predefined = {
 			betColor: RouletteBetColor.RED,
 		},
 	},
+	responsibleGamblingBan: {
+		walletAmount: 0,
+		royaltyLevel: 0,
+		unrankedXp: 1500000,
+		banReason: "Responsible gaming",
+	},
 };
