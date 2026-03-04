@@ -61,17 +61,17 @@ test.describe("Free spins tests", () => {
 						betAmount: 100,
 					});
 
-					await toast.assertThat().titlesAre([
+					await toast.assertThat().toastMessagesAre([
+						{
+							title: ToastTitle.SUCCESS,
+							subTitle: ToastSubTitle.CASINO_REWARD_GIVEN,
+						},
 						{
 							title: ToastTitle.SUCCESS,
 							subTitle:
 								buildSendingOutFreeSpinsToastSubTitle(
 									newUserId,
 								),
-						},
-						{
-							title: ToastTitle.SUCCESS,
-							subTitle: ToastSubTitle.CASINO_REWARD_GIVEN,
 						},
 					]);
 				},
@@ -213,17 +213,17 @@ test.describe("Free spins tests", () => {
 						betAmount: 200,
 					});
 
-					await toast.assertThat().titlesAre([
+					await toast.assertThat().toastMessagesAre([
+						{
+							title: ToastTitle.FAILED,
+							subTitle: ToastSubTitle.BALANCE_TOO_LOW,
+						},
 						{
 							title: ToastTitle.SUCCESS,
 							subTitle:
 								buildSendingOutFreeSpinsToastSubTitle(
 									newUserId,
 								),
-						},
-						{
-							title: ToastTitle.FAILED,
-							subTitle: ToastSubTitle.BALANCE_TOO_LOW,
 						},
 					]);
 				},

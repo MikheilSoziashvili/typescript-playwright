@@ -4,6 +4,7 @@ import { step } from "decorators/step";
 import { expect } from "@playwright/test";
 import { CasinoGameName } from "@enums/casino-game";
 import { Toast } from "@pages/components/toast/toast";
+import { ToastTitle } from "@enums/toast-titles";
 
 export class FreeSpinsAdminPageAsserter extends BaseAsserter<FreeSpinsAdminPage> {
 	private readonly toast: Toast;
@@ -65,11 +66,12 @@ export class FreeSpinsAdminPageAsserter extends BaseAsserter<FreeSpinsAdminPage>
 			.assertThat()
 			.gameIsVisibleInTopPlayedSlots(expectedGame);
 	}
+
 	@step("Assert toast notifications for batch result are displayed")
 	public async batchToastsAreDisplayed(
-		expectedToasts: { title: string; subTitle: string }[],
+		expectedToasts: { title: ToastTitle; subTitle: string }[],
 	): Promise<void> {
-		await this.toast.assertThat().titlesAre(expectedToasts);
+		await this.toast.assertThat().toastMessagesAre(expectedToasts);
 	}
 
 	@step("Assert batch result popup is displayed and user counts are correct")

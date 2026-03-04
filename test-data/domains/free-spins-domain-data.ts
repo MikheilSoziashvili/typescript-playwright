@@ -19,14 +19,14 @@ export class FreeSpinsDomainData {
 				await page.assertThat().batchToastsAreDisplayed([
 					{
 						title: ToastTitle.SUCCESS,
-						subTitle: buildSendingOutFreeSpinsBatchToastSubTitle(
+						subTitle: buildFreeSpinsBatchProcessedToastSubTitle(
 							19,
 							1,
 						),
 					},
 					{
 						title: ToastTitle.SUCCESS,
-						subTitle: buildFreeSpinsBatchProcessedToastSubTitle(
+						subTitle: buildSendingOutFreeSpinsBatchToastSubTitle(
 							19,
 							1,
 						),
