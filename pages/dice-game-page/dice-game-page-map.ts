@@ -1,6 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
-import { DiceAutobetSectionName } from "@enums/dice-autobet-section-name";
+import { BetIncreaseCondition } from "@enums/dice-autobet-section-name";
 
 export class DiceGamePageMap extends BaseMap {
 	public constructor(page: Page) {
@@ -8,7 +8,9 @@ export class DiceGamePageMap extends BaseMap {
 	}
 
 	public get diceGameAreaMessage(): Locator {
-		return this.page.getByTestId("diceGameAreaMessage");
+		return this.page
+			.getByTestId("diceGameAreaContainer")
+			.locator("div[class*='DiceGameArea-styled__DrawStyledBox-sc']");
 	}
 
 	public get diceRollHistoryContainer(): Locator {
@@ -26,86 +28,60 @@ export class DiceGamePageMap extends BaseMap {
 	}
 
 	public get diceAutobetTabButton(): Locator {
-		return this.page.getByTestId("diceAutoTabButton");
-	}
-
-	public get autobetContainer(): Locator {
-		return this.page.locator("div[class*=styled__GameBoxBody]");
+		return this.page.getByTestId("dice-auto-tab");
 	}
 
 	public get diceHistoryResultsModal(): Locator {
 		return this.page.locator('div[class*="Modal-styled_"]');
 	}
 
-	private getAutobetSectionLocator(
-		sectionName: DiceAutobetSectionName,
-	): Locator {
-		return this.page.locator("div[class*=MuiFormControl-root]", {
-			has: this.page.locator("label[class*=MuiFormLabel-root]", {
-				hasText: sectionName,
-			}),
-		});
-	}
-
 	public get autobetYourBetInput(): Locator {
-		return this.getAutobetSectionLocator(
-			DiceAutobetSectionName.YOUR_BET,
-		).locator("input");
+		return this.page.getByTestId("dice-your-bet-auto-input");
 	}
 
 	public get autobetRollOverInput(): Locator {
-		return this.getAutobetSectionLocator(
-			DiceAutobetSectionName.ROLL_OVER,
-		).locator("input");
+		return this.page.getByTestId("dice-roll-over-auto-input");
 	}
 
 	public get autobetNbOfBetsInput(): Locator {
-		return this.getAutobetSectionLocator(
-			DiceAutobetSectionName.NUMBER_OF_BETS,
-		).locator("input");
+		return this.page.getByTestId("dice-number-of-bets-input");
 	}
 
 	public get autobetStopOnProfitInput(): Locator {
-		return this.getAutobetSectionLocator(
-			DiceAutobetSectionName.STOP_ON_PROFIT,
-		).locator("input");
+		return this.page.getByTestId("dice-stop-on-profit-input");
 	}
 
 	public get autobetStopOnLossInput(): Locator {
-		return this.getAutobetSectionLocator(
-			DiceAutobetSectionName.STOP_ON_LOSS,
-		).locator("input");
+		return this.page.getByTestId("dice-stop-on-loss-input");
 	}
 
 	public get startAutobetButton(): Locator {
-		return this.autobetContainer.locator("button", {
-			hasText: "Start Autobet",
-		});
+		return this.page.getByTestId("dice-toggle-autobet-btn");
 	}
 
 	public get stopAutobetButton(): Locator {
-		return this.autobetContainer.locator("button", {
-			hasText: "Stop Autobet",
-		});
+		return this.page.locator(
+			'button[data-testid="dice-toggle-autobet-btn"]',
+			{
+				hasText: "Stop Autobet",
+			},
+		);
 	}
 
 	public get betMenu(): Locator {
 		return this.page.locator('div[class*="GameBox"][class*="MuiBox-root"]');
 	}
 
-	private getInputLocatorByLabel(labelText: string | RegExp): Locator {
-		return this.page
-			.locator("label", { hasText: labelText })
-			.locator("..")
-			.locator("input");
+	public getIncreaseBySelectButton(type: BetIncreaseCondition): Locator {
+		return this.page.getByTestId(`dice-on-${type}-select-button`);
 	}
 
-	public get onWinIncreaseByInput(): Locator {
-		return this.getInputLocatorByLabel("On Win");
+	public getIncreaseByOption(type: BetIncreaseCondition): Locator {
+		return this.page.getByTestId(`dice-on-${type}-select-option-multiply`);
 	}
 
-	public get onLossIncreaseByInput(): Locator {
-		return this.getInputLocatorByLabel(/^On Loss$/);
+	public getIncreaseByPercentInput(type: BetIncreaseCondition): Locator {
+		return this.page.getByTestId(`dice-on-${type}-percent`);
 	}
 
 	public get manualYourBetContainer(): Locator {
@@ -162,14 +138,15 @@ export class DiceGamePageMap extends BaseMap {
 
 	public get diceSliderValue(): Locator {
 		return this.page
-			.getByTestId("diceSlider")
-			.locator("div[class*='DiceSliderPinResultNumber']");
+			.getByTestId("diceSliderBar")
+			.locator("input[type='range']");
 	}
 
 	public get diceResultNumberGameArea(): Locator {
-		return this.page.locator(
-			"div[class*='DiceSlider-styled__SliderPinResultNumber-sc']",
-		);
+		return this.page
+			.getByTestId("diceSlider")
+			.locator("div[class*='DiceSlider-styled__SliderPinResultNumber-sc']")
+			.first();
 	}
 
 	public get diceResultsHistory(): Locator {
@@ -182,6 +159,10 @@ export class DiceGamePageMap extends BaseMap {
 
 	public get diceLastResultNumber(): Locator {
 		return this.diceAllLastResultsNumber.first();
+	}
+
+	public get gameDescriptionToggleButton(): Locator {
+		return this.page.getByTestId("game-description-header-toggle-button");
 	}
 
 	public get fairnessButton(): Locator {

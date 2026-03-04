@@ -209,7 +209,11 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 		await this.gamdomPage.openWithdrawTab();
 		await this.gamdomPage
 			.assertThat()
-			.cryptoPaymentMethodIsPresent(cryptoCurrency, expectedPresence);
+			.cryptoPaymentMethodIsPresent(
+				cryptoCurrency,
+				expectedPresence,
+				TransactionType.WITHDRAWAL,
+			);
 	}
 
 	@step("Open deposit tab and verify crypto currency method presence")
@@ -220,6 +224,10 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 		await this.gamdomPage.openDepositTab();
 		await this.gamdomPage
 			.assertThat()
-			.cryptoPaymentMethodIsPresent(cryptoCurrency, expectedPresence);
+			.cryptoPaymentMethodIsPresent(
+				cryptoCurrency,
+				expectedPresence,
+				TransactionType.DEPOSIT,
+			);
 	}
 }

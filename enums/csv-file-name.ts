@@ -23,7 +23,6 @@ export enum CsvFilesName {
 	HOME_PAGE_CASINO_SLIDER_NAVIGATION = "ENG-3832-casino-slider-visit-button-redirect.csv",
 	USER_INFO_SEARCH_BY_IP_ADDRESS = "ENG-1456-user-info-search-by-ip.csv",
 	HILO_LAST_ROUNDS_STATISTICS = "ENG-2138-verify-hilo-red-black-cards-percentage-statistics.csv",
-	DICE_AUTOBET_INCREASE_BY = "ENG-2843-dice-autobet-increase-by.csv",
 	UPDATE_CONTACT_INFO_2FA_REQUIRED = "ENG-2567-update-contact-info-2fa-required.csv",
 	KOTH_VISUAL = "ENG-4484-KOTH-changing-currency.csv",
 	PROMO_CAMPAIGN_DUPLICATED_CODES = "ENG-4935-promo-campaign-duplicated-codes.csv",

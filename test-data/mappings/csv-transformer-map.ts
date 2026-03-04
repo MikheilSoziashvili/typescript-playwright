@@ -2,6 +2,7 @@ import {
 	BlogVerifySocialShareLinksCsvRecord,
 	CasinoGamesAggregatorProviderCsvRecord,
 	ChatPinMessagePermissionsCsvRecord,
+	DiceAutobetCsvRecord,
 	FeatureActivationV4CsvRecord,
 	FooterLinksAndEndpointsCsvRecord,
 	SokGamesMinBetAfterCurrencySwitchCsvRecord,
@@ -141,6 +142,10 @@ import {
 	FeatureActivationV4CsvParsedRecord,
 	parseFeatureActivationV4CsvRow,
 } from "test-data/parsers/feature-activation-v4-csv-parser";
+import {
+	DiceAutobetCsvParsedRecord,
+	parseDiceAutobetCsvRow,
+} from "test-data/parsers/dice-autobet-csv-parser";
 
 export type CsvTransformerExistingType<T> =
 	T extends keyof CsvTransformerMapType ? CsvTransformerMapType[T] : never;
@@ -270,6 +275,10 @@ export type CsvTransformerMapType = {
 	[CsvFilesName.FEATURE_ACTIVATION_V4]: (
 		row: FeatureActivationV4CsvRecord,
 	) => FeatureActivationV4CsvParsedRecord;
+
+	[CsvFilesName.DICE_AUTOBET]: (
+		row: DiceAutobetCsvRecord,
+	) => DiceAutobetCsvParsedRecord;
 };
 
 export const CsvTransformerMap: CsvTransformerMapType = {
@@ -319,4 +328,5 @@ export const CsvTransformerMap: CsvTransformerMapType = {
 	[CsvFilesName.CASINO_GAME_INSTANT_REWARDS_ROYALTY_UP_LEVELS]:
 		parseCasinoGameInstantRewardsRoyaltyUpLevelsCsvRow,
 	[CsvFilesName.FEATURE_ACTIVATION_V4]: parseFeatureActivationV4CsvRow,
+	[CsvFilesName.DICE_AUTOBET]: parseDiceAutobetCsvRow,
 } as const;

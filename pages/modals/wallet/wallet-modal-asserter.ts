@@ -3,6 +3,7 @@ import { bankPaymentMethodLabelMap } from "@core/mappings/bank/bank-payment-meth
 import { BankPaymentMethod } from "@enums/bank-payment-methods";
 import { CountryCodeISO3166 } from "@enums/country-codes-iso3166";
 import { Cryptocurrency, CryptoTicker } from "@enums/cryptocurrencies";
+import { TransactionType } from "@enums/transaction-types";
 import { Currency } from "@enums/currencies";
 import { Timeout } from "@enums/timeout";
 import { Unit } from "@enums/units";
@@ -191,9 +192,10 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 	public async cryptoPaymentMethodIsPresent(
 		cryptoCurrency: Cryptocurrency | CryptoTicker,
 		expectedPresence: boolean,
+		type: TransactionType,
 	): Promise<void> {
 		const paymentMethodLocator =
-			this.gamdomPage.map.withdrawCryptoPaymentMethod(cryptoCurrency);
+			this.gamdomPage.map.cryptoPaymentMethod(type, cryptoCurrency);
 
 		if (expectedPresence) {
 			await this.checkElementsAreVisible(

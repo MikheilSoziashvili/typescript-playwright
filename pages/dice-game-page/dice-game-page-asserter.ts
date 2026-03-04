@@ -10,6 +10,8 @@ import { sanitizeAmount } from "@support/regex-patterns";
 import { IntervalMs } from "@enums/interval-millisecond";
 import { testData } from "test-data/test-data-manager";
 import { Button } from "@enums/buttons-texts";
+import { Attributes } from "@enums/playwright/htmlAttributes";
+import { parseDiceSliderValue } from "@formulas/slider-calculations";
 
 export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 	public constructor(page: DiceGamePage) {
@@ -79,11 +81,6 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 		}
 	}
 
-	@step("Dice message is not empty")
-	public async diceMessageIsNotEmpty(): Promise<void> {
-		await expect(this.gamdomPage.map.diceGameAreaMessage).not.toBeEmpty();
-	}
-
 	@step("Check dice message")
 	public async diceMessageIs(
 		resultMessage: DiceGameResultMessage,
@@ -144,30 +141,21 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 	@step("Balance after auto bet is correct")
 	public async balanceAfterAutoBetIsCorrect(
 		initialBalance: number,
+		finalBalance: number,
 		diceBetData: DiceAutobetTestData,
 	): Promise<void> {
-		let expectedBalance = initialBalance;
+		const profit = finalBalance - initialBalance;
+		const loss = initialBalance - finalBalance;
 
-		for (let i = 0; i < (diceBetData.numberOfBets ?? 0); i++) {
-			const newBalance =
-				await this.gamdomPage.authenticatedHeader.getAccountBalance();
-			expectedBalance = newBalance;
-
-			const profit = expectedBalance - initialBalance;
-			const loss = initialBalance - expectedBalance;
-
-			if (this.shouldStopOn(diceBetData.stopOnProfit, profit)) {
-				return;
-			}
-
-			if (this.shouldStopOn(diceBetData.stopOnLoss, loss)) {
-				return;
-			}
+		if (this.shouldStopOn(diceBetData.stopOnProfit, profit)) {
+			return;
 		}
 
-		const finalBalance =
-			await this.gamdomPage.authenticatedHeader.getAccountBalance();
-		expect(finalBalance).toEqual(expectedBalance);
+		if (this.shouldStopOn(diceBetData.stopOnLoss, loss)) {
+			return;
+		}
+
+		expect(finalBalance).not.toEqual(initialBalance);
 	}
 
 	@step("Dice manual bet menu visual is correct")
@@ -260,15 +248,17 @@ export class DiceGamePageAsserter extends BaseAsserter<DiceGamePage> {
 
 	@step("Dice slider value is correct")
 	public async diceSliderValueIsCorrect(diceValue: string): Promise<void> {
-		await expect(this.gamdomPage.map.diceSliderValue).toHaveText(diceValue);
+		const rawValue = await this.gamdomPage.map.diceSliderValue.getAttribute(
+			Attributes.VALUE,
+		);
+		const parsedValue = parseToFloat(parseDiceSliderValue(rawValue));
+		expect(parsedValue).toBe(diceValue);
 	}
 
 	@step("Dice result is displayed")
 	public async diceResultIsDisplayed(): Promise<number> {
 		const diceResultGameArea =
-			await this.gamdomPage.map.diceResultNumberGameArea
-				.first()
-				.textContent();
+			await this.gamdomPage.map.diceResultNumberGameArea.textContent();
 
 		expect(parseFloat(diceResultGameArea ?? "0")).toBeGreaterThanOrEqual(0);
 

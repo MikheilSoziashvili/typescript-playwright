@@ -9,6 +9,7 @@ import { BasePageNavigationParametersType } from "@core/types/types";
 import { step } from "decorators/step";
 import { BetIncreaseCondition } from "@enums/dice-autobet-section-name";
 import { Toast } from "@pages/components/toast/toast";
+import { KeyboardKey } from "@enums/keyboard";
 
 export class DiceGamePage extends BasePage<DiceGamePageMap> {
 	public toast: Toast;
@@ -37,9 +38,30 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 	@step("Switch to autobet section")
 	public async switchToAutobetSection(): Promise<void> {
 		await this.map.diceAutobetTabButton.click();
-		await this.map.waitForVisibility({
-			locator: this.map.autobetContainer,
-		});
+	}
+
+	public async getBetAmountInputValue(): Promise<number> {
+		return parseFloat(await this.map.autobetYourBetInput.inputValue());
+	}
+
+	@step("Configure autobet with Increase By")
+	public async configureAutobetIncreaseBy(
+		betAmount: number,
+		numberOfBets: number,
+		onWinPercentage: number,
+		onLossPercentage: number,
+	): Promise<void> {
+		await this.switchToAutobetSection();
+		await this.map.autobetYourBetInput.fill(betAmount.toString());
+		await this.map.autobetNbOfBetsInput.fill(numberOfBets.toString());
+		await this.fillIncreaseByInput(
+			BetIncreaseCondition.WIN,
+			onWinPercentage,
+		);
+		await this.fillIncreaseByInput(
+			BetIncreaseCondition.LOSS,
+			onLossPercentage,
+		);
 	}
 
 	@step("Fill increase by input")
@@ -47,20 +69,13 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 		type: BetIncreaseCondition,
 		value: number,
 	): Promise<void> {
-		switch (type) {
-			case BetIncreaseCondition.BOTH:
-				await this.map.onWinIncreaseByInput.fill(`${value}`);
-				await this.map.onLossIncreaseByInput.fill(`${value}`);
-				break;
-
-			case BetIncreaseCondition.WIN:
-				await this.map.onWinIncreaseByInput.fill(`${value}`);
-				break;
-
-			case BetIncreaseCondition.LOSS:
-				await this.map.onLossIncreaseByInput.fill(`${value}`);
-				break;
-		}
+		await this.map.getIncreaseBySelectButton(type).click();
+		await this.map.getIncreaseByOption(type).click();
+		const input = this.map.getIncreaseByPercentInput(type);
+		await input.click();
+		await input.selectText();
+		await input.press(KeyboardKey.BACKSPACE);
+		await input.pressSequentially(`${value}`);
 	}
 
 	@step("Fill in autobet bet data")
@@ -123,8 +138,9 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 		multiplier?: number,
 	): Promise<void> {
 		await this.map.manualBetField.fill(`${betAmount}`);
-		multiplier !== undefined &&
-			(await this.map.manualMultiplierField.fill(`${multiplier}`));
+		if (multiplier !== undefined) {
+			await this.map.manualMultiplierField.fill(`${multiplier}`);
+		}
 	}
 
 	@step("Roll dice")
@@ -145,6 +161,7 @@ export class DiceGamePage extends BasePage<DiceGamePageMap> {
 
 	@step("Open Fairness tab")
 	public async openFairnessTab(): Promise<void> {
+		await this.map.gameDescriptionToggleButton.click();
 		await this.map.fairnessButton.click();
 	}
 }

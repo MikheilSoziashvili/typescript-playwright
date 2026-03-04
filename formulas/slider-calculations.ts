@@ -77,3 +77,17 @@ export function calculateCoordinate(
 ): number {
 	return sliderBox.x + sliderBox.width * percentage;
 }
+
+const DICE_SLIDER_SCALE = 10_000_000;
+
+/**
+ * Converts a raw dice slider DOM value to its display value.
+ * The DOM stores the roll-over value scaled by 10,000,000
+ * (e.g. 800000000 → 80).
+ *
+ * @param rawValue - The raw value from the slider's DOM attribute
+ * @returns The human-readable roll-over value
+ */
+export function parseDiceSliderValue(rawValue: string | null): number {
+	return Number(rawValue ?? 0) / DICE_SLIDER_SCALE;
+}

@@ -9,5 +9,4 @@ export enum DiceAutobetSectionName {
 export enum BetIncreaseCondition {
 	WIN = "win",
 	LOSS = "loss",
-	BOTH = "both",
 }

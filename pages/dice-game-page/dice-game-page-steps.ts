@@ -1,6 +1,5 @@
 import { BasePageStep } from "@pages/base/base-page-step";
 import { DiceAutobetTestData, DiceBetTestData } from "@dtos/test-data";
-import { DiceGameResultMessage } from "@enums/dice-result-messages";
 import { logger } from "@logger/logger";
 import { DiceGamePage } from "./dice-game-page";
 import {
@@ -10,13 +9,14 @@ import {
 	validateNumericValues,
 	waitUntil,
 } from "@core/utils/utils";
-import { BetIncreaseCondition } from "@enums/dice-autobet-section-name";
 import { step } from "decorators/step";
 import {
+	calculateBetAmountWithPercentage,
 	getExpectedDiceBalanceAfterRoll,
 	getExpectedDiceBetValues,
 	isDiceWin,
 } from "@formulas/betting-calculations";
+import { testData } from "test-data/test-data-manager";
 import { expect } from "@playwright/test";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { Timeout } from "@enums/timeout";
@@ -30,7 +30,7 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 	@step("Start autobet")
 	public async startAutobet(diceBetData: DiceAutobetTestData): Promise<void> {
 		const accountBalanceBeforeBet =
-			await this.gamdomPage.authenticatedHeader.getAccountBalance();
+			await this.userBalanceHandler.walletBalanceInFiatRounded();
 
 		await this.gamdomPage.switchToAutobetSection();
 		await this.gamdomPage.fillInAutobetBetData(diceBetData);
@@ -43,7 +43,6 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 
 		await this.gamdomPage.startAutobet();
 
-		await this.gamdomPage.assertThat().diceMessageIsNotEmpty();
 		await this.gamdomPage.assertThat().diceResultIsDisplayed();
 		await this.gamdomPage.authenticatedHeader
 			.assertThat()
@@ -71,76 +70,95 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 		await this.gamdomPage.assertThat().startAutobetButtonIsVisible();
 	}
 
-	@step("Autobet with increase by condition")
-	public async autobetIncreaseBy(
-		gameResultMessage: DiceGameResultMessage,
-		diceBetData: DiceAutobetTestData,
-		type: BetIncreaseCondition,
-		increaseBy: number,
+	@step("Play autobet rounds until win and loss detected")
+	public async playAutobetUntilWinAndLoss(
+		betAmount: number,
+		onWinPercentage: number,
+		onLossPercentage: number,
 	): Promise<void> {
-		let shouldContinue = true;
+		const defaultRollover =
+			testData().fromPredefined().data.dice.defaultRollover;
+		let hasWin = false;
+		let hasLoss = false;
+		let currentBet = betAmount;
 
-		while (shouldContinue) {
-			const winConditionNotMet =
-				!(await this.isWinningConditionMet(gameResultMessage));
-			const diceConditionNotMet =
-				!(await this.checkLastBetsAgainstRollOver(diceBetData, type));
+		while (!hasWin || !hasLoss) {
+			logger.info(`Current bet amount before round: ${currentBet}`);
+			await this.gamdomPage.startAutobet();
+			await expect
+				.poll(
+					async () => this.gamdomPage.isAutoBetInputFieldDisabled(),
+					{
+						message:
+							"Autobet input should be enabled after autobet completes.",
+						intervals: [IntervalMs.SHORT],
+						timeout: Timeout.SHORT,
+					},
+				)
+				.toBe(false);
 
-			shouldContinue = winConditionNotMet || diceConditionNotMet;
+			const { parsedDiceResult } = await this.getParsedDiceResults();
+			const isWin = isDiceWin(parsedDiceResult, defaultRollover);
 
-			if (shouldContinue) {
-				await this.prepareAutobetRound(diceBetData, type, increaseBy);
-				await this.waitForAutobetRoundToFinish();
+			logger.info(`Dice result: ${parsedDiceResult}, isWin: ${isWin}`);
+
+			if (isWin && !hasWin) {
+				hasWin = true;
+				currentBet = await this.updateAndVerifyBetAmount(
+					currentBet,
+					onWinPercentage,
+				);
+			} else if (!isWin && !hasLoss) {
+				hasLoss = true;
+				currentBet = await this.updateAndVerifyBetAmount(
+					currentBet,
+					onLossPercentage,
+				);
+			} else {
+				currentBet = await this.waitForBetAmountChange(currentBet);
 			}
+
+			logger.info(`Updated bet amount: ${currentBet}`);
 		}
 	}
 
-	@step("Prepare autobet round")
-	private async prepareAutobetRound(
-		diceBetData: DiceAutobetTestData,
-		type: BetIncreaseCondition,
-		increaseBy: number,
-	): Promise<void> {
-		await this.gamdomPage.switchToAutobetSection();
-		await this.gamdomPage.fillInAutobetBetData(diceBetData);
-		await this.gamdomPage.fillIncreaseByInput(type, increaseBy);
-
-		await this.gamdomPage
-			.assertThat()
-			.diceSliderValueIsCorrect(
-				parseToFloat(diceBetData.rollOver as number),
-			);
-		await this.gamdomPage.assertThat().autobetValuesAreCorrect(diceBetData);
-
-		await this.gamdomPage.startAutobet();
+	@step("Verify bet amount increased by percentage")
+	public async verifyBetAmountIncreasedBy(
+		previousBet: number,
+		percentage: number,
+	): Promise<number> {
+		const actualBet = await this.gamdomPage.getBetAmountInputValue();
+		const expectedBet = calculateBetAmountWithPercentage(
+			previousBet,
+			percentage,
+		);
+		expect(actualBet).toBeCloseTo(expectedBet, 1);
+		return actualBet;
 	}
 
-	@step("Wait for autobet round to finish")
-	private async waitForAutobetRoundToFinish(): Promise<void> {
+	@step("Wait for bet amount to change")
+	private async waitForBetAmountChange(currentBet: number): Promise<number> {
 		await waitUntil(
 			async () => {
-				const textContent =
-					await this.gamdomPage.map.diceGameAreaMessage.textContent();
-				return !textContent?.includes("Rolling");
+				const value = await this.gamdomPage.getBetAmountInputValue();
+				return currentBet !== value;
 			},
 			{
-				errorMessage: "Dice never finished rolling within the timeout.",
-				intervalSeconds: 2,
-				timeoutSeconds: 6,
+				errorMessage: `Bet amount did not change from ${currentBet}`,
+				intervalSeconds: TimeoutSeconds.HALF,
+				timeoutSeconds: TimeoutSeconds.FIVE,
 			},
 		);
-
-		await this.gamdomPage.assertThat().diceMessageIsNotEmpty();
-		await this.gamdomPage.assertThat().diceResultIsDisplayed();
+		return this.gamdomPage.getBetAmountInputValue();
 	}
 
-	@step("Check if winning condition is met")
-	private async isWinningConditionMet(
-		gameResultMessage: DiceGameResultMessage,
-	): Promise<boolean> {
-		const diceGameAreaMessage =
-			await this.gamdomPage.map.diceGameAreaMessage.textContent();
-		return diceGameAreaMessage === gameResultMessage;
+	@step("Update and verify bet amount")
+	private async updateAndVerifyBetAmount(
+		currentBet: number,
+		percentage: number,
+	): Promise<number> {
+		await this.waitForBetAmountChange(currentBet);
+		return this.verifyBetAmountIncreasedBy(currentBet, percentage);
 	}
 
 	@step("Open history and assert last bet")
@@ -149,58 +167,6 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 	): Promise<void> {
 		await this.gamdomPage.openDiceHistory();
 		await this.gamdomPage.assertThat().lastBetValueIs(expectedLastBet);
-	}
-
-	@step("Check last bets against roll over")
-	public async checkLastBetsAgainstRollOver(
-		autobetData: DiceAutobetTestData,
-		type: BetIncreaseCondition,
-	): Promise<boolean> {
-		const { rollOver, numberOfBets } = autobetData;
-
-		await this.gamdomPage.assertThat().checkElementsAreDefined([
-			{
-				value: rollOver,
-				message: "rollOver must be defined in DiceAutobetTestData",
-			},
-			{
-				value: numberOfBets,
-				message: "numberOfBets must be defined in DiceAutobetTestData",
-			},
-		]);
-
-		const validRollOver = rollOver as number;
-		const validNumberOfBets = numberOfBets as number;
-
-		const allResults =
-			await this.gamdomPage.map.diceAllLastResultsNumber.allTextContents();
-		const lastResults = allResults.slice(0, validNumberOfBets);
-
-		if (lastResults.length < validNumberOfBets) {
-			return false;
-		}
-
-		const resultNumbers = validateNumericValues(
-			lastResults,
-			"Invalid dice result number",
-		);
-
-		for (const resultNumber of resultNumbers) {
-			switch (type) {
-				case BetIncreaseCondition.WIN:
-					if (resultNumber < validRollOver) {
-						return false;
-					}
-					break;
-				case BetIncreaseCondition.LOSS:
-					if (resultNumber > validRollOver) {
-						return false;
-					}
-					break;
-			}
-		}
-
-		return true;
 	}
 
 	@step("Open Dice and verify default state")
@@ -214,37 +180,21 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 		diceBetData: DiceBetTestData,
 		expectedWins: number,
 	): Promise<number> {
-		let winCounter = 0;
 		let previousDiceResult: number | null = null;
 		let previousHistoryResult: number | null = null;
-		let lastWinResult: number | null = null;
+		let winResult = 0;
 
-		while (winCounter < expectedWins) {
-			const {
-				previousDiceResult: newPreviousDiceResult,
-				previousHistoryResult: newPreviousHistoryResult,
-				winResult,
-			} = await this.rollUntilWin(
-				diceBetData,
-				previousDiceResult,
-				previousHistoryResult,
-			);
-
-			previousDiceResult = newPreviousDiceResult;
-			previousHistoryResult = newPreviousHistoryResult;
-			lastWinResult = winResult;
-
-			winCounter++;
-			logger.info(`Win #${winCounter} of ${expectedWins} achieved`);
+		for (let i = 0; i < expectedWins; i++) {
+			({ previousDiceResult, previousHistoryResult, winResult } =
+				await this.rollUntilWin(
+					diceBetData,
+					previousDiceResult,
+					previousHistoryResult,
+				));
+			logger.info(`Win #${i + 1} of ${expectedWins} achieved`);
 		}
 
-		if (lastWinResult === null) {
-			throw new Error(
-				`Expected to achieve ${expectedWins} wins but lastWinResult was null`,
-			);
-		}
-
-		return lastWinResult;
+		return winResult;
 	}
 
 	@step("Roll dice until win")
@@ -257,45 +207,39 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 		previousHistoryResult: number | null;
 		winResult: number;
 	}> {
-		let isWin = false;
-		let winResult = 0;
+		const rollOver = parseFloat(
+			getExpectedDiceBetValues(diceBetData).rollOver,
+		);
 
-		while (!isWin) {
+		while (true) {
 			const accountBalanceBeforeBet =
-				await this.gamdomPage.authenticatedHeader.getAccountBalance();
+				await this.userBalanceHandler.walletBalanceInFiatRounded();
 
 			await this.playOneDiceRound(diceBetData);
-			await this.waitForManualBetInputToBeEnabled();
 			await this.gamdomPage.assertThat().diceResultIsDisplayed();
-			const { parsedDiceResult } = await this.getParsedDiceResults();
 
-			const updatedResults = await this.updatePreviousDiceResults(
-				previousDiceResult,
-				previousHistoryResult,
-			);
-			previousDiceResult = updatedResults.previousDiceResult;
-			previousHistoryResult = updatedResults.previousHistoryResult;
+			const { newDiceResult, newHistoryResult } =
+				await this.waitForNewDiceResult(
+					previousDiceResult,
+					previousHistoryResult,
+				);
+			previousDiceResult = newDiceResult;
+			previousHistoryResult = newHistoryResult;
 
-			isWin = await this.isDiceWin(diceBetData);
-			if (isWin) {
-				winResult = parsedDiceResult;
-			}
+			const winResult = previousDiceResult ?? 0;
+			const isWin = isDiceWin(winResult, rollOver);
 			await this.assertExpectedBalanceAfterRoll(
 				diceBetData,
 				accountBalanceBeforeBet,
 				isWin,
 			);
 
-			if (!isWin) {
-				logger.info("Dice game lost! Rolling dice again...");
+			if (isWin) {
+				return { previousDiceResult, previousHistoryResult, winResult };
 			}
-		}
 
-		return {
-			previousDiceResult: previousDiceResult,
-			previousHistoryResult: previousHistoryResult,
-			winResult: winResult,
-		};
+			logger.info("Dice game lost! Rolling dice again...");
+		}
 	}
 
 	@step("Play one dice round")
@@ -304,45 +248,6 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 	): Promise<void> {
 		await this.assertDiceBetValuesAreCorrect(diceBetData);
 		await this.gamdomPage.rollDice();
-	}
-
-	@step("Wait for manual bet input to be enabled")
-	private async waitForManualBetInputToBeEnabled(): Promise<void> {
-		await expect
-			.poll(async () => this.gamdomPage.isManualBetInputFieldDisabled(), {
-				message: "Input value should be enabled after rolling dice.",
-				intervals: [IntervalMs.SHORT],
-				timeout: Timeout.SHORT,
-			})
-			.toBe(false);
-	}
-
-	@step("Update previous dice results")
-	private async updatePreviousDiceResults(
-		previousDiceResult: number | null,
-		previousHistoryResult: number | null,
-	): Promise<{
-		previousDiceResult: number | null;
-		previousHistoryResult: number | null;
-	}> {
-		const newResults = await this.waitForNewDiceResult(
-			previousDiceResult,
-			previousHistoryResult,
-		);
-
-		return {
-			previousDiceResult: newResults.newDiceResult,
-			previousHistoryResult: newResults.newHistoryResult,
-		};
-	}
-
-	@step("Check if dice roll is a win")
-	private async isDiceWin(diceBetData: DiceBetTestData): Promise<boolean> {
-		const { parsedDiceResult } = await this.getParsedDiceResults();
-		const expectedValues = getExpectedDiceBetValues(diceBetData);
-		const rollOver = parseFloat(expectedValues.rollOver);
-
-		return isDiceWin(parsedDiceResult, rollOver);
 	}
 
 	@step("Assert expected balance after roll")
@@ -410,7 +315,12 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 
 		await waitUntil(
 			async () => {
-				const currentResults = await this.getCurrentDiceResults();
+				const { parsedDiceResult, parsedHistoryResult } =
+					await this.getParsedDiceResults();
+				const currentResults = {
+					dice: parsedDiceResult,
+					history: parsedHistoryResult,
+				};
 
 				if (
 					await this.areDiceResultsSame(
@@ -456,25 +366,13 @@ export class DiceGamePageSteps extends BasePageStep<DiceGamePage> {
 		);
 	}
 
-	@step("Get current dice results")
-	private async getCurrentDiceResults(): Promise<{
-		dice: number;
-		history: number;
-	}> {
-		const { parsedDiceResult, parsedHistoryResult } =
-			await this.getParsedDiceResults();
-
-		return { dice: parsedDiceResult, history: parsedHistoryResult };
-	}
-
 	@step("Get parsed dice results")
 	private async getParsedDiceResults(): Promise<{
 		parsedDiceResult: number;
 		parsedHistoryResult: number;
 	}> {
-		const tempDiceText = await this.gamdomPage.map.diceResultNumberGameArea
-			.first()
-			.textContent();
+		const tempDiceText =
+			await this.gamdomPage.map.diceResultNumberGameArea.textContent();
 		const tempHistoryText =
 			await this.gamdomPage.map.diceLastResultNumber.textContent();
 
