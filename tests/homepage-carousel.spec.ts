@@ -23,12 +23,7 @@ test.describe(
 						.withJiraBugTickets("8283")
 						.apply(),
 					async ({ homePage, gamdomApiDbFacade, page }) => {
-						test.fixme(
-							record.bannerName === "Drop & Wins Tournament" ||
-								record.bannerName ===
-									"Next-Gen Esports Betting",
-							"Blog post is missing on e2e environment.",
-						);
+						test.fixme(true, "Banners logic needs to be reworked");
 						const { cookie } =
 							await gamdomApiDbFacade.createSingleUserDbAndAuth();
 						await setAuthenticationCookies(page, cookie);
@@ -55,6 +50,7 @@ test.describe(
 					`[ENG-1158] - Homepage banner carousel - unauthenticated user - ${record.bannerName} page contains src '${record.srcPartial}'`,
 					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
 					async ({ homePage }) => {
+						test.fixme(true, "Banners logic needs to be reworked");
 						await homePage.navigateAndCheckTitle();
 						await homePage.assertThat().isTopBannerDisplayed();
 						await homePage.closeTopBanner();

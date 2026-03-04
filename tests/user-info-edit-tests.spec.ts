@@ -490,6 +490,10 @@ test.describe(
 						userInfoStaffUserSetupFlow,
 						userInfoEditFieldFlow,
 					}) => {
+						test.fixme(
+							input.staffRoleTag === UserTags.SuperAdmin,
+							"OBT servers are disabled after working hours due to OBT team rule and we can not test them in nightly runs.",
+						);
 						const { validValue, invalidValue } =
 							testDataPredefined.data.userInfoEditInfo
 								.unwageredDeposits;

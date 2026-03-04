@@ -107,13 +107,13 @@ test.describe(
 );
 
 test.describe(
-	"[Admin][Ban] Check that Support Requested and RG-banned Steam users can access the page",
+	"Check that Support Requested and RG-banned Steam users can access the page",
 	testDetails()
 		.withTags(JiraComponent.ADMIN, JiraComponent.ADMIN_PANEL)
 		.apply(),
 	() => {
 		test(
-			"[ENG-15707] Check that Support Requested and RG-banned Steam users can access the page",
+			"[ENG-11777] Check that Support Requested and RG-banned Steam users can access the page",
 			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
 			async ({
 				homePage,
