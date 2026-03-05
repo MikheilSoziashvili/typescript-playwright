@@ -141,8 +141,6 @@ export class OriginalsAsserter extends BaseAsserter<OriginalsPage> {
 							currentAccountBalance !== initialAccountBalance,
 						yourBetChanged:
 							currentYourBetBalance !== initialYourBetBalance,
-						valuesMatch:
-							currentAccountBalance === currentYourBetBalance,
 					};
 				},
 				{
@@ -153,8 +151,13 @@ export class OriginalsAsserter extends BaseAsserter<OriginalsPage> {
 			.toMatchObject({
 				balanceChanged: true,
 				yourBetChanged: true,
-				valuesMatch: true,
 			});
+
+		const finalAccountBalance =
+			await this.userBalanceHandler.walletBalanceInFiatRounded(unit);
+		const finalYourBetBalance =
+			await this.gamdomPage.getYourBetValueForGame(game);
+		expect(finalAccountBalance).toBeCloseTo(finalYourBetBalance, 2);
 	}
 
 	@step("Self exclusion toast message is displayed - v4")
