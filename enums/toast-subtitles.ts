@@ -64,5 +64,4 @@ export enum ToastSubTitle {
 	JURISDICTION_RESTRICTED = "Gamdom is not available in your jurisdiction",
 	SUCCESSFULLY_CLAIMED_PARTIAL = "You have successfully claimed",
 	EMAIL_UPDATED_SUCCESSFULLY = "Email updated successfully.",
-	RAIN_KYC_REQUIRED = "You need to complete level 2 KYC verification to claim rain."
 }

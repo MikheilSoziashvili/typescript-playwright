@@ -291,7 +291,7 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 		await this.gamdomPage.toast
 			.assertThat()
 			.toastMessageIs(ToastTitle.FAILED, ToastSubTitle.RAIN_KYC_REQUIRED);
-		await expect(this.gamdomPage.map.claimRainButton).toHaveText(
+		await expect(this.gamdomPage.map.findOutMoreRainButton).toHaveText(
 			"FIND OUT MORE",
 		);
 	}
