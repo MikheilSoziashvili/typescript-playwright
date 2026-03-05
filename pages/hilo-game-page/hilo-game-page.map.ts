@@ -60,11 +60,17 @@ export class HiloGamePageMap extends BaseMap {
 			.nth(1);
 	}
 
+	public get spinningCountdownNumber(): Locator {
+		return this.gameStateLocator.locator(
+			"span[class*='GameStateUi-styled__Text-']",
+		);
+	}
+
 	public get gameStatusLocator(): Locator {
 		return this.gameStateLocator.locator("div[class*='Status-']");
 	}
 
-	public get gamRoundResultLocator(): Locator {
+	public get gameRoundResultLocator(): Locator {
 		return this.gameStateLocator.locator(
 			"div[class*='GameStateUi-styled__RoundResultNumber']",
 		);

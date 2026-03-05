@@ -2,6 +2,7 @@ import { expect } from "@playwright/test";
 import { BasePageStep } from "@pages/base/base-page-step";
 import { step } from "decorators/step";
 import { Timeout } from "@enums/timeout";
+import { IntervalMs } from "@enums/interval-millisecond";
 import { HiloBetTestData, HiloCardsColorData } from "@dtos/test-data";
 import {
 	HiloGameResultColor,
@@ -203,7 +204,8 @@ export class HiloGamePageSteps extends BasePageStep<HiloGamePage> {
 					this.userBalanceHandler.walletBalanceInFiatRounded(),
 				{
 					message: `Account balance should be ${expectedBalance}`,
-					timeout: Timeout.SHORT,
+					intervals: [IntervalMs.NORMAL],
+					timeout: Timeout.LONG,
 				},
 			)
 			.toBe(expectedBalance);

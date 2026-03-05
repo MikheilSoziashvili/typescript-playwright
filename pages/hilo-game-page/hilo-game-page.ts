@@ -55,14 +55,32 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 		}
 	}
 
-	@step("Wait betting window available")
-	public async waitBettingWindowAvailable(
-		timeout = Timeout.EXTRA_MAX / 2,
-	): Promise<void> {
+	@step("Get time left for betting")
+	public async getTimeLeftForBetting(): Promise<number> {
 		await this.map.waitForVisibility({
 			locator: this.map.spinningCountdownTimer,
-			timeout: timeout,
+			timeout: Timeout.MEDIUM,
 		});
+		const timerText = await this.map.spinningCountdownNumber.innerText();
+		return parseInt(timerText);
+	}
+
+	@step("Wait betting window available")
+	public async waitBettingWindowAvailable(): Promise<void> {
+		const timeLeft = await this.getTimeLeftForBetting();
+
+		if (timeLeft < 2) {
+			await this.map.waitFor({
+				locator: this.map.spinningCountdownTimer,
+				state: VisibilityState.HIDDEN,
+				timeout: Timeout.MEDIUM,
+			});
+
+			await this.map.waitForVisibility({
+				locator: this.map.spinningCountdownTimer,
+				timeout: Timeout.MEDIUM,
+			});
+		}
 	}
 
 	@step("Place bet")
@@ -83,7 +101,7 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 			timeout: Timeout.MEDIUM,
 		});
 		await this.map.waitForVisibility({
-			locator: this.map.gamRoundResultLocator,
+			locator: this.map.gameRoundResultLocator,
 		});
 	}
 
@@ -91,7 +109,16 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 	public async getRoundResult(): Promise<string> {
 		await this.waitRoundResult();
 
-		return (await this.map.gamRoundResultLocator.textContent()) || "";
+		const result =
+			(await this.map.gameRoundResultLocator.textContent()) || "";
+
+		await this.map.waitFor({
+			locator: this.map.gameRoundResultLocator,
+			state: VisibilityState.HIDDEN,
+			timeout: Timeout.LONG,
+		});
+
+		return result;
 	}
 
 	public calculateProfit(
