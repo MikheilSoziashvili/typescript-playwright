@@ -26,13 +26,13 @@ export class GeoblockDomainData {
 		[GeoblockedCountry.UNITED_STATED, US_PROXY_CREDENTIALS],
 		[GeoblockedCountry.BELGIUM, BE_PROXY_CREDENTIALS],
 		[GeoblockedCountry.NETHERLANDS, NL_PROXY_CREDENTIALS],
+		[GeoblockedCountry.DENMARK, DK_PROXY_CREDENTIALS],
 	]);
 
 	public readonly softBlockedCredentialsMap = new Map<
 		string,
 		ProxyCredentialsType
 	>([
-		[SoftBlockedCountry.DENMARK, DK_PROXY_CREDENTIALS],
 		[SoftBlockedCountry.PORTUGAL, PT_PROXY_CREDENTIALS],
 		[SoftBlockedCountry.UNITED_KINGDOM, UK_PROXY_CREDENTIALS],
 		[SoftBlockedCountry.GERMANY, DE_PROXY_CREDENTIALS],
@@ -51,24 +51,16 @@ export class GeoblockDomainData {
 				telegram: false,
 			},
 		},
-		{
-			country: SoftBlockedCountry.DENMARK,
-			expectations: {
-				steam: false,
-				google: true,
-				telegram: true,
-			},
-		},
 	];
 
 	public readonly countries = [
 		GeoblockedCountry.UNITED_STATED,
 		GeoblockedCountry.BELGIUM,
 		GeoblockedCountry.NETHERLANDS,
+		GeoblockedCountry.DENMARK,
 	];
 
 	public readonly softBlockedCountries = [
-		SoftBlockedCountry.DENMARK,
 		SoftBlockedCountry.PORTUGAL,
 		SoftBlockedCountry.UNITED_KINGDOM,
 		SoftBlockedCountry.GERMANY,
