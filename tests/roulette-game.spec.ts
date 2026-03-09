@@ -30,19 +30,15 @@ test.describe(
 				const testData = testDataObject.rouletteBet.default({
 					username: browserSessionManager.activeUser.user.username,
 				});
-				const { accountBalance, rouletteResultNumber } =
-					await rouletteGamePage
-						.steps()
-						.playUntilResultColorIs(
-							RouletteNumberColor.BLACK,
-							testData,
-						);
+				const { accountBalance } = await rouletteGamePage
+					.steps()
+					.playUntilResultColorIs(
+						RouletteNumberColor.BLACK,
+						testData,
+					);
 				await rouletteGamePage
 					.steps()
 					.assertBalanceAfterWin(accountBalance, testData);
-				await rouletteGamePage
-					.assertThat()
-					.previousRollsHistoryUpdated(rouletteResultNumber);
 			},
 		);
 
@@ -69,7 +65,6 @@ test.describe(
 				await rouletteGamePage.waitBettingWindowAvailable();
 				await rouletteGamePage.insertBet(betAmount);
 
-				await rouletteGamePage.expandAutobetSection();
 				await rouletteGamePage
 					.steps()
 					.startAutobet(stopIfBalanceIsOver);

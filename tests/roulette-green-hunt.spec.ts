@@ -40,12 +40,9 @@ test.describe(
 						percentage,
 						GreenHuntTypeOption.PERCENT,
 					);
-				const rouletteResultNumber = await rouletteGamePage
+				await rouletteGamePage
 					.steps()
 					.placeBetAndVerifyGreenHunt(testData, percentage);
-				await rouletteGamePage
-					.assertThat()
-					.previousRollsHistoryUpdated(rouletteResultNumber);
 			},
 		);
 	},

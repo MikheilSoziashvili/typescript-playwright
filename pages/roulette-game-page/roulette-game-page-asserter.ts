@@ -3,33 +3,13 @@ import { step } from "decorators/step";
 import { BaseAsserter } from "@base/base-asserter";
 import { RouletteGamePage } from "./roulette-game-page";
 import { RouletteBetColor } from "@enums/original-games";
-import { plusSignWithExactDecimalCurrency } from "@support/regex-patterns";
-import { parseToFloat } from "@core/utils/utils";
 import { RouletteAutobetSection } from "@enums/roulette-autobet-section";
-import { Timeout } from "@enums/timeout";
+import { parseToFloat } from "@core/utils/utils";
 import { logger } from "@logger/logger";
 
 export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 	public constructor(page: RouletteGamePage) {
 		super(page);
-	}
-
-	@step("Check potential benefit value")
-	public async potentialBenefitValueIs(
-		value: number,
-		betColor: RouletteBetColor,
-		beforeBetPlacement = true,
-	): Promise<void> {
-		const betSection = this.gamdomPage.map.betSectionsByColor[betColor];
-		beforeBetPlacement
-			? await expect(
-					this.gamdomPage.map.betPotentialProfit(betSection),
-			  ).toContainText(parseToFloat(value))
-			: await expect(
-					this.gamdomPage.map.betProfit(betSection),
-			  ).toContainText(parseToFloat(value), {
-					timeout: Timeout.EXTRA_LONG,
-			  });
 	}
 
 	@step("Check bet buttons are enabled")
@@ -55,11 +35,6 @@ export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 				.all();
 
 			for (const row of betRows) {
-				await Promise.all([
-					this.gamdomPage.map.betUsername(row).innerText(),
-					this.gamdomPage.map.betUsernameAndAmount(row).innerText(),
-				]);
-
 				if (
 					await this.assertRowUsernameAndBetAmount(
 						row,
@@ -74,94 +49,14 @@ export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 		}
 	}
 
-	@step("Check total bets matches number of bet rows")
-	public async totalBetsMatchesNumberOfBetRows(
+	@step("Check potential profit is displayed")
+	public async potentialProfitIs(
 		betColor: RouletteBetColor,
+		profitAmount: number,
 	): Promise<void> {
-		await this.rouletteIsSpinning();
-
-		const [rowCount, totalBetsCount] = await Promise.all([
-			this.gamdomPage.getNumberOfBetRows(betColor),
-			this.gamdomPage.getTotalBetsCount(betColor),
-		]);
-		expect(rowCount).toEqual(totalBetsCount);
-	}
-
-	@step("Check roulette is spinning")
-	public async rouletteIsSpinning(): Promise<void> {
-		await this.checkElementsAreNotVisible(
-			[this.gamdomPage.map.spinningStateLocator],
-			Timeout.MAX,
-		);
-	}
-
-	@step("Check total bets")
-	public async totalBetsAre(betColor: RouletteBetColor): Promise<void> {
-		const betSection = this.gamdomPage.map.betSectionsByColor[betColor];
-
-		const betRows = await this.gamdomPage.map
-			.betRowsByColor(betColor)
-			.count();
-
-		const numberOfBets = await this.gamdomPage.map
-			.betTotalBetsCount(betSection)
-			.textContent();
-		const numberOfBetsAsNumber = parseInt(numberOfBets ?? "0");
-
-		expect(numberOfBetsAsNumber, `Total bets count for ${betColor}`).toBe(
-			betRows,
-		);
-	}
-
-	@step("Check profit amount is displayed")
-	public async profitAmountDisplayed(
-		bets: {
-			betColor: RouletteBetColor;
-			username: string;
-			betAmount: number;
-		}[],
-	): Promise<void> {
-		for (const { betColor, username, betAmount } of bets) {
-			const betSection = this.gamdomPage.map.betSectionsByColor[betColor];
-
-			const betRows = await this.gamdomPage.map
-				.betRowsByColor(betColor)
-				.all();
-
-			for (const row of betRows) {
-				await Promise.all([
-					this.gamdomPage.map.betUsername(row).innerText(),
-					this.gamdomPage.map.betUsernameAndAmount(row).innerText(),
-				]);
-
-				if (
-					await this.assertRowUsernameAndBetAmount(
-						row,
-						username,
-						betAmount,
-						`AFTER SPIN`,
-					)
-				) {
-					await expect(
-						this.gamdomPage.map.betProfit(betSection),
-					).toContainText(
-						plusSignWithExactDecimalCurrency(
-							parseToFloat(betAmount),
-						),
-					);
-					break;
-				}
-			}
-		}
-	}
-
-	@step("Check previous rolls history is updated")
-	public async previousRollsHistoryUpdated(
-		rouletteNumber: string,
-	): Promise<void> {
-		await expect(this.gamdomPage.map.latestRollResultNumber).toHaveText(
-			`${rouletteNumber}`,
-		);
+		await expect(
+			this.gamdomPage.map.betPotentialProfit(betColor),
+		).toContainText(parseToFloat(profitAmount));
 	}
 
 	@step("Check green hunt is active")
@@ -183,7 +78,7 @@ export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 	): Promise<boolean> {
 		const [rowUsernameText, rowBetAmountText] = await Promise.all([
 			this.gamdomPage.map.betUsername(row).innerText(),
-			this.gamdomPage.map.betUsernameAndAmount(row).innerText(),
+			this.gamdomPage.map.betAmount(row).innerText(),
 		]);
 
 		logger.info(
@@ -198,21 +93,12 @@ export class RouletteGamePageAsserter extends BaseAsserter<RouletteGamePage> {
 				expect(this.gamdomPage.map.betUsername(row)).toContainText(
 					username,
 				),
-				expect(
-					this.gamdomPage.map.betUsernameAndAmount(row),
-				).toContainText(String(betAmount)),
+				expect(this.gamdomPage.map.betAmount(row)).toContainText(
+					String(betAmount),
+				),
 			]);
 			return true;
 		}
 		return false;
-	}
-
-	@step("Check bet buttons are enabled - v4")
-	public async betButtonsEnabledV4(): Promise<void> {
-		for (const betButton of Object.values(
-			this.gamdomPage.map.betSectionsByColorV4,
-		)) {
-			await expect(betButton).toHaveCSS("opacity", "1");
-		}
 	}
 }

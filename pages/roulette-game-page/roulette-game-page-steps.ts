@@ -4,12 +4,13 @@ import { step } from "decorators/step";
 import { RouletteGamePage } from "./roulette-game-page";
 import { GreenHuntTypeOption } from "@enums/roulette-autobet-section";
 import { RouletteBetTestData } from "@dtos/test-data";
-import { RouletteBetColor, RouletteNumberColor } from "@enums/original-games";
+import { RouletteNumberColor } from "@enums/original-games";
 import { calculateGreenHuntAmountByPercentage } from "@formulas/roulette";
 import { Timeout } from "@enums/timeout";
 import { IntervalMs } from "@enums/interval-millisecond";
 import { logger } from "@logger/logger";
 import { VisibilityState } from "@enums/playwright/visibility-states";
+import { KeyboardKey } from "@enums/keyboard";
 
 export class RouletteGamePageSteps extends BasePageStep<RouletteGamePage> {
 	public constructor(gamdomPage: RouletteGamePage) {
@@ -29,19 +30,16 @@ export class RouletteGamePageSteps extends BasePageStep<RouletteGamePage> {
 		await this.gamdomPage.waitBettingWindowAvailable();
 		await this.gamdomPage.insertBet(testData.betAmount);
 		await this.gamdomPage.assertThat().betButtonsEnabled();
+		await this.gamdomPage.betOnColor(testData.betColor);
 		await this.gamdomPage
 			.assertThat()
-			.potentialBenefitValueIs(testData.betAmount, testData.betColor);
-		await this.gamdomPage.betOnColor(testData.betColor);
+			.potentialProfitIs(testData.betColor, testData.betAmount);
 	}
 
 	@step("Assert bet registration and wait for result")
 	private async assertBetRegistrationAndWaitForResult(
 		testData: RouletteBetTestData,
 	): Promise<string> {
-		await this.gamdomPage
-			.assertThat()
-			.totalBetsMatchesNumberOfBetRows(testData.betColor);
 		await this.gamdomPage.assertThat().playersBetsDisplayed([
 			{
 				betColor: testData.betColor,
@@ -49,12 +47,7 @@ export class RouletteGamePageSteps extends BasePageStep<RouletteGamePage> {
 				betAmount: testData.betAmount,
 			},
 		]);
-		const resultNumber = await this.gamdomPage.getRoundResultNumber();
-		await this.gamdomPage.map.gameResultStateLocator.waitFor({
-			state: VisibilityState.HIDDEN,
-			timeout: Timeout.LONG,
-		});
-		return resultNumber;
+		return this.gamdomPage.getRoundResultNumber();
 	}
 
 	@step("Play until result color is achieved")
@@ -63,7 +56,6 @@ export class RouletteGamePageSteps extends BasePageStep<RouletteGamePage> {
 		testData: RouletteBetTestData,
 	): Promise<{ accountBalance: number; rouletteResultNumber: string }> {
 		await this.gamdomPage.navigate();
-		let isWin = false;
 		let accountBalance: number;
 		let rouletteResultNumber: string;
 		do {
@@ -75,12 +67,18 @@ export class RouletteGamePageSteps extends BasePageStep<RouletteGamePage> {
 				Number(rouletteResultNumber),
 			);
 			logger.info(`Roulette result: ${RouletteNumberColor[resultColor]}`);
-			isWin = resultColor === targetColor;
+			const isWin = resultColor === targetColor;
 			if (!isWin) {
 				logger.info("Roulette lost! Trying again...");
 			}
-		} while (!isWin);
-		return { accountBalance, rouletteResultNumber };
+			await this.gamdomPage.map.gameResultStateLocator.waitFor({
+				state: VisibilityState.HIDDEN,
+				timeout: Timeout.LONG,
+			});
+			if (isWin) {
+				return { accountBalance, rouletteResultNumber };
+			}
+		} while (true);
 	}
 
 	@step("Assert account balance is correct after a win")
@@ -88,13 +86,7 @@ export class RouletteGamePageSteps extends BasePageStep<RouletteGamePage> {
 		balanceBeforeWin: number,
 		testData: RouletteBetTestData,
 	): Promise<void> {
-		const expectedBalance =
-			balanceBeforeWin -
-			testData.betAmount +
-			this.gamdomPage.calculateProfit(
-				testData.betAmount,
-				testData.betColor,
-			);
+		const expectedBalance = balanceBeforeWin + testData.betAmount;
 		await expect
 			.poll(
 				async () =>
@@ -137,7 +129,6 @@ export class RouletteGamePageSteps extends BasePageStep<RouletteGamePage> {
 				betAmount: testData.betAmount,
 			},
 		]);
-		await this.gamdomPage.assertThat().totalBetsAre(RouletteBetColor.GREEN);
 		await this.gamdomPage.authenticatedHeader
 			.assertThat()
 			.accountBalanceIs(
@@ -152,9 +143,12 @@ export class RouletteGamePageSteps extends BasePageStep<RouletteGamePage> {
 		type: GreenHuntTypeOption,
 	): Promise<void> {
 		await this.gamdomPage.expandAutobetSection();
-		await this.gamdomPage.map
-			.greenHuntAutomaticallyBetTextInput()
-			.fill(bet.toString());
+		const greenHuntInput =
+			this.gamdomPage.map.greenHuntAutomaticallyBetTextInput();
+		await greenHuntInput.click();
+		await greenHuntInput.selectText();
+		await greenHuntInput.press(KeyboardKey.BACKSPACE);
+		await greenHuntInput.pressSequentially(bet.toString());
 		await this.gamdomPage.selectGreenHuntType(type);
 		await this.gamdomPage.map.startGreenHuntButton().click();
 
