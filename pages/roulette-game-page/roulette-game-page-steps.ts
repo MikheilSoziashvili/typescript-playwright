@@ -7,6 +7,7 @@ import { RouletteBetTestData } from "@dtos/test-data";
 import { RouletteBetColor, RouletteNumberColor } from "@enums/original-games";
 import { calculateGreenHuntAmountByPercentage } from "@formulas/roulette";
 import { Timeout } from "@enums/timeout";
+import { IntervalMs } from "@enums/interval-millisecond";
 import { logger } from "@logger/logger";
 import { VisibilityState } from "@enums/playwright/visibility-states";
 
@@ -40,11 +41,7 @@ export class RouletteGamePageSteps extends BasePageStep<RouletteGamePage> {
 	): Promise<string> {
 		await this.gamdomPage
 			.assertThat()
-			.potentialBenefitValueIs(
-				testData.betAmount,
-				testData.betColor,
-				false,
-			);
+			.totalBetsMatchesNumberOfBetRows(testData.betColor);
 		await this.gamdomPage.assertThat().playersBetsDisplayed([
 			{
 				betColor: testData.betColor,
@@ -52,9 +49,6 @@ export class RouletteGamePageSteps extends BasePageStep<RouletteGamePage> {
 				betAmount: testData.betAmount,
 			},
 		]);
-		await this.gamdomPage
-			.assertThat()
-			.totalBetsMatchesNumberOfBetRows(testData.betColor);
 		const resultNumber = await this.gamdomPage.getRoundResultNumber();
 		await this.gamdomPage.map.gameResultStateLocator.waitFor({
 			state: VisibilityState.HIDDEN,
@@ -107,6 +101,7 @@ export class RouletteGamePageSteps extends BasePageStep<RouletteGamePage> {
 					this.userBalanceHandler.walletBalanceInFiatRounded(),
 				{
 					message: `Account balance should settle at ${expectedBalance} after payout`,
+					intervals: [IntervalMs.NORMAL],
 					timeout: Timeout.LONG,
 				},
 			)

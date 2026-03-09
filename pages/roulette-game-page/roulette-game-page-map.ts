@@ -56,7 +56,7 @@ export class RouletteGamePageMap extends BaseMap {
 	}
 
 	public get gameResultStateLocator(): Locator {
-		return this.gameStatusContainer.getByTestId("rouletteGameResult");
+		return this.page.getByTestId("rouletteGameResult");
 	}
 
 	public get roundResultNumber(): Locator {

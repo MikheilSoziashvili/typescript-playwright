@@ -44,7 +44,7 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 	public async waitBettingWindowAvailable(): Promise<void> {
 		const timeLeft = await this.getTimeLeftForBetting();
 
-		if (timeLeft < 4) {
+		if (timeLeft < 5) {
 			logger.info(
 				`Time left for betting is ${timeLeft} seconds. Waiting for the next round...`,
 			);
@@ -77,13 +77,15 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 
 	@step("Get round result number")
 	public async getRoundResultNumber(): Promise<string> {
+		let roundResult = "";
 		await expect
 			.poll(
 				async () => {
 					try {
-						return await this.map.roundResultNumber.innerText({
+						roundResult = await this.map.roundResultNumber.innerText({
 							timeout: Timeout.ULTRA_SHORT,
 						});
+						return roundResult;
 					} catch {
 						return "";
 					}
@@ -95,7 +97,7 @@ export class RouletteGamePage extends BasePage<RouletteGamePageMap> {
 				},
 			)
 			.not.toBe("");
-		return this.map.roundResultNumber.innerText();
+		return roundResult;
 	}
 
 	@step("Get number of bet rows")
