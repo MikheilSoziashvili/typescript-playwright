@@ -85,7 +85,7 @@ test.describe(
 
 				await originalsPage
 					.assertThat()
-					.balanceAndYourBetUpdatedSimultaneosly(
+					.balanceAndYourBetUpdatedSimultaneously(
 						Unit.COINS,
 						initialAccountBalance,
 						initialYourBetBalance,

@@ -120,7 +120,7 @@ export class OriginalsAsserter extends BaseAsserter<OriginalsPage> {
 	}
 
 	@step("Verify balance and 'Your Bet' updated simultaneously")
-	async balanceAndYourBetUpdatedSimultaneosly(
+	async balanceAndYourBetUpdatedSimultaneously(
 		unit: Unit,
 		initialAccountBalance: number,
 		initialYourBetBalance: number,
@@ -141,6 +141,10 @@ export class OriginalsAsserter extends BaseAsserter<OriginalsPage> {
 							currentAccountBalance !== initialAccountBalance,
 						yourBetChanged:
 							currentYourBetBalance !== initialYourBetBalance,
+						valuesMatch:
+							Math.abs(
+								currentAccountBalance - currentYourBetBalance,
+							) <= 0.01,
 					};
 				},
 				{
@@ -151,6 +155,7 @@ export class OriginalsAsserter extends BaseAsserter<OriginalsPage> {
 			.toMatchObject({
 				balanceChanged: true,
 				yourBetChanged: true,
+				valuesMatch: true,
 			});
 
 		const finalAccountBalance =
