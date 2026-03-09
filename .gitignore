@@ -159,3 +159,7 @@ fireblocks_secret*.key
 
 # ReportPortal
 .rp-launch-uuid
+
+# Claude Code
+.claude/settings.local.json
+CLAUDE.local.md
