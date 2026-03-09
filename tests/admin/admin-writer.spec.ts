@@ -27,7 +27,7 @@ test.describe(
 					}`,
 					testDetails()
 						.withJiraBugTickets("ENG-12009")
-						.withAuthor(JiraUser.YUKSEL_CHAUSH)
+						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 						.apply(),
 					async ({ browserSessionManager, writerAdminNewPage }) => {
 						test.fixme(isScheduledRun);

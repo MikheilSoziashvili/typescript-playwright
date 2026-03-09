@@ -49,7 +49,7 @@ test.describe("Dice tests", () => {
 			testDetails()
 				.withJiraBugTickets("ENG-12158")
 				.withTags(JiraComponent.DICE)
-				.withAuthor(JiraUser.YUKSEL_CHAUSH)
+				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 				.apply(),
 			async ({ browserSessionManager, diceGamePage, testDataObject }) => {
 				test.fixme(scenario.skipScenario === true);

@@ -13,7 +13,7 @@ test.describe(
 	() => {
 		test(
 			"[ENG-6406] [Admin][Crypto] Verify the Hourly Crypto Balances Snapshot Table",
-			testDetails().withAuthor(JiraUser.YUKSEL_CHAUSH).apply(),
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
 			async ({
 				browserSessionManager,
 				cryptoAdminPage,

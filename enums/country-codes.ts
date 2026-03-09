@@ -4,4 +4,5 @@ export enum CountryCodes {
 	ES = "ES",
 	PT = "PT",
 	UK = "UK",
+	FR = "FR",
 }

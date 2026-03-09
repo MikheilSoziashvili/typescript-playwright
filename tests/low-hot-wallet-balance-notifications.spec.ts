@@ -44,7 +44,7 @@ test.describe("Low Hot Wallet Balance notifications tests", () => {
 				JiraComponent.CRYPTO,
 				JiraComponent.WITHDRAWAL,
 			)
-			.withAuthor(JiraUser.YUKSEL_CHAUSH)
+			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 			.apply(),
 		async ({
 			gamdomCryptoApi,

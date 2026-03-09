@@ -1,4 +1,4 @@
-import { DK_PROXY_CREDENTIALS, ES_PROXY_CREDENTIALS } from "@constants/proxies";
+import { ES_PROXY_CREDENTIALS, FR_PROXY_CREDENTIALS } from "@constants/proxies";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { CountryCodes } from "@enums/country-codes";
 import { JiraComponent } from "@enums/jira/jira-components";
@@ -16,23 +16,23 @@ test.describe(
 			"[ENG-5086] User info -  verify that last_country property is updated correctly",
 			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
 			async ({ browserSessionManager }) => {
-				const dkProxySession = await browserSessionManager.loginAs(
+				const frProxySession = await browserSessionManager.loginAs(
 					TestUserRole.ADMIN_USER_INFO_ADMIN,
-					{ proxyCredentials: DK_PROXY_CREDENTIALS },
+					{ proxyCredentials: FR_PROXY_CREDENTIALS },
 				);
 
-				await dkProxySession.pages.userInfoAdminPage.navigate();
-				await dkProxySession.pages.softblockModal
+				await frProxySession.pages.userInfoAdminPage.navigate();
+				await frProxySession.pages.softblockModal
 					.steps()
 					.closeSoftblockModal();
-				await dkProxySession.pages.userInfoAdminPage
+				await frProxySession.pages.userInfoAdminPage
 					.steps()
 					.showUserDetails(
-						dkProxySession.getAuthenticatedUser().user.username,
+						frProxySession.getAuthenticatedUser().user.username,
 					);
-				await dkProxySession.pages.infoAdminPage
+				await frProxySession.pages.infoAdminPage
 					.assertThat()
-					.lastCountryCodeCorrect(CountryCodes.DK);
+					.lastCountryCodeCorrect(CountryCodes.FR);
 
 				const esProxySession = await browserSessionManager.loginAs(
 					TestUserRole.ADMIN_USER_INFO_ADMIN,

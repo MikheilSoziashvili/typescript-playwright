@@ -103,7 +103,7 @@ test.describe("Email Verification Tests", () => {
 		testDetails()
 			.withTags(JiraComponent.WALLET, JiraComponent.WITHDRAWAL)
 			.withJiraBugTickets("ENG-13989")
-			.withAuthor(JiraUser.YUKSEL_CHAUSH)
+			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 			.apply(),
 		async ({ browserSessionManager, mailinatorApi, testDataRandom }) => {
 			test.fixme(isScheduledRun);

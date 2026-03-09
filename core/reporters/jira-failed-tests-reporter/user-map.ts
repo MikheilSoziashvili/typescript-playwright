@@ -13,6 +13,4 @@ export const jiraUserMap: Record<string, string> = {
 		"712020:654320ee-3225-462d-b066-57da9c3b7fd5",
 	[`${JiraUser.RALUCA_ARITON}${domain}`]:
 		"712020:3187a40d-331f-47c1-b4bb-bcba6e1c33a7",
-	[`${JiraUser.YUKSEL_CHAUSH}${domain}`]:
-		"712020:cf93d769-68ed-4c7b-acc5-3dec0eea83f5",
 };

@@ -16,7 +16,7 @@ test.describe(
 			({ fetchUsersByFilterName, fetchUsersByFilterStep }) => {
 				test(
 					`[ENG-4968] Admin - New Users attributes verification - ${fetchUsersByFilterName}`,
-					testDetails().withAuthor(JiraUser.YUKSEL_CHAUSH).apply(),
+					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
 					async ({ browserSessionManager, testDataPredefined }) => {
 						const superadmin = await browserSessionManager.loginAs(
 							TestUserRole.SUPERADMIN,
