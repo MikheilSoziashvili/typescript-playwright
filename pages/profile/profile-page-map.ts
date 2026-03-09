@@ -109,4 +109,14 @@ export class ProfilePageMap extends BaseMap {
 	public get logOutButtonV4(): Locator {
 		return this.leftMenuContainerV4.getByTestId("prof-ttl");
 	}
+
+	public get profileUserInfoContainer(): Locator {
+		return this.page.getByTestId("profileUserIncoContainer");
+	}
+
+	public get changePasswordButton(): Locator {
+		return this.profileUserInfoContainer.getByTestId(
+			"change-password-button",
+		);
+	}
 }

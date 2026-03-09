@@ -44,6 +44,8 @@ import { UserInfoStaffUserSetupFlow } from "@test-flows/user-info/user-info-staf
 import { UserInfoEditFieldFlow } from "@test-flows/user-info/user-info-edit-field-test-flow";
 import { SteamUserLoginLogoutFlow } from "@test-flows/ban/steam-user-login-logout-test-flow";
 import { BanUserVerificationFlow } from "@test-flows/ban/ban-user-verification-test-flow";
+import { PasswordChangeSetupTestFlow } from "@test-flows/password/password-change-setup-test-flow";
+import { PasswordChangeExecutionTestFlow } from "@test-flows/password/password-change-execution-test-flow";
 
 export type TestFlowsFixtures = {
 	plinkoBetTestFlow: PlinkoBetTestFlow;
@@ -65,6 +67,8 @@ export type TestFlowsFixtures = {
 	userInfoEditFieldFlow: UserInfoEditFieldFlow;
 	steamUserLoginLogoutFlow: SteamUserLoginLogoutFlow;
 	banUserVerificationFlow: BanUserVerificationFlow;
+	passwordChangeSetupTestFlow: PasswordChangeSetupTestFlow;
+	passwordChangeExecutionTestFlow: PasswordChangeExecutionTestFlow;
 };
 
 type RequiredTestFlowsFixtures = {
@@ -218,5 +222,11 @@ export const testFlowsFixtures = base.extend<
 	},
 	banUserVerificationFlow: async ({}, use) => {
 		await use(new BanUserVerificationFlow());
+	},
+	passwordChangeSetupTestFlow: async ({}, use) => {
+		await use(new PasswordChangeSetupTestFlow());
+	},
+	passwordChangeExecutionTestFlow: async ({}, use) => {
+		await use(new PasswordChangeExecutionTestFlow());
 	},
 });

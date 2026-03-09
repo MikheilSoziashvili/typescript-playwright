@@ -116,6 +116,37 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		await this.gamdomPage.assertThat().assertVerifyButtonNotVisible();
 	}
 
+	@step("Verify email and proceed with change password")
+	public async verifyEmailAndProceedWithChangePassword(
+		mailinatorApi: MailinatorApi,
+		domain: string,
+		inbox: string,
+		page: Page,
+		{ messageIndex = 1 }: { messageIndex?: number } = {},
+		subjectIncludes?: string,
+		timeout = Timeout.MEDIUM,
+		interval = Timeout.SHORT,
+	): Promise<void> {
+		const message = await mailinatorApi.pollForMessages(
+			domain,
+			inbox,
+			timeout,
+			interval,
+			messageIndex,
+			subjectIncludes,
+		);
+		const changePasswordEmailId = message.id;
+
+		const emailLinks = await mailinatorApi.getEmailLinks(
+			domain,
+			inbox,
+			changePasswordEmailId,
+		);
+		const changePasswordLink = emailLinks.links[0];
+
+		await page.goto(changePasswordLink);
+	}
+
 	@step("Change email successfully")
 	public async changeEmailSuccessfully(email: string): Promise<void> {
 		await this.changeEmail(email);
@@ -184,6 +215,17 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 			.assertThat()
 			.continueAndCancelButtonsDisplayed();
 		await this.gamdomPage.continueModal.clickCancelButton();
+	}
+
+	@step("Click change password button successfully")
+	public async clickChangePasswordButtonSuccessfully(): Promise<void> {
+		await this.gamdomPage.clickChangePasswordButton();
+		await this.toast
+			.assertThat()
+			.toastMessageIs(
+				ToastTitle.SUCCESS,
+				ToastSubTitle.PASSWORD_CHANGE_CONFIRMATION_EMAIL_SENT,
+			);
 	}
 
 	@step("Update contact info with unique value")

@@ -62,3 +62,7 @@ export type {
 	BanUserVerificationParams,
 	SteamUserLoginLogoutParams,
 } from "./ban/types/ban-flow-types";
+// Password flows
+export { PasswordChangeSetupTestFlow } from "./password/password-change-setup-test-flow";
+export { PasswordChangeExecutionTestFlow } from "./password/password-change-execution-test-flow";
+export { PasswordChangeSetupResult } from "./password/password-change-setup-test-flow";

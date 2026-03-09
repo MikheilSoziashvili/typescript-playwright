@@ -12,6 +12,7 @@ export enum JiraComponent {
 	CASINO = "Casino",
 	CHAT = "Chat",
 	CMS = "CMS",
+	CHANGE_PASSWORD = "Change Password",
 	CORE_GAMES = "Core Games",
 	CRASH = "Crash",
 	CRM = "CRM",

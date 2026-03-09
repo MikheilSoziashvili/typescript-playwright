@@ -30,6 +30,7 @@ import {
 	EnableDisableCryptoCurrenciesStatusesCsv,
 	PromotionCombinationsNotForVipCsv,
 	UnwageredDepositsFieldCsv,
+	ChangePasswordCsv,
 } from "@dtos/csv";
 import { HomePageBannerCarouselCsv } from "@dtos/csv/home-page-banner-carousel-csv";
 import { OriginalsSelfExclusionCsv } from "@dtos/csv/originals-self-exclusion";
@@ -75,4 +76,5 @@ export type CsvDtoMap = {
 	[CsvFilesName.ENABLE_DISABLE_CRYPTO_CURRENCIES_STATUSES]: EnableDisableCryptoCurrenciesStatusesCsv;
 	[CsvFilesName.PROMOTION_COMBINATIONS_NOT_FOR_VIP]: PromotionCombinationsNotForVipCsv;
 	[CsvFilesName.UNWAGERED_DEPOSITS_FIELD]: UnwageredDepositsFieldCsv;
+	[CsvFilesName.CHANGE_PASSWORD]: ChangePasswordCsv;
 };
