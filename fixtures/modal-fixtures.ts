@@ -16,6 +16,7 @@ import {
 	sessionAwarePage,
 } from "@core/browser-session-mngmt";
 import { UnblockUserModal } from "@pages/modals/unblock-user-modal/unblock-user-modal";
+import { ChangePasswordModal } from "@pages/modals/change-password-modal/change-password-modal";
 
 export type Modals = {
 	browserSessionManager: BrowserSessionManager;
@@ -31,6 +32,7 @@ export type Modals = {
 	softblockModal: SoftblockModalPage;
 	newRedirectModal: NewRedirectModal;
 	promotionsModal: PromotionsModal;
+	changePasswordModal: ChangePasswordModal;
 	unblockUserModal: UnblockUserModal;
 };
 
@@ -52,5 +54,6 @@ export const modalsFixtures = base.extend<Modals>({
 	softblockModal: sessionAwarePage(SoftblockModalPage),
 	newRedirectModal: sessionAwarePage(NewRedirectModal),
 	promotionsModal: sessionAwarePage(PromotionsModal),
+	changePasswordModal: sessionAwarePage(ChangePasswordModal),
 	unblockUserModal: sessionAwarePage(UnblockUserModal),
 });

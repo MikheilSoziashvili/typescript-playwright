@@ -21,8 +21,8 @@ export class BlogPostPageMap extends BaseMap {
 	}
 
 	public get blogPostSubTitle(): Locator {
-		return this.blogPostSectionContainer.locator(
-			"p[class*='ArticleSubtitle-sc']",
+		return this.blogPostSectionContainer.getByTestId(
+			"blog-article-article-details-subtitle",
 		);
 	}
 

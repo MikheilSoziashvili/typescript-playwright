@@ -7,24 +7,30 @@ export class GeoblockedPageMap extends BaseMap {
 	}
 
 	public get geoblockedPageContent(): Locator {
-		return this.page.getByTestId("geoblockPageContent");
+		return this.page.getByTestId("error-page-banned-country");
 	}
 
 	public get errorContainer(): Locator {
-		return this.geoblockedPageContent.getByTestId("geoblockRedContainer");
+		return this.geoblockedPageContent.getByTestId(
+			"error-page-banned-country-content",
+		);
 	}
 
 	public get errorTitleLocator(): Locator {
-		return this.errorContainer.getByTestId("geoblockTitle");
+		return this.errorContainer.getByTestId(
+			"error-page-banned-country-description",
+		);
 	}
 
-	public get errorSubTitleLocator(): Locator {
-		return this.errorContainer.getByTestId("geoblockSubTitle");
+	public get errorCountryLocator(): Locator {
+		return this.errorContainer.getByTestId(
+			"error-page-banned-country-country-container",
+		);
 	}
 
 	public get socialMediaFooterContainer(): Locator {
 		return this.geoblockedPageContent.getByTestId(
-			"geoblockSocialButtonsContainer",
+			"error-page-banned-country-social-buttons",
 		);
 	}
 

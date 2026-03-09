@@ -7,14 +7,14 @@ export class SoftblockModalMap extends BaseMap {
 	}
 
 	public get softblockModal(): Locator {
-		return this.page.getByTestId("modalContainer");
+		return this.page.getByTestId("soft-block-modal-dialog");
 	}
 
 	public get softblockModalTitle(): Locator {
-		return this.softblockModal.locator("h4");
+		return this.softblockModal.getByTestId("soft-block-modal-text");
 	}
 
 	public get softblockModalCloseButton(): Locator {
-		return this.softblockModal.getByTestId("closeButton");
+		return this.softblockModal.getByTestId("soft-block-modal-close-button");
 	}
 }

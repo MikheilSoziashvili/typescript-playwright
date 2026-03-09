@@ -14,7 +14,7 @@ export class GeoblockedPageAsserter extends BaseAsserter<GeoblockedPage> {
 	@step("Is geoblocked error title displayed")
 	public async isGeoblockedErrorTitleDisplayed(): Promise<void> {
 		await expect(this.gamdomPage.map.errorTitleLocator).toHaveText(
-			"Gamdom is not available in your Country",
+			"Gamdom Is not Available In your Country",
 			{ timeout: Timeout.MAX },
 		);
 	}
@@ -23,7 +23,7 @@ export class GeoblockedPageAsserter extends BaseAsserter<GeoblockedPage> {
 	public async isBlockedCountryNameDisplayed(
 		countryName: GeoblockedCountry,
 	): Promise<void> {
-		await expect(this.gamdomPage.map.errorSubTitleLocator).toHaveText(
+		await expect(this.gamdomPage.map.errorCountryLocator).toHaveText(
 			countryName,
 		);
 	}
