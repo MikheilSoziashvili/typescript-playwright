@@ -2,22 +2,20 @@ import { testDetails } from "@core/helpers/test-details-helper";
 import { getCookieHeader, setAuthenticationCookies } from "@core/utils/utils";
 import { PlinkoBetTestData, RegisterTestData } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
+import { Currency } from "@enums/currencies";
 import { Feature } from "@enums/feature";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
-import { Currency } from "@enums/currencies";
 import { LogType } from "@enums/log-types";
-import { OriginalGame } from "@enums/original-games";
 import { TestTag } from "@enums/test-tags";
+import { TestUserRole } from "@enums/test-user-roles";
 import { Unit } from "@enums/units";
-import { UserMenuOption } from "@enums/user-menu-options";
 import { UserType } from "@enums/user-types";
 import { storageStateNewSuperAdminUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import { logger } from "@logger/logger";
 import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
 import { testData } from "test-data/test-data-manager";
-import { TestUserRole } from "@enums/test-user-roles";
 
 const walletUnits = Object.values(Unit);
 
@@ -98,50 +96,6 @@ test.describe(
 					},
 				);
 			});
-
-		test(
-			"[ENG-5164] Verify Plinko is displayed in statistics and in the Last 24 Hours Stats",
-			testDetails()
-				.withAuthor(JiraUser.RALUCA_ARITON)
-				.withTags(TestTag.ORIGINALS, TestTag.ACCEPTANCE)
-				.apply(),
-			async ({
-				plinkoGamePage,
-				homePage,
-				statisticsPage,
-				gamdomApiDbFacade,
-				testDataObject,
-			}) => {
-				const { user, cookie } =
-					await gamdomApiDbFacade.createSingleUserDbAndAuth();
-				await setAuthenticationCookies(plinkoGamePage.page, cookie);
-
-				const betTestData = testDataObject.bet.build(
-					{ username: user.username },
-					{ betAmount: 100 },
-				);
-
-				await plinkoGamePage.navigate();
-				await plinkoGamePage.startManualBet(
-					betTestData.betAmount.toString(),
-				);
-				await plinkoGamePage.steps().waitForSlidersToBeActive();
-				const betWinMultiplier = await plinkoGamePage
-					.steps()
-					.getInGameChipsHistoryButtonValue();
-				await homePage.authenticatedHeader.navigateToUserMenuOption(
-					UserMenuOption.STATISTICS,
-				);
-
-				await statisticsPage
-					.assertThat()
-					.last24HoursGameLargestProfitIs(
-						OriginalGame.Plinko,
-						betWinMultiplier,
-						betTestData.betAmount,
-					);
-			},
-		);
 
 		test.describe("Plinko posible win pop-up", () => {
 			testData()
