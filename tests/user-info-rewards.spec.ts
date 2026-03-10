@@ -31,6 +31,8 @@ import { WalletModal } from "@pages/modals/wallet/wallet-modal";
 import { RewardsPage } from "@pages/rewards/rewards-page";
 import { VerificationPage } from "@pages/verification/verification-page";
 import { getISOWeek, getMonth, getYear } from "date-fns";
+import { testData } from "test-data/test-data-manager";
+import { CsvFilesName } from "@enums/csv-file-name";
 
 test.describe(
 	"User info - Rewards History - Custom rewards",
@@ -1657,5 +1659,97 @@ test.describe(
 				);
 			},
 		);
+
+		testData()
+			.fromCsvParsed({
+				file: CsvFilesName.RELOAD_UPDATE_AFTER_PARTIAL_CLAIM,
+			})
+			.forEach((input) => {
+				test(
+					`[ENG-10259] Reload update logic after partial claim - Admin: ${input.adminExpected} | Client: ${input.clientExpected}`,
+					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+					async ({
+						browserSessionManager,
+						gamdomDb,
+						changeReloadRewardTestFlow,
+						claimReloadRewardTestFlow,
+						testDataPredefined,
+					}) => {
+						const adminUserInfoAdmin =
+							await browserSessionManager.loginAs(
+								TestUserRole.EV_REWARDS_SYSTEM_SUPERADMIN_WITH_USER_INFO,
+								{ reuseContext: true },
+							);
+						const regularUser = await browserSessionManager.loginAs(
+							TestUserRole.REGULAR,
+						);
+
+						const regularUserId =
+							regularUser.getAuthenticatedUser().user.userId;
+						const adminUserId =
+							adminUserInfoAdmin.getAuthenticatedUser().user
+								.userId;
+
+						const reloadRewardData =
+							testDataPredefined.data
+								.reloadRewardWithUpdatedTotal;
+
+						await gamdomDb.insertReloadReward(
+							regularUserId,
+							adminUserId,
+							input.reloadCoins,
+							reloadRewardData.expirationMs,
+							reloadRewardData.claimIntervalMs,
+							reloadRewardData.amountCoins,
+							EvRewardTypes.RELOAD,
+							RewardStatus.ACTIVE,
+							0,
+							input.days,
+							null,
+						);
+
+						await claimReloadRewardTestFlow.claimReloadRewardAndVerifyBalance(
+							{
+								user: regularUser,
+								rewardAmount: input.dailyRewardAmount,
+								expectedBalanceIncrease: input.dailyReward,
+								expectedRewardMissing: false,
+							},
+						);
+
+						await gamdomDb.updateRewardsDates(
+							regularUserId,
+							input.updateRewardsDays,
+						);
+						await gamdomDb.updateClaimHistoryDates(
+							regularUserId,
+							input.updateRewardsDays,
+						);
+
+						await changeReloadRewardTestFlow.changeReloadReward({
+							adminUser: adminUserInfoAdmin,
+							targetUsername:
+								regularUser.getAuthenticatedUser().user
+									.username,
+							newRewardTotal: input.totalRewards,
+							newTotalAmount: input.totalRewardsAmount,
+							shouldToastBePresent: input.shouldToastBePresent,
+							shouldRewardBePresent: input.shouldRewardBePresent,
+							expectedToastType: input.expectedToastType,
+						});
+
+						await regularUser.pages.rewardsPage.navigate();
+
+						await regularUser.pages.rewardsPage
+							.assertThat()
+							.verifyRewardClaimability(
+								CustomRewardType.RELOAD,
+								input.shouldRewardBeClaimable,
+								RewardButton.CLAIM,
+								input.perClaimAmount,
+							);
+					},
+				);
+			});
 	},
 );

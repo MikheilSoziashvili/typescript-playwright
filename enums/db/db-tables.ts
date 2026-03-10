@@ -12,6 +12,7 @@ export enum DbTables {
 	Promotions = "promotions.promotions",
 	VipUsers = "public.vip_users",
 	Rewards = "rewards.rewards",
+	ClaimHistory = "rewards.claim_history",
 	FreeSpinsPromotionsEventData = "rewards.free_spins_promotions_event_data",
 	GeoipHistory = "public.geoip_history",
 	OtherAuditLog = "public.other_audit_log",

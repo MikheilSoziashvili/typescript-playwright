@@ -29,6 +29,7 @@ import { CampaignRedemptionsColumns } from "@enums/db/campaign-redemptions-colum
 import { CampaignRuleType } from "@enums/db/campaign-rule-type";
 import { CampaignRulesColumns } from "@enums/db/campaign-rules-columns";
 import { CampaignsColumns } from "@enums/db/campaigns-columns";
+import { ClaimHistoryColumns } from "@enums/db/claim-history-columns";
 import { DbTables } from "@enums/db/db-tables";
 import { FreeSpinsPromotionsEventData } from "@enums/db/free-spins-promotions-event-data";
 import { GeoipHistoryColumns } from "@enums/db/geoip-history-columns";
@@ -1735,6 +1736,75 @@ export class GamdomDb extends BaseDB {
 		return this.insert(DbTables.Rewards, data, hasLogMessage);
 	}
 
+	public async updateReloadReward(
+		userId: number,
+		params: {
+			givenByUserId?: number;
+			reloadCoins?: number;
+			expirationMs?: number;
+			claimIntervalMs?: number;
+			amountCoins?: number;
+			type?: EvRewardTypes;
+			status?: RewardStatus;
+			startDate?: string;
+			endDate?: string;
+			promotionId?: number | null;
+			hasLogMessage?: boolean;
+			updatedNewTotal?: number | null;
+			modifiedDate?: string;
+		} = {},
+	): Promise<QueryResultRow> {
+		const { hasLogMessage = true, modifiedDate, ...rest } = params;
+
+		// Map param keys to DB columns
+		const columnMap: Record<string, string> = {
+			givenByUserId: RewardsColumns.GivenByUserId,
+			amountCoins: RewardsColumns.AmountCoins,
+			type: RewardsColumns.Type,
+			status: RewardsColumns.Status,
+			startDate: RewardsColumns.StartDate,
+			endDate: RewardsColumns.EndDate,
+			promotionId: RewardsColumns.PromotionId,
+		};
+
+		const updateData: Record<string, unknown> = {
+			[RewardsColumns.ModifiedDate]: modifiedDate ?? getISODate(),
+		};
+
+		// Assign defined top-level fields
+		for (const [key, column] of Object.entries(columnMap)) {
+			if (rest[key as keyof typeof rest] !== undefined) {
+				updateData[column] = rest[key as keyof typeof rest];
+			}
+		}
+
+		// Build meta object from meta-related fields
+		const metaFields = {
+			reloadCoins: rest.reloadCoins,
+			expirationMs: rest.expirationMs,
+			claimIntervalMs: rest.claimIntervalMs,
+			updatedNewTotal: rest.updatedNewTotal,
+		};
+
+		const definedMeta = Object.fromEntries(
+			Object.entries(metaFields).filter(([, v]) => v !== undefined && v !== null),
+		);
+
+		if (Object.keys(definedMeta).length > 0) {
+			updateData[RewardsColumns.Meta] = JSON.stringify({
+				rewardType: CustomRewardType.RELOAD,
+				...definedMeta,
+			});
+		}
+
+		return this.update(
+			DbTables.Rewards,
+			updateData,
+			`${RewardsColumns.UserId} = ${userId}`,
+			hasLogMessage,
+		);
+	}
+
 	public async insertRoyaltyUpReward(
 		userId: number,
 		achievedRankId: number,
@@ -1828,5 +1898,52 @@ export class GamdomDb extends BaseDB {
 			},
 			hasLogMessage,
 		);
+	}
+
+	public async updateRewardsDates(
+		userId: number,
+		days: number,
+		hasLogMessage = true,
+	): Promise<QueryResultRow> {
+		const sql = `
+			UPDATE ${DbTables.Rewards}
+			SET
+				${RewardsColumns.StartDate} = ${RewardsColumns.StartDate} - ($1 || ' day')::INTERVAL,
+				${RewardsColumns.EndDate} = ${RewardsColumns.EndDate} - ($1 || ' day')::INTERVAL,
+				${RewardsColumns.Created} = ${RewardsColumns.Created} - ($1 || ' day')::INTERVAL,
+				${RewardsColumns.ModifiedDate} = ${RewardsColumns.ModifiedDate} - ($1 || ' day')::INTERVAL
+			WHERE ${RewardsColumns.UserId} = $2
+			RETURNING *
+		`;
+
+		const result = await this.executeQuery<QueryResultRow>(
+			sql,
+			[days, userId],
+			"Database 'Update Rewards Dates' operation",
+			hasLogMessage,
+		);
+		return result[0];
+	}
+
+	public async updateClaimHistoryDates(
+		userId: number,
+		days: number,
+		hasLogMessage = true,
+	): Promise<QueryResultRow> {
+		const sql = `
+			UPDATE ${DbTables.ClaimHistory}
+			SET
+				${ClaimHistoryColumns.Created} = ${ClaimHistoryColumns.Created} - ($1 || ' day')::INTERVAL
+			WHERE ${ClaimHistoryColumns.UserId} = $2
+			RETURNING *
+		`;
+
+		const result = await this.executeQuery<QueryResultRow>(
+			sql,
+			[days, userId],
+			"Database 'Update Claim History Dates' operation",
+			hasLogMessage,
+		);
+		return result[0];
 	}
 }

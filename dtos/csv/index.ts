@@ -32,3 +32,4 @@ export * from "./enable-disable-crypto-currencies-statuses-csv";
 export * from "./unwagered-deposits-field-csv";
 export * from "./promotion-combinations-not-for-vip-csv";
 export * from "./change-password-csv";
+export * from "./reload-update-after-partial-claim-csv";

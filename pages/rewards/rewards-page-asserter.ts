@@ -226,6 +226,37 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 		]);
 	}
 
+	@step("Verify reward claimability")
+	async verifyRewardClaimability(
+		reward: string,
+		shouldBeClaimable: boolean,
+		buttonText?: string,
+		rewardValue?: string,
+	): Promise<void> {
+		if (shouldBeClaimable) {
+			await this.checkElementsAreDefined([
+				{
+					value: buttonText,
+					message:
+						"buttonText is required when shouldBeClaimable is true",
+				},
+				{
+					value: rewardValue,
+					message:
+						"rewardValue is required when shouldBeClaimable is true",
+				},
+			]);
+
+			await this.rewardCanBeClaimed(
+				reward,
+				buttonText ?? "",
+				rewardValue ?? "",
+			);
+		} else {
+			await this.rewardIsNotVisible(reward);
+		}
+	}
+
 	@step("Reward is claimed and active")
 	async rewardIsClaimedAndActive(
 		reward: string,

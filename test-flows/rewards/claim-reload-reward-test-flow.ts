@@ -13,8 +13,14 @@ export class ClaimReloadRewardTestFlow extends BaseTestFlow {
 		user: BrowserUserSession;
 		rewardAmount: string;
 		expectedBalanceIncrease: number;
+		expectedRewardMissing?: boolean;
 	}): Promise<void> {
-		const { user, rewardAmount, expectedBalanceIncrease } = params;
+		const {
+			user,
+			rewardAmount,
+			expectedBalanceIncrease,
+			expectedRewardMissing = true,
+		} = params;
 
 		const userBalanceHandler = await user.userBalanceHandler();
 
@@ -36,9 +42,11 @@ export class ClaimReloadRewardTestFlow extends BaseTestFlow {
 			RewardButton.CLAIM,
 		);
 
-		await user.pages.rewardsPage
-			.assertThat()
-			.rewardIsNotVisible(CustomRewardType.RELOAD);
+		if (expectedRewardMissing) {
+			await user.pages.rewardsPage
+				.assertThat()
+				.rewardIsNotVisible(CustomRewardType.RELOAD);
+		}
 
 		const expectedBalance = initialBalance + expectedBalanceIncrease;
 

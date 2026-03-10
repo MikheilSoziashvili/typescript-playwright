@@ -31,6 +31,7 @@ import {
 	PromotionCombinationsNotForVipCsv,
 	UnwageredDepositsFieldCsv,
 	ChangePasswordCsv,
+	ReloadUpdateAfterPartialClaimCsv,
 } from "@dtos/csv";
 import { HomePageBannerCarouselCsv } from "@dtos/csv/home-page-banner-carousel-csv";
 import { OriginalsSelfExclusionCsv } from "@dtos/csv/originals-self-exclusion";
@@ -77,4 +78,5 @@ export type CsvDtoMap = {
 	[CsvFilesName.PROMOTION_COMBINATIONS_NOT_FOR_VIP]: PromotionCombinationsNotForVipCsv;
 	[CsvFilesName.UNWAGERED_DEPOSITS_FIELD]: UnwageredDepositsFieldCsv;
 	[CsvFilesName.CHANGE_PASSWORD]: ChangePasswordCsv;
+	[CsvFilesName.RELOAD_UPDATE_AFTER_PARTIAL_CLAIM]: ReloadUpdateAfterPartialClaimCsv;
 };
