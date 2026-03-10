@@ -1,6 +1,9 @@
 import { CoinGeckoApi } from "@api/coingecko-api";
 import { GamdomApi } from "@api/gamdom-api";
 import { GamdomCryptoApi } from "@api/gamdom-crypto-api";
+import { CrashApi } from "@api/games-api/crash-api";
+import { HiloApi } from "@api/games-api/hilo-api";
+import { RouletteApi } from "@api/games-api/roulette-api";
 import { MailinatorApi } from "@api/mailinator-api";
 import { GamdomApiAsserter } from "@core/api/asserters/gamdom-api-asserter";
 import { test as base } from "@playwright/test";
@@ -11,6 +14,9 @@ export type Apis = {
 	mailinatorApi: MailinatorApi;
 	gamdomApi: GamdomApi;
 	gamdomCryptoApi: GamdomCryptoApi;
+	crashApi: CrashApi;
+	hiloApi: HiloApi;
+	rouletteApi: RouletteApi;
 	coingeckoApi: CoinGeckoApi;
 	gamdomApiAsserter: GamdomApiAsserter;
 	veriffApi: VeriffApi;
@@ -25,6 +31,15 @@ export const apisFixtures = base.extend<Apis>({
 	},
 	gamdomCryptoApi: async ({}, use) => {
 		await use(new GamdomCryptoApi());
+	},
+	crashApi: async ({}, use) => {
+		await use(new CrashApi());
+	},
+	hiloApi: async ({}, use) => {
+		await use(new HiloApi());
+	},
+	rouletteApi: async ({}, use) => {
+		await use(new RouletteApi());
 	},
 	coingeckoApi: async ({}, use) => {
 		await use(new CoinGeckoApi());

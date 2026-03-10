@@ -80,4 +80,12 @@ export class OriginalsMap extends BaseMap {
 	public get minesUnfinishedGamePopupContinueButton(): Locator {
 		return this.page.getByTestId("mines-unfinished-popup");
 	}
+
+	public get jackpotCounter(): Locator {
+		return this.page
+			.locator(
+				'div[class*="JackpotCounter-styled__StyledTextCounter"]',
+			)
+			.first();
+	}
 }

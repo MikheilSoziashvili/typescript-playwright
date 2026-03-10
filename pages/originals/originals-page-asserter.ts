@@ -10,6 +10,7 @@ import { ToastTitle } from "@enums/toast-titles";
 import { BaseAsserter } from "@pages/base/base-asserter";
 import { expect } from "@playwright/test";
 import { step } from "decorators/step";
+import { floorToTwoDecimals } from "formulas/betting-calculations";
 import { OriginalsPage } from "./originals-page";
 import { Unit } from "@enums/units";
 
@@ -173,5 +174,23 @@ export class OriginalsAsserter extends BaseAsserter<OriginalsPage> {
 				ToastTitle.FAILED_V4,
 				ToastSubTitle.SELF_EXCLUSION,
 			);
+	}
+
+	@step("Assert jackpot amount increased by at least {expectedIncrease}")
+	public async jackpotIncreasedBy(
+		previousAmount: number,
+		expectedIncrease: number,
+	): Promise<void> {
+		const expectedMinimum = floorToTwoDecimals(
+			previousAmount + expectedIncrease,
+		);
+
+		await expect
+			.poll(async () => this.gamdomPage.getJackpotAmount(), {
+				timeout: Timeout.MEDIUM,
+				intervals: [IntervalMs.SHORT],
+				message: `Jackpot did not increase by ${expectedIncrease} from ${previousAmount}`,
+			})
+			.toBeGreaterThanOrEqual(expectedMinimum);
 	}
 }

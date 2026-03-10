@@ -11,7 +11,7 @@ import { Locator, Page } from "@playwright/test";
 import accounting from "accounting";
 import { UserBalanceHandlerSteps } from "./user-balance-handler-steps";
 
-const COINS_PER_USD = 1500;
+export const COINS_PER_USD = 1500;
 
 const ATOMIC_DIVISOR: Record<Unit, number> = {
 	BTC_SATOSHI: 1e8,

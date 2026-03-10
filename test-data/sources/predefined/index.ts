@@ -43,6 +43,9 @@ export const predefined = {
 		betAmountDDefault: 1,
 		betAmountSmall: 10,
 	},
+	crash: {
+		defaultAutoCashOutApi: 150,
+	},
 	dice: {
 		betAmount: 1,
 		multiplier: 1.5,

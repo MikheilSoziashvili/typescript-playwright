@@ -26,6 +26,7 @@ import { MinesGamePage } from "@pages/mines-game-page/mines-game-page";
 import { PlinkoGamePage } from "@pages/plinko-game-page/plinko-game-page";
 import { RouletteGamePage } from "@pages/roulette-game-page/roulette-game-page";
 import { step } from "decorators/step";
+import { sanitizeAmount } from "support/regex-patterns";
 import { Page } from "playwright";
 import { OriginalsAsserter } from "./originals-page-asserter";
 import { OriginalsMap } from "./originals-page-map";
@@ -511,6 +512,12 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 					`Get your bet value method not implemented for ${game}`,
 				);
 		}
+	}
+
+	@step("Get jackpot amount")
+	public async getJackpotAmount(): Promise<number> {
+		const text = await this.map.jackpotCounter.innerText();
+		return parseFloat(text.replace(sanitizeAmount, ""));
 	}
 
 	@step("Open How to Play modal")

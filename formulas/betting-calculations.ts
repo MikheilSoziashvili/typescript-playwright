@@ -54,6 +54,9 @@ export function getExpectedDiceBetValues(betData: DiceBetTestData): {
 	};
 }
 
+export const floorToTwoDecimals = (value: number): number =>
+	Math.floor(value * 100) / 100;
+
 export const calculateBetAmountWithPercentage = (
 	betAmount: number,
 	percentage: number,
