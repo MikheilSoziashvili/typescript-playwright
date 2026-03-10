@@ -10,6 +10,7 @@ import { VisibilityState } from "@enums/playwright/visibility-states";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { Timeout } from "@enums/timeout";
 import { step } from "decorators/step";
+import { logger } from "@logger/logger";
 
 export class HiloGamePage extends BasePage<HiloGamePageMap> {
 	public constructor(page: Page) {
@@ -24,7 +25,7 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 			endpoint: { paths: [HILO_GAME_PAGE_ENDPOINT] },
 		});
 		await this.map.waitForVisibility({
-			locator: this.map.gameArea,
+			locator: this.map.gameContainer,
 		});
 	}
 
@@ -34,6 +35,45 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 
 	public steps(): HiloGamePageSteps {
 		return new HiloGamePageSteps(this);
+	}
+
+	@step("Get time left for betting")
+	public async getTimeLeftForBetting(): Promise<number> {
+		if (!(await this.map.spinningCountdownTimer.isVisible())) {
+			await this.map.waitForVisibility({
+				locator: this.map.spinningCountdownTimer,
+				timeout: Timeout.LONG,
+			});
+		}
+		const statusText = await this.map.spinningCountdownStatus.innerText({
+			timeout: Timeout.LONG,
+		});
+		return parseFloat(statusText);
+	}
+
+	@step("Wait for betting window to be available")
+	public async waitBettingWindowAvailable(): Promise<void> {
+		const timeLeft = await this.getTimeLeftForBetting();
+
+		if (timeLeft < 2) {
+			logger.info(
+				`Time left for betting is ${timeLeft} seconds. Waiting for the next round...`,
+			);
+
+			await this.map.waitForInvisibility({
+				locator: this.map.spinningCountdownTimer,
+				timeout: Timeout.LONG,
+			});
+
+			await this.map.waitForVisibility({
+				locator: this.map.spinningCountdownTimer,
+				timeout: Timeout.LONG,
+			});
+		} else {
+			logger.info(
+				`Sufficient time left (${timeLeft} seconds) to place the bet.`,
+			);
+		}
 	}
 
 	@step("Fill in bet amount")
@@ -50,36 +90,9 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 			case HiloBetOption.BLACK:
 				await this.map.blackButton.click();
 				break;
-			default:
+			case HiloBetOption.JOKER:
+				await this.map.jokerButton.click();
 				break;
-		}
-	}
-
-	@step("Get time left for betting")
-	public async getTimeLeftForBetting(): Promise<number> {
-		await this.map.waitForVisibility({
-			locator: this.map.spinningCountdownTimer,
-			timeout: Timeout.MEDIUM,
-		});
-		const timerText = await this.map.spinningCountdownNumber.innerText();
-		return parseInt(timerText);
-	}
-
-	@step("Wait betting window available")
-	public async waitBettingWindowAvailable(): Promise<void> {
-		const timeLeft = await this.getTimeLeftForBetting();
-
-		if (timeLeft < 2) {
-			await this.map.waitFor({
-				locator: this.map.spinningCountdownTimer,
-				state: VisibilityState.HIDDEN,
-				timeout: Timeout.MEDIUM,
-			});
-
-			await this.map.waitForVisibility({
-				locator: this.map.spinningCountdownTimer,
-				timeout: Timeout.MEDIUM,
-			});
 		}
 	}
 
@@ -95,38 +108,29 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 
 	@step("Wait round result")
 	public async waitRoundResult(): Promise<void> {
-		await this.map.waitFor({
-			locator: this.map.spinningCountdownTimer,
-			state: VisibilityState.HIDDEN,
-			timeout: Timeout.MEDIUM,
-		});
-		await this.map.waitForVisibility({
-			locator: this.map.gameRoundResultLocator,
+		await this.map.gameResultLocator.waitFor({
+			state: VisibilityState.VISIBLE,
+			timeout: Timeout.LONG,
 		});
 	}
 
 	@step("Get round result")
 	public async getRoundResult(): Promise<string> {
 		await this.waitRoundResult();
-
-		const result =
-			(await this.map.gameRoundResultLocator.textContent()) || "";
-
-		await this.map.waitFor({
-			locator: this.map.gameRoundResultLocator,
+		const result = await this.map.gameResultLocator.innerText({
+			timeout: Timeout.LONG,
+		});
+		await this.map.gameResultLocator.waitFor({
 			state: VisibilityState.HIDDEN,
 			timeout: Timeout.LONG,
 		});
-
 		return result;
 	}
 
 	public calculateProfit(
 		betAmount: number,
 		hiloBetOptions: HiloBetMultiplierByBetOption,
-		includeBetReturn = true,
 	): number {
-		let result = 0;
 		switch (hiloBetOptions) {
 			case HiloBetMultiplierByBetOption.JOKER:
 				return betAmount * 24;
@@ -140,50 +144,7 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 			case HiloBetMultiplierByBetOption.RED:
 				return betAmount * 2;
 			default:
-				break;
+				throw new Error("Unknown bet option");
 		}
-
-		result = !includeBetReturn ? result - betAmount : result;
-
-		return result;
-	}
-
-	@step("Wait betting window available - v4")
-	public async waitBettingWindowAvailableV4(
-		timeout = Timeout.EXTRA_MAX / 2,
-	): Promise<void> {
-		await this.map.waitForVisibility({
-			locator: this.map.spinningCountdownTimerV4,
-			timeout: timeout,
-		});
-	}
-
-	@step("Fill in bet amount - v4")
-	public async fillInBetAmountV4(betAmount: number): Promise<void> {
-		await this.map.yourBetFieldV4.fill(`${betAmount}`);
-	}
-
-	@step("Click bet option - v4")
-	public async clickBetOptionV4(betOption: HiloBetOption): Promise<void> {
-		switch (betOption) {
-			case HiloBetOption.RED:
-				await this.map.redButtonV4.click();
-				break;
-			case HiloBetOption.BLACK:
-				await this.map.blackButtonV4.click();
-				break;
-			default:
-				break;
-		}
-	}
-
-	@step("Place bet - v4")
-	public async placeBetV4(
-		betAmount: number,
-		betOption: HiloBetOption,
-	): Promise<void> {
-		await this.waitBettingWindowAvailableV4();
-		await this.fillInBetAmountV4(betAmount);
-		await this.clickBetOptionV4(betOption);
 	}
 }
