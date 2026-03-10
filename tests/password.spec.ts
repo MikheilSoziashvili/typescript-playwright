@@ -25,7 +25,7 @@ test.describe("Password tests", () => {
 			})
 			.forEach((input: ChangePasswordCsvRecord) => {
 				test(
-					`[ENG-15706] Password change - ${input.Scenario}`,
+					`[ENG-11781] Password change - ${input.Scenario}`,
 					testDetails()
 						.withTags(
 							JiraComponent.CHANGE_PASSWORD,
