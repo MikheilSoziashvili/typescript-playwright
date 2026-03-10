@@ -12,7 +12,7 @@ import {
 	MAILINATOR_MESSAGE_LINKS_URL,
 } from "@constants/mailinator-endpoints";
 import { Timeout } from "@enums/timeout";
-import { waitForSeconds, waitUntil } from "@core/utils/utils";
+import { waitUntil } from "@core/utils/utils";
 
 export class MailinatorApi extends BaseApi {
 	constructor(

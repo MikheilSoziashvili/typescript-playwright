@@ -494,7 +494,7 @@ test.describe(
 
 						await originalsPage
 							.assertThat()
-							.balanceAndYourBetUpdatedSimultaneosly(
+							.balanceAndYourBetUpdatedSimultaneously(
 								record.unit,
 								accountBalance,
 								yourBetBalance,
@@ -527,7 +527,7 @@ test.describe(
 
 						await originalsPage
 							.assertThat()
-							.balanceAndYourBetUpdatedSimultaneosly(
+							.balanceAndYourBetUpdatedSimultaneously(
 								Unit.COINS,
 								accountBalance,
 								yourBetBalance,
