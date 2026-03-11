@@ -3,10 +3,15 @@ import { APIRequestContext, APIResponse, request } from "@playwright/test";
 import { RequestParameters } from "../core/api/interfaces/request-parameters";
 import { logger } from "@logger/logger";
 import { handleError } from "@core/api/error-handler";
-import { PayloadType, RequestOptions } from "@core/types/types";
+import {
+	ApiRequestOptions,
+	PayloadType,
+	RequestOptions,
+} from "@core/types/types";
 import { KnownError } from "@core/types/error-types";
 import { HttpStatus } from "@enums/http-status";
 import { BaseApiOptions } from "@core/api/interfaces/base-api-options";
+import { RetryOptions } from "@core/api/interfaces/retry-options";
 
 /**
  * This BaseApi class serves as a foundation for managing HTTP requests.
@@ -240,14 +245,15 @@ export class BaseApi {
 	 *
 	 * @param {HttpMethod} method - The HTTP method to use (GET, POST, PUT, DELETE, PATCH).
 	 * @param {RequestParameters} parameters - The parameters for the request, including endpoint, headers, data, and query parameters.
-	 * @param {RequestOptions} options - Additional options for the request.
+	 * @param {ApiRequestOptions} options - Additional options for the request.
 	 * @returns {Promise<APIResponse>} A promise resolving to the API response.
 	 */
 	private async makeRequest(
 		method: HttpMethod,
 		parameters: RequestParameters,
-		options: RequestOptions = {},
+		options: ApiRequestOptions = {},
 	): Promise<APIResponse> {
+		const { retry, ...restOptions } = options;
 		const { endpoint, headers, data, queryParams } = parameters;
 		const context = await this.context;
 		const url = this.concatenateUrl(endpoint);
@@ -257,41 +263,59 @@ export class BaseApi {
 			headers: { ...this.requestHeaders, ...headers },
 			data,
 			params: queryParams,
-			...options,
+			...restOptions,
 		};
 
-		try {
-			const response = await context.fetch(url, {
-				method,
-				...requestOptions,
-			});
-
-			const statusCode = response.status();
-			const successStatusCodes = [
-				HttpStatus.OK,
-				HttpStatus.CREATED,
-				HttpStatus.NO_CONTENT,
-			];
-
-			if (!successStatusCodes.includes(statusCode)) {
-				await this.logFailedResponse(
+		const executeFetch = async (): Promise<APIResponse> => {
+			try {
+				const response = await context.fetch(url, {
 					method,
-					url,
-					statusCode,
-					response,
-					requestOptions,
-				);
-			}
+					...requestOptions,
+				});
 
-			return response;
-		} catch (error) {
-			if (!this.apiOptions?.suppressRequestFailureLogging) {
-				this.logRequestFailure(method, url, error, requestOptions);
-				handleError(error as KnownError);
-			}
+				const statusCode = response.status();
+				const successStatusCodes = [
+					HttpStatus.OK,
+					HttpStatus.CREATED,
+					HttpStatus.NO_CONTENT,
+				];
 
-			throw error;
+				if (!successStatusCodes.includes(statusCode)) {
+					await this.logFailedResponse(
+						method,
+						url,
+						statusCode,
+						response,
+						requestOptions,
+					);
+
+					if (retry) {
+						throw new Error(
+							`${method.toUpperCase()} ${url} failed with status ${statusCode}`,
+						);
+					}
+				}
+
+				return response;
+			} catch (error) {
+				if (!this.apiOptions?.suppressRequestFailureLogging) {
+					this.logRequestFailure(method, url, error, requestOptions);
+					handleError(error as KnownError);
+				}
+
+				throw error;
+			}
+		};
+
+		if (retry) {
+			return BaseApi.withRetry(
+				`${method.toUpperCase()} ${url}`,
+				executeFetch,
+				retry,
+			);
 		}
+
+		return executeFetch();
 	}
 
 	/**
@@ -304,7 +328,7 @@ export class BaseApi {
 	 */
 	public async get(
 		parameters: RequestParameters,
-		options?: RequestOptions,
+		options?: ApiRequestOptions,
 	): Promise<APIResponse> {
 		return this.makeRequest(HttpMethod.GET, parameters, options);
 	}
@@ -319,7 +343,7 @@ export class BaseApi {
 	 */
 	public async post(
 		parameters: RequestParameters,
-		options?: RequestOptions,
+		options?: ApiRequestOptions,
 	): Promise<APIResponse> {
 		return this.makeRequest(HttpMethod.POST, parameters, options);
 	}
@@ -334,7 +358,7 @@ export class BaseApi {
 	 */
 	public async put(
 		parameters: RequestParameters,
-		options?: RequestOptions,
+		options?: ApiRequestOptions,
 	): Promise<APIResponse> {
 		return this.makeRequest(HttpMethod.PUT, parameters, options);
 	}
@@ -349,7 +373,7 @@ export class BaseApi {
 	 */
 	public async delete(
 		parameters: RequestParameters,
-		options?: RequestOptions,
+		options?: ApiRequestOptions,
 	): Promise<APIResponse> {
 		return this.makeRequest(HttpMethod.DELETE, parameters, options);
 	}
@@ -364,9 +388,36 @@ export class BaseApi {
 	 */
 	public async patch(
 		parameters: RequestParameters,
-		options?: RequestOptions,
+		options?: ApiRequestOptions,
 	): Promise<APIResponse> {
 		return this.makeRequest(HttpMethod.PATCH, parameters, options);
+	}
+
+	private static async withRetry<T>(
+		stepName: string,
+		fn: () => Promise<T>,
+		options: RetryOptions,
+	): Promise<T> {
+		const { maxRetries = 3, delayMs = 2000 } = options;
+
+		for (let attempt = 1; attempt <= maxRetries; attempt++) {
+			try {
+				return await fn();
+			} catch (error) {
+				if (attempt === maxRetries) {
+					logger.error(
+						`"${stepName}" failed after ${maxRetries} attempts`,
+					);
+					throw error;
+				}
+				logger.warn(
+					`"${stepName}" failed on attempt ${attempt}/${maxRetries}. ` +
+						`Retrying in ${delayMs}ms... Error: ${error instanceof Error ? error.message : String(error)}`,
+				);
+				await new Promise((resolve) => setTimeout(resolve, delayMs));
+			}
+		}
+		throw new Error(`"${stepName}" failed unexpectedly`);
 	}
 
 	/**
@@ -386,3 +437,5 @@ export class BaseApi {
 		await ctx.dispose();
 	}
 }
+export { ApiRequestOptions };
+

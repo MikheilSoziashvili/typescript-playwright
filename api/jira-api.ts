@@ -16,7 +16,11 @@ import {
 	JiraSearchResponse,
 } from "@core/types/jira-types";
 import { JIRA_AUTOMATION_SUMMARY_PREFIX } from "@core/reporters/jira-failed-tests-reporter/config/jira-failed-report-config";
-import { JIRA_CREATE_ISSUE_ENDPOINT, JIRA_SEARCH_JQL_ENDPOINT } from "@enums/jira/jira-api-endpoints";
+import {
+	JIRA_CREATE_ISSUE_ENDPOINT,
+	JIRA_SEARCH_JQL_ENDPOINT,
+} from "@enums/jira/jira-api-endpoints";
+import { API_DEFAULT_RETRY } from "@constants/api-default-retry";
 
 export class JiraApi extends BaseApi {
 	private jiraConfig: Record<string, string>;
@@ -95,7 +99,7 @@ export class JiraApi extends BaseApi {
 			data,
 			_headers,
 		);
-		return this.post(parameters);
+		return this.post(parameters, API_DEFAULT_RETRY);
 	}
 
 	public async createJiraBugForFailedTests(

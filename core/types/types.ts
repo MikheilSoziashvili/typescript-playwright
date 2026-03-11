@@ -33,6 +33,7 @@ import {
 	PlinkoRowsOption,
 } from "@enums/plinko/plinko-game-options";
 import { HiloBetOption } from "@enums/hilo-bet-options";
+import { RetryOptions } from "@core/api/interfaces/retry-options";
 
 export type TestUserConfigurationObject = {
 	username: string;
@@ -89,6 +90,10 @@ export type BasePageNavigationParametersType = {
 export type RequestOptions = NonNullable<
 	Parameters<APIRequestContext["fetch"]>[1]
 >;
+
+export type ApiRequestOptions = RequestOptions & {
+	retry?: RetryOptions;
+};
 
 export type SocialMediaRecord = {
 	static_page: string;

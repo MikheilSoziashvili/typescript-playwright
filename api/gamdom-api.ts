@@ -43,6 +43,7 @@ import { FeeLevel } from "@enums/withdrawal-speeds";
 import { AdminActionRequest } from "@dtos/requests/gamdom-api/admin-action-request";
 import { AdminActionType } from "@enums/admin-action-types";
 import { BanReason } from "@enums/ban-reasons";
+import { API_DEFAULT_RETRY } from "@constants/api-default-retry";
 
 export class GamdomApi extends BaseApi {
 	private gamdomDb: GamdomDb;
@@ -95,7 +96,7 @@ export class GamdomApi extends BaseApi {
 			payload,
 			_headers,
 		);
-		return this.post(parameters);
+		return this.post(parameters, API_DEFAULT_RETRY);
 	}
 
 	public async authenticateWithExistingUser(
@@ -206,7 +207,7 @@ export class GamdomApi extends BaseApi {
 			_headers,
 		);
 
-		return this.post(parameters);
+		return this.post(parameters, API_DEFAULT_RETRY);
 	}
 
 	/**
@@ -288,7 +289,7 @@ export class GamdomApi extends BaseApi {
 			_headers,
 		);
 
-		const response = await this.post(parameters);
+		const response = await this.post(parameters, API_DEFAULT_RETRY);
 
 		if (response.status() !== HttpStatus.OK) {
 			logger.error(
@@ -561,7 +562,7 @@ export class GamdomApi extends BaseApi {
 			payload,
 			_headers,
 		);
-		return this.post(parameters);
+		return this.post(parameters, API_DEFAULT_RETRY);
 	}
 
 	public async enableRain(
@@ -595,7 +596,7 @@ export class GamdomApi extends BaseApi {
 			payload,
 			_headers,
 		);
-		return this.post(parameters);
+		return this.post(parameters, API_DEFAULT_RETRY);
 	}
 
 	public async getOpenRains(
@@ -607,7 +608,7 @@ export class GamdomApi extends BaseApi {
 			_headers,
 		);
 
-		const response = await this.post(parameters);
+		const response = await this.post(parameters, API_DEFAULT_RETRY);
 		return (await response.json()) as RainDTO[];
 	}
 
@@ -655,7 +656,7 @@ export class GamdomApi extends BaseApi {
 			payload,
 			_headers,
 		);
-		return this.post(parameters);
+		return this.post(parameters, API_DEFAULT_RETRY);
 	}
 
 	public async fetchLastKothEventId(
@@ -680,7 +681,7 @@ export class GamdomApi extends BaseApi {
 			_headers,
 		);
 
-		const response = await this.post(parameters);
+		const response = await this.post(parameters, API_DEFAULT_RETRY);
 		return response.json() as Promise<KothEventDTO[]>;
 	}
 
