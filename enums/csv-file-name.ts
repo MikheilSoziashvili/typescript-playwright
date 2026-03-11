@@ -70,4 +70,5 @@ export enum CsvFilesName {
 	CHANGE_PASSWORD = "ENG-11781-change-password.csv",
 	RELOAD_UPDATE_AFTER_PARTIAL_CLAIM = "ENG-10259-reload-update-after-partial-claim.csv",
 	JACKPOT_CONTRIBUTION = "ENG-11717-Jackpot-Contribution-percentage-validation.csv",
+	RELOAD_UPDATE_LOGIC = "ENG-10268-reload-update-logic.csv",
 }

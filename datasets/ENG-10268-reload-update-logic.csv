@@ -1,0 +1,5 @@
+days,dailyReward,totalReward,perClaimExpectedAmount,perClaimExpected,reloadCoins,updateNewTotal,expectedClaimedDays
+7,$100,$70,$10,10,15000,105000,1
+7,$1000,$700,$100,100,150000,1050000,1
+7,$10000,$7000,$1k,1000,1500000,10500000,1
+10,$10,$0,$1,1,1500,0,0

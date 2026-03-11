@@ -34,3 +34,4 @@ export * from "./promotion-combinations-not-for-vip-csv";
 export * from "./change-password-csv";
 export * from "./reload-update-after-partial-claim-csv";
 export * from "./jackpot-contribution-csv";
+export * from "./reload-update-logic-csv";

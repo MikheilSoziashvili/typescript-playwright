@@ -43,6 +43,16 @@ export class UserInfoRewardsAdminPageAsserter extends BaseAsserter<UserInfoRewar
 		]);
 	}
 
+	@step("Claimed {currentClaims} out of {totalClaims} rewards")
+	public async claimedRewardsOutOfTotal(
+		currentClaims: number,
+		totalClaims: number,
+	): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.tileClaimsText(currentClaims, totalClaims),
+		]);
+	}
+
 	@step('Edit "Reload" Reward form is opened')
 	public async editReloadRewardFormIsOpened(): Promise<void> {
 		await this.checkElementsAreVisible([

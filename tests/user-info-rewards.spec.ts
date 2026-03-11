@@ -1751,5 +1751,68 @@ test.describe(
 					},
 				);
 			});
+
+		testData()
+			.fromCsvParsed({
+				file: CsvFilesName.RELOAD_UPDATE_LOGIC,
+			})
+			.forEach((input) => {
+				test(
+					`[ENG-10268] Reload update logic for: days: ${input.days} | dailyReward: ${input.dailyReward} | totalReward: ${input.totalReward}`,
+					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+					async ({
+						browserSessionManager,
+						gamdomDb,
+						testDataPredefined,
+						verifyReloadUpdateLogicTestFlow,
+					}) => {
+						const adminUserInfoAdmin =
+							await browserSessionManager.loginAs(
+								TestUserRole.EV_REWARDS_SYSTEM_SUPERADMIN_WITH_USER_INFO,
+								{ reuseContext: true },
+							);
+						const regularUser = await browserSessionManager.loginAs(
+							TestUserRole.REGULAR,
+						);
+
+						const regularUserId =
+							regularUser.getAuthenticatedUser().user.userId;
+						const adminUserId =
+							adminUserInfoAdmin.getAuthenticatedUser().user
+								.userId;
+
+						const reloadRewardData =
+							testDataPredefined.data
+								.reloadRewardWithUpdatedTotal;
+
+						await gamdomDb.insertReloadReward(
+							regularUserId,
+							adminUserId,
+							input.reloadCoins,
+							reloadRewardData.expirationMs,
+							reloadRewardData.claimIntervalMs,
+							reloadRewardData.amountCoins,
+							EvRewardTypes.RELOAD,
+							RewardStatus.ACTIVE,
+							0,
+							input.days,
+							null,
+							true,
+							input.updateNewTotal,
+						);
+
+						await verifyReloadUpdateLogicTestFlow.verifyReloadUpdateLogic(
+							{
+								user: regularUser,
+								adminUser: adminUserInfoAdmin,
+								rewardAmount: input.perClaimExpectedAmount,
+								expectedBalanceIncrease: input.perClaimExpected,
+								expectedClaimedDays: input.expectedClaimedDays,
+								totalDays: input.days,
+							},
+						);
+					},
+				);
+			});
 	},
 );

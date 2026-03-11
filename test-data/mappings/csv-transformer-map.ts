@@ -17,6 +17,7 @@ import {
 	PromotionCombinationsNotForVipCsvRecord,
 	ReloadUpdateAfterPartialClaimCsvRecord,
 	JackpotContributionCsvRecord,
+	ReloadUpdateLogicCsvRecord,
 } from "@dtos/csv";
 import { OriginalsSelfExclusionCsvRecord } from "@dtos/csv/originals-self-exclusion";
 import { PlinkoTestDataCsvRecord } from "@dtos/csv/plinko-test-data-csv";
@@ -106,6 +107,10 @@ import {
 	parseJackpotContributionCsvRow,
 	JackpotContributionCsvParsedRecord,
 } from "test-data/parsers/jackpot-contribution-csv-parser";
+import {
+	parseReloadUpdateLogicCsvRow,
+	ReloadUpdateLogicCsvParsedRecord,
+} from "test-data/parsers/reload-update-logic-csv-parser";
 
 export type CsvTransformerExistingType<T> =
 	T extends keyof CsvTransformerMapType ? CsvTransformerMapType[T] : never;
@@ -208,6 +213,10 @@ export type CsvTransformerMapType = {
 	[CsvFilesName.JACKPOT_CONTRIBUTION]: (
 		row: JackpotContributionCsvRecord,
 	) => JackpotContributionCsvParsedRecord;
+
+	[CsvFilesName.RELOAD_UPDATE_LOGIC]: (
+		row: ReloadUpdateLogicCsvRecord,
+	) => ReloadUpdateLogicCsvParsedRecord;
 };
 
 export const CsvTransformerMap: CsvTransformerMapType = {
@@ -246,4 +255,5 @@ export const CsvTransformerMap: CsvTransformerMapType = {
 	[CsvFilesName.RELOAD_UPDATE_AFTER_PARTIAL_CLAIM]:
 		parseReloadUpdateAfterPartialClaimCsvRow,
 	[CsvFilesName.JACKPOT_CONTRIBUTION]: parseJackpotContributionCsvRow,
+	[CsvFilesName.RELOAD_UPDATE_LOGIC]: parseReloadUpdateLogicCsvRow,
 } as const;

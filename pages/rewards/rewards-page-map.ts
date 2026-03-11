@@ -128,6 +128,15 @@ export class RewardsPageMap extends BaseMap {
 		return this.royaltyUpSliderButtonsContainer(Directions.LEFT);
 	}
 
+	public specialOfferClaimedOutOfTotal(
+		currentClaims: number,
+		totalClaims: number,
+	): Locator {
+		return this.rewardsSpecialOfferCard.locator("p", {
+			hasText: `Reward (${currentClaims}/${totalClaims})`,
+		});
+	}
+
 	public rewardCard(reward: string): Locator {
 		return this.page.locator('div[class^="common-styled__ItemWrapper"]', {
 			has: this.page.getByText(reward),

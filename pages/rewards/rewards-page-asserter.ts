@@ -293,6 +293,19 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 		]);
 	}
 
+	@step("Claimed {currentClaims} out of {totalClaims} special offer rewards")
+	async specialOfferClaimedRewardsOutOfTotal(
+		currentClaims: number,
+		totalClaims: number,
+	): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.specialOfferClaimedOutOfTotal(
+				currentClaims,
+				totalClaims,
+			),
+		]);
+	}
+
 	@step("Verify special reward card details are correct")
 	async verifySpecialRewardCard(
 		gameName: string,

@@ -120,6 +120,12 @@ export class UserInfoRewardsAdminPageMap extends BaseMap {
 		});
 	}
 
+	public tileClaimsText(currentClaims: number, totalClaims: number): Locator {
+		return this.page.locator("p", {
+			hasText: `Claims: ${currentClaims}/${totalClaims}`,
+		});
+	}
+
 	public get editReloadRewardModalTitle(): Locator {
 		return this.page.getByTestId("modalTitle");
 	}

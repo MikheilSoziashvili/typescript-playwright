@@ -46,6 +46,10 @@ import { SteamUserLoginLogoutFlow } from "@test-flows/ban/steam-user-login-logou
 import { BanUserVerificationFlow } from "@test-flows/ban/ban-user-verification-test-flow";
 import { PasswordChangeSetupTestFlow } from "@test-flows/password/password-change-setup-test-flow";
 import { PasswordChangeExecutionTestFlow } from "@test-flows/password/password-change-execution-test-flow";
+import { ClaimReloadRewardAndVerifyClaimsTestFlow } from "@test-flows/rewards/claim-reload-reward-and-verify-claims-test-flow";
+import { VerifyReloadRewardPresenceAndClaimsTestFlow } from "@test-flows/rewards/verify-reload-reward-presence-and-claims-test-flow";
+import { VerifyAndClaimReloadRewardTestFlow } from "@test-flows/rewards/verify-and-claim-reload-reward-test-flow";
+import { VerifyReloadUpdateLogicTestFlow } from "@test-flows/rewards/verify-reload-update-logic-test-flow";
 
 export type TestFlowsFixtures = {
 	plinkoBetTestFlow: PlinkoBetTestFlow;
@@ -69,6 +73,10 @@ export type TestFlowsFixtures = {
 	banUserVerificationFlow: BanUserVerificationFlow;
 	passwordChangeSetupTestFlow: PasswordChangeSetupTestFlow;
 	passwordChangeExecutionTestFlow: PasswordChangeExecutionTestFlow;
+	claimReloadRewardAndVerifyClaimsTestFlow: ClaimReloadRewardAndVerifyClaimsTestFlow;
+	verifyReloadRewardPresenceAndClaimsTestFlow: VerifyReloadRewardPresenceAndClaimsTestFlow;
+	verifyAndClaimReloadRewardTestFlow: VerifyAndClaimReloadRewardTestFlow;
+	verifyReloadUpdateLogicTestFlow: VerifyReloadUpdateLogicTestFlow;
 };
 
 type RequiredTestFlowsFixtures = {
@@ -228,5 +236,17 @@ export const testFlowsFixtures = base.extend<
 	},
 	passwordChangeExecutionTestFlow: async ({}, use) => {
 		await use(new PasswordChangeExecutionTestFlow());
+	},
+	claimReloadRewardAndVerifyClaimsTestFlow: async ({}, use) => {
+		await use(new ClaimReloadRewardAndVerifyClaimsTestFlow());
+	},
+	verifyReloadRewardPresenceAndClaimsTestFlow: async ({}, use) => {
+		await use(new VerifyReloadRewardPresenceAndClaimsTestFlow());
+	},
+	verifyAndClaimReloadRewardTestFlow: async ({}, use) => {
+		await use(new VerifyAndClaimReloadRewardTestFlow());
+	},
+	verifyReloadUpdateLogicTestFlow: async ({}, use) => {
+		await use(new VerifyReloadUpdateLogicTestFlow());
 	},
 });
