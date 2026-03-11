@@ -44,4 +44,6 @@ export * from "./instant-rewards-royalty-up-levels-csv";
 export * from "./casino-game-instant-rewards-royalty-up-levels-csv";
 export * from "./koth-points-calculation-csv";
 export * from "./feature-activation-v4-csv";
+export * from "./crash-auto-cashout-csv";
+export * from "./crash-increase-by-csv";
 export * from "./dice-autobet-csv";

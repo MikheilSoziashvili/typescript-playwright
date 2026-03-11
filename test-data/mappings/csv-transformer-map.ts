@@ -2,6 +2,8 @@ import {
 	BlogVerifySocialShareLinksCsvRecord,
 	CasinoGamesAggregatorProviderCsvRecord,
 	ChatPinMessagePermissionsCsvRecord,
+	CrashAutoCashoutCsvRecord,
+	CrashIncreaseBysCsvRecord,
 	DiceAutobetCsvRecord,
 	FeatureActivationV4CsvRecord,
 	FooterLinksAndEndpointsCsvRecord,
@@ -146,6 +148,14 @@ import {
 	DiceAutobetCsvParsedRecord,
 	parseDiceAutobetCsvRow,
 } from "test-data/parsers/dice-autobet-csv-parser";
+import {
+	CrashAutoCashoutCsvParsedRecord,
+	parseCrashAutoCashoutCsvRow,
+} from "test-data/parsers/crash-auto-cashout-csv-parser";
+import {
+	CrashIncreaseBysCsvParsedRecord,
+	parseCrashIncreaseBysCsvRow,
+} from "test-data/parsers/crash-increase-by-csv-parser";
 
 export type CsvTransformerExistingType<T> =
 	T extends keyof CsvTransformerMapType ? CsvTransformerMapType[T] : never;
@@ -279,6 +289,14 @@ export type CsvTransformerMapType = {
 	[CsvFilesName.DICE_AUTOBET]: (
 		row: DiceAutobetCsvRecord,
 	) => DiceAutobetCsvParsedRecord;
+
+	[CsvFilesName.CRASH_AUTO_CASHOUT]: (
+		row: CrashAutoCashoutCsvRecord,
+	) => CrashAutoCashoutCsvParsedRecord;
+
+	[CsvFilesName.CRASH_INCREASE_BY]: (
+		row: CrashIncreaseBysCsvRecord,
+	) => CrashIncreaseBysCsvParsedRecord;
 };
 
 export const CsvTransformerMap: CsvTransformerMapType = {
@@ -329,4 +347,6 @@ export const CsvTransformerMap: CsvTransformerMapType = {
 		parseCasinoGameInstantRewardsRoyaltyUpLevelsCsvRow,
 	[CsvFilesName.FEATURE_ACTIVATION_V4]: parseFeatureActivationV4CsvRow,
 	[CsvFilesName.DICE_AUTOBET]: parseDiceAutobetCsvRow,
+	[CsvFilesName.CRASH_AUTO_CASHOUT]: parseCrashAutoCashoutCsvRow,
+	[CsvFilesName.CRASH_INCREASE_BY]: parseCrashIncreaseBysCsvRow,
 } as const;

@@ -90,15 +90,18 @@ export class BetTestData {
 	public username: string;
 	public betAmount: number;
 	public autoCashoutMultiplier: number;
+	public stopBetAmount?: number;
 
 	constructor(
 		username: string,
 		betAmount: number,
 		autoCashoutMultiplier: number,
+		stopBetAmount?: number,
 	) {
 		this.username = username;
 		this.betAmount = betAmount;
 		this.autoCashoutMultiplier = autoCashoutMultiplier;
+		this.stopBetAmount = stopBetAmount;
 	}
 }
 

@@ -4,11 +4,12 @@ import { CRASH_GAME_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { BetIncreaseCondition } from "@enums/crash-autobet-section";
 import { Timeout } from "@enums/timeout";
-import { logger } from "@logger/logger";
 import { Page } from "@playwright/test";
+import { sanitizeAmount } from "@support/regex-patterns";
 import { CrashGamePageAsserter } from "./crash-game-page-asserter";
 import { CrashGamePageMap } from "./crash-game-page-map";
 import { CrashGamePageSteps } from "./crash-game-page-steps";
+import { VisibilityState } from "@enums/playwright/visibility-states";
 
 export class CrashGamePage extends BasePage<CrashGamePageMap> {
 	public constructor(page: Page) {
@@ -35,10 +36,6 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 		return new CrashGamePageSteps(this);
 	}
 
-	public trackTotalBets(betAmount: number, currentTotal: number): number {
-		return currentTotal + betAmount;
-	}
-
 	public calculateWinnings(betAmount: number, multiplier: number): number {
 		return betAmount * multiplier;
 	}
@@ -51,44 +48,10 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 		return initialBalance - totalBets + winnings;
 	}
 
-	@step("Play until multiplier is reached")
-	public async playUntilMultiplierIs(
-		multiplier: number,
-		betAmount: number,
-		...actions: (() => Promise<void>)[]
-	): Promise<void> {
-		let isBetWon = false;
-		let crashedMultiplier = 0.0;
-
-		while (!isBetWon) {
-			logger.info("Starting a new round and placing a bet...");
-
-			for (const action of actions) {
-				await action();
-			}
-
-			const crashedMultiplierString = await this.getCrashedMultiplier();
-			crashedMultiplier = parseFloat(crashedMultiplierString);
-
-			logger.info(`Crashed Multiplier: ${crashedMultiplier}`);
-
-			if (crashedMultiplier >= multiplier) {
-				logger.info(
-					`Bet won! Multiplier reached: ${crashedMultiplier}. Exiting game...`,
-				);
-				isBetWon = true;
-			} else {
-				logger.warn(
-					`Bet lost. Multiplier crashed at: ${crashedMultiplier}. Retrying...`,
-				);
-			}
-		}
-	}
-
 	@step("Get current bet amount")
 	public async getCurrentBetAmount(): Promise<number> {
 		const betAmountText = await this.map.betField.inputValue();
-		return parseFloat(betAmountText);
+		return parseFloat(betAmountText.replace(sanitizeAmount, ""));
 	}
 
 	@step("Wait for betting window to be available")
@@ -104,7 +67,7 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 	@step("Wait for crash")
 	public async waitCrash(timeout = Timeout.EXTRA_MAX / 2): Promise<void> {
 		await this.map.multiplierCounterCrashed.waitFor({
-			state: "attached",
+			state: VisibilityState.ATTACHED,
 			timeout: timeout,
 		});
 	}
@@ -113,16 +76,13 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 	public async waitPreviousBetRoundFinish(
 		timeout = Timeout.EXTRA_MAX / 2,
 	): Promise<void> {
-		await this.assertThat().waitPlayerBetBoxesAbsent(timeout);
+		await this.assertThat().waitBetBoxAbsent(timeout);
 	}
 
 	@step("Get crashed multiplier")
 	public async getCrashedMultiplier(): Promise<string> {
 		await this.waitCrash();
-		const crashedMultiplierText =
-			await this.map.multiplierCounterCrashed.innerText();
-
-		return crashedMultiplierText;
+		return this.map.multiplierCounterCrashed.innerText();
 	}
 
 	@step("Get countdown timer")
@@ -131,9 +91,7 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 			[this.map.spinningCountdownCounter],
 			Timeout.EXTRA_MAX / 2,
 		);
-		const countdownTimerText =
-			await this.map.spinningCountdownCounter.innerText();
-		return countdownTimerText;
+		return this.map.spinningCountdownCounter.innerText();
 	}
 
 	@step("Place bet")
@@ -148,87 +106,46 @@ export class CrashGamePage extends BasePage<CrashGamePageMap> {
 		await this.map.placeBetBtn.click();
 	}
 
-	@step("Toggle autobet")
-	public async toggleAutobet(): Promise<void> {
-		await this.map.autobetButton.click();
-	}
-
-	@step("Set stop bet if more than amount")
-	public async stopBetIfMoreThan(amount: number): Promise<void> {
-		await this.map.stopBetIfMoreThanField.fill(amount.toString());
-	}
-
-	@step("Stop autobetting")
-	public async stopAutobetting(): Promise<void> {
-		await this.map.placeBetBtn.click();
+	@step("Place autobet")
+	public async placeAutoBet(
+		betAmount: number,
+		autoCashoutMultiplier: number,
+	): Promise<void> {
+		await this.waitPreviousBetRoundFinish();
+		await this.waitBettingWindowAvailable();
+		await this.fillInBetAmount(betAmount);
+		await this.map.autoCashOutField.fill(`${autoCashoutMultiplier}`);
+		await this.map.autoPlayBtn.click();
 	}
 
 	@step("Fill in bet amount")
 	public async fillInBetAmount(betAmount: number): Promise<void> {
-		await this.map.betField.fill(betAmount.toString());
+		await this.map.betField.fill(String(betAmount));
 	}
 
-	/**
-	 * Selects an option from the "On Win" or "On Loss" dropdown based on the provided condition and option text.
-	 *
-	 * @param {"win" | "loss"} condition - Specifies whether to select from the "On Win" or "On Loss" dropdown.
-	 * @param {string} option - The text of the option to select within the dropdown.
-	 * @returns {Promise<void>} A promise that resolves when the option has been selected.
-	 */
-	@step("Select win or loss condition")
-	public async selectWinOrLossCondition(
-		condition: BetIncreaseCondition,
-		option: string,
-	): Promise<void> {
-		const dropdown =
-			condition === "win"
-				? this.map.onWinDropdown
-				: this.map.onLossDropdown;
+	@step("Toggle autobet")
+	public async toggleAutobet(stopBetAmount?: number): Promise<void> {
+		await this.navigate();
+		await this.map.autobetToggle.click();
+		if (stopBetAmount !== undefined) {
+			await this.map.stopBetIfMoreThanField.fill(
+				stopBetAmount.toString(),
+			);
+		}
+	}
 
-		await dropdown.click();
-
-		await this.map.onConditionOption(option).click();
+	@step("Select increase by condition")
+	public async selectIncreaseBy(type: BetIncreaseCondition): Promise<void> {
+		await this.map.getOnConditionSelectButton(type).click();
+		await this.map.getOnConditionOption(type, "Inc").click();
 	}
 
 	@step("Fill increase by input")
-	public async fillIncreaseByInput(increaseByAmount: number): Promise<void> {
-		await this.map.increaseByInput.fill(increaseByAmount.toString());
-	}
-
-	@step("Wait for previous bet round to finish - v4")
-	public async waitPreviousBetRoundFinishV4(
-		timeout = Timeout.EXTRA_MAX / 2,
+	public async fillIncreaseByInput(
+		type: BetIncreaseCondition,
+		value: number,
 	): Promise<void> {
-		await this.assertThat().waitPlayerBetBoxesAbsentV4(timeout);
-	}
-
-	@step("Wait for betting window to be available - v4")
-	public async waitBettingWindowAvailableV4(
-		timeout = Timeout.EXTRA_MAX / 2,
-	): Promise<void> {
-		await this.map.waitForVisibility({
-			locator: this.map.spinningCountdownCounterV4,
-			timeout: timeout,
-		});
-	}
-
-	@step("Fill in bet amount - v4")
-	public async fillInBetAmountV4(betAmount: number): Promise<void> {
-		await this.map.betFieldV4.click();
-		await this.map.betFieldV4.selectText();
-		await this.map.betFieldV4.press("Backspace");
-		await this.map.betFieldV4.pressSequentially(String(betAmount));
-	}
-
-	@step("Place bet - v4")
-	public async placeBetV4(
-		betAmount: number,
-		autoCashoutMultiplier: number,
-	): Promise<void> {
-		await this.waitPreviousBetRoundFinishV4();
-		await this.waitBettingWindowAvailableV4();
-		await this.fillInBetAmountV4(betAmount);
-		await this.map.autoCashOutFieldV4.fill(`${autoCashoutMultiplier}`);
-		await this.map.placeBetBtnV4.click();
+		await this.selectIncreaseBy(type);
+		await this.map.getIncreaseByInput(type).fill(`${value}`);
 	}
 }

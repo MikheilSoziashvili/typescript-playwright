@@ -1,7 +1,9 @@
 import {
 	BlogVerifySocialShareLinksCsv,
+	CrashAutoCashoutCsv,
+	CrashIncreaseBysCsv,
 	DiceAutobetCsv,
-CasinoGamesAggregatorProviderCsv,
+	CasinoGamesAggregatorProviderCsv,
 	ChatDiamondIconForVipUsersCsv,
 	ChatPinMessagePermissionsCsv,
 	ChatroomsSuccessfullySelectedCsv,
@@ -99,4 +101,6 @@ export type CsvDtoMap = {
 	[CsvFilesName.CASINO_GAME_INSTANT_REWARDS_ROYALTY_UP_LEVELS]: CasinoGameInstantRewardsRoyaltyUpLevelsCsv;
 	[CsvFilesName.KOTH_POINTS_CALCULATION]: KothPointsCalculationCsv;
 	[CsvFilesName.DICE_AUTOBET]: DiceAutobetCsv;
+	[CsvFilesName.CRASH_AUTO_CASHOUT]: CrashAutoCashoutCsv;
+	[CsvFilesName.CRASH_INCREASE_BY]: CrashIncreaseBysCsv;
 };

@@ -1,190 +1,97 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
+import { BetIncreaseCondition } from "@enums/crash-autobet-section";
 
 export class CrashGamePageMap extends BaseMap {
 	public constructor(page: Page) {
 		super(page);
 	}
 
-	public get mainContainer(): Locator {
-		return this.page.locator("#site_content");
-	}
-
-	public get gameContainerV3(): Locator {
-		return this.mainContainer.getByTestId("crashGridControls");
-	}
-
 	public get gameContainer(): Locator {
-		return this.gameContainerV3.or(this.gameContainerV4);
-	}
-
-	public get chart(): Locator {
-		return this.gameContainer.locator("#chart-inner-container");
-	}
-
-	public get multiplierCounterProgressing(): Locator {
-		return this.chart.getByTestId("crashInProgressState");
-	}
-
-	public get multiplierCounterCrashed(): Locator {
-		return this.chart.getByTestId("crashStateCrashed");
-	}
-
-	public get betOptions(): Locator {
-		return this.gameContainer.getByTestId("crashPlaceBetGrid");
-	}
-
-	public get yourBetContainer(): Locator {
-		return this.page.getByTestId("crashYourBetContainer");
-	}
-
-	public get betField(): Locator {
-		return this.yourBetContainer.getByLabel("Your bet");
-	}
-
-	public get autoCashoutContainer(): Locator {
-		return this.page.getByTestId("crashAutoCashoutContainer");
-	}
-
-	public get autoCashOutField(): Locator {
-		return this.autoCashoutContainer.getByLabel("Auto Cashout");
-	}
-
-	public get placeBetBtn(): Locator {
-		return this.betOptions
-			.getByTestId("crashPlaceBetButton")
-			.locator("button");
-	}
-
-	public get spinningCountdownCounter(): Locator {
-		return this.chart.getByTestId("crashSpinningCountdownCounter");
-	}
-
-	public get playersGridContainer(): Locator {
-		return this.mainContainer.getByTestId("crashPlayersListContainer");
-	}
-
-	public get playersGrid(): Locator {
-		return this.playersGridContainer.getByLabel("grid");
-	}
-
-	public get playersGridRows(): Locator {
-		return this.playersGridContainer
-			.getByLabel("grid")
-			.getByRole("rowgroup")
-			.getByRole("row");
-	}
-
-	public get playersGridRowCells(): Locator {
-		return this.playersGridContainer
-			.getByLabel("grid")
-			.getByRole("row")
-			.getByRole("gridcell");
-	}
-
-	public get betBoxesContainer(): Locator {
-		return this.betOptions.getByTestId("crashCurrentBetBoxesContainer");
-	}
-
-	public get betBoxes(): Promise<Locator[]> {
-		return this.betBoxesContainer.locator("div#MultiBetRow > div").all();
-	}
-
-	public betBoxBetAmount(betBox: Locator): Locator {
-		return betBox.locator("input");
-	}
-
-	public get autobetButton(): Locator {
-		return this.betOptions.locator('input[type="checkbox"]');
-	}
-
-	public get stopBetIfMoreThanField(): Locator {
-		return this.betOptions.getByLabel("Stop if bet is more than");
-	}
-
-	public get potentialWinAmount(): Locator {
-		return this.betBoxesContainer.locator("span.currency-amount").nth(1);
-	}
-
-	public get potentialText(): Locator {
-		return this.betBoxesContainer.locator('h6:has-text("Paid Out")');
-	}
-
-	public get cashoutButton(): Locator {
-		return this.betBoxesContainer.locator('button:has-text("Cashout")');
-	}
-
-	public get successButton(): Locator {
-		return this.betBoxesContainer.locator('button:has-text("Success")');
-	}
-
-	public get onWinDropdown(): Locator {
-		return this.betOptions.locator('div[role="combobox"]').nth(0);
-	}
-
-	public get onLossDropdown(): Locator {
-		return this.betOptions.locator('div[role="combobox"]').nth(1);
-	}
-
-	public get onWinAndLossContainter(): Locator {
-		return this.page.locator('ul[role="listbox"]');
-	}
-
-	public onConditionOption(option: string): Locator {
-		return this.onWinAndLossContainter.locator("li", {
-			hasText: option,
-		});
-	}
-
-	public get increaseByInput(): Locator {
-		return this.betOptions.locator(
-			'div.MuiFormControl-root input[type="text"].MuiOutlinedInput-input',
-		);
-	}
-
-	public get mainContainerV4(): Locator {
-		return this.page.getByTestId("main-layout-content");
-	}
-
-	public get gameContainerV4(): Locator {
-		return this.mainContainerV4.locator(
-			"*[class*='Crash-styled__GamePrimarySection-sc-']",
-		);
-	}
-
-	public get betBoxesV4(): Locator {
-		return this.page.locator("UserBets-styled__Wrapper-sc-");
-	}
-
-	public get chartInnerContainerV4(): Locator {
 		return this.page.locator("#chart-inner-container");
 	}
 
-	public get spinningCountdownCounterV4(): Locator {
-		return this.chartInnerContainerV4.getByTestId(
-			"crashSpinningCountdownCounter",
-		);
+	public get multiplierCounterProgressing(): Locator {
+		return this.page.getByTestId("crashInProgressState");
 	}
 
-	public get yourBetContainerV4(): Locator {
-		return this.page.getByTestId("crashBetAmountInput-container");
+	public get multiplierCounterCrashed(): Locator {
+		return this.page.getByTestId("crashStateCrashed");
 	}
 
-	public get betFieldV4(): Locator {
-		return this.page.getByLabel("Bet amount", { exact: true });
+	public get spinningCountdownCounter(): Locator {
+		return this.page.getByTestId("crashSpinningCountdownCounter");
 	}
 
-	public get autoCashoutContainerV4(): Locator {
-		return this.page.getByTestId("crashCashOutInput-container");
+	public get betField(): Locator {
+		return this.page.getByRole("textbox", { name: "Bet amount" });
 	}
 
-	public get autoCashOutFieldV4(): Locator {
-		return this.autoCashoutContainerV4.getByTestId(
-			"crashCashOutInput-input",
-		);
+	public get autoCashOutField(): Locator {
+		return this.page.getByTestId("crashCashOutInput-input");
 	}
 
-	public get placeBetBtnV4(): Locator {
+	public get placeBetBtn(): Locator {
 		return this.page.getByTestId("crashPlayButton");
+	}
+
+	public get betBox(): Locator {
+		return this.page.locator("[class*='UserBets-styled__Wrapper-sc-']");
+	}
+
+	public get betItemYourBetInput(): Locator {
+		return this.page.getByTestId("crashSingleBetItemYourBet-input");
+	}
+
+	public get betItemButton(): Locator {
+		return this.page.getByTestId("crashSingleBetItemButton");
+	}
+
+	public get betItemPotential(): Locator {
+		return this.page.getByTestId("crashSingleBetItemPotential");
+	}
+
+	public get statsTableBody(): Locator {
+		return this.page.getByTestId("game-stats-area-grid-tbody");
+	}
+
+	// Autobet locators
+	public get autoPlayBtn(): Locator {
+		return this.page.getByTestId("crashAutoPlayButton");
+	}
+
+	public get autobetToggle(): Locator {
+		return this.page
+			.getByTestId("crashAutoBetLabel")
+			.locator("xpath=following-sibling::label");
+	}
+
+	public get stopBetIfMoreThanField(): Locator {
+		return this.page.getByRole("textbox", {
+			name: "Stop if bet is more than",
+		});
+	}
+
+	public getOnConditionSelectButton(
+		type: BetIncreaseCondition,
+	): Locator {
+		return this.page.getByTestId(
+			`crashOn${type === BetIncreaseCondition.WIN ? "Win" : "Loss"}Select-button`,
+		);
+	}
+
+	public getOnConditionOption(
+		type: BetIncreaseCondition,
+		option: "Ret" | "Inc",
+	): Locator {
+		return this.page.getByTestId(
+			`crashOn${type === BetIncreaseCondition.WIN ? "Win" : "Loss"}Select-option-${option}`,
+		);
+	}
+
+	public getIncreaseByInput(type: BetIncreaseCondition): Locator {
+		return this.page.getByTestId(
+			`crashOn${type === BetIncreaseCondition.WIN ? "Win" : "Loss"}AutoBetMultiplierOn${type === BetIncreaseCondition.WIN ? "Win" : "Loss"}-Input`,
+		);
 	}
 }

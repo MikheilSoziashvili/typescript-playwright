@@ -1,14 +1,16 @@
-import { Locator, expect } from "@playwright/test";
+import { expect } from "@playwright/test";
 import { step } from "decorators/step";
 import { BaseAsserter } from "@base/base-asserter";
+import { BetTestData } from "@dtos/test-data";
 import { CrashGamePage } from "./crash-game-page";
 import { Timeout } from "@enums/timeout";
-import { formatCurrency, parseToFloat } from "@core/utils/utils";
-import { Attributes } from "@enums/playwright/htmlAttributes";
-import { BetIncreaseCondition } from "@enums/crash-autobet-section";
-import { Locale } from "@enums/locale";
-import { Currency } from "@enums/currencies";
+import { parseToFloat } from "@core/utils/utils";
+import {
+	BetIncreaseCondition,
+	CrashBetItemStatus,
+} from "@enums/crash-autobet-section";
 import { IntervalMs } from "@enums/interval-millisecond";
+import { sanitizeAmount } from "@support/regex-patterns";
 
 export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 	public constructor(page: CrashGamePage) {
@@ -19,55 +21,40 @@ export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 	public async playerBetsAccepted(
 		bets: {
 			username: string;
-			betAmount: string;
+			betAmount: number;
 		}[],
 	): Promise<void> {
-		for (const bet of bets as { username: string; betAmount: string }[]) {
-			const formattedAmount = formatCurrency(
-				Number(bet.betAmount),
-				Locale.EN_US,
-				Currency.USD,
-			);
-
-			await expect(this.gamdomPage.map.playersGridRowCells).toContainText(
-				[bet.username, formattedAmount],
-				{ timeout: Timeout.EXTRA_MAX },
-			);
-		}
-	}
-
-	@step("Check player bet boxes are displayed")
-	public async playerBetBoxesDisplayed(
-		bets: { betAmount: string }[],
-	): Promise<void> {
-		let betBoxes: Locator[] = [];
-
-		await expect(async () => {
-			betBoxes = await this.gamdomPage.map.betBoxes;
-			expect(betBoxes).toHaveLength(bets.length);
-		}).toPass({
-			timeout: Timeout.SHORT,
-			intervals: [300],
-		});
-
 		for (const bet of bets) {
-			for (const betBox of betBoxes) {
-				await expect(
-					this.gamdomPage.map.betBoxBetAmount(betBox),
-				).toHaveAttribute(Attributes.VALUE, bet.betAmount);
-			}
+			const row = this.gamdomPage.map.statsTableBody.filter({
+				hasText: bet.username,
+			});
+			await expect(row).toBeVisible({ timeout: Timeout.EXTRA_MAX });
+			await expect
+				.poll(async () => {
+					const rawText = await row.textContent();
+					return rawText?.replace(sanitizeAmount, "");
+				})
+				.toContain(bet.betAmount.toFixed(2));
 		}
 	}
 
-	@step("Wait for player bet boxes to be absent")
-	public async waitPlayerBetBoxesAbsent(timeout: number): Promise<void> {
-		const betBoxes: Locator[] = await this.gamdomPage.map.betBoxes;
-		for (const betBox of betBoxes) {
-			await expect(betBox).toBeAttached({
-				attached: false,
-				timeout: timeout,
-			});
-		}
+	@step("Check bet box is displayed with correct amount")
+	public async betBoxDisplayed(betAmount: number): Promise<void> {
+		await expect
+			.poll(async () => {
+				const rawValue =
+					await this.gamdomPage.map.betItemYourBetInput.inputValue();
+				return rawValue.replace(sanitizeAmount, "");
+			})
+			.toBe(betAmount.toFixed(2));
+	}
+
+	@step("Wait for bet box to be absent")
+	public async waitBetBoxAbsent(timeout: number): Promise<void> {
+		await expect(this.gamdomPage.map.betBox).toBeAttached({
+			attached: false,
+			timeout: timeout,
+		});
 	}
 
 	@step("Check expected and actual winnings match")
@@ -83,23 +70,106 @@ export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 
 	@step("Check potential win is displayed")
 	public async potentialWinDisplayed(potentialWin: number): Promise<void> {
-		await expect(this.gamdomPage.map.potentialWinAmount).toContainText(
-			`$${parseToFloat(potentialWin)}`,
+		await expect
+			.poll(async () => {
+				const rawText =
+					await this.gamdomPage.map.betItemPotential.textContent();
+				return rawText?.replace(sanitizeAmount, "");
+			})
+			.toContain(parseToFloat(potentialWin));
+	}
+
+	@step("Check bet item button displays success")
+	public async betWonSuccess(): Promise<void> {
+		await expect(this.gamdomPage.map.betItemButton).toContainText(
+			CrashBetItemStatus.SUCCESS,
 		);
+	}
+
+	@step("Check paid out amount is displayed")
+	public async paidOutDisplayed(paidOutAmount: number): Promise<void> {
+		await expect(this.gamdomPage.map.betItemPotential).toContainText(
+			CrashBetItemStatus.PAID_OUT,
+		);
+		await expect
+			.poll(async () => {
+				const rawText =
+					await this.gamdomPage.map.betItemPotential.textContent();
+				return rawText?.replace(sanitizeAmount, "");
+			})
+			.toContain(parseToFloat(paidOutAmount));
+	}
+
+	@step("Assert bet registration")
+	public async betIsRegistered(
+		betTestData: BetTestData,
+		balanceBefore: number,
+	): Promise<void> {
+		await this.playerBetsAccepted([
+			{
+				username: betTestData.username,
+				betAmount: betTestData.betAmount,
+			},
+		]);
+		await this.betBoxDisplayed(betTestData.betAmount);
+
+		const potentialWin = this.gamdomPage.calculateWinnings(
+			betTestData.betAmount,
+			betTestData.autoCashoutMultiplier,
+		);
+		await this.potentialWinDisplayed(potentialWin);
+
+		await expect
+			.poll(
+				async () =>
+					this.userBalanceHandler.walletBalanceInFiatRounded(),
+				{
+					message: `Balance should decrease by ${betTestData.betAmount} after placing bet`,
+					intervals: [IntervalMs.NORMAL],
+					timeout: Timeout.SHORT,
+				},
+			)
+			.toBe(balanceBefore - betTestData.betAmount);
+	}
+
+	@step("Assert account balance is correct after play")
+	public async balanceAfterWinIsCorrect(
+		accountBalanceBeforePlay: number,
+		totalBetsPlaced: number,
+		winnings: number,
+	): Promise<void> {
+		const expectedBalance = this.gamdomPage.calculateExpectedBalance(
+			accountBalanceBeforePlay,
+			totalBetsPlaced,
+			winnings,
+		);
+		await expect
+			.poll(
+				async () =>
+					this.userBalanceHandler.walletBalanceInFiatRounded(),
+				{
+					message: `Account balance should settle at ${expectedBalance} after payout`,
+					intervals: [IntervalMs.NORMAL],
+					timeout: Timeout.LONG,
+				},
+			)
+			.toBe(expectedBalance);
 	}
 
 	@step("Check start autobet button is enabled")
 	public async startAutobetButtonIsEnabled(): Promise<void> {
-		await expect(this.gamdomPage.map.placeBetBtn).toBeEnabled();
-		await expect(this.gamdomPage.map.placeBetBtn).toHaveText(
-			"Start Autobet",
+		await expect(this.gamdomPage.map.autoPlayBtn).toBeEnabled();
+		await expect(this.gamdomPage.map.autoPlayBtn).toHaveText(
+			"Start auto bet",
 		);
 	}
 
-	@step("Check bet amount is equal to expected")
-	public async betAmountIsEqualTo(betAmount: number): Promise<void> {
-		const amount = this.gamdomPage.getCurrentBetAmount();
-		expect(betAmount).toEqual(amount);
+	@step("Verify balance is correct")
+	public async verifyBalance(
+		actualBalance: number,
+		expectedBalance: number,
+	): Promise<void> {
+		expect(actualBalance).toBe(expectedBalance);
 	}
 
 	@step("Verify bet amount updated correctly")
@@ -118,7 +188,11 @@ export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 			(increaseCondition === BetIncreaseCondition.WIN && betWon) ||
 			(increaseCondition === BetIncreaseCondition.LOSS && !betWon)
 		) {
-			expectedBetAmount = previousBetAmount * increaseByMultiplier;
+			expectedBetAmount = parseFloat(
+				(previousBetAmount * (1 + increaseByMultiplier / 100)).toFixed(
+					2,
+				),
+			);
 		} else {
 			expectedBetAmount = baseBetAmount;
 		}
@@ -132,14 +206,5 @@ export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 			.toEqual(expectedBetAmount);
 
 		return currentBetAmount;
-	}
-
-	@step("Wait for player bet boxes to be absent - v4")
-	public async waitPlayerBetBoxesAbsentV4(timeout: number): Promise<void> {
-		const betBoxes = this.gamdomPage.map.betBoxesV4;
-		await expect(betBoxes).toBeAttached({
-			attached: false,
-			timeout: timeout,
-		});
 	}
 }

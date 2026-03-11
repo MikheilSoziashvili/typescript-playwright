@@ -17,6 +17,7 @@ export class BetTestDataObjectFactory extends BaseTestDataObjectFactory<
 			overrides?.username ?? base.username,
 			overrides?.betAmount ?? base.betAmount,
 			overrides?.autoCashoutMultiplier ?? base.autoCashoutMultiplier,
+			overrides?.stopBetAmount ?? base.stopBetAmount,
 		);
 	}
 
@@ -35,7 +36,7 @@ export class BetTestDataObjectFactory extends BaseTestDataObjectFactory<
 	} {
 		return {
 			normalBetMinMultiplier: new BetTestData(username, 10, 1.1),
-			normalBetMediumMultiplier: new BetTestData(username, 10, 1.5),
+			normalBetMediumMultiplier: new BetTestData(username, 10, 1.5, 200),
 			highBetMinMultiplier: new BetTestData(username, 100, 1.2),
 		};
 	}
