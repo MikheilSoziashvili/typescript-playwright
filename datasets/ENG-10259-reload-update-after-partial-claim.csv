@@ -1,4 +1,4 @@
 days,reloadCoins,dailyReward,dailyRewardAmount,updateRewardsDays,totalRewards,totalRewardsAmount,perClaimAmount,shouldToastBePresent,shouldRewardBePresent,shouldRewardBeClaimable,expectedToastType,adminExpected,clientExpected
-7,150000,100,$100,1,100,$100,0,true,false,false,Success!,considered finished as the new total equals the claimed reward,not displayed anymore
-7,15000,10,$10,1,130,$130,$20,true,true,true,Success!,updated according to set configuration,displayed the Reward available for claim
-3,15000,10,$10,1,5,$5,$10,true,true,false,Failed!,failed to update,displayed the Reward available for claim
+7,150000,100,$100,1,100,$100,0,true,false,false,SUCCESS,considered finished as the new total equals the claimed reward,not displayed anymore
+7,15000,10,$10,1,130,$130,$20,true,true,true,SUCCESS,updated according to set configuration,displayed the Reward available for claim
+3,15000,10,$10,1,5,$5,$10,true,true,false,FAILED,failed to update,displayed the Reward available for claim

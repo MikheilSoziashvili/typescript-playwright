@@ -20,7 +20,7 @@ export class RewardsPageMap extends BaseMap {
 	}
 
 	public get rewardsOffersList(): Locator {
-		return this.page.getByTestId("RakeBackSlider-content-swiper");
+		return this.page.getByTestId("RakeBackSlider");
 	}
 
 	public get rewardsSpecialOfferCard(): Locator {
@@ -121,15 +121,19 @@ export class RewardsPageMap extends BaseMap {
 	}
 
 	public rewardCard(reward: string): Locator {
-		return this.page.locator('div[class^="common-styled__ItemWrapper"]', {
-			has: this.page.getByText(reward),
+		return this.page.locator('div[class*="RewardCard-styled__Wrapper"]', {
+			has: this.page
+				.getByTestId("SpecialRewardCardTitle")
+				.filter({ hasText: reward }),
 		});
 	}
 
 	public rewardCardButton(reward: string, buttonText: string): Locator {
-		return this.rewardCard(reward).locator("button", {
-			has: this.page.getByText(buttonText),
-		});
+		return this.rewardCard(reward)
+			.getByTestId("SpecialRewardCardButton")
+			.filter({
+				hasText: buttonText,
+			});
 	}
 
 	public rewardCardButtonValue(reward: string, buttonText: string): Locator {
@@ -139,17 +143,25 @@ export class RewardsPageMap extends BaseMap {
 	}
 
 	public getRewardCard(type: RewardType): Locator {
-		return this.page.getByTestId(`rewardsCard-${type}`);
+		const labelMap = {
+			instant_rakeback: "Instant",
+			weekly: "Weekly",
+			monthly: "Monthly",
+		} as const;
+
+		return this.rewardsBlock
+			.locator('article[class*="RakeBackItem-styled__Wrapper"]')
+			.filter({ hasText: labelMap[type] });
 	}
 
 	public getRewardAmount(type: RewardType): Locator {
-		return this.getRewardCard(type).getByTestId(`rewardsAmount-${type}`);
+		return this.getRewardCard(type)
+			.getByTestId("RakeBackItemButton")
+			.locator(".currency-amount");
 	}
 
 	public getRewardClaimButton(type: RewardType): Locator {
-		return this.getRewardCard(type).locator("button", {
-			hasText: "Claim Reward",
-		});
+		return this.getRewardCard(type).getByTestId("RakeBackItemButton");
 	}
 
 	public get promoBannersSlider(): Locator {
@@ -159,14 +171,14 @@ export class RewardsPageMap extends BaseMap {
 	}
 
 	public get royaltyUpCardItem(): Locator {
-		return this.page.locator(`div[class*="RoyaltyUpItem-styled__Item-sc"]`);
+		return this.page.locator('div[class*="RoyaltyUpItem-styled__Wrapper"]');
 	}
 
 	public get royaltyUpClaimButton(): Locator {
 		return this.page
-			.locator('div[class*="RoyaltyUpItem-styled__Item-sc"]', {
+			.locator('div[class*="RoyaltyUpItem-styled__Wrapper"]', {
 				hasText: "Bronze 3",
 			})
-			.locator('button:has-text("Claim")');
+			.getByTestId("RoyaltyUpItemButton");
 	}
 }
