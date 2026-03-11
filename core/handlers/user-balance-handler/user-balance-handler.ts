@@ -408,6 +408,26 @@ export class UserBalanceHandler extends BaseComponent<BaseMap> {
 	}
 
 	/**
+	 * Returns the raw wallet balance and crypto price from a single get-wallets API call.
+	 * Using a single call ensures both values share the same price snapshot,
+	 * eliminating price drift between separate API calls.
+	 * @param unit - Wallet unit type.
+	 * @param type - Wallet type (DEFAULT or VAULT).
+	 * @returns Object with raw balance, cryptoPrice, and atomic divisor.
+	 */
+	public async getWalletBalanceSnapshot(
+		unit: Unit,
+		type: WalletType = WalletType.DEFAULT,
+	): Promise<{ balance: number; cryptoPrice: number; divisor: number }> {
+		const entry = await this.getWalletEntry(unit, type);
+		return {
+			balance: entry.balance,
+			cryptoPrice: +entry.cryptoPrice,
+			divisor: ATOMIC_DIVISOR[unit],
+		};
+	}
+
+	/**
 	 * Converts crypto whole units to smallest atomic units (e.g., XRP to drops, BTC to satoshi).
 	 * @param amount - Amount in whole crypto units (e.g., 1.5 XRP).
 	 * @param unit - Target wallet unit type.

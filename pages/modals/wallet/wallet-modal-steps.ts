@@ -73,7 +73,9 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 			.vaultDepositToastMessageIsDisplayed(formattedAmount);
 		await this.gamdomPage.openWithdrawTabInVault();
 		await this.gamdomPage.selectWalletOption(wallet);
-		await this.gamdomPage.assertThat().vaultWalletAmountIs(amount, unit);
+		await this.gamdomPage
+			.assertThat()
+			.vaultWalletAmountIs(expectedAmountUsd, unit);
 	}
 
 	@step(
@@ -104,7 +106,16 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 			.vaultWithdrawToastMessageIsDisplayed(formattedToast);
 		await this.gamdomPage.openDepositTabInVault();
 		await this.gamdomPage.selectWalletOption(wallet);
-		await this.gamdomPage.assertThat().vaultWalletAmountIs(1, unit);
+
+		const remainingUsd =
+			await this.userBalanceHandler.walletBalanceInFiatRounded(
+				unit,
+				Currency.USD,
+				WalletType.VAULT,
+			);
+		await this.gamdomPage
+			.assertThat()
+			.vaultWalletAmountIs(remainingUsd, unit);
 	}
 
 	@step("Withdraw in vault with 2FA flow")
@@ -236,7 +247,9 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 			.vaultDepositToastMessageIsDisplayedV4(formattedAmount);
 		await this.gamdomPage.openWithdrawTabInVaultV4();
 		await this.gamdomPage.selectWalletOptionV4(wallet);
-		await this.gamdomPage.assertThat().vaultWalletAmountIs(amount, unit);
+		await this.gamdomPage
+			.assertThat()
+			.vaultWalletAmountIs(expectedAmountUsd, unit);
 	}
 
 	@step(
@@ -267,7 +280,16 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 			.vaultWithdrawToastMessageIsDisplayedV4(formattedToast);
 		await this.gamdomPage.openDepositTabInVaultV4();
 		await this.gamdomPage.selectWalletOptionV4(wallet);
-		await this.gamdomPage.assertThat().vaultWalletAmountIs(1, unit);
+
+		const remainingUsd =
+			await this.userBalanceHandler.walletBalanceInFiatRounded(
+				unit,
+				Currency.USD,
+				WalletType.VAULT,
+			);
+		await this.gamdomPage
+			.assertThat()
+			.vaultWalletAmountIs(remainingUsd, unit);
 	}
 
 	@step("Get vault amount minus one - v4")

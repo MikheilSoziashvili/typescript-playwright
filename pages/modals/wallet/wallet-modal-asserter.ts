@@ -32,14 +32,35 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 		expectedUsd: number,
 		unit: Unit,
 	): Promise<void> {
-		const backendUsd =
-			await this.userBalanceHandler.walletBalanceInFiatRounded(
-				unit,
-				Currency.USD,
-				WalletType.VAULT,
-			);
+		if (unit === Unit.COINS) {
+			const backendUsd =
+				await this.userBalanceHandler.walletBalanceInFiatRounded(
+					unit,
+					Currency.USD,
+					WalletType.VAULT,
+				);
+			expect(backendUsd).toBeCloseTo(expectedUsd, 1);
+			return;
+		}
 
-		expect(backendUsd).toBeCloseTo(expectedUsd, 1);
+		const {
+			balance: actualBalance,
+			cryptoPrice,
+			divisor,
+		} = await this.userBalanceHandler.getWalletBalanceSnapshot(
+			unit,
+			WalletType.VAULT,
+		);
+
+		const expectedBalance = (expectedUsd / cryptoPrice) * divisor;
+		const tolerance = Math.max(expectedBalance * 0.001, 1);
+
+		expect(actualBalance).toBeGreaterThanOrEqual(
+			Math.floor(expectedBalance - tolerance),
+		);
+		expect(actualBalance).toBeLessThanOrEqual(
+			Math.ceil(expectedBalance + tolerance),
+		);
 	}
 
 	@step("Vault deposit toast message is displayed")
