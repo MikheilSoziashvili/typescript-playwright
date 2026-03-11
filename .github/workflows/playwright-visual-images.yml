@@ -5,8 +5,16 @@ on:
         inputs:
             environment:
                 description: "Environment to run tests against"
-                type: string
+                type: choice
                 required: true
+                options:
+                    - qa
+                    - staging
+                    - custom
+            env_url:
+                description: "Custom Environment URL (required if environment=custom)"
+                type: string
+                required: false
             tag:
                 description: "Tag scope"
                 required: true
@@ -32,6 +40,7 @@ jobs:
     visual-tests-images:
         timeout-minutes: 60
         runs-on: self-hosted-dind-playwright
+        environment: ${{ ((inputs.environment || 'staging') == 'custom' && null) || (inputs.environment || 'staging') }}
 
         env:
             CI: ""
@@ -42,6 +51,8 @@ jobs:
             XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
             XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
             STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
+            STEAM_BANNED_USERNAME: ${{ secrets.STEAM_BANNED_USERNAME }}
+            BANNED_STEAM_USER: ${{ secrets.BANNED_STEAM_USER }}
             STEAM_PASSWORD: ${{ secrets.STEAM_PASSWORD }}
             GOOGLE_EMAIL: ${{ secrets.GOOGLE_EMAIL }}
             GOOGLE_PASSWORD: ${{ secrets.GOOGLE_PASSWORD }}
@@ -49,7 +60,13 @@ jobs:
             OXYLABS_USER: ${{ secrets.OXYLABS_USER }}
             OXYLABS_PASSWORD: ${{ secrets.OXYLABS_PASSWORD }}
             E2E_HOT_WALLET_CONFIG_ADMIN_API_KEY: ${{ secrets.E2E_HOT_WALLET_CONFIG_ADMIN_API_KEY }}
-            ENVIRONMENT_URL: ${{ inputs.environment == '' && vars.ENVIRONMENT_URL || inputs.environment }}
+            ENVIRONMENT_URL: >-
+                ${{
+                  (inputs.environment || 'staging') == 'custom'
+                    && inputs.env_url
+                  || inputs.env_url
+                  || vars.ENVIRONMENT_URL
+                }}
             SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
             SLACK_CRYPTO_LOW_WALLET_BALANCE_E2E_BOT_TOKEN: ${{secrets.SLACK_CRYPTO_LOW_WALLET_BALANCE_E2E_BOT_TOKEN}}
             OAUTH2_JWT: ${{ secrets.OAUTH2_JWT }}
@@ -63,14 +80,42 @@ jobs:
             BITCOIN_RPC_USER: ${{ secrets.BITCOIN_RPC_USER }}
             BITCOIN_RPC_PASS: ${{ secrets.BITCOIN_RPC_PASS }}
             FIREBLOCKS_API_KEY: ${{ secrets.FIREBLOCKS_API_KEY }}
-            FIREBLOCKS_BASE_URL: ${{ secrets.FIREBLOCKS_BASE_URL }}
+            FIREBLOCKS_BASE_URL: ${{ vars.FIREBLOCKS_BASE_URL }}
             FIREBLOCKS_SECRET_KEY: ${{ secrets.FIREBLOCKS_SECRET_KEY }}
             FIREBLOCKS_SECRET_KEY_PATH: ${{ secrets.FIREBLOCKS_SECRET_KEY_PATH }}
             FIREBLOCKS_USDT_ASSET_ID: ${{ secrets.FIREBLOCKS_USDT_ASSET_ID }}
-            FIREBLOCKS_VAULT_ID: ${{ secrets.FIREBLOCKS_VAULT_ID }}
+            FIREBLOCKS_VAULT_ID: ${{ vars.FIREBLOCKS_VAULT_ID }}
             TAG: ${{ inputs.tag == '' && 'visual' || inputs.tag }}
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            AWS_DEFAULT_REGION: eu-west-2
+            XRP_TESTNET_WALLET_SEED: ${{ secrets.XRP_TESTNET_WALLET_SEED }}
+            XRP_TESTNET_WALLET_SEED_WORKER_0: ${{ secrets.XRP_TESTNET_WALLET_SEED_WORKER_0 }}
+            XRP_TESTNET_WALLET_SEED_WORKER_1: ${{ secrets.XRP_TESTNET_WALLET_SEED_WORKER_1 }}
+            XRP_TESTNET_WALLET_SEED_WORKER_2: ${{ secrets.XRP_TESTNET_WALLET_SEED_WORKER_2 }}
+            XRP_TESTNET_WALLET_SEED_WORKER_3: ${{ secrets.XRP_TESTNET_WALLET_SEED_WORKER_3 }}
+            XRP_TESTNET_WALLET_SEED_WORKER_4: ${{ secrets.XRP_TESTNET_WALLET_SEED_WORKER_4 }}
+            XRP_TESTNET_RPC_URL: ${{ vars.XRP_TESTNET_RPC_URL }}
+            XRP_TESTNET_FAUCET_URL: ${{ vars.XRP_TESTNET_FAUCET_URL }}
+            LITECOIN_RPC_PORT: ${{ vars.LITECOIN_RPC_PORT }}
+            FIREBLOCKS_ETH_ASSET_ID: ${{ vars.FIREBLOCKS_ETH_ASSET_ID }}
+            FIREBLOCKS_SOL_ASSET_ID: ${{ vars.FIREBLOCKS_SOL_ASSET_ID }}
+            FIREBLOCKS_TRX_ASSET_ID: ${{ vars.FIREBLOCKS_TRX_ASSET_ID }}
+            FIREBLOCKS_USDT_TRX_ASSET_ID: ${{ vars.FIREBLOCKS_USDT_TRX_ASSET_ID }}
+            FIREBLOCKS_USD1_ETH_ASSET_ID: ${{ secrets.FIREBLOCKS_USD1_ETH_ASSET_ID }}
+            FIREBLOCKS_USD1_SOL_ASSET_ID: ${{ secrets.FIREBLOCKS_USD1_SOL_ASSET_ID }}
+            FIREBLOCKS_USDT_BSC_ASSET_ID: ${{ secrets.FIREBLOCKS_USDT_BSC_ASSET_ID }}
+            FIREBLOCKS_USDC_BSC_ASSET_ID: ${{ secrets.FIREBLOCKS_USDC_BSC_ASSET_ID }}
+            FIREBLOCKS_BNB_ASSET_ID: ${{ secrets.FIREBLOCKS_BNB_ASSET_ID }}
+            VERIFF_PUBLISHABLE_KEY: ${{ vars.VERIFF_PUBLISHABLE_KEY }}
+            VERIFF_PRIVATE_KEY: ${{ secrets.VERIFF_PRIVATE_KEY }}
+            VERIFF_USERNAME: ${{ vars.VERIFF_USERNAME }}
+            VERIFF_PASSWORD: ${{ secrets.VERIFF_PASSWORD }}
+            VERIFF_SECRET_2FA: ${{ secrets.VERIFF_SECRET_2FA }}
             FIREBLOCKS_USDC_ETH_ASSET_ID: ${{ vars.FIREBLOCKS_USDC_ETH_ASSET_ID }}
             FIREBLOCKS_USDC_SOL_ASSET_ID: ${{ vars.FIREBLOCKS_USDC_SOL_ASSET_ID }}
+            DOGE_TESTNET_ADDRESS: ${{ vars.DOGE_TESTNET_ADDRESS }}
+            DOGE_TESTNET_PRIVATE_KEY: ${{ secrets.DOGE_TESTNET_PRIVATE_KEY }}
 
         steps:
             - name: Validation For Environment URL
@@ -93,13 +138,9 @@ jobs:
 
             - name: Install Node.js dependencies
               run: |
-                  if ! command -v yarn &>/dev/null; then
-                    npm install -g yarn
-                  fi
-                  yarn install
-
-            - name: Install dependencies
-              run: yarn install --immutable --immutable-cache --check-cache
+                  set -euo pipefail
+                  corepack enable
+                  yarn install --immutable
 
             - name: Install Playwright Browsers
               run: yarn playwright install --with-deps

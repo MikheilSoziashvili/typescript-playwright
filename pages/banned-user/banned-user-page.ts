@@ -44,7 +44,7 @@ export class BannedUserPage extends BasePage<BannedUserPageMap> {
 	@step("Wait for red container to be visible")
 	public async waitRedContainerToBeVisible(): Promise<void> {
 		await this.map.waitForVisibility({
-			locator: this.map.redContainer,
+			locator: this.map.contentContainer,
 		});
 	}
 

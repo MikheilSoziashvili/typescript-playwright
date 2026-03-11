@@ -87,18 +87,18 @@ export class HomePageMap extends BaseMap {
 	}
 
 	public get kothHeaderImageLocator(): Locator {
-		return this.page.locator("header a[href^='/koth'] img");
+		return this.page.locator(
+			"header a[href='/koth'] div[class*='KothSlider-styled__AnimatedMessage']",
+		);
 	}
 
 	public get firstKothHeaderCurrencyAmount(): Locator {
-		return this.page
-			.locator('div[class*="swiper-slide"] span[class*="StyledCoins"]')
-			.first();
+		return this.allKothHeaderCurrencyAmounts.first();
 	}
 
 	public get allKothHeaderCurrencyAmounts(): Locator {
 		return this.page.locator(
-			'div[class*="swiper-slide"] span[class*="StyledCoins"]',
+			'div[class*="KothSlider-styled__AnimatedMessage-sc-"]',
 		);
 	}
 

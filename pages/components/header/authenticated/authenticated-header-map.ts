@@ -67,8 +67,8 @@ export class AuthenticatedHeaderMap extends BaseMap {
 	}
 
 	public get inGameAccountBalanceContainer(): Locator {
-		return this.page.locator(
-			"//div[contains(@class, 'header')]//i[contains(@class,'arrow')]//parent::div/div/div",
+		return this.page.getByTestId(
+			"headerUserBalance",
 		);
 	}
 

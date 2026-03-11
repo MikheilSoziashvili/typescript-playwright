@@ -22,7 +22,6 @@ import { KothPage } from "@pages/koth/koth-page";
 import { TransactionsPage } from "@pages/transactions/transactions-page";
 import { BlogPage } from "@pages/blog/blog-page";
 import { BlogPostPage } from "@pages/blog/post/blog-post-page";
-import { StatisticsPage } from "@pages/statistics/statistics-page";
 import { PromotionsPage } from "@pages/promotions/promotions-page";
 import { PromotionPage } from "@pages/promotion/promotion-page";
 import { NotificationsPage } from "@pages/notifications/notifications-page";
@@ -42,7 +41,6 @@ export type GamdomPages = {
 	rewardsExplorePage: RewardsExplorePage;
 	profilePage: ProfilePage;
 	verificationPage: VerificationPage;
-	statisticsPage: StatisticsPage;
 	faqPage: FaqPage;
 	geoblockedPage: GeoblockedPage;
 	bannedUserPage: BannedUserPage;
@@ -95,7 +93,6 @@ export const gamdomPagesFixtures = base.extend<GamdomPages>({
 	transactionsPage: sessionAwarePage(TransactionsPage),
 	blogPage: sessionAwarePage(BlogPage),
 	blogPostPage: sessionAwarePage(BlogPostPage),
-	statisticsPage: sessionAwarePage(StatisticsPage),
 	promotionsPage: sessionAwarePage(PromotionsPage),
 	promotionPage: sessionAwarePage(PromotionPage),
 	notificationsPage: sessionAwarePage(NotificationsPage),

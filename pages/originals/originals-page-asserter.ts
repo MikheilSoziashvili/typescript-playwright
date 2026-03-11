@@ -7,12 +7,12 @@ import { OriginalGame } from "@enums/original-games";
 import { Timeout } from "@enums/timeout";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
+import { Unit } from "@enums/units";
 import { BaseAsserter } from "@pages/base/base-asserter";
 import { expect } from "@playwright/test";
 import { step } from "decorators/step";
-import { floorToTwoDecimals } from "formulas/betting-calculations";
 import { OriginalsPage } from "./originals-page";
-import { Unit } from "@enums/units";
+import { floorToTwoDecimals } from "@formulas/betting-calculations";
 
 export class OriginalsAsserter extends BaseAsserter<OriginalsPage> {
 	public constructor(page: OriginalsPage) {

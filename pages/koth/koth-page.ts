@@ -1,6 +1,5 @@
 import { KOTH_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
-import { BoundingBoxCoordinate } from "@enums/bounding-box-coordinates";
 import { BasePage } from "@pages/base/base-page";
 import { step } from "decorators/step";
 import { Page } from "playwright";
@@ -39,27 +38,5 @@ export class KothPage extends BasePage<KothMap> {
 
 	public steps(): KothSteps {
 		return new KothSteps(this);
-	}
-
-	@step("Get koth banner currency xposition")
-	public async getKothBannerCurrencyXPosition(): Promise<number> {
-		await this.map.waitForStableXPosition({
-			locator: this.map.kothBannerCurrencyAmount,
-		});
-		return this.getElementPosition(
-			this.map.kothBannerCurrencyAmount,
-			BoundingBoxCoordinate.X,
-		);
-	}
-
-	@step("Get koth banner timer xposition")
-	public async getKothBannerTimerXPosition(): Promise<number> {
-		await this.map.waitForStableXPosition({
-			locator: this.map.kothBannerTimerContainer,
-		});
-		return this.getElementPosition(
-			this.map.kothBannerTimerContainer,
-			BoundingBoxCoordinate.X,
-		);
 	}
 }

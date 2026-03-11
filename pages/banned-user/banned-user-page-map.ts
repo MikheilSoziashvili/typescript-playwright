@@ -12,23 +12,23 @@ export class BannedUserPageMap extends BaseMap {
 		);
 	}
 
-	public get redContainer(): Locator {
-		return this.restrictedContainer.locator(
-			'div[class^="ErrorPageLayout-styled__BannerContainer"]',
+	public get contentContainer(): Locator {
+		return this.page.locator(
+			'div[class^="ErrorPageLayout-styled__ContentContainer-sc-"]',
 		);
 	}
 
 	public get restrictionTitle(): Locator {
-		return this.redContainer.getByText("Your account has been Banned!");
+		return this.contentContainer.getByText("Your account has been Banned!");
 	}
 
 	public get bannedReason(): Locator {
-		return this.redContainer.getByTestId("ban-reason");
+		return this.contentContainer.getByTestId("ban-reason");
 	}
 
 	public get socialMediaFooterContainer(): Locator {
 		return this.restrictedContainer.locator(
-			'div[class^="ErrorPageLayout-styled__SocialsContainer"]',
+			'div[class^="SocialButtonsV4-styled__SocialButtons-sc-"]',
 		);
 	}
 

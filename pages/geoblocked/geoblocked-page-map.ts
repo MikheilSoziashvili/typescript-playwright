@@ -36,13 +36,13 @@ export class GeoblockedPageMap extends BaseMap {
 
 	public socialMediaFooterIconByPlaceholder(socialMedia: string): Locator {
 		return this.socialMediaFooterContainer.getByTestId(
-			`${socialMedia}-img`,
+			`error-page-banned-country-social-buttons-${socialMedia}-icon`,
 		);
 	}
 
 	public socialMediaFooterLinkByPlaceholder(socialMedia: string): Locator {
 		return this.socialMediaFooterContainer.getByTestId(
-			`${socialMedia}-link`,
+			`error-page-banned-country-social-buttons-${socialMedia}-link`,
 		);
 	}
 }

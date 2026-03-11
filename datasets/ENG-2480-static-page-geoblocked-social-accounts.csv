@@ -1,6 +1,6 @@
 static_page,social_account,external_url,social_media,socialMedia_UrlPart,gamdom_UrlPart,locator
-/geoblocked?country=USA,Twitter,https://x.com/Gamdom,twitter,x.com,Gamdom,Twitter
-/geoblocked?country=USA,Instagram,https://www.instagram.com/gamdomhq,instagram,instagram.com,gamdomhq,Instagram
-/geoblocked?country=USA,Telegram,https://t.me/+JrVfUQipUmM0OGM0,t.me,t.me,JrVfUQipUmM0OGM0,Telegram
-/geoblocked?country=USA,Facebook,https://www.facebook.com/gamdomfb/,facebook,facebook.com,gamdomfb,Facebook
-
+/geoblocked?country=USA,Instagram,https://www.instagram.com/gamdomhq,instagram,instagram.com,gamdomhq,instagram
+/geoblocked?country=USA,X,https://x.com/Gamdom,x,x.com,Gamdom,x
+/geoblocked?country=USA,Telegram,https://t.me/+JrVfUQipUmM0OGM0,t.me,t.me,JrVfUQipUmM0OGM0,telegram
+/geoblocked?country=USA,Facebook,https://www.facebook.com/gamdomfb/,facebook,facebook.com,gamdomfb,facebook
+/geoblocked?country=USA,Discord,https://discord.gg/gamdom,discord,discord.com/invite,gamdom,discord

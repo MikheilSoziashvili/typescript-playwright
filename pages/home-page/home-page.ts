@@ -164,11 +164,6 @@ export class HomePage extends BasePage<HomePageMap> {
 		);
 	}
 
-	@step("Click koth image")
-	public async clickKothImage(): Promise<void> {
-		await this.map.kothHeaderImageLocator.click();
-	}
-
 	@step("Click gamdom logo")
 	public async clickGamdomLogo(): Promise<void> {
 		await this.map.gamdomLogoButton.click();

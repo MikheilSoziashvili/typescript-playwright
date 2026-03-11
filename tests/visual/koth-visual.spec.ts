@@ -41,26 +41,6 @@ kothDataset.forEach((record) => {
 					await homePage.assertThat().verifyKothCurrencyIsCentered();
 				},
 			);
-
-			test(
-				`[ENG-5179] KOTH - visual in dedicated page with currency: ${record.currency}`,
-				testDetails()
-					.withTags(TestTag.VISUAL, JiraComponent.KOTH)
-					.apply(),
-				async ({ kothPage, homePage }, testInfo) => {
-					await homePage.clickKothImage();
-					await kothPage.getKothBannerCurrencyXPosition();
-					await kothPage
-						.assertThat()
-						.kothBannerVisualCorrect(testInfo);
-					await kothPage
-						.assertThat()
-						.verifyKothBannerCurrencyIsCentered();
-					await kothPage
-						.assertThat()
-						.verifyKothBannerTimerIsCentered();
-				},
-			);
 		},
 	);
 });

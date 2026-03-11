@@ -110,7 +110,6 @@ import { RouletteGamePage } from "./roulette-game-page/roulette-game-page";
 import { SettingsPage } from "./settings/settings-page";
 import { SlotsBattlePage } from "./slot-battle/slots-battle-page";
 import { SportsPage } from "./sports/sports-page";
-import { StatisticsPage } from "./statistics/statistics-page";
 import { TransactionsPage } from "./transactions/transactions-page";
 import { VerificationPage } from "./verification/verification-page";
 import { SweetBonanzaCandyLandPage } from "./casino-games/pragmatic-play-live/sweet-bonanza-candy-land/sweet-bonanza-candy-land-page";
@@ -124,7 +123,6 @@ export const GamdomPages = {
 	rewardsExplorePage: RewardsExplorePage,
 	profilePage: ProfilePage,
 	verificationPage: VerificationPage,
-	statisticsPage: StatisticsPage,
 	faqPage: FaqPage,
 	geoblockedPage: GeoblockedPage,
 	bannedUserPage: BannedUserPage,

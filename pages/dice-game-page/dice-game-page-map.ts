@@ -69,7 +69,7 @@ export class DiceGamePageMap extends BaseMap {
 	}
 
 	public get betMenu(): Locator {
-		return this.page.locator('div[class*="GameBox"][class*="MuiBox-root"]');
+		return this.page.getByTestId("dice-sidebar-tabs-container");
 	}
 
 	public getIncreaseBySelectButton(type: BetIncreaseCondition): Locator {
@@ -145,7 +145,9 @@ export class DiceGamePageMap extends BaseMap {
 	public get diceResultNumberGameArea(): Locator {
 		return this.page
 			.getByTestId("diceSlider")
-			.locator("div[class*='DiceSlider-styled__SliderPinResultNumber-sc']")
+			.locator(
+				"div[class*='DiceSlider-styled__SliderPinResultNumber-sc']",
+			)
 			.first();
 	}
 

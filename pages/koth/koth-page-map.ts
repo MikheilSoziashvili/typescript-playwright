@@ -14,22 +14,6 @@ export class KothMap extends BaseMap {
 		return this.kothPageContent.getByTestId("koth-hero-container");
 	}
 
-	public get kothBannerImage(): Locator {
-		return this.kothPageContent.getByTestId("koth-hero-banner");
-	}
-
-	public get kothBannerCurrencyAmount(): Locator {
-		return this.kothBannerContainer
-			.getByTestId("koth-prize-display")
-			.locator("span[class*='StyledCoins']");
-	}
-
-	public get kothBannerTimerContainer(): Locator {
-		return this.page.locator(
-			"(//div[contains(@class,'Page-styled')]//div[1]//div[last()]//span)[1]",
-		);
-	}
-
 	public get kothGameContainer(): Locator {
 		return this.kothPageContent.getByTestId("koth-content-container");
 	}

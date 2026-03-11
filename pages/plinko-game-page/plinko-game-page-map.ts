@@ -10,21 +10,33 @@ export class PlinkoGamePageMap extends BaseMap {
 		return this.page.locator("button[class*='Formstyled__SubmitButton']");
 	}
 
+	public get signInDialog(): Locator {
+		return this.page.getByTestId("auth-modal-form-container");
+	}
+
 	public get signInModal(): Locator {
-		return this.page.locator("div[class*='Modal-styled__ModalBody']");
+		return this.page.getByTestId("auth-modal-login-dialog");
+	}
+
+	public get usernameContainer(): Locator {
+		return this.signInDialog.getByTestId("signin-username");
+	}
+
+	public get passwordContainer(): Locator {
+		return this.signInDialog.getByTestId("signin-password");
 	}
 
 	public get usernameField(): Locator {
-		return this.getInputField("username", this.signInModal);
+		return this.usernameContainer.getByTestId("signin-username-input");
 	}
 
 	public get passwordField(): Locator {
-		return this.getInputField("password", this.signInModal);
+		return this.passwordContainer.getByTestId("signin-password-input");
 	}
 
 	public get partnersSlider(): Locator {
 		return this.signInModal.locator(
-			"div[class*='AuthPopup-styled__SliderContainer-sc-']",
+			"div[class*='AuthModalLayout-styled__SlideBannerBottomContainer']",
 		);
 	}
 
