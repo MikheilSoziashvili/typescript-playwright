@@ -34,6 +34,7 @@ import {
 	ReloadUpdateAfterPartialClaimCsv,
 	JackpotContributionCsv,
 	ReloadUpdateLogicCsv,
+	LimboManualModeCsv,
 } from "@dtos/csv";
 import { HomePageBannerCarouselCsv } from "@dtos/csv/home-page-banner-carousel-csv";
 import { OriginalsSelfExclusionCsv } from "@dtos/csv/originals-self-exclusion";
@@ -83,4 +84,5 @@ export type CsvDtoMap = {
 	[CsvFilesName.RELOAD_UPDATE_AFTER_PARTIAL_CLAIM]: ReloadUpdateAfterPartialClaimCsv;
 	[CsvFilesName.JACKPOT_CONTRIBUTION]: JackpotContributionCsv;
 	[CsvFilesName.RELOAD_UPDATE_LOGIC]: ReloadUpdateLogicCsv;
+	[CsvFilesName.LIMBO_MANUAL_MODE]: LimboManualModeCsv;
 };

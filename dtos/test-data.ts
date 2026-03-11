@@ -167,6 +167,16 @@ export class MinesAutobetTestData {
 	}
 }
 
+export class LimboBetTestData {
+	public betAmount: number;
+	public multiplier: number;
+
+	constructor(options: { betAmount: number; multiplier: number }) {
+		this.betAmount = options.betAmount;
+		this.multiplier = options.multiplier;
+	}
+}
+
 export class DiceBetTestData {
 	public betAmount: number;
 	public multiplier?: number;

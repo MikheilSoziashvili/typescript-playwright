@@ -114,6 +114,7 @@ import { SweetBonanzaPage } from "./casino-games/pragmatic-play/sweet-bonanza/sw
 import { ToastV4 } from "./components/toastV4/toast-v4";
 import { UnblockUserModalV4 } from "./modals/unblock-user-modal-v4/unblock-user-modal-v4";
 import { UserProfileModalV4 } from "./modals/user-profile-modal-v4/user-profile-modal-v4";
+import { LimboGamePage } from "./limbo-game-page/limbo-game-page";
 
 export const GamdomPages = {
 	homePage: HomePage,
@@ -215,6 +216,7 @@ export const GamePages = {
 	pocketDicePage: PocketDicePage,
 	zuluGoldPage: ZuluGoldPage,
 	sweetBonanzaPage: SweetBonanzaPage,
+	limboGamePage: LimboGamePage,
 } as const;
 
 export const Components = {

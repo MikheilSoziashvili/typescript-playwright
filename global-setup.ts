@@ -57,6 +57,7 @@ async function enableCoreFeatures(
 				feature: Feature.USERS_PAY_WD_FEES,
 				states: ALL_USER_TYPES_ENABLED,
 			},
+			{ feature: Feature.LIMBO, states: ALL_USER_TYPES_ENABLED },
 		],
 		{ Cookie: cookie },
 	);
