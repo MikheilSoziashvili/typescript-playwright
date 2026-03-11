@@ -204,4 +204,8 @@ export class PlinkoGamePageMap extends BaseMap {
 	public tooltipAmountFor(coefficient: Locator): Locator {
 		return coefficient.getByTestId("plinko-tooltip-amount");
 	}
+
+	public get instantAnimationTooltip(): Locator {
+		return this.page.locator('button[data-tooltip="Instant animation"]');
+	}
 }

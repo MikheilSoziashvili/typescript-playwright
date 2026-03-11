@@ -214,7 +214,10 @@ export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 	}
 
 	@step("Calculate total wagered in Plinko")
-	public async calculateTotalWagered(betAmount: number, numberOfGames: number): Promise<string> {
+	public async calculateTotalWagered(
+		betAmount: number,
+		numberOfGames: number,
+	): Promise<string> {
 		const total = `$${(betAmount * numberOfGames).toFixed(2)}`;
 		logger.info(`Total wagered in Plinko: ${total}`);
 		return total;
@@ -253,6 +256,7 @@ export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 
 		await this.gamdomPage.fillInBetAmount(betAmount.toString());
 		await this.gamdomPage.defineSliderValues(options);
+		await this.gamdomPage.enableInstantAnimation();
 
 		let previousHistoryCount = await this.getHistoryButtonsCount();
 
@@ -270,9 +274,8 @@ export class PlinkoGamePageSteps extends BasePageStep<PlinkoGamePage> {
 			const accountBalanceBeforeBet =
 				await this.userBalanceHandler.walletBalanceInFiatRounded();
 
-			const newHistoryResult = await this.waitForNewPlinkoResult(
-				previousHistoryCount,
-			);
+			const newHistoryResult =
+				await this.waitForNewPlinkoResult(previousHistoryCount);
 
 			previousHistoryCount = await this.getHistoryButtonsCount();
 

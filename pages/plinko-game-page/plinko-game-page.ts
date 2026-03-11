@@ -212,4 +212,9 @@ export class PlinkoGamePage extends BasePage<PlinkoGamePageMap> {
 		const betText = await this.getBetAmountValue();
 		return parseFloat(betText);
 	}
+
+	@step("Enable instant animation")
+	public async enableInstantAnimation(): Promise<void> {
+		await this.map.instantAnimationTooltip.click();
+	}
 }
