@@ -148,6 +148,9 @@ playwright-report.zip
 /testImages/
 /test-files/TEMP_*.csv
 
+# xray scaffold files (local only)
+tests/*-scaffold.md
+
 # auth
 /core/.auth
 

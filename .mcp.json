@@ -1,0 +1,27 @@
+{
+	"mcpServers": {
+		"atlassian": {
+			"command": "npx",
+			"args": ["-y", "@sooperset/mcp-atlassian"],
+			"env": {
+				"JIRA_URL": "${JIRA_URL}",
+				"JIRA_USERNAME": "${JIRA_USERNAME}",
+				"JIRA_API_TOKEN": "${JIRA_API_TOKEN}",
+				"CONFLUENCE_URL": "${CONFLUENCE_URL}",
+				"CONFLUENCE_USERNAME": "${JIRA_USERNAME}",
+				"CONFLUENCE_API_TOKEN": "${JIRA_API_TOKEN}"
+			}
+		},
+		"xray": {
+			"command": "npx",
+			"args": ["-y", "@korfu/xray-mcp"],
+			"env": {
+				"JIRA_BASE_URL": "${JIRA_URL}",
+				"JIRA_EMAIL": "${JIRA_USERNAME}",
+				"JIRA_API_TOKEN": "${JIRA_API_TOKEN}",
+				"XRAY_CLIENT_ID": "${XRAY_CLIENT_ID}",
+				"XRAY_CLIENT_SECRET": "${XRAY_CLIENT_SECRET}"
+			}
+		}
+	}
+}
