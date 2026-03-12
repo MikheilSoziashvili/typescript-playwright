@@ -54,6 +54,8 @@ export const predefined = {
 		defaultRollover: 50.500000, //default rollover is dependant of default multiplier
 		// prettier-ignore
 		defaultWinChance: 49.50, //default win chance is dependant of default multiplier
+		defaultRollOverApi: 505000000,
+		defaultBetAmountApi: 150000,
 	},
 	sokAutobet: {
 		betAmount: 1,

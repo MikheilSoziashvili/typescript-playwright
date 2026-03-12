@@ -2,6 +2,7 @@ import { CoinGeckoApi } from "@api/coingecko-api";
 import { GamdomApi } from "@api/gamdom-api";
 import { GamdomCryptoApi } from "@api/gamdom-crypto-api";
 import { CrashApi } from "@api/games-api/crash-api";
+import { DiceApi } from "@api/games-api/dice-api";
 import { HiloApi } from "@api/games-api/hilo-api";
 import { RouletteApi } from "@api/games-api/roulette-api";
 import { MailinatorApi } from "@api/mailinator-api";
@@ -15,6 +16,7 @@ export type Apis = {
 	gamdomApi: GamdomApi;
 	gamdomCryptoApi: GamdomCryptoApi;
 	crashApi: CrashApi;
+	diceApi: DiceApi;
 	hiloApi: HiloApi;
 	rouletteApi: RouletteApi;
 	coingeckoApi: CoinGeckoApi;
@@ -34,6 +36,9 @@ export const apisFixtures = base.extend<Apis>({
 	},
 	crashApi: async ({}, use) => {
 		await use(new CrashApi());
+	},
+	diceApi: async ({}, use) => {
+		await use(new DiceApi());
 	},
 	hiloApi: async ({}, use) => {
 		await use(new HiloApi());

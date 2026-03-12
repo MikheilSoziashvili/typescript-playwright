@@ -32,6 +32,7 @@ export enum ApiEndpoints {
 	GET_WITHDRAWAL_FEES = "/client-api/crypto/getWithdrawalFees",
 	ADMIN_ACTION = "/client-api/admin/user/adminAction",
 	CRASH_PLACE_BET = "/stream/crash/rpc/place_bet",
+	DICE_PLACE_BET = "/stream/dice/rpc/bet",
 	HILO_PLACE_BET = "/stream/hilo/rpc/placeBet",
 	ROULETTE_PLACE_BET = "/stream/roulette/rpc/placeBet",
 }
