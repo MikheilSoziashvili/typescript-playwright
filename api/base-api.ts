@@ -1,7 +1,7 @@
 import { HttpMethod } from "@enums/api/http-methods";
 import { APIRequestContext, APIResponse, request } from "@playwright/test";
 import { RequestParameters } from "../core/api/interfaces/request-parameters";
-import { logger } from "@logger/logger";
+import { logErrorToFile, logger } from "@logger/logger";
 import { handleError } from "@core/api/error-handler";
 import {
 	ApiRequestOptions,
@@ -17,6 +17,8 @@ import { RetryOptions } from "@core/api/interfaces/retry-options";
  * This BaseApi class serves as a foundation for managing HTTP requests.
  */
 export class BaseApi {
+	private static readonly MAX_LOG_LENGTH = 1000;
+
 	private context: Promise<APIRequestContext>;
 	private baseUrl: string;
 	private requestHeaders: Record<string, string> = {};
@@ -138,6 +140,13 @@ export class BaseApi {
 	 * @param {Record<string, string>} headers - The headers to mask.
 	 * @returns {Record<string, string>} The masked headers.
 	 */
+	private static truncate(value: string): string {
+		if (value.length <= BaseApi.MAX_LOG_LENGTH) {
+			return value;
+		}
+		return `${value.slice(0, BaseApi.MAX_LOG_LENGTH)}... [truncated ${value.length - BaseApi.MAX_LOG_LENGTH} chars]`;
+	}
+
 	private maskSensitiveHeaders(
 		headers: Record<string, string>,
 	): Record<string, string> {
@@ -170,37 +179,37 @@ export class BaseApi {
 		response: APIResponse,
 		requestOptions: RequestOptions,
 	): Promise<void> {
-		logger.error(
-			`[Response] ${method.toUpperCase()} ${url} => ${statusCode}`,
-		);
+		const requestLabel = `${method.toUpperCase()} ${url}`;
+		logger.error(`[Response] ${requestLabel} => ${statusCode}`);
 
+		let responseBodyStr: string;
 		try {
 			const responseBody: unknown = await response.json();
-			logger.error(
-				`[Response Body] ${JSON.stringify(responseBody, null, 2)}`,
-			);
+			responseBodyStr = JSON.stringify(responseBody, null, 2);
 		} catch {
-			const responseText = await response.text();
-			logger.error(`[Response Body] ${responseText || "<Empty>"}`);
+			responseBodyStr = (await response.text()) || "<Empty>";
 		}
 
-		logger.error(
-			`[Request Details] Method: ${method.toUpperCase()}, URL: ${url}`,
-		);
+		logger.error(`[Response Body] ${BaseApi.truncate(responseBodyStr)}`);
+
 		const maskedHeaders = this.maskSensitiveHeaders(
 			requestOptions.headers ?? {},
 		);
 		logger.error(`[Request Headers] ${JSON.stringify(maskedHeaders)}`);
 
-		if (requestOptions.data) {
-			logger.error(
-				`[Request Data] ${JSON.stringify(
-					requestOptions.data,
-					null,
-					2,
-				)}`,
-			);
+		const dataStr = requestOptions.data
+			? JSON.stringify(requestOptions.data, null, 2)
+			: undefined;
+		if (dataStr) {
+			logger.error(`[Request Data] ${BaseApi.truncate(dataStr)}`);
 		}
+
+		logErrorToFile(
+			`[Response] ${requestLabel} => ${statusCode}\n` +
+				`[Response Body] ${responseBodyStr}\n` +
+				`[Request Headers] ${JSON.stringify(maskedHeaders)}\n` +
+				(dataStr ? `[Request Data] ${dataStr}\n` : ""),
+		);
 	}
 
 	/**
@@ -217,10 +226,11 @@ export class BaseApi {
 		error: unknown,
 		requestOptions: RequestOptions,
 	): void {
+		const requestLabel = `${method.toUpperCase()} ${url}`;
 		const errorMessage = String(error);
 
 		logger.error(
-			`[Request Failure] Method: ${method.toUpperCase()}, URL: ${url}, Error: ${errorMessage}`,
+			`[Request Failure] ${requestLabel}, Error: ${BaseApi.truncate(errorMessage)}`,
 		);
 
 		const maskedHeaders = this.maskSensitiveHeaders(
@@ -228,15 +238,18 @@ export class BaseApi {
 		);
 		logger.error(`[Request Headers] ${JSON.stringify(maskedHeaders)}`);
 
-		if (requestOptions.data) {
-			logger.error(
-				`[Request Data] ${JSON.stringify(
-					requestOptions.data,
-					null,
-					2,
-				)}`,
-			);
+		const dataStr = requestOptions.data
+			? JSON.stringify(requestOptions.data, null, 2)
+			: undefined;
+		if (dataStr) {
+			logger.error(`[Request Data] ${BaseApi.truncate(dataStr)}`);
 		}
+
+		logErrorToFile(
+			`[Request Failure] ${requestLabel}, Error: ${errorMessage}\n` +
+				`[Request Headers] ${JSON.stringify(maskedHeaders)}\n` +
+				(dataStr ? `[Request Data] ${dataStr}\n` : ""),
+		);
 	}
 
 	/**
@@ -438,4 +451,3 @@ export class BaseApi {
 	}
 }
 export { ApiRequestOptions };
-

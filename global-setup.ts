@@ -16,7 +16,11 @@ import { KothEventName } from "@enums/db/koth-event-types";
 import { WithdrawLimitsSettingsValues } from "@enums/db/withdraw-settings-values";
 import { Feature } from "@enums/feature";
 import { HttpStatus } from "@enums/http-status";
-import { logger } from "@logger/logger";
+import {
+	clearApiErrorLog,
+	getApiErrorLogContent,
+	logger,
+} from "@logger/logger";
 import { expect } from "@playwright/test";
 import * as Configuration from "configuration";
 import { GamdomDb } from "database/gamdom-db";
@@ -288,35 +292,45 @@ async function ensureKothEventsExist(
 }
 
 async function globalSetup(): Promise<void> {
-	await new DbServiceManager().start();
-	const gamdomApi = new GamdomApi();
-	const cookie = getCookieHeader(
-		await gamdomApi.authenticateWithExistingUser(
-			SUPER_ADMIN_CREDENTIALS.username,
-			SUPER_ADMIN_CREDENTIALS.password,
-		),
-	);
-	await updateWithdrawLimits();
-	await configureRain();
-	await enableCoreFeatures(gamdomApi, cookie);
-	await ensureKothEventsExist(gamdomApi, cookie);
+	clearApiErrorLog();
 
-	if (Configuration.enableNewDesignV4Feature) {
-		await enableNewDesignV4Feature(gamdomApi, cookie);
-	}
+	try {
+		await new DbServiceManager().start();
+		const gamdomApi = new GamdomApi();
+		const cookie = getCookieHeader(
+			await gamdomApi.authenticateWithExistingUser(
+				SUPER_ADMIN_CREDENTIALS.username,
+				SUPER_ADMIN_CREDENTIALS.password,
+			),
+		);
+		await updateWithdrawLimits();
+		await configureRain();
+		await enableCoreFeatures(gamdomApi, cookie);
+		await ensureKothEventsExist(gamdomApi, cookie);
 
-	if (Configuration.createExecution) {
-		const existingKey = process.env.TEST_EXECUTION_ID;
-		if (existingKey) {
-			logger.info(
-				`Using existing Test Execution [${existingKey}] in JIRA`,
-			);
-			await writeExecutionToKeystore(existingKey);
-		} else {
-			await createJiraExecution();
+		if (Configuration.enableNewDesignV4Feature) {
+			await enableNewDesignV4Feature(gamdomApi, cookie);
 		}
-	} else {
-		logger.info("Skipping creation of Test Execution in JIRA");
+
+		if (Configuration.createExecution) {
+			const existingKey = process.env.TEST_EXECUTION_ID;
+			if (existingKey) {
+				logger.info(
+					`Using existing Test Execution [${existingKey}] in JIRA`,
+				);
+				await writeExecutionToKeystore(existingKey);
+			} else {
+				await createJiraExecution();
+			}
+		} else {
+			logger.info("Skipping creation of Test Execution in JIRA");
+		}
+	} catch (error) {
+		const apiLog = getApiErrorLogContent();
+		if (apiLog && error instanceof Error) {
+			error.message += `\n\n========== API Error Log ==========\n${apiLog}\n===================================`;
+		}
+		throw error;
 	}
 }
 
