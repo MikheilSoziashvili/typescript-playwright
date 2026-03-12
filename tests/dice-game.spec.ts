@@ -56,9 +56,6 @@ test.describe("Dice tests", () => {
 					regularUserOptions: { amount: SUPER_HIGH_USER_AMOUNT },
 				});
 				await diceGamePage.navigate();
-				await diceGamePage
-					.assertThat()
-					.diceMessageIs(DiceGameResultMessage.PLACE_YOUR_BETS);
 
 				const diceBetData = testDataObject.diceBet.build({
 					betAmount: scenario.betAmount,

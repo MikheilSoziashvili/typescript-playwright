@@ -40,6 +40,16 @@ export class ProfilePage extends BasePage<ProfilePageMap> {
 		return new TwoFactorAuthModal(this.page);
 	}
 
+	@step("Logout")
+	public async logout(): Promise<void> {
+		await this.map.logOutButton.click();
+		await this.continueModal.assertThat().isModalDisplayed();
+		await this.continueModal.clickLogoutButton();
+		await this.unauthenticatedHeader
+			.assertThat()
+			.loggedOutUserElementsAreVisible();
+	}
+
 	@step("Click save email")
 	public async clickSaveEmail(): Promise<void> {
 		await this.map.saveEmailButton.click();

@@ -11,6 +11,7 @@ import { AllGamdomPagesType, AllGamdomPages } from "@pages/index";
 import { AuthenticatedUser } from "./facades/gamdom-api-db/interfaces";
 import { TestUserRole } from "@enums/test-user-roles";
 import { UserClasses } from "@enums/db/user-classes";
+import { autoDismissCookieBanner, cookieConsent } from "configuration";
 import { UserTags } from "@enums/db/user-tags";
 import { AllApis, AllApisType, ApiFactories } from "@api/index";
 import { BaseApi } from "@api/base-api";
@@ -300,6 +301,12 @@ export class BrowserSessionManager {
 		}
 
 		const context = await this.browser.newContext(contextOptions);
+		if (autoDismissCookieBanner) {
+			await context.addInitScript(
+				({ key, value }) => localStorage.setItem(key, value),
+				cookieConsent,
+			);
+		}
 		const page = await context.newPage();
 
 		return { context, page };

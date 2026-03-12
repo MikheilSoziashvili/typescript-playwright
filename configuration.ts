@@ -20,6 +20,14 @@ import "dotenv/config";
 
 export const isScheduledRun = process.env.GITHUB_EVENT_NAME === "schedule";
 export const isCI = process.env.CI === "true";
+
+export const autoDismissCookieBanner =
+	process.env.AUTO_DISMISS_COOKIE_BANNER === "true";
+
+export const cookieConsent = {
+	key: "HAS_ACCEPTED_COOKIES",
+	value: "true",
+} as const;
 const shouldCreateExecution = process.env.CREATE_TEST_EXECUTION === "true";
 export const enableNewDesignV4Feature =
 	process.env.ENABLE_NEW_DESIGN_V4 === "true";

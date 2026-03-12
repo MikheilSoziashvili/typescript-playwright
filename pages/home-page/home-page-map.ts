@@ -98,7 +98,7 @@ export class HomePageMap extends BaseMap {
 
 	public get allKothHeaderCurrencyAmounts(): Locator {
 		return this.page.locator(
-			'div[class*="KothSlider-styled__AnimatedMessage-sc-"]',
+			'div[class*="KothSlider-styled__AnimatedMessage-sc-"] svg text:last-of-type',
 		);
 	}
 

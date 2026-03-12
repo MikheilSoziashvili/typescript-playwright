@@ -7,6 +7,7 @@ import { FavoritesGamesListListener } from "@core/listeners/network-listener/fav
 import { HourlyCryptoBalancesListener } from "@core/listeners/network-listener/hourly-crypto-balances-listener";
 import { UserAuditLogListener } from "@core/listeners/network-listener/user-audit-log-listener";
 import { test as base } from "@playwright/test";
+import { autoDismissCookieBanner, cookieConsent } from "configuration";
 
 export type Listeners = {
 	browserSessionManager: BrowserSessionManager;
@@ -21,6 +22,12 @@ export type Listeners = {
 
 export const listenersFixtures = base.extend<Listeners>({
 	browserSessionManager: async ({ browser, context, page }, use) => {
+		if (autoDismissCookieBanner) {
+			await context.addInitScript(
+				({ key, value }) => localStorage.setItem(key, value),
+				cookieConsent,
+			);
+		}
 		const manager = new BrowserSessionManager(browser, context, page);
 		await use(manager);
 		await manager.cleanup();

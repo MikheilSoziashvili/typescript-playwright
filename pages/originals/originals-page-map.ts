@@ -84,10 +84,6 @@ export class OriginalsMap extends BaseMap {
 	}
 
 	public get jackpotCounter(): Locator {
-		return this.page
-			.locator(
-				'div[class*="JackpotCounter-styled__StyledTextCounter"]',
-			)
-			.first();
+		return this.page.getByTestId("game-stats-area-jackpot-summary");
 	}
 }
