@@ -143,4 +143,8 @@ export class PromoCampaignsAdminMap extends BaseMap {
 	public copyLinkButtonInRow(campaignName: string): Locator {
 		return this.getCopyActionButton(campaignName, 1);
 	}
+
+	public get noDataCell(): Locator {
+		return this.promoCampaignsTableBody.getByTestId("noDataCell");
+	}
 }

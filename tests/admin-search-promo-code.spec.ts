@@ -4,8 +4,6 @@ import {
 	generateRandomString,
 } from "@core/utils/utils";
 import { test } from "@fixtures/fixtures";
-import { ToastSubTitle } from "@enums/toast-subtitles";
-import { ToastTitle } from "@enums/toast-titles";
 import { storageStateNewSuperAdminUserDB } from "../fixtures/auth-fixtures";
 import { JiraUser } from "@enums/jira/jira-users";
 import { testDetails } from "@core/helpers/test-details-helper";
@@ -72,17 +70,12 @@ test.describe("Search for Promo codes", () => {
 			.withAuthor(JiraUser.NIKOLAY_GENOV)
 			.withJiraBugTickets("15617")
 			.apply(),
-		async ({ promoCampaignsAdminPage, toast }) => {
+		async ({ promoCampaignsAdminPage }) => {
 			const appendToCode = generateRandomString({ length: 3 });
 			await promoCampaignsAdminPage
 				.steps()
 				.searchForNonExistingPromoCode(campaignCode, appendToCode);
-			await toast.assertThat().titlesAre([
-				{
-					title: ToastTitle.FAILED,
-					subTitle: ToastSubTitle.PROMOCODE_NOT_FOUND,
-				},
-			]);
+			await promoCampaignsAdminPage.assertThat().noDataCellIsDisplayed();
 			await promoCampaignsAdminPage
 				.assertThat()
 				.verifySearchInputIsNotCleared(campaignCode + appendToCode);
