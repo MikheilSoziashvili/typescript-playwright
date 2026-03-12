@@ -475,7 +475,7 @@ test.describe(
 			})
 			.forEach((input) => {
 				test(
-					`[ENG-15706] Edit Info - Verify unwagered_deposits field with ${input.staffRoleTag} account`,
+					`[ENG-11731] Edit Info - Verify unwagered_deposits field with ${input.staffRoleTag} account`,
 					testDetails()
 						.withTags(JiraComponent.EDIT_INFO)
 						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
