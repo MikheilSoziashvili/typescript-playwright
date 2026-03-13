@@ -95,7 +95,7 @@ on:
                     - "no"
 
     schedule:
-        - cron: "0 3 * * *"
+        - cron: "0 3 * * 1-5"
 
     workflow_call:
         secrets:
