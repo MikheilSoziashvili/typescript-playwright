@@ -34,6 +34,10 @@ export class UserInfoTransactionsAdminPageMap extends BaseMap {
 		return this.logTypesToFetchFieldContainer.locator(`input`);
 	}
 
+	public logTypeOption(name: string): Locator {
+		return this.page.getByRole("option", { name: name, exact: true });
+	}
+
 	public get fetchWithDateButton(): Locator {
 		return this.transactionsAdminPageContent.getByTestId(
 			`fetch-transactions-button`,

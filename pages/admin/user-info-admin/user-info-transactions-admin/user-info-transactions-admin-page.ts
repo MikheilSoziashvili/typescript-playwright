@@ -32,7 +32,7 @@ export class UserInfoTransactionsAdminPage extends BasePage<UserInfoTransactions
 		});
 		await this.map.logTypesToFetchFieldContainer.click();
 		await this.map.logTypesToFetchFieldInput.fill(logType);
-		await this.pressEnterKeyboard();
+		await this.map.logTypeOption(logType).click();
 	}
 
 	@step("Click fetch data")

@@ -261,6 +261,8 @@ test.describe(
 				const numberOfGames = 5;
 				await plinkoGamePage.navigate();
 
+				await plinkoGamePage.enableInstantAnimation();
+
 				const balances = await plinkoGamePage
 					.steps()
 					.playMultipleGamesAndGetBalances(
