@@ -7,14 +7,14 @@ export class WelcomeBonusModalMap extends BaseMap {
 	}
 
 	public get modalLocator(): Locator {
-		return this.page.getByTestId("welcomeBonusModalInner");
+		return this.page.getByTestId("welcome-bonus-modal-dialog");
 	}
 
 	public get claimButton(): Locator {
-		return this.modalLocator.getByTestId("welcomeBonusClaimButton");
+		return this.modalLocator.getByTestId("welcome-bonus-modal-submit");
 	}
 
 	public get codeInputFiled(): Locator {
-		return this.modalLocator.locator("input");
+		return this.modalLocator.getByTestId("welcome-bonus-modal-input-input");
 	}
 }

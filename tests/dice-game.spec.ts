@@ -1,13 +1,12 @@
-import { DiceGameResultMessage } from "@enums/dice-result-messages";
-import { test } from "@fixtures/fixtures";
 import { testDetails } from "@core/helpers/test-details-helper";
-import { TestTag } from "@enums/test-tags";
-import { JiraUser } from "@enums/jira/jira-users";
 import { JiraComponent } from "@enums/jira/jira-components";
-import { testData } from "test-data/test-data-manager";
+import { JiraUser } from "@enums/jira/jira-users";
+import { TestTag } from "@enums/test-tags";
 import { TestUserRole } from "@enums/test-user-roles";
 import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
 import { isScheduledRun } from "configuration";
+import { test } from "@fixtures/fixtures";
+import { testData } from "test-data/test-data-manager";
 
 test.describe("Dice tests", () => {
 	const diceGameDomainData = testData().fromDomain().diceGame;

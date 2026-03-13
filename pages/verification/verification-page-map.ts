@@ -1,6 +1,10 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
-import { ProofOfFunds } from "@enums/verification-enums";
+import {
+	KycLevelDisplayName,
+	KycLevels,
+	ProofOfFunds,
+} from "@enums/verification-enums";
 import { KYC_LEVEL_3_FIELDS } from "test-data/domains/verification-domain-data";
 
 export class VerificationPageMap extends BaseMap {
@@ -12,10 +16,13 @@ export class VerificationPageMap extends BaseMap {
 		return this.page.getByTestId("kyc-v4-page");
 	}
 
-	public levelTitle(level: string): Locator {
-		return this.verificationPageContainer.getByText(level, {
-			exact: true,
-		});
+	public levelTitle(level: KycLevels): Locator {
+		return this.verificationPageContainer.getByText(
+			KycLevelDisplayName[level],
+			{
+				exact: true,
+			},
+		);
 	}
 
 	public get verificationPageTitle(): Locator {

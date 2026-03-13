@@ -15,6 +15,13 @@ export enum KycLevels {
 	LEVEL_3 = "LEVEL3",
 }
 
+export const KycLevelDisplayName: Record<KycLevels, string> = {
+	[KycLevels.LEVEL_1]: "Level 1",
+	[KycLevels.LEVEL_2]: "Level 2",
+	[KycLevels.LEVEL_2_5]: "Level 2.5",
+	[KycLevels.LEVEL_3]: "Level 3",
+};
+
 export enum KycAdminActions {
 	TRIGGER = "Trigger",
 	REVOKE_TRIGGER = "Revoke Trigger",

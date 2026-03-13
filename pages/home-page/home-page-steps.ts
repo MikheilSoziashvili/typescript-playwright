@@ -153,26 +153,40 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 		await this.toast.assertThat().titleIs(title, { timeout });
 	}
 
-	@step("Click on Originals game tile in slider")
-	public async clickGameInOriginalsSlider(game: string): Promise<void> {
-		const nextButton = this.gamdomPage.map.originalsSliderNextButton;
+	@step("Click on Originals game launch tile")
+	public async clickOnOriginalsGameLaunchTile(
+		game: string,
+		location: LaunchLocation,
+	): Promise<void> {
+		if (location === LaunchLocation.SubNav) {
+			await this.gamdomPage.map.originalsNavButton.hover();
+		}
+
+		const gameTileLocator =
+			location === LaunchLocation.SubNav
+				? this.gamdomPage.map.originalsGameFromSubNav(game)
+				: this.gamdomPage.map.originalsGameFromSection(game);
+
+		const nextButton =
+			location === LaunchLocation.SubNav
+				? this.gamdomPage.map.originalsSubNavNextButton
+				: this.gamdomPage.map.originalsSliderNextButton;
 
 		await waitUntil(
 			async () => {
-				const gameTile =
-					this.gamdomPage.map.originalsGameFromSection(game);
-
 				try {
-					const box = await gameTile.boundingBox();
-					const isVisible = await gameTile.isVisible();
+					const box = await gameTileLocator.boundingBox();
+					const isVisible = await gameTileLocator.isVisible();
 
 					if (box && isVisible) {
-						await gameTile.click({ timeout: Timeout.MEDIUM });
+						await gameTileLocator.click({
+							timeout: Timeout.MEDIUM,
+						});
 						return true;
 					}
 				} catch (error) {
 					logger.debug(
-						`[Originals slider] Game '${game}' not clickable yet. Retrying...`,
+						`[${location}] Game '${game}' not clickable yet. Retrying...`,
 						error,
 					);
 				}
@@ -181,25 +195,10 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 				return false;
 			},
 			{
-				errorMessage: `Game '${game}' not found in Originals slider after full scroll attempts`,
+				errorMessage: `Game '${game}' not found in ${location} after full scroll attempts`,
 				timeoutSeconds: TimeoutSeconds.THIRTY,
 			},
 		);
-	}
-
-	@step("Click on Originals game launch tile")
-	public async clickOnOriginalsGameLaunchTile(
-		game: string,
-		location: LaunchLocation,
-	): Promise<void> {
-		location === LaunchLocation.SubNav
-			? await (async () => {
-					await this.gamdomPage.map.originalsNavButton.hover();
-					const gameTile =
-						this.gamdomPage.map.originalsGameFromSubNav(game);
-					await gameTile.click();
-				})()
-			: await this.clickGameInOriginalsSlider(game);
 	}
 
 	@step("Get all KOTH header currency amounts")

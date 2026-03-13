@@ -10,17 +10,7 @@ export class HomePageMap extends BaseMap {
 		return this.page.getByTestId("toastContainer");
 	}
 
-	public get registerSuccessMessage(): Locator {
-		return this.toastMessage.getByTestId("toastTitle");
-	}
-
-	public get welcomeBackMessage(): Locator {
-		return this.page.locator(
-			"[class*='Welcome-styled__WelcomeText'] + span",
-		);
-	}
-
-	public get bannerCarousel(): Locator {
+public get bannerCarousel(): Locator {
 		return this.page.getByTestId(
 			"home-page-top-banner-slider-content-swiper",
 		);
@@ -112,27 +102,7 @@ export class HomePageMap extends BaseMap {
 		);
 	}
 
-	public get recentWinsSectionList(): Locator {
-		return this.recentWinsSectionContainer.locator(
-			`div[class*='RecentWins-styled__Content-sc']`,
-		);
-	}
-
-	public get recentWinsSectionTotalBets(): Locator {
-		return this.recentWinsSectionContainer.locator(
-			`p[class*='MuiTypography-liveSelection']`,
-		);
-	}
-
-	public get recentWinsItems(): Locator {
-		return this.page.locator("div[class*='RecentWins-styled__Item']");
-	}
-
-	public recentWinsUsername(item: Locator): Locator {
-		return item.locator("span[class*='UserName']");
-	}
-
-	public get gamdomLogoButton(): Locator {
+public get gamdomLogoButton(): Locator {
 		return this.page.locator("a[class*='TopNavDesktopLogo-']");
 	}
 
@@ -140,8 +110,20 @@ export class HomePageMap extends BaseMap {
 		return this.page.getByTestId("nav-desktop-Gamdom-Originals-tab");
 	}
 
+	public get originalsSubNavContainer(): Locator {
+		return this.page
+			.getByRole("banner")
+			.getByTestId("games-list-slider");
+	}
+
+	public get originalsSubNavSwiper(): Locator {
+		return this.originalsSubNavContainer.getByTestId(
+			"games-list-slider-content-swiper",
+		);
+	}
+
 	public originalsGameFromSubNav(game: string): Locator {
-		return this.originalsGamesListSliderSwiper
+		return this.originalsSubNavSwiper
 			.locator(
 				'a[data-testid^="games-list-item-"][data-testid*="-container-"]',
 			)
@@ -153,12 +135,27 @@ export class HomePageMap extends BaseMap {
 			.first();
 	}
 
+	public get originalsSubNavNextButton(): Locator {
+		return this.originalsSubNavContainer.getByTestId(
+			"games-list-slider-slider-next",
+		);
+	}
+
 	public get originalsSectionSliderContainer(): Locator {
-		return this.page.getByTestId("Originals-styled__Container-sc-");
+		return this.page
+			.locator("main")
+			.getByTestId("games-list-slider")
+			.filter({
+				has: this.page
+					.getByTestId("games-list-slider-header")
+					.locator("p", { hasText: "Gamdom Originals" }),
+			});
 	}
 
 	public get originalsGamesListSliderSwiper(): Locator {
-		return this.page.getByTestId("games-list-slider-content-swiper");
+		return this.originalsSectionSliderContainer.getByTestId(
+			"games-list-slider-content-swiper",
+		);
 	}
 
 	public originalsGameFromSection(game: string): Locator {

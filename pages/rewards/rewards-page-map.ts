@@ -24,9 +24,7 @@ export class RewardsPageMap extends BaseMap {
 	}
 
 	public get rewardsSpecialOfferCard(): Locator {
-		return this.specialOffersList.locator(
-			'[data-testid^="SpecialRewardsSlider-content-swiper-slide-"].swiper-slide-active',
-		);
+		return this.specialOffersList.locator(".swiper-slide-active");
 	}
 
 	public get specialOfferActivateNowButton(): Locator {

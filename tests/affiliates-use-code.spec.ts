@@ -18,7 +18,6 @@ const AUTOMATION_AFFILIATES_CODE = generateRandomString({
 test.describe("Use affiliate code", () => {
 	test.use(storageStateNewUserDB());
 
-	test.slow();
 	test(
 		"[ENG-297] Create an affiliate code and use it with a new account",
 		testDetails()
