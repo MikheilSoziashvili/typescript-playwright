@@ -5,6 +5,7 @@ import { GamdomCryptoApi } from "./gamdom-crypto-api";
 import { CrashApi } from "./games-api/crash-api";
 import { DiceApi } from "./games-api/dice-api";
 import { HiloApi } from "./games-api/hilo-api";
+import { PlinkoApi } from "./games-api/plinko-api";
 import { RouletteApi } from "./games-api/roulette-api";
 import { Page } from "@playwright/test";
 
@@ -14,6 +15,7 @@ export const AllApis = {
 	currencyApi: CurrencyApi,
 	diceApi: DiceApi,
 	hiloApi: HiloApi,
+	plinkoApi: PlinkoApi,
 	rouletteApi: RouletteApi,
 	gamdomApi: GamdomApi,
 	gamdomCryptoApi: GamdomCryptoApi,

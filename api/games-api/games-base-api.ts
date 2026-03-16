@@ -1,13 +1,23 @@
 import { GamesBaseApiConfig } from "@core/api/interfaces/games-base-api-config";
+import { buildGameInitEndpoint } from "@core/helpers/endpoint-builder";
 import { waitUntil } from "@core/utils/utils";
+import { GameUrlRequest } from "@dtos/requests/games-api/game-url-request";
+import { ApiEndpoints } from "@enums/api-endpoints";
+import { Currency } from "@enums/currencies";
+import { GameCode } from "@enums/game-codes";
 import { HttpStatus } from "@enums/http-status";
+import { Language } from "@enums/languages";
+import { Unit } from "@enums/units";
+import { WalletType } from "@enums/wallet-types";
 import { APIResponse } from "@playwright/test";
 import { logger } from "@logger/logger";
+import { urlTokenPattern } from "@support/regex-patterns";
 import * as Configuration from "../../configuration";
 import { BaseApi } from "../base-api";
 
 export abstract class GamesBaseApi extends BaseApi {
-	private readonly config: GamesBaseApiConfig;
+	protected readonly config: GamesBaseApiConfig;
+	protected gameToken!: string;
 
 	constructor(
 		config: GamesBaseApiConfig,
@@ -21,9 +31,72 @@ export abstract class GamesBaseApi extends BaseApi {
 		});
 	}
 
+	public async setToken(token: string): Promise<void> {
+		this.gameToken = token;
+		await this.initGameSession();
+	}
+
+	public async fetchGameToken(): Promise<string> {
+		const token = await this.requestGameUrl();
+		await this.setToken(token);
+		return this.gameToken;
+	}
+
+	private getGameCode(): GameCode {
+		if (!this.config.gameCode) {
+			throw new Error(
+				`Game code not configured for ${this.config.game}`,
+			);
+		}
+
+		return this.config.gameCode;
+	}
+
+	private async requestGameUrl(): Promise<string> {
+		const payload: GameUrlRequest = {
+			gameCode: this.getGameCode(),
+			demo: false,
+			mobile: false,
+			lang: Language.EN,
+			walletInfo: {
+				amount: 0,
+				unit: Unit.COINS,
+				displayCurrency: Currency.USD,
+				wallet_type: WalletType.DEFAULT,
+			},
+		};
+
+		const parameters = this.buildParameters(ApiEndpoints.GAME_URL, payload);
+		const response = await this.post(parameters);
+		const body = await response.text();
+		const match = body.match(urlTokenPattern);
+
+		if (!match) {
+			throw new Error(`No token found in game-url response: ${body}`);
+		}
+
+		return match[1];
+	}
+
+	private async initGameSession(): Promise<void> {
+		const initEndpoint = buildGameInitEndpoint(
+			this.config.game.toLowerCase(),
+			this.gameToken,
+		);
+		const parameters = this.buildParameters(initEndpoint);
+		await this.post(parameters);
+	}
+
+	private async ensureGameToken(): Promise<void> {
+		if (!this.gameToken) {
+			await this.fetchGameToken();
+		}
+	}
+
 	protected async placeBetWithRetry(
 		placeBet: () => Promise<APIResponse>,
 	): Promise<APIResponse> {
+		await this.ensureGameToken();
 		let lastResponse!: APIResponse;
 
 		const tryPlaceBet = async (): Promise<boolean> => {

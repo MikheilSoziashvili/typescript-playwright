@@ -35,4 +35,7 @@ export enum ApiEndpoints {
 	DICE_PLACE_BET = "/stream/dice/rpc/bet",
 	HILO_PLACE_BET = "/stream/hilo/rpc/placeBet",
 	ROULETTE_PLACE_BET = "/stream/roulette/rpc/placeBet",
+	GAME_URL = "/client-api/casino/game-url",
+	PLINKO_HEALTHCHECK = "/_proxied/games/plinko/healthcheck",
+	PLINKO_PLACE_BET = "/_proxied/games/plinko/client-api/plinko/bet",
 }

@@ -102,3 +102,4 @@ export const selfExclusionTimerV4Pattern = (
 };
 export const numericAmountPattern = /[\d,.]+/;
 export const shortScaledAmountPattern = /[\d,.]+[kmbKMB]/;
+export const urlTokenPattern = /[?&]token=([^&"\s]+)/;
