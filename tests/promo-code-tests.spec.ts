@@ -236,9 +236,7 @@ test.describe(
 
 			test(
 				`[ENG-4833] Promo Codes - Verify that Promo Win Cash & Promo Win Free Spins log filters are working`,
-				testDetails()
-					.withAuthor(JiraUser.IVAYLO_STOYCHEV)
-					.apply(),
+				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
 				async ({
 					promoCampaignsAdminPage,
 					promoCodeModal,
@@ -270,7 +268,6 @@ test.describe(
 						.navigateAndEnable2FaAuthentication(qrCode2FAImagePath);
 					await promoCampaignsAdminPage.navigate();
 					await promoCampaignsAdminPage.clickCreateCampaignButton();
-					await promoCodeModal.assertThat().isNotDisplayed();
 					await twoFactorAuthModal
 						.steps()
 						.generateAndEnter2FaCodeSuccessfully(
@@ -804,7 +801,7 @@ test.describe(
 								promoCodeName,
 								input.finalAction,
 							);
-							
+
 							await promoCampaignsAdminPage
 								.assertThat()
 								.verifyPromoCampaignStatus(

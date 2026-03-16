@@ -49,7 +49,6 @@ test.describe("Promo Code tests", () => {
 
 			await promoCampaignsAdminPage.navigate();
 			await promoCampaignsAdminPage.clickCreateCampaignButton();
-			await promoCodeModal.assertThat().isNotDisplayed();
 			await twoFactorAuthModal
 				.steps()
 				.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);

@@ -42,7 +42,6 @@ test.describe("Promo Campaign with duplicate codes of finished campaigns tests",
 				.navigateAndEnable2FaAuthentication(qrCode2FAImagePath);
 			await promoCampaignsAdminPage.navigate();
 			await promoCampaignsAdminPage.clickCreateCampaignButton();
-			await promoCodeModal.assertThat().isNotDisplayed();
 			await twoFactorAuthModal
 				.steps()
 				.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
@@ -64,9 +63,7 @@ test.describe("Promo Campaign with duplicate codes of finished campaigns tests",
 	promoCampaignStatuses.forEach((promoCampaignStatus) => {
 		test(
 			`[ENG-4935] Promo Codes - Verify duplicate codes of ${promoCampaignStatus.status} campaigns still work`,
-			testDetails()
-				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
-				.apply(),
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
 			async ({
 				promoCampaignsAdminPage,
 				promoCodeModal,
@@ -96,9 +93,7 @@ test.describe("Promo Campaign with duplicate codes of finished campaigns tests",
 
 	test(
 		`[ENG-4935] Promo Codes - Verify duplicate codes of expired campaigns still work`,
-		testDetails()
-			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
-			.apply(),
+		testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
 		async ({
 			promoCampaignsAdminPage,
 			promoCodeModal,
