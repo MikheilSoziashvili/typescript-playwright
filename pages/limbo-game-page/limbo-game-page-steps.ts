@@ -1,10 +1,8 @@
 import { BasePageStep } from "@pages/base/base-page-step";
 import { LimboBetTestData } from "@dtos/test-data";
 import { LimboGamePage } from "./limbo-game-page";
-import { waitUntil } from "@core/utils/utils";
 import { step } from "decorators/step";
 import { logger } from "@logger/logger";
-import { TimeoutSeconds } from "@enums/timeout-seconds";
 
 export class LimboGamePageSteps extends BasePageStep<LimboGamePage> {
 	public constructor(gamdomPage: LimboGamePage) {
@@ -25,8 +23,7 @@ export class LimboGamePageSteps extends BasePageStep<LimboGamePage> {
 
 		await this.gamdomPage.fillBetData(limboBetData);
 		await this.gamdomPage.clickRoll();
-
-		await this.waitForNewHistoryChip(chipCountBefore);
+		await this.gamdomPage.waitForNewHistoryChip(chipCountBefore);
 
 		const resultMultiplier =
 			await this.gamdomPage.getLastResultMultiplier();
@@ -44,50 +41,51 @@ export class LimboGamePageSteps extends BasePageStep<LimboGamePage> {
 			: 0;
 		const expectedCoins = initialCoins - betCoins + payoutCoins;
 
-		await this.waitForExpectedBalanceInCoins(expectedCoins);
-	}
-
-	@step("Wait for expected balance in coins")
-	private async waitForExpectedBalanceInCoins(
-		expectedCoins: number,
-	): Promise<void> {
-		await waitUntil(
-			async () => {
-				const currentCoins =
-					await this.userBalanceHandler.walletBalanceInCoins();
-
-				return currentCoins === expectedCoins;
-			},
-			{
-				errorMessage: `Balance did not update to expected ${expectedCoins} coins`,
-				intervalSeconds: TimeoutSeconds.ONE,
-				timeoutSeconds: TimeoutSeconds.TEN,
-			},
-		);
-	}
-
-	@step("Wait for new history chip to appear")
-	private async waitForNewHistoryChip(
-		previousChipCount: number,
-	): Promise<void> {
-		await waitUntil(
-			async () => {
-				const currentCount =
-					await this.gamdomPage.map.historyChips.count();
-				return currentCount > previousChipCount;
-			},
-			{
-				errorMessage:
-					"Game result did not appear in history after rolling",
-				intervalSeconds: TimeoutSeconds.HALF,
-				timeoutSeconds: TimeoutSeconds.SIXTY,
-			},
-		);
+		await this.gamdomPage.waitForExpectedBalanceInCoins(expectedCoins);
 	}
 
 	@step("Navigate to limbo and assert roll button is visible")
 	public async navigateAndAssertRollButton(): Promise<void> {
 		await this.gamdomPage.navigate();
 		await this.gamdomPage.assertThat().rollButtonIsVisible();
+	}
+
+	@step("Switch to auto mode and assert start playing button")
+	public async switchToAutoModeAndAssertStartPlaying(
+		limboBetData: LimboBetTestData,
+	): Promise<void> {
+		await this.gamdomPage.fillBetData(limboBetData);
+		await this.gamdomPage.switchToAutoMode();
+		await this.gamdomPage.assertThat().startPlayingButtonIsVisible();
+	}
+
+	@step("Start auto play and assert stop playing button")
+	public async startAutoPlayAndAssertStopPlaying(): Promise<void> {
+		await this.gamdomPage.clickStartPlaying();
+		await this.gamdomPage.assertThat().stopPlayingButtonIsVisible();
+	}
+
+	@step("Play auto rounds, stop and verify final balance")
+	public async playAutoRoundsAndVerifyBalance(
+		limboBetData: LimboBetTestData,
+		numberOfRounds: number,
+		initialCoins: number,
+	): Promise<void> {
+		const trackedMultipliers =
+			await this.gamdomPage.trackAutoRounds(numberOfRounds);
+
+		await this.gamdomPage.clickStopPlaying();
+		await this.gamdomPage.assertThat().assertAutobetFinishedToast();
+		await this.gamdomPage.waitForAutobetToFullyStop();
+
+		await this.gamdomPage.detectExtraRound(trackedMultipliers);
+
+		const expectedCoins = this.gamdomPage.calculateExpectedBalance(
+			initialCoins,
+			limboBetData,
+			trackedMultipliers,
+		);
+
+		await this.gamdomPage.waitForExpectedBalanceInCoins(expectedCoins);
 	}
 }

@@ -15,4 +15,36 @@ export class LimboGamePageAsserter extends BaseAsserter<LimboGamePage> {
 			Timeout.LONG,
 		);
 	}
+
+	@step("Start playing button is visible")
+	public async startPlayingButtonIsVisible(): Promise<void> {
+		await this.checkElementsAreVisible(
+			[this.gamdomPage.map.startPlayingButton],
+			Timeout.LONG,
+		);
+	}
+
+	@step("Stop playing button is visible")
+	public async stopPlayingButtonIsVisible(): Promise<void> {
+		await this.checkElementsAreVisible(
+			[this.gamdomPage.map.stopPlayingButton],
+			Timeout.LONG,
+		);
+	}
+
+	@step("Autobet finished toast is displayed")
+	public async autobetFinishedToastIsDisplayed(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.autobetFinishedToast,
+		]);
+	}
+
+	@step("Assert autobet finished toast")
+	public async assertAutobetFinishedToast(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.autobetFinishedToast,
+			this.gamdomPage.map.autobetFinishedToastTitle,
+			this.gamdomPage.map.autobetFinishedToastSubTitle,
+		]);
+	}
 }

@@ -72,4 +72,5 @@ export enum CsvFilesName {
 	JACKPOT_CONTRIBUTION = "ENG-11717-Jackpot-Contribution-percentage-validation.csv",
 	RELOAD_UPDATE_LOGIC = "ENG-10268-reload-update-logic.csv",
 	LIMBO_MANUAL_MODE = "ENG-10738-limbo-manual-mode.csv",
+	LIMBO_AUTO_MODE = "ENG-10737-limbo-auto-mode.csv",
 }

@@ -82,4 +82,5 @@ export enum JiraComponent {
 	WRITER = "Writer",
 	NOTES = "Notes",
 	JACKPOT = "Jackpot",
+	LIMBO = "Limbo",
 }

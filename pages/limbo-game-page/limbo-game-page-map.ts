@@ -2,6 +2,9 @@ import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
 
 export class LimboGamePageMap extends BaseMap {
+	private readonly BET_BUTTON =
+		'button[class*="BetButtonstyled__Button-Limbo"]';
+
 	public constructor(page: Page) {
 		super(page);
 	}
@@ -19,9 +22,7 @@ export class LimboGamePageMap extends BaseMap {
 	}
 
 	public get rollButton(): Locator {
-		return this.page.locator(
-			'button[class*="BetButtonstyled__Button-Limbo"]',
-		);
+		return this.page.locator(this.BET_BUTTON);
 	}
 
 	public get historyTrack(): Locator {
@@ -44,5 +45,35 @@ export class LimboGamePageMap extends BaseMap {
 		return this.lastHistoryChip.locator(
 			'span[class*="MultiplierChipstyled__Span-Limbo"]',
 		);
+	}
+
+	public get autoRollSwitch(): Locator {
+		return this.page.locator(
+			'button[class*="Switchstyled__Button-Limbo"]',
+		);
+	}
+
+	public get startPlayingButton(): Locator {
+		return this.page.locator(this.BET_BUTTON, {
+			hasText: "Start playing",
+		});
+	}
+
+	public get stopPlayingButton(): Locator {
+		return this.page.locator(this.BET_BUTTON, {
+			hasText: "Stop playing",
+		});
+	}
+
+	public get autobetFinishedToast(): Locator {
+		return this.page.getByTestId("Autobet Finished-toast");
+	}
+
+	public get autobetFinishedToastTitle(): Locator {
+		return this.page.getByTestId("Success!-toast-title");
+	}
+
+	public get autobetFinishedToastSubTitle(): Locator {
+		return this.page.getByTestId("Autobet Finished-toast-subtitle");
 	}
 }

@@ -47,3 +47,36 @@ test.describe(
 			});
 	},
 );
+
+test.describe(
+	"Limbo autobet tests",
+	testDetails().withTags(JiraComponent.LIMBO).apply(),
+	() => {
+		test.slow();
+		testData()
+			.fromCsvRaw({ file: CsvFilesName.LIMBO_AUTO_MODE })
+			.forEach((record) => {
+				test(
+					`[ENG-10737][Limbo] Auto mode - Bet: $${record.betAmount}, Multiplier: ${record.multiplier}x`,
+					testDetails()
+						.withTags(TestTag.ORIGINALS)
+						.withAuthor(JiraUser.ANGEL_PETROV)
+						.apply(),
+					async ({ limboAutobetTestFlow, testDataPredefined }) => {
+						const numberOfRounds =
+							testDataPredefined.data.limboAutobet.numberOfRounds;
+
+						const limboBetData = new LimboBetTestData({
+							betAmount: parseFloat(record.betAmount),
+							multiplier: parseFloat(record.multiplier),
+						});
+
+						await limboAutobetTestFlow.executeAutobetScenario({
+							limboBetData,
+							numberOfRounds,
+						});
+					},
+				);
+			});
+	},
+);

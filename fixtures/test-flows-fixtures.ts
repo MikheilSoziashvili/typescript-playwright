@@ -50,6 +50,9 @@ import { ClaimReloadRewardAndVerifyClaimsTestFlow } from "@test-flows/rewards/cl
 import { VerifyReloadRewardPresenceAndClaimsTestFlow } from "@test-flows/rewards/verify-reload-reward-presence-and-claims-test-flow";
 import { VerifyAndClaimReloadRewardTestFlow } from "@test-flows/rewards/verify-and-claim-reload-reward-test-flow";
 import { VerifyReloadUpdateLogicTestFlow } from "@test-flows/rewards/verify-reload-update-logic-test-flow";
+import { LimboAutobetTestFlow } from "@test-flows/originals/limbo/limbo-autobet-test-flow";
+import { LimboAutobetSetupFlow } from "@test-flows/originals/limbo/limbo-autobet-setup-test-flow";
+import { LimboAutobetExecutionFlow } from "@test-flows/originals/limbo/limbo-autobet-execution-test-flow";
 
 export type TestFlowsFixtures = {
 	plinkoBetTestFlow: PlinkoBetTestFlow;
@@ -77,6 +80,7 @@ export type TestFlowsFixtures = {
 	verifyReloadRewardPresenceAndClaimsTestFlow: VerifyReloadRewardPresenceAndClaimsTestFlow;
 	verifyAndClaimReloadRewardTestFlow: VerifyAndClaimReloadRewardTestFlow;
 	verifyReloadUpdateLogicTestFlow: VerifyReloadUpdateLogicTestFlow;
+	limboAutobetTestFlow: LimboAutobetTestFlow;
 };
 
 type RequiredTestFlowsFixtures = {
@@ -248,5 +252,13 @@ export const testFlowsFixtures = base.extend<
 	},
 	verifyReloadUpdateLogicTestFlow: async ({}, use) => {
 		await use(new VerifyReloadUpdateLogicTestFlow());
+	},
+	limboAutobetTestFlow: async ({ browserSessionManager }, use) => {
+		await use(
+			new LimboAutobetTestFlow(
+				new LimboAutobetSetupFlow(browserSessionManager),
+				new LimboAutobetExecutionFlow(),
+			),
+		);
 	},
 });

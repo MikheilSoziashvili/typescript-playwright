@@ -49,6 +49,11 @@ export { toFireblocksCryptoClient } from "./crypto/adapters/fireblocks-crypto-cl
 export { toUtxoCryptoClient } from "./crypto/adapters/utxo-crypto-client-adapter";
 export { toXrpCryptoClient } from "./crypto/adapters/xrp-crypto-client-adapter";
 
+// Limbo flows
+export { LimboAutobetSetupFlow } from "./originals/limbo/limbo-autobet-setup-test-flow";
+export { LimboAutobetExecutionFlow } from "./originals/limbo/limbo-autobet-execution-test-flow";
+export { LimboAutobetTestFlow } from "./originals/limbo/limbo-autobet-test-flow";
+
 // User Info flows
 export { UserInfoStaffUserSetupFlow } from "./user-info/user-info-staff-user-setup-test-flow";
 export { UserInfoEditFieldFlow } from "./user-info/user-info-edit-field-test-flow";

@@ -36,6 +36,10 @@ export const predefined = {
 	betsNumberPlinkoCannon: {
 		numberOfBets: "500",
 	},
+	limboAutobet: {
+		numberOfRounds: 2,
+		amount: 30000000,
+	},
 	vault: {
 		amountToWithdraw: 5,
 	},

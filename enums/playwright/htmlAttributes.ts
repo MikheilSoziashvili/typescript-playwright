@@ -27,4 +27,5 @@ export enum Attributes {
 	ARIA_ORIENTATION = "aria-orientation",
 	SPAN = "span",
 	DATA_SELECTED = "data-selected",
+	DISABLED = "disabled",
 }
