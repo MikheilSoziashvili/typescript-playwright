@@ -61,8 +61,10 @@ export class PromoCampaignsAdminMap extends BaseMap {
 		);
 	}
 
-	public promoCodeTableText(): Locator {
-		return this.promoCampaignsTableRows.locator(`//td[2]//p`);
+	public promoCodeTableText(rowIndex = 0): Locator {
+		return this.promoCampaignsTableBody.getByTestId(
+			`promo-code-text-${rowIndex}`,
+		);
 	}
 
 	public campaignNameTableTextByCampaignName(campaignName: string): Locator {
