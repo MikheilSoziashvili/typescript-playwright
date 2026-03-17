@@ -126,4 +126,11 @@ export class VerificationPageAsserter extends BaseAsserter<VerificationPage> {
 	public async fileIsUploaded(): Promise<void> {
 		await this.checkElementsAreVisible([this.gamdomPage.map.uploadedFile]);
 	}
+
+	@step("File upload error message is displayed")
+	public async fileUploadErrorMessageIsDisplayed(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.fileUploadErrorMessage,
+		]);
+	}
 }

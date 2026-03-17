@@ -5,7 +5,11 @@ import {
 	KycLevels,
 	ProofOfFunds,
 } from "@enums/verification-enums";
-import { KYC_LEVEL_3_FIELDS } from "test-data/domains/verification-domain-data";
+import { whiteSpacePattern } from "@support/regex-patterns";
+import {
+	FIELD_ERROR_TESTID_MAP,
+	KYC_LEVEL_3_FIELDS,
+} from "test-data/domains/verification-domain-data";
 
 export class VerificationPageMap extends BaseMap {
 	public constructor(page: Page) {
@@ -33,30 +37,40 @@ export class VerificationPageMap extends BaseMap {
 		return this.page.locator("#veriffFrame");
 	}
 
+	public kycLevelToggle(level: KycLevels): Locator {
+		return this.page.getByTestId(`kyc-${level}-toggle`);
+	}
+
+	public levelContent(level: KycLevels): Locator {
+		return this.page.getByTestId(
+			`kyc-v4-accordion-${level.toLowerCase()}-content`,
+		);
+	}
+
 	public get verifyMeTab(): Locator {
-		return this.page.getByRole("tab", { name: "Verify me" });
+		return this.levelContent(KycLevels.LEVEL_1).getByTestId(
+			"kyc-v4-level1-tab-personal",
+		);
 	}
 
 	public get verifyBusinessTab(): Locator {
-		return this.page.getByRole("tab", { name: "Verify Business" });
-	}
-
-	public get countryDropdownContainer(): Locator {
-		return this.page.getByLabel("Country of Residence");
-	}
-
-	public get level2countryDropdownContainer(): Locator {
-		return this.page.getByRole("combobox", { name: "Country" });
-	}
-
-	public get reasonForResidenceDropdown(): Locator {
-		return this.page.getByLabel("Reason for Residence");
-	}
-
-	public get countryDropdown(): Locator {
-		return this.page.locator(
-			'input[role="combobox"][aria-autocomplete="list"]',
+		return this.levelContent(KycLevels.LEVEL_1).getByTestId(
+			"kyc-v4-level1-tab-business",
 		);
+	}
+
+	public countryDropdownContainer(level: KycLevels): Locator {
+		return this.levelContent(level).getByTestId("kyc-v4-country-button");
+	}
+
+	public reasonForResidenceDropdown(level: KycLevels): Locator {
+		return this.levelContent(level).getByTestId(
+			"kyc-v4-residence-reason-button",
+		);
+	}
+
+	public countryDropdown(level: KycLevels): Locator {
+		return this.levelContent(level).getByTestId("kyc-v4-country-button");
 	}
 
 	public get countryDropdownValuesContainer(): Locator {
@@ -64,52 +78,88 @@ export class VerificationPageMap extends BaseMap {
 	}
 
 	public get countryDropdownValueItems(): Locator {
-		return this.countryDropdownValuesContainer
-			.locator("li")
-			.getByRole("option");
+		return this.countryDropdownValuesContainer.getByRole("option");
 	}
 
 	public get firstAndLastNameInput(): Locator {
-		return this.page.getByLabel("Full name");
+		return this.levelContent(KycLevels.LEVEL_1).getByTestId(
+			"kyc-v4-full-name-input",
+		);
 	}
 
-	public get dateOfBirthInput(): Locator {
-		return this.page.getByLabel("Date of Birth");
+	public get dateOfBirthDayButton(): Locator {
+		return this.levelContent(KycLevels.LEVEL_1).getByTestId(
+			"kyc-v4-date-of-birth-day-button",
+		);
+	}
+
+	public get dateOfBirthMonthButton(): Locator {
+		return this.levelContent(KycLevels.LEVEL_1).getByTestId(
+			"kyc-v4-date-of-birth-month-button",
+		);
+	}
+
+	public get dateOfBirthYearButton(): Locator {
+		return this.levelContent(KycLevels.LEVEL_1).getByTestId(
+			"kyc-v4-date-of-birth-year-button",
+		);
+	}
+
+	public dateOfBirthDayOption(day: number): Locator {
+		return this.page.getByTestId(`kyc-v4-date-of-birth-day-option-${day}`);
+	}
+
+	public dateOfBirthMonthOption(month: number): Locator {
+		return this.page.getByTestId(
+			`kyc-v4-date-of-birth-month-option-${month}`,
+		);
+	}
+
+	public dateOfBirthYearOption(year: number): Locator {
+		return this.page.getByTestId(
+			`kyc-v4-date-of-birth-year-option-${year}`,
+		);
 	}
 
 	public get businessNameInput(): Locator {
-		return this.page.getByLabel("Business name");
+		return this.levelContent(KycLevels.LEVEL_1).getByTestId(
+			"kyc-v4-business-name-input",
+		);
 	}
 
-	public get bbusinessAddressInput(): Locator {
-		return this.page.getByLabel("Business address");
+	public get businessAddressInput(): Locator {
+		return this.levelContent(KycLevels.LEVEL_1).getByTestId(
+			"kyc-v4-business-address-input",
+		);
 	}
 
 	public get businessRegistrationNumberInput(): Locator {
-		return this.page.getByLabel("Registration number");
+		return this.levelContent(KycLevels.LEVEL_1).getByTestId(
+			"kyc-v4-registration-number-input",
+		);
 	}
 
-	public get verifyCheckbox(): Locator {
-		return this.page.locator('span[role="button"]', {
-			has: this.page.locator(
-				'input[type="checkbox"][class*="PrivateSwitchBase-input"]',
-			),
-		});
+	public verifyCheckbox(level: KycLevels): Locator {
+		return this.levelContent(level).getByTestId(
+			"kyc-v4-agree-checkbox-container",
+		);
 	}
 
-	public get submitButton(): Locator {
-		return this.page.locator("button", { hasText: "Submit" });
+	public submitButton(level: KycLevels): Locator {
+		return this.levelContent(level).getByTestId("kyc-v4-submit-button");
 	}
 
 	public getErrorMessageForField(fieldLabel: string): Locator {
 		if (fieldLabel === KYC_LEVEL_3_FIELDS.FILE_UPLOAD) {
 			return this.fileUploadErrorMessage;
 		}
-		return this.page
-			.getByLabel(fieldLabel)
-			.locator("..")
-			.locator("..")
-			.locator('p[class*="MuiFormHelperText-root"]');
+		const testId = FIELD_ERROR_TESTID_MAP[fieldLabel];
+		if (!testId) {
+			throw new Error(
+				`No error testid mapping for field: "${fieldLabel}"`,
+			);
+		}
+		return this.page.getByTestId(testId);
 	}
 
 	public getClearButtonForField(fieldLabel: string): Locator {
@@ -119,55 +169,52 @@ export class VerificationPageMap extends BaseMap {
 			.getByTestId("clearInputButton");
 	}
 
-	public get level2CountryClearButton(): Locator {
-		return this.level2countryDropdownContainer
-			.locator("..")
-			.getByTestId("CloseIcon");
-	}
-
 	public get checkboxValidationMessage(): Locator {
-		return this.page.locator('span[class*="MuiTypography-caption"]', {
-			hasText: "You must confirm that the information above is accurate.",
-		});
+		return this.page.getByTestId("kyc-v4-agree-checkbox-error");
 	}
 
 	public get kycLevelTwoVerificationTitle(): Locator {
-		return this.page.getByText("Level 2 Verification");
+		return this.levelTitle(KycLevels.LEVEL_2);
 	}
 
 	public get levelThreeVerificationHeader(): Locator {
-		return this.page.getByText("Level 3 Verification");
+		return this.levelTitle(KycLevels.LEVEL_3);
 	}
 
 	public get proofOfFundsDropdown(): Locator {
-		return this.page.getByLabel("Proof of Funds");
+		return this.levelContent(KycLevels.LEVEL_3).getByTestId(
+			"kyc-v4-proof-of-funds-button",
+		);
 	}
 
 	public proofOfFundsOption(option: ProofOfFunds): Locator {
-		return this.page.getByRole("option", { name: option });
+		const key = option.toLowerCase().replace(whiteSpacePattern, "_");
+		return this.page.getByTestId(`kyc-v4-proof-of-funds-option-${key}`);
 	}
 
 	public get uploadProofOfFundsButton(): Locator {
-		return this.page.getByText("Choose file to upload");
+		return this.levelContent(KycLevels.LEVEL_3).getByTestId(
+			"-upload-button",
+		);
 	}
 
 	public get uploadedFile(): Locator {
-		return this.page.locator('img[alt="file"]');
+		return this.levelContent(KycLevels.LEVEL_3).getByTestId(
+			"kyc-v4-uploaded-files-preview",
+		);
 	}
 
 	public get fileUploadErrorMessage(): Locator {
-		return this.page
-			.locator('span[class*="MuiTypography-caption"]')
-			.first();
+		return this.page.getByTestId("kyc-v4-upload-error");
 	}
 
-	public get closeIcon(): Locator {
-		return this.page.locator("i[class*='icon-close']");
+	public get removeFileButton(): Locator {
+		return this.page.getByTestId("kyc-v4-remove-file-0");
 	}
 
 	public get levelThreeVerificationInProgressMessage(): Locator {
-		return this.page.getByText(
-			"Verification in progress. Please wait for the verification to complete.",
+		return this.levelContent(KycLevels.LEVEL_3).getByTestId(
+			"kyc-v4-level3-in-progress",
 		);
 	}
 }

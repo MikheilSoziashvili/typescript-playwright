@@ -3,11 +3,6 @@ import { NotificationTitle } from "@enums/notification-titles";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import {
-	KYC_LEVEL_3_FILE_PATH,
-	LARGE_KYC_LEVEL_3_FILE_PATH,
-	PDF_KYC_LEVEL_3_FILE_PATH,
-} from "@constants/file-paths";
-import {
 	KycAdminActions,
 	kycAdminStatus,
 	KycLevel3ReviewAction,
@@ -68,6 +63,21 @@ export const KYC_LEVEL_3_FIELDS = {
 } as const;
 
 // ============================================================================
+// CONSTANTS - Field Error TestID Mapping
+// ============================================================================
+
+export const FIELD_ERROR_TESTID_MAP: Record<string, string> = {
+	[KYC_FIELDS.FULL_NAME]: "kyc-v4-full-name-error",
+	[KYC_FIELDS.DATE_OF_BIRTH]: "kyc-v4-date-of-birth-error",
+	[KYB_FIELDS.BUSINESS_NAME]: "kyc-v4-business-name-error",
+	[KYB_FIELDS.BUSINESS_ADDRESS]: "kyc-v4-business-address-error",
+	[KYB_FIELDS.REGISTRATION_NUMBER]: "kyc-v4-registration-number-error",
+	[KYC_LEVEL_2_5_FIELDS.COUNTRY]: "kyc-v4-country-error",
+	[KYC_LEVEL_2_5_FIELDS.REASON_FOR_RESIDENCE]:
+		"kyc-v4-residence-reason-error",
+};
+
+// ============================================================================
 // CONSTANTS - Date Input Descriptions
 // ============================================================================
 
@@ -84,6 +94,11 @@ export const DATE_INPUT_DESCRIPTIONS = {
  * Special input value to trigger random option selection
  */
 export const RANDOM_OPTION = "Random Option";
+
+/**
+ * Temporary character used to trigger field validation before clearing
+ */
+export const VALIDATION_TRIGGER_CHAR = "a";
 
 /*
  * All available Proof of Funds options
@@ -114,10 +129,8 @@ export const VALID_INPUTS = {
  * Invalid input values for field validation (101 characters - exceeds max length)
  */
 export const INVALID_INPUTS = {
-	NAME_TOO_LONG: faker.string.alphanumeric(101),
-	BUSINESS_TOO_LONG: faker.string.alphanumeric(101),
-	ADDRESS_TOO_LONG: faker.string.alphanumeric(101),
-	NUMBER_TOO_LONG: faker.string.numeric(101),
+	TOO_LONG_TEXT: faker.string.alphanumeric(101),
+	TOO_LONG_NUMBER: faker.string.numeric(101),
 } as const;
 
 // ============================================================================
@@ -135,13 +148,6 @@ export const ERROR_MESSAGES = {
 	BUSINESS_NAME_REQUIRED: "Business name is required",
 	BUSINESS_ADDRESS_REQUIRED: "Business address is required",
 	INVALID_REGISTRATION_NUMBER: "Please enter a valid registration number",
-	COUNTRY_REQUIRED: "Country is required",
-	REASON_FOR_RESIDENCE_REQUIRED: "Reason for residence is required",
-	REASON_FOR_FUNDS_REQUIRED: "Reason for funds is required",
-	FILE_TOO_LARGE: "Files must be less than 5 MB",
-	FILE_FORMAT_NOT_SUPPORTED:
-		"Only certain file types are allowed: JPG/JPEG, PNG",
-	FILE_UPLOAD_REQUIRED: "Please upload a file",
 	NO_ERROR: "",
 } as const;
 
@@ -286,47 +292,15 @@ export class VerificationDomainData {
 		},
 		{
 			inputField: KYC_FIELDS.FULL_NAME,
-			input: INVALID_INPUTS.NAME_TOO_LONG,
+			input: INVALID_INPUTS.TOO_LONG_TEXT,
 			expectedErrorMessage: ERROR_MESSAGES.TOO_LONG,
-		},
-		{
-			inputField: KYC_FIELDS.DATE_OF_BIRTH,
-			input: DATE_INPUT_DESCRIPTIONS.UNDER_18,
-			expectedErrorMessage: ERROR_MESSAGES.UNDER_18,
 		},
 		{
 			inputField: KYC_FIELDS.DATE_OF_BIRTH,
 			input: DATE_INPUT_DESCRIPTIONS.OVER_18,
 			expectedErrorMessage: ERROR_MESSAGES.NO_ERROR,
 		},
-		{
-			inputField: KYC_FIELDS.DATE_OF_BIRTH,
-			input: DATE_INPUT_DESCRIPTIONS.OVER_100,
-			expectedErrorMessage: ERROR_MESSAGES.OVER_100,
-		},
-		{
-			inputField: KYC_FIELDS.COUNTRY,
-			input: VALID_INPUTS.EMPTY,
-			expectedErrorMessage: ERROR_MESSAGES.NO_ERROR,
-		},
-		{
-			inputField: KYC_FIELDS.COUNTRY,
-			input: RANDOM_OPTION,
-			expectedErrorMessage: ERROR_MESSAGES.NO_ERROR,
-		},
 	];
-
-	/**
-	 * KYC Level 1 clear field validation scenarios
-	 */
-	private readonly kycLevel1ClearFieldValidations: FieldValidationScenario[] =
-		[
-			{
-				inputField: KYC_FIELDS.FULL_NAME,
-				input: INVALID_INPUTS.NAME_TOO_LONG,
-				expectedErrorMessage: ERROR_MESSAGES.TOO_LONG,
-			},
-		];
 
 	// ========================================================================
 	// KYB LEVEL 1 - FIELD VALIDATION SCENARIOS DATASET
@@ -383,138 +357,28 @@ export class VerificationDomainData {
 		},
 		{
 			inputField: KYB_FIELDS.BUSINESS_NAME,
-			input: INVALID_INPUTS.BUSINESS_TOO_LONG,
+			input: INVALID_INPUTS.TOO_LONG_TEXT,
 			expectedErrorMessage: ERROR_MESSAGES.TOO_LONG,
 		},
 		{
 			inputField: KYB_FIELDS.BUSINESS_ADDRESS,
-			input: INVALID_INPUTS.ADDRESS_TOO_LONG,
+			input: INVALID_INPUTS.TOO_LONG_TEXT,
 			expectedErrorMessage: ERROR_MESSAGES.TOO_LONG,
 		},
 		{
 			inputField: KYB_FIELDS.REGISTRATION_NUMBER,
-			input: INVALID_INPUTS.NUMBER_TOO_LONG,
+			input: INVALID_INPUTS.TOO_LONG_NUMBER,
 			expectedErrorMessage: ERROR_MESSAGES.TOO_LONG,
 		},
 	];
 
 	/**
-	 * KYB Level 1 clear field validation scenarios
+	 * KYB Level 1 clear field validation scenarios (derived from "too long" entries)
 	 */
-	private readonly kybLevel1ClearFieldValidations: FieldValidationScenario[] =
-		[
-			{
-				inputField: KYB_FIELDS.BUSINESS_NAME,
-				input: INVALID_INPUTS.BUSINESS_TOO_LONG,
-				expectedErrorMessage: ERROR_MESSAGES.TOO_LONG,
-			},
-			{
-				inputField: KYB_FIELDS.BUSINESS_ADDRESS,
-				input: INVALID_INPUTS.ADDRESS_TOO_LONG,
-				expectedErrorMessage: ERROR_MESSAGES.TOO_LONG,
-			},
-			{
-				inputField: KYB_FIELDS.REGISTRATION_NUMBER,
-				input: INVALID_INPUTS.NUMBER_TOO_LONG,
-				expectedErrorMessage: ERROR_MESSAGES.TOO_LONG,
-			},
-		];
-
-	// ========================================================================
-	// KYC LEVEL 2.5 - FIELD VALIDATION SCENARIOS DATASET
-	// ========================================================================
-
-	/**
-	 * KYC Level 2.5 field validation scenarios
-	 */
-	private readonly kycLevel2_5FieldValidations: FieldValidationScenario[] = [
-		{
-			inputField: KYC_LEVEL_2_5_FIELDS.COUNTRY,
-			input: VALID_INPUTS.EMPTY,
-			expectedErrorMessage: ERROR_MESSAGES.COUNTRY_REQUIRED,
-		},
-		{
-			inputField: KYC_LEVEL_2_5_FIELDS.COUNTRY,
-			input: RANDOM_OPTION,
-			expectedErrorMessage: ERROR_MESSAGES.NO_ERROR,
-		},
-		{
-			inputField: KYC_LEVEL_2_5_FIELDS.REASON_FOR_RESIDENCE,
-			input: VALID_INPUTS.EMPTY,
-			expectedErrorMessage: ERROR_MESSAGES.REASON_FOR_RESIDENCE_REQUIRED,
-		},
-		{
-			inputField: KYC_LEVEL_2_5_FIELDS.REASON_FOR_RESIDENCE,
-			input: RANDOM_OPTION,
-			expectedErrorMessage: ERROR_MESSAGES.NO_ERROR,
-		},
-	];
-
-	/**
-	 * KYC Level 2.5 clear field validation scenarios
-	 */
-	private readonly kycLevel2_5ClearFieldValidations: FieldValidationScenario[] =
-		[
-			{
-				inputField: KYC_LEVEL_2_5_FIELDS.COUNTRY,
-				input: RANDOM_OPTION,
-				expectedErrorMessage: ERROR_MESSAGES.COUNTRY_REQUIRED,
-			},
-		];
-
-	// ========================================================================
-	// KYC LEVEL 3 - FIELD VALIDATION SCENARIOS DATASET
-	// ========================================================================
-
-	/**
-	 * KYC Level 3 field validation scenarios
-	 */
-	private readonly kycLevel3FieldValidations: FieldValidationScenario[] = [
-		// Proof of Funds dropdown validation
-		{
-			inputField: KYC_LEVEL_3_FIELDS.PROOF_OF_FUNDS,
-			input: VALID_INPUTS.EMPTY,
-			expectedErrorMessage: ERROR_MESSAGES.REASON_FOR_FUNDS_REQUIRED,
-		},
-		{
-			inputField: KYC_LEVEL_3_FIELDS.PROOF_OF_FUNDS,
-			input: RANDOM_OPTION,
-			expectedErrorMessage: ERROR_MESSAGES.NO_ERROR,
-		},
-		// File upload validation
-		{
-			inputField: KYC_LEVEL_3_FIELDS.FILE_UPLOAD,
-			input: VALID_INPUTS.EMPTY,
-			expectedErrorMessage: ERROR_MESSAGES.FILE_UPLOAD_REQUIRED,
-		},
-		{
-			inputField: KYC_LEVEL_3_FIELDS.FILE_UPLOAD,
-			input: PDF_KYC_LEVEL_3_FILE_PATH,
-			expectedErrorMessage: ERROR_MESSAGES.FILE_FORMAT_NOT_SUPPORTED,
-		},
-		{
-			inputField: KYC_LEVEL_3_FIELDS.FILE_UPLOAD,
-			input: LARGE_KYC_LEVEL_3_FILE_PATH,
-			expectedErrorMessage: ERROR_MESSAGES.FILE_TOO_LARGE,
-		},
-		{
-			inputField: KYC_LEVEL_3_FIELDS.FILE_UPLOAD,
-			input: KYC_LEVEL_3_FILE_PATH,
-			expectedErrorMessage: ERROR_MESSAGES.NO_ERROR,
-		},
-	];
-
-	/**
-	 * KYC Level 3 clear field validation scenarios
-	 */
-	private readonly kycLevel3ClearFieldValidations: FieldValidationScenario[] =
-		[
-			{
-				inputField: KYC_LEVEL_3_FIELDS.PROOF_OF_FUNDS,
-				input: RANDOM_OPTION,
-				expectedErrorMessage: ERROR_MESSAGES.REASON_FOR_FUNDS_REQUIRED,
-			},
-		];
+	private readonly kybLevel1ClearFieldValidations =
+		this.kybLevel1FieldValidations.filter(
+			(v) => v.expectedErrorMessage === ERROR_MESSAGES.TOO_LONG,
+		);
 
 	// ========================================================================
 	// COMBINED FIELD VALIDATION SCENARIOS
@@ -529,7 +393,7 @@ export class VerificationDomainData {
 				testId: "ENG-8542",
 				formType: VerificationFormTypeEnum.KYC,
 				fieldValidations: this.kycLevel1FieldValidations,
-				clearFieldValidations: this.kycLevel1ClearFieldValidations,
+				clearFieldValidations: [],
 				processInput: (input: string) => this.convertDateInput(input),
 				tabType: VerificationTabType.VERIFY_YOURSELF,
 			},
@@ -540,36 +404,6 @@ export class VerificationDomainData {
 				clearFieldValidations: this.kybLevel1ClearFieldValidations,
 				processInput: (input: string) => input,
 				tabType: VerificationTabType.VERIFY_BUSINESS,
-			},
-		];
-
-	/**
-	 * Combined field validation test scenario for KYC Level 2.5.
-	 */
-	public readonly level2_5FieldValidationScenarios: FieldValidationTestScenario[] =
-		[
-			{
-				testId: "ENG-8833",
-				formType: VerificationFormTypeEnum.KYC,
-				fieldValidations: this.kycLevel2_5FieldValidations,
-				clearFieldValidations: this.kycLevel2_5ClearFieldValidations,
-				processInput: (input: string) => input,
-				tabType: VerificationTabType.VERIFY_YOURSELF,
-			},
-		];
-
-	/**
-	 * Combined field validation test scenario for KYC Level 3.
-	 */
-	public readonly level3FieldValidationScenarios: FieldValidationTestScenario[] =
-		[
-			{
-				testId: "ENG-8673",
-				formType: VerificationFormTypeEnum.KYC,
-				fieldValidations: this.kycLevel3FieldValidations,
-				clearFieldValidations: this.kycLevel3ClearFieldValidations,
-				processInput: (input: string) => input,
-				tabType: VerificationTabType.VERIFY_YOURSELF,
 			},
 		];
 

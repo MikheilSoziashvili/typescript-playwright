@@ -236,20 +236,20 @@ export class WalletModalMap extends BaseMap {
 		return this.page.getByTestId("crypto-withdraw-dest-tag-input");
 	}
 
-	public get kycLevelOneCotainer(): Locator {
-		return this.page.getByTestId("levelLEVEL1KycLeftPanelContainer");
+	public get kycLevelOneContainer(): Locator {
+		return this.page.getByTestId("kyc-v4-level1-form");
 	}
 
 	public get veriffIFrameElement(): Locator {
 		return this.page.locator("#veriffFrame");
 	}
 
-	public get kycLevelTwoHeader(): Locator {
-		return this.page.getByTestId("levelLEVEL25KycLeftPanelContainer");
+	public get kycLevelTwoContainer(): Locator {
+		return this.page.getByTestId("kyc-v4-level25");
 	}
 
-	public get kycLevelThreeHeader(): Locator {
-		return this.page.getByTestId("levelLEVEL3KycLeftPanelContainer");
+	public get kycLevelThreeContainer(): Locator {
+		return this.page.getByTestId("kyc-v4-level3");
 	}
 
 	public get networkDropdown(): Locator {

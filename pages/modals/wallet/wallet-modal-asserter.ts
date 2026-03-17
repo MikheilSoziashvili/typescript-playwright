@@ -133,7 +133,7 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 	@step("Verify KYC Level One container is visible")
 	public async kycLevelOneContainerIsVisible(): Promise<void> {
 		await this.checkElementsAreVisible([
-			this.gamdomPage.map.kycLevelOneCotainer,
+			this.gamdomPage.map.kycLevelOneContainer,
 		]);
 	}
 
@@ -154,14 +154,14 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 	@step("KYC Level Two Verification title is visible")
 	public async kycLevelTwoVerificationTitleIsVisible(): Promise<void> {
 		await this.checkElementsAreVisible([
-			this.gamdomPage.map.kycLevelTwoHeader,
+			this.gamdomPage.map.kycLevelTwoContainer,
 		]);
 	}
 
 	@step("KYC Level Three Verification header is visible")
 	public async kycLevelThreeVerificationHeaderIsVisible(): Promise<void> {
 		await this.checkElementsAreVisible([
-			this.gamdomPage.map.kycLevelThreeHeader,
+			this.gamdomPage.map.kycLevelThreeContainer,
 		]);
 	}
 

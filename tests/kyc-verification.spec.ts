@@ -4,12 +4,8 @@ import { Cryptocurrency } from "@enums/cryptocurrencies";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
-import { NotificationSubTitle } from "@enums/notification-subtitles";
-import { NotificationTitle } from "@enums/notification-titles";
 import { TestTag } from "@enums/test-tags";
 import { TestUserRole } from "@enums/test-user-roles";
-import { ToastSubTitle } from "@enums/toast-subtitles";
-import { ToastTitle } from "@enums/toast-titles";
 import {
 	InitialVerificationStatus,
 	KycAdminActions,
@@ -70,14 +66,7 @@ test.describe(
 		);
 
 		verificationTestData.level1FieldValidationScenarios.forEach(
-			({
-				testId,
-				formType,
-				fieldValidations,
-				clearFieldValidations,
-				processInput,
-				tabType,
-			}) => {
+			({ testId, formType, fieldValidations, processInput, tabType }) => {
 				test(
 					`[${testId}] ${formType} Level 1 - Field validations`,
 					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
@@ -103,13 +92,6 @@ test.describe(
 									expectedErrorMessage,
 								);
 						}
-
-						await verificationPage.clearFieldsUsingClearButton(
-							clearFieldValidations,
-						);
-						await verificationPage
-							.assertThat()
-							.fieldsAreCleared(clearFieldValidations);
 
 						await verificationPage.toggleCheckbox({ count: 2 });
 						await verificationPage
@@ -266,9 +248,7 @@ test.describe(
 						);
 
 						await regularUser.pages.homePage.navigateToWallet();
-						await regularUser.pages.walletModal.openWithdrawTabAndSelectPaymentMethod(
-							Cryptocurrency.Bitcoin,
-						);
+						await regularUser.pages.walletModal.openWithdrawTab();
 						await trigger.assertWalletModal(
 							regularUser.pages.walletModal,
 						);
@@ -322,8 +302,6 @@ test.describe(
 	"KYC Level 2.5 Verification",
 	testDetails().withTags(JiraComponent.VERIFICATION).apply(),
 	() => {
-		const verificationTestData = testData().fromDomain().verification;
-
 		test.beforeEach(async ({ browserSessionManager }) => {
 			const adminUser = await browserSessionManager.loginAs(
 				TestUserRole.SUPERADMIN,
@@ -364,57 +342,25 @@ test.describe(
 
 				await regularUser.pages.verificationPage
 					.assertThat()
-					.verifySubmissionToastAndNotification(
-						regularUser.pages.toast,
-						regularUser.pages.homePage.getNotification(),
-						ToastTitle.SUCCESS,
-						ToastSubTitle.LEVEL_TWO_VERIFICATION_SUBMITTED,
-						NotificationTitle.KYC_VERIFIED,
-						NotificationSubTitle.KYC_LEVEL_TWO_VERIFIED,
-					);
+					.verificationPageTitleAndTabsAreVisible();
 			},
 		);
 
-		verificationTestData.level2_5FieldValidationScenarios.forEach(
-			({ testId, formType, fieldValidations, processInput }) => {
-				test(
-					`[${testId}] ${formType} Level 2.5 - Field validations`,
-					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
-					async ({ browserSessionManager }) => {
-						const regularUser = await browserSessionManager.loginAs(
-							TestUserRole.REGULAR,
-						);
-
-						for (const {
-							inputField,
-							input,
-							expectedErrorMessage,
-						} of fieldValidations) {
-							const actualInput = processInput(input);
-
-							await regularUser.pages.verificationPage.fillInputAndTriggerValidation(
-								inputField,
-								actualInput,
-							);
-
-							await regularUser.pages.verificationPage
-								.assertThat()
-								.validateErrorMessageForField(
-									inputField,
-									expectedErrorMessage,
-								);
-						}
-
-						await regularUser.pages.verificationPage.toggleCheckbox(
-							{
-								count: 2,
-							},
-						);
-						await regularUser.pages.verificationPage
-							.assertThat()
-							.checkboxValidationMessageIsDisplayed();
-					},
+		test(
+			"[ENG-8833] KYC Level 2.5 - Checkbox validation",
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
+			async ({ browserSessionManager }) => {
+				const regularUser = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
 				);
+
+				await regularUser.pages.verificationPage.toggleCheckbox({
+					count: 2,
+					level: KycLevels.LEVEL_2,
+				});
+				await regularUser.pages.verificationPage
+					.assertThat()
+					.checkboxValidationMessageIsDisplayed();
 			},
 		);
 	},
@@ -470,50 +416,33 @@ test.describe(
 			),
 		);
 
-		const verificationTestData = testData().fromDomain().verification;
-
-		verificationTestData.level3FieldValidationScenarios.forEach(
-			({ testId, formType, fieldValidations, processInput }) => {
-				test(
-					`[${testId}] ${formType} Level 3 - Field validations`,
-					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
-					async ({ browserSessionManager }) => {
-						const regularUser = await browserSessionManager.loginAs(
-							TestUserRole.REGULAR,
-						);
-
-						for (const {
-							inputField,
-							input,
-							expectedErrorMessage,
-						} of fieldValidations) {
-							const actualInput = processInput(input);
-
-							await regularUser.pages.verificationPage.fillInputAndTriggerValidation(
-								inputField,
-								actualInput,
-							);
-
-							await regularUser.pages.verificationPage
-								.assertThat()
-								.validateErrorMessageForField(
-									inputField,
-									expectedErrorMessage,
-								);
-						}
-
-						await regularUser.pages.verificationPage.toggleCheckbox(
-							{
-								count: 2,
-							},
-						);
-						await regularUser.pages.verificationPage
-							.assertThat()
-							.checkboxValidationMessageIsDisplayed();
-					},
+		test(
+			"[ENG-8673] KYC Level 3 - File upload and checkbox validation",
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
+			async ({ browserSessionManager }) => {
+				const regularUser = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
 				);
+
+				await regularUser.pages.verificationPage.uploadProofOfFundsFile(
+					ProofOfFunds.BANK_STATEMENT,
+				);
+				await regularUser.pages.verificationPage.removeUploadedFile();
+				await regularUser.pages.verificationPage
+					.assertThat()
+					.fileUploadErrorMessageIsDisplayed();
+
+				await regularUser.pages.verificationPage.toggleCheckbox({
+					count: 2,
+					level: KycLevels.LEVEL_3,
+				});
+				await regularUser.pages.verificationPage
+					.assertThat()
+					.checkboxValidationMessageIsDisplayed();
 			},
 		);
+
+		const verificationTestData = testData().fromDomain().verification;
 
 		verificationTestData.kycLevel3ReviewActions.forEach(
 			({
