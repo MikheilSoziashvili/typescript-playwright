@@ -3,6 +3,7 @@ export interface ChangePasswordCsvRecord {
 	OldPassword: string;
 	NewPassword: string;
 	RepeatPassword: string;
+	IsSubmitButtonActive: string;
 	ExpectedResult: string;
 }
 

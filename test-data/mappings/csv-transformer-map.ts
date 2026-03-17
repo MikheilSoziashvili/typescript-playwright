@@ -19,6 +19,7 @@ import {
 	JackpotContributionCsvRecord,
 	ReloadUpdateLogicCsvRecord,
 } from "@dtos/csv";
+import { ChangePasswordCsvRecord } from "@dtos/csv/change-password-csv";
 import { OriginalsSelfExclusionCsvRecord } from "@dtos/csv/originals-self-exclusion";
 import { PlinkoTestDataCsvRecord } from "@dtos/csv/plinko-test-data-csv";
 import { UserInfoSendNotificationCsvRecord } from "@dtos/csv/user-info-send-notification-csv";
@@ -111,6 +112,10 @@ import {
 	parseReloadUpdateLogicCsvRow,
 	ReloadUpdateLogicCsvParsedRecord,
 } from "test-data/parsers/reload-update-logic-csv-parser";
+import {
+	parseChangePasswordCsvRow,
+	ChangePasswordCsvParsedRecord,
+} from "test-data/parsers/change-password-csv-parser";
 
 export type CsvTransformerExistingType<T> =
 	T extends keyof CsvTransformerMapType ? CsvTransformerMapType[T] : never;
@@ -217,6 +222,10 @@ export type CsvTransformerMapType = {
 	[CsvFilesName.RELOAD_UPDATE_LOGIC]: (
 		row: ReloadUpdateLogicCsvRecord,
 	) => ReloadUpdateLogicCsvParsedRecord;
+
+	[CsvFilesName.CHANGE_PASSWORD]: (
+		row: ChangePasswordCsvRecord,
+	) => ChangePasswordCsvParsedRecord;
 };
 
 export const CsvTransformerMap: CsvTransformerMapType = {
@@ -256,4 +265,5 @@ export const CsvTransformerMap: CsvTransformerMapType = {
 		parseReloadUpdateAfterPartialClaimCsvRow,
 	[CsvFilesName.JACKPOT_CONTRIBUTION]: parseJackpotContributionCsvRow,
 	[CsvFilesName.RELOAD_UPDATE_LOGIC]: parseReloadUpdateLogicCsvRow,
+	[CsvFilesName.CHANGE_PASSWORD]: parseChangePasswordCsvRow,
 } as const;

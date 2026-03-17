@@ -15,17 +15,16 @@ import { passwordPattern } from "@support/regex-patterns";
 import { test } from "fixtures/fixtures";
 import { testData } from "test-data/test-data-manager";
 import { CsvFilesName } from "@enums/csv-file-name";
-import { ChangePasswordCsvRecord } from "@dtos/csv/change-password-csv";
 
 test.describe("Password tests", () => {
 	test.describe("Password Change Tests", () => {
 		testData()
-			.fromCsvRaw({
+			.fromCsvParsed({
 				file: CsvFilesName.CHANGE_PASSWORD,
 			})
-			.forEach((input: ChangePasswordCsvRecord) => {
+			.forEach((input) => {
 				test(
-					`[ENG-11781] Password change - ${input.Scenario}`,
+					`[ENG-11781] Password change - ${input.scenario}`,
 					testDetails()
 						.withTags(
 							JiraComponent.CHANGE_PASSWORD,
@@ -123,68 +122,66 @@ test.describe("Password tests", () => {
 			},
 		);
 	});
+});
 
-	test.describe("Password reset - v4", () => {
-		test.slow();
-		test(
-			"[ENG-9510] Password reset - v4",
-			testDetails()
-				.withTags(TestTag.V4, JiraComponent.PASSWORD_RESET)
-				.withAuthor(JiraUser.RALUCA_ARITON)
-				.apply(),
-			async ({ browserSessionManager, mailinatorApi, page }) => {
-				let emailDetails = generateEmailAndInbox();
+test.describe("Password reset - v4", () => {
+	test.slow();
+	test(
+		"[ENG-9510] Password reset - v4",
+		testDetails()
+			.withTags(TestTag.V4, JiraComponent.PASSWORD_RESET)
+			.withAuthor(JiraUser.RALUCA_ARITON)
+			.apply(),
+		async ({ browserSessionManager, mailinatorApi, page }) => {
+			let emailDetails = generateEmailAndInbox();
 
-				const newUserPassword = testData()
-					.fromRandom()
-					.data.password.password();
+			const newUserPassword = testData()
+				.fromRandom()
+				.data.password.password();
 
-				const regularUser = await browserSessionManager.loginAs(
-					TestUserRole.REGULAR,
-					{ reuseContext: true, regularUserOptions: emailDetails },
+			const regularUser = await browserSessionManager.loginAs(
+				TestUserRole.REGULAR,
+				{ reuseContext: true, regularUserOptions: emailDetails },
+			);
+
+			emailDetails = generateEmailAndInbox(
+				regularUser.getAuthenticatedUser().user.email,
+			);
+
+			await regularUser.pages.profilePage
+				.steps()
+				.logoutUserSuccessfullyV4();
+			await regularUser.pages.homePage.navigateAndCheckTitle();
+			await regularUser.pages.homePage.unauthenticatedHeader.openLoginModalV4();
+			await regularUser.pages.homePage
+				.steps()
+				.resetPasswordV4(regularUser.getAuthenticatedUser().user.email);
+			await regularUser.pages.homePage
+				.steps()
+				.changePasswordFromEmailV4(
+					newUserPassword,
+					mailinatorApi,
+					MAILINATOR_DOMAIN,
+					emailDetails.inbox,
+					page,
+					{ messageIndex: 1 },
+					"Password Reset",
 				);
 
-				emailDetails = generateEmailAndInbox(
-					regularUser.getAuthenticatedUser().user.email,
+			await regularUser.pages.toastV4
+				.assertThat()
+				.toastMessageIsV4(
+					ToastTitle.SUCCESS_V4,
+					ToastSubTitle.PASSWORD_CHANGED,
 				);
 
-				await regularUser.pages.profilePage
-					.steps()
-					.logoutUserSuccessfullyV4();
-				await regularUser.pages.homePage.navigateAndCheckTitle();
-				await regularUser.pages.homePage.unauthenticatedHeader.openLoginModalV4();
-				await regularUser.pages.homePage
-					.steps()
-					.resetPasswordV4(
-						regularUser.getAuthenticatedUser().user.email,
-					);
-				await regularUser.pages.homePage
-					.steps()
-					.changePasswordFromEmailV4(
-						newUserPassword,
-						mailinatorApi,
-						MAILINATOR_DOMAIN,
-						emailDetails.inbox,
-						page,
-						{ messageIndex: 1 },
-						"Password Reset",
-					);
-
-				await regularUser.pages.toastV4
-					.assertThat()
-					.toastMessageIsV4(
-						ToastTitle.SUCCESS_V4,
-						ToastSubTitle.PASSWORD_CHANGED,
-					);
-
-				await regularUser.pages.homePage.navigateAndCheckTitle();
-				await regularUser.pages.homePage
-					.steps()
-					.loginUserV4(
-						regularUser.getAuthenticatedUser().user.username,
-						newUserPassword,
-					);
-			},
-		);
-	});
+			await regularUser.pages.homePage.navigateAndCheckTitle();
+			await regularUser.pages.homePage
+				.steps()
+				.loginUserV4(
+					regularUser.getAuthenticatedUser().user.username,
+					newUserPassword,
+				);
+		},
+	);
 });
