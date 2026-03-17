@@ -166,3 +166,4 @@ fireblocks_secret*.key
 # Claude Code
 .claude/settings.local.json
 CLAUDE.local.md
+pr-review-report.md
