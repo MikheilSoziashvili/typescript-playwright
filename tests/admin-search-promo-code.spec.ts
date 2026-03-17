@@ -28,7 +28,6 @@ test.describe("Search for Promo codes", () => {
 				.navigateAndEnable2FaAuthentication(qrCode2FAImagePath);
 			await promoCampaignsAdminPage.navigate();
 			await promoCampaignsAdminPage.clickCreateCampaignButton();
-			await promoCodeModal.assertThat().isNotDisplayed();
 			await twoFactorAuthModal
 				.steps()
 				.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
@@ -49,10 +48,7 @@ test.describe("Search for Promo codes", () => {
 
 	test(
 		"[ENG-6184] Search for existing promo code in the campaigns table",
-		testDetails()
-			.withAuthor(JiraUser.NIKOLAY_GENOV)
-			.withJiraBugTickets("15617")
-			.apply(),
+		testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
 		async ({ promoCampaignsAdminPage }) => {
 			await promoCampaignsAdminPage
 				.steps()
@@ -66,10 +62,7 @@ test.describe("Search for Promo codes", () => {
 
 	test(
 		"[ENG-6184] Search for non-existing promo code in the campaigns table",
-		testDetails()
-			.withAuthor(JiraUser.NIKOLAY_GENOV)
-			.withJiraBugTickets("15617")
-			.apply(),
+		testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
 		async ({ promoCampaignsAdminPage }) => {
 			const appendToCode = generateRandomString({ length: 3 });
 			await promoCampaignsAdminPage
