@@ -24,22 +24,20 @@ export class RegisterModalSteps extends BaseModalStep<RegisterModal> {
 		await this.gamdomModal.map.emailField.fill(registerData.email);
 
 		if (acceptTermsOfService) {
+			await this.gamdomModal.map.termsOfServiceCheckboxVisual.click();
 			await this.gamdomModal
-				.steps()
-				.checkCheckbox(
-					this.gamdomModal.map.termsOfServiceCheckboxVisual,
-					this.gamdomModal.map.termsOfServiceCheckboxInput,
-					true,
+				.assertThat()
+				.waitUntilChecked(
+					this.gamdomModal.map.termsOfServiceCheckbox,
 				);
 		}
 
 		if (acceptNewsOffers) {
+			await this.gamdomModal.map.newsAndOffersCheckboxVisual.click();
 			await this.gamdomModal
-				.steps()
-				.checkCheckbox(
-					this.gamdomModal.map.newsAndOffersCheckboxVisual,
-					this.gamdomModal.map.newsAndOffersCheckboxInput,
-					true,
+				.assertThat()
+				.waitUntilChecked(
+					this.gamdomModal.map.newsAndOffersCheckbox,
 				);
 		}
 	}

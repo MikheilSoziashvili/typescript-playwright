@@ -23,7 +23,7 @@ export class BannedUserPageMap extends BaseMap {
 	}
 
 	public get bannedReason(): Locator {
-		return this.contentContainer.getByTestId("ban-reason");
+		return this.contentContainer.locator(".error_pages_reason");
 	}
 
 	public get socialMediaFooterContainer(): Locator {

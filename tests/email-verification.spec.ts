@@ -2,20 +2,19 @@ import {
 	generateEmailAndInbox,
 	setAuthenticationCookies,
 } from "@core/utils/utils";
-import { test } from "fixtures/fixtures";
+import { test } from "@fixtures/fixtures";
 import { RegisterTestData } from "@dtos/test-data";
+import { Cryptocurrency } from "@enums/cryptocurrencies";
 import { JiraUser } from "@enums/jira/jira-users";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { TestUserRole } from "@enums/test-user-roles";
 import { testData } from "test-data/test-data-manager";
 import { JiraComponent } from "@enums/jira/jira-components";
-import { isScheduledRun } from "configuration";
 import { TestTag } from "@enums/test-tags";
+import { isScheduledRun } from "configuration";
 
 test.describe("Email Verification Tests", () => {
 	test.use({ storageState: { cookies: [], origins: [] } });
-
-	const userWalletTestDataDomain = testData().fromDomain().userWallet;
 
 	test(
 		"[ENG-1133] E-mail verification - new account",
@@ -94,54 +93,118 @@ test.describe("Email Verification Tests", () => {
 		},
 	);
 
-	test(
-		`[ENG-7516] [Wallet] Verify e-mail verification restriction on Withdraw tab`,
-		testDetails()
-			.withTags(JiraComponent.WALLET, JiraComponent.WITHDRAWAL, TestTag.ACCEPTANCE)
-			.withJiraBugTickets("ENG-13989")
-			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
-			.apply(),
-		async ({ browserSessionManager, mailpitApi, testDataRandom }) => {
-			test.fixme(isScheduledRun);
-			const { email: userEmail } = testDataRandom.data.mailpit.emailInbox();
-			const regularUserEmailNotVerified =
-				await browserSessionManager.loginAs(TestUserRole.REGULAR, {
-					reuseContext: true,
-					regularUserOptions: {
-						emailVerified: false,
-						email: userEmail,
-					},
-				});
+	for (const crypto of Object.values(Cryptocurrency)) {
+		test(
+			`[ENG-7516] [Wallet] Verify e-mail verification restriction on Withdraw tab - ${crypto}`,
+			testDetails()
+				.withTags(JiraComponent.WALLET, JiraComponent.WITHDRAWAL, TestTag.ACCEPTANCE)
+				.withJiraBugTickets("ENG-13989")
+				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+				.apply(),
+			async ({
+				browserSessionManager,
+				mailpitApi,
+				testDataRandom,
+			}) => {
+				test.fixme(isScheduledRun);
+				const { email: userEmail } = testDataRandom.data.mailpit.emailInbox();
+				const regularUserEmailNotVerified =
+					await browserSessionManager.loginAs(TestUserRole.REGULAR, {
+						reuseContext: true,
+						regularUserOptions: {
+							emailVerified: false,
+							email: userEmail,
+						},
+					});
 
-			await regularUserEmailNotVerified.pages.homePage.navigateToWallet();
-			await regularUserEmailNotVerified.pages.walletModal.openWithdrawTab();
+				await regularUserEmailNotVerified.pages.homePage.navigateToWallet();
+				await regularUserEmailNotVerified.pages.walletModal
+					.steps()
+					.openWithdrawAndSelectCryptoPaymentMethod(crypto);
 
-			await regularUserEmailNotVerified.pages.walletModal
-				.steps()
-				.verifyWithdrawCryptoEmailNotVerifiedMessage();
+				await regularUserEmailNotVerified.pages.walletModal
+					.assertThat()
+					.withdrawEmailNotVerifiedPanelContentCorrect();
 
-			//this step need to be confirmed in V4 - atm we don't have withdraw bank payment available
-			await regularUserEmailNotVerified.pages.walletModal
-				.steps()
-				.verifyWithdrawBankEmailNotVerifiedMessage(
-					userWalletTestDataDomain.countryAvailableBankPaymentMethods,
-				);
+				await regularUserEmailNotVerified.pages.walletModal
+					.steps()
+					.resendVerificationWithdrawEmailSuccessfully();
 
-			await regularUserEmailNotVerified.pages.walletModal
-				.steps()
-				.resendVerificationWithdrawEmailSuccessfully();
+				await regularUserEmailNotVerified.pages.profilePage
+					.steps()
+					.verifyEmail(
+						mailpitApi,
+						userEmail,
+						regularUserEmailNotVerified.page,
+					);
 
-			await regularUserEmailNotVerified.pages.profilePage
-				.steps()
-				.verifyEmail(
-					mailpitApi,
-					userEmail,
-					regularUserEmailNotVerified.page,
-				);
+				await regularUserEmailNotVerified.pages.homePage.authenticatedHeader
+					.assertThat()
+					.loggedInUserElementsAreVisible();
+			},
+		);
+	}
 
-			await regularUserEmailNotVerified.pages.homePage.authenticatedHeader
-				.assertThat()
-				.loggedInUserElementsAreVisible();
-		},
-	);
+	const userWalletDomainData = testData().fromDomain().userWallet;
+
+	for (const {
+		country,
+		bankPaymentMethod,
+	} of userWalletDomainData.bankWithdrawScenarios) {
+		test(
+			`[ENG-7516] [Wallet] Verify e-mail verification restriction on Withdraw tab - ${country} ${bankPaymentMethod}`,
+			testDetails()
+				.withTags(JiraComponent.WALLET, JiraComponent.WITHDRAWAL, TestTag.ACCEPTANCE)
+				.withJiraBugTickets("ENG-13989")
+				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+				.apply(),
+			async ({
+				browserSessionManager,
+				mailpitApi,
+				testDataRandom,
+			}) => {
+				test.fixme(isScheduledRun);
+				const { email: userEmail } = testDataRandom.data.mailpit.emailInbox();
+				const regularUserEmailNotVerified =
+					await browserSessionManager.loginAs(TestUserRole.REGULAR, {
+						reuseContext: true,
+						regularUserOptions: {
+							emailVerified: false,
+							email: userEmail,
+						},
+					});
+
+				await regularUserEmailNotVerified.pages.homePage.navigateToWallet();
+				await regularUserEmailNotVerified.pages.walletModal
+					.steps()
+					.openWithdrawAndSelectBankPaymentMethod(
+						country,
+						bankPaymentMethod,
+					);
+
+				await regularUserEmailNotVerified.pages.walletModal
+					.assertThat()
+					.withdrawBankPanelHeaderCorrect(bankPaymentMethod);
+				await regularUserEmailNotVerified.pages.walletModal
+					.assertThat()
+					.withdrawEmailNotVerifiedPanelContentCorrect();
+
+				await regularUserEmailNotVerified.pages.walletModal
+					.steps()
+					.resendVerificationWithdrawEmailSuccessfully();
+
+				await regularUserEmailNotVerified.pages.profilePage
+					.steps()
+					.verifyEmail(
+						mailpitApi,
+						userEmail,
+						regularUserEmailNotVerified.page,
+					);
+
+				await regularUserEmailNotVerified.pages.homePage.authenticatedHeader
+					.assertThat()
+					.loggedInUserElementsAreVisible();
+			},
+		);
+	}
 });

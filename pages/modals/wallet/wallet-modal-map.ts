@@ -75,23 +75,31 @@ export class WalletModalMap extends BaseMap {
 		);
 	}
 
+	public get cryptoWithdrawBackButton(): Locator {
+		return this.cryptoWithdrawContainer.getByTestId(
+			"crypto-withdraw-wallet-title-back-button",
+		);
+	}
+
 	public get withdrawPanelCryptoCurrency(): Locator {
 		return this.withdrawTabContainer.getByTestId(
 			"wallet-sec-wallet-info-txt",
 		);
 	}
 
-	//not present on withdraw panel - WIP
-	public get withdrawPanelBankWithdrawHeader(): Locator {
-		return this.withdrawTabContainer.locator(
-			'[class*="WithDrawPanel-styled__Head-"]',
+	public get bankWithdrawContainer(): Locator {
+		return this.page.getByTestId("bank-withdraw-container");
+	}
+
+	public get bankWithdrawHeaderTitle(): Locator {
+		return this.bankWithdrawContainer.getByTestId(
+			"bank-withdraw-container-title",
 		);
 	}
 
-	//not present on withdraw panel - WIP
-	public get walletLeftPanelBankWithdrawHeaderTitle(): Locator {
-		return this.withdrawPanelBankWithdrawHeader.locator(
-			'[class*="WithDrawPanel-styled__HeadWrapper"]',
+	public get bankWithdrawBackButton(): Locator {
+		return this.bankWithdrawContainer.getByTestId(
+			"bank-withdraw-container-wallet-title-back-button",
 		);
 	}
 
@@ -141,24 +149,14 @@ export class WalletModalMap extends BaseMap {
 		);
 	}
 
-	public get withdrawCountryDropdownContainer(): Locator {
-		return this.depositTabContainer.locator(
-			'[class^="Withdraw-styled__CountriesSelectorWrapper"]',
-		);
-	}
-
 	public get withdrawCountryDropdownOption(): Locator {
-		return this.withdrawCountryDropdownContainer
-			.getByTestId("Input")
-			.filter({
-				has: this.page.locator(`[role="combobox"]`),
-			});
+		return this.page.getByTestId("country-selector-trigger-btn");
 	}
 
 	public withdrawCountryDropdownOptions(optionValue: string): Locator {
-		return this.page
-			.getByTestId("ListContainer")
-			.locator(`li[data-value="${optionValue}"]`);
+		return this.page.getByTestId(
+			`wallet-left-panel-country-selector-desktop-option-${optionValue}`,
+		);
 	}
 
 	public get promoCodeInputField(): Locator {
@@ -203,7 +201,9 @@ export class WalletModalMap extends BaseMap {
 	}
 
 	public bankPaymentMethod(paymentMethod: string): Locator {
-		return this.page.getByTestId(`${paymentMethod}PaymentMethodContainer`);
+		return this.page.getByTestId(
+			`withdraw-bank-section-${paymentMethod}PaymentMethodContainer`,
+		);
 	}
 
 	public get cryptoDepositAddress(): Locator {

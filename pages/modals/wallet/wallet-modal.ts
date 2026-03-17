@@ -40,6 +40,14 @@ export class WalletModal extends BasePage<WalletModalMap> {
 		await this.map.withdrawTabButton.click();
 	}
 
+	@step("Go back to withdraw panel")
+	public async goBackToWithdraw(): Promise<void> {
+		const backButton = this.map.cryptoWithdrawBackButton.or(
+			this.map.bankWithdrawBackButton,
+		);
+		await backButton.click();
+	}
+
 	@step("Open deposit tab")
 	public async openDepositTab(): Promise<void> {
 		await this.map.depositTabButton.click();

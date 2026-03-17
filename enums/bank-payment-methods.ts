@@ -1,4 +1,7 @@
 export enum BankPaymentMethod {
+	HAVALE = "havale",
 	HAVALE1 = "havale1",
-	UPI = "payrock-upi",
+	PAYIXI = "payixi",
+	PAPARA = "papara",
+	UPI = "upi",
 }

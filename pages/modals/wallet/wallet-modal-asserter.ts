@@ -62,20 +62,17 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 		);
 	}
 
-	@step("Bank withdraw left panel header is correct")
-	public async withdrawBankLeftPanelHeaderCorrect(
+	@step("Bank withdraw header title is correct")
+	public async withdrawBankPanelHeaderCorrect(
 		bankPaymentMethod: BankPaymentMethod,
 	): Promise<void> {
 		const bankPaymentMethodName =
-			bankPaymentMethod === BankPaymentMethod.HAVALE1
-				? ""
-				: `${bankPaymentMethodLabelMap[bankPaymentMethod]} `;
+			bankPaymentMethodLabelMap[bankPaymentMethod];
 
 		await this.checkElementsHaveText([
 			{
-				locator:
-					this.gamdomPage.map.walletLeftPanelBankWithdrawHeaderTitle,
-				expectedText: `${bankPaymentMethodName}Withdraw`,
+				locator: this.gamdomPage.map.bankWithdrawHeaderTitle,
+				expectedText: `${bankPaymentMethodName} Withdrawal`,
 			},
 		]);
 	}
@@ -107,15 +104,17 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 	public async withdrawBankPaymentMethodPresentForCountry(
 		country?: CountryCodeISO3166,
 	): Promise<void> {
-		await this.checkElementsAreVisible([
-			this.gamdomPage.map.bankPaymentMethod(BankPaymentMethod.HAVALE1),
-		]);
+		if (country === CountryCodeISO3166.TURKEY) {
+			await this.checkElementsAreVisible([
+				this.gamdomPage.map.bankPaymentMethod(BankPaymentMethod.HAVALE),
+				this.gamdomPage.map.bankPaymentMethod(BankPaymentMethod.HAVALE1),
+				this.gamdomPage.map.bankPaymentMethod(BankPaymentMethod.PAYIXI),
+				this.gamdomPage.map.bankPaymentMethod(BankPaymentMethod.PAPARA),
+			]);
+		}
 
 		if (country === CountryCodeISO3166.INDIA) {
 			await this.checkElementsAreVisible([
-				this.gamdomPage.map.bankPaymentMethod(
-					BankPaymentMethod.HAVALE1,
-				),
 				this.gamdomPage.map.bankPaymentMethod(BankPaymentMethod.UPI),
 			]);
 		}

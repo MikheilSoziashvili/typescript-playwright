@@ -5,3 +5,8 @@ export interface CountryAvailableBankPaymentMethods {
 	[CountryCodeISO3166.TURKEY]: BankPaymentMethod[];
 	[CountryCodeISO3166.INDIA]: BankPaymentMethod[];
 }
+
+export interface BankWithdrawScenario {
+	country: CountryCodeISO3166;
+	bankPaymentMethod: BankPaymentMethod;
+}

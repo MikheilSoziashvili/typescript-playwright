@@ -62,15 +62,7 @@ export class RegisterModalMap extends BaseMap {
 		);
 	}
 
-	public get termsOfServiceCheckboxInput(): Locator {
-		return this.toggleCheckbox(this.termsOfServiceCheckbox);
-	}
-
-	public get newsAndOffersCheckboxInput(): Locator {
-		return this.toggleCheckbox(this.newsAndOffersCheckbox);
-	}
-
-	public get termsOfServiceCheckboxVisual(): Locator {
+public get termsOfServiceCheckboxVisual(): Locator {
 		return this.termsOfServiceCheckboxContainer.getByTestId(
 			"sup-age-consent-chk-visual",
 		);

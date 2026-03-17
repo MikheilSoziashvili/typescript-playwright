@@ -72,9 +72,7 @@ export class CrashGamePageMap extends BaseMap {
 		});
 	}
 
-	public getOnConditionSelectButton(
-		type: BetIncreaseCondition,
-	): Locator {
+	public getOnConditionSelectButton(type: BetIncreaseCondition): Locator {
 		return this.page.getByTestId(
 			`crashOn${type === BetIncreaseCondition.WIN ? "Win" : "Loss"}Select-button`,
 		);
@@ -91,7 +89,7 @@ export class CrashGamePageMap extends BaseMap {
 
 	public getIncreaseByInput(type: BetIncreaseCondition): Locator {
 		return this.page.getByTestId(
-			`crashOn${type === BetIncreaseCondition.WIN ? "Win" : "Loss"}AutoBetMultiplierOn${type === BetIncreaseCondition.WIN ? "Win" : "Loss"}-Input`,
+			`crashOnWinAutoBetMultiplierOn${type === BetIncreaseCondition.WIN ? "Win" : "Loss"}-Input`,
 		);
 	}
 }
