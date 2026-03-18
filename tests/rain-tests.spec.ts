@@ -17,6 +17,7 @@ import { KycLevels } from "@enums/verification-enums";
 import { test } from "@fixtures/fixtures";
 import { testData } from "test-data/test-data-manager";
 import { KycStatus } from "@enums/verification-enums";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { TestTag } from "@enums/test-tags";
 
 test.describe("Rain tests", () => {
@@ -28,7 +29,10 @@ test.describe("Rain tests", () => {
 
 	test(
 		"[ENG-15626] Rain - cannot claim rain with no KYC level",
-		testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+		testDetails()
+			.withTags(JiraComponent.VERIFICATION, JiraComponent.RAIN)
+			.withAuthor(JiraUser.ANGEL_PETROV)
+			.apply(),
 		async ({ homePage, chat, browserSessionManager }) => {
 			await browserSessionManager.loginAs(TestUserRole.REGULAR, {
 				reuseContext: true,
@@ -45,7 +49,10 @@ test.describe("Rain tests", () => {
 	for (const kycLevel of rainDomainData.cannotClaimKycLevels) {
 		test(
 			`[ENG-15626] Rain - cannot claim rain with KYC level: ${kycLevel.level}`,
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails()
+				.withTags(JiraComponent.VERIFICATION, JiraComponent.RAIN)
+				.withAuthor(JiraUser.ANGEL_PETROV)
+				.apply(),
 			async ({ homePage, chat, browserSessionManager, gamdomDb }) => {
 				const regularUser = await browserSessionManager.loginAs(
 					TestUserRole.REGULAR,
@@ -74,6 +81,7 @@ test.describe("Rain tests", () => {
 		test(
 			`[ENG-15626] Rain - can claim rain with KYC level: ${kycConfig.label}`,
 			testDetails()
+				.withTags(JiraComponent.VERIFICATION, JiraComponent.RAIN)
 				.withJiraBugTickets("5094")
 				.withAuthor(JiraUser.ANGEL_PETROV)
 				.apply(),
@@ -139,7 +147,7 @@ test.describe("Rain tests", () => {
 	test(
 		"[ENG-2564] Tip rain - Require new 2FA code when IP of user changes",
 		testDetails()
-			.withTags(TestTag.SEQUENTIAL)
+			.withTags(TestTag.SEQUENTIAL, JiraComponent.TWO_FA, JiraComponent.RAIN)
 			.withAuthor(JiraUser.ANGEL_PETROV)
 			.apply(),
 		async ({

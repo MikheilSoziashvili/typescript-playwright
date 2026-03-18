@@ -18,8 +18,9 @@ import { HomePage } from "@pages/home-page/home-page";
 import { Chat } from "@pages/components/chat/chat";
 import { UserData } from "@core/facades/gamdom-api-db/interfaces";
 import { testDetails } from "@core/helpers/test-details-helper";
-import { TestTag } from "@enums/test-tags";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
+import { TestTag } from "@enums/test-tags";
 
 test.describe("Tip user tests", () => {
 	let user1: UserData;
@@ -29,7 +30,7 @@ test.describe("Tip user tests", () => {
 	test(
 		"[ENG-290] 'Tip User' from the chat",
 		testDetails()
-			.withTags(TestTag.SMOKE)
+			.withTags(TestTag.SMOKE, JiraComponent.CHAT)
 			.withAuthor(JiraUser.NIKOLAY_GENOV)
 			.apply(),
 		async ({

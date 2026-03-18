@@ -1,5 +1,6 @@
 import { DATASETS_DIR } from "@constants/file-paths";
 import { testDetails } from "@core/helpers/test-details-helper";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { parse_csv } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { JiraUser } from "@enums/jira/jira-users";
@@ -18,7 +19,7 @@ test.describe("Visual Tests - Footer - social media icon", () => {
 		test(
 			`[ENG-2310] Social '${record.socialMedia}' media footer image is correct`,
 			testDetails()
-				.withTags(TestTag.VISUAL, TestTag.PLATFORM_BUG)
+				.withTags(TestTag.VISUAL, TestTag.PLATFORM_BUG, JiraComponent.FOOTER)
 				.withJiraBugTickets("7253")
 				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 				.apply(),
@@ -38,7 +39,7 @@ test.describe("Visual Tests - Footer - social media icon", () => {
 	test(
 		`[ENG-2907] Verify social media icons order is correct`,
 		testDetails()
-			.withTags(TestTag.VISUAL, TestTag.PLATFORM_BUG)
+			.withTags(TestTag.VISUAL, TestTag.PLATFORM_BUG, JiraComponent.FOOTER)
 			.withArbitraryAnnotations({
 				type: AnnotationType.BUG,
 				description:

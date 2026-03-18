@@ -4,6 +4,7 @@ import { OriginalGame, RouletteBetColor } from "@enums/original-games";
 import { HiloBetOption } from "@enums/hilo-bet-options";
 import { LOW_USER_AMOUNT } from "database/constants/user-amounts";
 import { testDetails } from "@core/helpers/test-details-helper";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 
 const instantRewardsInputData = [
@@ -40,7 +41,10 @@ instantRewardsInputData.forEach((inputData) => {
 
 		test(
 			`[ENG-3679] Rewards - Instant reward - ${inputData.game} - Bet: ${inputData.betAmount}`,
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails()
+				.withTags(JiraComponent.REWARDS)
+				.withAuthor(JiraUser.ANGEL_PETROV)
+				.apply(),
 			async ({ originalsPage, rewardsPage }) => {
 				test.fixme(
 					true,

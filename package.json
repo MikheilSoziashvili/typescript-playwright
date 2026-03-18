@@ -54,6 +54,7 @@
 	"scripts": {
 		"lint": "eslint .",
 		"lint:step-decorators": "node scripts/check-step-decorators.js",
+		"lint:jira-components": "node scripts/check-jira-components.js",
 		"test-pretty": "playwright test --headed | pino-pretty"
 	},
 	"packageManager": "yarn@4.5.3"

@@ -5,6 +5,7 @@ import { parse_csv } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { storageStateNewSuperAdminUserDB } from "@fixtures/auth-fixtures";
 import { testDetails } from "@core/helpers/test-details-helper";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 
 test.describe("Ban user from linking platforms", () => {
@@ -30,7 +31,10 @@ test.describe("Ban user from linking platforms", () => {
 
 		test(
 			`[ENG-1540] UserInfo - Info - Community connect actions: ban linking of ${record.platform}`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			testDetails()
+				.withTags(JiraComponent.USER_INFO, JiraComponent.ADMIN)
+				.withAuthor(JiraUser.NIKOLAY_GENOV)
+				.apply(),
 			async ({ userInfoAdminPage, infoAdminPage }) => {
 				await userInfoAdminPage.navigate();
 				await userInfoAdminPage

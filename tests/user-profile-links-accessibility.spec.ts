@@ -1,4 +1,5 @@
 import { testDetails } from "@core/helpers/test-details-helper";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { setAuthenticationCookies } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { AmlVerificationLevel } from "@enums/db/aml-verification-level";
@@ -42,7 +43,10 @@ test.describe("User profile links accessibility", () => {
 			.forEach((kycLevelData) => {
 				test(
 					`[ENG-5988] Open "Verification" from the User Profile dropdown for user with aml ${kycLevelData.kycLevel}`,
-					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+					testDetails()
+						.withTags(JiraComponent.PROFILE, JiraComponent.VERIFICATION)
+						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+						.apply(),
 					async ({
 						gamdomApiDbFacade,
 						gamdomApi,
@@ -99,6 +103,7 @@ test.describe("User profile links accessibility", () => {
 						test(
 							`[${testId}] Verify '${menuItem.menuItemLink}' User Profile ${menuType} link item accessibility for user with aml ${menuItem.userKycLevel}`,
 							testDetails()
+								.withTags(JiraComponent.PROFILE)
 								.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 								.apply(),
 							async ({

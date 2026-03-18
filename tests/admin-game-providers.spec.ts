@@ -15,6 +15,7 @@ import { UserTags } from "@enums/db/user-tags";
 import { Feature } from "@enums/feature";
 import { GameAggregator } from "@enums/game-aggregators";
 import { GameProvider } from "@enums/game-providers";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { ProducerId } from "@enums/producer-ids";
 import { TestTag } from "@enums/test-tags";
@@ -76,7 +77,7 @@ adminEnableGames.forEach((record) => {
 	test.describe(
 		`Admin Enable Game Provider - Case ${record.case}`,
 		testDetails()
-			.withTags(TestTag.SEQUENTIAL, TestTag.GAME_PROVIDERS)
+			.withTags(TestTag.SEQUENTIAL, TestTag.GAME_PROVIDERS, JiraComponent.ADMIN)
 			.apply(),
 		() => {
 			test.slow();

@@ -10,6 +10,7 @@ import {
 	parse_csv,
 } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { ContactType } from "@enums/personal-info-types";
 import { test } from "@fixtures/fixtures";
@@ -41,7 +42,10 @@ test.describe("User info update tests", () => {
 	contactInfoInputs.forEach((contactType) => {
 		test(
 			`[ENG-2567] Profile page - change ${contactType.field} - Require new 2FA code when IP of user changes`,
-			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			testDetails()
+				.withTags(JiraComponent.TWO_FA, JiraComponent.EDIT_INFO)
+				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+				.apply(),
 			async ({ profilePage, twoFactorAuthModal, browser }) => {
 				const pages = {
 					profilePage,

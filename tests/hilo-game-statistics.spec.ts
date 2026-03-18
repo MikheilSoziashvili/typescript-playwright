@@ -3,6 +3,7 @@ import { testDetails } from "@core/helpers/test-details-helper";
 import { parse_csv } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { HiloGameStatusMessage } from "@enums/hilo-result-messages";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { OriginalGame } from "@enums/original-games";
 import { TestTag } from "@enums/test-tags";
@@ -19,7 +20,7 @@ const lastRoundsInputs = parse_csv(
 
 test.describe(
 	"Hilo game - statistics tests",
-	testDetails().withTags(TestTag.ORIGINALS).apply(),
+	testDetails().withTags(TestTag.ORIGINALS, JiraComponent.HILO).apply(),
 	() => {
 		test.use(storageStateNewUserDB());
 		test.slow();

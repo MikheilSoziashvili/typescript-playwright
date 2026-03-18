@@ -15,6 +15,7 @@ import {
 import { RegisterTestData } from "@dtos/test-data";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { test } from "@fixtures/fixtures";
 
@@ -65,7 +66,10 @@ test.describe("Tip user 2FA tests", () => {
 
 	test(
 		"[ENG-2562] Tip User - Require new 2FA code when IP of user changes",
-		testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+		testDetails()
+			.withTags(JiraComponent.TWO_FA)
+			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+			.apply(),
 		async ({
 			homePage,
 			gamdomApi,

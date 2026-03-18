@@ -7,6 +7,7 @@ import {
 	initializePageObjects,
 	initializePageObjectsWithCookies,
 } from "@core/utils/utils";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { Unit } from "@enums/units";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
@@ -41,6 +42,7 @@ test.describe(`Vault wallet - 2FA verifications`, () => {
 	test(
 		`[ENG-2566] Vault wallet - Require new 2FA code when IP of user changes`,
 		testDetails()
+			.withTags(JiraComponent.VAULT, JiraComponent.TWO_FA)
 			.withJiraBugTickets("5109")
 			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 			.apply(),

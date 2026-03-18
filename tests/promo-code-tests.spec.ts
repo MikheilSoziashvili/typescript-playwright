@@ -23,6 +23,7 @@ import { PromoCodeStatusValue } from "@enums/db/campaign-promo-status-value";
 import { CampaignPromoType } from "@enums/db/campaign-promo-type";
 import { UserClasses } from "@enums/db/user-classes";
 import { UserTags } from "@enums/db/user-tags";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { LogType } from "@enums/log-types";
 import { NotificationButton } from "@enums/notification-buttons";
@@ -221,7 +222,7 @@ const promoCampaignVariants = Object.values(promoCampaignMatrix);
 
 test.describe(
 	"Promo code tests",
-	testDetails().withTags(TestTag.PROMO_CODES).apply(),
+	testDetails().withTags(TestTag.PROMO_CODES, JiraComponent.PROMO_CODES).apply(),
 	() => {
 		test.describe("Promo code log filters tests", () => {
 			let qrCode2FAImagePath: string;

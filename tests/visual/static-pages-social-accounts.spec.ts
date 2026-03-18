@@ -1,6 +1,7 @@
 import { DATASETS_DIR } from "@constants/file-paths";
 import { US_PROXY_CREDENTIALS } from "@constants/proxies";
 import { testDetails } from "@core/helpers/test-details-helper";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { SocialMediaRecord } from "@core/types/types";
 import { parse_csv } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
@@ -47,7 +48,7 @@ test.describe("Static pages - social accounts", () => {
 				test(
 					`[ENG-2480] Verify '${socialMedia.social_account}' social account in '${socialMedia.static_page}' static page`,
 					testDetails()
-						.withTags(TestTag.VISUAL)
+						.withTags(TestTag.VISUAL, JiraComponent.GENERAL)
 						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 						.apply(),
 					async (

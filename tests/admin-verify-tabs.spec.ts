@@ -7,6 +7,7 @@ import { SUPER_ADMIN_CREDENTIALS } from "@constants/credentials";
 import { Locator } from "playwright";
 import { AdminTabLocatorKey } from "@enums/admin-tab-locator-keys";
 import { testDetails } from "@core/helpers/test-details-helper";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 
 test.describe.parallel("Admin page tabs visibility tests", () => {
@@ -25,7 +26,10 @@ test.describe.parallel("Admin page tabs visibility tests", () => {
 	}[]) {
 		test(
 			`[ENG-3349] [Admin] Verify admin tabs, tab: ${record.adminTab}`,
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails()
+				.withTags(JiraComponent.ADMIN)
+				.withAuthor(JiraUser.ANGEL_PETROV)
+				.apply(),
 			async ({
 				baseAdminPage,
 				userInfoAdminPage,

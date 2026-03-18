@@ -10,6 +10,7 @@ import {
 	initializePageObjectsWithCookies,
 } from "@core/utils/utils";
 import { RegisterTestData } from "@dtos/test-data";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { test } from "@fixtures/fixtures";
 import { emailDomainPattern } from "@support/regex-patterns";
@@ -47,7 +48,10 @@ test.describe("Tip user through admin panel tests", () => {
 
 	test(
 		"[ENG-2563] Tip user through admin panel - Require new 2FA code when IP of user changes",
-		testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+		testDetails()
+			.withTags(JiraComponent.ADMIN_PANEL, JiraComponent.TWO_FA)
+			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+			.apply(),
 		async ({
 			homePage,
 			userInfoAdminPage,

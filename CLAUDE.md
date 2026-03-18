@@ -30,6 +30,7 @@ npx playwright test --headed                      # Headed mode
 yarn test-pretty                                  # Headed + pino-pretty logging
 yarn lint                                         # ESLint
 yarn lint:step-decorators                         # Check missing @step decorators
+yarn lint:jira-components                         # Check missing JiraComponent tags
 npx playwright show-report                        # Open HTML report
 npx tsc --noEmit --pretty                         # Type check
 ```
@@ -51,6 +52,7 @@ Playwright
 - **Always** `import { test } from "@fixtures/fixtures"` — never from `@playwright/test` in spec files
 - **Always** use path aliases (`@api/*`, `@constants/*`, `@core/*`, `@enums/*`, `@fixtures/*`, `@pages/*`, `@base/*`, `@test-flows/*`, `@dtos/*`, etc.) — never relative cross-directory imports
 - **Always** use `testDetails().withTags(...).withAuthor(...).apply()` on every `test()` and `test.describe()`
+- **Always** include at least one `JiraComponent.*` in `.withTags()` — the corresponding Jira test case must have the matching Component set. Enforced by `yarn lint:jira-components` in CI
 - **Always** prefix test names with `[ENG-{ticket}]`
 - **Always** add `@step()` decorator to public methods in page, asserter, and steps files
 - **Always** use `async/await` — `.then()` and `.catch()` are ESLint-restricted

@@ -4,7 +4,8 @@ import {
 	generateRandomString,
 } from "@core/utils/utils";
 import { test } from "@fixtures/fixtures";
-import { storageStateNewSuperAdminUserDB } from "../fixtures/auth-fixtures";
+import { storageStateNewSuperAdminUserDB } from "@fixtures/auth-fixtures";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { testDetails } from "@core/helpers/test-details-helper";
 
@@ -48,7 +49,10 @@ test.describe("Search for Promo codes", () => {
 
 	test(
 		"[ENG-6184] Search for existing promo code in the campaigns table",
-		testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+		testDetails()
+			.withTags(JiraComponent.PROMO_CODES)
+			.withAuthor(JiraUser.NIKOLAY_GENOV)
+			.apply(),
 		async ({ promoCampaignsAdminPage }) => {
 			await promoCampaignsAdminPage
 				.steps()
@@ -62,7 +66,10 @@ test.describe("Search for Promo codes", () => {
 
 	test(
 		"[ENG-6184] Search for non-existing promo code in the campaigns table",
-		testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+		testDetails()
+			.withTags(JiraComponent.PROMO_CODES)
+			.withAuthor(JiraUser.NIKOLAY_GENOV)
+			.apply(),
 		async ({ promoCampaignsAdminPage }) => {
 			const appendToCode = generateRandomString({ length: 3 });
 			await promoCampaignsAdminPage

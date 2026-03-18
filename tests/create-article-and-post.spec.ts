@@ -13,8 +13,9 @@ import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { storageStateUserAPI } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
-import { CsvFilesName } from "../enums/csv-file-name";
+import { CsvFilesName } from "@enums/csv-file-name";
 import { testDetails } from "@core/helpers/test-details-helper";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { isScheduledRun } from "configuration";
 
@@ -48,6 +49,7 @@ test.describe("Create article and posts tests", () => {
 		test(
 			`[ENG-1057] Create new [${postRecords.category}] article and post it in [${postRecords.category_endpoint}] category`,
 			testDetails()
+				.withTags(JiraComponent.ARTICLES)
 				.withJiraBugTickets("2627")
 				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 				.apply(),

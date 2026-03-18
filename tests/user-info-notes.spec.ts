@@ -7,7 +7,7 @@ import { test } from "@fixtures/fixtures";
 test.describe(
 	"User info - notes",
 	testDetails()
-		.withTags(JiraComponent.ADMIN_PANEL, JiraComponent.NOTES)
+		.withTags(JiraComponent.ADMIN_PANEL, JiraComponent.USER_INFO)
 		.apply(),
 	() => {
 		test.beforeEach(

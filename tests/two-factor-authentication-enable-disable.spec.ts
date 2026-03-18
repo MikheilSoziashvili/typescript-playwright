@@ -5,6 +5,7 @@ import {
 	generate2FACodeFromQRCodeImage,
 	getUserDetailsByTestTitle,
 } from "@core/utils/utils";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
@@ -23,7 +24,10 @@ test.describe("Two-Factor Authentication login verification", () => {
 
 	test(
 		`[ENG-2539] - Enable and Disable Two-Factor Authentication`,
-		testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+		testDetails()
+			.withTags(JiraComponent.TWO_FA)
+			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+			.apply(),
 		async ({ homePage, profilePage, settingsPage }, testInfo) => {
 			const newUserDetails = getUserDetailsByTestTitle(
 				testInfo.title,

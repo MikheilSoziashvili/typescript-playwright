@@ -51,7 +51,7 @@ test.describe(
 
 ## testDetails() builder — required on every test() and test.describe()
 
-- `.withTags(...)` — `TestTag` and/or `JiraComponent` values
+- `.withTags(...)` — `TestTag` and/or `JiraComponent` values. **Every test file must include at least one `JiraComponent.*`** (enforced by `yarn lint:jira-components` in CI). The corresponding Jira test case must have the matching Component set
 - `.withAuthor(JiraUser.NAME)` — required, links to JIRA user
 - `.withJiraBugTickets("ENG-123")` — known bugs (auto-disables retries)
 - `.apply()` — returns Playwright TestDetails object

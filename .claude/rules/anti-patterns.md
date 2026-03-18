@@ -6,6 +6,7 @@ Project-specific rules — all derived from actual codebase conventions.
 
 - **Do not import `test` from `@playwright/test`** in spec files — always from `@fixtures/fixtures`
 - **Do not create tests without `testDetails()`** — missing metadata breaks JIRA and ReportPortal
+- **Do not create test files without `JiraComponent.*` in `.withTags()`** — enforced by CI check (`yarn lint:jira-components`). The Jira test case must also have the matching Component set
 - **Do not use `test.describe.configure({ mode: "serial" })` without `@sequential` tag** — tag required for routing to sequential project
 - **Do not share mutable state between tests** — use `test.beforeEach` for per-test setup
 - **Do not hardcode URLs** — use `configuration.ts` or `@constants/page-endpoints`

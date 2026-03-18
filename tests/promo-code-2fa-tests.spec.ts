@@ -7,6 +7,7 @@ import {
 	initializePageObjects,
 	initializePageObjectsWithCookies,
 } from "@core/utils/utils";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { test } from "@fixtures/fixtures";
 import { storageStateNewSuperAdminUserDB } from "../fixtures/auth-fixtures";
@@ -29,6 +30,7 @@ test.describe("Promo Code tests", () => {
 	test(
 		"[ENG-3966] Promo Code - Require new 2FA code when IP of user changes",
 		testDetails()
+			.withTags(JiraComponent.PROMO_CODES)
 			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 			.apply(),
 		async ({

@@ -1,4 +1,5 @@
 import { testDetails } from "@core/helpers/test-details-helper";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { setAuthenticationCookies } from "@core/utils/utils";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { JiraUser } from "@enums/jira/jira-users";
@@ -11,7 +12,10 @@ test.describe("Blog - social share links tests", () => {
 		.forEach((input) => {
 			test(
 				`[ENG-6374][Blog] Verify the social share links - ${input.socialMedia}`,
-				testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+				testDetails()
+					.withTags(JiraComponent.BLOG)
+					.withAuthor(JiraUser.ANGEL_PETROV)
+					.apply(),
 				async ({ blogPage, blogPostPage, gamdomApiDbFacade, page }) => {
 					const { cookie } =
 						await gamdomApiDbFacade.createSingleUserDbAndAuth();

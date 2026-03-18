@@ -3,6 +3,7 @@ import {
 	generateRandomString,
 	setAuthenticationCookies,
 } from "@core/utils/utils";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { NotificationTitle } from "@enums/notification-titles";
 import { TestTag } from "@enums/test-tags";
@@ -21,7 +22,7 @@ test.describe("Use affiliate code", () => {
 	test(
 		"[ENG-297] Create an affiliate code and use it with a new account",
 		testDetails()
-			.withTags(TestTag.SMOKE)
+			.withTags(TestTag.SMOKE, JiraComponent.AFFILIATES)
 			.withAuthor(JiraUser.NIKOLAY_GENOV)
 			.apply(),
 		async ({

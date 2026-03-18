@@ -1,6 +1,7 @@
 import { PRODUCTION_BASE_URL } from "@constants/page-urls";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { normalizeUrl } from "@core/utils/utils";
+import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { OgProperties } from "@enums/playwright/htmlOgProperties";
 import { OgPropertiesValues } from "@enums/playwright/htmlOgPropertiesValues";
@@ -15,6 +16,7 @@ test.describe("Blog article - SEO meta tests", () => {
 	test(
 		`[ENG-5680] Verify SEO meta information for Blog article`,
 		testDetails()
+			.withTags(JiraComponent.BLOG, JiraComponent.SEO)
 			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 			.withJiraBugTickets("9597")
 			.apply(),

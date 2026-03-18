@@ -54,6 +54,9 @@ jobs:
             - name: Check for missing @step decorators
               run: yarn lint:step-decorators
 
+            - name: Check for missing JiraComponent tags
+              run: yarn lint:jira-components
+
     detect-tests:
         needs: premerge-checks
         if: always()
