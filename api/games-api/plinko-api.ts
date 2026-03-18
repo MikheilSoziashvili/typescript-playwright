@@ -26,6 +26,10 @@ export class PlinkoApi extends GamesBaseApi {
 		});
 	}
 
+	protected override async initSession(): Promise<void> {
+		await this.fetchGameToken();
+	}
+
 	private async getClientVersion(): Promise<string> {
 		if (this.cachedClientVersion) {
 			return this.cachedClientVersion;

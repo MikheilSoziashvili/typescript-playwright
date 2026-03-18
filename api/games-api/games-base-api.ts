@@ -1,11 +1,15 @@
 import { GamesBaseApiConfig } from "@core/api/interfaces/games-base-api-config";
-import { buildGameInitEndpoint } from "@core/helpers/endpoint-builder";
+import {
+	buildGameInitEndpoint,
+	buildStreamInitEndpoint,
+} from "@core/helpers/endpoint-builder";
 import { waitUntil } from "@core/utils/utils";
 import { GameUrlRequest } from "@dtos/requests/games-api/game-url-request";
 import { ApiEndpoints } from "@enums/api-endpoints";
 import { Currency } from "@enums/currencies";
 import { GameCode } from "@enums/game-codes";
 import { HttpStatus } from "@enums/http-status";
+import { RequestType } from "@enums/request-type";
 import { Language } from "@enums/languages";
 import { Unit } from "@enums/units";
 import { WalletType } from "@enums/wallet-types";
@@ -18,6 +22,7 @@ import { BaseApi } from "../base-api";
 export abstract class GamesBaseApi extends BaseApi {
 	protected readonly config: GamesBaseApiConfig;
 	protected gameToken!: string;
+	private sessionInitialized = false;
 
 	constructor(
 		config: GamesBaseApiConfig,
@@ -44,9 +49,7 @@ export abstract class GamesBaseApi extends BaseApi {
 
 	private getGameCode(): GameCode {
 		if (!this.config.gameCode) {
-			throw new Error(
-				`Game code not configured for ${this.config.game}`,
-			);
+			throw new Error(`Game code not configured for ${this.config.game}`);
 		}
 
 		return this.config.gameCode;
@@ -87,16 +90,28 @@ export abstract class GamesBaseApi extends BaseApi {
 		await this.post(parameters);
 	}
 
-	private async ensureGameToken(): Promise<void> {
-		if (!this.gameToken) {
-			await this.fetchGameToken();
+	private async ensureGameSession(): Promise<void> {
+		if (this.sessionInitialized) {
+			return;
 		}
+
+		await this.initSession();
+		this.sessionInitialized = true;
+	}
+
+	protected async initSession(): Promise<void> {
+		const endpoint = buildStreamInitEndpoint(
+			this.config.game.toLowerCase(),
+		);
+		const payload = { type: RequestType.RPC };
+		const parameters = this.buildParameters(endpoint, payload);
+		await this.post(parameters);
 	}
 
 	protected async placeBetWithRetry(
 		placeBet: () => Promise<APIResponse>,
 	): Promise<APIResponse> {
-		await this.ensureGameToken();
+		await this.ensureGameSession();
 		let lastResponse!: APIResponse;
 
 		const tryPlaceBet = async (): Promise<boolean> => {
