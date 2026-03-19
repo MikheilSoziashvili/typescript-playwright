@@ -155,7 +155,7 @@ export class HomePage extends BasePage<HomePageMap> {
 
 	@step("Get koth currency xposition")
 	public async getKothCurrencyXPosition(): Promise<number> {
-		await this.map.waitForStableXPosition({
+		await this.map.waitForStableBoundingBox({
 			locator: this.map.firstKothHeaderCurrencyAmount,
 		});
 		return this.getElementPosition(

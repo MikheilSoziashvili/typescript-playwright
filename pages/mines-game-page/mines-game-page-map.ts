@@ -119,9 +119,7 @@ export class MinesGamePageMap extends BaseMap {
 	}
 
 	public disabledGameMessage(): Locator {
-		return this.page
-			.getByTestId("page-container-animate")
-			.filter({ hasText: "This game is currently disabled." });
+		return this.page.getByText("This game is currently disabled.");
 	}
 
 	public get stopAutobetButton(): Locator {

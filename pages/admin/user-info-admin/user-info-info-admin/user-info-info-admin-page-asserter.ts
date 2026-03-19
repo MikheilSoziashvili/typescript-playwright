@@ -44,7 +44,7 @@ export class UserInfoInfoAdminPageAsserter extends BaseAsserter<UserInfoInfoAdmi
 			[this.gamdomPage.map.adminInfoTable],
 			Timeout.MAX,
 		);
-		await this.gamdomPage.map.waitForStableXPosition({
+		await this.gamdomPage.map.waitForStableBoundingBox({
 			locator: this.gamdomPage.map.adminInfoTable,
 			delayMs: Timeout.EXTRA_SHORT,
 		});

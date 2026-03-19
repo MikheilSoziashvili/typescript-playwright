@@ -150,7 +150,7 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 
 	@step("Koth in header visual correct")
 	public async kothInHeaderVisualCorrect(testInfo: TestInfo): Promise<void> {
-		await this.gamdomPage.map.waitForStableXPosition({
+		await this.gamdomPage.map.waitForStableBoundingBox({
 			locator: this.gamdomPage.map.kothHeaderImageLocator,
 		});
 		await this.checkElementVisualCorrect(

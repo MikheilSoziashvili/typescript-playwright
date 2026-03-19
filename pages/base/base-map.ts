@@ -60,13 +60,13 @@ export class BaseMap {
 		});
 	}
 
-	async waitForStableXPosition(parameters: {
+	async waitForStableBoundingBox(parameters: {
 		locator: Locator;
 		allowedMovement?: number;
 		attempts?: number;
 		delayMs?: number;
 		failOnTimeout?: boolean;
-	}): Promise<number> {
+	}): Promise<void> {
 		const {
 			locator,
 			allowedMovement = 1,
@@ -75,31 +75,33 @@ export class BaseMap {
 			failOnTimeout = false,
 		} = parameters;
 
-		let previousX: number | undefined;
-		let currentX: number | undefined;
+		let previousBox = await locator.boundingBox();
+		await waitForSeconds(delayMs / 1000);
 
-		for (let i = 0; i < attempts; i++) {
-			previousX = currentX;
-			currentX = (await locator.boundingBox())?.x;
+		for (let i = 1; i < attempts; i++) {
+			const currentBox = await locator.boundingBox();
 
-			if (previousX !== undefined && currentX !== undefined) {
-				const delta = Math.abs(previousX - currentX);
+			if (previousBox && currentBox) {
+				const isStable =
+					Math.abs(previousBox.x - currentBox.x) <= allowedMovement &&
+					Math.abs(previousBox.y - currentBox.y) <= allowedMovement &&
+					Math.abs(previousBox.width - currentBox.width) <= allowedMovement &&
+					Math.abs(previousBox.height - currentBox.height) <= allowedMovement;
 
-				if (delta <= allowedMovement) {
-					return currentX;
+				if (isStable) {
+					return;
 				}
 			}
 
+			previousBox = currentBox;
 			await waitForSeconds(delayMs / 1000);
 		}
 
 		if (failOnTimeout) {
 			throw new Error(
-				`Element's X position did not stabilize within ${attempts} attempts.`,
+				`Element's bounding box did not stabilize within ${attempts} attempts.`,
 			);
 		}
-
-		return currentX ?? 0;
 	}
 
 	async waitForAttributeToHaveValue(

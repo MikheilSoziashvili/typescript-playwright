@@ -1,7 +1,6 @@
 import { BasePageStep } from "@pages/base/base-page-step";
 import { WalletModal } from "./wallet-modal";
 import { step } from "decorators/step";
-import { Toast } from "@pages/components/toast/toast";
 import { ToastTitle } from "@enums/toast-titles";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { Unit } from "@enums/units";
@@ -55,9 +54,9 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 	@step(`Redeem a promo code and verify the success message is displayed`)
 	public async redeemPromoCodeSuccessfully(promoCode: string): Promise<void> {
 		await this.redeemPromoCode(promoCode);
-		const toast = new Toast(this.gamdomPage.page);
-		await toast.assertThat().titleIs(ToastTitle.SUCCESS);
-		await toast.assertThat().subTitleIs(ToastSubTitle.PROMO_CODE_REDEEMED);
+		await this.gamdomPage.toast.assertThat().titleIs(ToastTitle.SUCCESS, {
+			subTitle: ToastSubTitle.PROMO_CODE_REDEEMED,
+		});
 	}
 
 	@step("Open withdraw tab and select crypto payment method")

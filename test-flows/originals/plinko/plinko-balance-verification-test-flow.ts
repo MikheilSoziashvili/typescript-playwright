@@ -39,7 +39,7 @@ export class PlinkoBalanceVerificationFlow extends BaseTestFlow {
 				payoutCoins,
 			);
 
-		await params.user.pages.homePage.map.waitForStableXPosition({
+		await params.user.pages.homePage.map.waitForStableBoundingBox({
 			locator:
 				await params.user.pages.homePage.authenticatedHeader.map.getLoadedAccountBalance(),
 		});

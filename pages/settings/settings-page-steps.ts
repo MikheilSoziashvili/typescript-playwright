@@ -61,49 +61,13 @@ export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 		await this.gamdomPage.map.confirm2FADeactivationCodeButton.click();
 		const code2FA = await generate2FACodeFromQRCodeImage(screenshotPath);
 		await this.gamdomPage.fill2FADeactivationCodeInputs(code2FA);
-		await this.gamdomPage
-			.assertThat()
-			.checkElementsAreNotVisible([
-				this.gamdomPage.map.verification2FAPopup,
-			]);
-		await this.gamdomPage
-			.assertThat()
-			.checkElementsAreVisible([
-				this.gamdomPage.map.deactivation2FaPopup,
-			]);
 		await this.gamdomPage.map.continue2FADeactivationCodeButton.click();
 
-		await this.disable2FaWorkaround(screenshotPath);
-
 		await this.gamdomPage
 			.assertThat()
 			.checkElementsAreNotVisible([
 				this.gamdomPage.map.deactivation2FaPopup,
 			]);
-	}
-
-	// Workaround step for disabling the 2FA
-	// TODO: Remove when the issue is fixed
-	@step("Disable 2FA workaround")
-	private async disable2FaWorkaround(screenshotPath: string): Promise<void> {
-		let attempts = 0;
-		while (
-			(await this.gamdomPage.map.deactivation2FaPopup.isVisible()) &&
-			attempts < 5
-		) {
-			attempts++;
-			await this.gamdomPage.refresh();
-			await this.gamdomPage.open2FADisableModal();
-			const code2FA2 =
-				await generate2FACodeFromQRCodeImage(screenshotPath);
-			await this.gamdomPage.fill2FADeactivationCodeInputs(code2FA2);
-			await this.gamdomPage.map.confirm2FADeactivationCodeButton.dblclick();
-			// eslint-disable-next-line playwright/no-wait-for-timeout
-			await this.gamdomPage.page.waitForTimeout(1000);
-		}
-		if (attempts >= 5) {
-			throw new Error("Maximum attempts to disable 2FA reached.");
-		}
 	}
 
 	@step("Enable self exclusion")

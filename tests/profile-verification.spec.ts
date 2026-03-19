@@ -7,6 +7,7 @@ import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { TestTag } from "@enums/test-tags";
+import { KycLevels } from "@enums/verification-enums";
 
 test.describe("Profile - verification", () => {
 	test.use(storageStateNewUserDB());
@@ -24,6 +25,9 @@ test.describe("Profile - verification", () => {
 			.apply(),
 		async ({ verificationPage }) => {
 			await verificationPage.navigate();
+			await verificationPage.map
+				.kycLevelToggle(KycLevels.LEVEL_1)
+				.click();
 			await verificationPage.steps().expandCountryDropdown();
 			await verificationPage
 				.assertThat()

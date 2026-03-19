@@ -23,7 +23,6 @@ Help-Privacy Policy,/help/privacy_policy
 Rewards,/rewards
 Profile,/profile
 Notifications,/notifications
-Statistics,/statistics
 Affiliates,/affiliates
 Privacy,/privacy
 Aml-Level 1,/aml
@@ -44,7 +43,7 @@ Modal Wallet-Withdraw,/?modal=wallet&tab=withdraw
 Modal Wallet-Buy Crypto,/?modal=wallet&tab=buycrypto
 Modal Wallet-Vault,/?modal=wallet&tab=vault
 Modal Wallet-Redeem,/?modal=wallet&tab=redeem
-KOTH,/koth
+KOTH,/koth/monthly
 KOTH-Daily,/koth/daily
 KOTH-Weekly,/koth/weekly
 KOTH-Monthly,/koth/monthly

@@ -52,7 +52,7 @@ export class MinesGamePageAsserter extends BaseAsserter<MinesGamePage> {
 
 	@step("Assert balance matches expected")
 	private async assertBalanceMatches(expected: number): Promise<void> {
-		await this.gamdomPage.map.waitForStableXPosition({
+		await this.gamdomPage.map.waitForStableBoundingBox({
 			locator:
 				await this.gamdomPage.authenticatedHeader.map.getLoadedAccountBalance(),
 		});

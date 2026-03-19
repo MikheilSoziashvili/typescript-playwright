@@ -113,9 +113,11 @@ export class RewardsPageMap extends BaseMap {
 		currentClaims: number,
 		totalClaims: number,
 	): Locator {
-		return this.rewardsSpecialOfferCard.locator("p", {
-			hasText: `Reward (${currentClaims}/${totalClaims})`,
-		});
+		return this.specialOffersList
+			.getByTestId("SpecialRewardCardSubTitle")
+			.filter({
+				hasText: `Reward (${currentClaims}/${totalClaims})`,
+			});
 	}
 
 	public rewardCard(reward: string): Locator {
