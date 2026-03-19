@@ -20,3 +20,7 @@ export function buildPlinkoPlaceBetEndpoint(token: string): string {
 export function buildKenoPlaceBetEndpoint(token: string): string {
 	return `${ApiEndpoints.KENO_PLACE_BET}?${QueryParam.TOKEN}=${token}`;
 }
+
+export function buildMinesPlaceBetEndpoint(token: string): string {
+	return `${ApiEndpoints.MINES_PLACE_BET}?${QueryParam.TOKEN}=${token}`;
+}

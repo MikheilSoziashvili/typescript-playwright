@@ -39,4 +39,5 @@ export enum ApiEndpoints {
 	PLINKO_HEALTHCHECK = "/_proxied/games/plinko/healthcheck",
 	PLINKO_PLACE_BET = "/_proxied/games/plinko/client-api/plinko/bet",
 	KENO_PLACE_BET = "/_proxied/games/keno/client-api/keno/bet",
+	MINES_PLACE_BET = "/_proxied/games/mines/client-api/mines/bet",
 }
