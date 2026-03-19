@@ -22,6 +22,18 @@
 				"XRAY_CLIENT_ID": "${XRAY_CLIENT_ID}",
 				"XRAY_CLIENT_SECRET": "${XRAY_CLIENT_SECRET}"
 			}
+		},
+		"reportportal": {
+			"command": "docker",
+			"args": [
+				"run",
+				"-i",
+				"--rm",
+				"-e", "RP_API_TOKEN=${RP_API_KEY}",
+				"-e", "RP_HOST=${RP_HOST}",
+				"-e", "RP_PROJECT=${RP_PROJECT}",
+				"reportportal/mcp-server"
+			]
 		}
 	}
 }
