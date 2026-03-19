@@ -1,5 +1,14 @@
 import { ApiEndpoints } from "@enums/api-endpoints";
+import { OriginalGame } from "@enums/original-games";
 import { QueryParam } from "@enums/query-params";
+
+const gameKeyOverrides: Partial<Record<OriginalGame, string>> = {
+	[OriginalGame.PocketDice]: "pocketDice",
+};
+
+export function toGameKey(game: OriginalGame): string {
+	return gameKeyOverrides[game] ?? game.toLowerCase();
+}
 
 export function buildStreamInitEndpoint(gameKey: string): string {
 	return `/stream/${gameKey}/rpc/init`;
@@ -23,4 +32,8 @@ export function buildKenoPlaceBetEndpoint(token: string): string {
 
 export function buildMinesPlaceBetEndpoint(token: string): string {
 	return `${ApiEndpoints.MINES_PLACE_BET}?${QueryParam.TOKEN}=${token}`;
+}
+
+export function buildPocketDicePlaceBetEndpoint(token: string): string {
+	return `${ApiEndpoints.POCKET_DICE_PLACE_BET}?${QueryParam.TOKEN}=${token}`;
 }

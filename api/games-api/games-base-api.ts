@@ -2,6 +2,7 @@ import { GamesBaseApiConfig } from "@core/api/interfaces/games-base-api-config";
 import {
 	buildGameInitEndpoint,
 	buildStreamInitEndpoint,
+	toGameKey,
 } from "@core/helpers/endpoint-builder";
 import { waitUntil } from "@core/utils/utils";
 import { GameUrlRequest } from "@dtos/requests/games-api/game-url-request";
@@ -83,7 +84,7 @@ export abstract class GamesBaseApi extends BaseApi {
 
 	private async initGameSession(): Promise<void> {
 		const initEndpoint = buildGameInitEndpoint(
-			this.config.game.toLowerCase(),
+			toGameKey(this.config.game),
 			this.gameToken,
 		);
 		const parameters = this.buildParameters(initEndpoint);

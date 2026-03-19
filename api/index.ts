@@ -8,6 +8,7 @@ import { HiloApi } from "./games-api/hilo-api";
 import { KenoApi } from "./games-api/keno-api";
 import { MinesApi } from "./games-api/mines-api";
 import { PlinkoApi } from "./games-api/plinko-api";
+import { PocketDiceApi } from "./games-api/pocket-dice-api";
 import { RouletteApi } from "./games-api/roulette-api";
 import { Page } from "@playwright/test";
 
@@ -20,6 +21,7 @@ export const AllApis = {
 	kenoApi: KenoApi,
 	minesApi: MinesApi,
 	plinkoApi: PlinkoApi,
+	pocketDiceApi: PocketDiceApi,
 	rouletteApi: RouletteApi,
 	gamdomApi: GamdomApi,
 	gamdomCryptoApi: GamdomCryptoApi,
