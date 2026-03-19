@@ -1,15 +1,17 @@
 import { BasePageStep } from "@pages/base/base-page-step";
 import { CryptoAdminPage } from "./crypto-admin-page";
 import { TransactionType } from "@enums/transaction-types";
+import { TransactionState } from "@enums/transaction-states";
 import { CryptoNode } from "@enums/crypto-nodes";
 import { step } from "decorators/step";
-import { pollOrSkip, waitForSeconds } from "@core/utils/utils";
+import { pollOrSkip, waitForSeconds, waitUntil } from "@core/utils/utils";
 import { Timeout } from "@enums/timeout";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { Toast } from "@pages/components/toast/toast";
 import { TestInfo } from "@playwright/test";
 import { Cryptocurrency, CryptoTicker } from "@enums/cryptocurrencies";
+import { GamdomApi } from "@api/gamdom-api";
 import { logger } from "@logger/logger";
 
 export class CryptoAdminSteps extends BasePageStep<CryptoAdminPage> {
@@ -135,6 +137,37 @@ export class CryptoAdminSteps extends BasePageStep<CryptoAdminPage> {
 				`No wait needed for ${crypto} - proceeding immediately.`,
 			);
 		}
+	}
+
+	@step("Send queued withdrawals and wait for processing")
+	public async sendQueuedAndWaitForProcessing(
+		gamdomApi: GamdomApi,
+		userId: number,
+		username: string,
+		adminCookie: string,
+	): Promise<void> {
+		await this.gamdomPage.sendQueuedWithdrawals();
+
+		await waitUntil(
+			async () => {
+				const transactions =
+					await gamdomApi.getCryptoAdminTransactions({
+						cookie: adminCookie,
+					});
+				return !transactions.some(
+					(tx) =>
+						tx.user_id === userId &&
+						tx.type ===
+							TransactionType.WITHDRAWAL.toLowerCase() &&
+						tx.state ===
+							TransactionState.QUEUED.toLowerCase(),
+				);
+			},
+			{
+				errorMessage: `Withdrawal for user "${username}" remained in queued status`,
+			},
+		);
+
 	}
 
 	@step("Wait until crypto status toggle reaches expected state")

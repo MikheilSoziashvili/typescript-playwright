@@ -259,4 +259,19 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 	): Promise<void> {
 		expect(actualFeeInUsd).toBe(expectedFeeInUsd);
 	}
+
+	@step("Verify deposit tab is not visible for banned user")
+	public async depositTabIsNotVisible(): Promise<void> {
+		await this.checkElementsAreNotVisible([
+			this.gamdomPage.map.depositTabButton,
+		]);
+	}
+
+	@step("Verify withdraw and vault tabs are visible")
+	public async withdrawAndVaultTabsAreVisible(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.withdrawTabButton,
+			this.gamdomPage.map.vaultTabButton,
+		]);
+	}
 }

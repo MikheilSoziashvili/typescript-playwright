@@ -229,4 +229,15 @@ export const predefined = {
 		unrankedXp: 1500000,
 		banReason: "Responsible gaming",
 	},
+	hardBanResponsibleGambling: {
+		walletAmount: 1500,
+		royaltyLevel: 1,
+		rewardAmountCoins: 1500,
+		betAmount: 0.2,
+		betMultiplier: 2,
+		startingXp: 2999999,
+		banReason: "Responsible Gambling",
+		// Staging-only test wallet — not a real user address
+		withdrawalAddress: "0x88190Ef584BD63E320693133f01c0cfcdA24bB8e",
+	},
 };

@@ -1,5 +1,6 @@
 import { BaseAsserter } from "@base/base-asserter";
 import { ChatFooterPlaceholder } from "@enums/chat-footer-palceholders";
+import { BooleanValueString } from "@enums/playwright/booleanValues";
 import { Attributes } from "@enums/playwright/htmlAttributes";
 import { AttributesValues } from "@enums/playwright/htmlAttributesValues";
 import { logger } from "@logger/logger";
@@ -356,5 +357,17 @@ export class ChatAsserter extends BaseAsserter<Chat> {
 		await expect(this.gamdomPage.map.claimRainButton).toHaveText(
 			"FIND OUT MORE",
 		);
+	}
+
+	@step("Verify chat input is disabled for banned user")
+	public async chatInputIsDisabledForBannedUser(): Promise<void> {
+		await this.gamdomPage.map.waitForAttributeToHaveValue(
+			this.gamdomPage.map.chatTextBox,
+			Attributes.CONTENTEDITABLE,
+			BooleanValueString.FALSE,
+		);
+		await this.checkElementsAreDisabled([
+			this.gamdomPage.map.sendMessageButton,
+		]);
 	}
 }

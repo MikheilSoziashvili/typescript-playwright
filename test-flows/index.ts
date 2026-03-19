@@ -61,12 +61,14 @@ export { UserInfoEditFieldFlow } from "./user-info/user-info-edit-field-test-flo
 // Ban flows
 export { SteamUserLoginLogoutFlow } from "./ban/steam-user-login-logout-test-flow";
 export { BanUserVerificationFlow } from "./ban/ban-user-verification-test-flow";
+export { HardBanResponsibleGamblingTestFlow } from "./ban/hard-ban-responsible-gambling-test-flow";
 
 // Ban types
 export type {
 	BanUserVerificationParams,
 	SteamUserLoginLogoutParams,
 } from "./ban/types/ban-flow-types";
+export type { HardBanResponsibleGamblingParams } from "./ban/types/hard-ban-flow-types";
 // Password flows
 export { PasswordChangeSetupTestFlow } from "./password/password-change-setup-test-flow";
 export { PasswordChangeExecutionTestFlow } from "./password/password-change-execution-test-flow";

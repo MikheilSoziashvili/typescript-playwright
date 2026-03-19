@@ -97,6 +97,19 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		]);
 	}
 
+	@step("Verify top hard banned banner is displayed with correct text")
+	public async isTopHardBannedBannerDisplayed(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.topBannedBanner,
+		]);
+		await this.checkElementsHaveText([
+			{
+				locator: this.gamdomPage.map.topBannedBanner,
+				expectedText: BannerMessages.HARD_BANNED_USER,
+			},
+		]);
+	}
+
 	@step("Verify that Create Account and Social buttons are disabled")
 	public async verifyTopBannerButtonsState(): Promise<void> {
 		const page = this.gamdomPage.page;

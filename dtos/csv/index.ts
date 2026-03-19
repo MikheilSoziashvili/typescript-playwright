@@ -37,3 +37,4 @@ export * from "./jackpot-contribution-csv";
 export * from "./reload-update-logic-csv";
 export * from "./limbo-manual-mode-csv";
 export * from "./limbo-auto-mode-csv";
+export * from "./hard-ban-responsible-gambling-csv";

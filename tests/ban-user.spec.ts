@@ -6,6 +6,9 @@ import { JiraComponent } from "@enums/jira/jira-components";
 import { TestUserRole } from "@enums/test-user-roles";
 import * as Configuration from "configuration";
 import { BanReason } from "@enums/ban-reasons";
+import { CsvFilesName } from "@enums/csv-file-name";
+import { testData } from "test-data/test-data-manager";
+import { BooleanValueString } from "@enums/playwright/booleanValues";
 
 test.describe(
 	"Ban user",
@@ -214,5 +217,40 @@ test.describe(
 					);
 			},
 		);
+
+		testData()
+			.fromCsvRaw({
+				file: CsvFilesName.HARD_BAN_RESPONSIBLE_GAMBLING,
+			})
+			.forEach((input) => {
+				test(
+					`[ENG-10321] [Hard ban] 'Responsible gambling' ban - restricted access, claim rewards, withdraw balance, and account lock - ${input.twoFaLabel}`,
+					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+					async (
+						{
+							browserSessionManager,
+							gamdomDb,
+							gamdomApi,
+							testDataPredefined,
+							hardBanResponsibleGamblingTestFlow,
+						},
+						testInfo,
+					) => {
+						test.slow();
+
+						await hardBanResponsibleGamblingTestFlow.execute({
+							browserSessionManager: browserSessionManager,
+							gamdomDb: gamdomDb,
+							gamdomApi: gamdomApi,
+							twoFaEnabled:
+								input.twoFaEnabled === BooleanValueString.TRUE,
+							testInfo: testInfo,
+							testData:
+								testDataPredefined.data
+									.hardBanResponsibleGambling,
+						});
+					},
+				);
+			});
 	},
 );

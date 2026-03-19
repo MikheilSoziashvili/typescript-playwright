@@ -152,4 +152,20 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 			this.gamdomPage.map.userAccountMenuAvatarV4,
 		]);
 	}
+
+	@step("Verify Support and Rewards navigation buttons are visible")
+	public async bannedUserAllowedNavigationIsVisible(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.supportNavigationButton,
+			this.gamdomPage.map.rewardsNavigationButton,
+		]);
+	}
+
+	@step("Verify Casino and Originals navigation buttons are not visible")
+	public async bannedUserRestrictedNavigationIsNotVisible(): Promise<void> {
+		await this.checkElementsAreNotVisible([
+			this.gamdomPage.map.casinoNavigationButton,
+			this.gamdomPage.map.originalGamesMenuLink,
+		]);
+	}
 }
