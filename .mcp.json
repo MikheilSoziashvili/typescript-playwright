@@ -1,8 +1,19 @@
 {
 	"mcpServers": {
+		"playwright": {
+			"command": "npx",
+			"args": [
+				"-y",
+				"@playwright/mcp@latest",
+				"--caps=testing"
+			]
+		},
 		"atlassian": {
 			"command": "npx",
-			"args": ["-y", "@sooperset/mcp-atlassian"],
+			"args": [
+				"-y",
+				"@sooperset/mcp-atlassian"
+			],
 			"env": {
 				"JIRA_URL": "${JIRA_URL}",
 				"JIRA_USERNAME": "${JIRA_USERNAME}",
@@ -14,7 +25,10 @@
 		},
 		"xray": {
 			"command": "npx",
-			"args": ["-y", "@korfu/xray-mcp"],
+			"args": [
+				"-y",
+				"@korfu/xray-mcp"
+			],
 			"env": {
 				"JIRA_BASE_URL": "${JIRA_URL}",
 				"JIRA_EMAIL": "${JIRA_USERNAME}",

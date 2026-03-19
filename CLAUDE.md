@@ -47,6 +47,26 @@ Page Objects      → HOW to interact with UI (4-file POM)
 Playwright
 ```
 
+## Code Style Rules
+
+- **No redundant comments** anywhere in generated code — only FALLBACK/TODO annotations when truly needed
+- **Use base-asserter methods** (`checkElementsAreVisible`, `checkElementsContainText`, etc.) over raw `expect()` in asserter classes
+- **No `assert` prefix** on asserter methods — use `connectionsPageIsDisplayed()` not `assertConnectionsPageIsDisplayed()`
+- **Steps class**: only for methods combining actions + assertions (e.g., navigate then verify)
+- **Asserter class**: pure assertion methods (no actions)
+- **Page class**: pure action methods (no assertions)
+
+## MCP Page Inspection
+
+- **Always ask which user type** before logging in to inspect a page: superadmin, default user1, or newly created DB user with specific tags
+- Different users see different elements — never assume user type
+- All predefined users are in `TestUserConfigurationObject` in `configuration.ts`
+
+## New Test Creation
+
+- **Always ask** which tags (`TestTag.*`) and which author (`JiraUser.*`) to use for `testDetails()`
+- Never assume defaults — different tests need different tags and authors
+
 ## Key Architecture Rules
 
 - **Always** `import { test } from "@fixtures/fixtures"` — never from `@playwright/test` in spec files
@@ -107,3 +127,8 @@ Pattern-specific rules with code examples are in `.claude/rules/`:
 - `fixtures.md` — Fixture system, scopes, auth, BrowserSessionManager
 - `api-and-db.md` — API client and database patterns
 - `anti-patterns.md` — What to avoid (project-specific)
+- `mcp-selectors.md` — MCP selector authoring rules (Container→Content→Role methodology)
+
+Additional documentation:
+- `.claude/skills/mcp-selector-authoring.md` — Dual MCP skill workflow (Verdex + Playwright MCP)
+- `docs/dual-mcp-poc.md` — Dual MCP PoC documentation, auth strategies, and lessons learned

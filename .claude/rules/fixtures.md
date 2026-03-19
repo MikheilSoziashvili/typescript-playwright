@@ -24,30 +24,43 @@ homePage: sessionAwarePage(HomePage),
 - `_reportPortalTest` — ReportPortal setup
 - `_disableRetriesForBugTickets` — Skips retries for tests with `withJiraBugTickets()`
 
-## Auth storage state fixtures
+## Authentication — `browserSessionManager.loginAs()` (default)
 
-Factory functions returning Playwright Fixtures:
+**Always use `browserSessionManager.loginAs()`** for authenticated tests. When a test requires a logged-in user, always ask which user type (regular, superadmin, etc.) before implementing.
+
 ```typescript
-test.use(storageStateNewUserDB());                              // New user via DB
-test.use(storageStateNewUserDB({ amount: 50000 }));             // With balance
-test.use(storageStateNewUserDB({ userClass: UserClasses.Admin, tags: [UserTags.SuperAdmin] }));
-test.use(storageStateNewSuperAdminUserDB());                    // Super admin shorthand
-test.use(storageStateUserAPI(SUPER_ADMIN_CREDENTIALS.username)); // Existing user via API
-test.use(storageStateUnauthenticatedUser());                    // No auth
-```
+// Regular user (default)
+const user = await browserSessionManager.loginAs(TestUserRole.REGULAR, {
+    reuseContext: true,
+});
+await user.pages.homePage.navigate();
 
-## BrowserSessionManager
+// Regular user with balance
+const user = await browserSessionManager.loginAs(TestUserRole.REGULAR, {
+    reuseContext: true,
+    regularUserOptions: { amount: LOW_USER_AMOUNT },
+});
 
-Manages multiple concurrent user sessions in a single test:
-```typescript
-// Switch/create sessions by role
+// Superadmin
 const superAdmin = await browserSessionManager.loginAs(TestUserRole.SUPERADMIN);
-await browserSessionManager.loginAs(TestUserRole.REGULAR, { reuseContext: true });
 
 // Session-scoped access (lazy via Proxy)
 await superAdmin.apis.gamdomApi;
 superAdmin.pages.homePage;
 await superAdmin.userBalanceHandler();
+```
+
+## Legacy: `storageStateNewUserDB()` / `test.use()`
+
+> **LEGACY — do not use unless explicitly requested.** These factory functions are outdated. Always prefer `browserSessionManager.loginAs()` instead.
+
+```typescript
+// LEGACY — only use when explicitly asked
+test.use(storageStateNewUserDB());
+test.use(storageStateNewUserDB({ amount: 50000 }));
+test.use(storageStateNewSuperAdminUserDB());
+test.use(storageStateUserAPI(SUPER_ADMIN_CREDENTIALS.username));
+test.use(storageStateUnauthenticatedUser());
 ```
 
 ## Creating a new fixture
