@@ -12,6 +12,7 @@ import { SlotsBattlePage } from "@pages/slot-battle/slots-battle-page";
 import { BlogCategoryPage } from "@pages/blog/category/blog-category-page";
 import { SettingsPage } from "@pages/settings/settings-page";
 import { HelpPage } from "@pages/help/help-page";
+import { SupportPage } from "@pages/help/support/support-page";
 import { MaintenancePage } from "@pages/maintenance/maintenance-page";
 import { Error404Page } from "@pages/error-404-page/error-404-page";
 import { CasinoPage } from "@pages/casino/casino-game-page";
@@ -53,6 +54,7 @@ export type GamdomPages = {
 	blogPage: BlogPage;
 	blogPostPage: BlogPostPage;
 	helpPage: HelpPage;
+	supportPage: SupportPage;
 	casinoPage: CasinoPage;
 	providersPage: ProvidersPage;
 	kothPage: KothPage;
@@ -86,6 +88,7 @@ export const gamdomPagesFixtures = base.extend<GamdomPages>({
 	slotsBattlePage: sessionAwarePage(SlotsBattlePage),
 	blogCategoryPage: sessionAwarePage(BlogCategoryPage),
 	helpPage: sessionAwarePage(HelpPage),
+	supportPage: sessionAwarePage(SupportPage),
 	casinoPage: sessionAwarePage(CasinoPage),
 	providersPage: sessionAwarePage(ProvidersPage),
 	kothPage: sessionAwarePage(KothPage),

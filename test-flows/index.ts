@@ -62,6 +62,7 @@ export { UserInfoEditFieldFlow } from "./user-info/user-info-edit-field-test-flo
 export { SteamUserLoginLogoutFlow } from "./ban/steam-user-login-logout-test-flow";
 export { BanUserVerificationFlow } from "./ban/ban-user-verification-test-flow";
 export { HardBanResponsibleGamblingTestFlow } from "./ban/hard-ban-responsible-gambling-test-flow";
+export { HardBanSupportRequestedTestFlow } from "./ban/hard-ban-support-requested-test-flow";
 
 // Ban types
 export type {

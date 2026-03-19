@@ -252,5 +252,13 @@ test.describe(
 					},
 				);
 			});
+
+		test(
+			"[ENG-10327] [Hard Ban] 'Support Requested' ban - verify restricted access for banned user",
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			async ({ hardBanSupportRequestedTestFlow }) => {
+				await hardBanSupportRequestedTestFlow.execute();
+			},
+		);
 	},
 );

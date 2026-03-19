@@ -67,6 +67,10 @@ Playwright
 - **Always ask** which tags (`TestTag.*`) and which author (`JiraUser.*`) to use for `testDetails()`
 - Never assume defaults — different tests need different tags and authors
 
+## Skill Usage
+
+- **Always** check available skills before writing new code — invoke matching skills before manual exploration
+
 ## Key Architecture Rules
 
 - **Always** `import { test } from "@fixtures/fixtures"` — never from `@playwright/test` in spec files
@@ -82,21 +86,22 @@ Playwright
 
 ## Playwright Config
 
-| Setting | Value |
-|---------|-------|
-| Test timeout | 3 min |
-| Expect/Action timeout | 25s |
-| Navigation timeout | 40s |
-| slowMo | 300ms |
-| Viewport | 1920x1080 |
-| Retries | 1 (CI) / 0 (local) |
-| Workers | 1 (CI) / auto (local) |
-| Trace/Video | retain-on-failure |
-| Projects | `chromium` (parallel) + `chromium-sequential` (serial, `@sequential` tag) |
+| Setting               | Value                                                                     |
+| --------------------- | ------------------------------------------------------------------------- |
+| Test timeout          | 3 min                                                                     |
+| Expect/Action timeout | 25s                                                                       |
+| Navigation timeout    | 40s                                                                       |
+| slowMo                | 300ms                                                                     |
+| Viewport              | 1920x1080                                                                 |
+| Retries               | 1 (CI) / 0 (local)                                                        |
+| Workers               | 1 (CI) / auto (local)                                                     |
+| Trace/Video           | retain-on-failure                                                         |
+| Projects              | `chromium` (parallel) + `chromium-sequential` (serial, `@sequential` tag) |
 
 ## CI/CD
 
 GitHub Actions on self-hosted runners:
+
 - `playwright.yml` — Main runner (nightly 3 AM + manual dispatch, 5-15 workers, S3 reports, Slack, JIRA)
 - `premerge.yml` — PR quality gates (ESLint + Prettier + step decorator check, then runs modified tests)
 - `detect-modified-tests.yml` — Git diff detection, runs new/modified specs with `--repeat-each=3`
@@ -120,6 +125,7 @@ GitHub Actions on self-hosted runners:
 ## Detailed Rules
 
 Pattern-specific rules with code examples are in `.claude/rules/`:
+
 - `pom-pattern.md` — Page Object Model four-file pattern and skeletons
 - `test-structure.md` — Test file structure, tagging, parametrization
 - `test-flows.md` — Test Flow Layer architecture and creation guide
@@ -130,5 +136,6 @@ Pattern-specific rules with code examples are in `.claude/rules/`:
 - `mcp-selectors.md` — MCP selector authoring rules (Container→Content→Role methodology)
 
 Additional documentation:
+
 - `.claude/skills/mcp-selector-authoring.md` — Dual MCP skill workflow (Verdex + Playwright MCP)
 - `docs/dual-mcp-poc.md` — Dual MCP PoC documentation, auth strategies, and lessons learned

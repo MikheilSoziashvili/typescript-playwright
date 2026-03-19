@@ -274,4 +274,15 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 			this.gamdomPage.map.vaultTabButton,
 		]);
 	}
+
+		@step("Verify only Withdraw and Vault tabs are visible")
+	public async onlyWithdrawAndVaultTabsAreVisible(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.withdrawTabButton,
+			this.gamdomPage.map.vaultTabButton,
+		]);
+		await this.checkElementsAreNotVisible([
+			this.gamdomPage.map.depositTabButton,
+		]);
+	}
 }

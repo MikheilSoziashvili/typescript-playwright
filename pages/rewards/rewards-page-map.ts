@@ -169,6 +169,12 @@ export class RewardsPageMap extends BaseMap {
 		});
 	}
 
+	public get promoBannersSlider(): Locator {
+		return this.page.locator(
+			`div[class*="SliderPrimary-styled__SwiperContainer"]`,
+		);
+	}
+
 	public get royaltyUpCardItem(): Locator {
 		return this.page.locator(`div[class*="RoyaltyUpItem-styled__Item-sc"]`);
 	}

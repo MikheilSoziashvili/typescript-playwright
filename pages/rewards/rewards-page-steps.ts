@@ -84,6 +84,13 @@ export class RewardsPageSteps extends BasePageStep<RewardsPage> {
 		);
 	}
 
+	@step("Navigate and verify banned user rewards view")
+	public async navigateAndVerifyBannedUserRewardsView(): Promise<void> {
+		await this.gamdomPage.navigate();
+		await this.gamdomPage.assertThat().allRakebackRewardCardsAreVisible();
+		await this.gamdomPage.assertThat().promoBannersSliderIsNotVisible();
+	}
+
 	@step("Claim reward and verify balance")
 	public async claimRewardAndVerifyBalance(
 		claimButton: Locator,

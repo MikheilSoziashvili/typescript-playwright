@@ -69,6 +69,7 @@ import { SteamBlockedPage } from "./external/steam/steam-blocked-page";
 import { GeoblockedPage } from "./geoblocked/geoblocked-page";
 import { FaqPage } from "./help/faq/faq-page";
 import { HelpPage } from "./help/help-page";
+import { SupportPage } from "./help/support/support-page";
 import { HiloGamePage } from "./hilo-game-page/hilo-game-page";
 import { HomePage } from "./home-page/home-page";
 import { KenoGamePage } from "./keno-game/keno-game-page";
@@ -136,6 +137,7 @@ export const GamdomPages = {
 	blogPage: BlogPage,
 	blogPostPage: BlogPostPage,
 	helpPage: HelpPage,
+	supportPage: SupportPage,
 	casinoPage: CasinoPage,
 	providersPage: ProvidersPage,
 	kothPage: KothPage,

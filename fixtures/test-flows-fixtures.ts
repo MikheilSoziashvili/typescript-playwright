@@ -45,6 +45,7 @@ import { UserInfoEditFieldFlow } from "@test-flows/user-info/user-info-edit-fiel
 import { SteamUserLoginLogoutFlow } from "@test-flows/ban/steam-user-login-logout-test-flow";
 import { BanUserVerificationFlow } from "@test-flows/ban/ban-user-verification-test-flow";
 import { HardBanResponsibleGamblingTestFlow } from "@test-flows/ban/hard-ban-responsible-gambling-test-flow";
+import { HardBanSupportRequestedTestFlow } from "@test-flows/ban/hard-ban-support-requested-test-flow";
 import { PasswordChangeSetupTestFlow } from "@test-flows/password/password-change-setup-test-flow";
 import { PasswordChangeExecutionTestFlow } from "@test-flows/password/password-change-execution-test-flow";
 import { ClaimReloadRewardAndVerifyClaimsTestFlow } from "@test-flows/rewards/claim-reload-reward-and-verify-claims-test-flow";
@@ -76,6 +77,7 @@ export type TestFlowsFixtures = {
 	steamUserLoginLogoutFlow: SteamUserLoginLogoutFlow;
 	banUserVerificationFlow: BanUserVerificationFlow;
 	hardBanResponsibleGamblingTestFlow: HardBanResponsibleGamblingTestFlow;
+	hardBanSupportRequestedTestFlow: HardBanSupportRequestedTestFlow;
 	passwordChangeSetupTestFlow: PasswordChangeSetupTestFlow;
 	passwordChangeExecutionTestFlow: PasswordChangeExecutionTestFlow;
 	claimReloadRewardAndVerifyClaimsTestFlow: ClaimReloadRewardAndVerifyClaimsTestFlow;
@@ -239,6 +241,9 @@ export const testFlowsFixtures = base.extend<
 	},
 	hardBanResponsibleGamblingTestFlow: async ({}, use) => {
 		await use(new HardBanResponsibleGamblingTestFlow());
+	},
+	hardBanSupportRequestedTestFlow: async ({ browserSessionManager }, use) => {
+		await use(new HardBanSupportRequestedTestFlow(browserSessionManager));
 	},
 	passwordChangeSetupTestFlow: async ({}, use) => {
 		await use(new PasswordChangeSetupTestFlow());

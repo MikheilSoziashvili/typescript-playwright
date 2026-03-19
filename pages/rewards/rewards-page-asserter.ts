@@ -306,6 +306,22 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 		]);
 	}
 
+	@step("Verify all three rakeback reward cards are visible")
+	async allRakebackRewardCardsAreVisible(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.getRewardCard(RewardType.INSTANT),
+			this.gamdomPage.map.getRewardCard(RewardType.WEEKLY),
+			this.gamdomPage.map.getRewardCard(RewardType.MONTHLY),
+		]);
+	}
+
+	@step("Verify promo banners slider is not visible")
+	async promoBannersSliderIsNotVisible(): Promise<void> {
+		await this.checkElementsAreNotVisible([
+			this.gamdomPage.map.promoBannersSlider,
+		]);
+	}
+
 	@step("Verify special reward card details are correct")
 	async verifySpecialRewardCard(
 		gameName: string,

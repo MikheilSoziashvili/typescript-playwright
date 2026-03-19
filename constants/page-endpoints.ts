@@ -16,6 +16,7 @@ export const AFFILIATES_PAGE_ENDPOINT = "/affiliates";
 export const SETTINGS_PAGE_ENDPOINT = "/settings";
 export const HELP_PAGE_ENDPOINT = "/help";
 export const FAQ_PAGE_ENDPOINT = `${HELP_PAGE_ENDPOINT}/faq`;
+export const SUPPORT_PAGE_ENDPOINT = `${HELP_PAGE_ENDPOINT}/support`;
 export const ADMIN_IP_USERS_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/ipusers`;
 export const USER_INFO_ADMIN_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/UserInfoAdmin`;
 export const FREE_SPINS_ADMIN_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/FreeSpinsAdmin`;
