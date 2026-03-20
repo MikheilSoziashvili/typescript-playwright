@@ -130,6 +130,11 @@ export class PlinkoGamePage extends BasePage<PlinkoGamePageMap> {
 		return parseBalance(balance);
 	}
 
+	@step("Place a single bet")
+	public async placeSingleBet(): Promise<void> {
+		await this.dropBall();
+	}
+
 	@step("Press min button")
 	public async pressMinButton(): Promise<void> {
 		await this.map.minButton.click();

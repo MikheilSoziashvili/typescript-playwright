@@ -39,6 +39,7 @@ import {
 	HardBanResponsibleGamblingCsv,
 } from "@dtos/csv";
 import { HomePageBannerCarouselCsv } from "@dtos/csv/home-page-banner-carousel-csv";
+import { SokGamesMinBetAfterCurrencySwitchCsv } from "@dtos/csv/sok-games-min-bet-after-currency-switch-csv";
 import { OriginalsSelfExclusionCsv } from "@dtos/csv/originals-self-exclusion";
 import { PlinkoTestDataCsv } from "@dtos/csv/plinko-test-data-csv";
 import { PossibleWinPopUpCsv } from "@dtos/csv/possible-win-pop-up-csv";
@@ -89,4 +90,5 @@ export type CsvDtoMap = {
 	[CsvFilesName.LIMBO_MANUAL_MODE]: LimboManualModeCsv;
 	[CsvFilesName.LIMBO_AUTO_MODE]: LimboAutoModeCsv;
 	[CsvFilesName.HARD_BAN_RESPONSIBLE_GAMBLING]: HardBanResponsibleGamblingCsv;
+	[CsvFilesName.SOK_GAMES_MIN_BET_AFTER_CURRENCY_SWITCH]: SokGamesMinBetAfterCurrencySwitchCsv;
 };

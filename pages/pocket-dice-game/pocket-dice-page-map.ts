@@ -60,6 +60,16 @@ export class PocketDiceMap extends BaseMap {
 		return this.page.getByRole("button", { name: "Start playing" });
 	}
 
+	public get betAmountOptions(): Locator {
+		return this.page.locator(
+			"div[class*='BetAmountInputstyled__Options-PocketDice']",
+		);
+	}
+
+	public get minButton(): Locator {
+		return this.betAmountOptions.getByRole("button", { name: "Min" });
+	}
+
 	public get winBanner(): Locator {
 		return this.page.locator(
 			"[class*='ResultBannerstyled__Base-PocketDice']",

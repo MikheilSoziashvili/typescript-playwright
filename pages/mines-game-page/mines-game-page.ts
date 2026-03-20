@@ -313,6 +313,18 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 		}
 	}
 
+	@step("Place a single bet and finish round")
+	public async placeSingleBet(): Promise<void> {
+		await this.map.startPlayingButton.click();
+		await this.map.pickRandomTileButton.click();
+		await expect(
+			this.map.bombTile.or(this.map.manualCashoutButton),
+		).toBeVisible();
+		if (await this.map.manualCashoutButton.isVisible()) {
+			await this.performManualCashout();
+		}
+	}
+
 	@step("Press min button")
 	public async pressMinButton(): Promise<void> {
 		await this.map.minButton.click();

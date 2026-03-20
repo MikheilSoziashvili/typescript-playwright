@@ -48,6 +48,12 @@ export class KenoGamePage extends BasePage<KenoGamePageMap> {
 		await this.map.betAmountInput.fill(betAmount.toString());
 	}
 
+	@step("Place a single bet with random tile")
+	public async placeSingleBet(): Promise<void> {
+		await this.pickRandomTiles();
+		await this.map.startPlayingButton.click();
+	}
+
 	@step("Press minimum bet button")
 	public async pressMinButton(): Promise<void> {
 		await this.map.minButton.click();

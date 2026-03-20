@@ -21,6 +21,8 @@ import {
 } from "@core/browser-session-mngmt";
 import { SweetBonanzaPage } from "@pages/casino-games/pragmatic-play/sweet-bonanza/sweet-bonanza-page";
 import { SweetBonanzaCandyLandPage } from "@pages/casino-games/pragmatic-play-live/sweet-bonanza-candy-land/sweet-bonanza-candy-land-page";
+import { BlackjackGamePage } from "@pages/blackjack-game-page/blackjack-game-page";
+import { SokGamesPage } from "@pages/sok-games/sok-games-page";
 
 export type GamePages = {
 	browserSessionManager: BrowserSessionManager;
@@ -41,7 +43,9 @@ export type GamePages = {
 	sweetBonanzaPage: SweetBonanzaPage;
 	sweetBonanzaCandyLandPage: SweetBonanzaCandyLandPage;
 	limboGamePage: LimboGamePage;
+	blackjackGamePage: BlackjackGamePage;
 	casinoGamesPage: CasinoGamesUnifiedPage;
+	sokGamesPage: SokGamesPage;
 };
 
 export const gamePagesFixtures = base.extend<GamePages>({
@@ -59,6 +63,7 @@ export const gamePagesFixtures = base.extend<GamePages>({
 	kenoGamePage: sessionAwarePage(KenoGamePage),
 	pocketDicePage: sessionAwarePage(PocketDicePage),
 	limboGamePage: sessionAwarePage(LimboGamePage),
+	blackjackGamePage: sessionAwarePage(BlackjackGamePage),
 	bookOfPyramidsPage: sessionAwarePage(BookOfPyramidsPage),
 	cashVaultIPage: sessionAwarePage(CashVaultIPage),
 	bookOfArabiaPage: sessionAwarePage(BookOfArabiaPage),
@@ -92,6 +97,31 @@ export const gamePagesFixtures = base.extend<GamePages>({
 			kenoGamePage,
 		);
 		await use(originals);
+	},
+
+	sokGamesPage: async (
+		{
+			browserSessionManager,
+			minesGamePage,
+			plinkoGamePage,
+			kenoGamePage,
+			pocketDicePage,
+			limboGamePage,
+			blackjackGamePage,
+		},
+		use,
+	) => {
+		const page = browserSessionManager.active.page;
+		const sokGames = new SokGamesPage(
+			page,
+			minesGamePage,
+			plinkoGamePage,
+			kenoGamePage,
+			pocketDicePage,
+			limboGamePage,
+			blackjackGamePage,
+		);
+		await use(sokGames);
 	},
 
 	casinoGamesPage: async (

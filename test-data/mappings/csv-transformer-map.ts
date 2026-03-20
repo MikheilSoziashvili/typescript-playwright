@@ -3,6 +3,7 @@ import {
 	CasinoGamesAggregatorProviderCsvRecord,
 	ChatPinMessagePermissionsCsvRecord,
 	FooterLinksAndEndpointsCsvRecord,
+	SokGamesMinBetAfterCurrencySwitchCsvRecord,
 	OriginalsQuickSelectButtonsCsvRecord,
 	OriginalsWalletSwitchingTestsCsvRecord,
 	PlinkoBetsAcrossMultipleWalletsCsvRecord,
@@ -116,6 +117,10 @@ import {
 	parseChangePasswordCsvRow,
 	ChangePasswordCsvParsedRecord,
 } from "test-data/parsers/change-password-csv-parser";
+import {
+	parseSokGamesMinBetAfterCurrencySwitchCsvRow,
+	SokGamesMinBetAfterCurrencySwitchCsvParsedRecord,
+} from "test-data/parsers/sok-games-min-bet-after-currency-switch-csv-parser";
 
 export type CsvTransformerExistingType<T> =
 	T extends keyof CsvTransformerMapType ? CsvTransformerMapType[T] : never;
@@ -226,6 +231,10 @@ export type CsvTransformerMapType = {
 	[CsvFilesName.CHANGE_PASSWORD]: (
 		row: ChangePasswordCsvRecord,
 	) => ChangePasswordCsvParsedRecord;
+
+	[CsvFilesName.SOK_GAMES_MIN_BET_AFTER_CURRENCY_SWITCH]: (
+		row: SokGamesMinBetAfterCurrencySwitchCsvRecord,
+	) => SokGamesMinBetAfterCurrencySwitchCsvParsedRecord;
 };
 
 export const CsvTransformerMap: CsvTransformerMapType = {
@@ -266,4 +275,6 @@ export const CsvTransformerMap: CsvTransformerMapType = {
 	[CsvFilesName.JACKPOT_CONTRIBUTION]: parseJackpotContributionCsvRow,
 	[CsvFilesName.RELOAD_UPDATE_LOGIC]: parseReloadUpdateLogicCsvRow,
 	[CsvFilesName.CHANGE_PASSWORD]: parseChangePasswordCsvRow,
+	[CsvFilesName.SOK_GAMES_MIN_BET_AFTER_CURRENCY_SWITCH]:
+		parseSokGamesMinBetAfterCurrencySwitchCsvRow,
 } as const;

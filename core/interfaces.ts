@@ -198,3 +198,9 @@ export interface TransactionDetails {
 	bulk_withdrawal_id?: number | null;
 	[key: string]: unknown;
 }
+
+export interface GameActions {
+	navigate(): Promise<void>;
+	pressMinButton(): Promise<void>;
+	placeSingleBet(): Promise<void>;
+}

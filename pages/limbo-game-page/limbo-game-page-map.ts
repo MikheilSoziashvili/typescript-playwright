@@ -21,6 +21,16 @@ export class LimboGamePageMap extends BaseMap {
 		return this.multiplierContainer.locator("input");
 	}
 
+	public get betAmountOptions(): Locator {
+		return this.page.locator(
+			"div[class*='BetAmountInputstyled__Options-Limbo']",
+		);
+	}
+
+	public get minButton(): Locator {
+		return this.betAmountOptions.getByRole("button", { name: "Min" });
+	}
+
 	public get rollButton(): Locator {
 		return this.page.locator(this.BET_BUTTON);
 	}

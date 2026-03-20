@@ -23,6 +23,7 @@ const ATOMIC_DIVISOR: Record<Unit, number> = {
 	SOL_LAMPORT: 1e9,
 	BNB_JAGER: 1e9,
 	COINS: 1,
+	FIAT_TRY: 1,
 };
 
 /**

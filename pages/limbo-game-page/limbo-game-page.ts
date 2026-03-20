@@ -41,6 +41,22 @@ export class LimboGamePage extends BasePage<LimboGamePageMap> {
 		return new LimboGamePageSteps(this);
 	}
 
+	@step("Press MIN button")
+	public async pressMinButton(): Promise<void> {
+		await this.map.minButton.click();
+	}
+
+	@step("Get bet amount value")
+	public async getBetAmountValue(): Promise<string> {
+		return this.map.betAmountInput.inputValue();
+	}
+
+	@step("Place a single bet")
+	public async placeSingleBet(multiplier = 1.5): Promise<void> {
+		await this.map.multiplierInput.fill(`${multiplier}`);
+		await this.clickRoll();
+	}
+
 	@step("Fill bet data")
 	public async fillBetData(limboBetData: LimboBetTestData): Promise<void> {
 		await this.map.betAmountInput.fill(`${limboBetData.betAmount}`);
@@ -114,9 +130,7 @@ export class LimboGamePage extends BasePage<LimboGamePageMap> {
 	}
 
 	@step("Track auto round multipliers")
-	public async trackAutoRounds(
-		numberOfRounds: number,
-	): Promise<number[]> {
+	public async trackAutoRounds(numberOfRounds: number): Promise<number[]> {
 		const trackedMultipliers: number[] = [];
 
 		for (let round = 0; round < numberOfRounds; round++) {
@@ -131,9 +145,7 @@ export class LimboGamePage extends BasePage<LimboGamePageMap> {
 	}
 
 	@step("Detect extra round after stop")
-	public async detectExtraRound(
-		trackedMultipliers: number[],
-	): Promise<void> {
+	public async detectExtraRound(trackedMultipliers: number[]): Promise<void> {
 		const latestMultiplier = await this.getLastResultMultiplier();
 		const lastTracked = trackedMultipliers[trackedMultipliers.length - 1];
 

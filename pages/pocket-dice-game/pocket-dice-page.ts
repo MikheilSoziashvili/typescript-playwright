@@ -37,6 +37,21 @@ export class PocketDicePage extends BasePage<PocketDiceMap> {
 		return parseFloat(value);
 	}
 
+	@step("Press MIN button")
+	public async pressMinButton(): Promise<void> {
+		await this.map.minButton.click();
+	}
+
+	@step("Get bet amount value")
+	public async getBetAmountValue(): Promise<string> {
+		return this.map.betAmountInput.inputValue();
+	}
+
+	@step("Place a single bet")
+	public async placeSingleBet(): Promise<void> {
+		await this.map.rollOverButton.click();
+	}
+
 	@step("Define slider values")
 	public async defineSliderValues(riskValue: number): Promise<void> {
 		const sliderThumb = this.map.numberSlider;

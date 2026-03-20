@@ -7,4 +7,6 @@ export enum Wallet {
 	XRP = "XRP",
 	DOGE = "DOGE",
 	SOL = "SOL",
+	FIAT_TRY = "FIAT_TRY",
+	BNB = "BNB",
 }

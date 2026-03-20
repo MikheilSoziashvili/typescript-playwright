@@ -62,6 +62,7 @@ async function enableCoreFeatures(
 				states: ALL_USER_TYPES_ENABLED,
 			},
 			{ feature: Feature.LIMBO, states: ALL_USER_TYPES_ENABLED },
+			{ feature: Feature.BLACKJACK, states: ALL_USER_TYPES_ENABLED },
 		],
 		{ Cookie: cookie },
 	);
@@ -118,9 +119,8 @@ async function updateWithdrawLimits(): Promise<void> {
 
 	await gamdomDb.withClient(async () => {
 		for (const withdrawLimit of withdrawLimits) {
-			const existing = await gamdomDb.getWithdrawLimitFromSettingByKey(
-				withdrawLimit,
-			);
+			const existing =
+				await gamdomDb.getWithdrawLimitFromSettingByKey(withdrawLimit);
 			if (existing.length > 0) {
 				await gamdomDb.updateWithdrawLimitInSetting(
 					withdrawLimit,

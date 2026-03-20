@@ -165,9 +165,8 @@ export class PlinkoGamePageAsserter extends BaseAsserter<PlinkoGamePage> {
 		expectedValue: number,
 		tolerance = 0,
 	): Promise<void> {
-		const actualValue = await this.gamdomPage.getSliderValue(
-			sliderContainer,
-		);
+		const actualValue =
+			await this.gamdomPage.getSliderValue(sliderContainer);
 
 		if (tolerance > 0) {
 			expect(actualValue).toBeGreaterThanOrEqual(
