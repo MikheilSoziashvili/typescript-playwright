@@ -41,7 +41,7 @@ export class VeriffPortalMap extends BaseMap {
 		return this.page
 			.locator("tr")
 			.filter({ has: this.page.locator(`span[title="${vendorData}"]`) })
-			.locator('td [data-test-id="sessionStatus"]');
+			.getByTestId("sessionStatus-verificationListItem");
 	}
 
 	public get vendorData(): Locator {
@@ -49,7 +49,7 @@ export class VeriffPortalMap extends BaseMap {
 	}
 
 	public get sessionStatus(): Locator {
-		return this.page.locator("[data-test-id='sessionStatus']");
+		return this.page.getByTestId("sessionStatus-attemptSection");
 	}
 
 	public get updateStatusButton(): Locator {
