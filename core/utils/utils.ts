@@ -1184,6 +1184,30 @@ export async function excludeHeaderFromHost(
 }
 
 /**
+ * Masks "HeadlessChrome" in the user-agent to bypass bot detection by third-party widgets (e.g. Intercom).
+ * Overrides both the JS `navigator.userAgent` property and the HTTP `User-Agent` header.
+ * Must be called before navigating to the page where the widget loads.
+ */
+export async function maskHeadlessUserAgent(page: Page): Promise<void> {
+	const currentUA = await page.evaluate(() => navigator.userAgent);
+	if (!currentUA.includes("HeadlessChrome")) return;
+
+	const maskedUA = currentUA.replace("HeadlessChrome", "Chrome");
+
+	await page.addInitScript((ua) => {
+		Object.defineProperty(navigator, "userAgent", { get: () => ua });
+	}, maskedUA);
+
+	await page.route("**/*", async (route) => {
+		const headers = { ...route.request().headers() };
+		if (headers["user-agent"].includes("HeadlessChrome")) {
+			headers["user-agent"] = maskedUA;
+		}
+		await route.continue({ headers });
+	});
+}
+
+/**
  * Return the Gamdom‑style scrypt hash for a plaintext password.
  * Uses a dynamic import so it works in both CommonJS (Playwright) and ESM.
  */
