@@ -11,17 +11,6 @@ export class BannedUserPage extends BasePage<BannedUserPageMap> {
 		super(page, new BannedUserPageMap(page));
 	}
 
-	@step("Navigate to custom banned page")
-	public async navigateCustomBannedPage(
-		bannedPageEndpoint: string,
-		parameters?: BasePageNavigationParametersType,
-	): Promise<void> {
-		await super.navigate({
-			...parameters,
-			endpoint: { paths: [bannedPageEndpoint] },
-		});
-	}
-
 	@step("Navigate to banned page")
 	public async navigateToPage(
 		bannedPageEndpoint: string,

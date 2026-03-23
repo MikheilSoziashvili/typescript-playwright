@@ -77,31 +77,6 @@ export class CasinoPageMap extends BaseMap {
 		return this.page.getByTestId("external-games-search-field-input");
 	}
 
-	public get searchQuickSearchInputField(): Locator {
-		return this.page.getByTestId("search-input-input");
-	}
-
-	public casinoGameDropdownItem(game: CasinoGameName): Locator {
-		return this.page
-			.locator("li")
-			.filter({
-				has: this.page.locator(
-					"div[class*='DropdownItem-styled__OptionDetails']",
-					{
-						hasText: game,
-					},
-				),
-			})
-			.filter({
-				has: this.page.locator(
-					"div[class*='DropdownItem-styled__OptionDesc']",
-					{
-						hasText: "Wicked Games",
-					},
-				),
-			});
-	}
-
 	public casinoGameInDropdown(game: CasinoGameName): Locator {
 		return this.page
 			.locator(

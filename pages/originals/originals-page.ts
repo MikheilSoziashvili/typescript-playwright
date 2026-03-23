@@ -70,7 +70,6 @@ type GameStrategy = {
 
 export class OriginalsPage extends BasePage<OriginalsMap> {
 	public readonly toast: Toast;
-
 	private readonly strategies: Record<OriginalGames, GameStrategy>;
 
 	public constructor(page: Page, deps?: Partial<OriginalsDeps>) {

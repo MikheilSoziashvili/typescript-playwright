@@ -76,24 +76,6 @@ async function enableCoreFeatures(
 	logger.info("Core features have been successfully enabled.");
 }
 
-async function enableNewDesignV4Feature(
-	gamdomApi: GamdomApi,
-	cookie: string,
-): Promise<void> {
-	logger.info("Enabling New Design V4...");
-
-	const featureResponse = await gamdomApi.setFeatureState(
-		Feature.NEW_DESIGN_V4,
-		ALL_USER_TYPES_ENABLED,
-		{ Cookie: cookie },
-	);
-
-	featureResponse.forEach((response) => {
-		expect(response.status()).toBe(HttpStatus.OK);
-	});
-
-	logger.info("New Design V4 has been successfully enabled.");
-}
 
 async function createKothEvent(
 	gamdomApi: GamdomApi,
@@ -313,10 +295,6 @@ async function globalSetup(): Promise<void> {
 		await configureRain();
 		await enableCoreFeatures(gamdomApi, cookie);
 		await ensureKothEventsExist(gamdomApi, cookie);
-
-		if (Configuration.enableNewDesignV4Feature) {
-			await enableNewDesignV4Feature(gamdomApi, cookie);
-		}
 
 		if (Configuration.createExecution) {
 			const existingKey = process.env.TEST_EXECUTION_ID;

@@ -57,7 +57,6 @@ test.describe(
 							.loggedOutUserElementsAreVisible();
 						await homePage.navigate();
 						await chat.expandChat();
-						//these last steps are not working anymore on v4 - still searching for the correct flow
 						await chat
 							.steps()
 							.selectChatroomSuccessfully(input.chatroom);

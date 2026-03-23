@@ -65,12 +65,6 @@ export class CasinoPage extends BasePage<CasinoPageMap> {
 			.getAttribute(Attributes.ALT) as Promise<string>;
 	}
 
-	@step("Get the name of the second Top game")
-	public async getSecondTopGameName(): Promise<string> {
-		await this.map.topGamesSlider.scrollIntoViewIfNeeded();
-		return this.map.secondTopGame().locator("p").first().innerText();
-	}
-
 	@step("Add first new game to favorites")
 	public async addFirstNewGameToFavorites(): Promise<void> {
 		await this.map.sliderHeartIcon.click();

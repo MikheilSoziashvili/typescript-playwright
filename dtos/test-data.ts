@@ -1,7 +1,6 @@
 import { GAMDOM_EMAIL_DOMAIN } from "@constants/domains";
 import {
 	PromotionTestDataParams,
-	PromotionTestDataParamsV4,
 	RegisterTestDataParams,
 } from "@core/interfaces";
 import { generateRandomString } from "@core/utils/utils";
@@ -475,55 +474,4 @@ export class SportsBlogArticleTestData {
 	}
 }
 
-export class PromotionTestDataV4 {
-	public title: string;
-	public customUrl: string;
-	public priority: number;
-	public shortDescription: string;
-	public detailedDescription: string;
-	public termsAndConditions: string;
-	public howToParticipate: string;
-	public prizesDescription: string;
-	public buttonText: string;
-	public buttonLink: string;
-	public isForVip: string;
-	public promotionCategory: string;
-	public promotionSubCategory: string;
-	public promotionStartDate?: string;
-	public promotionEndDate?: string;
-	public promotionStartTime?: string;
-	public promotionEndTime?: string;
-	public coverImage: string;
-	public thumbnailImage: string;
 
-	constructor(data: PromotionTestDataParamsV4) {
-		this.title = data.title;
-		this.customUrl = data.customUrl;
-		this.isForVip = data.isForVip;
-		this.promotionCategory = data.promotionCategory;
-		this.promotionSubCategory = data.promotionSubCategory;
-		this.promotionStartDate = data.promotionStartDate;
-		this.promotionEndDate = data.promotionEndDate;
-		this.promotionStartTime = data.promotionStartTime;
-		this.promotionEndTime = data.promotionEndTime;
-		this.coverImage =
-			data.coverImage ??
-			"./test-files/ENG-5576-promotion-cover-image.jpg";
-		this.thumbnailImage =
-			data.thumbnailImage ??
-			"./test-files/ENG-5576-promotion-thumbnail-image.jpg";
-		this.priority = data.priority ?? 1;
-		this.shortDescription =
-			data.shortDescription ?? "Automation test short description";
-		this.detailedDescription =
-			data.detailedDescription ?? "Automation test detailed description";
-		this.termsAndConditions =
-			data.termsAndConditions ?? "Automation test terms and conditions";
-		this.howToParticipate =
-			data.howToParticipate ?? "Automation test how to participate";
-		this.prizesDescription =
-			data.prizesDescription ?? "Automation test prizes description";
-		this.buttonText = data.buttonText ?? "Automation Button";
-		this.buttonLink = data.buttonLink ?? "automation-button-link";
-	}
-}

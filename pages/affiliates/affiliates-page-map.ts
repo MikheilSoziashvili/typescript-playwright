@@ -6,10 +6,6 @@ export class AffiliatesPageMap extends BaseMap {
 		super(page);
 	}
 
-	public get affiliatesBox(): Locator {
-		return this.page.getByTestId("affilitesContainerBox");
-	}
-
 	public get affiliatesEnterCodeContainer(): Locator {
 		return this.page.getByTestId("create-affiliate-input-container");
 	}
@@ -34,7 +30,4 @@ export class AffiliatesPageMap extends BaseMap {
 		);
 	}
 
-	public get copyCodeToClipboardField(): Locator {
-		return this.page.getByTestId("your-affiliate-code-copy-button");
-	}
 }
