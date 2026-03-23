@@ -37,3 +37,7 @@ export function buildMinesPlaceBetEndpoint(token: string): string {
 export function buildPocketDicePlaceBetEndpoint(token: string): string {
 	return `${ApiEndpoints.POCKET_DICE_PLACE_BET}?${QueryParam.TOKEN}=${token}`;
 }
+
+export function buildLimboPlaceBetEndpoint(token: string): string {
+	return `${ApiEndpoints.LIMBO_PLACE_BET}?${QueryParam.TOKEN}=${token}`;
+}

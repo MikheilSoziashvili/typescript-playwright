@@ -41,4 +41,5 @@ export enum ApiEndpoints {
 	KENO_PLACE_BET = "/_proxied/games/keno/client-api/keno/bet",
 	MINES_PLACE_BET = "/_proxied/games/mines/client-api/mines/bet",
 	POCKET_DICE_PLACE_BET = "/_proxied/games/pocketDice/client-api/pocketDice/bet",
+	LIMBO_PLACE_BET = "/_proxied/games/limbo/client-api/limbo/bet",
 }

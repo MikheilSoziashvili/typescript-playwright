@@ -11,6 +11,7 @@ import { PlinkoApi } from "./games-api/plinko-api";
 import { PocketDiceApi } from "./games-api/pocket-dice-api";
 import { RouletteApi } from "./games-api/roulette-api";
 import { Page } from "@playwright/test";
+import { LimboApi } from "./games-api/limbo-api";
 
 export const AllApis = {
 	coinGeckoApi: CoinGeckoApi,
@@ -19,6 +20,7 @@ export const AllApis = {
 	diceApi: DiceApi,
 	hiloApi: HiloApi,
 	kenoApi: KenoApi,
+	limboApi: LimboApi,
 	minesApi: MinesApi,
 	plinkoApi: PlinkoApi,
 	pocketDiceApi: PocketDiceApi,
