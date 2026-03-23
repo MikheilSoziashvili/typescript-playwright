@@ -15,6 +15,7 @@ export { CryptoDepositVerificationTestFlow } from "./crypto/crypto-deposit-verif
 export { CryptoWithdrawalSetupTestFlow } from "./crypto/crypto-withdrawal-setup-test-flow";
 export { CryptoWithdrawalProcessTestFlow } from "./crypto/crypto-withdrawal-process-test-flow";
 export { CryptoWithdrawalVerificationTestFlow } from "./crypto/crypto-withdrawal-verification-test-flow";
+export { StreamerWithdrawalReviewTestFlow } from "./crypto/streamer-withdrawal-review-test-flow";
 
 // Crypto types
 export type {

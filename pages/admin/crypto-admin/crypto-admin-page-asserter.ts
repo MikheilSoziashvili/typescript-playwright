@@ -10,6 +10,7 @@ import { CurrencySymbol } from "@enums/currenciesSymbols";
 import { NumberSeparators } from "@enums/number-separators";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { TransactionType } from "@enums/transaction-types";
+import { TransactionState } from "@enums/transaction-states";
 import { Cryptocurrency, CryptoTicker } from "@enums/cryptocurrencies";
 
 export class CryptoAdminAsserter extends BaseAsserter<CryptoAdminPage> {
@@ -253,6 +254,32 @@ export class CryptoAdminAsserter extends BaseAsserter<CryptoAdminPage> {
 				label: `status toggle for ${cryptoName}`,
 			},
 		]);
+	}
+
+	@step("Assert withdrawal is in reviewing state for user")
+	public async withdrawalIsInReviewingState(
+		gamdomApi: GamdomApi,
+		adminCookie: string,
+		userId: number,
+	): Promise<void> {
+		await waitUntil(
+			async () => {
+				const transactions =
+					await gamdomApi.getCryptoAdminTransactions({
+						Cookie: adminCookie,
+					});
+				return transactions.some(
+					(tx) =>
+						Number(tx.user_id) === Number(userId) &&
+						tx.state === TransactionState.REVIEWING,
+				);
+			},
+			{
+				errorMessage: `Withdrawal for user "${userId}" did not reach reviewing state`,
+				intervalSeconds: TimeoutSeconds.FIVE,
+				timeoutSeconds: TimeoutSeconds.THIRTY,
+			},
+		);
 	}
 
 	@step("Assert crypto status toggle state")

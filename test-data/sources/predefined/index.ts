@@ -253,4 +253,8 @@ export const predefined = {
 		// Staging-only test wallet — not a real user address
 		withdrawalAddress: "0x88190Ef584BD63E320693133f01c0cfcdA24bB8e",
 	},
+	diceBetForStreamerWithdrawal: {
+		betAmount: 50,
+		multiplier: 50,
+	},
 };

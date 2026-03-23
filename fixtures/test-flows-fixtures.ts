@@ -55,6 +55,8 @@ import { VerifyReloadUpdateLogicTestFlow } from "@test-flows/rewards/verify-relo
 import { LimboAutobetTestFlow } from "@test-flows/originals/limbo/limbo-autobet-test-flow";
 import { LimboAutobetSetupFlow } from "@test-flows/originals/limbo/limbo-autobet-setup-test-flow";
 import { LimboAutobetExecutionFlow } from "@test-flows/originals/limbo/limbo-autobet-execution-test-flow";
+import { StreamerWithdrawalReviewTestFlow } from "@test-flows/crypto/streamer-withdrawal-review-test-flow";
+import { DiceApi } from "@api/games-api/dice-api";
 
 export type TestFlowsFixtures = {
 	plinkoBetTestFlow: PlinkoBetTestFlow;
@@ -85,6 +87,7 @@ export type TestFlowsFixtures = {
 	verifyAndClaimReloadRewardTestFlow: VerifyAndClaimReloadRewardTestFlow;
 	verifyReloadUpdateLogicTestFlow: VerifyReloadUpdateLogicTestFlow;
 	limboAutobetTestFlow: LimboAutobetTestFlow;
+	streamerWithdrawalReviewTestFlow: StreamerWithdrawalReviewTestFlow;
 };
 
 type RequiredTestFlowsFixtures = {
@@ -104,6 +107,7 @@ type RequiredTestFlowsFixtures = {
 	userBalanceHandler: UserBalanceHandler;
 	gamdomApi: GamdomApi;
 	testDataPredefined: PredefinedDataSource;
+	diceApi: DiceApi;
 };
 
 export const testFlowsFixtures = base.extend<
@@ -269,6 +273,32 @@ export const testFlowsFixtures = base.extend<
 				new LimboAutobetSetupFlow(browserSessionManager),
 				new LimboAutobetExecutionFlow(),
 			),
+		);
+	},
+	streamerWithdrawalReviewTestFlow: async (
+		{
+			browserSessionManager,
+			homePage,
+			walletModal,
+			toast,
+			cryptoAdminPage,
+			userBalanceHandler,
+			gamdomApi,
+			testDataPredefined,
+		},
+		use,
+	) => {
+		await use(
+			new StreamerWithdrawalReviewTestFlow({
+				browserSessionManager,
+				homePage,
+				walletModal,
+				toast,
+				cryptoAdminPage,
+				userBalanceHandler,
+				gamdomApi,
+				testDataPredefined,
+			}),
 		);
 	},
 });
