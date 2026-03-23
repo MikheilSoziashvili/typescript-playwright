@@ -9,6 +9,7 @@ export enum OriginalGame {
 	Keno = "Keno",
 	PocketDice = "PocketDice",
 	Limbo = "Limbo",
+	Blackjack = "Blackjack",
 }
 
 export enum RouletteNumberColor {

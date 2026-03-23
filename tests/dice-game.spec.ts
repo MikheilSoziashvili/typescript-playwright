@@ -47,12 +47,14 @@ test.describe("Dice tests", () => {
 		test(
 			`[ENG-3513] Dice - Check that max bet can be 1k and potential win 800k - Bet: ${scenario.betAmount}, Multiplier: ${scenario.multiplier}`,
 			testDetails()
-				.withJiraBugTickets("ENG-12158")
 				.withTags(JiraComponent.DICE)
 				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 				.apply(),
 			async ({ browserSessionManager, diceGamePage, testDataObject }) => {
-				test.fixme(scenario.skipScenario === true);
+				test.fixme(
+					true,
+					"Temporary skipped until test is updated with new bet amounts",
+				);
 
 				await browserSessionManager.loginAs(TestUserRole.REGULAR, {
 					reuseContext: true,

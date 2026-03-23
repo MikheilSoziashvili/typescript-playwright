@@ -41,3 +41,7 @@ export function buildPocketDicePlaceBetEndpoint(token: string): string {
 export function buildLimboPlaceBetEndpoint(token: string): string {
 	return `${ApiEndpoints.LIMBO_PLACE_BET}?${QueryParam.TOKEN}=${token}`;
 }
+
+export function buildBlackjackPlaceBetEndpoint(token: string): string {
+	return `${ApiEndpoints.BLACKJACK_PLACE_BET}?${QueryParam.TOKEN}=${token}`;
+}

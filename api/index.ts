@@ -1,3 +1,4 @@
+import { BlackjackApi } from "./games-api/blackjack-api";
 import { GamdomApi } from "./gamdom-api";
 import { CoinGeckoApi } from "./coingecko-api";
 import { CurrencyApi } from "./currency-api";
@@ -14,6 +15,7 @@ import { Page } from "@playwright/test";
 import { LimboApi } from "./games-api/limbo-api";
 
 export const AllApis = {
+	blackjackApi: BlackjackApi,
 	coinGeckoApi: CoinGeckoApi,
 	crashApi: CrashApi,
 	currencyApi: CurrencyApi,
