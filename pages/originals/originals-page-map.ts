@@ -84,6 +84,8 @@ export class OriginalsMap extends BaseMap {
 	}
 
 	public get jackpotCounter(): Locator {
-		return this.page.getByTestId("game-stats-area-jackpot-summary");
+		return this.page
+			.getByTestId("game-stats-area-jackpot-summary")
+			.or(this.page.getByTestId("jackpot-amount-value"));
 	}
 }

@@ -6,6 +6,7 @@ period,game
 1 day,Plinko
 1 day,Mines
 1 day,Keno
+1 day,Pocket Dice
 5 days,Dice
 5 days,Crash
 5 days,HiLo
@@ -13,6 +14,7 @@ period,game
 5 days,Plinko
 5 days,Mines
 5 days,Keno
+5 days,Pocket Dice
 8 days,Dice
 8 days,Crash
 8 days,HiLo
@@ -20,3 +22,4 @@ period,game
 8 days,Plinko
 8 days,Mines
 8 days,Keno
+8 days,Pocket Dice

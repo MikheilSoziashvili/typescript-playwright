@@ -9,8 +9,6 @@ import { CasinoPageAsserter } from "./casino-game-page-asserter";
 import { CasinoPageMap } from "./casino-game-page-map";
 import { CasinoPageSteps } from "./casino-game-page-step";
 import { KeyboardKey } from "@enums/keyboard";
-import { gameNameFromTestIdPattern } from "@support/regex-patterns";
-import { extractFirstGroup } from "@core/utils/utils";
 import { Attributes } from "@enums/playwright/htmlAttributes";
 
 export class CasinoPage extends BasePage<CasinoPageMap> {
@@ -62,13 +60,9 @@ export class CasinoPage extends BasePage<CasinoPageMap> {
 
 	@step("Get the name of the first new game")
 	public async getFirstNewGameName(): Promise<string> {
-		const testId = await this.map.firstGameInSlider.getAttribute(
-			Attributes.DATA_TESTID,
-		);
-
-		const gameName = extractFirstGroup(testId, gameNameFromTestIdPattern);
-
-		return gameName;
+		return this.map.firstGameInSlider
+			.getByTestId("lobby-carousel-item-0-banner-image")
+			.getAttribute(Attributes.ALT) as Promise<string>;
 	}
 
 	@step("Get the name of the second Top game")

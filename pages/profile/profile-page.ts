@@ -71,4 +71,9 @@ export class ProfilePage extends BasePage<ProfilePageMap> {
 	public async clickSaveUsername(): Promise<void> {
 		await this.map.saveUsernameButton.click();
 	}
+
+	@step("Click change password button")
+	public async clickChangePasswordButton(): Promise<void> {
+		await this.map.changePasswordButton.click();
+	}
 }

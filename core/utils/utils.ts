@@ -302,7 +302,7 @@ export function generateCustomUrl(title: string): string {
 		.replace(urlLeadingTrailingHyphensPattern, "");
 }
 
-export const getRandomPhone = (countryCode = "+1", length = 9): string => {
+export const getRandomPhone = (countryCode = "+49", length = 9): string => {
 	const formattedCountryCode = countryCode.startsWith("+")
 		? countryCode
 		: `+${countryCode}`;

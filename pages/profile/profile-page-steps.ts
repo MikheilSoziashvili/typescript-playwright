@@ -115,7 +115,6 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 
 	@step("Change phone")
 	public async changePhone(phone: string): Promise<void> {
-		await this.gamdomPage.map.changePhoneButton.click();
 		await this.gamdomPage.map.changePhoneInput.fill(phone);
 		await this.gamdomPage.clickSavePhone();
 	}
@@ -124,7 +123,7 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 	public async completeAndVerifyPhoneChange(): Promise<void> {
 		await this.gamdomPage.continueModal.assertThat().isModalDisplayed();
 		await this.gamdomPage.continueModal.clickLogoutButton();
-		await this.gamdomPage.assertThat().assertChangePhoneButtonVisible();
+		await this.gamdomPage.assertThat().assertPhoneInputVisible();
 	}
 
 	@step("Logout user successfully")
@@ -198,7 +197,7 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 						);
 					await this.gamdomPage
 						.assertThat()
-						.assertChangePhoneButtonVisible();
+						.assertPhoneInputVisible();
 				} else {
 					await this.gamdomPage.twoFactorAuthModal
 						.assertThat()

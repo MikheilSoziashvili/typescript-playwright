@@ -1,6 +1,7 @@
 import { BaseAsserter } from "@base/base-asserter";
 import { ChatFooterPlaceholder } from "@enums/chat-footer-palceholders";
 import { BooleanValueString } from "@enums/playwright/booleanValues";
+import { Attributes } from "@enums/playwright/htmlAttributes";
 import { Timeout } from "@enums/timeout";
 import { TooltipText } from "@enums/tooltip-text";
 import { VipUserStatus } from "@enums/vip-user-statuses";

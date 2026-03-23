@@ -85,7 +85,7 @@ export class AuthenticatedHeaderMap extends BaseMap {
 	}
 
 	public get originalGamesMenuLink(): Locator {
-		return this.page.locator('header a[class*="MenuLink"][href="/"]');
+		return this.page.getByTestId("nav-desktop-Gamdom-Originals-tab");
 	}
 
 	public get originalGamesSubMenuContainer(): Locator {
@@ -98,22 +98,20 @@ export class AuthenticatedHeaderMap extends BaseMap {
 		});
 	}
 
-	private headerNavigationButtons(button: string): Locator {
-		return this.page.locator(
-			`header a[class*="MenuLink"][href="/${button}"]`,
-		);
+	private headerNavigationTab(tabName: string): Locator {
+		return this.page.getByTestId(`nav-desktop-${tabName}-tab`);
 	}
 
 	public get casinoNavigationButton(): Locator {
-		return this.headerNavigationButtons("casino");
+		return this.headerNavigationTab("casino");
 	}
 
 	public get supportNavigationButton(): Locator {
-		return this.headerNavigationButtons("help/support");
+		return this.headerNavigationTab("support");
 	}
 
 	public get rewardsNavigationButton(): Locator {
-		return this.headerNavigationButtons("rewards");
+		return this.headerNavigationTab("rewards");
 	}
 
 	public selectCurrencyOption(currency: string): Locator {
@@ -139,10 +137,6 @@ export class AuthenticatedHeaderMap extends BaseMap {
 		return this.page
 			.locator("div", { hasText: new RegExp(`^${cryptoCurrency}$`) })
 			.locator("~ div span.animation-finished");
-	}
-
-	public get accountBalanceValueInCasinoGame(): Locator {
-		return this.page.getByTestId("balanceAmoutLabel");
 	}
 
 	public get accountBalance(): Locator {

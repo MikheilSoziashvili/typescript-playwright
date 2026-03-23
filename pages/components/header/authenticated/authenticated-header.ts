@@ -152,7 +152,7 @@ export class AuthenticatedHeader extends BaseComponent<AuthenticatedHeaderMap> {
 
 	@step("Get account balance while in a casino game")
 	public async getAccountBalanceInCasinoGame(): Promise<number> {
-		const raw = await this.map.accountBalanceValueInCasinoGame.innerText();
+		const raw = await this.map.accountBalance.innerText();
 		return accounting.unformat(raw);
 	}
 

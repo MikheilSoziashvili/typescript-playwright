@@ -37,6 +37,7 @@ import {
 } from "@enums/plinko/plinko-game-options";
 import { HiloBetOption } from "@enums/hilo-bet-options";
 import { RetryOptions } from "@core/api/interfaces/retry-options";
+import { PocketDicePage } from "@pages/pocket-dice-game/pocket-dice-page";
 
 export type TestUserConfigurationObject = {
 	username: string;

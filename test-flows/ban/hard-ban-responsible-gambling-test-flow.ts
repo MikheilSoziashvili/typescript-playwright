@@ -156,7 +156,7 @@ export class HardBanResponsibleGamblingTestFlow extends BaseTestFlow {
 			.assertThat()
 			.bannedUserRestrictedNavigationIsNotVisible();
 
-		await regularUser.pages.homePage.authenticatedHeader.expandChatIfNotVisible();
+		await regularUser.pages.chat.expandChat();
 		await regularUser.pages.chat
 			.assertThat()
 			.chatInputIsDisabledForBannedUser();

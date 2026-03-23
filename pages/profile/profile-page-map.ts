@@ -32,12 +32,10 @@ export class ProfilePageMap extends BaseMap {
 		);
 	}
 
-	public get changeUsernameButton(): Locator {
-		return this.usernameContainer.getByTestId("changeButton");
-	}
-
 	public get changeUsernameInput(): Locator {
-		return this.getInputField("displayUsername", this.usernameContainer);
+		return this.page.getByTestId(
+			"profile-page-change-user-info-username-input",
+		);
 	}
 
 	public get saveUsernameButton(): Locator {
@@ -47,7 +45,9 @@ export class ProfilePageMap extends BaseMap {
 	}
 
 	public get changeEmailInput(): Locator {
-		return this.getInputField("email", this.emailContainer);
+		return this.page.getByTestId(
+			"profile-page-change-user-info-email-input",
+		);
 	}
 
 	public get saveEmailButton(): Locator {
@@ -57,19 +57,25 @@ export class ProfilePageMap extends BaseMap {
 	}
 
 	public get phoneNumberContainer(): Locator {
-		return this.page.getByTestId("profilePhoneContainer");
-	}
-
-	public get changePhoneButton(): Locator {
-		return this.phoneNumberContainer.getByTestId("changeButton");
+		return this.page.getByTestId(
+			"profile-page-change-user-info-phone-container",
+		);
 	}
 
 	public get changePhoneInput(): Locator {
-		return this.getInputField("phone", this.phoneNumberContainer);
+		return this.page.getByTestId(
+			"profile-page-change-user-info-phone-input",
+		);
 	}
 
 	public get savePhoneButton(): Locator {
-		return this.phoneNumberContainer.getByTestId("saveButton");
+		return this.page.getByTestId(
+			"profile-page-change-user-info-save-phone",
+		);
+	}
+
+	public get changePasswordButton(): Locator {
+		return this.page.getByTestId("change-user-password-button");
 	}
 
 	public userProfileLeftMenuItem(dropdownItem: UserMenuOption): Locator {

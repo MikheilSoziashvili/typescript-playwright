@@ -194,8 +194,10 @@ export class CasinoPageMap extends BaseMap {
 
 	public favoriteGameTileByName(gameName: string): Locator {
 		return this.favoritesGamesList.locator(
-			`[data-testid*="-container-${gameName}-"]`,
-		);
+			`[data-testid*="-container-"]`,
+		).filter({
+			has: this.page.locator(`img[alt="${gameName}"]`),
+		});
 	}
 
 	public get inGameHeartIcon(): Locator {

@@ -65,7 +65,7 @@ test.describe("Password tests", () => {
 
 	test.describe("Password reset", () => {
 		test(
-			"[ENG-1119] Password reset",
+			"[ENG-9510] Password reset",
 			testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				gamdomApiDbFacade,

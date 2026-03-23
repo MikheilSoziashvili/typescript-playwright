@@ -45,3 +45,11 @@ export function buildLimboPlaceBetEndpoint(token: string): string {
 export function buildBlackjackPlaceBetEndpoint(token: string): string {
 	return `${ApiEndpoints.BLACKJACK_PLACE_BET}?${QueryParam.TOKEN}=${token}`;
 }
+
+export function buildCasinoGamesSearchEndpoint(): string {
+	return ApiEndpoints.CASINO_GAMES_SEARCH;
+}
+
+export function buildCasinoGamesListEndpoint(): string {
+	return ApiEndpoints.CASINO_GAMES_LIST;
+}
