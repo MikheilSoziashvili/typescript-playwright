@@ -184,7 +184,7 @@ export class PlinkoGamePageMap extends BaseMap {
 	}
 
 	public get yourBetValue(): Locator {
-		return this.page.locator("span[class*='Balancestyled__Text']");
+		return this.page.getByTestId("Plinko-balance");
 	}
 
 	public disabledGameMessage(): Locator {
