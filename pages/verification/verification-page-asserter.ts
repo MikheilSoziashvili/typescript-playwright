@@ -122,6 +122,13 @@ export class VerificationPageAsserter extends BaseAsserter<VerificationPage> {
 		await notification.assertThat().subTitleIs(notificationSubTitle);
 	}
 
+	@step("KYC level form is not visible")
+	public async levelFormIsNotVisible(level: KycLevels): Promise<void> {
+		await this.checkElementsAreHidden([
+			this.gamdomPage.map.levelForm(level),
+		]);
+	}
+
 	@step("Verify file is uploaded")
 	public async fileIsUploaded(): Promise<void> {
 		await this.checkElementsAreVisible([this.gamdomPage.map.uploadedFile]);

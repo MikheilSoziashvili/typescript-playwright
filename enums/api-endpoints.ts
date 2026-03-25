@@ -48,4 +48,5 @@ export enum ApiEndpoints {
 	SAML_LOGIN = "/saml/login",
 	CASINO_GAMES_LIST = "/client-api/casino/games-list",
 	CASINO_GAMES_SEARCH = "/client-api/casino/games-search",
+	AML_TRIGGER_KYC_LEVEL = "/client-api/admin/aml/amlAdminTriggerUserKYCLevel",
 }

@@ -1,3 +1,4 @@
+import { ExpectedStatus } from "@enums/http-status";
 import { EV_REWARD_FREE_SPINS_FILE_MAP } from "@constants/file-paths";
 import { RegisterTestData } from "@dtos/test-data";
 import { Protocol } from "@enums/api/protocols";
@@ -97,6 +98,7 @@ export type RequestOptions = NonNullable<
 
 export type ApiRequestOptions = RequestOptions & {
 	retry?: RetryOptions;
+	expectedStatus?: ExpectedStatus;
 };
 
 export type SocialMediaRecord = {

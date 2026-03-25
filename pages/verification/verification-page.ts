@@ -115,7 +115,6 @@ export class VerificationPage extends BasePage<VerificationPageMap> {
 	public async selectVerificationTab(
 		tabType: VerificationTabType,
 	): Promise<void> {
-		await this.map.kycLevelToggle(KycLevels.LEVEL_1).click();
 		if (tabType === VerificationTabType.VERIFY_BUSINESS) {
 			await this.selectVerifyBusinessTab();
 		}
@@ -150,7 +149,6 @@ export class VerificationPage extends BasePage<VerificationPageMap> {
 
 	@step("Fill in verification form for KYC level 1")
 	public async fillInKycLevel1Form(): Promise<void> {
-		await this.map.kycLevelToggle(KycLevels.LEVEL_1).click();
 		await this.map.firstAndLastNameInput.fill(faker.person.fullName());
 		await this.selectDateOfBirth(
 			getISODate({ yearsOffset: -25 }).split("T")[0],
@@ -163,17 +161,16 @@ export class VerificationPage extends BasePage<VerificationPageMap> {
 
 	@step("Fill in verification form for KYC level 2.5")
 	public async fillInKycLevel2_5Form(): Promise<void> {
-		await this.map.countryDropdownContainer(KycLevels.LEVEL_2).click();
+		await this.map.countryDropdownContainer(KycLevels.LEVEL_2_5).click();
 		await this.selectRandomOption();
-		await this.map.reasonForResidenceDropdown(KycLevels.LEVEL_2).click();
+		await this.map.reasonForResidenceDropdown(KycLevels.LEVEL_2_5).click();
 		await this.selectRandomOption();
-		await this.map.verifyCheckbox(KycLevels.LEVEL_2).click();
-		await this.map.submitButton(KycLevels.LEVEL_2).click();
+		await this.map.verifyCheckbox(KycLevels.LEVEL_2_5).click();
+		await this.map.submitButton(KycLevels.LEVEL_2_5).click();
 	}
 
 	@step("Fill in verification form for KYB level 1")
 	public async fillInKybLevel1Form(): Promise<void> {
-		await this.map.kycLevelToggle(KycLevels.LEVEL_1).click();
 		await this.selectVerifyBusinessTab();
 		await this.map.businessNameInput.fill(faker.company.name());
 		await this.map.businessAddressInput.fill(
@@ -207,20 +204,8 @@ export class VerificationPage extends BasePage<VerificationPageMap> {
 				},
 			},
 			[KYC_LEVEL_2_5_FIELDS.COUNTRY]: {
-				container: this.map.countryDropdownContainer(KycLevels.LEVEL_2),
-				onRandom: async () => {
-					await this.selectRandomOption();
-				},
-				onNonRandom: async () => {
-					await this.page.keyboard.press(KeyboardKey.ESCAPE);
-					await this.map
-						.countryDropdownContainer(KycLevels.LEVEL_2)
-						.blur();
-				},
-			},
-			[KYC_LEVEL_2_5_FIELDS.REASON_FOR_RESIDENCE]: {
-				container: this.map.reasonForResidenceDropdown(
-					KycLevels.LEVEL_2,
+				container: this.map.countryDropdownContainer(
+					KycLevels.LEVEL_2_5,
 				),
 				onRandom: async () => {
 					await this.selectRandomOption();
@@ -228,7 +213,21 @@ export class VerificationPage extends BasePage<VerificationPageMap> {
 				onNonRandom: async () => {
 					await this.page.keyboard.press(KeyboardKey.ESCAPE);
 					await this.map
-						.reasonForResidenceDropdown(KycLevels.LEVEL_2)
+						.countryDropdownContainer(KycLevels.LEVEL_2_5)
+						.blur();
+				},
+			},
+			[KYC_LEVEL_2_5_FIELDS.REASON_FOR_RESIDENCE]: {
+				container: this.map.reasonForResidenceDropdown(
+					KycLevels.LEVEL_2_5,
+				),
+				onRandom: async () => {
+					await this.selectRandomOption();
+				},
+				onNonRandom: async () => {
+					await this.page.keyboard.press(KeyboardKey.ESCAPE);
+					await this.map
+						.reasonForResidenceDropdown(KycLevels.LEVEL_2_5)
 						.blur();
 				},
 			},

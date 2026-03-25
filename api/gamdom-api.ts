@@ -17,7 +17,7 @@ import { GetFeaturesStateResponse } from "@dtos/responses/gamdom-api/get-feature
 import { RegisterTestData } from "@dtos/test-data";
 import { ApiEndpoints } from "@enums/api-endpoints";
 import { Feature } from "@enums/feature";
-import { HttpStatus } from "@enums/http-status";
+import { ExpectedStatusGroup, HttpStatus } from "@enums/http-status";
 import { logger } from "@logger/logger";
 import { RainDTO } from "@dtos/responses/gamdom-api/get-open-rains-response";
 import { APIResponse, expect } from "@playwright/test";
@@ -47,8 +47,10 @@ import { CryptoTicker } from "@enums/cryptocurrencies";
 import { GetWithdrawalFeesResponse } from "@dtos/responses/gamdom-api/get-withdrawal-fees-response";
 import { FeeLevel } from "@enums/withdrawal-speeds";
 import { AdminActionRequest } from "@dtos/requests/gamdom-api/admin-action-request";
+import { TriggerKycLevelRequest } from "@dtos/requests/gamdom-api/trigger-kyc-level-request";
 import { AdminActionType } from "@enums/admin-action-types";
 import { BanReason } from "@enums/ban-reasons";
+import { KycLevels } from "@enums/verification-enums";
 import { API_DEFAULT_RETRY } from "@constants/api-default-retry";
 import { GetEvReportPeriodIdentifiersRequest } from "@dtos/requests/gamdom-api/get-ev-report-period-identifiers-request";
 import { BulkRewardResponse } from "@dtos/responses/gamdom-api/bulk-reward-response";
@@ -903,6 +905,27 @@ export class GamdomApi extends BaseApi {
 
 		const response = await this.post(parameters);
 		return response.json() as Promise<GetWithdrawalFeesResponse>;
+	}
+
+	public async triggerKycLevel(
+		userId: number,
+		level: KycLevels,
+		_headers: Record<string, string> = {},
+	): Promise<APIResponse> {
+		const payload: TriggerKycLevelRequest = {
+			userId: Number(userId),
+			level: level,
+		};
+
+		const parameters = this.buildParameters(
+			ApiEndpoints.AML_TRIGGER_KYC_LEVEL,
+			payload,
+			_headers,
+		);
+
+		return this.post(parameters, {
+			expectedStatus: ExpectedStatusGroup.SUCCESS,
+		});
 	}
 
 	public async banUser(

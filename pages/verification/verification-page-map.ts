@@ -47,30 +47,43 @@ export class VerificationPageMap extends BaseMap {
 		);
 	}
 
+	private static readonly LEVEL_FORM_TESTID: Record<KycLevels, string> = {
+		[KycLevels.LEVEL_1]: "kyc-v4-level1-form",
+		[KycLevels.LEVEL_2]: "kyc-v4-level2",
+		[KycLevels.LEVEL_2_5]: "kyc-v4-level25",
+		[KycLevels.LEVEL_3]: "kyc-v4-level3",
+	};
+
+	public levelForm(level: KycLevels): Locator {
+		return this.page.getByTestId(
+			VerificationPageMap.LEVEL_FORM_TESTID[level],
+		);
+	}
+
 	public get verifyMeTab(): Locator {
-		return this.levelContent(KycLevels.LEVEL_1).getByTestId(
+		return this.levelForm(KycLevels.LEVEL_1).getByTestId(
 			"kyc-v4-level1-tab-personal",
 		);
 	}
 
 	public get verifyBusinessTab(): Locator {
-		return this.levelContent(KycLevels.LEVEL_1).getByTestId(
+		return this.levelForm(KycLevels.LEVEL_1).getByTestId(
 			"kyc-v4-level1-tab-business",
 		);
 	}
 
 	public countryDropdownContainer(level: KycLevels): Locator {
-		return this.levelContent(level).getByTestId("kyc-v4-country-button");
+		return this.levelForm(level).getByTestId("kyc-v4-country-button");
 	}
 
 	public reasonForResidenceDropdown(level: KycLevels): Locator {
-		return this.levelContent(level).getByTestId(
+		return this.levelForm(level).getByTestId(
 			"kyc-v4-residence-reason-button",
 		);
 	}
 
 	public countryDropdown(level: KycLevels): Locator {
-		return this.levelContent(level).getByTestId("kyc-v4-country-button");
+		return this.levelForm(level).getByTestId("kyc-v4-country-button");
 	}
 
 	public get countryDropdownValuesContainer(): Locator {
@@ -82,25 +95,25 @@ export class VerificationPageMap extends BaseMap {
 	}
 
 	public get firstAndLastNameInput(): Locator {
-		return this.levelContent(KycLevels.LEVEL_1).getByTestId(
+		return this.levelForm(KycLevels.LEVEL_1).getByTestId(
 			"kyc-v4-full-name-input",
 		);
 	}
 
 	public get dateOfBirthDayButton(): Locator {
-		return this.levelContent(KycLevels.LEVEL_1).getByTestId(
+		return this.levelForm(KycLevels.LEVEL_1).getByTestId(
 			"kyc-v4-date-of-birth-day-button",
 		);
 	}
 
 	public get dateOfBirthMonthButton(): Locator {
-		return this.levelContent(KycLevels.LEVEL_1).getByTestId(
+		return this.levelForm(KycLevels.LEVEL_1).getByTestId(
 			"kyc-v4-date-of-birth-month-button",
 		);
 	}
 
 	public get dateOfBirthYearButton(): Locator {
-		return this.levelContent(KycLevels.LEVEL_1).getByTestId(
+		return this.levelForm(KycLevels.LEVEL_1).getByTestId(
 			"kyc-v4-date-of-birth-year-button",
 		);
 	}
@@ -122,31 +135,31 @@ export class VerificationPageMap extends BaseMap {
 	}
 
 	public get businessNameInput(): Locator {
-		return this.levelContent(KycLevels.LEVEL_1).getByTestId(
+		return this.levelForm(KycLevels.LEVEL_1).getByTestId(
 			"kyc-v4-business-name-input",
 		);
 	}
 
 	public get businessAddressInput(): Locator {
-		return this.levelContent(KycLevels.LEVEL_1).getByTestId(
+		return this.levelForm(KycLevels.LEVEL_1).getByTestId(
 			"kyc-v4-business-address-input",
 		);
 	}
 
 	public get businessRegistrationNumberInput(): Locator {
-		return this.levelContent(KycLevels.LEVEL_1).getByTestId(
+		return this.levelForm(KycLevels.LEVEL_1).getByTestId(
 			"kyc-v4-registration-number-input",
 		);
 	}
 
 	public verifyCheckbox(level: KycLevels): Locator {
-		return this.levelContent(level).getByTestId(
+		return this.levelForm(level).getByTestId(
 			"kyc-v4-agree-checkbox-container",
 		);
 	}
 
 	public submitButton(level: KycLevels): Locator {
-		return this.levelContent(level).getByTestId("kyc-v4-submit-button");
+		return this.levelForm(level).getByTestId("kyc-v4-submit-button");
 	}
 
 	public getErrorMessageForField(fieldLabel: string): Locator {
@@ -182,7 +195,7 @@ export class VerificationPageMap extends BaseMap {
 	}
 
 	public get proofOfFundsDropdown(): Locator {
-		return this.levelContent(KycLevels.LEVEL_3).getByTestId(
+		return this.levelForm(KycLevels.LEVEL_3).getByTestId(
 			"kyc-v4-proof-of-funds-button",
 		);
 	}
@@ -193,13 +206,11 @@ export class VerificationPageMap extends BaseMap {
 	}
 
 	public get uploadProofOfFundsButton(): Locator {
-		return this.levelContent(KycLevels.LEVEL_3).getByTestId(
-			"-upload-button",
-		);
+		return this.levelForm(KycLevels.LEVEL_3).getByTestId("-upload-button");
 	}
 
 	public get uploadedFile(): Locator {
-		return this.levelContent(KycLevels.LEVEL_3).getByTestId(
+		return this.levelForm(KycLevels.LEVEL_3).getByTestId(
 			"kyc-v4-uploaded-files-preview",
 		);
 	}
@@ -213,8 +224,6 @@ export class VerificationPageMap extends BaseMap {
 	}
 
 	public get levelThreeVerificationInProgressMessage(): Locator {
-		return this.levelContent(KycLevels.LEVEL_3).getByTestId(
-			"kyc-v4-level3-in-progress",
-		);
+		return this.page.getByTestId("kyc-v4-level3-in-progress");
 	}
 }

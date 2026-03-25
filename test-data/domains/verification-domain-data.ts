@@ -18,8 +18,10 @@ import {
 	KycAdminActionConfig,
 	kycAdminActionsScenario,
 	KycLevel3ReviewActionScenario,
+	VerificationEntryPoint,
 	VerificationFormType,
 } from "test-data/interfaces/domain";
+import { HomePage } from "@pages/home-page/home-page";
 import { VerificationPage } from "@pages/verification/verification-page";
 import { faker } from "@faker-js/faker";
 import { Toast } from "@pages/components/toast/toast";
@@ -232,6 +234,39 @@ export class VerificationDomainData {
 	}
 
 	// ========================================================================
+	// VERIFICATION ENTRY POINTS
+	// ========================================================================
+
+	public readonly verificationEntryPoints: VerificationEntryPoint[] = [
+		{
+			name: "Verification Page",
+			navigateToForm: async ({
+				verificationPage,
+			}: {
+				verificationPage: VerificationPage;
+				homePage: HomePage;
+				walletModal: WalletModal;
+			}): Promise<void> => {
+				await verificationPage.navigate();
+			},
+		},
+		{
+			name: "Wallet",
+			navigateToForm: async ({
+				homePage,
+				walletModal,
+			}: {
+				verificationPage: VerificationPage;
+				homePage: HomePage;
+				walletModal: WalletModal;
+			}): Promise<void> => {
+				await homePage.navigateToWallet();
+				await walletModal.openWithdrawTab();
+			},
+		},
+	];
+
+	// ========================================================================
 	// LEVEL 1 VERIFICATION SCENARIOS
 	// ========================================================================
 
@@ -242,7 +277,7 @@ export class VerificationDomainData {
 	 */
 	public readonly level1VerificationScenarios: VerificationFormType[] = [
 		{
-			testId: "ENG-8537",
+			testId: "ENG-13424",
 			formType: VerificationFormTypeEnum.KYC,
 			fillSubmissionForm: (page: VerificationPage) =>
 				page.fillInKycLevel1Form(),
@@ -254,7 +289,7 @@ export class VerificationDomainData {
 				ToastSubTitle.LEVEL_ONE_VERIFICATION_SUBMITTED,
 		},
 		{
-			testId: "ENG-8539",
+			testId: "ENG-13425",
 			formType: VerificationFormTypeEnum.KYB,
 			fillSubmissionForm: (page: VerificationPage) =>
 				page.fillInKybLevel1Form(),
@@ -390,7 +425,7 @@ export class VerificationDomainData {
 	public readonly level1FieldValidationScenarios: FieldValidationTestScenario[] =
 		[
 			{
-				testId: "ENG-8542",
+				testId: "ENG-13426",
 				formType: VerificationFormTypeEnum.KYC,
 				fieldValidations: this.kycLevel1FieldValidations,
 				clearFieldValidations: [],
@@ -398,7 +433,7 @@ export class VerificationDomainData {
 				tabType: VerificationTabType.VERIFY_YOURSELF,
 			},
 			{
-				testId: "ENG-8563",
+				testId: "ENG-13427",
 				formType: VerificationFormTypeEnum.KYB,
 				fieldValidations: this.kybLevel1FieldValidations,
 				clearFieldValidations: this.kybLevel1ClearFieldValidations,

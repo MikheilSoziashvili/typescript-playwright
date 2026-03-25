@@ -12,9 +12,19 @@ import {
 	VerificationTabType,
 } from "@enums/verification-enums";
 import { Toast } from "@pages/components/toast/toast";
+import { HomePage } from "@pages/home-page/home-page";
 import { WalletModal } from "@pages/modals/wallet/wallet-modal";
 import { VerificationPage } from "@pages/verification/verification-page";
 import { UserInfoKycAdminPageSteps } from "@pages/admin/user-info-admin/user-info-kyc-admin/user-info-kyc-steps";
+
+export interface VerificationEntryPoint {
+	name: string;
+	navigateToForm: (pages: {
+		verificationPage: VerificationPage;
+		homePage: HomePage;
+		walletModal: WalletModal;
+	}) => Promise<void>;
+}
 
 export interface VerificationFormType {
 	testId: string;

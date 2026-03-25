@@ -13,6 +13,7 @@ import {
 	KycLevels,
 	ProofOfFunds,
 } from "@enums/verification-enums";
+import { getCookieHeader } from "@core/utils/utils";
 import { test } from "@fixtures/fixtures";
 import { PROOF_OF_FUNDS_OPTIONS } from "test-data/domains/verification-domain-data";
 import { testData } from "test-data/test-data-manager";
@@ -23,43 +24,70 @@ test.describe(
 	() => {
 		const verificationTestData = testData().fromDomain().verification;
 
-		test.beforeEach(async ({ browserSessionManager, verificationPage }) => {
-			await browserSessionManager.loginAs(TestUserRole.REGULAR, {
-				reuseContext: true,
-			});
+		test.beforeEach(async ({ browserSessionManager, gamdomApi }) => {
+			const adminUser = await browserSessionManager.loginAs(
+				TestUserRole.SUPERADMIN,
+				{ reuseContext: true },
+			);
+			const regularUser = await browserSessionManager.loginAs(
+				TestUserRole.REGULAR,
+				{ reuseContext: true },
+			);
 
-			await verificationPage.navigate();
-			await verificationPage
-				.assertThat()
-				.verificationPageTitleAndTabsAreVisible();
+			const superAdminCookie = getCookieHeader(
+				adminUser.getAuthenticatedUser().cookie,
+			);
+			const userId = regularUser.getAuthenticatedUser().user.userId;
+
+			await gamdomApi.triggerKycLevel(userId, KycLevels.LEVEL_1, {
+				Cookie: superAdminCookie,
+			});
 		});
 
-		verificationTestData.level1VerificationScenarios.forEach(
-			({
-				testId,
-				formType,
-				fillSubmissionForm,
-				expectedNotificationTitle,
-				expectedNotificationSubTitle,
-				expectedToastTitle,
-				expectedToastSubTitle,
-			}) => {
-				test(
-					`[${testId}] Submit ${formType} Level 1`,
-					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
-					async ({ homePage, verificationPage, toast }) => {
-						await fillSubmissionForm(verificationPage);
-
-						await verificationPage
-							.assertThat()
-							.verifySubmissionToastAndNotification(
+		verificationTestData.verificationEntryPoints.forEach(
+			({ name, navigateToForm }) => {
+				verificationTestData.level1VerificationScenarios.forEach(
+					({
+						testId,
+						formType,
+						fillSubmissionForm,
+						expectedNotificationTitle,
+						expectedNotificationSubTitle,
+						expectedToastTitle,
+						expectedToastSubTitle,
+					}) => {
+						test(
+							`[${testId}] Submit ${formType} Level 1 via ${name}`,
+							testDetails()
+								.withAuthor(JiraUser.NIKOLAY_GENOV)
+								.withTags(TestTag.ACCEPTANCE)
+								.apply(),
+							async ({
+								homePage,
+								verificationPage,
 								toast,
-								homePage.getNotification(),
-								expectedToastTitle,
-								expectedToastSubTitle,
-								expectedNotificationTitle,
-								expectedNotificationSubTitle,
-							);
+								walletModal,
+							}) => {
+								await navigateToForm({
+									verificationPage,
+									homePage,
+									walletModal,
+								});
+
+								await fillSubmissionForm(verificationPage);
+
+								await verificationPage
+									.assertThat()
+									.verifySubmissionToastAndNotification(
+										toast,
+										homePage.getNotification(),
+										expectedToastTitle,
+										expectedToastSubTitle,
+										expectedNotificationTitle,
+										expectedNotificationSubTitle,
+									);
+							},
+						);
 					},
 				);
 			},
@@ -71,6 +99,11 @@ test.describe(
 					`[${testId}] ${formType} Level 1 - Field validations`,
 					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({ verificationPage }) => {
+						await verificationPage.navigate();
+						await verificationPage
+							.assertThat()
+							.verificationPageTitleAndTabsAreVisible();
+
 						await verificationPage.selectVerificationTab(tabType);
 
 						for (const {
@@ -302,7 +335,9 @@ test.describe(
 	"KYC Level 2.5 Verification",
 	testDetails().withTags(JiraComponent.VERIFICATION).apply(),
 	() => {
-		test.beforeEach(async ({ browserSessionManager }) => {
+		const verificationTestData = testData().fromDomain().verification;
+
+		test.beforeEach(async ({ browserSessionManager, gamdomApi }) => {
 			const adminUser = await browserSessionManager.loginAs(
 				TestUserRole.SUPERADMIN,
 				{ reuseContext: true },
@@ -311,54 +346,52 @@ test.describe(
 				TestUserRole.REGULAR,
 			);
 
-			await adminUser.pages.userInfoAdminPage
-				.steps()
-				.navigateAndShowUserDetails(
-					regularUser.getAuthenticatedUser().user.username,
-				);
-			await adminUser.pages.userInfoAdminPage.clickUserInfoTab(
-				UserInfoTabs.KYC,
+			const superAdminCookie = getCookieHeader(
+				adminUser.getAuthenticatedUser().cookie,
 			);
-			await adminUser.pages.userInfoKycAdminPage.selectKycAction(
-				KycLevels.LEVEL_2_5,
-				KycAdminActions.TRIGGER,
-			);
+			const userId = regularUser.getAuthenticatedUser().user.userId;
 
-			await regularUser.pages.verificationPage.navigate();
-			await regularUser.pages.verificationPage
-				.assertThat()
-				.kycLevelTwoVerificationTitleIsVisible();
+			await gamdomApi.triggerKycLevel(userId, KycLevels.LEVEL_2_5, {
+				Cookie: superAdminCookie,
+			});
 		});
 
-		test(
-			"[ENG-8736] Submit KYC Level 2.5",
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
-			async ({ browserSessionManager }) => {
-				const regularUser = await browserSessionManager.loginAs(
-					TestUserRole.REGULAR,
+		verificationTestData.verificationEntryPoints.forEach(
+			({ name, navigateToForm }) => {
+				test(
+					`[ENG-13429] Submit KYC Level 2.5 via ${name}`,
+					testDetails()
+						.withAuthor(JiraUser.NIKOLAY_GENOV)
+						.withTags(TestTag.ACCEPTANCE)
+						.apply(),
+					async ({ homePage, verificationPage, walletModal }) => {
+						await navigateToForm({
+							verificationPage,
+							homePage,
+							walletModal,
+						});
+
+						await verificationPage.fillInKycLevel2_5Form();
+
+						await verificationPage
+							.assertThat()
+							.levelFormIsNotVisible(KycLevels.LEVEL_2_5);
+					},
 				);
-
-				await regularUser.pages.verificationPage.fillInKycLevel2_5Form();
-
-				await regularUser.pages.verificationPage
-					.assertThat()
-					.verificationPageTitleAndTabsAreVisible();
 			},
 		);
 
 		test(
-			"[ENG-8833] KYC Level 2.5 - Checkbox validation",
+			"[ENG-13430] KYC Level 2.5 - Checkbox validation",
 			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
-			async ({ browserSessionManager }) => {
-				const regularUser = await browserSessionManager.loginAs(
-					TestUserRole.REGULAR,
-				);
+			async ({ verificationPage }) => {
+				await verificationPage.navigate();
 
-				await regularUser.pages.verificationPage.toggleCheckbox({
+				await verificationPage.toggleCheckbox({
 					count: 2,
-					level: KycLevels.LEVEL_2,
+					level: KycLevels.LEVEL_2_5,
 				});
-				await regularUser.pages.verificationPage
+				await verificationPage
 					.assertThat()
 					.checkboxValidationMessageIsDisplayed();
 			},
@@ -370,7 +403,9 @@ test.describe(
 	"KYC Level 3 Verification",
 	testDetails().withTags(JiraComponent.VERIFICATION).apply(),
 	() => {
-		test.beforeEach(async ({ browserSessionManager }) => {
+		const verificationTestData = testData().fromDomain().verification;
+
+		test.beforeEach(async ({ browserSessionManager, gamdomApi }) => {
 			const adminUser = await browserSessionManager.loginAs(
 				TestUserRole.SUPERADMIN,
 				{ reuseContext: true },
@@ -379,70 +414,67 @@ test.describe(
 				TestUserRole.REGULAR,
 			);
 
-			await adminUser.pages.userInfoAdminPage
-				.steps()
-				.navigateAndShowUserDetails(
-					regularUser.getAuthenticatedUser().user.username,
-				);
-			await adminUser.pages.userInfoAdminPage.clickUserInfoTab(
-				UserInfoTabs.KYC,
+			const superAdminCookie = getCookieHeader(
+				adminUser.getAuthenticatedUser().cookie,
 			);
-			await adminUser.pages.userInfoKycAdminPage.selectKycAction(
-				KycLevels.LEVEL_3,
-				KycAdminActions.TRIGGER,
-			);
+			const userId = regularUser.getAuthenticatedUser().user.userId;
 
-			await regularUser.pages.verificationPage.navigate();
-			await regularUser.pages.verificationPage
-				.assertThat()
-				.kycLevelThreeVerificationHeaderIsVisible();
+			await gamdomApi.triggerKycLevel(userId, KycLevels.LEVEL_3, {
+				Cookie: superAdminCookie,
+			});
 		});
 
-		PROOF_OF_FUNDS_OPTIONS.forEach((proofOfFund) =>
-			test(
-				`[ENG-8663] Submit KYC Level 3 - ${proofOfFund}`,
-				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
-				async ({ browserSessionManager }) => {
-					const regularUser = await browserSessionManager.loginAs(
-						TestUserRole.REGULAR,
-					);
-					await regularUser.pages.verificationPage.fillInKycLevel3Form(
-						proofOfFund,
-					);
-					await regularUser.pages.verificationPage
-						.assertThat()
-						.kycLevelThreeVerificationInProgressMessageIsVisible();
-				},
-			),
+		verificationTestData.verificationEntryPoints.forEach(
+			({ name, navigateToForm }) => {
+				PROOF_OF_FUNDS_OPTIONS.forEach((proofOfFund) =>
+					test(
+						`[ENG-13431] Submit KYC Level 3 - ${proofOfFund} via ${name}`,
+						testDetails()
+							.withAuthor(JiraUser.NIKOLAY_GENOV)
+							.withTags(TestTag.ACCEPTANCE)
+							.apply(),
+						async ({ homePage, verificationPage, walletModal }) => {
+							await navigateToForm({
+								verificationPage,
+								homePage,
+								walletModal,
+							});
+
+							await verificationPage.fillInKycLevel3Form(
+								proofOfFund,
+							);
+							await verificationPage
+								.assertThat()
+								.kycLevelThreeVerificationInProgressMessageIsVisible();
+						},
+					),
+				);
+			},
 		);
 
 		test(
-			"[ENG-8673] KYC Level 3 - File upload and checkbox validation",
+			"[ENG-13432] KYC Level 3 - File upload and checkbox validation",
 			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
-			async ({ browserSessionManager }) => {
-				const regularUser = await browserSessionManager.loginAs(
-					TestUserRole.REGULAR,
-				);
+			async ({ verificationPage }) => {
+				await verificationPage.navigate();
 
-				await regularUser.pages.verificationPage.uploadProofOfFundsFile(
+				await verificationPage.uploadProofOfFundsFile(
 					ProofOfFunds.BANK_STATEMENT,
 				);
-				await regularUser.pages.verificationPage.removeUploadedFile();
-				await regularUser.pages.verificationPage
+				await verificationPage.removeUploadedFile();
+				await verificationPage
 					.assertThat()
 					.fileUploadErrorMessageIsDisplayed();
 
-				await regularUser.pages.verificationPage.toggleCheckbox({
+				await verificationPage.toggleCheckbox({
 					count: 2,
 					level: KycLevels.LEVEL_3,
 				});
-				await regularUser.pages.verificationPage
+				await verificationPage
 					.assertThat()
 					.checkboxValidationMessageIsDisplayed();
 			},
 		);
-
-		const verificationTestData = testData().fromDomain().verification;
 
 		verificationTestData.kycLevel3ReviewActions.forEach(
 			({

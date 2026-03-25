@@ -9,7 +9,12 @@ import {
 	RequestOptions,
 } from "@core/types/types";
 import { KnownError } from "@core/types/error-types";
-import { HttpStatus } from "@enums/http-status";
+import {
+	ERROR_STATUS_CODES,
+	ExpectedStatus,
+	ExpectedStatusGroup,
+	SUCCESS_STATUS_CODES,
+} from "@enums/http-status";
 import { BaseApiOptions } from "@core/api/interfaces/base-api-options";
 import { RetryOptions } from "@core/api/interfaces/retry-options";
 
@@ -266,7 +271,7 @@ export class BaseApi {
 		parameters: RequestParameters,
 		options: ApiRequestOptions = {},
 	): Promise<APIResponse> {
-		const { retry, ...restOptions } = options;
+		const { retry, expectedStatus, ...restOptions } = options;
 		const { endpoint, headers, data, queryParams } = parameters;
 		const context = await this.context;
 		const url = this.concatenateUrl(endpoint);
@@ -287,13 +292,11 @@ export class BaseApi {
 				});
 
 				const statusCode = response.status();
-				const successStatusCodes = [
-					HttpStatus.OK,
-					HttpStatus.CREATED,
-					HttpStatus.NO_CONTENT,
-				];
+				const isStatusOk = expectedStatus !== undefined
+					? BaseApi.matchesExpectedStatus(statusCode, expectedStatus)
+					: SUCCESS_STATUS_CODES.includes(statusCode);
 
-				if (!successStatusCodes.includes(statusCode)) {
+				if (!isStatusOk) {
 					await this.logFailedResponse(
 						method,
 						url,
@@ -305,6 +308,12 @@ export class BaseApi {
 					if (retry) {
 						throw new Error(
 							`${method.toUpperCase()} ${url} failed with status ${statusCode}`,
+						);
+					}
+
+					if (expectedStatus !== undefined) {
+						throw new Error(
+							`${method.toUpperCase()} ${endpoint} expected status ${expectedStatus} but got ${statusCode}`,
 						);
 					}
 				}
@@ -404,6 +413,22 @@ export class BaseApi {
 		options?: ApiRequestOptions,
 	): Promise<APIResponse> {
 		return this.makeRequest(HttpMethod.PATCH, parameters, options);
+	}
+
+	private static matchesExpectedStatus(
+		statusCode: number,
+		expectedStatus?: ExpectedStatus,
+	): boolean {
+		if (expectedStatus === undefined) {
+			return false;
+		}
+		if (expectedStatus === ExpectedStatusGroup.SUCCESS) {
+			return SUCCESS_STATUS_CODES.includes(statusCode);
+		}
+		if (expectedStatus === ExpectedStatusGroup.ERROR) {
+			return ERROR_STATUS_CODES.includes(statusCode);
+		}
+		return statusCode === expectedStatus;
 	}
 
 	private static async withRetry<T>(
