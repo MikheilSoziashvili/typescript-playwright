@@ -15,47 +15,12 @@ test.describe(
 	testDetails().withTags(JiraComponent.ADMIN).apply(),
 	() => {
 		test(
-			"[ENG-288] Banning a user",
+			"[ENG-288] Banning and unbanning a user",
 			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
-			async ({ browserSessionManager, testDataPredefined }) => {
-				const adminSession = await browserSessionManager.loginAs(
-					TestUserRole.SUPERADMIN,
-					{ reuseContext: true },
+			async ({ banUnbanUserTestFlow, testDataPredefined }) => {
+				await banUnbanUserTestFlow.runBanAndUnbanFlow(
+					testDataPredefined.data.admin.ban.defaultReason,
 				);
-				const regularUserSession = await browserSessionManager.loginAs(
-					TestUserRole.REGULAR,
-				);
-
-				const targetUser =
-					regularUserSession.getAuthenticatedUser().user;
-
-				await adminSession.pages.userInfoAdminPage
-					.steps()
-					.navigateAndShowUserDetails(targetUser.username);
-
-				const banReason =
-					testDataPredefined.data.admin.ban.defaultReason;
-
-				await adminSession.pages.infoAdminPage
-					.steps()
-					.banUser({ reason: banReason });
-
-				await regularUserSession.pages.homePage.navigate();
-				await regularUserSession.pages.homePage
-					.steps()
-					.loginUser(targetUser.username, targetUser.password, {
-						expectErrors: true,
-					});
-
-				await regularUserSession.pages.bannedUserPage.waitRedContainerToBeVisible();
-				await regularUserSession.pages.bannedUserPage
-					.assertThat()
-					.isBannedTitleDisplayed();
-				await regularUserSession.pages.bannedUserPage
-					.assertThat()
-					.isBannedReasonDisplayed(
-						`${banReason} - ${getCurrentDate()}`,
-					);
 			},
 		);
 
@@ -260,5 +225,21 @@ test.describe(
 				await hardBanSupportRequestedTestFlow.execute();
 			},
 		);
+
+		testData()
+			.fromCsvRaw({
+				file: CsvFilesName.HARD_BAN_REASONS_WITH_IMMEDIATE_ACCOUNT_LOCK,
+			})
+			.forEach((input) => {
+				test(
+					`[ENG-10402] [Hard Ban] Reasons with immediate account lock - ${input.reason}`,
+					testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+					async ({ hardBanImmediateAccountLockTestFlow }) => {
+						await hardBanImmediateAccountLockTestFlow.runHardBanImmediateLockFlow(
+							input.reason as BanReason,
+						);
+					},
+				);
+			});
 	},
 );

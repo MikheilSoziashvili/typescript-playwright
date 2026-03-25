@@ -74,6 +74,11 @@ export class UserInfoInfoAdminPage extends BasePage<UserInfoInfoAdminPageMap> {
 		await this.map.banUserButton.click();
 	}
 
+	@step("Click unban user button")
+	public async clickUnbanUserButton(): Promise<void> {
+		await this.map.unbanUserButton.click();
+	}
+
 	@step("Toggle ban category options")
 	public async toggleBanCategoryOptions(
 		category: BanCategories,

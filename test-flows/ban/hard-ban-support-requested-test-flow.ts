@@ -34,8 +34,6 @@ export class HardBanSupportRequestedTestFlow extends BaseTestFlow {
 			Cookie: adminCookie,
 		});
 
-		this.log(`User ${userId} banned with Support Requested reason`);
-
 		return { adminSession, bannedUser };
 	}
 

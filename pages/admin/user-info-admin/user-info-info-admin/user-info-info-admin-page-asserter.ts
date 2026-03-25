@@ -69,6 +69,13 @@ export class UserInfoInfoAdminPageAsserter extends BaseAsserter<UserInfoInfoAdmi
 		]);
 	}
 
+	@step("Check ban button is displayed")
+	public async isBanButtonDisplayed(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.banUserButton,
+		]);
+	}
+
 	@step("Check category ban options are displayed")
 	public async categoryBanOptionsDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible([

@@ -38,6 +38,12 @@ export class UserInfoInfoAdminPageSteps extends BasePageStep<UserInfoInfoAdminPa
 		await this.gamdomPage.assertThat().isUnbanButtonDisplayed();
 	}
 
+	@step("Unban user")
+	public async unbanUser(): Promise<void> {
+		await this.gamdomPage.clickUnbanUserButton();
+		await this.gamdomPage.assertThat().isBanButtonDisplayed();
+	}
+
 	@step("Ban user - verify category options")
 	public async verifyBanUserCategoryOptions(): Promise<void> {
 		await this.waitForPageLoadAndBanUser();

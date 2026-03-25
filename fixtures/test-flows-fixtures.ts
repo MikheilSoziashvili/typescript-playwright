@@ -44,8 +44,10 @@ import { UserInfoStaffUserSetupFlow } from "@test-flows/user-info/user-info-staf
 import { UserInfoEditFieldFlow } from "@test-flows/user-info/user-info-edit-field-test-flow";
 import { SteamUserLoginLogoutFlow } from "@test-flows/ban/steam-user-login-logout-test-flow";
 import { BanUserVerificationFlow } from "@test-flows/ban/ban-user-verification-test-flow";
+import { BanUnbanUserTestFlow } from "@test-flows/ban/ban-unban-user-test-flow";
 import { HardBanResponsibleGamblingTestFlow } from "@test-flows/ban/hard-ban-responsible-gambling-test-flow";
 import { HardBanSupportRequestedTestFlow } from "@test-flows/ban/hard-ban-support-requested-test-flow";
+import { HardBanImmediateAccountLockTestFlow } from "@test-flows/ban/hard-ban-immediate-account-lock-test-flow";
 import { PasswordChangeSetupTestFlow } from "@test-flows/password/password-change-setup-test-flow";
 import { PasswordChangeExecutionTestFlow } from "@test-flows/password/password-change-execution-test-flow";
 import { ClaimReloadRewardAndVerifyClaimsTestFlow } from "@test-flows/rewards/claim-reload-reward-and-verify-claims-test-flow";
@@ -77,9 +79,11 @@ export type TestFlowsFixtures = {
 	userInfoStaffUserSetupFlow: UserInfoStaffUserSetupFlow;
 	userInfoEditFieldFlow: UserInfoEditFieldFlow;
 	steamUserLoginLogoutFlow: SteamUserLoginLogoutFlow;
+	banUnbanUserTestFlow: BanUnbanUserTestFlow;
 	banUserVerificationFlow: BanUserVerificationFlow;
 	hardBanResponsibleGamblingTestFlow: HardBanResponsibleGamblingTestFlow;
 	hardBanSupportRequestedTestFlow: HardBanSupportRequestedTestFlow;
+	hardBanImmediateAccountLockTestFlow: HardBanImmediateAccountLockTestFlow;
 	passwordChangeSetupTestFlow: PasswordChangeSetupTestFlow;
 	passwordChangeExecutionTestFlow: PasswordChangeExecutionTestFlow;
 	claimReloadRewardAndVerifyClaimsTestFlow: ClaimReloadRewardAndVerifyClaimsTestFlow;
@@ -240,6 +244,9 @@ export const testFlowsFixtures = base.extend<
 	steamUserLoginLogoutFlow: async ({}, use) => {
 		await use(new SteamUserLoginLogoutFlow());
 	},
+	banUnbanUserTestFlow: async ({ browserSessionManager }, use) => {
+		await use(new BanUnbanUserTestFlow(browserSessionManager));
+	},
 	banUserVerificationFlow: async ({}, use) => {
 		await use(new BanUserVerificationFlow());
 	},
@@ -248,6 +255,14 @@ export const testFlowsFixtures = base.extend<
 	},
 	hardBanSupportRequestedTestFlow: async ({ browserSessionManager }, use) => {
 		await use(new HardBanSupportRequestedTestFlow(browserSessionManager));
+	},
+	hardBanImmediateAccountLockTestFlow: async (
+		{ browserSessionManager },
+		use,
+	) => {
+		await use(
+			new HardBanImmediateAccountLockTestFlow(browserSessionManager),
+		);
 	},
 	passwordChangeSetupTestFlow: async ({}, use) => {
 		await use(new PasswordChangeSetupTestFlow());

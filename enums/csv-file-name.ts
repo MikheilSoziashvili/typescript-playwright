@@ -75,4 +75,5 @@ export enum CsvFilesName {
 	LIMBO_AUTO_MODE = "ENG-10737-limbo-auto-mode.csv",
 	HARD_BAN_RESPONSIBLE_GAMBLING = "ENG-10321-hard-ban-responsible-gambling.csv",
 	SOK_GAMES_MIN_BET_AFTER_CURRENCY_SWITCH = "ENG-11134-sok-games-min-bet-after-currency-switch.csv",
+	HARD_BAN_REASONS_WITH_IMMEDIATE_ACCOUNT_LOCK = "ENG-10402-reasons-with-immediate-account-lock.csv",
 }
