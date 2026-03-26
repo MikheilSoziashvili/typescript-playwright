@@ -7,6 +7,8 @@ import { JiraUser } from "@enums/jira/jira-users";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { testData } from "test-data/test-data-manager";
 import { TestUserRole } from "@enums/test-user-roles";
+import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
+import { isScheduledRun } from "configuration";
 
 test.describe("Dice tests", () => {
 	const diceGameDomainData = testData().fromDomain().diceGame;
@@ -45,19 +47,18 @@ test.describe("Dice tests", () => {
 
 	diceGameDomainData.diceMaxBetPotentialWinScenarios.forEach((scenario) => {
 		test(
-			`[ENG-3513] Dice - Check that max bet can be 1k and potential win 800k - Bet: ${scenario.betAmount}, Multiplier: ${scenario.multiplier}`,
+			`[ENG-3513] Dice - Check that max bet can be $500k and potential win $1.5m - Bet: ${scenario.betAmount}, Multiplier: ${scenario.multiplier}`,
 			testDetails()
+				.withJiraBugTickets("ENG-17661")
 				.withTags(JiraComponent.DICE)
 				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 				.apply(),
 			async ({ browserSessionManager, diceGamePage, testDataObject }) => {
-				test.fixme(
-					true,
-					"Temporary skipped until test is updated with new bet amounts",
-				);
+				test.fixme(isScheduledRun);
 
 				await browserSessionManager.loginAs(TestUserRole.REGULAR, {
 					reuseContext: true,
+					regularUserOptions: { amount: SUPER_HIGH_USER_AMOUNT },
 				});
 				await diceGamePage.navigate();
 				await diceGamePage

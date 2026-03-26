@@ -7,20 +7,20 @@ export class DiceGameDomainData {
 	public readonly diceMaxBetPotentialWinScenarios: DiceMaxBetPotentialWinScenario[] =
 		[
 			{
-				betAmount: 999,
-				multiplier: 800,
+				betAmount: 499999,
+				multiplier: 300,
 				assertDiceRollResult: (diceGamePage: DiceGamePage) =>
 					diceGamePage.assertThat().diceResultIsDisplayed(),
 			},
 			{
-				betAmount: 1000,
-				multiplier: 800,
+				betAmount: 500000,
+				multiplier: 3000,
 				assertDiceRollResult: (diceGamePage: DiceGamePage) =>
 					diceGamePage.assertThat().diceResultIsDisplayed(),
 			},
 			{
-				betAmount: 1000.01,
-				multiplier: 800,
+				betAmount: 50000.01,
+				multiplier: 300,
 				assertDiceRollResult: (diceGamePage: DiceGamePage) =>
 					diceGamePage.toast
 						.assertThat()
@@ -31,8 +31,8 @@ export class DiceGameDomainData {
 				skipScenario: true,
 			},
 			{
-				betAmount: 1000,
-				multiplier: 801,
+				betAmount: 500000,
+				multiplier: 301,
 				assertDiceRollResult: (diceGamePage: DiceGamePage) =>
 					diceGamePage.toast
 						.assertThat()
@@ -42,8 +42,8 @@ export class DiceGameDomainData {
 						),
 			},
 			{
-				betAmount: 1001,
-				multiplier: 810,
+				betAmount: 500001,
+				multiplier: 301,
 				assertDiceRollResult: (diceGamePage: DiceGamePage) =>
 					diceGamePage.toast
 						.assertThat()
