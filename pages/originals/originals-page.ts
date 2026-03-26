@@ -454,6 +454,7 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 			OriginalGame,
 			{
 				setBetAmount?: (amount: number) => Promise<void>;
+				typeBetAmount?: (amount: string) => Promise<void>;
 				pressMinButton?: () => Promise<void>;
 				pressHalfButton?: () => Promise<void>;
 				pressMaxButton?: () => Promise<void>;
@@ -465,6 +466,8 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 		[OriginalGame.Plinko]: {
 			setBetAmount: (amount) =>
 				this.plinkoGamePage.fillInBetAmount(amount),
+			typeBetAmount: (amount) =>
+				this.plinkoGamePage.map.betAmountInput.pressSequentially(amount),
 			pressMinButton: () => this.plinkoGamePage.pressMinButton(),
 			pressHalfButton: () => this.plinkoGamePage.pressHalfButton(),
 			pressMaxButton: () => this.plinkoGamePage.pressMaxButton(),
@@ -473,6 +476,8 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 		},
 		[OriginalGame.Mines]: {
 			setBetAmount: (amount) => this.minesGamePage.insertBet(amount),
+			typeBetAmount: (amount) =>
+				this.minesGamePage.map.betField.pressSequentially(amount),
 			pressMinButton: () => this.minesGamePage.pressMinButton(),
 			pressHalfButton: () => this.minesGamePage.pressHalfButton(),
 			pressMaxButton: () => this.minesGamePage.pressMaxButton(),
@@ -481,6 +486,8 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 		},
 		[OriginalGame.Keno]: {
 			setBetAmount: (amount) => this.kenoGamePage.insertBet(amount),
+			typeBetAmount: (amount) =>
+				this.kenoGamePage.map.betAmountInput.pressSequentially(amount),
 			pressMinButton: () => this.kenoGamePage.pressMinButton(),
 			pressHalfButton: () => this.kenoGamePage.pressHalfButton(),
 			pressMaxButton: () => this.kenoGamePage.pressMaxButton(),

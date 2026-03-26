@@ -48,6 +48,7 @@ export enum MaxBetAmount {
 
 export enum OriginalsHandlerMethods {
 	SetBetAmount = "setBetAmount",
+	TypeBetAmount = "typeBetAmount",
 	PressMinButton = "pressMinButton",
 	PressHalfButton = "pressHalfButton",
 	PressMaxButton = "pressMaxButton",

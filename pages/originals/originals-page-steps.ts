@@ -24,6 +24,14 @@ export class OriginalsSteps extends BasePageStep<OriginalsPage> {
 		game: OriginalGames,
 		betAmount: number,
 	): Promise<void> {
+		if (betAmount < 0) {
+			await this.invokeHandler(
+				game,
+				OriginalsHandlerMethods.TypeBetAmount,
+				betAmount.toString(),
+			);
+			return;
+		}
 		await this.invokeHandler(
 			game,
 			OriginalsHandlerMethods.SetBetAmount,
