@@ -12,8 +12,7 @@ export class ChangePasswordModalAsserter extends BaseAsserter<ChangePasswordModa
 	public async isModalDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.modalContainer,
-			this.gamdomPage.map.modalTitle,
-			this.gamdomPage.map.changePasswordModalBody,
+			this.gamdomPage.map.modalContent,
 		]);
 	}
 
@@ -24,12 +23,6 @@ export class ChangePasswordModalAsserter extends BaseAsserter<ChangePasswordModa
 		]);
 	}
 
-	@step("Assert modal title is 'Change Password'")
-	public async modalTitleIsChangePassword(): Promise<void> {
-		await expect(this.gamdomPage.map.modalTitle).toHaveText(
-			"Change Password",
-		);
-	}
 
 	@step("Assert change password button is enabled")
 	public async changePasswordButtonIsEnabled(): Promise<void> {
@@ -39,6 +32,13 @@ export class ChangePasswordModalAsserter extends BaseAsserter<ChangePasswordModa
 	@step("Assert change password button is disabled")
 	public async changePasswordButtonIsDisabled(): Promise<void> {
 		await expect(this.gamdomPage.map.changePasswordButton).toBeDisabled();
+	}
+
+	@step("Assert validation error is displayed")
+	public async validationErrorIs(expectedText: string): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.inputError(expectedText),
+		]);
 	}
 
 	@step("Assert all password fields are visible")

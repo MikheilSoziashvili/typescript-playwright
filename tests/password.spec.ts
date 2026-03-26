@@ -1,5 +1,7 @@
 import { testDetails } from "@core/helpers/test-details-helper";
 import {
+	createPngImagePath,
+	deleteFilesWithFilePaths,
 	generateEmailAndInbox,
 	setAuthenticationCookies,
 } from "@core/utils/utils";
@@ -11,10 +13,62 @@ import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { faker } from "@faker-js/faker";
 import { passwordPattern } from "@support/regex-patterns";
-import { test } from "fixtures/fixtures";
+import { test } from "@fixtures/fixtures";
 import { testData } from "test-data/test-data-manager";
 
 test.describe("Password tests", () => {
+	test.describe("Password Change Tests - 2FA", () => {
+		let qrCode2FAImagePath: string;
+
+		test.beforeEach(async () => {
+			qrCode2FAImagePath = createPngImagePath();
+		});
+
+		test.afterEach(async () => {
+			await deleteFilesWithFilePaths([qrCode2FAImagePath]);
+		});
+
+		testData()
+			.fromCsvParsed({
+				file: CsvFilesName.CHANGE_PASSWORD_2FA,
+			})
+			.forEach((input) => {
+				test(
+					`[ENG-11753] Change password with 2FA - ${input.scenario}`,
+					testDetails()
+						.withTags(
+							JiraComponent.CHANGE_PASSWORD,
+							JiraComponent.PROFILE,
+						)
+						.withAuthor(JiraUser.RALUCA_ARITON)
+						.apply(),
+					async ({
+						passwordChange2FaSetupTestFlow,
+						passwordChangeExecutionTestFlow,
+						profilePage,
+						settingsPage,
+						changePasswordModal,
+						toast,
+					}) => {
+						const { userPassword } =
+							await passwordChange2FaSetupTestFlow.setup2FaPasswordChange({
+								profilePage,
+								settingsPage,
+								changePasswordModal,
+								qrCode2FAImagePath,
+							});
+
+						await passwordChangeExecutionTestFlow.executePasswordChange({
+							changePasswordModal,
+							toast,
+							input,
+							userPassword,
+						});
+					},
+				);
+			});
+	});
+
 	test.describe("Password Change Tests", () => {
 		testData()
 			.fromCsvParsed({

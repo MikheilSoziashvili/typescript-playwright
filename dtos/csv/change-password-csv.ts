@@ -5,6 +5,7 @@ export interface ChangePasswordCsvRecord {
 	RepeatPassword: string;
 	IsSubmitButtonActive: string;
 	ExpectedResult: string;
+	ExpectedToastTitle?: string;
 }
 
 export type ChangePasswordCsv = ChangePasswordCsvRecord[];

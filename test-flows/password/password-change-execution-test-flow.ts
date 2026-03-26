@@ -32,16 +32,29 @@ export class PasswordChangeExecutionTestFlow extends BaseTestFlow {
 			}
 		}
 
-		if (input.isSubmitButtonActive) {
-			await changePasswordModal
-				.assertThat()
-				.changePasswordButtonIsEnabled();
-			await changePasswordModal.clickChangePasswordButton();
-			await toast.assertThat().subTitleIs(input.expectedResult);
-		} else {
+		if (!input.isSubmitButtonActive) {
 			await changePasswordModal
 				.assertThat()
 				.changePasswordButtonIsDisabled();
+			await changePasswordModal
+				.assertThat()
+				.validationErrorIs(input.expectedResult);
+			return;
 		}
+
+		await changePasswordModal.assertThat().changePasswordButtonIsEnabled();
+		await changePasswordModal.clickChangePasswordButton();
+
+		const { expectedToastTitle } = input;
+		if (!expectedToastTitle) {
+			await toast.assertThat().subTitleIs(input.expectedResult);
+			return;
+		}
+
+		await toast
+			.assertThat()
+			.titleIs(expectedToastTitle as string, {
+				subTitle: input.expectedResult,
+			});
 	}
 }

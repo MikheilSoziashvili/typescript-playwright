@@ -7,53 +7,32 @@ export class ChangePasswordModalMap extends BaseMap {
 	}
 
 	public get modalContainer(): Locator {
-		return this.page.getByTestId("modalContainer");
+		return this.page.getByTestId("change-password-modal-dialog");
 	}
 
-	public get modalHeader(): Locator {
-		return this.page.getByTestId("modalHeader");
-	}
-
-	public get modalTitle(): Locator {
-		return this.page.getByTestId("modalTitle");
-	}
-
-	public get closeButton(): Locator {
-		return this.page.getByTestId("closeButton");
-	}
-
-	public get modalBody(): Locator {
-		return this.page.getByTestId("modalBody");
-	}
-
-	public get changePasswordModalBody(): Locator {
-		return this.page.getByTestId("change-password-modal-body");
+	public get modalContent(): Locator {
+		return this.modalContainer.getByTestId("change-password-modal-content");
 	}
 
 	public get oldPasswordInput(): Locator {
-		return this.getInputField("old-password", this.changePasswordModalBody);
+		return this.modalContent.getByTestId("chg-password-cur").locator("input");
 	}
 
 	public get newPasswordInput(): Locator {
-		return this.getInputField("new-password", this.changePasswordModalBody);
+		return this.modalContent.getByTestId("chg-password-new").locator("input");
 	}
 
 	public get repeatNewPasswordInput(): Locator {
-		return this.getInputField(
-			"repeat-new-password",
-			this.changePasswordModalBody,
-		);
-	}
-
-	public get modalFooter(): Locator {
-		return this.page.getByTestId("modalFooter");
-	}
-
-	public get changePasswordModalFooter(): Locator {
-		return this.page.getByTestId("change-password-modal-footer");
+		return this.modalContent.getByTestId("chg-password-conf").locator("input");
 	}
 
 	public get changePasswordButton(): Locator {
-		return this.page.getByTestId("change-password-modal");
+		return this.modalContent.getByTestId("chg-password-sbt");
+	}
+
+	public inputError(text: string): Locator {
+		return this.modalContent.locator('[data-testid$="-error"]', {
+			hasText: text,
+		});
 	}
 }

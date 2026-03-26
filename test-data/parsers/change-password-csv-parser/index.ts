@@ -1,4 +1,5 @@
 import { ChangePasswordCsvRecord } from "@dtos/csv/change-password-csv";
+import { ToastTitle } from "@enums/toast-titles";
 
 export interface ChangePasswordCsvParsedRecord {
 	scenario: string;
@@ -7,6 +8,7 @@ export interface ChangePasswordCsvParsedRecord {
 	repeatPassword: string | null;
 	isSubmitButtonActive: boolean;
 	expectedResult: string;
+	expectedToastTitle: ToastTitle | null;
 }
 
 export const parseChangePasswordCsvRow = (
@@ -19,6 +21,9 @@ export const parseChangePasswordCsvRow = (
 		row.RepeatPassword === "empty" ? null : row.RepeatPassword,
 	isSubmitButtonActive: row.IsSubmitButtonActive === "true",
 	expectedResult: row.ExpectedResult,
+	expectedToastTitle: row.ExpectedToastTitle
+		? (row.ExpectedToastTitle as ToastTitle)
+		: null,
 });
 
 const CORRECT_PASSWORD_PLACEHOLDER = "Correct password";

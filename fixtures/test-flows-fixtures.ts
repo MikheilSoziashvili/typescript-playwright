@@ -50,6 +50,7 @@ import { HardBanSupportRequestedTestFlow } from "@test-flows/ban/hard-ban-suppor
 import { HardBanImmediateAccountLockTestFlow } from "@test-flows/ban/hard-ban-immediate-account-lock-test-flow";
 import { PasswordChangeSetupTestFlow } from "@test-flows/password/password-change-setup-test-flow";
 import { PasswordChangeExecutionTestFlow } from "@test-flows/password/password-change-execution-test-flow";
+import { PasswordChange2FaSetupTestFlow } from "@test-flows/password/password-change-2fa-setup-test-flow";
 import { ClaimReloadRewardAndVerifyClaimsTestFlow } from "@test-flows/rewards/claim-reload-reward-and-verify-claims-test-flow";
 import { VerifyReloadRewardPresenceAndClaimsTestFlow } from "@test-flows/rewards/verify-reload-reward-presence-and-claims-test-flow";
 import { VerifyAndClaimReloadRewardTestFlow } from "@test-flows/rewards/verify-and-claim-reload-reward-test-flow";
@@ -101,6 +102,7 @@ export type TestFlowsFixtures = {
 	hardBanImmediateAccountLockTestFlow: HardBanImmediateAccountLockTestFlow;
 	passwordChangeSetupTestFlow: PasswordChangeSetupTestFlow;
 	passwordChangeExecutionTestFlow: PasswordChangeExecutionTestFlow;
+	passwordChange2FaSetupTestFlow: PasswordChange2FaSetupTestFlow;
 	claimReloadRewardAndVerifyClaimsTestFlow: ClaimReloadRewardAndVerifyClaimsTestFlow;
 	verifyReloadRewardPresenceAndClaimsTestFlow: VerifyReloadRewardPresenceAndClaimsTestFlow;
 	verifyAndClaimReloadRewardTestFlow: VerifyAndClaimReloadRewardTestFlow;
@@ -300,6 +302,9 @@ export const testFlowsFixtures = base.extend<
 	},
 	passwordChangeExecutionTestFlow: async ({}, use) => {
 		await use(new PasswordChangeExecutionTestFlow());
+	},
+	passwordChange2FaSetupTestFlow: async ({ browserSessionManager }, use) => {
+		await use(new PasswordChange2FaSetupTestFlow(browserSessionManager));
 	},
 	claimReloadRewardAndVerifyClaimsTestFlow: async ({}, use) => {
 		await use(new ClaimReloadRewardAndVerifyClaimsTestFlow());

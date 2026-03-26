@@ -38,11 +38,6 @@ export class ChangePasswordModal extends BaseModal<ChangePasswordModalMap> {
 		await this.map.changePasswordButton.click();
 	}
 
-	@step("Close modal")
-	public async closeModal(): Promise<void> {
-		await this.map.closeButton.click();
-	}
-
 	@step("Change password")
 	public async changePassword(
 		oldPassword: string,

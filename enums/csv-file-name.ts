@@ -64,6 +64,7 @@ export enum CsvFilesName {
 	PROMOTION_COMBINATIONS_NOT_FOR_VIP = "ENG-11905-promotion-combinations.csv",
 	UNWAGERED_DEPOSITS_FIELD = "ENG-11731-Edit-Info-Verify-unwagered-deposits-field.csv",
 	CHANGE_PASSWORD = "ENG-11781-change-password.csv",
+	CHANGE_PASSWORD_2FA = "ENG-11753-change-password-2fa.csv",
 	RELOAD_UPDATE_AFTER_PARTIAL_CLAIM = "ENG-10259-reload-update-after-partial-claim.csv",
 	JACKPOT_CONTRIBUTION = "ENG-11717-Jackpot-Contribution-percentage-validation.csv",
 	RELOAD_UPDATE_LOGIC = "ENG-10268-reload-update-logic.csv",

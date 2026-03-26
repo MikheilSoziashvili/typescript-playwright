@@ -267,6 +267,10 @@ export type CsvTransformerMapType = {
 		row: ChangePasswordCsvRecord,
 	) => ChangePasswordCsvParsedRecord;
 
+	[CsvFilesName.CHANGE_PASSWORD_2FA]: (
+		row: ChangePasswordCsvRecord,
+	) => ChangePasswordCsvParsedRecord;
+
 	[CsvFilesName.SOK_GAMES_MIN_BET_AFTER_CURRENCY_SWITCH]: (
 		row: SokGamesMinBetAfterCurrencySwitchCsvRecord,
 	) => SokGamesMinBetAfterCurrencySwitchCsvParsedRecord;
@@ -337,6 +341,7 @@ export const CsvTransformerMap: CsvTransformerMapType = {
 	[CsvFilesName.JACKPOT_CONTRIBUTION]: parseJackpotContributionCsvRow,
 	[CsvFilesName.RELOAD_UPDATE_LOGIC]: parseReloadUpdateLogicCsvRow,
 	[CsvFilesName.CHANGE_PASSWORD]: parseChangePasswordCsvRow,
+	[CsvFilesName.CHANGE_PASSWORD_2FA]: parseChangePasswordCsvRow,
 	[CsvFilesName.SOK_GAMES_MIN_BET_AFTER_CURRENCY_SWITCH]:
 		parseSokGamesMinBetAfterCurrencySwitchCsvRow,
 	[CsvFilesName.SEND_WEEKLY_MONTHLY_REWARD]:

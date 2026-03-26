@@ -88,6 +88,7 @@ export type CsvDtoMap = {
 	[CsvFilesName.PROMOTION_COMBINATIONS_NOT_FOR_VIP]: PromotionCombinationsNotForVipCsv;
 	[CsvFilesName.UNWAGERED_DEPOSITS_FIELD]: UnwageredDepositsFieldCsv;
 	[CsvFilesName.CHANGE_PASSWORD]: ChangePasswordCsv;
+	[CsvFilesName.CHANGE_PASSWORD_2FA]: ChangePasswordCsv;
 	[CsvFilesName.RELOAD_UPDATE_AFTER_PARTIAL_CLAIM]: ReloadUpdateAfterPartialClaimCsv;
 	[CsvFilesName.JACKPOT_CONTRIBUTION]: JackpotContributionCsv;
 	[CsvFilesName.RELOAD_UPDATE_LOGIC]: ReloadUpdateLogicCsv;

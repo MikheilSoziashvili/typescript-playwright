@@ -83,6 +83,7 @@ export { KothPointsCalculationTestFlow } from "./koth/koth-points-calculation-te
 export { PasswordChangeSetupTestFlow } from "./password/password-change-setup-test-flow";
 export { PasswordChangeExecutionTestFlow } from "./password/password-change-execution-test-flow";
 export { PasswordChangeSetupResult } from "./password/password-change-setup-test-flow";
+export { PasswordChange2FaSetupTestFlow } from "./password/password-change-2fa-setup-test-flow";
 
 // EV Rewards flows
 export { EvRewardsBulkRewardSetupTestFlow } from "./rewards/ev-rewards-bulk-reward-setup-test-flow";
