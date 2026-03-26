@@ -50,6 +50,7 @@ import { OriginalsSelfExclusionCsv } from "@dtos/csv/originals-self-exclusion";
 import { PlinkoTestDataCsv } from "@dtos/csv/plinko-test-data-csv";
 import { PossibleWinPopUpCsv } from "@dtos/csv/possible-win-pop-up-csv";
 import { UserInfoSendNotificationCsv } from "@dtos/csv/user-info-send-notification-csv";
+import { PhoneNumberValidationCsv } from "@dtos/csv/phone-number-validation-csv";
 import { CsvFilesName } from "@enums/csv-file-name";
 
 export type CsvDtoMap = {
@@ -104,4 +105,5 @@ export type CsvDtoMap = {
 	[CsvFilesName.DICE_AUTOBET]: DiceAutobetCsv;
 	[CsvFilesName.CRASH_AUTO_CASHOUT]: CrashAutoCashoutCsv;
 	[CsvFilesName.CRASH_INCREASE_BY]: CrashIncreaseBysCsv;
+	[CsvFilesName.PHONE_NUMBER_VALIDATION]: PhoneNumberValidationCsv;
 };

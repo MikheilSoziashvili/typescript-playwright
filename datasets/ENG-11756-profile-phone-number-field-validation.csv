@@ -1,0 +1,9 @@
+inputValue,buttonAction,expectedResult,notificationMessage,comments
++972557709011,Press,SUCCESS,Phone updated successfully.,International phone number format
++972 55 7709011,Press,SUCCESS,Phone updated successfully.,International phone number format with spaces
++9720557709011,Press,SUCCESS,Phone updated successfully.,international format with an extra local prefix
+12314,Not active,FAILED,Invalid phone number,short phone number
++(972)557709012,Press,FAILED,Invalid number has been used,Phone number format with parentheses
+,Not active,FAILED,Invalid phone number,Empty input field
+0557709011,Not active,FAILED,Invalid phone number,Local phone number format
+972557709018,Not active,FAILED,Invalid phone number,Missing + in international format

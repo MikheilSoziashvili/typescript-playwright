@@ -64,4 +64,6 @@ export enum ToastSubTitle {
 	JURISDICTION_RESTRICTED = "Gamdom is not available in your jurisdiction",
 	SUCCESSFULLY_CLAIMED_PARTIAL = "You have successfully claimed",
 	EMAIL_UPDATED_SUCCESSFULLY = "Email updated successfully.",
+	PHONE_UPDATED_SUCCESSFULLY = "Phone updated successfully.",
+	INVALID_NUMBER_HAS_BEEN_USED = "Invalid number has been used",
 }

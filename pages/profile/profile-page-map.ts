@@ -74,6 +74,12 @@ export class ProfilePageMap extends BaseMap {
 		);
 	}
 
+	public get phoneValidationError(): Locator {
+		return this.page.getByTestId(
+			"profile-page-change-user-info-phone-error",
+		);
+	}
+
 	public get changePasswordButton(): Locator {
 		return this.page.getByTestId("change-user-password-button");
 	}

@@ -55,6 +55,15 @@ export class ProfilePage extends BasePage<ProfilePageMap> {
 		await this.map.saveEmailButton.click();
 	}
 
+	@step("Fill phone input")
+	public async fillPhoneInput(value: string): Promise<void> {
+		const PLACEHOLDER_TEXT = "temp";
+		if (!value) {
+			await this.map.changePhoneInput.fill(PLACEHOLDER_TEXT);
+		}
+		await this.map.changePhoneInput.fill(value);
+	}
+
 	@step("Click save phone")
 	public async clickSavePhone(): Promise<void> {
 		await this.map.savePhoneButton.click();

@@ -78,4 +78,5 @@ export enum CsvFilesName {
 	CASINO_GAME_INSTANT_REWARDS_ROYALTY_UP_LEVELS = "ENG-10283-casino-game-instant-rewards-royalty-up-levels-with-diff-rakeback-percantage.csv",
 	KOTH_POINTS_CALCULATION = "ENG-9786-koth-points-calculation.csv",
 	FEATURE_ACTIVATION_V4 = "ENG-12432-redesign-v4-feature-activation.csv",
+	PHONE_NUMBER_VALIDATION = "ENG-11756-profile-phone-number-field-validation.csv",
 }

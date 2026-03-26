@@ -19,4 +19,21 @@ export class ProfilePageAsserter extends BaseAsserter<ProfilePage> {
 			this.gamdomPage.map.changePhoneInput,
 		]);
 	}
+
+	@step("Assert phone validation error is")
+	public async phoneValidationErrorIs(errorText: string): Promise<void> {
+		await this.checkElementsContainText([
+			{
+				locator: this.gamdomPage.map.phoneValidationError,
+				expectedText: errorText,
+			},
+		]);
+	}
+
+	@step("Assert save phone button is disabled")
+	public async savePhoneButtonIsDisabled(): Promise<void> {
+		await this.checkElementsAreDisabled([
+			this.gamdomPage.map.savePhoneButton,
+		]);
+	}
 }

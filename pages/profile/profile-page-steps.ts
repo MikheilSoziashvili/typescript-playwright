@@ -211,6 +211,31 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		}
 	}
 
+	@step("Submit phone number and verify toast")
+	public async submitPhoneNumberAndVerifyToast(
+		inputValue: string,
+		expectedResult: ToastTitle,
+		notificationMessage: ToastSubTitle,
+	): Promise<void> {
+		await this.gamdomPage.fillPhoneInput(inputValue);
+		await this.gamdomPage.clickSavePhone();
+		await this.toast
+			.assertThat()
+			.toastMessageIs(expectedResult, notificationMessage);
+	}
+
+	@step("Fill phone number and verify validation error")
+	public async fillPhoneNumberAndVerifyValidationError(
+		inputValue: string,
+		notificationMessage: string,
+	): Promise<void> {
+		await this.gamdomPage.fillPhoneInput(inputValue);
+		await this.gamdomPage.assertThat().savePhoneButtonIsDisabled();
+		await this.gamdomPage
+			.assertThat()
+			.phoneValidationErrorIs(notificationMessage);
+	}
+
 	@step("Change username")
 	public async changeUsername(username: string): Promise<void> {
 		await this.gamdomPage.map.changeUsernameInput.fill(username);
