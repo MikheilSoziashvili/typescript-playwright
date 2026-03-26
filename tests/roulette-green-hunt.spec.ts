@@ -1,10 +1,10 @@
 import { test } from "@fixtures/fixtures";
-import { GreenHuntTypeOption } from "@enums/roulette-autobet-section";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { TestUserRole } from "@enums/test-user-roles";
 import { TestTag } from "@enums/test-tags";
+import { testData } from "test-data/test-data-manager";
 
 test.describe(
 	"Green hunt",
@@ -12,38 +12,36 @@ test.describe(
 		.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.ROULETTE)
 		.apply(),
 	() => {
-		test(
-			"[ENG-1090] Roulette - green hunt",
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
-			async ({
-				browserSessionManager,
-				rouletteGamePage,
-				testDataObject,
-				testDataPredefined,
-			}) => {
-				await browserSessionManager.loginAs(TestUserRole.REGULAR, {
-					reuseContext: true,
-				});
-				const { betAmount, betColor, percentage } =
-					testDataPredefined.data.roulette.greenHunt;
-				const testData = testDataObject.rouletteBet.build(
-					{
-						username:
-							browserSessionManager.activeUser.user.username,
-					},
-					{ betAmount, betColor },
-				);
+		const rouletteDomainData = testData().fromDomain().roulette;
 
-				await rouletteGamePage
-					.steps()
-					.navigateAndStartGreenHunt(
-						percentage,
-						GreenHuntTypeOption.PERCENT,
-					);
-				await rouletteGamePage
-					.steps()
-					.placeBetAndVerifyGreenHunt(testData, percentage);
-			},
-		);
+		rouletteDomainData.greenHuntScenarios.forEach((scenario) => {
+			test(
+				`[ENG-15292] Roulette - green hunt - ${scenario.when}`,
+				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
+				async ({ browserSessionManager, rouletteGamePage }) => {
+					await browserSessionManager.loginAs(TestUserRole.REGULAR, {
+						reuseContext: true,
+					});
+
+					const { greenHuntValue, bet } =
+						rouletteDomainData.buildGreenHuntBetData(
+							browserSessionManager.activeUser.user.username,
+						);
+
+					await rouletteGamePage
+						.steps()
+						.navigateAndStartGreenHunt(
+							greenHuntValue,
+							scenario.when,
+						);
+					await rouletteGamePage
+						.steps()
+						.placeBetAndVerifyGreenHunt(
+							bet,
+							scenario.expectedGreenBet,
+						);
+				},
+			);
+		});
 	},
 );

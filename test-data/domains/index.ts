@@ -16,6 +16,7 @@ import { RewardsDomainData } from "./rewards-domain-data";
 import { ChatDomainData } from "./chat-domain-data";
 import { CryptoDomainData } from "./crypto-domain-data";
 import { RainDomainData } from "./rain-domain-data";
+import { RouletteDomainData } from "./roulette-domain-data";
 
 export const domainRegistry = {
 	originals: OriginalsDomainData,
@@ -36,4 +37,5 @@ export const domainRegistry = {
 	chat: ChatDomainData,
 	crypto: CryptoDomainData,
 	rain: RainDomainData,
+	roulette: RouletteDomainData,
 };

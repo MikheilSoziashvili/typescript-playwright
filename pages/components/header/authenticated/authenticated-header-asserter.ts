@@ -1,8 +1,9 @@
 import { BaseAsserter } from "@base/base-asserter";
-import { formatBalance } from "@core/utils/utils";
+import { formatBalance, waitUntil } from "@core/utils/utils";
 import { Currency } from "@enums/currencies";
 import { CurrencySymbol } from "@enums/currenciesSymbols";
 import { NumberSeparators } from "@enums/number-separators";
+import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { Unit } from "@enums/units";
 import { WalletType } from "@enums/wallet-types";
 import { expect, TestInfo } from "@playwright/test";
@@ -58,6 +59,22 @@ export class AuthenticatedHeaderAsserter extends BaseAsserter<AuthenticatedHeade
 				headers,
 			);
 		expect(expectedBalance).toBe(amount);
+	}
+
+	@step("Account balance in coins is")
+	public async accountBalanceInCoinsIs(expectedCoins: number): Promise<void> {
+		await waitUntil(
+			async () => {
+				const currentCoins =
+					await this.userBalanceHandler.walletBalanceInCoins();
+				return currentCoins === expectedCoins;
+			},
+			{
+				errorMessage: `Balance did not update to expected ${expectedCoins} coins`,
+				intervalSeconds: TimeoutSeconds.HALF,
+				timeoutSeconds: TimeoutSeconds.THREE,
+			},
+		);
 	}
 
 	@step("Account balance has changed")

@@ -5,7 +5,7 @@ import { RouletteGamePage } from "./roulette-game-page";
 import { GreenHuntTypeOption } from "@enums/roulette-autobet-section";
 import { RouletteBetTestData } from "@dtos/test-data";
 import { RouletteNumberColor } from "@enums/original-games";
-import { calculateGreenHuntAmountByPercentage } from "@formulas/roulette";
+import { RouletteBetColor } from "@enums/original-games";
 import { Timeout } from "@enums/timeout";
 import { IntervalMs } from "@enums/interval-millisecond";
 import { logger } from "@logger/logger";
@@ -113,27 +113,33 @@ export class RouletteGamePageSteps extends BasePageStep<RouletteGamePage> {
 	@step("Place manual bet and verify green hunt state")
 	public async placeBetAndVerifyGreenHunt(
 		testData: RouletteBetTestData,
-		percentage: number,
+		expectedGreenBetAmount: number,
 	): Promise<string> {
-		const greenHuntAmount = calculateGreenHuntAmountByPercentage(
+		const initialCoins =
+			await this.userBalanceHandler.walletBalanceInCoins();
+		const betCoins = this.userBalanceHandler.usdToCoinsTrunc(
 			testData.betAmount,
-			percentage,
 		);
-		const accountBalance =
-			await this.userBalanceHandler.walletBalanceInFiatRounded();
+		const greenHuntCoins =
+			this.userBalanceHandler.usdToCoinsTrunc(expectedGreenBetAmount);
 		await this.prepareBet(testData);
+		await this.gamdomPage.authenticatedHeader
+			.assertThat()
+			.accountBalanceInCoinsIs(
+				initialCoins - betCoins - greenHuntCoins,
+			);
 		await this.gamdomPage.assertThat().playersBetsDisplayed([
 			{
 				betColor: testData.betColor,
 				username: testData.username,
 				betAmount: testData.betAmount,
 			},
+			{
+				betColor: RouletteBetColor.GREEN,
+				username: testData.username,
+				betAmount: expectedGreenBetAmount,
+			},
 		]);
-		await this.gamdomPage.authenticatedHeader
-			.assertThat()
-			.accountBalanceIs(
-				accountBalance - testData.betAmount - greenHuntAmount,
-			);
 		return this.gamdomPage.getRoundResultNumber();
 	}
 
