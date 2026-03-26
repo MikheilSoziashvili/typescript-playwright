@@ -80,6 +80,12 @@ export class ProfilePageMap extends BaseMap {
 		);
 	}
 
+	public get emailValidationError(): Locator {
+		return this.page.getByTestId(
+			"profile-page-change-user-info-email-error",
+		);
+	}
+
 	public get changePasswordButton(): Locator {
 		return this.page.getByTestId("change-user-password-button");
 	}

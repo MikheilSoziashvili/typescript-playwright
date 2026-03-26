@@ -211,13 +211,33 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		}
 	}
 
+	@step("Fill email and verify save button is enabled")
+	public async fillEmailAndVerifySaveButtonEnabled(
+		inputValue: string,
+	): Promise<void> {
+		await this.gamdomPage.fillProfileInput(this.gamdomPage.map.changeEmailInput, inputValue);
+		await this.gamdomPage.assertThat().saveEmailButtonIsEnabled();
+	}
+
+	@step("Fill email and verify validation error")
+	public async fillEmailAndVerifyValidationError(
+		inputValue: string,
+		notificationMessage: string,
+	): Promise<void> {
+		await this.gamdomPage.fillProfileInput(this.gamdomPage.map.changeEmailInput, inputValue);
+		await this.gamdomPage.assertThat().saveEmailButtonIsDisabled();
+		await this.gamdomPage
+			.assertThat()
+			.emailValidationErrorIs(notificationMessage);
+	}
+
 	@step("Submit phone number and verify toast")
 	public async submitPhoneNumberAndVerifyToast(
 		inputValue: string,
 		expectedResult: ToastTitle,
 		notificationMessage: ToastSubTitle,
 	): Promise<void> {
-		await this.gamdomPage.fillPhoneInput(inputValue);
+		await this.gamdomPage.fillProfileInput(this.gamdomPage.map.changePhoneInput, inputValue);
 		await this.gamdomPage.clickSavePhone();
 		await this.toast
 			.assertThat()
@@ -229,7 +249,7 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		inputValue: string,
 		notificationMessage: string,
 	): Promise<void> {
-		await this.gamdomPage.fillPhoneInput(inputValue);
+		await this.gamdomPage.fillProfileInput(this.gamdomPage.map.changePhoneInput, inputValue);
 		await this.gamdomPage.assertThat().savePhoneButtonIsDisabled();
 		await this.gamdomPage
 			.assertThat()

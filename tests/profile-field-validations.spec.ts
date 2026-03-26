@@ -9,68 +9,128 @@ import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { testData } from "test-data/test-data-manager";
 
+const filterByButtonAction = <T extends { buttonAction: string }>(
+	rows: T[],
+	action: ButtonAction,
+): T[] => rows.filter((row) => row.buttonAction === action);
+
 test.describe("Profile - Field validations", () => {
-	const allRows = testData().fromCsvRaw({
+	const phoneRows = testData().fromCsvRaw({
 		file: CsvFilesName.PHONE_NUMBER_VALIDATION,
 	});
+	const emailRows = testData().fromCsvRaw({
+		file: CsvFilesName.EMAIL_ADDRESS_VALIDATION,
+	});
 
-	const enabledRows = allRows.filter(
-		(row) => row.buttonAction === ButtonAction.ENABLED,
-	);
-	const disabledRows = allRows.filter(
-		(row) => row.buttonAction === ButtonAction.DISABLED,
-	);
+	test.describe("Email address - save button enabled", () => {
+		filterByButtonAction(emailRows, ButtonAction.ENABLED).forEach(
+			(row) => {
+				test(
+					`[ENG-11755] Email address validation - ${row.comments}`,
+					testDetails()
+						.withTags(JiraComponent.PROFILE)
+						.withAuthor(JiraUser.RALUCA_ARITON)
+						.apply(),
+					async ({ browserSessionManager, profilePage }) => {
+						await browserSessionManager.loginAs(
+							TestUserRole.REGULAR,
+							{ reuseContext: true },
+						);
+
+						await profilePage.navigate();
+						await profilePage
+							.steps()
+							.fillEmailAndVerifySaveButtonEnabled(
+								row.inputValue,
+							);
+					},
+				);
+			},
+		);
+	});
+
+	test.describe("Email address - validation error", () => {
+		filterByButtonAction(emailRows, ButtonAction.DISABLED).forEach(
+			(row) => {
+				test(
+					`[ENG-11755] Email address validation - ${row.comments}`,
+					testDetails()
+						.withTags(JiraComponent.PROFILE)
+						.withAuthor(JiraUser.RALUCA_ARITON)
+						.apply(),
+					async ({ browserSessionManager, profilePage }) => {
+						await browserSessionManager.loginAs(
+							TestUserRole.REGULAR,
+							{ reuseContext: true },
+						);
+
+						await profilePage.navigate();
+						await profilePage
+							.steps()
+							.fillEmailAndVerifyValidationError(
+								row.inputValue,
+								row.notificationMessage,
+							);
+					},
+				);
+			},
+		);
+	});
 
 	test.describe("Phone number - submit and verify toast", () => {
-		enabledRows.forEach((row) => {
-			test(
-				`[ENG-11756] Phone number validation - ${row.comments}`,
-				testDetails()
-					.withTags(JiraComponent.PROFILE)
-					.withAuthor(JiraUser.RALUCA_ARITON)
-					.apply(),
-				async ({ browserSessionManager, profilePage }) => {
-					await browserSessionManager.loginAs(
-						TestUserRole.REGULAR,
-						{ reuseContext: true },
-					);
-
-					await profilePage.navigate();
-					await profilePage
-						.steps()
-						.submitPhoneNumberAndVerifyToast(
-							row.inputValue,
-							row.expectedResult as ToastTitle,
-							row.notificationMessage as ToastSubTitle,
+		filterByButtonAction(phoneRows, ButtonAction.ENABLED).forEach(
+			(row) => {
+				test(
+					`[ENG-11756] Phone number validation - ${row.comments}`,
+					testDetails()
+						.withTags(JiraComponent.PROFILE)
+						.withAuthor(JiraUser.RALUCA_ARITON)
+						.apply(),
+					async ({ browserSessionManager, profilePage }) => {
+						await browserSessionManager.loginAs(
+							TestUserRole.REGULAR,
+							{ reuseContext: true },
 						);
-				},
-			);
-		});
+
+						await profilePage.navigate();
+						await profilePage
+							.steps()
+							.submitPhoneNumberAndVerifyToast(
+								row.inputValue,
+								row.expectedResult as ToastTitle,
+								row.notificationMessage as ToastSubTitle,
+							);
+					},
+				);
+			},
+		);
 	});
 
 	test.describe("Phone number - validation error", () => {
-		disabledRows.forEach((row) => {
-			test(
-				`[ENG-11756] Phone number validation - ${row.comments}`,
-				testDetails()
-					.withTags(JiraComponent.PROFILE)
-					.withAuthor(JiraUser.RALUCA_ARITON)
-					.apply(),
-				async ({ browserSessionManager, profilePage }) => {
-					await browserSessionManager.loginAs(
-						TestUserRole.REGULAR,
-						{ reuseContext: true },
-					);
-
-					await profilePage.navigate();
-					await profilePage
-						.steps()
-						.fillPhoneNumberAndVerifyValidationError(
-							row.inputValue,
-							row.notificationMessage,
+		filterByButtonAction(phoneRows, ButtonAction.DISABLED).forEach(
+			(row) => {
+				test(
+					`[ENG-11756] Phone number validation - ${row.comments}`,
+					testDetails()
+						.withTags(JiraComponent.PROFILE)
+						.withAuthor(JiraUser.RALUCA_ARITON)
+						.apply(),
+					async ({ browserSessionManager, profilePage }) => {
+						await browserSessionManager.loginAs(
+							TestUserRole.REGULAR,
+							{ reuseContext: true },
 						);
-				},
-			);
-		});
+
+						await profilePage.navigate();
+						await profilePage
+							.steps()
+							.fillPhoneNumberAndVerifyValidationError(
+								row.inputValue,
+								row.notificationMessage,
+							);
+					},
+				);
+			},
+		);
 	});
 });

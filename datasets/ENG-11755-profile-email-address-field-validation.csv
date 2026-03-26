@@ -1,0 +1,11 @@
+inputValue,buttonAction,notificationMessage,comments
+usertest@gamdom.com,Press,,Valid email with basic format
+user.test123!@gamdom.com,Not active,Invalid email address,Email with special character !
+user_test@gamdom.com,Press,,Valid email with underscore
+user-test@gamdom.com,Press,,Valid email with hyphen
+12345@gamdom.com,Press,,Valid email with numeric local part
+usertest@gamdom.c,Not active,Invalid email address,Domain TLD too short
+usertest@gamdom,Not active,Invalid email address,Missing TLD
+usertestgamdom.com,Not active,Invalid email address,Missing @ symbol
+@gmail.com,Not active,Invalid email address,Missing local part
+,Not active,Invalid email address,Empty input field

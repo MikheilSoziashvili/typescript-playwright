@@ -79,4 +79,5 @@ export enum CsvFilesName {
 	KOTH_POINTS_CALCULATION = "ENG-9786-koth-points-calculation.csv",
 	FEATURE_ACTIVATION_V4 = "ENG-12432-redesign-v4-feature-activation.csv",
 	PHONE_NUMBER_VALIDATION = "ENG-11756-profile-phone-number-field-validation.csv",
+	EMAIL_ADDRESS_VALIDATION = "ENG-11755-profile-email-address-field-validation.csv",
 }

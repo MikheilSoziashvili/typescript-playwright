@@ -1,4 +1,4 @@
-import { Page } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 import { step } from "decorators/step";
 import { BasePage } from "@base/base-page";
 import { ProfilePageMap } from "./profile-page-map";
@@ -9,6 +9,8 @@ import { ProfilePageSteps } from "./profile-page-steps";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { TwoFactorAuthModal } from "@pages/modals/two-factor-authentication-modal/two-factor-auth-modal";
 import { UserMenuOption } from "@enums/user-menu-options";
+
+const PLACEHOLDER_TEXT = "temp";
 
 export class ProfilePage extends BasePage<ProfilePageMap> {
 	public constructor(page: Page) {
@@ -55,13 +57,15 @@ export class ProfilePage extends BasePage<ProfilePageMap> {
 		await this.map.saveEmailButton.click();
 	}
 
-	@step("Fill phone input")
-	public async fillPhoneInput(value: string): Promise<void> {
-		const PLACEHOLDER_TEXT = "temp";
+	@step("Fill profile input field")
+	public async fillProfileInput(
+		field: Locator,
+		value: string,
+	): Promise<void> {
 		if (!value) {
-			await this.map.changePhoneInput.fill(PLACEHOLDER_TEXT);
+			await field.fill(PLACEHOLDER_TEXT);
 		}
-		await this.map.changePhoneInput.fill(value);
+		await field.fill(value);
 	}
 
 	@step("Click save phone")
