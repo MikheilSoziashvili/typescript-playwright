@@ -1,0 +1,6 @@
+inputValue,buttonAction,expectedResult,notificationMessage,comments
+Qx7,Not active,FAILED,"This display username is not acceptable, please don't use display usernames shorter than 5 characters or longer than 16 characters.",Less than 5 characters
+Zk9mW,Press,SUCCESS,Username updated successfully.,Exactly 5 characters
+Vp3xR8$w#Lq!+>n@,Press,SUCCESS,Username updated successfully.,Exactly 16 characters with symbols
+Vp3xR8$w#Lq!+>n@?,Not active,FAILED,"This display username is not acceptable, please don't use display usernames shorter than 5 characters or longer than 16 characters.",More than 16 characters
+,Press,SUCCESS,Username updated successfully.,Empty input field

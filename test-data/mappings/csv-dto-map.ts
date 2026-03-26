@@ -52,6 +52,7 @@ import { PossibleWinPopUpCsv } from "@dtos/csv/possible-win-pop-up-csv";
 import { UserInfoSendNotificationCsv } from "@dtos/csv/user-info-send-notification-csv";
 import { PhoneNumberValidationCsv } from "@dtos/csv/phone-number-validation-csv";
 import { EmailAddressValidationCsv } from "@dtos/csv/email-address-validation-csv";
+import { UsernameValidationCsv } from "@dtos/csv/username-validation-csv";
 import { CsvFilesName } from "@enums/csv-file-name";
 
 export type CsvDtoMap = {
@@ -108,4 +109,5 @@ export type CsvDtoMap = {
 	[CsvFilesName.CRASH_INCREASE_BY]: CrashIncreaseBysCsv;
 	[CsvFilesName.PHONE_NUMBER_VALIDATION]: PhoneNumberValidationCsv;
 	[CsvFilesName.EMAIL_ADDRESS_VALIDATION]: EmailAddressValidationCsv;
+	[CsvFilesName.USERNAME_VALIDATION]: UsernameValidationCsv;
 };

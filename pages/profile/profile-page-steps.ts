@@ -211,6 +211,39 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		}
 	}
 
+	@step("Submit username and verify toast")
+	public async submitUsernameAndVerifyToast(
+		inputValue: string,
+		expectedResult: ToastTitle,
+		notificationMessage: ToastSubTitle,
+	): Promise<void> {
+		await this.gamdomPage.fillProfileInput(
+			this.gamdomPage.map.changeUsernameInput,
+			inputValue,
+		);
+		await this.gamdomPage.clickSaveUsername();
+		await this.toast
+			.assertThat()
+			.toastMessageIs(expectedResult, notificationMessage);
+	}
+
+	@step("Fill username and verify validation error")
+	public async fillUsernameAndVerifyValidationError(
+		inputValue: string,
+		notificationMessage: string,
+	): Promise<void> {
+		await this.gamdomPage.fillProfileInput(
+			this.gamdomPage.map.changeUsernameInput,
+			inputValue,
+		);
+		await this.gamdomPage
+			.assertThat()
+			.saveUsernameButtonIsDisabled();
+		await this.gamdomPage
+			.assertThat()
+			.usernameValidationErrorIs(notificationMessage);
+	}
+
 	@step("Fill email and verify save button is enabled")
 	public async fillEmailAndVerifySaveButtonEnabled(
 		inputValue: string,

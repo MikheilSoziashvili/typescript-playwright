@@ -20,6 +20,25 @@ export class ProfilePageAsserter extends BaseAsserter<ProfilePage> {
 		]);
 	}
 
+	@step("Assert username validation error is")
+	public async usernameValidationErrorIs(
+		errorText: string,
+	): Promise<void> {
+		await this.checkElementsContainText([
+			{
+				locator: this.gamdomPage.map.usernameValidationError,
+				expectedText: errorText,
+			},
+		]);
+	}
+
+	@step("Assert save username button is disabled")
+	public async saveUsernameButtonIsDisabled(): Promise<void> {
+		await this.checkElementsAreDisabled([
+			this.gamdomPage.map.saveUsernameButton,
+		]);
+	}
+
 	@step("Assert email validation error is")
 	public async emailValidationErrorIs(errorText: string): Promise<void> {
 		await this.checkElementsContainText([

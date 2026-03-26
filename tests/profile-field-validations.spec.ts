@@ -21,6 +21,66 @@ test.describe("Profile - Field validations", () => {
 	const emailRows = testData().fromCsvRaw({
 		file: CsvFilesName.EMAIL_ADDRESS_VALIDATION,
 	});
+	const usernameRows = testData().fromCsvRaw({
+		file: CsvFilesName.USERNAME_VALIDATION,
+	});
+
+	test.describe("Username - submit and verify toast", () => {
+		filterByButtonAction(usernameRows, ButtonAction.ENABLED).forEach(
+			(row) => {
+				test(
+					`[ENG-11754] Username validation - ${row.comments}`,
+					testDetails()
+						.withTags(JiraComponent.PROFILE)
+						.withAuthor(JiraUser.RALUCA_ARITON)
+						.apply(),
+					async ({ browserSessionManager, profilePage }) => {
+						await browserSessionManager.loginAs(
+							TestUserRole.REGULAR,
+							{ reuseContext: true },
+						);
+
+						await profilePage.navigate();
+						await profilePage
+							.steps()
+							.submitUsernameAndVerifyToast(
+								row.inputValue,
+								row.expectedResult as ToastTitle,
+								row.notificationMessage as ToastSubTitle,
+							);
+					},
+				);
+			},
+		);
+	});
+
+	test.describe("Username - validation error", () => {
+		filterByButtonAction(usernameRows, ButtonAction.DISABLED).forEach(
+			(row) => {
+				test(
+					`[ENG-11754] Username validation - ${row.comments}`,
+					testDetails()
+						.withTags(JiraComponent.PROFILE)
+						.withAuthor(JiraUser.RALUCA_ARITON)
+						.apply(),
+					async ({ browserSessionManager, profilePage }) => {
+						await browserSessionManager.loginAs(
+							TestUserRole.REGULAR,
+							{ reuseContext: true },
+						);
+
+						await profilePage.navigate();
+						await profilePage
+							.steps()
+							.fillUsernameAndVerifyValidationError(
+								row.inputValue,
+								row.notificationMessage,
+							);
+					},
+				);
+			},
+		);
+	});
 
 	test.describe("Email address - save button enabled", () => {
 		filterByButtonAction(emailRows, ButtonAction.ENABLED).forEach(

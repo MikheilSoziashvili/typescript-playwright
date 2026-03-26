@@ -48,3 +48,4 @@ export * from "./crash-increase-by-csv";
 export * from "./dice-autobet-csv";
 export * from "./phone-number-validation-csv";
 export * from "./email-address-validation-csv";
+export * from "./username-validation-csv";
