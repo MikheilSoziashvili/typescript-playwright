@@ -38,10 +38,6 @@ export class RegisterModalMap extends BaseMap {
 		return this.page.getByTestId("agree-terms-signup").locator("span");
 	}
 
-	public get newsAndOffersCheckbox(): Locator {
-		return this.page.getByTestId("want-news-signup").locator("span");
-	}
-
 	public get startPlayingBtn(): Locator {
 		return this.page.getByTestId("start-playing-signup");
 	}

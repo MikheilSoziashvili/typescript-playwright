@@ -23,7 +23,6 @@ test.describe("Register tests", () => {
 			const registeredData = testDataObject.register.random();
 			await homePage.registerModal.fillInCredentials(registeredData, {
 				acceptTermsOfService: true,
-				acceptNewsOffers: true,
 			});
 
 			await homePage.registerModal.clickStartPlayingBtn();

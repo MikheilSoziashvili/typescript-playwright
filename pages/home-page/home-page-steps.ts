@@ -85,7 +85,6 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 		const registeredData = RegisterTestDataObjectFactory.build(params);
 		await this.gamdomPage.registerModal.fillInCredentials(registeredData, {
 			acceptTermsOfService: true,
-			acceptNewsOffers: true,
 		});
 		await Promise.all([
 			this.gamdomPage.steps().verifyToastMessage(ToastTitle.SUCCESS),

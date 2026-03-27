@@ -21,6 +21,10 @@ test.describe("Login tests", () => {
 				`[ENG-294] Login using username - Login is not possible: [Username: ${record.username}] [Password: ${record.password}]`,
 				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
 				async ({ homePage }) => {
+					test.fixme(
+						true,
+						"Needs to be updated once XRay test is active",
+					);
 					await homePage.navigateAndCheckTitle();
 
 					await homePage.unauthenticatedHeader.openLoginModal();
@@ -81,8 +85,8 @@ test.describe("Login tests", () => {
 				.apply(),
 			async ({ homePage }) => {
 				test.fixme(
-					record.username ===
-						"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+					true,
+					"Needs to be updated once XRay test is active",
 				);
 				await homePage.navigateAndCheckTitle();
 

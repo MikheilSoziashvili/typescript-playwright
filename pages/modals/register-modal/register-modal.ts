@@ -30,11 +30,9 @@ export class RegisterModal extends BaseModal<RegisterModalMap> {
 		registerData: RegisterTestData,
 		options: {
 			acceptTermsOfService?: boolean;
-			acceptNewsOffers?: boolean;
 		} = {},
 	): Promise<void> {
-		const { acceptTermsOfService = true, acceptNewsOffers = false } =
-			options;
+		const { acceptTermsOfService = true } = options;
 
 		await this.map.usernameField.fill(registerData.username);
 		await this.map.passwordField.fill(registerData.password);
@@ -48,15 +46,6 @@ export class RegisterModal extends BaseModal<RegisterModalMap> {
 			});
 
 			await this.waitUntilChecked(termsOfServiceCheckbox);
-		}
-		if (acceptNewsOffers) {
-			const newsAndOffersCheckbox = this.map.newsAndOffersCheckbox;
-
-			await newsAndOffersCheckbox.click({
-				delay: Delay.EXTRA_SHORT,
-			});
-
-			await this.waitUntilChecked(newsAndOffersCheckbox);
 		}
 	}
 

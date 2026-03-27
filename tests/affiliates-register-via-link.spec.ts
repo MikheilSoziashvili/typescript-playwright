@@ -39,7 +39,6 @@ test.describe("Register with affiliate link", () => {
 				affiliate_user_register_data,
 				{
 					acceptTermsOfService: true,
-					acceptNewsOffers: true,
 				},
 			);
 			await Promise.all([
