@@ -18,12 +18,15 @@ import {
 	PlinkoRowsOption,
 } from "@enums/plinko/plinko-game-options";
 import { BasePage } from "@pages/base/base-page";
+import { BlackjackGamePage } from "@pages/blackjack-game-page/blackjack-game-page";
 import { CrashGamePage } from "@pages/crash-game-page/crash-game-page";
 import { DiceGamePage } from "@pages/dice-game-page/dice-game-page";
 import { HiloGamePage } from "@pages/hilo-game-page/hilo-game-page";
 import { KenoGamePage } from "@pages/keno-game/keno-game-page";
+import { LimboGamePage } from "@pages/limbo-game-page/limbo-game-page";
 import { MinesGamePage } from "@pages/mines-game-page/mines-game-page";
 import { PlinkoGamePage } from "@pages/plinko-game-page/plinko-game-page";
+import { PocketDicePage } from "@pages/pocket-dice-game/pocket-dice-page";
 import { RouletteGamePage } from "@pages/roulette-game-page/roulette-game-page";
 import { step } from "decorators/step";
 import { sanitizeAmount } from "support/regex-patterns";
@@ -32,7 +35,7 @@ import { OriginalsAsserter } from "./originals-page-asserter";
 import { OriginalsMap } from "./originals-page-map";
 import { OriginalsSteps } from "./originals-page-steps";
 import { Toast } from "@pages/components/toast/toast";
-import { ToastV4 } from "@pages/components/toastV4/toast-v4";
+import { VisibilityState } from "@enums/playwright/visibility-states";
 
 type OriginalsDeps = {
 	diceGamePage: DiceGamePage;
@@ -42,207 +45,278 @@ type OriginalsDeps = {
 	plinkoGamePage: PlinkoGamePage;
 	minesGamePage: MinesGamePage;
 	kenoGamePage: KenoGamePage;
+	pocketDicePage: PocketDicePage;
+	limboGamePage: LimboGamePage;
+	blackjackGamePage: BlackjackGamePage;
 };
 
-/**
- * The OriginalsPage class acts as a unified interface for interacting with all the "Originals" games.
- * It leverages individual game POMs (Dice, Crash, Hi-Lo, Roulette).
- */
+export type GameHandlers = {
+	setBetAmount?: (amount: number) => Promise<void>;
+	typeBetAmount?: (amount: string) => Promise<void>;
+	pressMinButton?: () => Promise<void>;
+	pressHalfButton?: () => Promise<void>;
+	pressMaxButton?: () => Promise<void>;
+	pressDoubleButton?: () => Promise<void>;
+	getBetAmountValue?: () => Promise<string>;
+};
+
+type GameStrategy = {
+	page: OriginalGamesPage;
+	placeBet: (amount: number, option?: BetOption) => Promise<void>;
+	waitForRoundFinish: () => Promise<void>;
+	getYourBetValue?: () => Promise<number>;
+	handlers?: GameHandlers;
+};
+
 export class OriginalsPage extends BasePage<OriginalsMap> {
 	public readonly toast: Toast;
-	public readonly toastV4: ToastV4;
-	public handlers: typeof this._handlers;
-	/**
-	 * A map that associates each OriginalGame to its corresponding page object.
-	 * @type {Record<OriginalGames, OriginalGamesPage>}
-	 */
-	private gamesMap: Record<OriginalGames, OriginalGamesPage>;
 
-	private readonly diceGamePage: DiceGamePage;
-	private readonly crashGamePage: CrashGamePage;
-	private readonly hiloGamePage: HiloGamePage;
-	private readonly rouletteGamePage: RouletteGamePage;
-	private readonly plinkoGamePage: PlinkoGamePage;
-	private readonly minesGamePage: MinesGamePage;
-	private readonly kenoGamePage: KenoGamePage;
+	private readonly strategies: Record<OriginalGames, GameStrategy>;
 
-	/**
-	 * Constructs an instance of the OriginalsPage.
-	 * @param {Page} page - The Playwright Page object for browser automation.
-	 * @param {Partial<OriginalsDeps>} deps - Optional override injection of game pages
-	 */
 	public constructor(page: Page, deps?: Partial<OriginalsDeps>) {
 		super(page, new OriginalsMap(page));
 
-		this.diceGamePage = deps?.diceGamePage ?? new DiceGamePage(page);
-		this.crashGamePage = deps?.crashGamePage ?? new CrashGamePage(page);
-		this.hiloGamePage = deps?.hiloGamePage ?? new HiloGamePage(page);
-		this.rouletteGamePage =
-			deps?.rouletteGamePage ?? new RouletteGamePage(page);
-		this.plinkoGamePage = deps?.plinkoGamePage ?? new PlinkoGamePage(page);
-		this.minesGamePage = deps?.minesGamePage ?? new MinesGamePage(page);
-		this.kenoGamePage = deps?.kenoGamePage ?? new KenoGamePage(page);
+		const dice = deps?.diceGamePage ?? new DiceGamePage(page);
+		const crash = deps?.crashGamePage ?? new CrashGamePage(page);
+		const hilo = deps?.hiloGamePage ?? new HiloGamePage(page);
+		const roulette = deps?.rouletteGamePage ?? new RouletteGamePage(page);
+		const plinko = deps?.plinkoGamePage ?? new PlinkoGamePage(page);
+		const mines = deps?.minesGamePage ?? new MinesGamePage(page);
+		const keno = deps?.kenoGamePage ?? new KenoGamePage(page);
+		const pocketDice = deps?.pocketDicePage ?? new PocketDicePage(page);
+		const limbo = deps?.limboGamePage ?? new LimboGamePage(page);
+		const blackjack =
+			deps?.blackjackGamePage ?? new BlackjackGamePage(page);
 
-		this.gamesMap = {
-			Dice: this.diceGamePage,
-			Crash: this.crashGamePage,
-			Roulette: this.rouletteGamePage,
-			HiLo: this.hiloGamePage,
-			Plinko: this.plinkoGamePage,
-			Mines: this.minesGamePage,
-			Keno: this.kenoGamePage,
+		const defaultMultiplier = 1.1;
+
+		this.strategies = {
+			[OriginalGame.Dice]: {
+				page: dice,
+				placeBet: async (amount, option) => {
+					const multiplier = isNumberBetOption(option)
+						? option
+						: defaultMultiplier;
+					await dice.placeBet(amount, multiplier);
+				},
+				waitForRoundFinish: () =>
+					dice.assertThat().diceResultIsDisplayed(),
+			},
+			[OriginalGame.Crash]: {
+				page: crash,
+				placeBet: async (amount, option) => {
+					const multiplier = isNumberBetOption(option)
+						? option
+						: defaultMultiplier;
+					await crash.placeBet(amount, multiplier);
+				},
+				waitForRoundFinish: async () => {
+					await crash.waitPreviousBetRoundFinish();
+					await crash.waitBettingWindowAvailable();
+				},
+			},
+			[OriginalGame.Roulette]: {
+				page: roulette,
+				placeBet: async (amount, option) => {
+					const betColor = isStringBetOption(option)
+						? (option as RouletteBetColor)
+						: RouletteBetColor.RED;
+					await roulette.placeBet(amount, betColor);
+				},
+				waitForRoundFinish: async () => {
+					await roulette.waitBettingWindowAvailable();
+					await roulette.waitRoundResultNumber();
+				},
+			},
+			[OriginalGame.HiLo]: {
+				page: hilo,
+				placeBet: async (amount, option) => {
+					const betOption = isStringBetOption(option)
+						? (option as HiloBetOption)
+						: HiloBetOption.RED;
+					await hilo.placeBet(amount, betOption);
+				},
+				waitForRoundFinish: async () => {
+					await hilo.waitBettingWindowAvailable();
+					await hilo.waitRoundResult();
+				},
+			},
+			[OriginalGame.Plinko]: {
+				page: plinko,
+				placeBet: async (amount, option) => {
+					const plinkoOptions = isObjectBetOptions(option)
+						? (option as {
+								rowsValue?: PlinkoRowsOption;
+								riskValue?: PlinkoRiskOption;
+							})
+						: {};
+					await plinko.startManualBet(
+						amount.toString(),
+						plinkoOptions,
+					);
+				},
+				waitForRoundFinish: () =>
+					plinko.steps().waitForSlidersToBeActive(),
+				getYourBetValue: () => plinko.getYourBetValue(),
+				handlers: {
+					setBetAmount: (amount) => plinko.fillInBetAmount(amount),
+					typeBetAmount: (amount) =>
+						plinko.map.betAmountInput.pressSequentially(amount),
+					pressMinButton: () => plinko.pressMinButton(),
+					pressHalfButton: () => plinko.pressHalfButton(),
+					pressMaxButton: () => plinko.pressMaxButton(),
+					pressDoubleButton: () => plinko.pressDoubleButton(),
+					getBetAmountValue: () => plinko.getBetAmountValue(),
+				},
+			},
+			[OriginalGame.Mines]: {
+				page: mines,
+				placeBet: async (amount, option) => {
+					await mines.assertThat().startPlayingButtonIsDisplayed();
+					await mines.steps().placeManualBetWithRandomTile({
+						betAmount: amount,
+						minesNumber: isNumberBetOption(option) ? option : 0,
+						cashoutMultiplier: 0,
+					});
+				},
+				waitForRoundFinish: async () => {
+					const bombHit = await mines.map.bombTile.isVisible();
+
+					if (bombHit) {
+						await mines
+							.assertThat()
+							.startPlayingButtonIsDisplayed();
+						await mines.steps().placeManualBetWithRandomTile({
+							betAmount: 1,
+							minesNumber: 0,
+							cashoutMultiplier: 0,
+						});
+					}
+
+					const isCashoutAvailable =
+						await mines.map.manualCashoutButton.isVisible();
+
+					if (isCashoutAvailable) {
+						await mines.steps().performManualCashout();
+					}
+					await mines
+						.assertThat()
+						.pickRandomTileButtonIsNotDisplayed();
+				},
+				getYourBetValue: () => mines.getYourBetValue(),
+				handlers: {
+					setBetAmount: (amount) => mines.insertBet(amount),
+					typeBetAmount: (amount) =>
+						mines.map.betField.pressSequentially(amount),
+					pressMinButton: () => mines.pressMinButton(),
+					pressHalfButton: () => mines.pressHalfButton(),
+					pressMaxButton: () => mines.pressMaxButton(),
+					pressDoubleButton: () => mines.pressDoubleButton(),
+					getBetAmountValue: () => mines.getBetAmountValue(),
+				},
+			},
+			[OriginalGame.Keno]: {
+				page: keno,
+				placeBet: async (amount) => {
+					await keno.assertThat().startPlayingButtonIsDisplayed();
+					await keno.steps().startManualBet(amount);
+				},
+				waitForRoundFinish: () =>
+					keno.assertThat().verifyRiskSliderActive(),
+				getYourBetValue: () => keno.getYourBetValue(),
+				handlers: {
+					setBetAmount: (amount) => keno.insertBet(amount),
+					typeBetAmount: (amount) =>
+						keno.map.betAmountInput.pressSequentially(amount),
+					pressMinButton: () => keno.pressMinButton(),
+					pressHalfButton: () => keno.pressHalfButton(),
+					pressMaxButton: () => keno.pressMaxButton(),
+					pressDoubleButton: () => keno.pressDoubleButton(),
+					getBetAmountValue: () => keno.getBetAmountValue(),
+				},
+			},
+			[OriginalGame.PocketDice]: {
+				page: pocketDice,
+				placeBet: async (amount) => {
+					await pocketDice.map.betAmountInput.fill(amount.toString());
+					await pocketDice.placeSingleBet();
+					await pocketDice.map.rollButton.click();
+				},
+				waitForRoundFinish: async () => {
+					let won = false;
+					try {
+						await pocketDice.map.winBanner.waitFor({
+							state: VisibilityState.VISIBLE,
+							timeout: 3000,
+						});
+						won = true;
+					} catch {
+						// Lost — no win banner displayed
+					}
+					if (won) {
+						await pocketDice.map.takeButton.click();
+					}
+					await pocketDice.assertThat().rollDiceButtonVisible();
+				},
+			},
+			[OriginalGame.Limbo]: {
+				page: limbo,
+				placeBet: async (amount, option) => {
+					await limbo.map.betAmountInput.fill(amount.toString());
+					await limbo.placeSingleBet(
+						isNumberBetOption(option) ? option : 1.5,
+					);
+				},
+				waitForRoundFinish: () =>
+					limbo.assertThat().rollButtonIsVisible(),
+			},
+			[OriginalGame.Blackjack]: {
+				page: blackjack,
+				placeBet: async (amount) => {
+					await blackjack.map.betAmountInput.fill(amount.toString());
+					await blackjack.placeSingleBet();
+				},
+				waitForRoundFinish: () =>
+					blackjack.assertThat().playButtonIsVisible(),
+			},
 		};
 
-		this.handlers = this._handlers;
 		this.toast = new Toast(this.page);
-		this.toastV4 = new ToastV4(this.page);
 	}
 
-	/**
-	 * Returns an instance of OriginalsAsserter for performing assertions on the Originals page.
-	 *
-	 * @override
-	 * @returns {OriginalsAsserter} - The asserter instance specific to the Originals page.
-	 */
+	public get handlers(): Partial<Record<OriginalGame, GameHandlers>> {
+		const result: Partial<Record<OriginalGame, GameHandlers>> = {};
+		for (const [game, strategy] of Object.entries(this.strategies)) {
+			if (strategy.handlers) {
+				result[game as OriginalGame] = strategy.handlers;
+			}
+		}
+		return result;
+	}
+
 	public override assertThat(): OriginalsAsserter {
 		return new OriginalsAsserter(this);
 	}
 
-	/**
-	 * Returns an instance of OriginalsSteps for performing higher-level interactions on the Originals page.
-	 *
-	 * @returns {OriginalsSteps} - The steps instance for the Originals page.
-	 */
 	public steps(): OriginalsSteps {
 		return new OriginalsSteps(this);
 	}
 
-	/**
-	 * Navigates to a specified Originals game using its dedicated page object.
-	 *
-	 * @param {OriginalGames} game - The name of the game to navigate to (e.g., "Dice", "Crash", "Roulette", "Hi-Lo").
-	 * @returns {Promise<void>} A promise that resolves when navigation is complete.
-	 */
 	@step("Navigate to game")
 	public async navigateToGame(game: OriginalGames): Promise<void> {
-		const gamePage = this.gamesMap[game];
-		await gamePage.navigate();
+		await this.strategies[game].page.navigate();
 	}
 
-	/**
-	 * Places a bet on a specified Originals game.
-	 *
-	 * Depending on the game, the `multiplierOrColorOrOption` parameter may represent:
-	 * - For "Crash": the autoCashoutMultiplier (number)
-	 * - For "Dice": the multiplier (number)
-	 * - For "Roulette": the bet color (RouletteBetColor)
-	 * - For "Hi-Lo": the bet option (HiloBetOption)
-	 * - For "Plinko": an object with rowsValue and riskValue options
-	 * - For "Mines": the number of mines (number)
-	 *
-	 * If no suitable parameter is provided, a default value or option is used.
-	 *
-	 * @param {OriginalGames} game - The game to place a bet on.
-	 * @param {number} betAmount - The amount of the bet.
-	 * @param {number | RouletteBetColor | HiloBetOption | { rowsValue?: PlinkoRowsOption, riskValue?: PlinkoRiskOption } | number} [multiplierOrColorOrOption] - An optional parameter that can represent multiplier, color, betting option, Plinko options, or number of mines, depending on the game.
-	 * @returns {Promise<void>} A promise that resolves when the bet has been placed.
-	 */
 	@step("Place bet")
 	public async placeBet(
 		game: OriginalGames,
 		betAmount: number,
 		multiplierOrColorOrOption?: BetOption,
 	): Promise<void> {
-		const gamePage = this.gamesMap[game];
-		const defaultMultiplier = 1.1;
-
-		switch (game) {
-			case OriginalGame.Crash: {
-				const crashMultiplier = isNumberBetOption(
-					multiplierOrColorOrOption,
-				)
-					? multiplierOrColorOrOption
-					: defaultMultiplier;
-				await (gamePage as CrashGamePage).placeBet(
-					betAmount,
-					crashMultiplier,
-				);
-				break;
-			}
-			case OriginalGame.Dice: {
-				const diceMultiplier = isNumberBetOption(
-					multiplierOrColorOrOption,
-				)
-					? multiplierOrColorOrOption
-					: defaultMultiplier;
-				await (gamePage as DiceGamePage).placeBet(
-					betAmount,
-					diceMultiplier,
-				);
-				break;
-			}
-			case OriginalGame.Roulette: {
-				const betColor = isStringBetOption(multiplierOrColorOrOption)
-					? (multiplierOrColorOrOption as RouletteBetColor)
-					: RouletteBetColor.RED;
-				await (gamePage as RouletteGamePage).placeBet(
-					betAmount,
-					betColor,
-				);
-				break;
-			}
-			case OriginalGame.HiLo: {
-				const betOption = isStringBetOption(multiplierOrColorOrOption)
-					? (multiplierOrColorOrOption as HiloBetOption)
-					: HiloBetOption.RED;
-				await (gamePage as HiloGamePage).placeBet(betAmount, betOption);
-				break;
-			}
-			case OriginalGame.Plinko: {
-				const plinkoOptions = isObjectBetOptions(
-					multiplierOrColorOrOption,
-				)
-					? (multiplierOrColorOrOption as {
-							rowsValue?: PlinkoRowsOption;
-							riskValue?: PlinkoRiskOption;
-						})
-					: {};
-				await (gamePage as PlinkoGamePage).startManualBet(
-					betAmount.toString(),
-					plinkoOptions,
-				);
-				break;
-			}
-			case OriginalGame.Mines: {
-				await (gamePage as MinesGamePage)
-					.assertThat()
-					.startPlayingButtonIsDisplayed();
-				await (gamePage as MinesGamePage)
-					.steps()
-					.placeManualBetWithRandomTile({
-						betAmount: betAmount,
-						minesNumber: isNumberBetOption(
-							multiplierOrColorOrOption,
-						)
-							? multiplierOrColorOrOption
-							: 0,
-						cashoutMultiplier: 0,
-					});
-				break;
-			}
-			case OriginalGame.Keno: {
-				await (gamePage as KenoGamePage)
-					.assertThat()
-					.startPlayingButtonIsDisplayed();
-				await (gamePage as KenoGamePage)
-					.steps()
-					.startManualBet(betAmount);
-				break;
-			}
-			default: {
-				throw new Error(`Unhandled game type: ${String(game)}`);
-			}
-		}
+		await this.strategies[game].placeBet(
+			betAmount,
+			multiplierOrColorOrOption,
+		);
 	}
 
 	@step("Navigate to game and place bet")
@@ -255,246 +329,10 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 		await this.placeBet(game, betAmount, multiplierOrColorOrOption);
 	}
 
-	@step("Place bet - v4")
-	public async placeBetV4(
-		game: OriginalGames,
-		betAmount: number,
-		multiplierOrColorOrOption?: BetOption,
-	): Promise<void> {
-		const gamePage = this.gamesMap[game];
-		const defaultMultiplier = 1.1;
-
-		switch (game) {
-			case OriginalGame.Crash: {
-				const crashMultiplier = isNumberBetOption(
-					multiplierOrColorOrOption,
-				)
-					? multiplierOrColorOrOption
-					: defaultMultiplier;
-				await (gamePage as CrashGamePage).placeBetV4(
-					betAmount,
-					crashMultiplier,
-				);
-				break;
-			}
-			case OriginalGame.Dice: {
-				const diceMultiplier = isNumberBetOption(
-					multiplierOrColorOrOption,
-				)
-					? multiplierOrColorOrOption
-					: defaultMultiplier;
-				await (gamePage as DiceGamePage).placeBetV4(
-					betAmount,
-					diceMultiplier,
-				);
-				break;
-			}
-			case OriginalGame.Roulette: {
-				const betColor = isStringBetOption(multiplierOrColorOrOption)
-					? (multiplierOrColorOrOption as RouletteBetColor)
-					: RouletteBetColor.RED;
-				await (gamePage as RouletteGamePage).placeBetV4(
-					betAmount,
-					betColor,
-				);
-				break;
-			}
-			case OriginalGame.HiLo: {
-				const betOption = isStringBetOption(multiplierOrColorOrOption)
-					? (multiplierOrColorOrOption as HiloBetOption)
-					: HiloBetOption.RED;
-				await (gamePage as HiloGamePage).placeBetV4(
-					betAmount,
-					betOption,
-				);
-				break;
-			}
-			case OriginalGame.Plinko: {
-				const plinkoOptions = isObjectBetOptions(
-					multiplierOrColorOrOption,
-				)
-					? (multiplierOrColorOrOption as {
-							rowsValue?: PlinkoRowsOption;
-							riskValue?: PlinkoRiskOption;
-						})
-					: {};
-				await (gamePage as PlinkoGamePage).startManualBet(
-					betAmount.toString(),
-					plinkoOptions,
-				);
-				break;
-			}
-			case OriginalGame.Mines: {
-				await (gamePage as MinesGamePage)
-					.assertThat()
-					.startPlayingButtonIsDisplayed();
-				await (gamePage as MinesGamePage)
-					.steps()
-					.placeManualBetWithRandomTile({
-						betAmount: betAmount,
-						minesNumber: isNumberBetOption(
-							multiplierOrColorOrOption,
-						)
-							? multiplierOrColorOrOption
-							: 0,
-						cashoutMultiplier: 0,
-					});
-				break;
-			}
-			case OriginalGame.Keno: {
-				await (gamePage as KenoGamePage)
-					.assertThat()
-					.startPlayingButtonIsDisplayed();
-				await (gamePage as KenoGamePage)
-					.steps()
-					.startManualBet(betAmount);
-				break;
-			}
-			default: {
-				throw new Error(`Unhandled game type: ${String(game)}`);
-			}
-		}
-	}
-
-	/**
-	 * Waits for the current game round to finish.
-	 *
-	 * For each game, this method performs the appropriate wait actions:
-	 * - For "Crash": Waits for the previous bet round to finish and for the betting window to become available
-	 * - For "Dice": Waits for the dice result to be displayed
-	 * - For "Roulette": Waits for the betting window to become available and for the round result number
-	 * - For "Hi-Lo": Waits for the betting window to become available and for the round result
-	 * - For "Plinko": Waits for the sliders to become active again, indicating the round is complete
-	 * - For "Mines": Waits for either a bomb to be revealed or all safe tiles to be revealed
-	 *
-	 * @param {OriginalGames} game - The game to wait for.
-	 * @returns {Promise<void>} A promise that resolves when the game round has finished.
-	 */
 	@step("Wait for game round finish")
 	public async waitForGameRoundFinish(game: OriginalGames): Promise<void> {
-		const gamePage = this.gamesMap[game];
-
-		switch (game) {
-			case OriginalGame.Crash: {
-				await (gamePage as CrashGamePage).waitPreviousBetRoundFinish();
-				await (gamePage as CrashGamePage).waitBettingWindowAvailable();
-				break;
-			}
-			case OriginalGame.Dice: {
-				await (gamePage as DiceGamePage)
-					.assertThat()
-					.diceResultIsDisplayed();
-				break;
-			}
-			case OriginalGame.Roulette: {
-				await (
-					gamePage as RouletteGamePage
-				).waitBettingWindowAvailable();
-				await (gamePage as RouletteGamePage).waitRoundResultNumber();
-				break;
-			}
-			case OriginalGame.HiLo: {
-				await (gamePage as HiloGamePage).waitBettingWindowAvailable();
-				await (gamePage as HiloGamePage).waitRoundResult();
-				break;
-			}
-			case OriginalGame.Plinko: {
-				await (gamePage as PlinkoGamePage)
-					.steps()
-					.waitForSlidersToBeActive();
-				break;
-			}
-			case OriginalGame.Keno: {
-				await (gamePage as KenoGamePage)
-					.assertThat()
-					.verifyRiskSliderActive();
-				break;
-			}
-			case OriginalGame.Mines: {
-				const bombHit = await (
-					gamePage as MinesGamePage
-				).map.bombTile.isVisible();
-
-				if (bombHit) {
-					await (gamePage as MinesGamePage)
-						.assertThat()
-						.startPlayingButtonIsDisplayed();
-
-					await (gamePage as MinesGamePage)
-						.steps()
-						.placeManualBetWithRandomTile({
-							betAmount: 1,
-							minesNumber: 0,
-							cashoutMultiplier: 0,
-						});
-				}
-
-				const isCashoutAvailable = await (
-					gamePage as MinesGamePage
-				).map.manualCashoutButton.isVisible();
-
-				if (isCashoutAvailable) {
-					await (gamePage as MinesGamePage)
-						.steps()
-						.performManualCashout();
-				}
-				await (gamePage as MinesGamePage)
-					.assertThat()
-					.pickRandomTileButtonIsNotDisplayed();
-				break;
-			}
-			default: {
-				throw new Error(`Unhandled game type: ${String(game)}`);
-			}
-		}
+		await this.strategies[game].waitForRoundFinish();
 	}
-
-	private readonly _handlers: Partial<
-		Record<
-			OriginalGame,
-			{
-				setBetAmount?: (amount: number) => Promise<void>;
-				typeBetAmount?: (amount: string) => Promise<void>;
-				pressMinButton?: () => Promise<void>;
-				pressHalfButton?: () => Promise<void>;
-				pressMaxButton?: () => Promise<void>;
-				pressDoubleButton?: () => Promise<void>;
-				getBetAmountValue?: () => Promise<string>;
-			}
-		>
-	> = {
-		[OriginalGame.Plinko]: {
-			setBetAmount: (amount) =>
-				this.plinkoGamePage.fillInBetAmount(amount),
-			typeBetAmount: (amount) =>
-				this.plinkoGamePage.map.betAmountInput.pressSequentially(amount),
-			pressMinButton: () => this.plinkoGamePage.pressMinButton(),
-			pressHalfButton: () => this.plinkoGamePage.pressHalfButton(),
-			pressMaxButton: () => this.plinkoGamePage.pressMaxButton(),
-			pressDoubleButton: () => this.plinkoGamePage.pressDoubleButton(),
-			getBetAmountValue: () => this.plinkoGamePage.getBetAmountValue(),
-		},
-		[OriginalGame.Mines]: {
-			setBetAmount: (amount) => this.minesGamePage.insertBet(amount),
-			typeBetAmount: (amount) =>
-				this.minesGamePage.map.betField.pressSequentially(amount),
-			pressMinButton: () => this.minesGamePage.pressMinButton(),
-			pressHalfButton: () => this.minesGamePage.pressHalfButton(),
-			pressMaxButton: () => this.minesGamePage.pressMaxButton(),
-			pressDoubleButton: () => this.minesGamePage.pressDoubleButton(),
-			getBetAmountValue: () => this.minesGamePage.getBetAmountValue(),
-		},
-		[OriginalGame.Keno]: {
-			setBetAmount: (amount) => this.kenoGamePage.insertBet(amount),
-			typeBetAmount: (amount) =>
-				this.kenoGamePage.map.betAmountInput.pressSequentially(amount),
-			pressMinButton: () => this.kenoGamePage.pressMinButton(),
-			pressHalfButton: () => this.kenoGamePage.pressHalfButton(),
-			pressMaxButton: () => this.kenoGamePage.pressMaxButton(),
-			pressDoubleButton: () => this.kenoGamePage.pressDoubleButton(),
-			getBetAmountValue: () => this.kenoGamePage.getBetAmountValue(),
-		},
-	};
 
 	public getMinBetAmount(game: OriginalGame): number {
 		return MinBetAmount[game.toUpperCase() as keyof typeof MinBetAmount];
@@ -506,19 +344,13 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 
 	@step("Get 'Your Bet' value for game")
 	public async getYourBetValueForGame(game: OriginalGame): Promise<number> {
-		const gamePage = this.gamesMap[game];
-		switch (game) {
-			case OriginalGame.Plinko:
-				return (gamePage as PlinkoGamePage).getYourBetValue();
-			case OriginalGame.Keno:
-				return (gamePage as KenoGamePage).getYourBetValue();
-			case OriginalGame.Mines:
-				return (gamePage as MinesGamePage).getYourBetValue();
-			default:
-				throw new Error(
-					`Get your bet value method not implemented for ${game}`,
-				);
+		const strategy = this.strategies[game];
+		if (!strategy.getYourBetValue) {
+			throw new Error(
+				`Get your bet value method not implemented for ${game}`,
+			);
 		}
+		return strategy.getYourBetValue();
 	}
 
 	@step("Get jackpot amount")
@@ -542,7 +374,7 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 		game: OriginalGames,
 		betAmount: number,
 	): Promise<void> {
-		const toastGames = [
+		const toastGames: OriginalGames[] = [
 			OriginalGame.Dice,
 			OriginalGame.Roulette,
 			OriginalGame.HiLo,
@@ -552,26 +384,6 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 		if (toastGames.includes(game)) {
 			await this.placeBet(game, betAmount);
 			await this.assertThat().selfExclusionToastMessageIsDisplayed();
-		} else {
-			await this.assertThat().selfExclusionPageTextIsDisplayed();
-		}
-	}
-
-	@step("Verify self-exclusion message is displayed - v4")
-	public async verifySelfExclusionMessageIsDisplayedV4(
-		game: OriginalGames,
-		betAmount: number,
-	): Promise<void> {
-		const toastGames = [
-			OriginalGame.Dice,
-			OriginalGame.Roulette,
-			OriginalGame.HiLo,
-			OriginalGame.Crash,
-		];
-
-		if (toastGames.includes(game)) {
-			await this.placeBetV4(game, betAmount);
-			await this.assertThat().selfExclusionToastMessageIsDisplayedV4();
 		} else {
 			await this.assertThat().selfExclusionPageTextIsDisplayed();
 		}

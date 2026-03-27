@@ -122,7 +122,7 @@ export class OriginalsSteps extends BasePageStep<OriginalsPage> {
 			.assertThat()
 			.checkElementsAreVisible(
 				[this.gamdomPage.map.getBetRowByUserAndGame(username, game)],
-				Timeout.MEDIUM,
+				Timeout.LONG,
 				`Bet for game ${game} and user ${username} is displayed in live bets section`,
 			);
 

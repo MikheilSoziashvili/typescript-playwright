@@ -70,6 +70,14 @@ export class PocketDiceMap extends BaseMap {
 		return this.betAmountOptions.getByRole("button", { name: "Min" });
 	}
 
+	public get takeButton(): Locator {
+		return this.page.getByRole("button", { name: "Take" });
+	}
+
+	public get riskButton(): Locator {
+		return this.page.getByRole("button", { name: "Risk" });
+	}
+
 	public get winBanner(): Locator {
 		return this.page.locator(
 			"[class*='ResultBannerstyled__Base-PocketDice']",

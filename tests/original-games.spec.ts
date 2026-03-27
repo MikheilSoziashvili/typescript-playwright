@@ -20,10 +20,10 @@ import {
 	OriginalGame,
 	OriginalsQuickSelectButtons,
 } from "@enums/original-games";
+import { TestUserRole } from "@enums/test-user-roles";
 import { Unit } from "@enums/units";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
-import { isScheduledRun } from "configuration";
 import {
 	HIGH_USER_AMOUNT,
 	SUPER_HIGH_USER_AMOUNT,
@@ -317,8 +317,6 @@ test.describe("Live Bets Section", () => {
 	const gamesToTest = Object.values(OriginalGame).filter(
 		(game) => game !== OriginalGame.Roulette,
 	);
-
-	test.fixme(isScheduledRun);
 	for (const game of gamesToTest) {
 		test(
 			`[ENG-3157] Bets are displayed in the Live bets section for ${game}`,
@@ -327,18 +325,21 @@ test.describe("Live Bets Section", () => {
 					JiraComponent.GAMDOM_ORIGINALS,
 					JiraComponent.SOK_GAMES,
 				)
-				.withJiraBugTickets("8569")
 				.withAuthor(JiraUser.NIKOLAY_GENOV)
 				.apply(),
-			async ({ originalsPage, gamdomApiDbFacade, page }) => {
-				const betAmount = 5;
+			async ({
+				originalsPage,
+				browserSessionManager,
+				testDataPredefined,
+			}) => {
+				const betAmount =
+					testDataPredefined.data.originals.liveBetsBetAmount;
 
-				const { user, cookie } =
-					await gamdomApiDbFacade.createSingleUserDbAndAuth({});
-
-				await setAuthenticationCookies(page, cookie);
-
-				const userName = user.username;
+				const user = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
+					{ reuseContext: true },
+				);
+				const userName = user.getAuthenticatedUser().user.username;
 
 				await originalsPage.navigateToGame(game);
 				await originalsPage.authenticatedHeader

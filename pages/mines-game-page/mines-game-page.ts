@@ -9,6 +9,7 @@ import { step } from "decorators/step";
 import { MinesGamePageAsserter } from "./mines-game-page-asserter";
 import { MinesGamePageMap } from "./mines-game-page-map";
 import { MinesGamePageSteps } from "./mines-game-page-steps";
+import { Delay } from "@enums/delay";
 
 export class MinesGamePage extends BasePage<MinesGamePageMap> {
 	public constructor(page: Page) {
@@ -257,7 +258,7 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 
 	@step("Perform manual cashout")
 	public async performManualCashout(): Promise<void> {
-		await this.map.manualCashoutButton.click();
+		await this.map.manualCashoutButton.click({ delay: Delay.SHORT });
 	}
 
 	@step("Pick random tiles until a bomb is caught")

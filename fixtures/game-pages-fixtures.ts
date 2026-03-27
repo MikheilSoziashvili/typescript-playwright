@@ -82,12 +82,14 @@ export const gamePagesFixtures = base.extend<GamePages>({
 			plinkoGamePage,
 			minesGamePage,
 			kenoGamePage,
+			pocketDicePage,
+			limboGamePage,
+			blackjackGamePage,
 		},
 		use,
 	) => {
 		const page = browserSessionManager.active.page;
-		const originals = new OriginalsPage(
-			page,
+		const originals = new OriginalsPage(page, {
 			diceGamePage,
 			crashGamePage,
 			hiloGamePage,
@@ -95,7 +97,10 @@ export const gamePagesFixtures = base.extend<GamePages>({
 			plinkoGamePage,
 			minesGamePage,
 			kenoGamePage,
-		);
+			pocketDicePage,
+			limboGamePage,
+			blackjackGamePage,
+		});
 		await use(originals);
 	},
 

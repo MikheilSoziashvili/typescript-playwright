@@ -61,6 +61,9 @@ export const predefined = {
 		defaultRollOverApi: 505000000,
 		defaultBetAmountApi: 150000,
 	},
+	originals: {
+		liveBetsBetAmount: 5,
+	},
 	sokGames: {
 		wallets: [
 			Wallet.BTC,
