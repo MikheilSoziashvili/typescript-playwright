@@ -171,14 +171,16 @@ export class CrashGamePageSteps extends BasePageStep<CrashGamePage> {
 	public async setupAutobetWithIncreaseBy(
 		betTestData: BetTestData,
 		stopBetAmount: number,
-		increaseCondition: BetIncreaseCondition,
+		increaseCondition: BetIncreaseCondition | string,
 		increaseMultiplier: number,
 	): Promise<void> {
-		await this.gamdomPage.toggleAutobet(stopBetAmount);
-		await this.gamdomPage.fillIncreaseByInput(
-			increaseCondition,
-			increaseMultiplier,
-		);
+		await this.gamdomPage.toggleAutobet(stopBetAmount || undefined);
+		if (this.isBetIncreaseCondition(increaseCondition)) {
+			await this.gamdomPage.fillIncreaseByInput(
+				increaseCondition,
+				increaseMultiplier,
+			);
+		}
 	}
 
 	@step("Autobet until bet more than threshold")
@@ -186,7 +188,7 @@ export class CrashGamePageSteps extends BasePageStep<CrashGamePage> {
 		betTestData: BetTestData,
 		stopIfBetMoreThanAmount: number,
 		increaseByMultiplier: number,
-		increaseCondition: BetIncreaseCondition,
+		increaseCondition: BetIncreaseCondition | string,
 	): Promise<void> {
 		await this.waitForBettingWindowOrSkip();
 
@@ -194,6 +196,11 @@ export class CrashGamePageSteps extends BasePageStep<CrashGamePage> {
 			betTestData.betAmount,
 			betTestData.autoCashoutMultiplier,
 		);
+
+		if (!this.isBetIncreaseCondition(increaseCondition)) {
+			await this.verifyReturnToBaseBetRounds(betTestData.betAmount);
+			return;
+		}
 
 		let previousBetAmount = betTestData.betAmount;
 
@@ -268,5 +275,28 @@ export class CrashGamePageSteps extends BasePageStep<CrashGamePage> {
 				increaseByMultiplier,
 				baseBetAmount,
 			);
+	}
+
+	private isBetIncreaseCondition(
+		condition: BetIncreaseCondition | string,
+	): condition is BetIncreaseCondition {
+		return (
+			condition === BetIncreaseCondition.WIN ||
+			condition === BetIncreaseCondition.LOSS
+		);
+	}
+
+	@step("Verify return to base bet rounds")
+	private async verifyReturnToBaseBetRounds(
+		baseBetAmount: number,
+		rounds = 2,
+	): Promise<void> {
+		for (let i = 0; i < rounds; i++) {
+			await this.gamdomPage.waitCrash();
+			await this.gamdomPage.waitBettingWindowAvailable();
+			await this.gamdomPage
+				.assertThat()
+				.betAmountIsAtBase(baseBetAmount);
+		}
 	}
 }

@@ -20,7 +20,7 @@ test.describe(
 		test.slow();
 
 		test(
-			"[ENG-1416] Crash - Autobet",
+			"[ENG-17872] Crash - Autobet",
 			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				browserSessionManager,
@@ -99,7 +99,7 @@ test.describe(
 
 		crashIncreaseBy.forEach((record) => {
 			test(
-				`[ENG-2541] Crash - Autobet - Increase by [${record.increaseBy}]`,
+				`[ENG-17872] Crash - Autobet - Increase by [${record.increaseBy}]`,
 				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					browserSessionManager,

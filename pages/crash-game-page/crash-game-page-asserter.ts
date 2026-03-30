@@ -172,6 +172,17 @@ export class CrashGamePageAsserter extends BaseAsserter<CrashGamePage> {
 		expect(actualBalance).toBe(expectedBalance);
 	}
 
+	@step("Verify bet amount remains at base")
+	public async betAmountIsAtBase(baseBetAmount: number): Promise<void> {
+		await expect
+			.poll(() => this.gamdomPage.getCurrentBetAmount(), {
+				timeout: Timeout.SHORT,
+				intervals: [IntervalMs.SHORT],
+				message: `Bet amount should remain at base: ${baseBetAmount}`,
+			})
+			.toEqual(baseBetAmount);
+	}
+
 	@step("Verify bet amount updated correctly")
 	public async verifyBetAmountUpdatedCorrectly(
 		previousBetAmount: number,
