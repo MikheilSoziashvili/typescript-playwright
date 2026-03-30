@@ -50,7 +50,8 @@ Playwright
 ## Code Style Rules
 
 - **No redundant comments** anywhere in generated code — only FALLBACK/TODO annotations when truly needed
-- **Use base-asserter methods** (`checkElementsAreVisible`, `checkElementsContainText`, etc.) over raw `expect()` in asserter classes
+- **Use base-asserter methods** over raw `expect()` in asserter classes — see `.claude/rules/base-asserter-methods.md` for the full mapping
+- **Always pass a meaningful custom message** to `expect()` and BaseAsserter helpers (`message`, `label` params) — failure logs must describe the expected state, not just dump the raw locator
 - **No `assert` prefix** on asserter methods — use `connectionsPageIsDisplayed()` not `assertConnectionsPageIsDisplayed()`
 - **Steps class**: only for methods combining actions + assertions (e.g., navigate then verify)
 - **Asserter class**: pure assertion methods (no actions)
@@ -134,6 +135,7 @@ Pattern-specific rules with code examples are in `.claude/rules/`:
 - `fixtures.md` — Fixture system, scopes, auth, BrowserSessionManager
 - `api-and-db.md` — API client and database patterns
 - `anti-patterns.md` — What to avoid (project-specific)
+- `base-asserter-methods.md` — BaseAsserter utility methods and raw `expect()` replacements
 - `mcp-selectors.md` — MCP selector authoring rules (Container→Content→Role methodology)
 
 Additional documentation:

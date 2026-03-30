@@ -63,6 +63,7 @@ Always read `CLAUDE.md` — it applies to every review. Then read **only the rul
 | Read this rule file | When the diff contains… |
 |---|---|
 | `.claude/rules/anti-patterns.md` | any changed file (always read) |
+| `.claude/rules/base-asserter-methods.md` | `pages/**/*asserter*` |
 | `.claude/rules/pom-pattern.md` | `pages/**`, `fixtures/*pages*`, `fixtures/*components*`, `fixtures/*modal*` |
 | `.claude/rules/test-structure.md` | `tests/**` |
 | `.claude/rules/test-flows.md` | `test-flows/**` |
@@ -343,6 +344,44 @@ At the top of the STEP 2 output, list which sections are **active** and which ar
 - [ ] Asymmetric matchers used for partial matching: `expect.objectContaining({})`, `expect.arrayContaining([])`, `expect.stringContaining()`, `expect.stringMatching()` — not full equality checks when only key fields matter
 - [ ] Custom matchers added via `expect.extend()` only when the same assertion logic is reused in 3+ places — not for one-off checks
 - [ ] `mergeExpects()` used when combining custom matchers from multiple modules (e.g., DB matchers + accessibility matchers)
+
+**BaseAsserter utility methods — use these instead of raw `expect()` in asserter files**
+
+`BaseAsserter` exposes helper methods that batch assertions, add `@step()` labels, and run in parallel. Whenever the pattern below appears in an `*-page-asserter.ts`, replace it with the corresponding helper:
+
+| Raw `expect()` pattern | Use instead |
+|---|---|
+| `expect(locator).toBeVisible()` × N | `checkElementsAreVisible([...])` |
+| `expect(locator).not.toBeVisible()` × N | `checkElementsAreNotVisible([...])` |
+| `expect(locator).toBeHidden()` × N | `checkElementsAreHidden([...])` |
+| `expect(locator).toHaveValue(v)` × N | `checkElementsHaveValue([{ locator, expectedValue }])` |
+| `expect(locator).toHaveText(t)` × N | `checkElementsHaveText([{ locator, expectedText }])` |
+| `expect(locator).toContainText(t)` × N | `checkElementsContainText([{ locator, expectedText }])` |
+| `expect(locator).toHaveText(allowedSet)` × N | `checkEachElementTextIsInSet([...], allowedTexts)` |
+| `expect(locator).toBeEmpty()` × N | `checkElementsAreEmpty([...])` |
+| `expect(locator).not.toBeEmpty()` × N | `checkElementsAreNotEmpty([...])` |
+| `expect(locator).toBeEnabled()` × N | `checkElementsAreEnabled([...])` |
+| `expect(locator).toBeDisabled()` × N | `checkElementsAreDisabled([...])` |
+| `expect(value).toBeDefined()` × N | `checkElementsAreDefined([{ value, message }])` |
+| `expect(a).toBe(b)` on strings × N | `checkStringElementsAreEqual(expected[], actual[])` |
+| `expect(locator).toBeChecked()` / `.not.toBeChecked()` × N | `assertCheckedState([{ locator, checked, label? }])` |
+| `expect(locator).toBeEnabled()` / `.toBeDisabled()` × N | `assertEnabledState([{ locator, enabled, label? }])` |
+| `expect(condition).toBeTruthy()` × N | `assertAllTruthy([{ condition, message }])` |
+| `expect(slider).toHaveAttribute(ARIA_DISABLED, v)` | `verifySliderState(slider, expected)` |
+| `expect(locator).toHaveClass(pattern)` | `expectElementToHaveClass(locator, value)` |
+| Manual `page.url()` + `expect(...).toBe(url)` | `waitForAndVerifyCurrentUrlIs(url)` |
+| Manual new-tab URL + `expect(...).toBe(url)` | `verifyNewTabUrl(url)` / `verifyNewTabUrlParts(parts[])` |
+| Manual `boundingBox()` containment checks | `expectLocatorInside(inner, outer)` |
+| Manual `boundingBox()` vs `window.innerWidth/Height` | `expectElementWithinViewport(el)` |
+
+- [ ] No bare `expect(locator).toBeVisible()` loops or repeated single-element calls in asserter files when `checkElementsAreVisible([...])` covers the same intent
+- [ ] No raw `expect(locator).toBeHidden()` when `checkElementsAreHidden([...])` applies
+- [ ] No inline `expect(locator).toHaveText()` / `toContainText()` loops when `checkElementsHaveText` / `checkElementsContainText` applies
+- [ ] No manual `expect(locator).toBeEnabled()` / `toBeDisabled()` loops when `checkElementsAreEnabled` / `checkElementsAreDisabled` or `assertEnabledState` applies
+- [ ] No manual `expect(locator).toBeChecked()` / `not.toBeChecked()` loops when `assertCheckedState` applies
+- [ ] No manual `expect(condition).toBeTruthy()` loops when `assertAllTruthy` applies
+- [ ] No repeated `expect(value).toBeDefined()` calls when `checkElementsAreDefined` applies
+- [ ] No manual `boundingBox()` containment arithmetic when `expectLocatorInside` / `expectElementWithinViewport` covers it
 
 ---
 
