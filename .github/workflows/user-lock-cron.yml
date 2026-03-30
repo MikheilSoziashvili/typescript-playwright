@@ -7,12 +7,16 @@ jobs:
     run-expired-ban-auto-lock:
         runs-on: self-hosted-k8s
         timeout-minutes: 30
-        env:
-            KUBECONFIG: ${{ secrets.KUBECONFIG_STG_OVH }}
         steps:
-            - name: Find pod
-              id: pod
+            - name: Run expired ban auto-lock
+              env:
+                  KUBECONFIG_STG_OVH: ${{ secrets.KUBECONFIG_STG_OVH }}
               run: |
+                  set -xeuo pipefail
+                  echo "$KUBECONFIG_STG_OVH" > .kubeconfig
+                  chmod 600 .kubeconfig
+                  export KUBECONFIG=.kubeconfig
+
                   POD=$(kubectl get pod \
                     -n staging \
                     -l "app.kubernetes.io/instance=fixed-e2e-release" \
@@ -23,11 +27,5 @@ jobs:
                     exit 1
                   fi
 
-                  echo "pod_name=${POD}" >> "$GITHUB_OUTPUT"
                   echo "Found pod: ${POD}"
-
-            - name: Run script
-              run: |
-                  kubectl exec ${{ steps.pod.outputs.pod_name }} \
-                    -n staging \
-                    -- yarn auto-lock-expired-bans
+                  kubectl exec "$POD" -n staging -- yarn auto-lock-expired-bans
