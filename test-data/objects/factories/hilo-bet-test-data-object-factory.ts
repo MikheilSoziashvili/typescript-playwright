@@ -29,7 +29,7 @@ export class HiloBetTestDataObjectFactory extends BaseTestDataObjectFactory<
 	}): HiloBetTestData {
 		return new HiloBetTestData(
 			username,
-			10,
+			1,
 			HiloBetOption.RED,
 			HiloBetMultiplierByBetOption.RED,
 		);

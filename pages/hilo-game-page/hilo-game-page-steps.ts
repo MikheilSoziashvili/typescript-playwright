@@ -1,11 +1,10 @@
-import { expect } from "@playwright/test";
 import { BasePageStep } from "@pages/base/base-page-step";
 import { step } from "decorators/step";
 import { Timeout } from "@enums/timeout";
-import { IntervalMs } from "@enums/interval-millisecond";
 import { HiloBetTestData } from "@dtos/test-data";
 import { HiloGameResultColor } from "@enums/hilo-result-messages";
 import { logger } from "@logger/logger";
+import { parseToFloat } from "@core/utils/utils";
 import { HiloGamePage } from "./hilo-game-page";
 
 export class HiloGamePageSteps extends BasePageStep<HiloGamePage> {
@@ -13,21 +12,42 @@ export class HiloGamePageSteps extends BasePageStep<HiloGamePage> {
 		super(gamdomPage);
 	}
 
-	@step("Navigate to Hilo and wait for betting window")
+	@step("Navigate to Hilo and verify countdown is visible")
 	public async navigateAndWaitForBettingWindow(): Promise<void> {
 		await this.gamdomPage.navigate();
+		await this.gamdomPage.assertThat().countdownIsVisible();
 		await this.gamdomPage.waitBettingWindowAvailable();
 	}
 
-	@step("Place bet and wait for round result")
-	public async placeBetAndWaitForResult(
+	@step("Enter bet amount and verify bet options are enabled")
+	public async enterBetAndVerifyBetOptions(
+		testData: HiloBetTestData,
+	): Promise<void> {
+		await this.gamdomPage.fillInBetAmount(testData.betAmount);
+		await this.gamdomPage
+			.assertThat()
+			.yourBetFieldHasValue(parseToFloat(testData.betAmount));
+		await this.gamdomPage
+			.assertThat()
+			.betOptionButtonsAreEnabled(
+				this.gamdomPage.getAlwaysEnabledBetButtons(),
+			);
+	}
+
+	@step("Place bet and read round result")
+	public async placeBetAndReadResult(
 		testData: HiloBetTestData,
 	): Promise<string> {
-		await this.gamdomPage.placeBet(testData.betAmount, testData.betOption);
+		await this.gamdomPage.waitBettingWindowAvailable();
+		await this.enterBetAndVerifyBetOptions(testData);
+		await this.gamdomPage.clickBetOption(testData.betOption);
 		await this.gamdomPage
 			.assertThat()
 			.betIsPlaced(testData.username, testData.betAmount);
-		return this.gamdomPage.getRoundResult();
+		await this.gamdomPage.waitRoundResult();
+		return this.gamdomPage.map.gameResultLocator.innerText({
+			timeout: Timeout.MEDIUM,
+		});
 	}
 
 	@step("Play until result color is achieved")
@@ -38,47 +58,58 @@ export class HiloGamePageSteps extends BasePageStep<HiloGamePage> {
 		await this.navigateAndWaitForBettingWindow();
 
 		let isWin = false;
-		let accountBalance: number;
+		let balanceInCoins: number;
 
 		do {
-			accountBalance =
-				await this.userBalanceHandler.walletBalanceInFiatRounded();
+			balanceInCoins =
+				await this.userBalanceHandler.walletBalanceInCoins();
 
-			const roundResult = await this.placeBetAndWaitForResult(testData);
+			const roundResult = await this.placeBetAndReadResult(testData);
 			logger.info(`Current round result: ${roundResult}`);
 
 			isWin = roundResult.includes(resultColor);
-			if (!isWin) {
+			if (isWin) {
+				await this.verifyWinPayoutAndHistory(testData);
+			} else {
 				logger.info("Hilo game lost! Trying again...");
 			}
 		} while (!isWin);
 
-		return accountBalance;
+		return balanceInCoins;
 	}
 
-	@step("Assert account balance is correct after a win")
+	@step("Assert account balance in coins is correct after a win")
 	public async assertBalanceAfterWin(
-		balanceBeforeWin: number,
+		balanceBeforeWinInCoins: number,
 		testData: HiloBetTestData,
 	): Promise<void> {
-		const expectedBalance =
-			balanceBeforeWin -
-			testData.betAmount +
+		const betCoins = this.userBalanceHandler.usdToCoinsTrunc(
+			testData.betAmount,
+		);
+		const payoutCoins = this.userBalanceHandler.calculatePayoutCoins(
+			betCoins,
+			testData.betMultiplierByBetOption,
+		);
+		const expectedCoins = balanceBeforeWinInCoins - betCoins + payoutCoins;
+
+		await this.gamdomPage.authenticatedHeader
+			.assertThat()
+			.accountBalanceInCoinsIs(expectedCoins);
+	}
+
+	@step("Verify win payout and history card")
+	public async verifyWinPayoutAndHistory(
+		testData: HiloBetTestData,
+	): Promise<void> {
+		const payoutAmount = `+${parseToFloat(
 			this.gamdomPage.calculateProfit(
 				testData.betAmount,
 				testData.betMultiplierByBetOption,
-			);
-
-		await expect
-			.poll(
-				async () =>
-					this.userBalanceHandler.walletBalanceInFiatRounded(),
-				{
-					message: `Account balance should be ${expectedBalance}`,
-					intervals: [IntervalMs.NORMAL],
-					timeout: Timeout.LONG,
-				},
-			)
-			.toBe(expectedBalance);
+			),
+		)}`;
+		await this.gamdomPage
+			.assertThat()
+			.payoutIsDisplayed(testData.username, payoutAmount);
+		await this.gamdomPage.assertThat().historyCardsAreVisible();
 	}
 }

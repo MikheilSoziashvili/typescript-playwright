@@ -1,4 +1,4 @@
-import { Page } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 import { BasePage } from "@base/base-page";
 import { HiloGamePageMap } from "./hilo-game-page.map";
 import { HiloGamePageAsserter } from "./hilo-game-page-asserter";
@@ -81,6 +81,18 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 		await this.map.yourBetField.fill(`${betAmount}`);
 	}
 
+	public getAlwaysEnabledBetButtons(): Locator[] {
+		return [
+			this.map.redButton,
+			this.map.blackButton,
+			this.map.twoToNineButton,
+			this.map.jqkaButton,
+			this.map.kaButton,
+			this.map.aceButton,
+			this.map.jokerButton,
+		];
+	}
+
 	@step("Click bet option")
 	public async clickBetOption(betOption: HiloBetOption): Promise<void> {
 		switch (betOption) {
@@ -104,6 +116,11 @@ export class HiloGamePage extends BasePage<HiloGamePageMap> {
 		await this.waitBettingWindowAvailable();
 		await this.fillInBetAmount(betAmount);
 		await this.clickBetOption(betOption);
+	}
+
+	@step("Get current history card count")
+	public async getHistoryCardCount(): Promise<number> {
+		return this.map.historyCards.count();
 	}
 
 	@step("Wait round result")

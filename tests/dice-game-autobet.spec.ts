@@ -59,7 +59,7 @@ test.describe(
 
 		scenarios.forEach(({ betAmount, onWin, onLoss }) => {
 			test(
-				`[ENG-2843] Dice - Autobet - Increase By - Bet ${betAmount} - Win ${onWin}% Loss ${onLoss}%`,
+			`[ENG-13868] Dice - Autobet - Increase By - Bet ${betAmount} - Win ${onWin}% Loss ${onLoss}%`,
 				testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({ browserSessionManager, diceGamePage }) => {
 					await browserSessionManager.loginAs(TestUserRole.REGULAR, {

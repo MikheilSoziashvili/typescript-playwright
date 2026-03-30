@@ -11,7 +11,9 @@ export class HiloGamePageMap extends BaseMap {
 	}
 
 	public get spinningCountdownTimer(): Locator {
-		return this.page.getByTestId("hilo-game-area-accepting-bets-spinning-in");
+		return this.page.getByTestId(
+			"hilo-game-area-accepting-bets-spinning-in",
+		);
 	}
 
 	public get spinningCountdownStatus(): Locator {
@@ -34,11 +36,47 @@ export class HiloGamePageMap extends BaseMap {
 		return this.page.getByTestId("hilo-bet-area-bet-joker");
 	}
 
+	public get hiButton(): Locator {
+		return this.page.getByTestId("hilo-bet-area-bet-hi");
+	}
+
+	public get loButton(): Locator {
+		return this.page.getByTestId("hilo-bet-area-bet-lo");
+	}
+
+	public get twoToNineButton(): Locator {
+		return this.page.getByTestId("hilo-bet-area-bet-2-9");
+	}
+
+	public get jqkaButton(): Locator {
+		return this.page.getByTestId("hilo-bet-area-bet-JQKA");
+	}
+
+	public get kaButton(): Locator {
+		return this.page.getByTestId("hilo-bet-area-bet-KA");
+	}
+
+	public get aceButton(): Locator {
+		return this.page.getByTestId("hilo-bet-area-bet-A");
+	}
+
 	public get gameResultLocator(): Locator {
 		return this.page.getByTestId("hilo-game-area-after-name");
 	}
 
 	public get statsTableBody(): Locator {
 		return this.page.getByTestId("game-stats-area-grid-tbody");
+	}
+
+	public get histroyCardsContainer(): Locator {
+		return this.page.locator(
+			"div[class*='GameHistory-styled__TransitionGroup']",
+		);
+	}
+
+	public get historyCards(): Locator {
+		return this.page.locator(
+			"[data-testid^='hilo-game-area-hiloHistoryCard']",
+		);
 	}
 }
