@@ -79,7 +79,7 @@ export function buildRewardsRoyaltyUpRankSubTitle(
 		return ToastSubTitle.ROYALTY_UP_STARTED;
 	}
 
-	return `Congratulations! You ranked up to ${royaltyUpRank} rank. Your royalty reward awaits you on the rewards page.`;
+	return `You ranked up to ${royaltyUpRank} rank. Your royalty reward awaits you on the rewards page.`;
 }
 
 export function buildCreatedCampaignSubTitle(campaignName: string): string {
