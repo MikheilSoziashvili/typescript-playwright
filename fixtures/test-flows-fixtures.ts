@@ -58,6 +58,9 @@ import { LimboAutobetTestFlow } from "@test-flows/originals/limbo/limbo-autobet-
 import { LimboAutobetSetupFlow } from "@test-flows/originals/limbo/limbo-autobet-setup-test-flow";
 import { LimboAutobetExecutionFlow } from "@test-flows/originals/limbo/limbo-autobet-execution-test-flow";
 import { StreamerWithdrawalReviewTestFlow } from "@test-flows/crypto/streamer-withdrawal-review-test-flow";
+import { InstantRakebackRewardTestFlow } from "@test-flows/rewards/instant-rakeback-reward-test-flow";
+import { CasinoGameHouseEdgeTestFlow } from "@test-flows/rewards/casino-game-house-edge-test-flow";
+import { CasinoGameRakebackTestFlow } from "@test-flows/rewards/casino-game-rakeback-test-flow";
 import { DiceApi } from "@api/games-api/dice-api";
 
 export type TestFlowsFixtures = {
@@ -92,6 +95,9 @@ export type TestFlowsFixtures = {
 	verifyReloadUpdateLogicTestFlow: VerifyReloadUpdateLogicTestFlow;
 	limboAutobetTestFlow: LimboAutobetTestFlow;
 	streamerWithdrawalReviewTestFlow: StreamerWithdrawalReviewTestFlow;
+	instantRakebackRewardTestFlow: InstantRakebackRewardTestFlow;
+	casinoGameHouseEdgeTestFlow: CasinoGameHouseEdgeTestFlow;
+	casinoGameRakebackTestFlow: CasinoGameRakebackTestFlow;
 };
 
 type RequiredTestFlowsFixtures = {
@@ -315,5 +321,14 @@ export const testFlowsFixtures = base.extend<
 				testDataPredefined,
 			}),
 		);
+	},
+	instantRakebackRewardTestFlow: async ({}, use) => {
+		await use(new InstantRakebackRewardTestFlow());
+	},
+	casinoGameHouseEdgeTestFlow: async ({ browserSessionManager }, use) => {
+		await use(new CasinoGameHouseEdgeTestFlow(browserSessionManager));
+	},
+	casinoGameRakebackTestFlow: async ({ browserSessionManager }, use) => {
+		await use(new CasinoGameRakebackTestFlow(browserSessionManager));
 	},
 });

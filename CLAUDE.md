@@ -83,6 +83,7 @@ Playwright
 - **Always** throw Error objects — `no-throw-literal` enforced
 - **Formatting:** tabs (width 4), trailing commas everywhere (Prettier)
 - **Unused vars:** prefix with `_` (pattern: `^_.`)
+- **Object shorthand consistency:** never mix shorthand and non-shorthand properties in the same object literal — if any property uses `key: value` syntax, all properties must (including variables that match the key name, e.g. `houseEdge: houseEdge` not `houseEdge`)
 
 ## Playwright Config
 

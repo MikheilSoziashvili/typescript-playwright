@@ -65,4 +65,14 @@ export class CasinoGamesAdminMap extends BaseMap {
 			.locator('//td//span[@role="button"]')
 			.nth(0);
 	}
+
+	public houseEdgeInputByCasinoGameAndProviderName(
+		gameName: string,
+		providerName: string,
+	): Locator {
+		return this.tableRowByCasinoGameAndProviderName(
+			gameName,
+			providerName,
+		).locator("//td[15]//input");
+	}
 }

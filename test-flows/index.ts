@@ -75,3 +75,8 @@ export type { HardBanResponsibleGamblingParams } from "./ban/types/hard-ban-flow
 export { PasswordChangeSetupTestFlow } from "./password/password-change-setup-test-flow";
 export { PasswordChangeExecutionTestFlow } from "./password/password-change-execution-test-flow";
 export { PasswordChangeSetupResult } from "./password/password-change-setup-test-flow";
+
+// Instant rakeback reward flows
+export { InstantRakebackRewardTestFlow } from "./rewards/instant-rakeback-reward-test-flow";
+export { CasinoGameHouseEdgeTestFlow } from "./rewards/casino-game-house-edge-test-flow";
+export { CasinoGameRakebackTestFlow } from "./rewards/casino-game-rakeback-test-flow";

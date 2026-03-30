@@ -33,6 +33,12 @@ import { UserType } from "@enums/user-types";
 import { GetAllRedirectsResponse } from "@dtos/responses/gamdom-api/get-all-redirects-response";
 import { CreateRedirectRequest } from "@dtos/requests/gamdom-api/create-redirect-request";
 import { BulkRewardRequest } from "@dtos/requests/gamdom-api/bulk-reward-request";
+import {
+	ChangeRankRewardConfigsRequest,
+	RankRewardConfig,
+} from "@dtos/requests/gamdom-api/change-rank-reward-configs-request";
+import { DEFAULT_RANK_REWARD_CONFIGS } from "@constants/rewards-royalty-up-rank-reward-configs";
+import { ChangeRankRewardConfigsResponse } from "@dtos/responses/gamdom-api/change-rank-reward-configs-response";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { HourlyCryptoBalancesRequest } from "@dtos/requests/gamdom-api/hourly-crypto-balances-request";
 import { HourlyCryptoBalancesResponse } from "@dtos/responses/gamdom-api/get-hourly-crypto-balances-response";
@@ -777,6 +783,42 @@ export class GamdomApi extends BaseApi {
 		fromPath: string,
 	): Promise<APIResponse> {
 		return this.get({ endpoint: fromPath }, { maxRedirects: 0 });
+	}
+
+	public async changeRankRewardConfigs(options?: {
+		overrides?: Partial<Record<string, Partial<RankRewardConfig>>>;
+		globalValues?: Partial<RankRewardConfig>;
+		headers?: Record<string, string>;
+	}): Promise<ChangeRankRewardConfigsResponse> {
+		const rankIdToRewardConfigs = { ...DEFAULT_RANK_REWARD_CONFIGS };
+
+		if (options?.globalValues) {
+			for (const key of Object.keys(rankIdToRewardConfigs)) {
+				rankIdToRewardConfigs[key] = {
+					...rankIdToRewardConfigs[key],
+					...options.globalValues,
+				};
+			}
+		}
+
+		if (options?.overrides) {
+			for (const [key, override] of Object.entries(options.overrides)) {
+				rankIdToRewardConfigs[key] = {
+					...rankIdToRewardConfigs[key],
+					...override,
+				};
+			}
+		}
+
+		const payload: ChangeRankRewardConfigsRequest = { rankIdToRewardConfigs };
+		const parameters = this.buildParameters(
+			ApiEndpoints.CHANGE_RANK_REWARD_CONFIGS,
+			payload,
+			options?.headers,
+		);
+
+		const response = await this.post(parameters);
+		return response.json() as Promise<ChangeRankRewardConfigsResponse>;
 	}
 
 	public async bulkReward(

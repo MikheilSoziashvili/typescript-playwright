@@ -1,11 +1,16 @@
 import { BaseAsserter } from "@base/base-asserter";
 import { DEFAULT_CURRENCY } from "@constants/defaults";
-import { formatCurrencyWithSuffix, parseToFloat } from "@core/utils/utils";
+import {
+	buildAmountWithCurrency,
+	formatCurrencyWithSuffix,
+	parseToFloat,
+} from "@core/utils/utils";
 import { RewardType } from "@enums/admin/reward-type";
 import { OriginalGame } from "@enums/original-games";
 import { RewardsRoyaltyUpRanks } from "@enums/rewards-royalty-up-ranks";
 import { Timeout } from "@enums/timeout";
 import { calculateInstantReward } from "@formulas/instant-reward";
+import { calculateRakeback } from "@formulas/rakeback";
 import { expect } from "@playwright/test";
 import { step } from "decorators/step";
 import { RewardsRoyaltyUpRanksValues } from "../../constants/rewards-royalty-up-rank-values";
@@ -108,6 +113,31 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 		await this.gamdomPage
 			.assertThat()
 			.verifyInstantRewardAmountIsCalculated(game, betAmount);
+	}
+
+	@step(
+		"Instant rakeback reward is visible and amount matches rakeback formula",
+	)
+	public async instantRakebackRewardIsCorrect(
+		betAmount: number,
+		rakebackPercentage: number,
+		houseEdge: number,
+	): Promise<void> {
+		await this.checkElementsAreVisible(
+			[this.gamdomPage.map.instantRakebackCard],
+			Timeout.LONG,
+		);
+		const reward = calculateRakeback(
+			betAmount,
+			rakebackPercentage,
+			houseEdge,
+		);
+		await this.checkElementsHaveText([
+			{
+				locator: this.gamdomPage.map.instantRakebackAmount,
+				expectedText: buildAmountWithCurrency(reward),
+			},
+		]);
 	}
 
 	@step("Is royalty up rewards in progress")

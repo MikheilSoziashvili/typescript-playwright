@@ -35,4 +35,15 @@ export class CasinoGamesAdminPage extends BasePage<CasinoGamesAdminMap> {
 		await this.map.searchByNameOrCodeInput.clear();
 		await this.map.searchByNameOrCodeInput.pressSequentially(gameName);
 	}
+
+	@step("Get house edge value for casino game")
+	public async getHouseEdgeValue(
+		gameName: string,
+		providerName: string,
+	): Promise<number> {
+		const value = await this.map
+			.houseEdgeInputByCasinoGameAndProviderName(gameName, providerName)
+			.inputValue();
+		return Number(value);
+	}
 }

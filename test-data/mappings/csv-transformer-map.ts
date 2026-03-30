@@ -19,6 +19,8 @@ import {
 	ReloadUpdateAfterPartialClaimCsvRecord,
 	JackpotContributionCsvRecord,
 	ReloadUpdateLogicCsvRecord,
+	InstantRewardsRoyaltyUpLevelsCsvRecord,
+	CasinoGameInstantRewardsRoyaltyUpLevelsCsvRecord,
 } from "@dtos/csv";
 import { ChangePasswordCsvRecord } from "@dtos/csv/change-password-csv";
 import { OriginalsSelfExclusionCsvRecord } from "@dtos/csv/originals-self-exclusion";
@@ -121,6 +123,14 @@ import {
 	parseSokGamesMinBetAfterCurrencySwitchCsvRow,
 	SokGamesMinBetAfterCurrencySwitchCsvParsedRecord,
 } from "test-data/parsers/sok-games-min-bet-after-currency-switch-csv-parser";
+import {
+	parseInstantRewardsRoyaltyUpLevelsCsvRow,
+	InstantRewardsRoyaltyUpLevelsCsvParsedRecord,
+} from "test-data/parsers/instant-rewards-royalty-up-levels-csv-parser";
+import {
+	parseCasinoGameInstantRewardsRoyaltyUpLevelsCsvRow,
+	CasinoGameInstantRewardsRoyaltyUpLevelsCsvParsedRecord,
+} from "test-data/parsers/casino-game-instant-rewards-royalty-up-levels-csv-parser";
 
 export type CsvTransformerExistingType<T> =
 	T extends keyof CsvTransformerMapType ? CsvTransformerMapType[T] : never;
@@ -235,6 +245,14 @@ export type CsvTransformerMapType = {
 	[CsvFilesName.SOK_GAMES_MIN_BET_AFTER_CURRENCY_SWITCH]: (
 		row: SokGamesMinBetAfterCurrencySwitchCsvRecord,
 	) => SokGamesMinBetAfterCurrencySwitchCsvParsedRecord;
+
+	[CsvFilesName.INSTANT_REWARDS_ROYALTY_UP_LEVELS]: (
+		row: InstantRewardsRoyaltyUpLevelsCsvRecord,
+	) => InstantRewardsRoyaltyUpLevelsCsvParsedRecord;
+
+	[CsvFilesName.CASINO_GAME_INSTANT_REWARDS_ROYALTY_UP_LEVELS]: (
+		row: CasinoGameInstantRewardsRoyaltyUpLevelsCsvRecord,
+	) => CasinoGameInstantRewardsRoyaltyUpLevelsCsvParsedRecord;
 };
 
 export const CsvTransformerMap: CsvTransformerMapType = {
@@ -277,4 +295,8 @@ export const CsvTransformerMap: CsvTransformerMapType = {
 	[CsvFilesName.CHANGE_PASSWORD]: parseChangePasswordCsvRow,
 	[CsvFilesName.SOK_GAMES_MIN_BET_AFTER_CURRENCY_SWITCH]:
 		parseSokGamesMinBetAfterCurrencySwitchCsvRow,
+	[CsvFilesName.INSTANT_REWARDS_ROYALTY_UP_LEVELS]:
+		parseInstantRewardsRoyaltyUpLevelsCsvRow,
+	[CsvFilesName.CASINO_GAME_INSTANT_REWARDS_ROYALTY_UP_LEVELS]:
+		parseCasinoGameInstantRewardsRoyaltyUpLevelsCsvRow,
 } as const;

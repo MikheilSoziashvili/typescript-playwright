@@ -260,4 +260,12 @@ export const predefined = {
 		betAmount: 50,
 		multiplier: 50,
 	},
+	originalGames: {
+		betAmountCoins: 150000,
+		betAmount: 100,
+		rakebackPercentage: 10,
+	},
+	casinoGames: {
+		betCount: 1,
+	},
 };

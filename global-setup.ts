@@ -2,7 +2,10 @@ import { GamdomApi } from "@api/gamdom-api";
 import { JiraApi } from "@api/jira-api";
 import { createExecutionBody } from "@api/jira-api-payloads";
 import { SUPER_ADMIN_CREDENTIALS } from "@constants/credentials";
-import { ALL_USER_TYPES_ENABLED } from "@constants/feature-configurations";
+import {
+	ALL_USER_TYPES_DISABLED,
+	ALL_USER_TYPES_ENABLED,
+} from "@constants/feature-configurations";
 import { JsonData } from "@core/interfaces";
 import {
 	generateRandomString,
@@ -63,6 +66,10 @@ async function enableCoreFeatures(
 			},
 			{ feature: Feature.LIMBO, states: ALL_USER_TYPES_ENABLED },
 			{ feature: Feature.BLACKJACK, states: ALL_USER_TYPES_ENABLED },
+			{
+				feature: Feature.ZERO_EDGE_RTP_ORIGINALS,
+				states: ALL_USER_TYPES_DISABLED,
+			},
 		],
 		{ Cookie: cookie },
 	);

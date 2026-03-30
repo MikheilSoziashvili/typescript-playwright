@@ -112,6 +112,7 @@ import { ZuluGoldPage } from "./casino-games/elk-studios/zulu-gold/zulu-gold-pag
 import { SportsBlogAdminPage } from "./admin/sports-blog-admin/sports-blog-admin-page";
 import { SportsBlogModal } from "./modals/sports-blog-modal/sports-blog-modal";
 import { SweetBonanzaPage } from "./casino-games/pragmatic-play/sweet-bonanza/sweet-bonanza-page";
+import { SweetBonanzaCandyLandPage } from "./casino-games/pragmatic-play-live/sweet-bonanza-candy-land/sweet-bonanza-candy-land-page";
 import { ToastV4 } from "./components/toastV4/toast-v4";
 import { UnblockUserModalV4 } from "./modals/unblock-user-modal-v4/unblock-user-modal-v4";
 import { UserProfileModalV4 } from "./modals/user-profile-modal-v4/user-profile-modal-v4";
@@ -218,6 +219,7 @@ export const GamePages = {
 	pocketDicePage: PocketDicePage,
 	zuluGoldPage: ZuluGoldPage,
 	sweetBonanzaPage: SweetBonanzaPage,
+	sweetBonanzaCandyLandPage: SweetBonanzaCandyLandPage,
 	limboGamePage: LimboGamePage,
 } as const;
 

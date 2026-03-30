@@ -6,11 +6,12 @@
  * @return {number}
  */
 
+import { roundToDecimals } from "@core/utils/utils";
+
 export function calculateRakeback(
 	wager: number,
 	rakeback: number,
 	houseEdge: number,
 ): number {
-	
-	return wager * (rakeback / 100) * (houseEdge / 100);
+	return roundToDecimals(((wager * rakeback) / 100) * houseEdge, 2);
 }

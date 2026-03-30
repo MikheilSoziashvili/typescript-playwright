@@ -12,6 +12,7 @@ export enum GameProviderCode {
 	SOFTSWISS = "softswiss",
 	ALEA = "alea",
 	HACKSAW_GAMING = "hacksawgaming",
+	WICKED_GAMES = "wicked",
 }
 
 export enum RoundOutcome {
