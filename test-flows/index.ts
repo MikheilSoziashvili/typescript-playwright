@@ -73,11 +73,15 @@ export type {
 	SteamUserLoginLogoutParams,
 } from "./ban/types/ban-flow-types";
 export type { HardBanResponsibleGamblingParams } from "./ban/types/hard-ban-flow-types";
+
 // Originals flows - shared
 export { OriginalsBetPlacementTestFlow } from "./originals/originals-bet-placement-test-flow";
 
 // KoTH flows
 export { KothPointsCalculationTestFlow } from "./koth/koth-points-calculation-test-flow";
+
+// Wager Requirement flows
+export { WagerRequirementTestFlow } from "./wager-requirement/wager-requirement-test-flow";
 
 // Password flows
 export { PasswordChangeSetupTestFlow } from "./password/password-change-setup-test-flow";

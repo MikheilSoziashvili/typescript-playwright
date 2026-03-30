@@ -64,6 +64,7 @@ import { CasinoPage } from "./casino/casino-game-page";
 import { Chat } from "./components/chat/chat";
 import { Footer } from "./components/footer/footer";
 import { Toast } from "./components/toast/toast";
+import { WagerRequirementPopup } from "./components/wager-requirement-popup/wager-requirement-popup";
 import { CrashGamePage } from "./crash-game-page/crash-game-page";
 import { DiceGamePage } from "./dice-game-page/dice-game-page";
 import { EsportsPage } from "./esports-page/esports-page";
@@ -224,6 +225,7 @@ export const Components = {
 	toast: Toast,
 	chat: Chat,
 	footer: Footer,
+	wagerRequirementPopup: WagerRequirementPopup,
 };
 
 export const ExternalPages = {

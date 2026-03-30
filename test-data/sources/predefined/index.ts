@@ -292,4 +292,13 @@ export const predefined = {
 		promoAmount: "$100.00",
 		freeSpinsValue: "10×$0.10",
 	},
+	wagerRequirement: {
+		wagerReqEndCoins: 30000,
+		wagerReqEndDollars: "$20.00",
+		smallBetAmount: 1500,
+		largeBetAmount: 31500,
+		dragTargetX: 500,
+		dragTargetY: 500,
+		message: "Roll over the wager to withdraw funds",
+	},
 };

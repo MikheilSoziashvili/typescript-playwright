@@ -103,6 +103,7 @@ export enum JiraComponent {
 	VAULT = "Vault",
 	VERIFICATION = "Verification",
 	VIP_MANAGER = "VIP",
+	WAGER = "Wager",
 	WALLET = "Wallet",
 	WEBSITE_ACCESS = "Website Access",
 	WEBSOCKET = "WebSocket",

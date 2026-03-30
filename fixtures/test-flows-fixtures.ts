@@ -75,6 +75,7 @@ import { PromoRewardHistoryTestFlow } from "@test-flows/rewards/promo-reward-his
 import { TipRewardHistoryTestFlow } from "@test-flows/rewards/tip-reward-history-test-flow";
 import { WeeklyMonthlyRewardTestFlow } from "@test-flows/rewards/weekly-monthly-reward-test-flow";
 import { FeatureActivationV4TestFlow } from "@test-flows/feature-activation/feature-activation-v4-test-flow";
+import { WagerRequirementTestFlow } from "@test-flows/wager-requirement/wager-requirement-test-flow";
 
 export type TestFlowsFixtures = {
 	plinkoBetTestFlow: PlinkoBetTestFlow;
@@ -122,6 +123,7 @@ export type TestFlowsFixtures = {
 	tipRewardHistoryTestFlow: TipRewardHistoryTestFlow;
 	weeklyMonthlyRewardTestFlow: WeeklyMonthlyRewardTestFlow;
 	featureActivationV4TestFlow: FeatureActivationV4TestFlow;
+	wagerRequirementTestFlow: WagerRequirementTestFlow;
 };
 
 type RequiredTestFlowsFixtures = {
@@ -337,6 +339,11 @@ export const testFlowsFixtures = base.extend<
 			),
 		);
 	},
+
+	wagerRequirementTestFlow: async ({}, use) => {
+		await use(new WagerRequirementTestFlow());
+	},
+	
 	streamerWithdrawalReviewTestFlow: async (
 		{
 			browserSessionManager,

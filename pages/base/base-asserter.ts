@@ -797,6 +797,39 @@ export class BaseAsserter<
 		});
 	}
 
+	@step("Check that value is greater than expected")
+	public async checkValueIsGreaterThan(
+		actual: number,
+		expected: number,
+		message?: string,
+	): Promise<void> {
+		expect(actual, message).toBeGreaterThan(expected);
+	}
+
+	@step("Check element position changed")
+	public async checkElementPositionChanged(
+		element: Locator,
+		initialX: number,
+		initialY: number,
+		tolerance = 5,
+		message?: string,
+	): Promise<void> {
+		const boundingBox = await element.boundingBox();
+		if (!boundingBox) {
+			throw new Error(
+				message ?? "Element is not visible for position check",
+			);
+		}
+
+		const moved =
+			Math.abs(boundingBox.x - initialX) > tolerance ||
+			Math.abs(boundingBox.y - initialY) > tolerance;
+		expect(
+			moved,
+			message ?? "Element should have moved from its original position",
+		).toBe(true);
+	}
+
 	@step("Wait for element to appear after repeated refresh")
 	protected async waitForElementAfterRefresh(
 		locator: Locator,
