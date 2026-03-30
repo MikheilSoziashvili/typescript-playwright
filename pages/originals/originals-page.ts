@@ -98,8 +98,9 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 						: defaultMultiplier;
 					await dice.placeBet(amount, multiplier);
 				},
-				waitForRoundFinish: () =>
-					dice.assertThat().diceResultIsDisplayed(),
+				waitForRoundFinish: async () => {
+					await dice.assertThat().diceResultIsDisplayed();
+				},
 			},
 			[OriginalGame.Crash]: {
 				page: crash,
@@ -120,11 +121,12 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 					const betColor = isStringBetOption(option)
 						? (option as RouletteBetColor)
 						: RouletteBetColor.RED;
-					await roulette.placeBet(amount, betColor);
+					await roulette.insertBet(amount);
+					await roulette.betOnColor(betColor);
 				},
 				waitForRoundFinish: async () => {
 					await roulette.waitBettingWindowAvailable();
-					await roulette.waitRoundResultNumber();
+					await roulette.getRoundResultNumber();
 				},
 			},
 			[OriginalGame.HiLo]: {

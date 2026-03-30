@@ -5,11 +5,11 @@ import path from "path";
 import { parse } from "csv-parse/sync";
 import { CsvFileLoadError, CsvParseError } from "test-data/custom-exceptions";
 import {
+	CsvRowType,
 	CsvTransformerExistingReturnType,
 	CsvTransformerFunctionType,
 	CsvTransformerMapType,
 } from "test-data/mappings/csv-transformer-map";
-import { CsvDtoMap } from "test-data/mappings/csv-dto-map";
 
 export class CSVDataSource {
 	private readonly CSV_DATASETS_PATH = DATASETS_DIR_PATH;
@@ -54,7 +54,7 @@ export class CSVDataSource {
 		transform: CsvTransformerFunctionType<T>;
 	}): CsvTransformerExistingReturnType<T> {
 		try {
-			const csvRaw = this.loadRaw<CsvDtoMap[T]>();
+			const csvRaw = this.loadRaw<CsvRowType<T>[]>();
 			const csvMapped = csvRaw.map((row) => params.transform(row));
 
 			return csvMapped as CsvTransformerExistingReturnType<T>;

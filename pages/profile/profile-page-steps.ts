@@ -119,6 +119,13 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 		await this.gamdomPage.clickSavePhone();
 	}
 
+	@step("Complete and verify email change")
+	public async completeAndVerifyEmailChange(): Promise<void> {
+		await this.gamdomPage.continueModal.assertThat().isModalDisplayed();
+		await this.gamdomPage.continueModal.clickLogoutButton();
+		await this.gamdomPage.assertThat().assertEmailInputVisible();
+	}
+
 	@step("Complete and verify phone change")
 	public async completeAndVerifyPhoneChange(): Promise<void> {
 		await this.gamdomPage.continueModal.assertThat().isModalDisplayed();
@@ -184,7 +191,7 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 						.assertThat()
 						.modal2FaNotDisplayed();
 				}
-				await this.gamdomPage.steps().completeAndVerifyEmailChange();
+				await this.completeAndVerifyEmailChange();
 				break;
 
 			case ContactType.PHONE:

@@ -187,9 +187,7 @@ export class HardBanResponsibleGamblingTestFlow extends BaseTestFlow {
 		await regularUser.pages.rewardsPage.navigateToRewardInSlider(
 			RewardsRoyaltyUpRanks.BRONZE_1,
 		);
-		await regularUser.pages.rewardsPage.map
-			.royaltyUpItemClaimButton(RewardsRoyaltyUpRanks.BRONZE_1)
-			.click();
+		await regularUser.pages.rewardsPage.map.royaltyUpClaimButton.click();
 
 		await regularUser.pages.homePage.navigate();
 		await regularUser.pages.homePage.clickWalletButton();
