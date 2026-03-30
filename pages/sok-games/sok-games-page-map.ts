@@ -7,7 +7,7 @@ export class SokGamesPageMap extends BaseMap {
 
 	private static readonly BALANCE_TESTIDS: Record<SokGame, string> = {
 		[SokGame.Mines]: "Mines-balance",
-		[SokGame.Plinko]: "0-balance",
+		[SokGame.Plinko]: "Plinko-balance",
 		[SokGame.Keno]: "Keno-balance",
 		[SokGame.PocketDice]: "PocketDice-balance",
 		[SokGame.Limbo]: "Limbo-balance",
