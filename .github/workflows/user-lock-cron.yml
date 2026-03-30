@@ -7,14 +7,9 @@ jobs:
     run-expired-ban-auto-lock:
         runs-on: self-hosted-k8s
         timeout-minutes: 30
+        env:
+            KUBECONFIG: ${{ secrets.KUBECONFIG_STG_OVH }}
         steps:
-            - name: Configure kubeconfig
-              run: |
-                  echo "{{ secrets.KUBECONFIG_STG_OVH }}" > .kubeconfig
-                  set -xeuo pipefail
-                  chmod 600 .kubeconfig
-                  export KUBECONFIG=.kubeconfig
-
             - name: Find pod
               id: pod
               run: |
