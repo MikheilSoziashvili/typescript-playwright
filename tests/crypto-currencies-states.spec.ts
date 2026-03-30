@@ -29,7 +29,7 @@ test.describe(
 					test(
 						`[ENG-10584] Enable/Disable crypto currencies - ${record.cryptoTicker} (Deposit: ${record.isDepositEnabled}, Withdrawal: ${record.isWithdrawalEnabled})`,
 						testDetails()
-							.withTags(TestTag.SEQUENTIAL)
+							.withTags(TestTag.SEQUENTIAL, TestTag.ACCEPTANCE)
 							.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 							.apply(),
 						async ({
@@ -119,7 +119,7 @@ test.describe(
 			test(
 				`[ENG-12151] Crypto currencies - status column state`,
 				testDetails()
-					.withTags(TestTag.SEQUENTIAL)
+					.withTags(TestTag.SEQUENTIAL, TestTag.ACCEPTANCE)
 					.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 					.apply(),
 				async ({ cryptoAdminPage }, testInfo) => {

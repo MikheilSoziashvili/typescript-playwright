@@ -22,7 +22,7 @@ test.describe("Use affiliate code", () => {
 	test(
 		"[ENG-297] Create an affiliate code and use it with a new account",
 		testDetails()
-			.withTags(TestTag.SMOKE, JiraComponent.AFFILIATES)
+			.withTags(TestTag.SMOKE, JiraComponent.AFFILIATES, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.NIKOLAY_GENOV)
 			.apply(),
 		async ({

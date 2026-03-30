@@ -30,7 +30,7 @@ test.describe("Rain tests", () => {
 	test(
 		"[ENG-15626] Rain - cannot claim rain with no KYC level",
 		testDetails()
-			.withTags(JiraComponent.VERIFICATION, JiraComponent.RAIN)
+			.withTags(JiraComponent.VERIFICATION, JiraComponent.RAIN, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.ANGEL_PETROV)
 			.apply(),
 		async ({ homePage, chat, browserSessionManager }) => {
@@ -50,7 +50,7 @@ test.describe("Rain tests", () => {
 		test(
 			`[ENG-15626] Rain - cannot claim rain with KYC level: ${kycLevel.level}`,
 			testDetails()
-				.withTags(JiraComponent.VERIFICATION, JiraComponent.RAIN)
+				.withTags(JiraComponent.VERIFICATION, JiraComponent.RAIN, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.ANGEL_PETROV)
 				.apply(),
 			async ({ homePage, chat, browserSessionManager, gamdomDb }) => {
@@ -81,7 +81,7 @@ test.describe("Rain tests", () => {
 		test(
 			`[ENG-15626] Rain - can claim rain with KYC level: ${kycConfig.label}`,
 			testDetails()
-				.withTags(JiraComponent.VERIFICATION, JiraComponent.RAIN)
+				.withTags(JiraComponent.VERIFICATION, JiraComponent.RAIN, TestTag.ACCEPTANCE)
 				.withJiraBugTickets("5094")
 				.withAuthor(JiraUser.ANGEL_PETROV)
 				.apply(),
@@ -147,7 +147,7 @@ test.describe("Rain tests", () => {
 	test(
 		"[ENG-2564] Tip rain - Require new 2FA code when IP of user changes",
 		testDetails()
-			.withTags(TestTag.SEQUENTIAL, JiraComponent.TWO_FA, JiraComponent.RAIN)
+			.withTags(TestTag.SEQUENTIAL, JiraComponent.TWO_FA, JiraComponent.RAIN, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.ANGEL_PETROV)
 			.apply(),
 		async ({

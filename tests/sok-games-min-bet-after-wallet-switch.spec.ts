@@ -8,6 +8,7 @@ import { test } from "@fixtures/fixtures";
 import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
 import { predefined } from "test-data/sources/predefined";
 import { testData } from "test-data/test-data-manager";
+import { TestTag } from "@enums/test-tags";
 
 const { wallets } = predefined.sokGames;
 
@@ -32,7 +33,7 @@ test.describe(
 			.forEach((record) => {
 				test(
 					`[ENG-11134] ${record.game} - Min bet after wallet switch`,
-					testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+					testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({ sokGamesPage, browserSessionManager }) => {
 						test.slow();
 

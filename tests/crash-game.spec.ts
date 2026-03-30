@@ -38,7 +38,7 @@ test.describe(
 		test(
 			"[ENG-265] Place a single bet on Crash and try to cashout",
 			testDetails()
-				.withTags(TestTag.SMOKE)
+				.withTags(TestTag.SMOKE, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.NIKOLAY_GENOV)
 				.apply(),
 			async (
@@ -104,7 +104,7 @@ test.describe(
 		crashAutoCashout.forEach((record) => {
 			test(
 				`[ENG-1118] Crash - Auto Cashout with: [${record.your_bet}] value bets`,
-				testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+				testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 				async (
 					{ crashGamePage, testDataObject, userBalanceHandler },
 					testInfo,

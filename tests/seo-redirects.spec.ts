@@ -9,6 +9,7 @@ import {
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
+import { TestTag } from "@enums/test-tags";
 
 test.describe("SEO Redirects tests", () => {
 	test.describe("SEO Redirects - create, edit, delete and check history", () => {
@@ -45,7 +46,7 @@ test.describe("SEO Redirects tests", () => {
 
 		test(
 			"[ENG-5620] Create a new redirect",
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ seoRedirectsAdminPage }) => {
 				await seoRedirectsAdminPage
 					.assertThat()
@@ -63,7 +64,7 @@ test.describe("SEO Redirects tests", () => {
 
 		test(
 			"[ENG-5622] Edit an existing redirect",
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ seoRedirectsAdminPage, newRedirectModal }) => {
 				await seoRedirectsAdminPage.clickEditRedirect(fromPath);
 				await newRedirectModal
@@ -85,7 +86,7 @@ test.describe("SEO Redirects tests", () => {
 
 		test(
 			"[ENG-5622] Delete a redirect",
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ seoRedirectsAdminPage }) => {
 				await seoRedirectsAdminPage
 					.assertThat()
@@ -112,7 +113,7 @@ test.describe("SEO Redirects tests", () => {
 
 		test(
 			"[ENG-5620] Verify redirect functionality",
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ gamdomApiDbFacade, blogPostPage, gamdomApi }) => {
 				const { user: superAdminUser } =
 					await gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
@@ -139,7 +140,7 @@ test.describe("SEO Redirects tests", () => {
 		test(
 			"[ENG-6190] - /esports redirects to /sports/esports with 301 status",
 			testDetails()
-				.withTags(JiraComponent.SPORTS_ESPORTS_BETTING)
+				.withTags(JiraComponent.SPORTS_ESPORTS_BETTING, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.RALUCA_ARITON)
 				.apply(),
 			async ({ gamdomApi, gamdomApiAsserter }) => {

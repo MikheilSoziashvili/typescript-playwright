@@ -8,6 +8,7 @@ import { JiraComponent } from "@enums/jira/jira-components";
 import { testData } from "test-data/test-data-manager";
 import { TRX_CONFIG } from "@test-flows/crypto/types/crypto-flow-types";
 import { toFireblocksCryptoClient } from "@test-flows/crypto/adapters/fireblocks-crypto-client-adapter";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"TRX tests",
@@ -33,7 +34,7 @@ test.describe(
 
 		test(
 			"[ENG-10325] TRX - deposit",
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				cryptoDepositTestFlow,
 				cryptoDepositVerificationTestFlow,
@@ -58,7 +59,7 @@ test.describe(
 		for (const speed of cryptoWithdrawalDomainData.withdrawalSpeeds) {
 			test(
 				`[ENG-13724] TRX - withdraw with regular user - ${speed.toLowerCase()}`,
-				testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+				testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					cryptoWithdrawalSetupTestFlow,
 					cryptoWithdrawalProcessTestFlow,
@@ -92,7 +93,7 @@ test.describe(
 		for (const speed of cryptoWithdrawalDomainData.withdrawalSpeeds) {
 			test(
 				`[ENG-13475] TRX - withdraw with vip user - ${speed.toLowerCase()}`,
-				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					cryptoWithdrawalSetupTestFlow,
 					cryptoWithdrawalProcessTestFlow,

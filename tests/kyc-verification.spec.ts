@@ -50,7 +50,7 @@ test.describe(
 			}) => {
 				test(
 					`[${testId}] Submit ${formType} Level 1`,
-					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({ homePage, verificationPage, toast }) => {
 						await fillSubmissionForm(verificationPage);
 
@@ -80,7 +80,7 @@ test.describe(
 			}) => {
 				test(
 					`[${testId}] ${formType} Level 1 - Field validations`,
-					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({ verificationPage }) => {
 						await verificationPage.selectVerificationTab(tabType);
 
@@ -151,7 +151,7 @@ test.describe(
 		for (const { decision, reason } of kycLevel2Scenarios) {
 			test(
 				`[ENG-8616] Submit documents for KYC Level 2 - Decision: ${decision}, Reason: ${reason}`,
-				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({ verificationPage, veriffApi, veriffPortalPage }) => {
 					await verificationPage
 						.steps()
@@ -200,7 +200,7 @@ test.describe(
 			({ kycLevel, trigger, revoke }) => {
 				test(
 					`[ENG-8621] KYC Level ${kycLevel} - Trigger and Revoke`,
-					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({ browserSessionManager }) => {
 						const adminUser = await browserSessionManager.loginAs(
 							TestUserRole.SUPERADMIN,
@@ -354,7 +354,7 @@ test.describe(
 
 		test(
 			"[ENG-8736] Submit KYC Level 2.5",
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ browserSessionManager }) => {
 				const regularUser = await browserSessionManager.loginAs(
 					TestUserRole.REGULAR,
@@ -379,7 +379,7 @@ test.describe(
 			({ testId, formType, fieldValidations, processInput }) => {
 				test(
 					`[${testId}] ${formType} Level 2.5 - Field validations`,
-					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({ browserSessionManager }) => {
 						const regularUser = await browserSessionManager.loginAs(
 							TestUserRole.REGULAR,
@@ -455,7 +455,7 @@ test.describe(
 		PROOF_OF_FUNDS_OPTIONS.forEach((proofOfFund) =>
 			test(
 				`[ENG-8663] Submit KYC Level 3 - ${proofOfFund}`,
-				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({ browserSessionManager }) => {
 					const regularUser = await browserSessionManager.loginAs(
 						TestUserRole.REGULAR,
@@ -476,7 +476,7 @@ test.describe(
 			({ testId, formType, fieldValidations, processInput }) => {
 				test(
 					`[${testId}] ${formType} Level 3 - Field validations`,
-					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({ browserSessionManager }) => {
 						const regularUser = await browserSessionManager.loginAs(
 							TestUserRole.REGULAR,
@@ -527,7 +527,7 @@ test.describe(
 			}) =>
 				test(
 					`[${testId}] [ENG-8674] ${action} KYC Level 3 in Admin`,
-					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({ browserSessionManager }) => {
 						const adminUser = await browserSessionManager.loginAs(
 							TestUserRole.SUPERADMIN,

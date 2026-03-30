@@ -198,7 +198,7 @@ adminEnableGames.forEach((record) => {
 			 */
 			test(
 				`[ENG-2745] Admin - enable a game provider only for qa users, test number: [${record.case}]`,
-				testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+				testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					gamdomApi,
 					gamdomDb,

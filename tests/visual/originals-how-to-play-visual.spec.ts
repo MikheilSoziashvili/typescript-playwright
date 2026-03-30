@@ -21,8 +21,7 @@ test.describe("Visual Tests - Originals - How to Play", () => {
 					JiraComponent.SOK_GAMES,
 					JiraComponent[
 						game.toUpperCase() as keyof typeof JiraComponent
-					],
-				)
+					], TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.NIKOLAY_GENOV)
 				.apply(),
 			async ({ originalsPage }, testInfo) => {

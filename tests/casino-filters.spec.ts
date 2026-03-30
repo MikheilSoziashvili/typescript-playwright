@@ -4,6 +4,7 @@ import { GameProvider } from "@enums/game-providers";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { test } from "@fixtures/fixtures";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"Casino filters tests",
@@ -11,7 +12,7 @@ test.describe(
 	() => {
 		test(
 			"[ENG-2850] Filter by provider",
-			testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+			testDetails().withAuthor(JiraUser.RALUCA_ARITON).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ casinoPage }) => {
 				await casinoPage.navigate();
 				const providersToSelect = [
@@ -45,7 +46,7 @@ test.describe(
 
 		test(
 			"[ENG-2846] Pick random filter",
-			testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+			testDetails().withAuthor(JiraUser.RALUCA_ARITON).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ casinoPage, gamdomApiDbFacade, page }) => {
 				const { cookie } =
 					await gamdomApiDbFacade.createSingleUserDbAndAuth();

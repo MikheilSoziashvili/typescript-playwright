@@ -9,6 +9,7 @@ import { AdminTabLocatorKey } from "@enums/admin-tab-locator-keys";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
+import { TestTag } from "@enums/test-tags";
 
 test.describe.parallel("Admin page tabs visibility tests", () => {
 	test.slow();
@@ -27,7 +28,7 @@ test.describe.parallel("Admin page tabs visibility tests", () => {
 		test(
 			`[ENG-3349] [Admin] Verify admin tabs, tab: ${record.adminTab}`,
 			testDetails()
-				.withTags(JiraComponent.ADMIN)
+				.withTags(JiraComponent.ADMIN, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.ANGEL_PETROV)
 				.apply(),
 			async ({

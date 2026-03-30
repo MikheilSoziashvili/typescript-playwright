@@ -8,6 +8,7 @@ import { storageStateNewSuperAdminUserDB } from "@fixtures/auth-fixtures";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { testDetails } from "@core/helpers/test-details-helper";
+import { TestTag } from "@enums/test-tags";
 
 test.describe("Search for Promo codes", () => {
 	let qrCode2FAImagePath: string;
@@ -50,7 +51,7 @@ test.describe("Search for Promo codes", () => {
 	test(
 		"[ENG-6184] Search for existing promo code in the campaigns table",
 		testDetails()
-			.withTags(JiraComponent.PROMO_CODES)
+			.withTags(JiraComponent.PROMO_CODES, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.NIKOLAY_GENOV)
 			.apply(),
 		async ({ promoCampaignsAdminPage }) => {
@@ -67,7 +68,7 @@ test.describe("Search for Promo codes", () => {
 	test(
 		"[ENG-6184] Search for non-existing promo code in the campaigns table",
 		testDetails()
-			.withTags(JiraComponent.PROMO_CODES)
+			.withTags(JiraComponent.PROMO_CODES, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.NIKOLAY_GENOV)
 			.apply(),
 		async ({ promoCampaignsAdminPage }) => {

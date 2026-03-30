@@ -26,6 +26,7 @@ import { FreeSpinsAdminPage } from "@pages/admin/free-spins-admin/free-spins-adm
 import { HomePage } from "@pages/home-page/home-page";
 import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
 import { testData } from "test-data/test-data-manager";
+import { TestTag } from "@enums/test-tags";
 
 test.describe("Free spins tests", () => {
 	test.describe(
@@ -42,7 +43,7 @@ test.describe("Free spins tests", () => {
 			test(
 				"[ENG-932] Granting free spins",
 				testDetails()
-					.withTags(JiraComponent.FREE_SPINS)
+					.withTags(JiraComponent.FREE_SPINS, TestTag.ACCEPTANCE)
 					.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 					.apply(),
 				async ({ freeSpinsAdminPage, toast, gamdomApiDbFacade }) => {
@@ -81,7 +82,7 @@ test.describe("Free spins tests", () => {
 					test(
 						`[ENG-5008] Granting free spins in batch - ${description}`,
 						testDetails()
-							.withTags(JiraComponent.FREE_SPINS)
+							.withTags(JiraComponent.FREE_SPINS, TestTag.ACCEPTANCE)
 							.withAuthor(JiraUser.RALUCA_ARITON)
 							.apply(),
 						async ({ freeSpinsAdminPage }) => {
@@ -114,7 +115,7 @@ test.describe("Free spins tests", () => {
 			);
 			test(
 				"[ENG-4850] Free spins notification - Play button redirects user to game (via UI)",
-				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({ browser, gamdomApi, gamdomDb, testDataObject }) => {
 					const userData = testDataObject.register.random();
 					const superAdminData = new RegisterTestData({
@@ -196,7 +197,7 @@ test.describe("Free spins tests", () => {
 			);
 			test(
 				"[ENG-3474] Verify free spins cannot be sent when admin wallet is 0",
-				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({ freeSpinsAdminPage, toast, gamdomApiDbFacade }) => {
 					const [newUserData] = await gamdomApiDbFacade.createUsersDb(
 						{
@@ -239,7 +240,7 @@ test.describe("Free spins tests", () => {
 		() => {
 			test(
 				"[ENG-4860] Verify that the TOP PLAYED SLOTS table is displayed only after the GET button from the Get top played slots panel is clicked",
-				testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+				testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					freeSpinsAdminPage,
 					gamdomApiDbFacade,
@@ -306,7 +307,7 @@ test.describe(
 		test(
 			"[ENG-2866] Revoke Free spins and verify user notification",
 			testDetails()
-				.withTags(JiraComponent.FREE_SPINS)
+				.withTags(JiraComponent.FREE_SPINS, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.NIKOLAY_GENOV)
 				.apply(),
 			async ({ browserSessionManager }) => {

@@ -33,8 +33,12 @@ on:
                     - visual
                     - originals
                     - game-providers
-            custom_options:
-                description: "Custom command-line options"
+            custom_options_chromium:
+                description: "Custom command-line options for parallel tests"
+                type: string
+                required: false
+            custom_options_sequential:
+                description: "Custom command-line options for sequential tests"
                 type: string
                 required: false
             run_sequential_tests:
@@ -354,7 +358,8 @@ jobs:
             GREP_V4_TESTS: --grep @v4
             INVERT_V4_TESTS: --grep-invert @v4
             PROJECT_CHROMIUM: --project=chromium
-            CUSTOM_OPTIONS: ${{ github.event.client_payload.custom_options || inputs.custom_options }}
+            CUSTOM_OPTIONS_CHROMIUM: ${{ github.event.client_payload.custom_options || inputs.custom_options_chromium }}
+            CUSTOM_OPTIONS_SEQUENTIAL: ${{ inputs.custom_options_sequential }}
             PLAYWRIGHT_TEST: yarn playwright test
             WORKERS: ${{ github.event_name == 'schedule' && '--workers=15' || format('--workers={0}', inputs.workers || '15')}}
             CREATE_TEST_EXECUTION: ${{ inputs.create_test_execution }}
@@ -501,9 +506,9 @@ jobs:
 
                   # Handle tag filtering
                   if [ "$TAG" == "all" ]; then
-                    echo "Running all tests ${CUSTOM_OPTIONS:+with custom options: $CUSTOM_OPTIONS}"
+                    echo "Running all tests ${CUSTOM_OPTIONS_CHROMIUM:+with custom options: $CUSTOM_OPTIONS_CHROMIUM}"
                   else
-                    echo "Running tests with tag: "@$TAG" ${CUSTOM_OPTIONS:+and custom options: $CUSTOM_OPTIONS}"
+                    echo "Running tests with tag: "@$TAG" ${CUSTOM_OPTIONS_CHROMIUM:+and custom options: $CUSTOM_OPTIONS_CHROMIUM}"
                     TEST_COMMAND="$TEST_COMMAND --grep @${TAG}"
                   fi
 
@@ -518,8 +523,12 @@ jobs:
                   fi
 
                   # Execute tests
-                  if [ -n "$CUSTOM_OPTIONS" ]; then
-                    $TEST_COMMAND $V4_OPTION $CUSTOM_OPTIONS $SHARD_OPTION $PROJECT_CHROMIUM
+                  if [ -n "$CUSTOM_OPTIONS_CHROMIUM" ]; then
+                    if echo "$CUSTOM_OPTIONS_CHROMIUM" | grep -q "\-\-workers"; then
+                      $TEST_COMMAND $V4_OPTION $CUSTOM_OPTIONS_CHROMIUM $SHARD_OPTION $PROJECT_CHROMIUM
+                    else
+                      $TEST_COMMAND $V4_OPTION $WORKERS $CUSTOM_OPTIONS_CHROMIUM $SHARD_OPTION $PROJECT_CHROMIUM
+                    fi
                   else
                     $TEST_COMMAND $INVERT_SEQUENTIAL_TESTS $V4_OPTION $WORKERS $SHARD_OPTION $PROJECT_CHROMIUM
                   fi
@@ -579,7 +588,7 @@ jobs:
                           V4_OPTION="$INVERT_V4_TESTS"
                       fi
 
-                      $PLAYWRIGHT_TEST $GREP_SEQUENTIAL_TESTS $V4_OPTION --project=chromium-sequential
+                      $PLAYWRIGHT_TEST $GREP_SEQUENTIAL_TESTS $V4_OPTION $CUSTOM_OPTIONS_SEQUENTIAL --project=chromium-sequential
                   else
                       echo "Sequential tests are disabled for this run."
                   fi

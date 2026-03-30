@@ -11,6 +11,7 @@ import { TestUserRole } from "@enums/test-user-roles";
 import { testData } from "test-data/test-data-manager";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { isScheduledRun } from "configuration";
+import { TestTag } from "@enums/test-tags";
 
 test.describe("Email Verification Tests", () => {
 	test.use({ storageState: { cookies: [], origins: [] } });
@@ -19,7 +20,7 @@ test.describe("Email Verification Tests", () => {
 
 	test(
 		"[ENG-1133] E-mail verification - new account",
-		testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+		testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 		async ({ mailinatorApi, page, profilePage, gamdomApi }) => {
 			// reduce code duplication from 19-23 to be in a beforeEach (eventually take them out in another describe)
 			let { email, inbox } = generateEmailAndInbox();
@@ -43,7 +44,7 @@ test.describe("Email Verification Tests", () => {
 
 	test(
 		"[ENG-1121] E-mail verification",
-		testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+		testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 		async ({ mailinatorApi, page, profilePage, gamdomApi }) => {
 			let { email, inbox } = generateEmailAndInbox();
 			const userData = new RegisterTestData({ email });
@@ -70,7 +71,7 @@ test.describe("Email Verification Tests", () => {
 
 	test(
 		"[ENG-1132] E-mail verification - changing e-mail",
-		testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+		testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 		async ({ gamdomApiDbFacade, mailinatorApi, page, profilePage }) => {
 			const { email } = generateEmailAndInbox();
 			const newEmailData = generateEmailAndInbox();
@@ -101,7 +102,7 @@ test.describe("Email Verification Tests", () => {
 	test(
 		`[ENG-7516] [Wallet] Verify e-mail verification restriction on Withdraw tab`,
 		testDetails()
-			.withTags(JiraComponent.WALLET, JiraComponent.WITHDRAWAL)
+			.withTags(JiraComponent.WALLET, JiraComponent.WITHDRAWAL, TestTag.ACCEPTANCE)
 			.withJiraBugTickets("ENG-13989")
 			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 			.apply(),

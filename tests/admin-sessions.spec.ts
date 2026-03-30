@@ -10,6 +10,7 @@ import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { test } from "@fixtures/fixtures";
 import { HomePage } from "@pages/home-page/home-page";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"Admin sessions tests",
@@ -17,7 +18,7 @@ test.describe(
 	() => {
 		test(
 			`[ENG-7575] [Admin][Sessions] Admin ends user's session`,
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				userInfoAdminPage,
 				gamdomApiDbFacade,

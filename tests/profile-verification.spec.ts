@@ -6,6 +6,7 @@ import { CsvFilesName } from "@enums/csv-file-name";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { testDetails } from "@core/helpers/test-details-helper";
+import { TestTag } from "@enums/test-tags";
 
 test.describe("Profile - verification", () => {
 	test.use(storageStateNewUserDB());
@@ -18,7 +19,7 @@ test.describe("Profile - verification", () => {
 	test(
 		`[ENG-2625] Profile - Verification - Verify removed 'aml1RestrictedCountries' from KYC1 list`,
 		testDetails()
-			.withTags(JiraComponent.VERIFICATION)
+			.withTags(JiraComponent.VERIFICATION, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 			.apply(),
 		async ({ verificationPage }) => {

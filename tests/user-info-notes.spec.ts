@@ -3,6 +3,7 @@ import { setAuthenticationCookies } from "@core/utils/utils";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { test } from "@fixtures/fixtures";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"User info - notes",
@@ -26,7 +27,7 @@ test.describe(
 
 		test(
 			"[ENG-6271] [UserInfo] Check that a Pinned note is still pinned after deleting a note and refreshing the page",
-			testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+			testDetails().withAuthor(JiraUser.RALUCA_ARITON).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ infoAdminPage }) => {
 				const [, noteToPin, noteToSetInactive] = await infoAdminPage
 					.steps()
@@ -48,7 +49,7 @@ test.describe(
 
 		test(
 			"[ENG-3025] [Notes] Adding multiple notes to a user",
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ infoAdminPage }) => {
 				await infoAdminPage.steps().createNote(3);
 				await infoAdminPage.assertThat().notesSortedByCreationTime();
@@ -57,7 +58,7 @@ test.describe(
 
 		test(
 			"[ENG-3026] Pinning/unpinning a note",
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ infoAdminPage }) => {
 				const [noteToPin] = await infoAdminPage.steps().createNote(1);
 				await infoAdminPage

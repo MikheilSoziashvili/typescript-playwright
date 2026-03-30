@@ -4,6 +4,7 @@ import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { TestUserRole } from "@enums/test-user-roles";
 import { encodeCookieHeader } from "@core/utils/utils";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"Admin - Crypto",
@@ -13,7 +14,7 @@ test.describe(
 	() => {
 		test(
 			"[ENG-6406] [Admin][Crypto] Verify the Hourly Crypto Balances Snapshot Table",
-			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				browserSessionManager,
 				cryptoAdminPage,

@@ -7,6 +7,7 @@ import { ToastTitle } from "@enums/toast-titles";
 import { storageStateUserAPI } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import { testData } from "test-data/test-data-manager";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"VIP Manager admin tests",
@@ -33,7 +34,7 @@ test.describe(
 						`${testDescriptionName}`,
 						testDetails()
 							.withAuthor(JiraUser.IVAYLO_STOYCHEV)
-							.apply(),
+							.withTags(TestTag.ACCEPTANCE).apply(),
 						async ({ vipManagerAdminPage }) => {
 							await vipManagerAdminPage.navigate();
 							await vipManagerAdminPage
@@ -67,7 +68,7 @@ test.describe(
 					test(
 						`[ENG-2366] Vip Manager Bulk Admin - incorrect '${fileFormatType}' file format (different than .csv) can not be uploaded`,
 						testDetails()
-							.withTags(JiraComponent.ADMIN)
+							.withTags(JiraComponent.ADMIN, TestTag.ACCEPTANCE)
 							.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 							.apply(),
 						async ({ vipManagerAdminPage }) => {
@@ -132,7 +133,7 @@ test.describe(
 						`[ENG-2649] Vip Manager tab - verify that "Send notification" section is removed for '${userCredentials.username}' user`,
 						testDetails()
 							.withAuthor(JiraUser.IVAYLO_STOYCHEV)
-							.apply(),
+							.withTags(TestTag.ACCEPTANCE).apply(),
 						async ({ vipManagerAdminPage }) => {
 							await vipManagerAdminPage.navigate();
 							await vipManagerAdminPage
@@ -166,7 +167,7 @@ test.describe(
 					test(
 						`[ENG-2332] Vip Manager Bulk Admin - Verify error received when upload .csv file containing incorrect userID for bulk '${bulkAction}' process`,
 						testDetails()
-							.withTags(JiraComponent.ADMIN)
+							.withTags(JiraComponent.ADMIN, TestTag.ACCEPTANCE)
 							.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 							.apply(),
 						async ({ vipManagerAdminPage, toast }) => {

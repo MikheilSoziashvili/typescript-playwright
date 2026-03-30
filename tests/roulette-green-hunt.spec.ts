@@ -4,6 +4,7 @@ import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { TestUserRole } from "@enums/test-user-roles";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"Green hunt",
@@ -13,7 +14,7 @@ test.describe(
 	() => {
 		test(
 			"[ENG-1090] Roulette - green hunt",
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				browserSessionManager,
 				rouletteGamePage,

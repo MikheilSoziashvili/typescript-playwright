@@ -9,6 +9,7 @@ import { BanReason } from "@enums/ban-reasons";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { testData } from "test-data/test-data-manager";
 import { BooleanValueString } from "@enums/playwright/booleanValues";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"Ban user",
@@ -16,7 +17,7 @@ test.describe(
 	() => {
 		test(
 			"[ENG-288] Banning and unbanning a user",
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ banUnbanUserTestFlow, testDataPredefined }) => {
 				await banUnbanUserTestFlow.runBanAndUnbanFlow(
 					testDataPredefined.data.admin.ban.defaultReason,
@@ -26,7 +27,7 @@ test.describe(
 
 		test(
 			"[ENG-6414] Category Ban - Verify casino and sportsbook ban options are displayed",
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ browserSessionManager, gamdomApiDbFacade }) => {
 				test.fixme(
 					true,
@@ -52,7 +53,7 @@ test.describe(
 
 		test(
 			"[ENG-6418] Ban User Modal - Verify ban types, ban reasons, and custom input field",
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ browserSessionManager, gamdomApiDbFacade }) => {
 				const adminSession = await browserSessionManager.loginAs(
 					TestUserRole.SUPERADMIN,
@@ -82,7 +83,7 @@ test.describe(
 	() => {
 		test(
 			"[ENG-11777] Check that Support Requested and RG-banned Steam users can access the page",
-			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				homePage,
 				steamAuthPage,
@@ -128,7 +129,7 @@ test.describe(
 	() => {
 		test(
 			"[ENG-11617] [Hard ban] 'Responsible gambling' ban for user with Unranked1 unclaimable reward",
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ browserSessionManager, gamdomDb, testDataPredefined }) => {
 				const banReason =
 					testDataPredefined.data.responsibleGamblingBan.banReason;
@@ -190,7 +191,7 @@ test.describe(
 			.forEach((input) => {
 				test(
 					`[ENG-10321] [Hard ban] 'Responsible gambling' ban - restricted access, claim rewards, withdraw balance, and account lock - ${input.twoFaLabel}`,
-					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 					async (
 						{
 							browserSessionManager,
@@ -220,7 +221,7 @@ test.describe(
 
 		test(
 			"[ENG-10327] [Hard Ban] 'Support Requested' ban - verify restricted access for banned user",
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ hardBanSupportRequestedTestFlow }) => {
 				await hardBanSupportRequestedTestFlow.execute();
 			},

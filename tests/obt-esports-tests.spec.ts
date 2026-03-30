@@ -6,6 +6,7 @@ import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { isScheduledRun } from "configuration";
+import { TestTag } from "@enums/test-tags";
 
 test.describe("OBT E-Sports tests", () => {
 	testData()
@@ -18,8 +19,7 @@ test.describe("OBT E-Sports tests", () => {
 				testDetails()
 					.withTags(
 						JiraComponent.SEO,
-						JiraComponent.SPORTS_ESPORTS_BETTING,
-					)
+						JiraComponent.SPORTS_ESPORTS_BETTING, TestTag.ACCEPTANCE)
 					.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 					.apply(),
 				async ({ esportsPage }) => {

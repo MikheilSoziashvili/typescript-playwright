@@ -8,6 +8,7 @@ import { UserMenuOption } from "@enums/user-menu-options";
 import { test } from "@fixtures/fixtures";
 import { ProfilePage } from "@pages/profile/profile-page";
 import { testData } from "test-data/test-data-manager";
+import { TestTag } from "@enums/test-tags";
 
 const testDataInput = [
 	{
@@ -44,7 +45,7 @@ test.describe("User profile links accessibility", () => {
 				test(
 					`[ENG-5988] Open "Verification" from the User Profile dropdown for user with aml ${kycLevelData.kycLevel}`,
 					testDetails()
-						.withTags(JiraComponent.PROFILE, JiraComponent.VERIFICATION)
+						.withTags(JiraComponent.PROFILE, JiraComponent.VERIFICATION, TestTag.ACCEPTANCE)
 						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 						.apply(),
 					async ({
@@ -103,7 +104,7 @@ test.describe("User profile links accessibility", () => {
 						test(
 							`[${testId}] Verify '${menuItem.menuItemLink}' User Profile ${menuType} link item accessibility for user with aml ${menuItem.userKycLevel}`,
 							testDetails()
-								.withTags(JiraComponent.PROFILE)
+								.withTags(JiraComponent.PROFILE, TestTag.ACCEPTANCE)
 								.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 								.apply(),
 							async ({

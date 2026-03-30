@@ -48,7 +48,7 @@ test.describe("Static pages - social accounts", () => {
 				test(
 					`[ENG-2480] Verify '${socialMedia.social_account}' social account in '${socialMedia.static_page}' static page`,
 					testDetails()
-						.withTags(TestTag.VISUAL, JiraComponent.GENERAL)
+						.withTags(TestTag.VISUAL, JiraComponent.GENERAL, TestTag.ACCEPTANCE)
 						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 						.apply(),
 					async (

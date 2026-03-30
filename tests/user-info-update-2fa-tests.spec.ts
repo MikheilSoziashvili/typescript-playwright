@@ -15,6 +15,7 @@ import { JiraUser } from "@enums/jira/jira-users";
 import { ContactType } from "@enums/personal-info-types";
 import { test } from "@fixtures/fixtures";
 import { storageStateNewUserDB } from "../fixtures/auth-fixtures";
+import { TestTag } from "@enums/test-tags";
 
 const contactInfoInputs = parse_csv(
 	DATASETS_DIR,
@@ -43,7 +44,7 @@ test.describe("User info update tests", () => {
 		test(
 			`[ENG-2567] Profile page - change ${contactType.field} - Require new 2FA code when IP of user changes`,
 			testDetails()
-				.withTags(JiraComponent.TWO_FA, JiraComponent.EDIT_INFO)
+				.withTags(JiraComponent.TWO_FA, JiraComponent.EDIT_INFO, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 				.apply(),
 			async ({ profilePage, twoFactorAuthModal, browser }) => {

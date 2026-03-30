@@ -37,7 +37,7 @@ test.describe("Mines tests", () => {
 	test(
 		`[ENG-6486] Mines - place a bet and try to win - Pick random tiles`,
 		testDetails()
-			.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.MINES)
+			.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.MINES, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.RALUCA_ARITON)
 			.apply(),
 		async ({ minesGamePage, userBalanceHandler }, testInfo) => {
@@ -73,8 +73,7 @@ test.describe("Mines tests", () => {
 			.withTags(
 				TestTag.SMOKE,
 				JiraComponent.GAMDOM_ORIGINALS,
-				JiraComponent.MINES,
-			)
+				JiraComponent.MINES, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.RALUCA_ARITON)
 			.apply(),
 		async ({ minesGamePage, userBalanceHandler }) => {
@@ -105,7 +104,7 @@ test.describe("Mines tests", () => {
 	test(
 		`[ENG-5729] Mines - Verify Game History`,
 		testDetails()
-			.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.MINES)
+			.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.MINES, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.NIKOLAY_GENOV)
 			.apply(),
 		async ({ minesGamePage }) => {
@@ -138,7 +137,7 @@ test.describe("Mines tests", () => {
 	test(
 		`[ENG-6143] Mines - Autobet Increase By`,
 		testDetails()
-			.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.MINES)
+			.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.MINES, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.NIKOLAY_GENOV)
 			.apply(),
 		async ({ minesGamePage }) => {
@@ -183,7 +182,7 @@ test.describe("Mines tests", () => {
 	test(
 		`[ENG-5847] Mines - Stop Autobet actuates immediately`,
 		testDetails()
-			.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.MINES)
+			.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.MINES, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.NIKOLAY_GENOV)
 			.apply(),
 		async ({ minesGamePage, userBalanceHandler }) => {
@@ -249,7 +248,7 @@ test.describe.serial(
 		test(
 			"[ENG-5532] Mines game can be launched when Plinko is unavailable",
 			testDetails()
-				.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.MINES)
+				.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.MINES, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.RALUCA_ARITON)
 				.apply(),
 			async ({ minesGamePage, plinkoGamePage }) => {

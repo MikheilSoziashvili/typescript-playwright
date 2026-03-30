@@ -277,7 +277,7 @@ test.describe(
 						`[${scenario.testId}] Promotions - '${promotionType.name}' ${scenario.description}`,
 						testDetails()
 							.withAuthor(JiraUser.IVAYLO_STOYCHEV)
-							.apply(),
+							.withTags(TestTag.ACCEPTANCE).apply(),
 						async ({
 							gamdomDb,
 							promotionsPage,
@@ -363,7 +363,7 @@ test.describe(
 			promotionCombinationsNotForVip.forEach((record) => {
 				test(
 					`[ENG-11905] Promotions - Check that NOT FOR VIP promotion with category: '${record.category}' and subcategory: '${record.subCategory}' cannot be seen by VIP players`,
-					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({
 						browserSessionManager,
 						promotionTestFlow,
@@ -408,7 +408,7 @@ test.describe(
 					`[ENG-5576] Promotions - Create a new promotion - Promotion Category: ${combination.category} - Promotion Subcategory: ${combination.subCategory} - Is For VIP: ${combination.isForVip}`,
 					testDetails()
 						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
-						.withTags(TestTag.PLATFORM_BUG)
+						.withTags(TestTag.PLATFORM_BUG, TestTag.ACCEPTANCE)
 						.apply(),
 					async ({ promotionAdminPage, promotionsModal, toast }) => {
 						promotionName = generateRandomString({
@@ -451,7 +451,7 @@ test.describe(
 			promotionTypes.forEach((promotionType) => {
 				test(
 					`[ENG-5735] Promotions - Delete '${promotionType.name}' active promotion`,
-					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({
 						promotionAdminPage,
 						promotionsModal,
@@ -509,7 +509,7 @@ test.describe(
 					`[ENG-7398] Promotions - Duplicate - Promotion Category: ${combination.category} - Promotion Subcategory: ${combination.subCategory} - Is For VIP: ${combination.isForVip} existing promotion`,
 					testDetails()
 						.withAuthor(JiraUser.RALUCA_ARITON)
-						.withTags(TestTag.PLATFORM_BUG)
+						.withTags(TestTag.PLATFORM_BUG, TestTag.ACCEPTANCE)
 						.apply(),
 					async ({
 						browserSessionManager,
@@ -665,7 +665,7 @@ test.describe(
 						`[ENG-5736] Promotions - Update '${promotionType.name}' active promotion. Promotion Category: ${combination.category} - Promotion Subcategory: ${combination.subCategory} - Is For VIP: ${combination.isForVip}`,
 						testDetails()
 							.withAuthor(JiraUser.IVAYLO_STOYCHEV)
-							.withTags(TestTag.PLATFORM_BUG)
+							.withTags(TestTag.PLATFORM_BUG, TestTag.ACCEPTANCE)
 							.apply(),
 						async ({
 							promotionAdminPage,
@@ -762,7 +762,7 @@ test.describe(
 								`[ENG-6121] Promotions - Promotion modal - Verify 'Play Now' button input text field validation - ${validation.buttonText}`,
 								testDetails()
 									.withAuthor(JiraUser.IVAYLO_STOYCHEV)
-									.apply(),
+									.withTags(TestTag.ACCEPTANCE).apply(),
 								async ({
 									promotionAdminPage,
 									promotionsModal,
@@ -787,7 +787,7 @@ test.describe(
 							`[ENG-6121] Promotions - Promotion button text verification - ${promotionType.name}`,
 							testDetails()
 								.withAuthor(JiraUser.IVAYLO_STOYCHEV)
-								.apply(),
+								.withTags(TestTag.ACCEPTANCE).apply(),
 							async ({
 								gamdomDb,
 								promotionPage,
@@ -860,7 +860,7 @@ test.describe(
 		promotionCombinationsV4.forEach((combination) => {
 			test(
 				`[ENG-11500] Verify promotions card labels - Promotion Category: ${combination.category} - Promotion Subcategory: ${combination.subcategory} - Label: ${combination.label}`,
-				testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+				testDetails().withAuthor(JiraUser.RALUCA_ARITON).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					browserSessionManager,
 					testDataRandom,

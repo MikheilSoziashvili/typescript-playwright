@@ -8,6 +8,7 @@ import { SelfExclusionDays } from "@enums/self-exlusion-days";
 import { CasinoGameName } from "@enums/casino-game";
 import { Cryptocurrency } from "@enums/cryptocurrencies";
 import { TestUserRole } from "@enums/test-user-roles";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"Self Exclusion",
@@ -20,7 +21,7 @@ test.describe(
 			.forEach((record) => {
 				test(
 					`[ENG-4422] Verify self exclusion for ${record.period} in game - ${record.game}`,
-					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({
 						settingsPage,
 						originalsPage,
@@ -49,7 +50,7 @@ test.describe(
 		exclusionPeriods.forEach((period) => {
 			test(
 				`[ENG-4422] Verify self exclusion in Casino for ${period}`,
-				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({ settingsPage, casinoPage, browserSessionManager }) => {
 					await browserSessionManager.loginAs(TestUserRole.REGULAR, {
 						reuseContext: true,
@@ -74,7 +75,7 @@ test.describe(
 		exclusionPeriods.forEach((period) => {
 			test(
 				`[ENG-4422] Verify self exclusion in Sports for ${period}`,
-				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({ settingsPage, sportsPage, browserSessionManager }) => {
 					await browserSessionManager.loginAs(TestUserRole.REGULAR, {
 						reuseContext: true,
@@ -93,7 +94,7 @@ test.describe(
 		exclusionPeriods.forEach((period) => {
 			test(
 				`[ENG-4422] Verify self exclusion in Wallet Deposit tab for ${period}`,
-				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({ browserSessionManager }) => {
 					const adminUser = await browserSessionManager.loginAs(
 						TestUserRole.SUPERADMIN,
@@ -131,7 +132,7 @@ test.describe(
 		exclusionPeriods.forEach((period) => {
 			test(
 				`[ENG-4422] Verify self exclusion in Wallet Buy crypto tab for ${period}`,
-				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({ browserSessionManager }) => {
 					const adminUser = await browserSessionManager.loginAs(
 						TestUserRole.SUPERADMIN,
@@ -170,7 +171,7 @@ test.describe(
 		exclusionPeriods.forEach((period) => {
 			test(
 				`[ENG-4422] Verify self exclusion in Wallet Redeem tab for ${period}`,
-				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					settingsPage,
 					walletModal,

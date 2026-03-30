@@ -5,6 +5,7 @@ import { JiraComponent } from "@enums/jira/jira-components";
 import { TestUserRole } from "@enums/test-user-roles";
 import { testData } from "test-data/test-data-manager";
 import { isScheduledRun } from "configuration";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"Admin - Writer",
@@ -28,7 +29,7 @@ test.describe(
 					testDetails()
 						.withJiraBugTickets("ENG-12009")
 						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
-						.apply(),
+						.withTags(TestTag.ACCEPTANCE).apply(),
 					async ({ browserSessionManager, writerAdminNewPage }) => {
 						test.fixme(isScheduledRun);
 

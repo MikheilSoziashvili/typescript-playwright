@@ -4,6 +4,7 @@ import { UserInfoTabs } from "@enums/admin/user-info-tabs";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { test } from "@fixtures/fixtures";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"User info - Transactions tab",
@@ -13,7 +14,7 @@ test.describe(
 	() => {
 		test(
 			`[ENG-7572]  Verify calculation and display of winnings and profit in transactions table`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				gamdomApiDbFacade,
 				page,

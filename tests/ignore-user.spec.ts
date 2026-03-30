@@ -37,7 +37,7 @@ test.describe(`[ENG-1334] "Ignore" user from the chat`, () => {
 	test.describe("Ignoring a user", () => {
 		test(
 			`Ignoring an user`,
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ homePage, chat, gamdomApiDbFacade }) => {
 				const { user, cookie } =
 					await gamdomApiDbFacade.createSingleUserDbAndAuth({
@@ -85,7 +85,7 @@ test.describe(`[ENG-1334] "Ignore" user from the chat`, () => {
 	test.describe(`Changing an ignored user's username`, () => {
 		test(
 			`Changing an ignored user's username`,
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ homePage, chat, profilePage, gamdomApiDbFacade }) => {
 				const { user, cookie } =
 					await gamdomApiDbFacade.createSingleUserDbAndAuth({
@@ -126,7 +126,7 @@ test.describe(`[ENG-1334] "Ignore" user from the chat`, () => {
 	test.describe(`Unignoring an ignored user`, () => {
 		test(
 			`Unignoring an ignored user`,
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ homePage, chat, gamdomApiDbFacade }) => {
 				const { user, cookie } =
 					await gamdomApiDbFacade.createSingleUserDbAndAuth({
@@ -173,7 +173,7 @@ test.describe(
 		test.describe("Ignoring a user - v4", () => {
 			test(
 				`Ignoring an user - v4`,
-				testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+				testDetails().withAuthor(JiraUser.RALUCA_ARITON).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({ browserSessionManager }) => {
 					const user1 = await browserSessionManager.loginAs(
 						TestUserRole.REGULAR,
@@ -252,7 +252,7 @@ test.describe(
 		test.describe(`Changing an ignored user's username - v4`, () => {
 			test(
 				`Changing an ignored user's username - v4`,
-				testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+				testDetails().withAuthor(JiraUser.RALUCA_ARITON).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({ browserSessionManager }) => {
 					const user1 = await browserSessionManager.loginAs(
 						TestUserRole.REGULAR,
@@ -316,7 +316,7 @@ test.describe(
 		test.describe(`Unignoring an ignored user - v4`, () => {
 			test(
 				`Unignoring an ignored user - v4`,
-				testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+				testDetails().withAuthor(JiraUser.RALUCA_ARITON).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({ browserSessionManager }) => {
 					const user1 = await browserSessionManager.loginAs(
 						TestUserRole.REGULAR,

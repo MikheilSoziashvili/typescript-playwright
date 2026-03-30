@@ -66,7 +66,7 @@ test.describe(
 				test(
 					`[ENG-5543] Edit Info - Selecting '${record.staffRoleTag}' checks its related tags`,
 					testDetails()
-						.withTags(TestTag.PLATFORM_BUG)
+						.withTags(TestTag.PLATFORM_BUG, TestTag.ACCEPTANCE)
 						.withJiraBugTickets("8283")
 						.withAuthor(JiraUser.ANGEL_PETROV)
 						.apply(),
@@ -138,7 +138,7 @@ test.describe(
 				test(
 					`[ENG-5552] Admin with '${recordVisibility.adminStaffRole}' can see assigned tags`,
 					testDetails()
-						.withTags(JiraComponent.EDIT_INFO)
+						.withTags(JiraComponent.EDIT_INFO, TestTag.ACCEPTANCE)
 						.withAuthor(JiraUser.ANGEL_PETROV)
 						.apply(),
 					async ({
@@ -259,7 +259,7 @@ test.describe(
 
 				test(
 					"[ENG-6392] Edit info - wager_req_end flow",
-					testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+					testDetails().withAuthor(JiraUser.RALUCA_ARITON).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({
 						userInfoAdminPage,
 						userInfoEditInfoAdminPage,
@@ -302,7 +302,7 @@ test.describe(
 							`[ENG-6392] Edit info - wallet balance flow for ${wallet}`,
 							testDetails()
 								.withAuthor(JiraUser.RALUCA_ARITON)
-								.apply(),
+								.withTags(TestTag.ACCEPTANCE).apply(),
 							async ({
 								userInfoAdminPage,
 								userInfoEditInfoAdminPage,
@@ -343,7 +343,7 @@ test.describe(
 			test(
 				`[ENG-7558] UserInfo - EditInfo tab - verify Save button states`,
 				testDetails()
-					.withTags(JiraComponent.EDIT_INFO)
+					.withTags(JiraComponent.EDIT_INFO, TestTag.ACCEPTANCE)
 					.withAuthor(JiraUser.RALUCA_ARITON)
 					.apply(),
 				async ({
@@ -399,7 +399,7 @@ test.describe(
 					test(
 						`[ENG-6324] - UserInfo - EditInfo tab - verify assignment of ${eSportCategory.userCategory} eSports category to user`,
 						testDetails()
-							.withTags(TestTag.PLATFORM_BUG)
+							.withTags(TestTag.PLATFORM_BUG, TestTag.ACCEPTANCE)
 							.withJiraBugTickets("8283")
 							.withTags(JiraComponent.EDIT_INFO)
 							.withAuthor(JiraUser.RALUCA_ARITON)
@@ -477,7 +477,7 @@ test.describe(
 				test(
 					`[ENG-11731] Edit Info - Verify unwagered_deposits field with ${input.staffRoleTag} account`,
 					testDetails()
-						.withTags(JiraComponent.EDIT_INFO)
+						.withTags(JiraComponent.EDIT_INFO, TestTag.ACCEPTANCE)
 						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 						.apply(),
 					async ({

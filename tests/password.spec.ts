@@ -28,8 +28,7 @@ test.describe("Password tests", () => {
 					testDetails()
 						.withTags(
 							JiraComponent.CHANGE_PASSWORD,
-							JiraComponent.PROFILE,
-						)
+							JiraComponent.PROFILE, TestTag.ACCEPTANCE)
 						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 						.apply(),
 					async ({
@@ -69,7 +68,7 @@ test.describe("Password tests", () => {
 	test.describe("Password reset", () => {
 		test(
 			"[ENG-1119] Password reset",
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				gamdomApiDbFacade,
 				homePage,
@@ -129,7 +128,7 @@ test.describe("Password reset - v4", () => {
 	test(
 		"[ENG-9510] Password reset - v4",
 		testDetails()
-			.withTags(TestTag.V4, JiraComponent.PASSWORD_RESET)
+			.withTags(TestTag.V4, JiraComponent.PASSWORD_RESET, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.RALUCA_ARITON)
 			.apply(),
 		async ({ browserSessionManager, mailinatorApi, page }) => {

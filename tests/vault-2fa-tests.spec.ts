@@ -15,6 +15,7 @@ import { test } from "@fixtures/fixtures";
 import { isScheduledRun } from "configuration";
 import { MEDIUM_USER_AMOUNT } from "database/constants/user-amounts";
 import { testData } from "test-data/test-data-manager";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(`Vault wallet - 2FA verifications`, () => {
 	let qrCode2FAImagePath: string;
@@ -42,7 +43,7 @@ test.describe(`Vault wallet - 2FA verifications`, () => {
 	test(
 		`[ENG-2566] Vault wallet - Require new 2FA code when IP of user changes`,
 		testDetails()
-			.withTags(JiraComponent.VAULT, JiraComponent.TWO_FA)
+			.withTags(JiraComponent.VAULT, JiraComponent.TWO_FA, TestTag.ACCEPTANCE)
 			.withJiraBugTickets("5109")
 			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 			.apply(),

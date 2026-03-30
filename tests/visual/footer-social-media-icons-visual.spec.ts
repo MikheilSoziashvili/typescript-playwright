@@ -19,7 +19,7 @@ test.describe("Visual Tests - Footer - social media icon", () => {
 		test(
 			`[ENG-2310] Social '${record.socialMedia}' media footer image is correct`,
 			testDetails()
-				.withTags(TestTag.VISUAL, TestTag.PLATFORM_BUG, JiraComponent.FOOTER)
+				.withTags(TestTag.VISUAL, TestTag.PLATFORM_BUG, JiraComponent.FOOTER, TestTag.ACCEPTANCE)
 				.withJiraBugTickets("7253")
 				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 				.apply(),
@@ -39,7 +39,7 @@ test.describe("Visual Tests - Footer - social media icon", () => {
 	test(
 		`[ENG-2907] Verify social media icons order is correct`,
 		testDetails()
-			.withTags(TestTag.VISUAL, TestTag.PLATFORM_BUG, JiraComponent.FOOTER)
+			.withTags(TestTag.VISUAL, TestTag.PLATFORM_BUG, JiraComponent.FOOTER, TestTag.ACCEPTANCE)
 			.withArbitraryAnnotations({
 				type: AnnotationType.BUG,
 				description:

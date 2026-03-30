@@ -3,6 +3,7 @@ import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { storageStateNewSuperAdminUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"User info data",
@@ -12,7 +13,7 @@ test.describe(
 
 		test(
 			`[ENG-4994] User info - confirm username and user id are displayed`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				gamdomApi,
 				gamdomDb,

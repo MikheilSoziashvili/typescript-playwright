@@ -32,7 +32,7 @@ test.describe(
 				testDetails()
 					.withJiraBugTickets("4718")
 					.withAuthor(JiraUser.IVAYLO_STOYCHEV)
-					.apply(),
+					.withTags(TestTag.ACCEPTANCE).apply(),
 				async ({ hiloGamePage, originalsPage }) => {
 					await hiloGamePage.navigate();
 					await originalsPage.waitForGameRoundFinish(

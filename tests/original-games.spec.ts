@@ -29,6 +29,7 @@ import {
 	SUPER_HIGH_USER_AMOUNT,
 } from "database/constants/user-amounts";
 import { testData } from "test-data/test-data-manager";
+import { TestTag } from "@enums/test-tags";
 
 test.describe("Quick Select Buttons", () => {
 	test.use(storageStateNewUserDB());
@@ -69,8 +70,7 @@ test.describe("Quick Select Buttons", () => {
 						JiraComponent.GAMDOM_ORIGINALS,
 						JiraComponent[
 							game.toUpperCase() as keyof typeof JiraComponent
-						],
-					)
+						], TestTag.ACCEPTANCE)
 					.withAuthor(JiraUser.RALUCA_ARITON)
 					.apply(),
 				async ({ originalsPage }) => {
@@ -114,8 +114,7 @@ test.describe("Quick Select Buttons", () => {
 						JiraComponent.GAMDOM_ORIGINALS,
 						JiraComponent[
 							game.toUpperCase() as keyof typeof JiraComponent
-						],
-					)
+						], TestTag.ACCEPTANCE)
 					.withAuthor(JiraUser.RALUCA_ARITON)
 					.apply(),
 				async ({ originalsPage }) => {
@@ -171,8 +170,7 @@ test.describe("Quick Select Buttons", () => {
 						JiraComponent.GAMDOM_ORIGINALS,
 						JiraComponent[
 							game.toUpperCase() as keyof typeof JiraComponent
-						],
-					)
+						], TestTag.ACCEPTANCE)
 					.withAuthor(JiraUser.RALUCA_ARITON)
 					.apply(),
 				async ({ originalsPage }) => {
@@ -218,8 +216,7 @@ test.describe("Quick Select Buttons", () => {
 						JiraComponent.GAMDOM_ORIGINALS,
 						JiraComponent[
 							game.toUpperCase() as keyof typeof JiraComponent
-						],
-					)
+						], TestTag.ACCEPTANCE)
 					.withAuthor(JiraUser.RALUCA_ARITON)
 					.apply(),
 				async ({ originalsPage }) => {
@@ -287,8 +284,7 @@ test.describe("Quick Select Buttons", () => {
 						JiraComponent.GAMDOM_ORIGINALS,
 						JiraComponent[
 							game.toUpperCase() as keyof typeof JiraComponent
-						],
-					)
+						], TestTag.ACCEPTANCE)
 					.withAuthor(JiraUser.RALUCA_ARITON)
 					.apply(),
 				async ({ originalsPage }) => {
@@ -323,8 +319,7 @@ test.describe("Live Bets Section", () => {
 			testDetails()
 				.withTags(
 					JiraComponent.GAMDOM_ORIGINALS,
-					JiraComponent.SOK_GAMES,
-				)
+					JiraComponent.SOK_GAMES, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.NIKOLAY_GENOV)
 				.apply(),
 			async ({
@@ -380,8 +375,7 @@ test.describe("Displayed currency behavior", () => {
 					JiraComponent.SOK_GAMES,
 					JiraComponent[
 						game.toUpperCase() as keyof typeof JiraComponent
-					],
-				)
+					], TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.RALUCA_ARITON)
 				.apply(),
 			async ({
@@ -448,7 +442,7 @@ test.describe(
 
 				test(
 					`[ENG-6967] ${game} - Switch from USD to ${record.wallet} wallet and verify balance updates correctly`,
-					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({
 						originalsPage,
 						userBalanceHandler,

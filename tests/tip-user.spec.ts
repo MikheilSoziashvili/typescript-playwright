@@ -30,7 +30,7 @@ test.describe("Tip user tests", () => {
 	test(
 		"[ENG-290] 'Tip User' from the chat",
 		testDetails()
-			.withTags(TestTag.SMOKE, JiraComponent.CHAT)
+			.withTags(TestTag.SMOKE, JiraComponent.CHAT, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.NIKOLAY_GENOV)
 			.apply(),
 		async ({

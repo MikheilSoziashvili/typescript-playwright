@@ -31,7 +31,7 @@ test.describe(
 
 			test(
 				"[ENG-2859] Vault Withdrawal - verify the Vault redirect",
-				testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+				testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({ homePage, walletModal }) => {
 					await homePage.navigate();
 					await homePage.clickWalletButton();
@@ -43,7 +43,7 @@ test.describe(
 				"[ENG-3108] Vault - access Vault during self exclusion",
 				testDetails()
 					.withAuthor(JiraUser.ANGEL_PETROV)
-					.withTags(JiraComponent.SELF_EXCLUSION)
+					.withTags(JiraComponent.SELF_EXCLUSION, TestTag.ACCEPTANCE)
 					.apply(),
 				async ({
 					homePage,
@@ -92,7 +92,7 @@ test.describe(
 
 				test(
 					`[ENG-2861] Vault - make a deposit from [${record.wallet}] wallet`,
-					testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+					testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({ homePage, walletModal }) => {
 						await homePage.navigateToWallet();
 						await walletModal
@@ -106,7 +106,7 @@ test.describe(
 
 				test(
 					`[ENG-2860] Vault - make a withdrawal from [${record.wallet}] wallet`,
-					testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+					testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({ homePage, walletModal }) => {
 						await homePage.navigateToWallet();
 						await walletModal
@@ -132,7 +132,7 @@ test.describe(
 			test.describe(`Vault wallet tests: ${record.wallet} - v4`, () => {
 				test(
 					`[ENG-8805] Vault - make a deposit from [${record.wallet}] wallet`,
-					testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+					testDetails().withAuthor(JiraUser.RALUCA_ARITON).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({
 						gamdomApiDbFacade,
 						page,
@@ -158,7 +158,7 @@ test.describe(
 
 				test(
 					`[ENG-8804] Vault - make a withdrawal from [${record.wallet}] wallet - v4`,
-					testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+					testDetails().withAuthor(JiraUser.RALUCA_ARITON).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({
 						gamdomApiDbFacade,
 						page,

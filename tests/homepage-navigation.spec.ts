@@ -28,7 +28,7 @@ test.describe("Homepage navigation", () => {
 	casinoSliders.forEach((casinoSlider) => {
 		test(
 			`[ENG-3832] Homepage - verify '${casinoSlider.sliderButton}' button correct navigation to '${casinoSlider.sliderTitle}' page`,
-			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ homePage, casinoPage }) => {
 				await homePage.navigateAndCheckTitle();
 				await homePage
@@ -63,7 +63,7 @@ test.describe(
 		originalsLaunchScenarios.forEach((scenario) => {
 			test(
 				`[ENG-5798] should launch ${scenario.game} from ${scenario.location}`,
-				testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+				testDetails().withAuthor(JiraUser.RALUCA_ARITON).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({ homePage }) => {
 					await homePage.navigate();
 
@@ -93,7 +93,7 @@ test.describe("Top line header links tests", () => {
 		test(
 			`[ENG-5256] Verify top line header link: ${link} for a logged out user`,
 			testDetails()
-				.withTags(JiraComponent.HOMEPAGE)
+				.withTags(JiraComponent.HOMEPAGE, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.RALUCA_ARITON)
 				.apply(),
 			async ({ homePage }) => {

@@ -42,8 +42,7 @@ test.describe("Low Hot Wallet Balance notifications tests", () => {
 			.withTags(
 				TestTag.SEQUENTIAL,
 				JiraComponent.CRYPTO,
-				JiraComponent.WITHDRAWAL,
-			)
+				JiraComponent.WITHDRAWAL, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 			.apply(),
 		async ({
@@ -78,8 +77,7 @@ test.describe("Low Hot Wallet Balance notifications tests", () => {
 			.withTags(
 				TestTag.SEQUENTIAL,
 				JiraComponent.CRYPTO,
-				JiraComponent.WITHDRAWAL,
-			)
+				JiraComponent.WITHDRAWAL, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 			.apply(),
 		async (

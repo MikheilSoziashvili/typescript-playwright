@@ -8,6 +8,7 @@ import { JiraUser } from "@enums/jira/jira-users";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { Unit } from "@enums/units";
 import { TestUserRole } from "@enums/test-user-roles";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"DOGE tests",
@@ -41,7 +42,7 @@ test.describe(
 
 		test(
 			"[ENG-11139] DOGE - deposit",
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				dogeClient,
 				cryptoAdminPage,

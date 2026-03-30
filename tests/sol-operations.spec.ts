@@ -8,6 +8,7 @@ import { JiraComponent } from "@enums/jira/jira-components";
 import { testData } from "test-data/test-data-manager";
 import { SOL_CONFIG } from "@test-flows/crypto/types/crypto-flow-types";
 import { toFireblocksCryptoClient } from "@test-flows/crypto/adapters/fireblocks-crypto-client-adapter";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"SOL tests",
@@ -33,7 +34,7 @@ test.describe(
 
 		test(
 			"[ENG-10303] SOL - deposit",
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				solClient,
 				cryptoDepositTestFlow,
@@ -58,7 +59,7 @@ test.describe(
 		for (const speed of cryptoWithdrawalDomainData.withdrawalSpeeds) {
 			test(
 				`[ENG-11991] SOL - withdraw with regular user - ${speed.toLowerCase()}`,
-				testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+				testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					cryptoWithdrawalSetupTestFlow,
 					cryptoWithdrawalProcessTestFlow,
@@ -92,7 +93,7 @@ test.describe(
 		for (const speed of cryptoWithdrawalDomainData.withdrawalSpeeds) {
 			test(
 				`[ENG-12137] SOL - withdraw with vip user - ${speed.toLowerCase()}`,
-				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					cryptoWithdrawalSetupTestFlow,
 					cryptoWithdrawalProcessTestFlow,

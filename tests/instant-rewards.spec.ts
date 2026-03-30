@@ -6,6 +6,7 @@ import { LOW_USER_AMOUNT } from "database/constants/user-amounts";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
+import { TestTag } from "@enums/test-tags";
 
 const instantRewardsInputData = [
 	{
@@ -42,7 +43,7 @@ instantRewardsInputData.forEach((inputData) => {
 		test(
 			`[ENG-3679] Rewards - Instant reward - ${inputData.game} - Bet: ${inputData.betAmount}`,
 			testDetails()
-				.withTags(JiraComponent.REWARDS)
+				.withTags(JiraComponent.REWARDS, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.ANGEL_PETROV)
 				.apply(),
 			async ({ originalsPage, rewardsPage }) => {

@@ -9,6 +9,7 @@ import { CsvFilesName } from "@enums/csv-file-name";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
+import { TestTag } from "@enums/test-tags";
 
 const crashIncreaseBy = parse_csv(
 	DATASETS_DIR,
@@ -30,7 +31,7 @@ test.describe(
 		test.slow();
 		test(
 			"[ENG-1416] Crash - Autobet",
-			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ crashGamePage, gamdomApiDbFacade, testDataObject }) => {
 				const { user, cookie } =
 					await gamdomApiDbFacade.createSingleUserDbAndAuth();
@@ -85,7 +86,7 @@ test.describe(
 
 		test(
 			"[ENG-2663] Crash - Start Autobet button is active",
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ crashGamePage, gamdomApiDbFacade, testDataObject }) => {
 				const { user, cookie } =
 					await gamdomApiDbFacade.createSingleUserDbAndAuth();
@@ -104,7 +105,7 @@ test.describe(
 
 		test(
 			"[ENG-5847] Crash - Stop Autobet actuates immediately",
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ crashGamePage, gamdomApiDbFacade, testDataObject }) => {
 				const { user, cookie } =
 					await gamdomApiDbFacade.createSingleUserDbAndAuth();
@@ -124,7 +125,7 @@ test.describe(
 		crashIncreaseBy.forEach((record) => {
 			test(
 				`[ENG-2541] Crash - Autobet - Increase by [${record.increase_by}]`,
-				testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+				testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					crashGamePage,
 					gamdomApiDbFacade,

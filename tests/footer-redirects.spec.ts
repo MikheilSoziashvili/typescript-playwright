@@ -14,6 +14,7 @@ import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { testData } from "test-data/test-data-manager";
 import { Timeout } from "@enums/timeout";
+import { TestTag } from "@enums/test-tags";
 
 const footerRecords = testData().fromCsvRaw({
 	file: CsvFilesName.FOOTER_LINKS_AND_ENDPOINTS,
@@ -83,7 +84,7 @@ loggedState.forEach(({ state, user, csv }) => {
 			csv.forEach((record) => {
 				test(
 					`[ENG-1977] Footer - Verify '${record.linkName}' redirection from Footer section redirects to its respective page - ${state}`,
-					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({ homePage, footer }) => {
 						await homePage.navigate();
 						await footer.openFooterLinkByPlaceholder(
@@ -102,7 +103,7 @@ loggedState.forEach(({ state, user, csv }) => {
 
 			test(
 				`[ENG-1977] Footer - Verify 'King Of The Hill' redirection from "Footer" section redirects to its respective page - ${state}`,
-				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					homePage,
 					footer,
@@ -132,7 +133,7 @@ loggedState.forEach(({ state, user, csv }) => {
 			helpPageRecords.forEach((record) => {
 				test(
 					`[ENG-1980] Footer - Verify correct page and tab selection is displayed after '${record.infoPage}' redirection from 'Info' and 'Support' sections footer links - ${state}`,
-					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({ homePage, footer, helpPage }) => {
 						await homePage.navigate();
 						await footer.openFooterLinkByPlaceholder(
@@ -151,7 +152,7 @@ loggedState.forEach(({ state, user, csv }) => {
 			socialMediaRecords.forEach((record) => {
 				test(
 					`[ENG-1981] Footer - Verify Redirection from Footer to '${record.socialMedia}' Social Applications - ${state}`,
-					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({ homePage, footer }) => {
 						await homePage.navigate();
 						await footer.openSocialMediaFooterLinkByPlaceholder(
@@ -174,7 +175,7 @@ loggedState.forEach(({ state, user, csv }) => {
 
 			test(
 				`[ENG-2826] Footer - Verify the Live Support modal is launched after redirection from Footer - ${state}`,
-				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({ homePage, footer, liveSupportModal, page }) => {
 					await maskHeadlessUserAgent(page);
 					await homePage.navigate();
@@ -187,7 +188,7 @@ loggedState.forEach(({ state, user, csv }) => {
 			officialSiteRecords.forEach((record) => {
 				test(
 					`[ENG-1979] Footer - Verify '${record.footerLink}' link redirection from Footer - ${state}`,
-					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({ homePage, footer }) => {
 						await homePage.navigate();
 						await footer.openFooterLinkByPlaceholder(
@@ -208,7 +209,7 @@ loggedState.forEach(({ state, user, csv }) => {
 			termsOfServiceRecords.forEach((record) => {
 				test(
 					`[ENG-2557] Footer - Verify 'Terms of Service' text removal  - ${state}`,
-					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({ homePage, helpPage, footer }) => {
 						await homePage.navigate();
 						await footer.openFooterLinkByPlaceholder("TOS");

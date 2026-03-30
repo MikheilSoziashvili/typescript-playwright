@@ -14,6 +14,7 @@ import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
 import { testData } from "test-data/test-data-manager";
+import { TestTag } from "@enums/test-tags";
 
 test.describe("Royalty up rewards tests", () => {
 	// TODO: Add additional test data for different games and bet types when rewards calculation is defined.
@@ -90,7 +91,7 @@ test.describe("Royalty up rewards tests", () => {
 
 			test(
 				`[ENG-3712] Verify in-progress rank gain for '${inputData.game}' Originals game with '${inputData.betAmount}' bet, expected rank '${inputData.expectedInProgressRanks}', and claim all Royalty-Up rewards`,
-				testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+				testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({ rewardsPage, toast, originalsPage }) => {
 					test.fixme(
 						true,
@@ -146,8 +147,7 @@ test.describe("Royalty up rewards tests", () => {
 					testDetails()
 						.withTags(
 							JiraComponent.ROYALTY_UP,
-							JiraComponent.REWARDS,
-						)
+							JiraComponent.REWARDS, TestTag.ACCEPTANCE)
 						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 						.apply(),
 					async ({
@@ -220,7 +220,7 @@ test.describe("Royalty up rewards tests", () => {
 		test(
 			`[ENG-10465] Royalty up level ranks - claim 'Bronze 1' rank with unranked amount from previous 'Unranked' rank`,
 			testDetails()
-				.withTags(JiraComponent.ROYALTY_UP)
+				.withTags(JiraComponent.ROYALTY_UP, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 				.apply(),
 			async ({
@@ -314,8 +314,7 @@ test.describe("Royalty up rewards tests", () => {
 					testDetails()
 						.withTags(
 							JiraComponent.ROYALTY_UP,
-							JiraComponent.REWARDS,
-						)
+							JiraComponent.REWARDS, TestTag.ACCEPTANCE)
 						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 						.apply(),
 					async ({

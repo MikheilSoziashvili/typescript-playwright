@@ -16,6 +16,7 @@ import { ToastTitle } from "@enums/toast-titles";
 import { TransactionType } from "@enums/transaction-types";
 import { test } from "@fixtures/fixtures";
 import { NotificationsPage } from "@pages/notifications/notifications-page";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"Bulk Actions - Notifications",
@@ -23,7 +24,7 @@ test.describe(
 	() => {
 		test(
 			`[ENG-7577] Check the bulk upload functionality for sending notifications`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				gamdomApiDbFacade,
 				bulkActionsAdminPage,
@@ -133,7 +134,7 @@ test.describe(
 	() => {
 		test(
 			`[ENG-7780] Check the bulk upload functionality for giving tips`,
-			testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+			testDetails().withAuthor(JiraUser.RALUCA_ARITON).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				gamdomApiDbFacade,
 				bulkActionsAdminPage,

@@ -21,6 +21,7 @@ import { JiraUser } from "@enums/jira/jira-users";
 import { UserBalanceHandler } from "@core/handlers/user-balance-handler/user-balance-handler";
 import { TransactionsPage } from "@pages/transactions/transactions-page";
 import { JiraComponent } from "@enums/jira/jira-components";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"Tip user transactions",
@@ -34,7 +35,7 @@ test.describe(
 
 		test(
 			"[ENG-7556] Check sent and received tips in Transactions",
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				homePage,
 				gamdomApi,

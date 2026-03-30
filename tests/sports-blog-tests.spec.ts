@@ -6,6 +6,7 @@ import { TestUserRole } from "@enums/test-user-roles";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { ToastTitle } from "@enums/toast-titles";
 import { test } from "@fixtures/fixtures";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"Sports blog tests",
@@ -15,7 +16,7 @@ test.describe(
 	() => {
 		test(
 			`[ENG-7656] Sports Blog - Article creation`,
-			testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+			testDetails().withAuthor(JiraUser.RALUCA_ARITON).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				browserSessionManager,
 				testDataObject,

@@ -9,6 +9,7 @@ import { BetIncreaseCondition } from "@enums/dice-autobet-section-name";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"Dice game autobet",
@@ -33,8 +34,7 @@ test.describe(
 				testDetails()
 					.withTags(
 						JiraComponent.GAMDOM_ORIGINALS,
-						JiraComponent.DICE,
-					)
+						JiraComponent.DICE, TestTag.ACCEPTANCE)
 					.withAuthor(JiraUser.NIKOLAY_GENOV)
 					.apply(),
 				async ({ diceGamePage }) => {
@@ -79,7 +79,7 @@ test.describe(
 		increaseByDataset.forEach((record) => {
 			test(
 				`[ENG-2843] Dice - Autobet - Increase by on condition ${record.input}`,
-				testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+				testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({ diceGamePage }) => {
 					const increaseByTestData = new DiceAutobetTestData({
 						betAmount: 10,
@@ -106,7 +106,7 @@ test.describe(
 		test(
 			`"[ENG-5847] Dice - Stop Autobet actuates immediately"`,
 			testDetails()
-				.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.DICE)
+				.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.DICE, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.NIKOLAY_GENOV)
 				.apply(),
 			async ({ diceGamePage, userBalanceHandler }) => {

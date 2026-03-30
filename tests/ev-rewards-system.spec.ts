@@ -87,7 +87,7 @@ test.describe(
 							testDetails()
 								.withJiraBugTickets("14807")
 								.withAuthor(JiraUser.RALUCA_ARITON)
-								.apply(),
+								.withTags(TestTag.ACCEPTANCE).apply(),
 							async ({
 								evRewardsSystemAdminPage,
 								userBalanceHandler,
@@ -187,7 +187,7 @@ test.describe("Revoke free spins", () => {
 		testDetails()
 			.withJiraBugTickets("14807")
 			.withAuthor(JiraUser.RALUCA_ARITON)
-			.apply(),
+			.withTags(TestTag.ACCEPTANCE).apply(),
 		async ({ browserSessionManager, gamdomDb, testDataObject }) => {
 			test.fixme(
 				true,
@@ -334,7 +334,7 @@ test.describe("Free spins promotion reward", () => {
 		testDetails()
 			.withJiraBugTickets("14807")
 			.withAuthor(JiraUser.RALUCA_ARITON)
-			.apply(),
+			.withTags(TestTag.ACCEPTANCE).apply(),
 		async ({ browserSessionManager, gamdomDb, testDataObject }) => {
 			test.fixme(
 				true,
@@ -476,7 +476,6 @@ test.describe("Free spins promotion reward", () => {
 				.verifyFreeSpinCardsCount(CasinoGameName.BOOK_OF_ARABIA, 1, 5);
 
 			await regular.pages.rewardsPage
-				.steps()
 				.clickRewardCardButtonByIndex(
 					CasinoGameName.BOOK_OF_ARABIA,
 					RewardCardButton.GO_TO_GAME,

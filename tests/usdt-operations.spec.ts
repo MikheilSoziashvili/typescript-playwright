@@ -57,7 +57,7 @@ test.describe(
 
 		test(
 			"[ENG-10132] USDT_ETH - deposit via sepolia",
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				cryptoDepositTestFlow,
 				cryptoDepositVerificationTestFlow,
@@ -82,7 +82,7 @@ test.describe(
 
 		test(
 			"[ENG-10474] USDT_TRX - deposit",
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				cryptoDepositTestFlow,
 				cryptoDepositVerificationTestFlow,
@@ -107,7 +107,7 @@ test.describe(
 
 		test(
 			"[ENG-14995] USDT_BSC - deposit",
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				cryptoDepositTestFlow,
 				cryptoDepositVerificationTestFlow,
@@ -133,7 +133,7 @@ test.describe(
 		for (const speed of cryptoWithdrawalDomainData.withdrawalSpeeds) {
 			test(
 				`[ENG-13331] USDT_ETH - withdraw with regular user - ${speed.toLowerCase()}`,
-				testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+				testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					cryptoWithdrawalSetupTestFlow,
 					cryptoWithdrawalProcessTestFlow,
@@ -167,7 +167,7 @@ test.describe(
 		for (const speed of cryptoWithdrawalDomainData.withdrawalSpeeds) {
 			test(
 				`[ENG-13635] USDT_ETH - withdraw with vip user - ${speed.toLowerCase()}`,
-				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					cryptoWithdrawalSetupTestFlow,
 					cryptoWithdrawalProcessTestFlow,
@@ -201,7 +201,7 @@ test.describe(
 		for (const speed of cryptoWithdrawalDomainData.withdrawalSpeeds) {
 			test(
 				`[ENG-13482] USDT_TRX - withdraw with regular user - ${speed.toLowerCase()}`,
-				testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+				testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					cryptoWithdrawalSetupTestFlow,
 					cryptoWithdrawalProcessTestFlow,
@@ -235,7 +235,7 @@ test.describe(
 		for (const speed of cryptoWithdrawalDomainData.withdrawalSpeeds) {
 			test(
 				`[ENG-13632] USDT_TRX - withdraw with vip user - ${speed.toLowerCase()}`,
-				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					cryptoWithdrawalSetupTestFlow,
 					cryptoWithdrawalProcessTestFlow,
@@ -269,7 +269,7 @@ test.describe(
 		for (const speed of cryptoWithdrawalDomainData.withdrawalSpeeds) {
 			test(
 				`[ENG-15019] USDT_BSC - withdraw with regular user - ${speed.toLowerCase()}`,
-				testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+				testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					cryptoWithdrawalSetupTestFlow,
 					cryptoWithdrawalProcessTestFlow,
@@ -303,7 +303,7 @@ test.describe(
 		for (const speed of cryptoWithdrawalDomainData.withdrawalSpeeds) {
 			test(
 				`[ENG-15022] USDT_BSC - withdraw with vip user - ${speed.toLowerCase()}`,
-				testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+				testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					cryptoWithdrawalSetupTestFlow,
 					cryptoWithdrawalProcessTestFlow,
@@ -375,7 +375,7 @@ test.describe(
 		for (const speed of cryptoWithdrawalDomainData.withdrawalSpeeds) {
 			test(
 				`[ENG-14706] USDT_ETH - withdraw with regular user and custom fees - ${speed.toLowerCase()}`,
-				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					cryptoWithdrawalSetupTestFlow,
 					cryptoWithdrawalProcessTestFlow,
@@ -432,7 +432,7 @@ test.describe(
 		for (const speed of cryptoWithdrawalDomainData.withdrawalSpeeds) {
 			test(
 				`[ENG-14775] USDT_ETH - withdraw with vip user and custom fees - ${speed.toLowerCase()}`,
-				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					cryptoWithdrawalSetupTestFlow,
 					cryptoWithdrawalProcessTestFlow,

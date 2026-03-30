@@ -10,7 +10,7 @@ test.describe("Wallet dropdown - in game visual tests", () => {
 	test(
 		"[ENG-4421] Verify Wallet dropdown visually correct during Plinko game",
 		testDetails()
-			.withTags(TestTag.ORIGINALS, TestTag.VISUAL, JiraComponent.WALLET, JiraComponent.PLINKO)
+			.withTags(TestTag.ORIGINALS, TestTag.VISUAL, JiraComponent.WALLET, JiraComponent.PLINKO, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 			.apply(),
 		async ({ plinkoGamePage }, testInfo) => {

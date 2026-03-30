@@ -15,6 +15,7 @@ import { JiraUser } from "@enums/jira/jira-users";
 import { test } from "@fixtures/fixtures";
 import { emailDomainPattern } from "@support/regex-patterns";
 import { storageStateNewSuperAdminUserDB } from "../fixtures/auth-fixtures";
+import { TestTag } from "@enums/test-tags";
 
 test.describe("Tip user through admin panel tests", () => {
 	let qrCode2FAImagePath: string;
@@ -49,7 +50,7 @@ test.describe("Tip user through admin panel tests", () => {
 	test(
 		"[ENG-2563] Tip user through admin panel - Require new 2FA code when IP of user changes",
 		testDetails()
-			.withTags(JiraComponent.ADMIN_PANEL, JiraComponent.TWO_FA)
+			.withTags(JiraComponent.ADMIN_PANEL, JiraComponent.TWO_FA, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 			.apply(),
 		async ({

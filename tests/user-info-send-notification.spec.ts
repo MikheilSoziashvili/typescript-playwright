@@ -10,6 +10,7 @@ import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import { NotificationsPage } from "@pages/notifications/notifications-page";
 import { testData } from "test-data/test-data-manager";
+import { TestTag } from "@enums/test-tags";
 
 const userInfoSendNotificationScenarios = testData().fromCsvParsed({
 	file: CsvFilesName.USER_INFO_SEND_NOTIFICATION,
@@ -41,7 +42,7 @@ test.describe("User info - send notification tests", () => {
 
 			test(
 				`[ENG-2808] UserInfo tab - verify the "Send notification" function`,
-				testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+				testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					userInfoAdminPage,
 					infoAdminPage,
@@ -113,7 +114,7 @@ test.describe("User info - send notification tests", () => {
 		test(
 			`[ENG-4852] UserInfo tab - verify the "Send long notification" function`,
 			testDetails()
-				.withTags(JiraComponent.NOTIFICATIONS)
+				.withTags(JiraComponent.NOTIFICATIONS, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.RALUCA_ARITON)
 				.apply(),
 			async ({

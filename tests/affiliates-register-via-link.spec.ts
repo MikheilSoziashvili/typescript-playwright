@@ -5,6 +5,7 @@ import { JiraUser } from "@enums/jira/jira-users";
 import { ToastTitle } from "@enums/toast-titles";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
+import { TestTag } from "@enums/test-tags";
 
 const AUTOMATION_AFFILIATES_CODE = generateRandomString({
 	prefix: "automation",
@@ -24,7 +25,7 @@ test.describe("Register with affiliate link", () => {
 	test(
 		"[ENG-1136] Register via affiliate link",
 		testDetails()
-			.withTags(JiraComponent.ACCOUNT_CREATION)
+			.withTags(JiraComponent.ACCOUNT_CREATION, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.RALUCA_ARITON)
 			.apply(),
 		async ({ homePage, faqPage, testDataObject }) => {

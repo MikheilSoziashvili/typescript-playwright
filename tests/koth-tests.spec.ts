@@ -20,6 +20,7 @@ import { Timeout } from "@enums/timeout";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import { testData } from "test-data/test-data-manager";
+import { TestTag } from "@enums/test-tags";
 
 const userData = new RegisterTestData();
 
@@ -84,7 +85,7 @@ test.describe("KoTH game tests", () => {
 	test(
 		`[ENG-6457] KoTH - Verify wagered amounts from all Originals games are displayed in KOTH leaderboards`,
 		testDetails()
-			.withTags(JiraComponent.KOTH)
+			.withTags(JiraComponent.KOTH, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 			.apply(),
 		async ({ kothPage, originalsPage }) => {
@@ -134,7 +135,7 @@ test.describe("KoTH - currency & amount format across badges", () => {
 			test(
 				`[ENG-4484] Currency: ${currencyCode} → all KoTH badges show correct symbol and format`,
 				testDetails()
-					.withTags(JiraComponent.KOTH)
+					.withTags(JiraComponent.KOTH, TestTag.ACCEPTANCE)
 					.withAuthor(JiraUser.RALUCA_ARITON)
 					.apply(),
 				async ({ homePage, page, gamdomApiDbFacade }) => {

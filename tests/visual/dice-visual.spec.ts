@@ -8,7 +8,7 @@ test.describe("Visual Tests - Dice", () => {
 	test(
 		"[ENG-3016] Dice manual bet menu is visually correct",
 		testDetails()
-			.withTags(TestTag.VISUAL, JiraComponent.GAMDOM_ORIGINALS)
+			.withTags(TestTag.VISUAL, JiraComponent.GAMDOM_ORIGINALS, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.NIKOLAY_GENOV)
 			.apply(),
 		async ({ diceGamePage }, testInfo) => {

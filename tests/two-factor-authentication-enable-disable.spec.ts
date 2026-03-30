@@ -9,6 +9,7 @@ import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
+import { TestTag } from "@enums/test-tags";
 
 test.describe("Two-Factor Authentication login verification", () => {
 	let qrCode2FAImagePath: string;
@@ -25,7 +26,7 @@ test.describe("Two-Factor Authentication login verification", () => {
 	test(
 		`[ENG-2539] - Enable and Disable Two-Factor Authentication`,
 		testDetails()
-			.withTags(JiraComponent.TWO_FA)
+			.withTags(JiraComponent.TWO_FA, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 			.apply(),
 		async ({ homePage, profilePage, settingsPage }, testInfo) => {

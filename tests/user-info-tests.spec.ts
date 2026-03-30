@@ -5,6 +5,7 @@ import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { TestUserRole } from "@enums/test-user-roles";
 import { test } from "@fixtures/fixtures";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"User info tests",
@@ -14,7 +15,7 @@ test.describe(
 	() => {
 		test(
 			"[ENG-5086] User info -  verify that last_country property is updated correctly",
-			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ browserSessionManager }) => {
 				const frProxySession = await browserSessionManager.loginAs(
 					TestUserRole.ADMIN_USER_INFO_ADMIN,

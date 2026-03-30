@@ -7,6 +7,7 @@ import { generateRandomString } from "@core/utils/utils";
 import { ToastTitle } from "@enums/toast-titles";
 import { ToastSubTitle } from "@enums/toast-subtitles";
 import { KothMaxWinners } from "@enums/admin/koth-max-winners";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"Create KOTH Event",
@@ -15,7 +16,7 @@ test.describe(
 		test.use(storageStateNewSuperAdminUserDB());
 		test(
 			`[ENG-7865] Admin - Create KOTH event`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ kothAdminPage, toast }) => {
 				const endDateOffset = 1;
 				const prize = 100;

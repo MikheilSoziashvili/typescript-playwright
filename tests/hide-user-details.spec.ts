@@ -19,7 +19,7 @@ test.describe(
 			testDetails()
 				.withJiraBugTickets("7893")
 				.withAuthor(JiraUser.RALUCA_ARITON)
-				.apply(),
+				.withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ browserSessionManager, testDataObject }) => {
 				const regular = await browserSessionManager.loginAs(
 					TestUserRole.REGULAR,
@@ -84,7 +84,7 @@ test.describe(
 			testDetails()
 				.withJiraBugTickets("7893")
 				.withAuthor(JiraUser.RALUCA_ARITON)
-				.apply(),
+				.withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ browserSessionManager, testDataObject }) => {
 				const regular = await browserSessionManager.loginAs(
 					TestUserRole.REGULAR,

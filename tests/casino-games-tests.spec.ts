@@ -39,7 +39,7 @@ test.describe("Casino games tests", () => {
 	test(
 		"[ENG-2845][Casino] Search for any game and play",
 		testDetails()
-			.withTags(JiraComponent.CASINO)
+			.withTags(JiraComponent.CASINO, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.ANGEL_PETROV)
 			.withJiraBugTickets("11715")
 			.apply(),
@@ -86,7 +86,7 @@ test.describe("Casino games tests", () => {
 	test(
 		"[ENG-7244] Casino - Verify in-game balance reflects selected crypto wallet balance",
 		testDetails()
-			.withTags(JiraComponent.CASINO)
+			.withTags(JiraComponent.CASINO, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.ANGEL_PETROV)
 			.withJiraBugTickets("11715")
 			.apply(),
@@ -171,8 +171,7 @@ test.describe("Aggregator and Providers - Casino games tests", () => {
 						JiraComponent.ADMIN,
 						JiraComponent.CASINO,
 						JiraComponent.TRANSACTIONS,
-						JiraComponent.USER_INFO,
-					)
+						JiraComponent.USER_INFO, TestTag.ACCEPTANCE)
 					.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 					.withJiraBugTickets("11715")
 					.withTags(TestTag.PLATFORM_BUG)

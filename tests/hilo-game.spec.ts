@@ -17,7 +17,7 @@ test.describe(
 		test(
 			"[ENG-298] Place a single bet on Hilo and try to win",
 			testDetails()
-				.withTags(TestTag.SMOKE, TestTag.ORIGINALS)
+				.withTags(TestTag.SMOKE, TestTag.ORIGINALS, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.NIKOLAY_GENOV)
 				.apply(),
 			async ({ browserSessionManager, hiloGamePage, testDataObject }) => {

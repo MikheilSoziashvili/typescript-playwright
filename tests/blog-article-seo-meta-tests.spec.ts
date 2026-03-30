@@ -9,6 +9,7 @@ import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
 import * as Configuration from "configuration";
 import { isScheduledRun } from "configuration";
+import { TestTag } from "@enums/test-tags";
 
 test.describe("Blog article - SEO meta tests", () => {
 	test.use(storageStateNewUserDB());
@@ -16,7 +17,7 @@ test.describe("Blog article - SEO meta tests", () => {
 	test(
 		`[ENG-5680] Verify SEO meta information for Blog article`,
 		testDetails()
-			.withTags(JiraComponent.BLOG, JiraComponent.SEO)
+			.withTags(JiraComponent.BLOG, JiraComponent.SEO, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 			.withJiraBugTickets("9597")
 			.apply(),

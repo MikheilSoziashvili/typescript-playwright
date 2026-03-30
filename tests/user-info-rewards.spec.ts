@@ -33,6 +33,7 @@ import { VerificationPage } from "@pages/verification/verification-page";
 import { getISOWeek, getMonth, getYear } from "date-fns";
 import { testData } from "test-data/test-data-manager";
 import { CsvFilesName } from "@enums/csv-file-name";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"User info - Rewards History - Custom rewards",
@@ -47,7 +48,7 @@ test.describe(
 
 		test(
 			`[ENG-7179] Custom rewards - reload`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				gamdomApi,
 				gamdomDb,
@@ -211,7 +212,7 @@ test.describe(
 
 		test(
 			`[ENG-7179] Custom rewards - vip`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				gamdomApi,
 				gamdomDb,
@@ -312,7 +313,7 @@ test.describe(
 
 		test(
 			`[ENG-7179] Custom rewards - vip - cancel`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				gamdomDb,
 				userInfoAdminPage,
@@ -377,7 +378,7 @@ test.describe(
 
 		test(
 			`[ENG-7179] Custom rewards - xp challenge`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				gamdomApi,
 				gamdomDb,
@@ -504,7 +505,7 @@ test.describe(
 
 		test(
 			`[ENG-7179] Custom rewards - xp challenge - cancel`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				gamdomDb,
 				userInfoAdminPage,
@@ -569,7 +570,7 @@ test.describe(
 
 		test(
 			`[ENG-7179] Custom rewards - kyc verification`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				gamdomApi,
 				gamdomDb,
@@ -699,7 +700,7 @@ test.describe(
 
 		test(
 			`[ENG-7179] Custom rewards - kyc verification - cancel`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				gamdomDb,
 				userInfoAdminPage,
@@ -786,7 +787,7 @@ test.describe(
 
 		test(
 			`[ENG-7179] Rewards history - Promo code - cash`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				gamdomApi,
 				gamdomDb,
@@ -866,7 +867,7 @@ test.describe(
 
 		test(
 			`[ENG-7179] Rewards history - Promo code - free spins`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				gamdomApi,
 				gamdomDb,
@@ -976,7 +977,7 @@ test.describe(
 		tipTypes.forEach(({ tipType, rewardType }) => {
 			test(
 				`[ENG-7179] Rewards history - Tip - ${tipType}`,
-				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					infoAdminPage,
 					userInfoAdminPage,
@@ -1086,7 +1087,7 @@ test.describe(
 
 		test(
 			`[ENG-7179] Rewards history - Royalty up and instant`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ rewardsPage }) => {
 				await superAdminSession.pages.userInfoAdminPage.clickUserInfoTab(
 					UserInfoTabs.RewardHistory,
@@ -1144,7 +1145,7 @@ test.describe(
 
 		test(
 			`[ENG-7179] Rewards history - Royalty up and instant - cancel`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 			async () => {
 				await superAdminSession.pages.userInfoAdminPage.clickUserInfoTab(
 					UserInfoTabs.Rewards,
@@ -1206,7 +1207,7 @@ test.describe(
 
 		test(
 			`[ENG-7179] Rewards history - Weekly reward`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				gamdomApi,
 				gamdomDb,
@@ -1330,7 +1331,7 @@ test.describe(
 
 		test(
 			`[ENG-7179] Rewards history - Monthly reward`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				gamdomApi,
 				gamdomDb,
@@ -1467,7 +1468,7 @@ test.describe(
 	() => {
 		test(
 			`[ENG-11140] Create and claim xp_challenge reward`,
-			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				browserSessionManager,
 				testDataPredefined,
@@ -1514,7 +1515,7 @@ test.describe(
 	() => {
 		test(
 			`[ENG-10167] Reload Reward creation and activation`,
-			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				browserSessionManager,
 				testDataPredefined,
@@ -1552,7 +1553,7 @@ test.describe(
 
 		test(
 			`[ENG-10170] Change Reload Reward`,
-			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				browserSessionManager,
 				gamdomDb,
@@ -1588,7 +1589,7 @@ test.describe(
 
 		test(
 			`[ENG-10269] Reload update - Skipped claims logic`,
-			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				browserSessionManager,
 				gamdomDb,
@@ -1665,7 +1666,7 @@ test.describe(
 			.forEach((input) => {
 				test(
 					`[ENG-10259] Reload update logic after partial claim - Admin: ${input.adminExpected} | Client: ${input.clientExpected}`,
-					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({
 						browserSessionManager,
 						gamdomDb,
@@ -1757,7 +1758,7 @@ test.describe(
 			.forEach((input) => {
 				test(
 					`[ENG-10268] Reload update logic for: days: ${input.days} | dailyReward: ${input.dailyReward} | totalReward: ${input.totalReward}`,
-					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({
 						browserSessionManager,
 						gamdomDb,

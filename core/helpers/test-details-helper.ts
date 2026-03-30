@@ -6,6 +6,7 @@ import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraIssueType } from "@enums/jira/jira-issue-types";
 import { JiraUser } from "@enums/jira/jira-users";
 import { AnnotationType } from "@enums/playwright/annotationsTypes";
+import { TestTag } from "@enums/test-tags";
 import { TestDetails } from "@playwright/test";
 import {
 	nonAlphanumSpacePattern,
@@ -19,6 +20,8 @@ export function testDetails(testName?: string): TestDetailsBuilder {
 }
 
 class TestDetailsBuilder {
+	private static readonly _acceptanceGroupCounts = new Map<string, number>();
+
 	private _testDetails: TestDetails = {};
 	private _testName?: string;
 	private _tags: string[] = [];
@@ -53,10 +56,27 @@ class TestDetailsBuilder {
 			throw new Error("Tags must not be empty");
 		}
 
-		const playwrightTags = tags.map((tag) => this.normalizeTag(tag));
+		let effectiveTags = tags;
+		if (tags.some((t) => t === TestTag.ACCEPTANCE)) {
+			const callSite = TestDetailsBuilder.callerSite();
+			const count =
+				TestDetailsBuilder._acceptanceGroupCounts.get(callSite) ?? 0;
+			TestDetailsBuilder._acceptanceGroupCounts.set(callSite, count + 1);
+
+			if (count > 0) {
+				effectiveTags = tags.filter((t) => t !== TestTag.ACCEPTANCE);
+				if (effectiveTags.length === 0) {
+					return this;
+				}
+			}
+		}
+
+		const playwrightTags = effectiveTags.map((tag) =>
+			this.normalizeTag(tag),
+		);
 		const uniquePlaywrightTags = Array.from(new Set(playwrightTags));
 
-		const reportPortalTags = tags.map((tag) => {
+		const reportPortalTags = effectiveTags.map((tag) => {
 			const isComponent = this.isJiraComponent(tag);
 			const normalizedValue = this.normalizeTag(tag);
 
@@ -281,6 +301,33 @@ class TestDetailsBuilder {
 
 		return `@${hyphenated}`;
 	}
+
+	/**
+	 * Returns a string identifying the source location of the `withTags` caller
+	 * (i.e. the exact line in the test file that called `withTags`).
+	 *
+	 * Uses V8's structured stack trace API (`Error.captureStackTrace` +
+	 * `Error.prepareStackTrace`) to avoid string-splitting the raw stack.
+	 * `captureStackTrace` is told to stop collecting frames at `callerSite`
+	 * itself, so the resulting `frames` array starts at `withTags` (index 0)
+	 * and the test-file call site is at index 1.
+	 *
+	 * All iterations of the same `forEach` loop share the same source line,
+	 * so this value is a stable, unique key per parametrized group — used by
+	 * `_acceptanceGroupCounts` to detect first vs. subsequent iterations.
+	 */
+	private static readonly callerSite = (): string => {
+		const saved = Error.prepareStackTrace;
+		Error.prepareStackTrace = (_err, frames) => frames;
+		const err = new Error();
+		Error.captureStackTrace(err, TestDetailsBuilder.callerSite);
+		const frames = err.stack as unknown as NodeJS.CallSite[];
+		Error.prepareStackTrace = saved;
+		// frames[0] = withTags (called callerSite) — same for every call, useless as a key
+		// frames[1] = the test file line where .withTags(...) was written — stable across
+		//             all iterations of the same forEach loop, unique across different loops
+		return frames[1]?.toString() ?? "";
+	};
 
 	private annotationToArray<T>(value: T | T[] | undefined): T[] {
 		return Array.isArray(value) ? value : value ? [value] : [];

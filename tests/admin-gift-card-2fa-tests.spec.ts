@@ -11,6 +11,7 @@ import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { test } from "@fixtures/fixtures";
 import { storageStateNewSuperAdminUserDB } from "@fixtures/auth-fixtures";
+import { TestTag } from "@enums/test-tags";
 
 test.describe("Gift card generation tests", () => {
 	let qrCode2FAImagePath: string;
@@ -32,7 +33,7 @@ test.describe("Gift card generation tests", () => {
 	test(
 		"[ENG-2568] Gift card generation - Require new 2FA code when IP of user changes",
 		testDetails()
-			.withTags(JiraComponent.GIFTCARDS, JiraComponent.TWO_FA)
+			.withTags(JiraComponent.GIFTCARDS, JiraComponent.TWO_FA, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 			.apply(),
 		async ({ giftCardsAdminPage, twoFactorAuthModal, browser }) => {

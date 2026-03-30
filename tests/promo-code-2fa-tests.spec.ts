@@ -11,6 +11,7 @@ import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { test } from "@fixtures/fixtures";
 import { storageStateNewSuperAdminUserDB } from "../fixtures/auth-fixtures";
+import { TestTag } from "@enums/test-tags";
 
 test.describe("Promo Code tests", () => {
 	let qrCode2FAImagePath: string;
@@ -30,7 +31,7 @@ test.describe("Promo Code tests", () => {
 	test(
 		"[ENG-3966] Promo Code - Require new 2FA code when IP of user changes",
 		testDetails()
-			.withTags(JiraComponent.PROMO_CODES)
+			.withTags(JiraComponent.PROMO_CODES, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 			.apply(),
 		async ({

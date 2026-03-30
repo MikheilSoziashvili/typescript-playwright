@@ -237,7 +237,7 @@ test.describe(
 
 			test(
 				`[ENG-4833] Promo Codes - Verify that Promo Win Cash & Promo Win Free Spins log filters are working`,
-				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					promoCampaignsAdminPage,
 					promoCodeModal,
@@ -402,7 +402,7 @@ test.describe(
 			promoCampaignVariants.forEach((promoCampaign) => {
 				test(
 					`[ENG-2862] Redeem a promo code - ${promoCampaign.name} - shows correct notification`,
-					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({
 						walletModal,
 						homePage,
@@ -444,7 +444,7 @@ test.describe(
 						`[ENG-3979] Promo Code - Error messages for failed redemption. For promo code with status: '${row.promo_code_status}' and type: '${row.promo_code_type}'`,
 						testDetails()
 							.withAuthor(JiraUser.IVAYLO_STOYCHEV)
-							.apply(),
+							.withTags(TestTag.ACCEPTANCE).apply(),
 						async ({
 							walletModal,
 							homePage,
@@ -480,7 +480,7 @@ test.describe(
 			promoCampaignVariants.forEach((promoCampaign) => {
 				test(
 					`[ENG-3739] Redeem a promo code - ${promoCampaign.name} and verify promo codes table is updated`,
-					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({
 						walletModal,
 						homePage,
@@ -576,7 +576,7 @@ test.describe(
 			promoCampaignVariants.forEach((promoCampaign) => {
 				test(
 					`[ENG-6530] [Promo Codes] Verify "Copy Link" button functionality '${promoCampaign.name}'`,
-					testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+					testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({
 						page,
 						testDataRandom,
@@ -646,7 +646,7 @@ test.describe(
 			promoCampaignVariants.forEach((promoCampaign) => {
 				test(
 					`[ENG-6527] [Promo Codes] Verify "Copy code" button functionality '${promoCampaign.name}'`,
-					testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+					testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({
 						page,
 						gamdomDb,
@@ -763,7 +763,7 @@ test.describe(
 						`[ENG-3334] Manage promo campaign - ${input.promoType} - ${input.finalStatus}`,
 						testDetails()
 							.withAuthor(JiraUser.RALUCA_ARITON)
-							.apply(),
+							.withTags(TestTag.ACCEPTANCE).apply(),
 						async ({ page, promoCampaignsAdminPage }) => {
 							const {
 								name: promoCodeName,

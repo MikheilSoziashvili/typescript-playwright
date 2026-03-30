@@ -18,6 +18,7 @@ import { UserTags } from "@enums/db/user-tags";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { test } from "@fixtures/fixtures";
+import { TestTag } from "@enums/test-tags";
 
 test.describe("Tip user 2FA tests", () => {
 	let qrCode2FAImagePath: string;
@@ -67,7 +68,7 @@ test.describe("Tip user 2FA tests", () => {
 	test(
 		"[ENG-2562] Tip User - Require new 2FA code when IP of user changes",
 		testDetails()
-			.withTags(JiraComponent.TWO_FA)
+			.withTags(JiraComponent.TWO_FA, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 			.apply(),
 		async ({

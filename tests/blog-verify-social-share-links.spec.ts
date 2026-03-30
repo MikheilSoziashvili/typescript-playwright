@@ -5,6 +5,7 @@ import { CsvFilesName } from "@enums/csv-file-name";
 import { JiraUser } from "@enums/jira/jira-users";
 import { test } from "@fixtures/fixtures";
 import { testData } from "test-data/test-data-manager";
+import { TestTag } from "@enums/test-tags";
 
 test.describe("Blog - social share links tests", () => {
 	testData()
@@ -13,7 +14,7 @@ test.describe("Blog - social share links tests", () => {
 			test(
 				`[ENG-6374][Blog] Verify the social share links - ${input.socialMedia}`,
 				testDetails()
-					.withTags(JiraComponent.BLOG)
+					.withTags(JiraComponent.BLOG, TestTag.ACCEPTANCE)
 					.withAuthor(JiraUser.ANGEL_PETROV)
 					.apply(),
 				async ({ blogPage, blogPostPage, gamdomApiDbFacade, page }) => {

@@ -52,7 +52,7 @@ test.describe("User statistics tests", () => {
 
 	test(
 		"[ENG-300] Hide statistics from other users",
-		testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+		testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 		async ({
 			gamdomApi,
 			gamdomDb,
@@ -94,7 +94,7 @@ test.describe(
 	() => {
 		test(
 			"[ENG-13938] Hidden statistics - ON - v4",
-			testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+			testDetails().withAuthor(JiraUser.RALUCA_ARITON).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ browserSessionManager }) => {
 				const user1 = await browserSessionManager.loginAs(
 					TestUserRole.SUPERADMIN,

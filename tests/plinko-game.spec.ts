@@ -34,7 +34,7 @@ test.describe(
 					test(
 						`[ENG-5128] Sign In feature on Plinko - Login successful: [Username: ${record.username}] [Password: ${record.password}]`,
 						testDetails()
-							.withTags(TestTag.SMOKE, TestTag.ORIGINALS)
+							.withTags(TestTag.SMOKE, TestTag.ORIGINALS, TestTag.ACCEPTANCE)
 							.withAuthor(JiraUser.RALUCA_ARITON)
 							.apply(),
 						async ({ plinkoGamePage, loginModal }) => {
@@ -74,7 +74,7 @@ test.describe(
 					`[ENG-2844] Plinko - Play a game and try to win - Bet: ${record.betAmount}, Rows: ${record.rowsValue}, Risk: ${record.riskValue}`,
 					testDetails()
 						.withAuthor(JiraUser.NIKOLAY_GENOV)
-						.withTags(TestTag.ORIGINALS)
+						.withTags(TestTag.ORIGINALS, TestTag.ACCEPTANCE)
 						.apply(),
 					async ({ plinkoGamePage, gamdomApiDbFacade }) => {
 						const { cookie } =
@@ -103,7 +103,7 @@ test.describe(
 			"[ENG-5164] Verify Plinko is displayed in statistics and in the Last 24 Hours Stats",
 			testDetails()
 				.withAuthor(JiraUser.RALUCA_ARITON)
-				.withTags(TestTag.ORIGINALS)
+				.withTags(TestTag.ORIGINALS, TestTag.ACCEPTANCE)
 				.apply(),
 			async ({
 				plinkoGamePage,
@@ -151,7 +151,7 @@ test.describe(
 						`[ENG-5685] Possible win pop-up for ${currency} appears while hovering over all baskets`,
 						testDetails()
 							.withAuthor(JiraUser.RALUCA_ARITON)
-							.withTags(TestTag.ORIGINALS)
+							.withTags(TestTag.ORIGINALS, TestTag.ACCEPTANCE)
 							.apply(),
 						async ({
 							browserSessionManager,
@@ -211,7 +211,7 @@ test.describe(
 						testDetails()
 							.withJiraBugTickets("8564")
 							.withAuthor(JiraUser.RALUCA_ARITON)
-							.withTags(TestTag.ORIGINALS)
+							.withTags(TestTag.ORIGINALS, TestTag.ACCEPTANCE)
 							.apply(),
 						async ({ plinkoBetTestFlow }) => {
 							await plinkoBetTestFlow.placeBetAcrossWallets({
@@ -247,7 +247,7 @@ test.describe(
 		test(
 			"[ENG-5472] Verify Plinko is displayed in transactions tab",
 			testDetails()
-				.withTags(JiraComponent.TRANSACTIONS)
+				.withTags(JiraComponent.TRANSACTIONS, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.RALUCA_ARITON)
 				.apply(),
 			async ({
@@ -330,7 +330,7 @@ test.describe.serial(
 		test(
 			"[ENG-5528] Plinko game can be launched when Mines is unavailable",
 			testDetails()
-				.withTags(TestTag.ORIGINALS, JiraComponent.PLINKO)
+				.withTags(TestTag.ORIGINALS, JiraComponent.PLINKO, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.RALUCA_ARITON)
 				.apply(),
 			async ({ minesGamePage, plinkoGamePage }) => {

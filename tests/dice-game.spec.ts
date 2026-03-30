@@ -15,7 +15,7 @@ test.describe("Dice tests", () => {
 	test(
 		"[ENG-299] Place a single bet on Dice and try to win",
 		testDetails()
-			.withTags(TestTag.SMOKE, JiraComponent.GAMDOM_ORIGINALS)
+			.withTags(TestTag.SMOKE, JiraComponent.GAMDOM_ORIGINALS, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.NIKOLAY_GENOV)
 			.withJiraBugTickets("ENG-13879")
 			.apply(),
@@ -50,7 +50,7 @@ test.describe("Dice tests", () => {
 			`[ENG-3513] Dice - Check that max bet can be $500k and potential win $1.5m - Bet: ${scenario.betAmount}, Multiplier: ${scenario.multiplier}`,
 			testDetails()
 				.withJiraBugTickets("ENG-17661")
-				.withTags(JiraComponent.DICE)
+				.withTags(JiraComponent.DICE, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 				.apply(),
 			async ({ browserSessionManager, diceGamePage, testDataObject }) => {
@@ -85,7 +85,7 @@ test.describe("Dice tests - v4", () => {
 	test(
 		"[ENG-13728] Place a single bet on Dice and try to win - v4",
 		testDetails()
-			.withTags(TestTag.SMOKE, TestTag.V4, JiraComponent.GAMDOM_ORIGINALS)
+			.withTags(TestTag.SMOKE, TestTag.V4, JiraComponent.GAMDOM_ORIGINALS, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.RALUCA_ARITON)
 			.apply(),
 		async ({ browserSessionManager, diceGamePage, testDataObject }) => {

@@ -11,7 +11,7 @@ test.describe(
 		test(
 			"[ENG-2550] Sign-in button on Plinko",
 			testDetails()
-				.withTags(TestTag.VISUAL, JiraComponent.PLINKO)
+				.withTags(TestTag.VISUAL, JiraComponent.PLINKO, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.RALUCA_ARITON)
 				.apply(),
 			async ({ plinkoGamePage }, testInfo) => {

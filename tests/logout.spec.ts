@@ -10,7 +10,7 @@ test.describe("Logout tests", () => {
 	test(
 		"[ENG-1541] Profile - logout",
 		testDetails()
-			.withTags(TestTag.SMOKE, JiraComponent.PROFILE, JiraComponent.AUTHENTICATION)
+			.withTags(TestTag.SMOKE, JiraComponent.PROFILE, JiraComponent.AUTHENTICATION, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 			.apply(),
 		async ({ profilePage, homePage }) => {

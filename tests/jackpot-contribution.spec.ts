@@ -12,6 +12,7 @@ import { SUPER_HIGH_USER_AMOUNT } from "database/constants/user-amounts";
 import { JackpotContributionCsvParsedRecord } from "test-data/parsers/jackpot-contribution-csv-parser";
 import { predefined } from "test-data/sources/predefined";
 import { testData } from "test-data/test-data-manager";
+import { TestTag } from "@enums/test-tags";
 
 const jackpotContributionScenarios: JackpotContributionCsvParsedRecord[] =
 	testData().fromCsvParsed({
@@ -45,7 +46,7 @@ test.describe("Jackpot Contribution percentage validation", () => {
 		test(
 			`[ENG-11717] Jackpot increases by ${expectedJackpotIncrease} when betting ${betAmountInCoins} coins on ${game}`,
 			testDetails()
-				.withTags(JiraComponent.JACKPOT)
+				.withTags(JiraComponent.JACKPOT, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.ANGEL_PETROV)
 				.apply(),
 			async ({ browserSessionManager }) => {

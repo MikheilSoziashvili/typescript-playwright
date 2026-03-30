@@ -6,6 +6,7 @@ import { Timeout } from "@enums/timeout";
 import { Unit } from "@enums/units";
 import { storageStateNewUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"Plinko autobet tests",
@@ -28,7 +29,7 @@ test.describe(
 
 		test(
 			`[ENG-5051] Plinko - Autobet - Players choice`,
-			testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+			testDetails().withAuthor(JiraUser.RALUCA_ARITON).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ plinkoGamePage }) => {
 				await plinkoGamePage
 					.assertThat()
@@ -51,7 +52,7 @@ test.describe(
 
 		test(
 			`[ENG-5048] Plinko - Autobet - Start-Stop`,
-			testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+			testDetails().withAuthor(JiraUser.RALUCA_ARITON).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ plinkoGamePage }) => {
 				await plinkoGamePage.steps().startAutobetSuccessfully();
 				await plinkoGamePage
@@ -74,7 +75,7 @@ test.describe(
 
 		test(
 			`[ENG-5789] Plinko - Autobet - Verify balance update`,
-			testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
+			testDetails().withAuthor(JiraUser.RALUCA_ARITON).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ plinkoGamePage, userBalanceHandler, originalsPage }) => {
 				const initialAccountBalance =
 					await userBalanceHandler.walletBalanceInFiatRounded();
@@ -96,7 +97,7 @@ test.describe(
 
 		test(
 			`[ENG-5187] [Plinko] Cannonballs fall in the correct cannons`,
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				plinkoGamePage,
 				errorConsoleAsserter,

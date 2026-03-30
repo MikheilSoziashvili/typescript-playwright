@@ -9,6 +9,7 @@ import { test } from "@fixtures/fixtures";
 import * as Configuration from "configuration";
 import { OAuthExpectations } from "test-data/interfaces";
 import { testData } from "test-data/test-data-manager";
+import { TestTag } from "@enums/test-tags";
 
 const baseUrls = [PRODUCTION_BASE_URL, Configuration.environment_url];
 const SOFTBLOCK_MODAL_TITLE =
@@ -30,7 +31,7 @@ for (const baseURL of baseUrls) {
 				`[ENG-5596] Check the country-based access restrictions : Blocked in ${country} for URL ${baseURL}`,
 				testDetails()
 					.withAuthor(JiraUser.RALUCA_ARITON)
-					.withTags(JiraComponent.GEOBLOCK)
+					.withTags(JiraComponent.GEOBLOCK, TestTag.ACCEPTANCE)
 					.apply(),
 				async ({ homePage, geoblockedPage }) => {
 					await homePage.tryNavigate({ retries: 5 });
@@ -76,7 +77,7 @@ for (const country of geoblockTestDataDomain.softBlockedCountries) {
 				`[ENG-2621] Check the country-based access restrictions : Soft blocked in ${country}`,
 				testDetails()
 					.withAuthor(JiraUser.RALUCA_ARITON)
-					.withTags(JiraComponent.GEOBLOCK)
+					.withTags(JiraComponent.GEOBLOCK, TestTag.ACCEPTANCE)
 					.apply(),
 				async ({ homePage, softblockModal }) => {
 					await homePage.navigate();
@@ -120,7 +121,7 @@ for (const country of geoblockTestDataDomain.softBlockedWithoutLoginCountries) {
 			"[ENG-5905] Soft blocked behavior for SK (no login allowed)",
 			testDetails()
 				.withAuthor(JiraUser.RALUCA_ARITON)
-				.withTags(JiraComponent.GEOBLOCK)
+				.withTags(JiraComponent.GEOBLOCK, TestTag.ACCEPTANCE)
 				.apply(),
 			async ({ homePage, softblockModal }) => {
 				await homePage.navigate();
@@ -182,7 +183,7 @@ for (const country of geoblockTestDataDomain.softBlockedCountries) {
 				`[ENG-5914] Verify OAuth restriction rules for ${country}`,
 				testDetails()
 					.withAuthor(JiraUser.RALUCA_ARITON)
-					.withTags(JiraComponent.GEOBLOCK)
+					.withTags(JiraComponent.GEOBLOCK, TestTag.ACCEPTANCE)
 					.apply(),
 				async ({ homePage, softblockModal }) => {
 					await homePage.navigate();

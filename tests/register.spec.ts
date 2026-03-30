@@ -12,7 +12,7 @@ test.describe("Register tests", () => {
 	test(
 		"[ENG-296] Register with email",
 		testDetails()
-			.withTags(TestTag.SMOKE)
+			.withTags(TestTag.SMOKE, TestTag.ACCEPTANCE)
 			.withTags(JiraComponent.ACCOUNT_CREATION)
 			.withAuthor(JiraUser.RALUCA_ARITON)
 			.apply(),
@@ -44,7 +44,7 @@ test.describe(
 		test(
 			`[ENG-7853] Verify correct display of "Create Account" modal window`,
 			testDetails()
-				.withTags(JiraComponent.ACCOUNT_CREATION)
+				.withTags(JiraComponent.ACCOUNT_CREATION, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 				.apply(),
 			async ({ homePage }) => {
@@ -59,7 +59,7 @@ test.describe(
 		test(
 			`[ENG-9512] Verify new account creation flow`,
 			testDetails()
-				.withTags(JiraComponent.ACCOUNT_CREATION)
+				.withTags(JiraComponent.ACCOUNT_CREATION, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 				.apply(),
 			async ({ homePage, toastV4, testDataObject }) => {

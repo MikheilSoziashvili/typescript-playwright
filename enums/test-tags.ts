@@ -19,4 +19,5 @@ export enum TestTag {
 	V4 = "@v4",
 	LOGIN = "@login",
 	PLATFORM_BUG = "@platform-bug",
+	ACCEPTANCE = "@acceptance",
 }

@@ -8,6 +8,7 @@ import { TestUserRole } from "@enums/test-user-roles";
 import { testData } from "test-data/test-data-manager";
 import { XRP_CONFIG } from "@test-flows/crypto/types/crypto-flow-types";
 import { toXrpCryptoClient } from "@test-flows/crypto/adapters/xrp-crypto-client-adapter";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"XRP tests",
@@ -33,7 +34,7 @@ test.describe(
 
 		test(
 			"[ENG-10212] XRP - deposit",
-			testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+			testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				xrpTestnetClient,
 				browserSessionManager,
@@ -66,7 +67,7 @@ test.describe(
 		for (const speed of cryptoWithdrawalDomainData.withdrawalSpeeds) {
 			test(
 				`[ENG-13678] XRP - withdraw with regular user - ${speed.toLowerCase()}`,
-				testDetails().withAuthor(JiraUser.ANGEL_PETROV).apply(),
+				testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					browserSessionManager,
 					homePage,
@@ -111,7 +112,7 @@ test.describe(
 		for (const speed of cryptoWithdrawalDomainData.withdrawalSpeeds) {
 			test(
 				`[ENG-13560] XRP - withdraw with vip user - ${speed.toLowerCase()}`,
-				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					browserSessionManager,
 					homePage,

@@ -4,6 +4,7 @@ import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { TestUserRole } from "@enums/test-user-roles";
 import { testData } from "test-data/test-data-manager";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"Admin - New Users",
@@ -16,7 +17,7 @@ test.describe(
 			({ fetchUsersByFilterName, fetchUsersByFilterStep }) => {
 				test(
 					`[ENG-4968] Admin - New Users attributes verification - ${fetchUsersByFilterName}`,
-					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({ browserSessionManager, testDataPredefined }) => {
 						const superadmin = await browserSessionManager.loginAs(
 							TestUserRole.SUPERADMIN,

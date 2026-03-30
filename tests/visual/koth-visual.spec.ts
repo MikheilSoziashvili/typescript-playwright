@@ -30,7 +30,7 @@ kothDataset.forEach((record) => {
 			test(
 				`[ENG-4483] KOTH - visual in header with currency: ${record.currency}`,
 				testDetails()
-					.withTags(TestTag.VISUAL, JiraComponent.KOTH)
+					.withTags(TestTag.VISUAL, JiraComponent.KOTH, TestTag.ACCEPTANCE)
 					.withAuthor(JiraUser.ANGEL_PETROV)
 					.apply(),
 				async ({ homePage }, testInfo) => {

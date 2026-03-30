@@ -5,6 +5,7 @@ import { PocketDiceSliderValues } from "@enums/pocket-dice-enums";
 import { TestUserRole } from "@enums/test-user-roles";
 import { test } from "@fixtures/fixtures";
 import { testData } from "test-data/test-data-manager";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"Pocket Dice game tests",
@@ -17,7 +18,7 @@ test.describe(
 			scenarios.forEach(({ betAmount, onWin, onLoss }) => {
 				test(
 					`[ENG-6143] Pocket Dice - Autobet Increase By - Roll ${rollType} - Bet ${betAmount} - On win ${onWin}% On loss ${onLoss}%`,
-					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).apply(),
+					testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({ pocketDicePage, browserSessionManager }) => {
 						await browserSessionManager.loginAs(
 							TestUserRole.REGULAR,

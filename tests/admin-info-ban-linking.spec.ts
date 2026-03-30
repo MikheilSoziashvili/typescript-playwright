@@ -7,6 +7,7 @@ import { storageStateNewSuperAdminUserDB } from "@fixtures/auth-fixtures";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
+import { TestTag } from "@enums/test-tags";
 
 test.describe("Ban user from linking platforms", () => {
 	const userData = new RegisterTestData();
@@ -32,7 +33,7 @@ test.describe("Ban user from linking platforms", () => {
 		test(
 			`[ENG-1540] UserInfo - Info - Community connect actions: ban linking of ${record.platform}`,
 			testDetails()
-				.withTags(JiraComponent.USER_INFO, JiraComponent.ADMIN)
+				.withTags(JiraComponent.USER_INFO, JiraComponent.ADMIN, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.NIKOLAY_GENOV)
 				.apply(),
 			async ({ userInfoAdminPage, infoAdminPage }) => {

@@ -15,6 +15,7 @@ import { storageStateNewSuperAdminUserDB } from "@fixtures/auth-fixtures";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
+import { TestTag } from "@enums/test-tags";
 
 const promoCampaignStatuses = parse_csv(
 	DATASETS_DIR,
@@ -67,7 +68,7 @@ test.describe(
 		promoCampaignStatuses.forEach((promoCampaignStatus) => {
 			test(
 				`[ENG-4935] Promo Codes - Verify duplicate codes of ${promoCampaignStatus.status} campaigns still work`,
-				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({
 					promoCampaignsAdminPage,
 					promoCodeModal,
@@ -97,7 +98,7 @@ test.describe(
 
 		test(
 			`[ENG-4935] Promo Codes - Verify duplicate codes of expired campaigns still work`,
-			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({
 				promoCampaignsAdminPage,
 				promoCodeModal,

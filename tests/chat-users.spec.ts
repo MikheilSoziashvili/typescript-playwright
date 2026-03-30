@@ -13,6 +13,7 @@ import { TestUserRole } from "@enums/test-user-roles";
 import { test } from "@fixtures/fixtures";
 import { ChatMessageOptions } from "@pages/components/chat/chat-map";
 import { testData } from "test-data/test-data-manager";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"Chat - tests",
@@ -29,7 +30,7 @@ test.describe(
 							`[ENG-6827] Chat - Verify diamond icon for user '${input.vipUserStatus}'`,
 							testDetails()
 								.withAuthor(JiraUser.RALUCA_ARITON)
-								.apply(),
+								.withTags(TestTag.ACCEPTANCE).apply(),
 							async ({
 								gamdomApiDbFacade,
 								gamdomDb,

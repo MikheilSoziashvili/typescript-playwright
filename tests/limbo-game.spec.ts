@@ -19,7 +19,7 @@ test.describe(
 				test(
 					`[ENG-10738][Limbo] Manual mode - Bet: $${record.betAmount}, Multiplier: ${record.multiplier}x`,
 					testDetails()
-						.withTags(TestTag.ORIGINALS)
+						.withTags(TestTag.ORIGINALS, TestTag.ACCEPTANCE)
 						.withAuthor(JiraUser.ANGEL_PETROV)
 						.apply(),
 					async ({ browserSessionManager }) => {
@@ -59,7 +59,7 @@ test.describe(
 				test(
 					`[ENG-10737][Limbo] Auto mode - Bet: $${record.betAmount}, Multiplier: ${record.multiplier}x`,
 					testDetails()
-						.withTags(TestTag.ORIGINALS)
+						.withTags(TestTag.ORIGINALS, TestTag.ACCEPTANCE)
 						.withAuthor(JiraUser.ANGEL_PETROV)
 						.apply(),
 					async ({ limboAutobetTestFlow, testDataPredefined }) => {

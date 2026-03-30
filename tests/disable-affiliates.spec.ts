@@ -40,7 +40,7 @@ test.describe.serial(
 		test(
 			"[ENG-8799] Check the redirection of Affiliates button when the Affiliates and Affiliates Info features are disabled",
 			testDetails()
-				.withTags(JiraComponent.AFFILIATES)
+				.withTags(JiraComponent.AFFILIATES, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.NIKOLAY_GENOV)
 				.apply(),
 			async ({ browserSessionManager, footer }) => {

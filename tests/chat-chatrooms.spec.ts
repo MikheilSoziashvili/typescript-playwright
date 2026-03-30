@@ -7,6 +7,7 @@ import { testDetails } from "@core/helpers/test-details-helper";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
 import { TestUserRole } from "@enums/test-user-roles";
+import { TestTag } from "@enums/test-tags";
 
 test.describe(
 	"Chat - chatrooms tests",
@@ -23,7 +24,7 @@ test.describe(
 			.forEach((input) => {
 				test(
 					`[ENG-2870] Chat - chatroom '${input.chatroom}' successfully selected with previous messages displayed`,
-					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 					async ({
 						browserSessionManager,
 						homePage,

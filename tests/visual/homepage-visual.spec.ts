@@ -8,7 +8,7 @@ test.describe("Visual Tests - Homepage", () => {
 	test(
 		"[ENG-2954] Homepage big banner is correct",
 		testDetails()
-			.withTags(TestTag.VISUAL, JiraComponent.HOMEPAGE)
+			.withTags(TestTag.VISUAL, JiraComponent.HOMEPAGE, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.NIKOLAY_GENOV)
 			.apply(),
 		async ({ homePage }, testInfo) => {

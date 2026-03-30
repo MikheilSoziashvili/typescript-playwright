@@ -23,6 +23,7 @@ import {
 	storageStateUserAPI,
 } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
+import { TestTag } from "@enums/test-tags";
 
 const ipAddressInputs = parse_csv(
 	DATASETS_DIR,
@@ -56,7 +57,7 @@ test.describe("User info - search by", () => {
 
 		test(
 			`[ENG-4990] User info - simple search by ID`,
-			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ userInfoAdminPage, baseAdminPage }) => {
 				await userInfoAdminPage.navigate();
 				await userInfoAdminPage
@@ -78,7 +79,7 @@ test.describe("User info - search by", () => {
 			test.use(storageStateUserAPI(SUPER_ADMIN_CREDENTIALS.username));
 			test(
 				`[ENG-1456] User info - Search by '${input.value}' IP`,
-				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 				async ({ userInfoAdminPage, baseAdminPage }) => {
 					await userInfoAdminPage.navigate();
 					await userInfoAdminPage
@@ -122,7 +123,7 @@ test.describe("User info - search by", () => {
 
 		test(
 			"[ENG-1386] User info - search by field (wild card)",
-			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).apply(),
+			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
 			async ({ userInfoAdminPage, infoAdminPage }) => {
 				await userInfoAdminPage.navigate();
 				await userInfoAdminPage
@@ -205,7 +206,7 @@ test.describe("User info - user badges", () => {
 		test(
 			`[ENG-7562] User info - user badges - ${role}`,
 			testDetails()
-				.withTags(JiraComponent.ADMIN, JiraComponent.ADMIN_PANEL)
+				.withTags(JiraComponent.ADMIN, JiraComponent.ADMIN_PANEL, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.RALUCA_ARITON)
 				.apply(),
 			async ({ userInfoAdminPage }) => {
