@@ -51,6 +51,14 @@ export class PlinkoGamePage extends BasePage<PlinkoGamePageMap> {
 		await this.map.betAmountInput.fill(betAmount.toString());
 	}
 
+	@step("Type bet amount")
+	public async typeInBetAmount(betAmount: string): Promise<void> {
+		await this.map.waitForStableXPosition({
+			locator: this.map.betAmountInput,
+		});
+		await this.map.betAmountInput.pressSequentially(betAmount);
+	}
+
 	@step("Define slider values")
 	public async defineSliderValues(options?: {
 		rowsValue?: number;

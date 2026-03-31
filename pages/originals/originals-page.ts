@@ -160,8 +160,7 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 				getYourBetValue: () => plinko.getYourBetValue(),
 				handlers: {
 					setBetAmount: (amount) => plinko.fillInBetAmount(amount),
-					typeBetAmount: (amount) =>
-						plinko.map.betAmountInput.pressSequentially(amount),
+					typeBetAmount: (amount) => plinko.typeInBetAmount(amount),
 					pressMinButton: () => plinko.pressMinButton(),
 					pressHalfButton: () => plinko.pressHalfButton(),
 					pressMaxButton: () => plinko.pressMaxButton(),
