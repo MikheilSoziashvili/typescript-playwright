@@ -134,16 +134,19 @@ export class HardBanResponsibleGamblingTestFlow extends BaseTestFlow {
 			async () => {
 				try {
 					await regularUser.page.reload();
+					await regularUser.pages.homePage
+						.assertThat()
+						.isTopHardBannedBannerDisplayed();
+					return true;
 				} catch {
 					return false;
 				}
-				return regularUser.pages.homePage.map.topBannedBanner.isVisible();
 			},
 			{
 				errorMessage:
 					"Hard ban banner was not displayed after banning the user",
 				timeoutSeconds: TimeoutSeconds.THIRTY,
-				intervalSeconds: TimeoutSeconds.THREE,
+				intervalSeconds: TimeoutSeconds.FIVE,
 			},
 		);
 
