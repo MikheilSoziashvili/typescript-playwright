@@ -50,7 +50,8 @@ Playwright
 ## Code Style Rules
 
 - **No redundant comments** anywhere in generated code — only FALLBACK/TODO annotations when truly needed
-- **Use base-asserter methods** over raw `expect()` in asserter classes — see `.claude/rules/base-asserter-methods.md` for the full mapping
+- **No comments** anywhere on locators or test steps — no FALLBACK, TODO, See Xray, or attachment annotations
+- **Use base-asserter methods** (`checkElementsAreVisible`, `checkElementsContainText`, etc.) over raw `expect()` in asserter classes — see `.claude/rules/base-asserter-methods.md` for the full mapping
 - **Always pass a meaningful custom message** to `expect()` and BaseAsserter helpers (`message`, `label` params) — failure logs must describe the expected state, not just dump the raw locator
 - **No `assert` prefix** on asserter methods — use `connectionsPageIsDisplayed()` not `assertConnectionsPageIsDisplayed()`
 - **Steps class**: only for methods combining actions + assertions (e.g., navigate then verify)
@@ -65,8 +66,32 @@ Playwright
 
 ## New Test Creation
 
-- **Always ask** which tags (`TestTag.*`) and which author (`JiraUser.*`) to use for `testDetails()`
-- Never assume defaults — different tests need different tags and authors
+**JiraComponent** — resolved automatically, never guessed:
+- If a scaffold `.md` exists (e.g. `tests/{TEST_KEY}-scaffold.md`), read the **Components** field and map each name to `JiraComponent.*` in `enums/jira/jira-components.ts` (case-insensitive). If a component is missing from the enum, add it directly to `enums/jira/jira-components.ts` before generating the spec.
+- If no scaffold exists and no component context is available, **ask the user** which `JiraComponent.*` value(s) to use before generating any test.
+- Do **not** use `TestTag.*` as a substitute for components — `JiraComponent.*` is always required.
+
+**Author (`JiraUser.*`)** — resolved automatically from git config, never asked:
+
+```bash
+git config user.email
+```
+
+Map email prefix (part before `@`) to `JiraUser` enum:
+
+| email prefix | JiraUser |
+|---|---|
+| svetoslav | `JiraUser.SVETOSLAV_LAZAROV` |
+| angel | `JiraUser.ANGEL_PETROV` |
+| ivaylo | `JiraUser.IVAYLO_STOYCHEV` |
+| raluca | `JiraUser.RALUCA_ARITON` |
+| nikolay | `JiraUser.NIKOLAY_GENOV` |
+
+If no match → use `JiraUser.SVETOSLAV_LAZAROV` as default and note it.
+
+**TestTag** — never emitted automatically. Leave a `// TODO: add .withTags(TestTag.X) manually` comment. Tags are added by the developer after reviewing the spec.
+
+To override any auto-mapped value (component, author, tags), specify it explicitly in your prompt.
 
 ## Skill Usage
 

@@ -150,6 +150,7 @@ playwright-report.zip
 
 # xray scaffold files (local only)
 tests/*-scaffold.md
+tests/*-scaffold/
 
 # auth
 /core/.auth

@@ -23,13 +23,10 @@ DO NOT use for: single UI actions, low-level helpers, simple page steps, pure as
 
 ```
 test-flows/originals/plinko/
-├── plinko-user-setup.flow.ts          ← setup
-├── plinko-bet-execution.flow.ts       ← action
 ├── plinko-user-setup-test-flow.ts          ← setup
 ├── plinko-bet-execution-test-flow.ts       ← action
 ├── plinko-balance-verification-test-flow.ts ← verification
 └── plinko-bet-scenario-test-flow.ts        ← scenario (test fixture)
-└── plinko-bet-scenario.flow.ts        ← scenario (test fixture)
 ```
 
 ## BaseTestFlow
@@ -117,3 +114,9 @@ test(
 - Only Scenario Flows are registered as test fixtures
 - All public methods must have `@testFlow()` decorator
 - Export new flows from `test-flows/index.ts`
+
+## AI-Assisted Workflow
+
+When implementing flows as part of a new test:
+- Use `/implement-test {TEST_KEY}` — reads the scaffold `.md`, decides if flows are needed, and creates them automatically
+- The `playwright-test-authoring` skill contains detailed flow architecture examples and the decision tree (3+ pages / session switching / >15 lines → flows)

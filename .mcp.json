@@ -43,11 +43,16 @@
 				"run",
 				"-i",
 				"--rm",
-				"-e", "RP_API_TOKEN=${RP_API_KEY}",
-				"-e", "RP_HOST=${RP_HOST}",
-				"-e", "RP_PROJECT=${RP_PROJECT}",
+				"-e", "RP_API_TOKEN",
+				"-e", "RP_HOST",
+				"-e", "RP_PROJECT",
 				"reportportal/mcp-server"
-			]
+			],
+			"env": {
+				"RP_API_TOKEN": "${RP_API_KEY}",
+				"RP_HOST": "${RP_HOST}",
+				"RP_PROJECT": "${RP_PROJECT}"
+			}
 		}
 	}
 }

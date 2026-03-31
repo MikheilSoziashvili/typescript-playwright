@@ -2,9 +2,10 @@
 
 Fetch a test from Xray by its Jira key and scaffold:
 
-1. A markdown summary file with steps and dataset at `tests/{TEST_KEY}-scaffold.md`
+1. A folder `tests/{TEST_KEY}-scaffold/` containing the scaffold `.md` and any step attachments
 2. CSV dataset file(s) under `datasets/` (only if the test has a dataset)
-3. A ready-to-fill `.spec.ts` skeleton at `tests/{spec-filename}.spec.ts`
+
+Use `/implement-test {TEST_KEY}` afterwards to implement the full test (POMs + flows + spec).
 
 ## Usage
 
@@ -29,15 +30,15 @@ Extract from `$ARGUMENTS`:
 **Check for existing scaffold (re-run mode):**
 
 ```bash
-ls tests/{TEST_KEY}-scaffold.md 2>/dev/null
+ls tests/{TEST_KEY}-scaffold/{TEST_KEY}-scaffold.md 2>/dev/null
 ls datasets/{TEST_KEY}-*.csv 2>/dev/null
 ```
 
-If `tests/{TEST_KEY}-scaffold.md` already exists:
+If `tests/{TEST_KEY}-scaffold/{TEST_KEY}-scaffold.md` already exists:
 
 - Skip Steps 2, 3, 5, and 6 entirely
 - Read the existing scaffold `.md` to extract summary, components, labels, steps, and CSV filenames
-- Go directly to Step 4 (pre-flight checks), then Step 8 (report + ask about spec)
+- Go directly to Step 4 (pre-flight checks), then Step 7 (report)
 - In the report, note: _"Using existing scaffold from a previous run."_
 
 ---
@@ -52,11 +53,14 @@ Extract:
 
 - `summary`, `description`, `status`, `assignee`, `components` (array), `labels` (array)
 - Steps: `action`, `data`, `expectedResult` for each
+- **Step attachments**: for each step, extract any `attachments` array entries — capture `id` (UUID), `filename`, and `downloadLink`. Build a map: `stepAttachments = { stepIndex: [{ uuid, filename, downloadLink }] }`. Dimensions (width/height) come from inline attachment markup in the `result` field (e.g. `!xray-attachment://UUID|width=698,height=142!`) — parse them for reporting. Default extension from `filename` field; fall back to `png`.
 
-**2b — Fetch Test Execution field from Jira:** Use `mcp__claude_ai_Atlassian__getJiraIssue` with `fields: ["customfield_10084"]`.
+**2b — Fetch Test Execution field and Component(s) from Jira:** Use `mcp__claude_ai_Atlassian__getJiraIssue` with `fields: ["customfield_10084", "components"]`.
 
 Extract `customfield_10084.value` — possible values: `Manual`, `Automation`, `Partial Automation`.
 If the field is null or missing → show as `Unknown`.
+
+Extract `components` as an array of `{ name }` objects. Use this as the authoritative source for component names (prefer over any components returned by Xray in 2a). If empty → treat as no components.
 
 ---
 
@@ -76,6 +80,55 @@ curl -s -X POST "https://xray.cloud.getxray.app/api/v2/graphql" \
 ```
 
 If `dataset` is null or has no rows → **no CSV or dataset section needed**, skip Step 5.
+
+**3b — Download step attachments** (run after 3a, or standalone if no dataset):
+
+If `stepAttachments` is non-empty (any steps have attachments):
+
+> ⚠️ **CRITICAL:** `mcp__xray__get_test_with_steps` constructs **wrong** attachment URLs:
+> - Wrong (MCP-constructed): `https://xray.cloud.getxray.app/api/v2/attachment/{UUID}` → returns HTML 404
+> - Correct (from raw GraphQL): `https://us.xray.cloud.getxray.app/api/v2/attachments/{UUID}` (`us.` prefix, plural `attachments`)
+>
+> Always use the `downloadLink` from the raw GraphQL query — never the "Link:" shown in the MCP tool result.
+>
+> The ordering of attachments in `attachments[]` may differ from their order in the `result` text (`!xray-attachment://...!` blocks). Use the `result` text order to assign step-N-M numbering.
+
+```bash
+mkdir -p tests/{TEST_KEY}-scaffold/
+
+# Reuse $TOKEN from 3a if already set; otherwise re-authenticate:
+TOKEN=$(curl -s -X POST "https://xray.cloud.getxray.app/api/v2/authenticate" \
+  -H "Content-Type: application/json" \
+  -d "{\"client_id\":\"$XRAY_CLIENT_ID\",\"client_secret\":\"$XRAY_CLIENT_SECRET\"}" | tr -d '"')
+
+# Extract downloadLinks in result-text order via Python (handles multi-attachment steps):
+LINKS=$(curl -s -X POST "https://xray.cloud.getxray.app/api/v2/graphql" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d "{\"query\": \"{ getTests(jql: \\\"issue = $TEST_KEY\\\", limit: 1) { results { steps { attachments { id filename downloadLink } } } } }\"}" | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+steps = data['data']['getTests']['results'][0]['steps']
+for i, step in enumerate(steps, 1):
+    for j, att in enumerate(step.get('attachments', []), 1):
+        print(f'step-{i}-{j}|{att[\"downloadLink\"]}')
+")
+
+# Download each; -L follows the redirect to the signed S3 URL
+while IFS='|' read -r name url; do
+  curl -sL -H "Authorization: Bearer $TOKEN" "$url" \
+    -o "tests/{TEST_KEY}-scaffold/${name}.png"
+done <<< "$LINKS"
+
+# Verify — every file should say "PNG image data", not "HTML document" or "JSON data"
+file tests/{TEST_KEY}-scaffold/step-*.png
+```
+
+File naming convention: `step-{N}-{M}.png` where N = step number, M = attachment index within step (both 1-based).
+
+If any file shows "HTML document" or "JSON data" after `file` check → download failed; do not silently continue — report the error and the failing URL to the user.
+
+If `stepAttachments` is empty → skip 3b entirely (no `mkdir` needed yet; Step 6 will create the folder when writing the `.md`).
 
 ---
 
@@ -115,20 +168,40 @@ Also map the Xray `assignee` field to `JiraUser` using the same table (first-nam
 For each component name returned from the Jira issue, check whether a matching entry already exists in `enums/jira/jira-components.ts` (case-insensitive / normalised comparison):
 
 - **Match found** → use `JiraComponent.{MATCHING_KEY}` in the spec
-- **No match** → warn the user: _"⚠️ Component `{value}` not found in `JiraComponent` enum — add it to `enums/jira/jira-components.ts` before generating the spec."_ Leave a `// TODO: add JiraComponent.{SUGGESTED_KEY} to enum` placeholder in the generated spec.
+- **No match** → add the missing entry directly to `enums/jira/jira-components.ts` (derive the key as `SCREAMING_SNAKE_CASE` of the component name), then use `JiraComponent.{NEW_KEY}` in the spec. Inform the user: _"Added `JiraComponent.{NEW_KEY} = \"{name}\"` to `enums/jira/jira-components.ts`."_
 
 **Do NOT infer or emit any `TestTag.*` values** — tags are added manually by the developer after reviewing the spec.
 
-Infer spec filename from the first component:
-| Component | Suggested spec file |
-|---|---|
-| Rewards | `tests/instant-rewards.spec.ts` (or create new if different feature) |
-| Wallet | `tests/vault-tests.spec.ts` |
-| Chat | `tests/chat-users.spec.ts` |
-| Admin panel | `tests/admin/` subdirectory |
-| _(any)_ | `tests/{csv-slug}.spec.ts` |
+**4d — Detect auth pattern and page coverage (run in parallel with 4a–4c):**
 
-When in doubt, default to `tests/{csv-slug}.spec.ts`.
+**Auth detection** — scan all step Actions for login/session language and resolve to `TestUserRole`:
+
+| Step text pattern | Resolved session |
+|---|---|
+| "login as regular / standard / player user" | `loginAs(TestUserRole.REGULAR)` |
+| "login as regular user with [X] balance/coins" | `loginAs(TestUserRole.REGULAR, { regularUserOptions: { amount: X } })` |
+| "login as superadmin / super admin" | `loginAs(TestUserRole.SUPERADMIN, { reuseContext: true })` |
+| "login as user info admin" | `loginAs(TestUserRole.ADMIN_USER_INFO_ADMIN, { reuseContext: true })` |
+| "login as crypto admin" | `loginAs(TestUserRole.ADMIN_CRYPTOSUPADMIN, { reuseContext: true })` |
+| "login as streamer" | `loginAs(TestUserRole.REGULAR, { regularUserOptions: { tags: [UserTags.Streamer] } })` |
+| "User A" + "User B" in different steps | 2 sessions — dual `loginAs()` |
+| Admin steps + user steps combined | 2 sessions — admin first with `reuseContext: true` |
+
+Determine: **how many sessions**, **which roles**, **which is first**.
+
+**Page coverage check** — for each UI surface mentioned in step Actions:
+
+```bash
+# Check each page name (iterate for each page mentioned in steps)
+find /Users/svetoslavlazarov/e2e/pages -type d -iname "*{slug}*" 2>/dev/null
+grep -r "{PageName}" /Users/svetoslavlazarov/e2e/pages/index.ts 2>/dev/null
+```
+
+Produce a coverage table:
+- ✅ POM exists → note fixture key
+- ❌ No POM → flag as "needs MCP inspection in /implement-test"
+
+**Step translation draft** — for each step, produce a one-line framework call using the patterns from the `xray-step-vocabulary` rule. Mark unresolvable steps explicitly.
 
 ---
 
@@ -152,7 +225,7 @@ When in doubt, default to `tests/{csv-slug}.spec.ts`.
 
 ### Step 6 — Generate the scaffold `.md` file
 
-Create at `tests/{TEST_KEY}-scaffold.md`:
+Create at `tests/{TEST_KEY}-scaffold/{TEST_KEY}-scaffold.md` (create the folder if it doesn't exist yet):
 
 ```markdown
 # {TEST_KEY} — {Summary}
@@ -171,11 +244,13 @@ Create at `tests/{TEST_KEY}-scaffold.md`:
 
 ## Test Steps
 
-| #   | Action                               | Data   | Expected Result  |
-| --- | ------------------------------------ | ------ | ---------------- |
-| 1   | {action, with ${params} highlighted} | {data} | {expectedResult} |
+| #   | Action                               | Data   | Expected Result  | Attachments |
+| --- | ------------------------------------ | ------ | ---------------- | ----------- |
+| 1   | {action, with ${params} highlighted} | {data} | {expectedResult} | {If step has attachments: `![Step N](./step-N-1.png)` for each; otherwise: —} |
 
 ...
+
+> Steps with no attachments show `—` in the Attachments column. Steps with multiple attachments show multiple images inline.
 
 ## Dataset Parameters
 
@@ -190,10 +265,37 @@ No dataset — this test uses hardcoded or no data.
 | {first 5 rows previewed}   |
 | _(N total rows — see CSV)_ |
 
+## Framework Analysis
+
+### Sessions Required
+- **Count:** {N} session(s)
+- **Session 1:** `loginAs(TestUserRole.{ROLE1}{, { reuseContext: true } if admin/API-only})`
+  - Triggered by: Step {N} — "{login step action text}"
+- {If 2nd session:}
+- **Session 2:** `loginAs(TestUserRole.{ROLE2})`
+  - Triggered by: Step {N} — "{login step action text}"
+- **Flows required:** {Yes — dual session + {N} pages / No — single page direct spec}
+
+### Page Coverage
+| Step Mentions | POM Exists | Fixture Key | Action |
+| --- | --- | --- | --- |
+| {page name from step} | ✅ / ❌ | `{fixtureKey}` or — | Ready / Needs MCP inspection |
+
+### Step Translations
+| # | Xray Action | Framework Call |
+| --- | --- | --- |
+| 1 | {action text} | `{resolved framework call}` |
+| {N} | {unresolvable action text} | `// NOTE: {reason} — manual implementation needed` |
+
+### Unresolvable Steps
+{If none: "None — all steps have framework equivalents."}
+{If any:}
+- Step {N}: "{action}" — {reason why unresolvable}
+
 ## Generated Files
 
-- `tests/{TEST_KEY}-scaffold.md` ← this file
-- `tests/{spec-filename}.spec.ts` ← spec skeleton
+- `tests/{TEST_KEY}-scaffold/{TEST_KEY}-scaffold.md` ← this file
+- {For each downloaded attachment: `tests/{TEST_KEY}-scaffold/step-{N}-{M}.png` ← Step N UI screenshot ({width}×{height})}
   {CSV lines if applicable}
 
 ## TODO (CSV data pipeline)
@@ -209,113 +311,30 @@ To wire up the CSV data, complete these steps:
 
 ---
 
-### Step 7 — Generate the `.spec.ts` skeleton
+### Step 7 — Report
 
-**File location:** inferred in Step 4c (default: `tests/{csv-slug}.spec.ts`)
+Report to the user:
+- Path to the markdown file (`tests/{TEST_KEY}-scaffold/{TEST_KEY}-scaffold.md`)
+- Path(s) to CSV file(s), or note that no dataset was found
+- Resolved `JiraComponent` value(s) and author (so user can verify)
+- ⚠️ Warning if an existing spec was found at `{path}` — scaffold created anyway, merge manually when implementing
+- ⚠️ Warning if any component was added to the `JiraComponent` enum
+- The `CsvFilesName` enum entry to add (copy-pasteable) if dataset exists
+- 📎 If attachments were downloaded: list each file with dimensions, e.g.:
+  ```
+  📎 Attachments downloaded:
+    - tests/{TEST_KEY}-scaffold/step-2-1.png (698×142)
+  ```
+  If no attachments: omit this section.
 
-**Imports block** — always include these, add others only if needed:
+Then print the **Next Steps** guidance:
 
-```typescript
-import { testDetails } from "@core/helpers/test-details-helper";
-import { JiraComponent } from "@enums/jira/jira-components";
-import { JiraUser } from "@enums/jira/jira-users";
-import { test } from "@fixtures/fixtures";
 ```
+Next steps for {TEST_KEY}:
 
-If dataset exists, also add:
+1. Implement the full test (POMs + flows + spec):
+   /implement-test {TEST_KEY}
 
-```typescript
-import { CsvFilesName } from "@enums/csv-file-name";
-import { testData } from "test-data/test-data-manager";
+2. Review before opening PR:
+   /pr-review
 ```
-
-> Note: `parse_csv` + `DATASETS_DIR` is legacy — always use `testData().fromCsvRaw()` or `testData().fromCsvParsed()` instead.
-> - **`fromCsvRaw`** — raw rows, typed via `CsvDtoMap`. Use by default.
-> - **`fromCsvParsed`** — rows run through a transformer from `CsvTransformerMap`. Use only when transformation logic exists or is needed.
-
-Only add `import { TestTag } from "@enums/test-tags";` if the developer will fill in tags manually — do **not** emit it automatically.
-
-**For tests WITH a dataset** — use `testData().fromCsvRaw()` + `forEach` pattern:
-
-```typescript
-// TODO: add {ENUM_KEY} to CsvFilesName enum and complete DTO setup (see scaffold.md)
-test.describe(
-    "{component area} — {short summary}",
-    testDetails()
-        .withTags(JiraComponent.{COMPONENT})
-        .apply(),
-    () => {
-        testData()
-            .fromCsvRaw({ file: CsvFilesName.{ENUM_KEY} })
-            .forEach((record) => {
-                test(
-                    `[{TEST_KEY}] {summary} - ${record.{first_meaningful_param}}`,
-                    testDetails()
-                        // TODO: add .withTags(TestTag.X) manually
-                        .withAuthor(JiraUser.{AUTHOR})
-                        .apply(),
-                    async ({ browserSessionManager }) => {
-                        // Step 1: {action — with ${params} replaced by record.param}
-                        // Expected: {expectedResult}
-
-                        // Step 2: {action}
-                        // Expected: {expectedResult}
-
-                        // ... one comment block per step
-                    },
-                );
-            });
-    },
-);
-```
-
-**For tests WITHOUT a dataset:**
-
-```typescript
-test.describe(
-    "{component area} — {short summary}",
-    testDetails()
-        .withTags(JiraComponent.{COMPONENT})
-        .apply(),
-    () => {
-        test(
-            "[{TEST_KEY}] {summary}",
-            testDetails()
-                // TODO: add .withTags(TestTag.X) manually
-                .withAuthor(JiraUser.{AUTHOR})
-                .apply(),
-            async ({ browserSessionManager }) => {
-                // Step 1: {action}
-                // Expected: {expectedResult}
-
-                // Step 2: {action}
-                // Expected: {expectedResult}
-
-                // ... one comment block per step
-            },
-        );
-    },
-);
-```
-
-**Step comment rules:**
-
-- Replace `${param}` placeholders with `${record.param}` (template literal) when dataset exists, or leave as `// TODO: ${param}` when no dataset
-- Include `// Data: {data}` line only when the step has non-empty data
-- When a step has attachments in Xray, add: `// 📎 See Xray: {TEST_KEY} — Step {N}`
-
----
-
-### Step 8 — Report and ask before generating spec
-
-1. Report to the user:
-    - Path to the markdown file
-    - Path(s) to CSV file(s), or note that no dataset was found
-    - Resolved `JiraComponent` value(s) and author (so user can verify)
-    - ⚠️ Warning if an existing spec was found
-    - ⚠️ Warning if any component was not found in the `JiraComponent` enum
-    - The `CsvFilesName` enum entry to add (copy-pasteable) if dataset exists
-
-2. **Ask the user:** _"Generate the `.spec.ts` skeleton? (yes/no)"_
-
-3. Only proceed to Step 7 (spec generation) if the user answers yes.

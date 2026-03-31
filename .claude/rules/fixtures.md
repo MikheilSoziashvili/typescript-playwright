@@ -24,43 +24,160 @@ homePage: sessionAwarePage(HomePage),
 - `_reportPortalTest` — ReportPortal setup
 - `_disableRetriesForBugTickets` — Skips retries for tests with `withJiraBugTickets()`
 
-## Authentication — `browserSessionManager.loginAs()` (default)
+## Authentication
 
-**Always use `browserSessionManager.loginAs()`** for authenticated tests. When a test requires a logged-in user, always ask which user type (regular, superadmin, etc.) before implementing.
+### `browserSessionManager.loginAs()` — standard for all new tests
+
+Three distinct context patterns — pick the right one:
+
+**Pattern 1: Single user (`reuseContext: true`)**
+
+One user, one browser tab. Fixture pages (e.g. `homePage`) are automatically authenticated:
 
 ```typescript
-// Regular user (default)
-const user = await browserSessionManager.loginAs(TestUserRole.REGULAR, {
-    reuseContext: true,
-});
-await user.pages.homePage.navigate();
-
-// Regular user with balance
-const user = await browserSessionManager.loginAs(TestUserRole.REGULAR, {
-    reuseContext: true,
-    regularUserOptions: { amount: LOW_USER_AMOUNT },
-});
-
-// Superadmin
-const superAdmin = await browserSessionManager.loginAs(TestUserRole.SUPERADMIN);
-
-// Session-scoped access (lazy via Proxy)
-await superAdmin.apis.gamdomApi;
-superAdmin.pages.homePage;
-await superAdmin.userBalanceHandler();
+await browserSessionManager.loginAs(TestUserRole.REGULAR, { reuseContext: true });
+await homePage.navigate(); // fixture page is already authenticated
 ```
 
-## Legacy: `storageStateNewUserDB()` / `test.use()`
+Without `reuseContext: true`, `loginAs` creates a **new** browser context, leaving fixture pages unauthenticated — a common mistake.
 
-> **LEGACY — do not use unless explicitly requested.** These factory functions are outdated. Always prefer `browserSessionManager.loginAs()` instead.
+**Pattern 2: Sequential user switching (both calls with `reuseContext: true`)**
+
+Switch users within the same tab. Cookies are cleared before each re-login. Fixture pages always reflect the currently active user:
 
 ```typescript
-// LEGACY — only use when explicitly asked
-test.use(storageStateNewUserDB());
-test.use(storageStateNewUserDB({ amount: 50000 }));
-test.use(storageStateNewSuperAdminUserDB());
-test.use(storageStateUserAPI(SUPER_ADMIN_CREDENTIALS.username));
-test.use(storageStateUnauthenticatedUser());
+await browserSessionManager.loginAs(TestUserRole.REGULAR, { reuseContext: true });
+await profilePage.navigate(); // logged in as regular user
+
+await browserSessionManager.loginAs(TestUserRole.SUPERADMIN, { reuseContext: true });
+await userInfoAdminPage.navigate(); // now logged in as superadmin, same tab
+```
+
+**Pattern 3: Parallel multi-user (first with `reuseContext`, second without)**
+
+Two separate browser contexts live simultaneously. Access each session via the returned object to avoid collision:
+
+```typescript
+const adminSession = await browserSessionManager.loginAs(TestUserRole.SUPERADMIN, { reuseContext: true });
+const regularUser = await browserSessionManager.loginAs(TestUserRole.REGULAR); // fresh context
+
+await adminSession.pages.userInfoAdminPage.steps().navigateAndShowUserDetails(username);
+await regularUser.pages.homePage.navigate();
+```
+
+### `loginAs` options
+
+```typescript
+// With balance or user properties
+await browserSessionManager.loginAs(TestUserRole.REGULAR, {
+    reuseContext: true,
+    regularUserOptions: { amount: 50000 },
+});
+
+// With XP / rank
+await browserSessionManager.loginAs(TestUserRole.REGULAR, {
+    reuseContext: true,
+    regularUserOptions: { startingXp: 5000 },
+});
+
+// With tags (e.g. streamer)
+await browserSessionManager.loginAs(TestUserRole.REGULAR, {
+    reuseContext: true,
+    regularUserOptions: { tags: [UserTags.Streamer] },
+});
+
+// With specific wallet units and balance
+await browserSessionManager.loginAs(TestUserRole.REGULAR, {
+    reuseContext: true,
+    regularUserWalletOptions: { walletUnits: [Unit.BTC], amount: 1000000 },
+});
+
+// Superadmin / other admin roles
+await browserSessionManager.loginAs(TestUserRole.SUPERADMIN, { reuseContext: true });
+// Also: ADMIN_USER_INFO_ADMIN, ADMIN_CRYPTOSUPADMIN, ADMIN_PROMOTIONS_ADMIN, ADMIN_SPORTS_BLOG_ADMIN
+
+// With proxy credentials (creates a new context regardless of reuseContext)
+await browserSessionManager.loginAs(TestUserRole.ADMIN_USER_INFO_ADMIN, {
+    proxyCredentials: { server: "http://proxy:8080", username: "u", password: "p" },
+});
+```
+
+### Session object API (returned by `loginAs`)
+
+```typescript
+const session = await browserSessionManager.loginAs(TestUserRole.REGULAR);
+
+// Access page objects scoped to this session (lazy-loaded via Proxy)
+await session.pages.homePage.navigate();
+await session.pages.userInfoAdminPage.steps().navigateAndShowUserDetails(username);
+
+// Access API clients scoped to this session (no manual cookie passing needed)
+await (await session.apis.gamdomApi).banUser(userId, BanReason.X, { Cookie: cookieHeader });
+
+// Get authenticated user details
+const { user, cookie } = session.getAuthenticatedUser();
+const { username, password, userId } = session.getAuthenticatedUser().user;
+const cookieHeader = getCookieHeader(session.getAuthenticatedUser().cookie);
+
+// Balance handler (lazy-loaded)
+const handler = await session.userBalanceHandler();
+const balance = await handler.walletBalanceInCoins(unit, WalletType.DEFAULT);
+```
+
+### `gamdomApiDbFacade.create*()` — programmatic user creation
+
+Use when `loginAs` options don't cover the required user state, or when creating multiple users without browser login.
+
+```typescript
+// Single user → returns { user, cookie }
+const { user, cookie } = await gamdomApiDbFacade.createSingleUserDbAndAuth();
+await setAuthenticationCookies(page, cookie);
+
+// With options
+const { user, cookie } = await gamdomApiDbFacade.createSingleUserDbAndAuth({
+    userClass: UserClasses.Admin,
+    tags: UserTags.SuperAdmin,
+    emailVerified: true,
+    startingXp: 5000,
+});
+await setAuthenticationCookies(page, cookie);
+
+// Superadmin shorthand
+const { cookie } = await gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
+await setAuthenticationCookies(page, cookie);
+
+// User with specific wallets/balance
+const { cookie } = await gamdomApiDbFacade.createUserWithWalletsAndAuth({
+    walletUnits: [Unit.BTC],
+    amount: 1000000,
+});
+await setAuthenticationCookies(page, cookie);
+
+// Multiple users (DB only, no cookies)
+const [user1, user2] = await gamdomApiDbFacade.createUsersDb({ usersCount: 2 });
+
+// Users with AML/KYC levels (DB only)
+const [userData] = await gamdomApiDbFacade.createUsersWithAmlLevelsDb({
+    users: [{ level: AmlVerificationLevel.FULL }],
+});
+```
+
+### Anonymous (no auth)
+
+Omit `loginAs` entirely — the test runs unauthenticated by default.
+
+### Legacy `storageState*` — do NOT use in new tests
+
+> **LEGACY.** All `storageState*` fixture functions use Playwright's `test.use({ storageState })` pattern — single-user, file-based, no multi-user support. 25+ spec files still use them; do not add new usage.
+
+```typescript
+// LEGACY — do not use
+test.use(storageStateNewUserDB());               // 25 spec files
+test.use(storageStateNewSuperAdminUserDB());      // 15 spec files
+test.use(storageStateUserAPI(username));          // 4 spec files
+// Defined but unused: storageStateNewUserAPI, storageStateNewSuperAdminUserAPI,
+//                     storageStateUser1, storageStateSuperadmin,
+//                     storageStateGoogleAuth, storageStateUnauthenticatedUser
 ```
 
 ## Creating a new fixture

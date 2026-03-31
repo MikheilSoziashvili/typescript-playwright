@@ -51,7 +51,7 @@ Use the highest-priority option that produces a stable, unique locator:
 | 4               | `getByText` / `getByLabel` / `getByPlaceholder` | `page.getByLabel("Email address")`                              |
 | 5               | Content-scoped `.locator()`                     | `.locator("div", { has: page.locator("img[alt='telegram']") })` |
 | 6               | CSS attribute selectors                         | `.locator("[data-state='active']")`                             |
-| 7 (last resort) | Raw CSS class / XPath                           | `.locator("[class*='StyledComponent']")` — add FALLBACK + TODO  |
+| 7 (last resort) | Raw CSS class / XPath                           | `.locator("[class*='StyledComponent']")`                        |
 
 ## Playwright MCP — Staging Auth (MANDATORY)
 
@@ -107,6 +107,18 @@ page.getByTestId("page-container")
 	.getByRole("button", { name: "Connect Telegram Account" });
 ```
 
+## Use { exact: true } for name-based locators
+
+When using `getByRole`, `getByText`, or `getByLabel`, pass `{ exact: true }` to prevent partial matches:
+
+```typescript
+// ❌ Matches "Submit" AND "Submit Form"
+page.getByRole("button", { name: "Submit" });
+
+// ✅ Matches only "Submit"
+page.getByRole("button", { name: "Submit", exact: true });
+```
+
 ## Prohibited selector patterns
 
 - `.nth()`, `.first()`, `.last()` — positional selectors break on DOM changes
@@ -114,14 +126,13 @@ page.getByTestId("page-container")
 
 ## Last-resort selectors (use only when no better option exists)
 
-- Raw CSS class selectors (`[class*='StyledComponent-sc-']`) — build-hashed, unstable. Add a FALLBACK + TODO comment.
-- XPath ancestor traversal (`//ancestor::div[contains(@class,...)]`) — fragile. Add a FALLBACK + TODO comment.
+- Raw CSS class selectors (`[class*='StyledComponent-sc-']`) — build-hashed, unstable. Use only when no data-testid or semantic anchor exists.
+- XPath ancestor traversal (`//ancestor::div[contains(@class,...)]`) — fragile. Use only as a last resort.
 
-## Fallback annotation (mandatory)
+Do **not** add FALLBACK or TODO comments to locators — no comments on locators.
 
-When Container → Content → Role cannot produce a stable selector:
+## AI-Assisted Workflow
 
-```typescript
-// FALLBACK: no data-testid within 5 ancestors of [element description]
-// TODO: Revisit with data-testid once [component] is refactored
-```
+When building selectors as part of implementing a test:
+- Use `/implement-test {TEST_KEY}` — reads the scaffold `.md`, detects missing POMs, runs MCP inspection automatically for each missing page, and scaffolds all 4 POM files with real selectors
+- The `mcp-selector-authoring` skill contains the complete step-by-step inspection procedure

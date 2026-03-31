@@ -21,6 +21,7 @@ Project-specific rules — all derived from actual codebase conventions.
 ## Waits
 
 - **Do not use `page.waitForTimeout()`** — use Playwright auto-wait, `waitUntilVisible()`, `waitForStableXPosition()`, or `waitFor()` from BaseMap
+- **Do not use `waitUntil: 'networkidle'`** — unreliable with WebSockets and background APIs; wait for specific elements or conditions instead
 
 ## Test Flows
 
@@ -30,6 +31,13 @@ Project-specific rules — all derived from actual codebase conventions.
 - **Do not use flows for simple page actions** — flows are for multi-page business journeys
 - **Do not over-split flows into tiny methods** — split by responsibility (setup/action/verification/scenario)
 - **Do not expose Setup/Action/Verification flows to tests** — only Scenario Flows are test fixtures
+
+## Authentication
+
+- **Do not use `storageState*` fixtures in new tests** — `storageStateNewUserDB`, `storageStateNewSuperAdminUserDB`, `storageStateUserAPI`, `storageStateNewUserAPI`, `storageStateNewSuperAdminUserAPI`, `storageStateUser1`, `storageStateSuperadmin`, `storageStateGoogleAuth`, `storageStateUnauthenticatedUser` are all legacy. They use `test.use({ storageState })` which locks to a single user and writes auth to JSON files on disk — no multi-user support.
+- **Do not mix `test.use(storageState*())` with `loginAs()`** — they are mutually exclusive; using both in the same test causes undefined auth behavior.
+- **Always use `browserSessionManager.loginAs()`** for new authenticated tests. Use `gamdomApiDbFacade.create*()` + `setAuthenticationCookies()` only when fine-grained user properties (custom `UserClass`, `UserTags`, AML levels) are required and `loginAs` options don't cover them.
+- **Always pass `reuseContext: true`** in single-session tests — without it, `loginAs` creates a fresh browser context and fixture-injected pages (`homePage`, `casinoPage`, etc.) remain unauthenticated.
 
 ## Code style
 

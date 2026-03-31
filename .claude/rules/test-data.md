@@ -14,13 +14,13 @@ Centralized layer in `test-data/`. Six data source types accessed via `testData(
 
 | Method | Purpose | Fixture | When to use |
 |--------|---------|---------|-------------|
-| `fromCsvRaw()` | Raw CSV as DTOs | `testData()` | Direct CSV values, no transformation |
-| `fromCsvParsed()` | CSV through parser | `testData()` | Need type-safe/normalized records |
-| `fromPredefined()` | Static constants | `testDataPredefined` | Stable values (wallets, amounts) |
-| `fromPredefinedRandom()` | One-time random per run | `testDataPredefinedRandom` | Unique-per-run identifiers |
-| `fromRandom()` | New value each call | `testDataRandom` | Parametrized tests needing unique values per iteration |
-| `fromDomain()` | Business datasets | `testData()` | Feature-specific scenario collections |
-| `fromObject()` | Factory objects | `testDataObject` | Typed DTOs with build/default/preconfigured/random |
+| `fromCsvRaw()` | Raw CSV as DTOs, no transformation | `testData()` | Data-driven tests using direct CSV values |
+| `fromCsvParsed()` | CSV through parser for normalized/typed records | `testData()` | Tests needing type-safe records derived from CSV |
+| `fromPredefined()` | Static constants, stable across runs | `testDataPredefined` | Default values: wallet types, deposit amounts, baselines |
+| `fromPredefinedRandom()` | One-time random per run, stable within run | `testDataPredefinedRandom` | Unique-per-run identifiers: promo codes, usernames |
+| `fromRandom()` | New value on each call, hybrid static+random | `testDataRandom` | Parametrized tests needing fresh random values per iteration |
+| `fromDomain()` | Business datasets by feature area | `testData()` | Scenario-based data for feature-specific test logic |
+| `fromObject()` | Factory objects with build/default/preconfigured/random | `testDataObject` | Typed DTOs: bets, users, transactions |
 
 ## CSV Data Pipeline
 
@@ -29,10 +29,10 @@ For parametrized tests where each CSV line = one test iteration.
 **Adding new CSV data:**
 1. Add CSV file to `datasets/` (naming: `ENG-{ticket}-description.csv`)
 2. Add filename to `enums/csv-file-name.ts`
-5. (For parsed) Create parser in `test-data/parsers/{name}/`, map in `test-data/mappings/csv-transformer-map.ts`
-6. Export from `dtos/csv/index.ts`
-4. Map DTO in `test-data/mappings/csv-dto-map.ts`
-5. (For parsed) Create parser in `test-data/parsers/{name}/`, map in `test-data/mappings/csv-transformer-map.ts`
+3. Create DTO at `dtos/csv/{slug}.dto.ts`
+4. Export from `dtos/csv/index.ts`
+5. Map DTO in `test-data/mappings/csv-dto-map.ts`
+6. (For parsed) Create parser in `test-data/parsers/{name}/`, map in `test-data/mappings/csv-transformer-map.ts`
 
 **Usage:**
 ```typescript
@@ -68,6 +68,31 @@ export const predefinedRandom = {
 };
 // Same value every call within a run
 testData().fromPredefinedRandom().data.notifications.longTitle;
+```
+
+**Rule:** Never declare inline test data (random strings, static strings, arrays) inside a test body. All values that belong to a test's dataset — including static strings grouped with a random value — must live in `predefinedRandom` and be consumed via the `testDataPredefinedRandom` fixture:
+```typescript
+// ❌ Wrong — random string inline in test
+const message = generateRandomString({ prefix: "chat_ml_" });
+
+// ❌ Wrong — mixing predefined random with inline static strings
+const messageLines = [
+    testDataPredefinedRandom.data.chatMessages.multiLineFirstLine as string,
+    "multiline",
+    "test",
+];
+
+// ✅ Correct — entire dataset in predefined-random/index.ts (static strings included)
+chatMessages: {
+    multiLineMessages: [
+        generateRandomString({ prefix: "chat_ml_" }),
+        "multiline",
+        "test",
+    ],
+}
+
+// ✅ Correct — in test body (note: .data is any, cast the value)
+const messageLines = testDataPredefinedRandom.data.chatMessages.multiLineMessages as string[];
 ```
 
 ## Random Data

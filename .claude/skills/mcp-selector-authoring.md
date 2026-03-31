@@ -24,30 +24,102 @@ You are an AI automation engineer. You have access to **Playwright MCP** for liv
 
 ## Step 0 — Authentication via Playwright MCP
 
-### Auth Method
+### Two Auth Layers
 
-The staging environment uses a Google OAuth proxy requiring a JWT `Authorization` header. Authentication is done via JWT header injection:
+Staging has **two independent auth layers**:
 
-1. `browser_run_code` → `page.context().setExtraHTTPHeaders({ Authorization: 'Bearer <OAUTH2_JWT>' })`
-2. `browser_navigate` → opens any authenticated page directly
+| Layer | What it does | How to bypass |
+|---|---|---|
+| **Google OAuth proxy** | Blocks all traffic to `staging-for-e2e-tests.teamgamdom.com` | Inject `Authorization: Bearer {OAUTH2_JWT}` header |
+| **Gamdom app login** | The app itself requires a Gamdom account to see user-specific views | Log in via UI using predefined staging credentials |
 
-The `OAUTH2_JWT` token is read from the project's `.env` file.
+### Layer 1 — Google OAuth Proxy Bypass (required for all MCP navigation)
+
+**Step 1a** — Read the JWT from the project `.env` (via Bash, not in `browser_run_code`):
+
+```bash
+grep OAUTH2_JWT /Users/svetoslavlazarov/e2e/.env | cut -d'"' -f2
+```
+
+**Step 1b** — Inject the header and navigate in one `browser_run_code` call using an `async (page) => {}` function. This is the only format that supports `const`, `await`, and multi-statement logic:
+
+```javascript
+async (page) => {
+    const jwt = 'PASTE_FULL_TOKEN_HERE';
+    await page.context().setExtraHTTPHeaders({ Authorization: `Bearer ${jwt}` });
+    await page.goto('{environment_url}{/path}', { waitUntil: 'domcontentloaded' });
+    return page.url();
+}
+```
+
+Replace `{environment_url}` with the value from Step 1c. The `async (page) => {}` wrapper is required — bare expressions and top-level `await` do NOT work in this tool.
+
+**Step 1c** — Resolve the base URL from `configuration.ts` (never hardcode it):
+
+```bash
+grep "^ENVIRONMENT_URL" .env 2>/dev/null | cut -d'=' -f2 | tr -d '"' \
+  || grep -oE '"https://[^"]+"' configuration.ts | head -1 | tr -d '"'
+```
+
+Then navigate via `browser_navigate` to `{environment_url}{/path}`.
+
+**Step 1d — If you land on Google's sign-in page:** the header is now set on the context. Call `browser_navigate` again with the same staging URL — it will succeed on the second attempt. This happens because the OAuth proxy checks the header on the incoming request; the first navigation may be mid-redirect before the header takes effect.
+
+After successful navigation you will be on the Gamdom site, **not yet logged in to the Gamdom application**.
+
+---
+
+### Layer 2 — Gamdom Application Login (only needed for logged-in user views)
+
+If the test scenario requires a logged-in state (e.g., inspecting a user's favorites, wallet, profile), log in via the Gamdom UI:
+
+1. Navigate to `{environment_url}` (resolve via `grep "^ENVIRONMENT_URL" .env 2>/dev/null | cut -d'=' -f2 | tr -d '"' \
+  || grep -oE '"https://[^"]+"' configuration.ts | head -1 | tr -d '"'`, or `/login` if redirected)
+2. Use the appropriate predefined staging account below
+3. Password is `password` for **all** accounts
+
+#### Predefined Staging Accounts
+
+| Username | Role / Tags | Use when |
+|---|---|---|
+| `superadmin` | SuperAdmin tag | Admin-only pages, full access |
+| `superadmin1`–`superadmin5` | SuperAdmin tag | Additional superadmin sessions |
+| `supportadmin` | SupportStaff tag | Support staff views |
+| `marketingadmin` | MarketingStaff tag | Marketing staff views |
+| `vipadmin` | VIPStaff tag | VIP staff views |
+| `socialadmin` | SocialMediaStaff tag | Social media staff views |
+| `moderator1` | Basic moderator | Moderator views |
+| `moderator2` | Basic moderator (not email verified) | Unverified moderator views |
+| `streamer1` | Streamer + StreamerVIP tags; aff code `streamer1` (WAGERED share) | Streamer-specific UI |
+| `streamer2` | Streamer tag only; aff code `streamer2` (REVENUE share), marketing tag `marketing2` | Streamer without VIP |
+| `user1` | Basic user, lvl1, affiliated with `streamer1` | Regular logged-in user |
+| `user2` | Basic user, lvl2, affiliated with `streamer1` | Levelled-up user |
+| `user3` | Basic user, lvl1, affiliated with `streamer2` | Different affiliation |
+| `user4` | Basic user, lvl2, marketing tag `marketing1` | Marketing-tagged user |
+| `user5` | Basic user, not affiliated, not email verified | Unverified user |
+
+> **Password for all accounts:** `password`
+> **Do not create credential files** for these accounts — document them here only. Any `.env.accounts`, `*.credentials`, or `staging-logins.*` files must be gitignored (see `.gitignore`).
+
+---
 
 ### Important Limitations
 
 - `storageStateNewUserDB()` and `browserSessionManager.loginAs()` are **Playwright test runner internals** — they only work within the test execution context, NOT in the Playwright MCP browser session
-- MCP inspection always uses JWT bypass (superadmin-level access)
-- The user type question is about **which page state to expect** (different roles see different elements), not which credentials to use
+- MCP inspection uses JWT proxy bypass — the Google OAuth proxy is bypassed regardless of which Gamdom account you're logged in as
+- The user type question (below) is about **which Gamdom account state to set up**, not which proxy credentials to use
 
 ### User Selection (MUST ASK FIRST)
 
-Before inspecting any page, **always ask the user** which user type's view they want to inspect:
+Before inspecting any page, **always ask the user** which view to inspect:
 
-- **superadmin** — full admin access, sees all elements including admin-only UI
-- **default user** — standard user view, may have restricted elements
-- **specific role/tags** — user with particular permissions; ask what the expected visible elements should be
+- **superadmin** — log in as `superadmin` / `superadmin1`–`superadmin5`; full admin access
+- **regular user** — log in as `user1`–`user4`; standard user view
+- **streamer** — log in as `streamer1` or `streamer2`; streamer-specific elements
+- **not logged in** — skip Gamdom login; only public-facing elements visible
+- **specific role** — use the table above to pick the right account
 
-This determines what elements you should expect to find on the page. Do NOT assume a user type.
+This determines which elements will be visible during snapshot inspection. Do NOT assume a user type.
 
 ---
 
@@ -166,26 +238,14 @@ Goal: Write a locator for a page element
             Build       Use CSS class or XPath as last resort
             locator     Add FALLBACK + TODO comments
             with content
-            anchor
+            anchor (no comments on locator)
 ```
 
 ---
 
-## FALLBACK Annotations
+## Last-resort selectors
 
-When no `data-testid` or semantic anchor exists within 5 ancestor levels:
-
-```ts
-// FALLBACK: no data-testid within 5 ancestors of telegram button
-// TODO: Revisit with data-testid once Connections page components are refactored
-public get connectTelegramButton(): Locator {
-    return this.telegramSection.getByRole("button", {
-        name: "Connect Telegram Account",
-    });
-}
-```
-
-`grep "FALLBACK:" pages/` surfaces all locators needing frontend `data-testid` improvements.
+When no `data-testid` or semantic anchor exists within 5 ancestor levels, fall back to CSS class selectors — but add **no comments** to the locator. The locator should be self-explanatory.
 
 ---
 
