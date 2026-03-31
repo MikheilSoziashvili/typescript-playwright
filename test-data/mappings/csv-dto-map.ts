@@ -43,6 +43,7 @@ import {
 } from "@dtos/csv";
 import { HomePageBannerCarouselCsv } from "@dtos/csv/home-page-banner-carousel-csv";
 import { SokGamesMinBetAfterCurrencySwitchCsv } from "@dtos/csv/sok-games-min-bet-after-currency-switch-csv";
+import { KothPointsCalculationCsv } from "@dtos/csv/koth-points-calculation-csv";
 import { OriginalsSelfExclusionCsv } from "@dtos/csv/originals-self-exclusion";
 import { PlinkoTestDataCsv } from "@dtos/csv/plinko-test-data-csv";
 import { PossibleWinPopUpCsv } from "@dtos/csv/possible-win-pop-up-csv";
@@ -97,4 +98,5 @@ export type CsvDtoMap = {
 	[CsvFilesName.HARD_BAN_REASONS_WITH_IMMEDIATE_ACCOUNT_LOCK]: HardBanReasonsWithImmediateAccountLockCsv;
 	[CsvFilesName.INSTANT_REWARDS_ROYALTY_UP_LEVELS]: InstantRewardsRoyaltyUpLevelsCsv;
 	[CsvFilesName.CASINO_GAME_INSTANT_REWARDS_ROYALTY_UP_LEVELS]: CasinoGameInstantRewardsRoyaltyUpLevelsCsv;
+	[CsvFilesName.KOTH_POINTS_CALCULATION]: KothPointsCalculationCsv;
 };

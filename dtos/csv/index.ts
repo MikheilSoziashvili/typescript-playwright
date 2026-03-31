@@ -42,3 +42,4 @@ export * from "./sok-games-min-bet-after-currency-switch-csv";
 export * from "./hard-ban-reasons-with-immediate-account-lock-csv";
 export * from "./instant-rewards-royalty-up-levels-csv";
 export * from "./casino-game-instant-rewards-royalty-up-levels-csv";
+export * from "./koth-points-calculation-csv";

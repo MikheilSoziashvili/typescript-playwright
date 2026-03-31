@@ -62,6 +62,8 @@ import { InstantRakebackRewardTestFlow } from "@test-flows/rewards/instant-rakeb
 import { CasinoGameHouseEdgeTestFlow } from "@test-flows/rewards/casino-game-house-edge-test-flow";
 import { CasinoGameRakebackTestFlow } from "@test-flows/rewards/casino-game-rakeback-test-flow";
 import { DiceApi } from "@api/games-api/dice-api";
+import { KothPointsCalculationTestFlow } from "@test-flows/koth/koth-points-calculation-test-flow";
+import { OriginalsBetPlacementTestFlow } from "@test-flows/originals/originals-bet-placement-test-flow";
 
 export type TestFlowsFixtures = {
 	plinkoBetTestFlow: PlinkoBetTestFlow;
@@ -98,6 +100,8 @@ export type TestFlowsFixtures = {
 	instantRakebackRewardTestFlow: InstantRakebackRewardTestFlow;
 	casinoGameHouseEdgeTestFlow: CasinoGameHouseEdgeTestFlow;
 	casinoGameRakebackTestFlow: CasinoGameRakebackTestFlow;
+	originalsBetPlacementTestFlow: OriginalsBetPlacementTestFlow;
+	kothPointsCalculationTestFlow: KothPointsCalculationTestFlow;
 };
 
 type RequiredTestFlowsFixtures = {
@@ -322,13 +326,23 @@ export const testFlowsFixtures = base.extend<
 			}),
 		);
 	},
-	instantRakebackRewardTestFlow: async ({}, use) => {
-		await use(new InstantRakebackRewardTestFlow());
-	},
 	casinoGameHouseEdgeTestFlow: async ({ browserSessionManager }, use) => {
 		await use(new CasinoGameHouseEdgeTestFlow(browserSessionManager));
 	},
-	casinoGameRakebackTestFlow: async ({ browserSessionManager }, use) => {
-		await use(new CasinoGameRakebackTestFlow(browserSessionManager));
+	originalsBetPlacementTestFlow: async ({}, use) => {
+		await use(new OriginalsBetPlacementTestFlow());
+	},
+	kothPointsCalculationTestFlow: async ({ browserSessionManager }, use) => {
+		const casinoGameHouseEdgeFlow = new CasinoGameHouseEdgeTestFlow(
+			browserSessionManager,
+		);
+		const originalsBetFlow = new OriginalsBetPlacementTestFlow();
+		await use(
+			new KothPointsCalculationTestFlow(
+				browserSessionManager,
+				casinoGameHouseEdgeFlow,
+				originalsBetFlow,
+			),
+		);
 	},
 });

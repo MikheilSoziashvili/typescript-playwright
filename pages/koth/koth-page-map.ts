@@ -50,6 +50,12 @@ export class KothMap extends BaseMap {
 		);
 	}
 
+	public get kothProfileCardPointsAmount(): Locator {
+		return this.kothProfileCardLeftContainer.getByTestId(
+			"koth-profile-card-wagered-amount",
+		);
+	}
+
 	public get kothUsersCardRightContainer(): Locator {
 		return this.kothPageContent.getByTestId("koth-users-card-container");
 	}

@@ -97,6 +97,27 @@ export class KothAsserter extends BaseAsserter<KothPage> {
 		);
 	}
 
+	@step("Verify KoTH points increased by expected amount")
+	public async verifyKothPointsIncreasedBy(
+		initialPoints: number,
+		expectedIncrease: number,
+	): Promise<void> {
+		const expectedTotal = parseFloat(
+			(initialPoints + expectedIncrease).toFixed(2),
+		);
+
+		await this.checkElementsHaveText(
+			[
+				{
+					locator:
+						this.gamdomPage.map.kothProfileCardPointsAmount,
+					expectedText: expectedTotal.toFixed(2),
+				},
+			],
+			Timeout.MAX,
+		);
+	}
+
 	@step("Verify koth wagger amount profile card")
 	public async verifyKothWaggerAmountProfileCard(
 		expectedAmount: number,
