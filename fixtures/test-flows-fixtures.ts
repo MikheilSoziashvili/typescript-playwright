@@ -326,8 +326,14 @@ export const testFlowsFixtures = base.extend<
 			}),
 		);
 	},
+	instantRakebackRewardTestFlow: async ({}, use) => {
+		await use(new InstantRakebackRewardTestFlow());
+	},
 	casinoGameHouseEdgeTestFlow: async ({ browserSessionManager }, use) => {
 		await use(new CasinoGameHouseEdgeTestFlow(browserSessionManager));
+	},
+	casinoGameRakebackTestFlow: async ({ browserSessionManager }, use) => {
+		await use(new CasinoGameRakebackTestFlow(browserSessionManager));
 	},
 	originalsBetPlacementTestFlow: async ({}, use) => {
 		await use(new OriginalsBetPlacementTestFlow());
