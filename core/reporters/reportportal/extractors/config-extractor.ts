@@ -76,7 +76,7 @@ export class ConfigExtractor {
 	 */
 	private static merge(configs: ReportPortalConfig[]): ReportPortalConfig {
 		const initialValue: ConfigAccumulator = {
-			jiraIssueId: undefined,
+			jiraIssueIds: [],
 			tags: [],
 			author: undefined,
 			arbitraryAnnotations: [],
@@ -85,7 +85,10 @@ export class ConfigExtractor {
 
 		const merged = configs.reduce<ConfigAccumulator>(
 			(acc, config) => ({
-				jiraIssueId: config.jiraIssueId ?? acc.jiraIssueId,
+				jiraIssueIds: [
+					...acc.jiraIssueIds,
+					...(config.jiraIssueIds ?? []),
+				],
 				author: config.author ?? acc.author,
 				tags: [...acc.tags, ...config.tags],
 				arbitraryAnnotations: [
@@ -97,9 +100,10 @@ export class ConfigExtractor {
 			initialValue,
 		);
 
-		// Remove duplicate tags
+		// Remove duplicates
 		return {
 			...merged,
+			jiraIssueIds: Array.from(new Set(merged.jiraIssueIds)),
 			tags: Array.from(new Set(merged.tags)),
 		};
 	}

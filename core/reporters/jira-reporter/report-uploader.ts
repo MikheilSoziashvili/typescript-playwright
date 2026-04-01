@@ -1,5 +1,5 @@
 import { XrayApi } from "@api/xray-api";
-import { XmlData, XmlDataTestSuite, XmlDataTestCase } from "@core/types/types";
+import { XmlData, XmlDataTestSuite, XmlDataTestCase, XmlDataProperty } from "@core/types/types";
 import { parseXmlFile } from "@core/utils/utils";
 import { logger } from "@logger/logger";
 import { jira } from "../../../configuration";
@@ -20,20 +20,46 @@ export default class ReportUploader {
 	}
 
 	private async updateXmlWithTestKeys(xmlData: XmlData): Promise<void> {
+		const testKeyRegex = new RegExp(
+			`\\[(${jira.projectKey}-\\d+)\\]`,
+			"g",
+		);
 		xmlData.testsuites.testsuite.forEach((suite: XmlDataTestSuite) => {
+			const expandedTestCases: XmlDataTestCase[] = [];
+
 			suite.testcase.forEach((testcase: XmlDataTestCase) => {
-				const match = testcase.$.name.match(
-					new RegExp(`\\[(${jira.projectKey}-\\d+)\\]`),
-				);
-				if (match) {
-					if (!testcase.properties) {
-						testcase.properties = [{ property: [] }];
-					}
-					testcase.properties[0].property.push({
-						$: { name: "test_key", value: match[1] },
-					});
+				const matches = [
+					...testcase.$.name.matchAll(testKeyRegex),
+				];
+
+				if (matches.length === 0) {
+					expandedTestCases.push(testcase);
+					return;
+				}
+
+				for (const match of matches) {
+					const baseProperties = testcase.properties
+						? testcase.properties[0].property.filter(
+								(p) => p.$.name !== "test_key",
+							)
+						: [];
+					const clonedProperties: XmlDataProperty[] = [
+						{
+							property: [
+								...baseProperties,
+								{ $: { name: "test_key", value: match[1] } },
+							],
+						},
+					];
+					const cloned: XmlDataTestCase = {
+						...testcase,
+						properties: clonedProperties,
+					};
+					expandedTestCases.push(cloned);
 				}
 			});
+
+			suite.testcase = expandedTestCases;
 		});
 
 		const builder = new xml2js.Builder();

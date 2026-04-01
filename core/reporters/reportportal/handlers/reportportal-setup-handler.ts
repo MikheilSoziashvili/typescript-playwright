@@ -56,17 +56,20 @@ export class ReportPortalSetupHandler {
 		config: ReportPortalConfig,
 		testInfo: TestInfo,
 	): void {
-		const jiraIssueId = this.resolveJiraIssueId(config, testInfo);
+		const jiraIssueIds = this.resolveJiraIssueIds(config, testInfo);
 
-		if (jiraIssueId) {
-			this.reportPortalService.setTestCaseId(jiraIssueId);
+		for (const id of jiraIssueIds) {
+			this.reportPortalService.setTestCaseId(id);
 		}
 	}
 
-	private resolveJiraIssueId(
+	private resolveJiraIssueIds(
 		config: ReportPortalConfig,
 		testInfo: TestInfo,
-	): string | undefined {
-		return config.jiraIssueId ?? JiraIssueExtractor.extract(testInfo.title);
+	): string[] {
+		if (config.jiraIssueIds && config.jiraIssueIds.length > 0) {
+			return [...config.jiraIssueIds];
+		}
+		return JiraIssueExtractor.extractAll(testInfo.title);
 	}
 }

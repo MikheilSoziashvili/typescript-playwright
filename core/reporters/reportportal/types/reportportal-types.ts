@@ -5,7 +5,7 @@ import { JiraUser } from "@enums/jira/jira-users";
  * Configuration for ReportPortal test metadata
  */
 export interface ReportPortalConfig {
-	readonly jiraIssueId?: string;
+	readonly jiraIssueIds?: readonly string[];
 	readonly tags: readonly string[];
 	readonly author?: JiraUser;
 	readonly arbitraryAnnotations?: readonly {
@@ -34,7 +34,7 @@ export type ConfigExtractionResult =
  * Mutable accumulator type for merging configs
  */
 export type ConfigAccumulator = {
-	jiraIssueId: string | undefined;
+	jiraIssueIds: string[];
 	tags: string[];
 	author: JiraUser | undefined;
 	arbitraryAnnotations: { type: AnnotationType; description: string }[];

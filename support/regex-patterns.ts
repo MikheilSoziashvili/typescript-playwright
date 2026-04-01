@@ -78,6 +78,7 @@ export const classNamePattern = (attributeValue: string): RegExp =>
 	new RegExp(`\\b${attributeValue}\\b`);
 
 export const jiraIssuePattern = /\[([A-Z]+-\d+)\]/;
+export const jiraIssueGlobalPattern = /\[([A-Z]+-\d+)\]/g;
 export const tagPrefixPattern = /^@/;
 
 export const freeSpinsMessagePattern = (expectedSpins: number): RegExp =>

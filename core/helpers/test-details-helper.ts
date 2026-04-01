@@ -25,7 +25,7 @@ class TestDetailsBuilder {
 	private _testDetails: TestDetails = {};
 	private _testName?: string;
 	private _tags: string[] = [];
-	private _jiraIssueId?: string;
+	private _jiraIssueIds: string[] = [];
 	private _author?: JiraUser;
 	private _arbitraryAnnotations: {
 		type: AnnotationType;
@@ -36,10 +36,7 @@ class TestDetailsBuilder {
 	constructor(testName?: string) {
 		this._testName = testName;
 		if (testName) {
-			const extractedId = JiraIssueExtractor.extract(testName);
-			if (extractedId) {
-				this._jiraIssueId = extractedId;
-			}
+			this._jiraIssueIds = JiraIssueExtractor.extractAll(testName);
 		}
 	}
 
@@ -209,7 +206,7 @@ class TestDetailsBuilder {
 	 */
 	public apply() {
 		const config = {
-			jiraIssueId: this._jiraIssueId,
+			jiraIssueIds: this._jiraIssueIds,
 			tags: this._tags,
 			author: this._author,
 			arbitraryAnnotations: this._arbitraryAnnotations,
