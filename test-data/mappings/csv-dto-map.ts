@@ -38,6 +38,7 @@ import {
 	LimboAutoModeCsv,
 	HardBanResponsibleGamblingCsv,
 	HardBanReasonsWithImmediateAccountLockCsv,
+	SendWeeklyMonthlyRewardCsv,
 	InstantRewardsRoyaltyUpLevelsCsv,
 	CasinoGameInstantRewardsRoyaltyUpLevelsCsv,
 } from "@dtos/csv";
@@ -96,6 +97,7 @@ export type CsvDtoMap = {
 	[CsvFilesName.HARD_BAN_RESPONSIBLE_GAMBLING]: HardBanResponsibleGamblingCsv;
 	[CsvFilesName.SOK_GAMES_MIN_BET_AFTER_CURRENCY_SWITCH]: SokGamesMinBetAfterCurrencySwitchCsv;
 	[CsvFilesName.HARD_BAN_REASONS_WITH_IMMEDIATE_ACCOUNT_LOCK]: HardBanReasonsWithImmediateAccountLockCsv;
+	[CsvFilesName.SEND_WEEKLY_MONTHLY_REWARD]: SendWeeklyMonthlyRewardCsv;
 	[CsvFilesName.INSTANT_REWARDS_ROYALTY_UP_LEVELS]: InstantRewardsRoyaltyUpLevelsCsv;
 	[CsvFilesName.CASINO_GAME_INSTANT_REWARDS_ROYALTY_UP_LEVELS]: CasinoGameInstantRewardsRoyaltyUpLevelsCsv;
 	[CsvFilesName.KOTH_POINTS_CALCULATION]: KothPointsCalculationCsv;

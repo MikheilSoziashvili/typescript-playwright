@@ -76,6 +76,7 @@ export enum CsvFilesName {
 	HARD_BAN_RESPONSIBLE_GAMBLING = "ENG-10321-hard-ban-responsible-gambling.csv",
 	SOK_GAMES_MIN_BET_AFTER_CURRENCY_SWITCH = "ENG-11134-sok-games-min-bet-after-currency-switch.csv",
 	HARD_BAN_REASONS_WITH_IMMEDIATE_ACCOUNT_LOCK = "ENG-10402-reasons-with-immediate-account-lock.csv",
+	SEND_WEEKLY_MONTHLY_REWARD = "ENG-9882-send-weekly-monthly-reward.csv",
 	INSTANT_REWARDS_ROYALTY_UP_LEVELS = "ENG-10283-instant-rewards-royalty-up-levels-with-diff-rakeback-percantage.csv",
 	CASINO_GAME_INSTANT_REWARDS_ROYALTY_UP_LEVELS = "ENG-10283-casino-game-instant-rewards-royalty-up-levels-with-diff-rakeback-percantage.csv",
 	KOTH_POINTS_CALCULATION = "ENG-9786-koth-points-calculation.csv",

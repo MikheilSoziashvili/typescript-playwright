@@ -306,6 +306,39 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 		]);
 	}
 
+	@step("Reward is visible and available")
+	public async rewardIsVisibleAndAvailable(
+		rewardType: RewardType,
+	): Promise<void> {
+		await this.checkElementsAreVisible(
+			[
+				this.gamdomPage.map.getRewardAmount(rewardType),
+				this.gamdomPage.map.getRewardClaimButton(rewardType),
+			],
+			undefined,
+			`${rewardType} reward should be visible and available for claiming`,
+		);
+	}
+
+	@step("Reward is claimed and disabled")
+	public async rewardIsClaimedAndDisabled(
+		rewardType: RewardType,
+	): Promise<void> {
+		await this.checkElementsAreVisible(
+			[this.gamdomPage.map.getRewardClaimButton(rewardType)],
+			undefined,
+			`${rewardType} reward claim button should be visible but disabled`,
+		);
+		await this.checkElementsAreDisabled([
+			this.gamdomPage.map.getRewardClaimButton(rewardType),
+		]);
+		await this.checkElementsAreNotVisible(
+			[this.gamdomPage.map.getRewardAmount(rewardType)],
+			undefined,
+			`${rewardType} reward amount should not be visible after claiming`,
+		);
+	}
+
 	@step("Weekly reward is visible and can be activated")
 	async weeklyRewardIsVisibleAndAvailable(): Promise<void> {
 		await this.checkElementsAreVisible([
@@ -315,12 +348,22 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 		]);
 	}
 
+	@step("Weekly reward is claimed and disabled")
+	async weeklyRewardIsClaimedAndDisabled(): Promise<void> {
+		await this.rewardIsClaimedAndDisabled(RewardType.WEEKLY);
+	}
+
 	@step("Monthly reward is visible and can be activated")
 	async monthlyRewardIsVisibleAndAvailable(): Promise<void> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.getRewardAmount(RewardType.MONTHLY),
 			this.gamdomPage.map.getRewardClaimButton(RewardType.MONTHLY),
 		]);
+	}
+
+	@step("Monthly reward is claimed and disabled")
+	async monthlyRewardIsClaimedAndDisabled(): Promise<void> {
+		await this.rewardIsClaimedAndDisabled(RewardType.MONTHLY);
 	}
 
 	@step("Claimed {currentClaims} out of {totalClaims} special offer rewards")

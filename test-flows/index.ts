@@ -82,6 +82,11 @@ export { PasswordChangeSetupTestFlow } from "./password/password-change-setup-te
 export { PasswordChangeExecutionTestFlow } from "./password/password-change-execution-test-flow";
 export { PasswordChangeSetupResult } from "./password/password-change-setup-test-flow";
 
+// EV Rewards flows
+export { EvRewardsBulkRewardSetupTestFlow } from "./rewards/ev-rewards-bulk-reward-setup-test-flow";
+export { EvRewardsClaimRewardVerificationTestFlow } from "./rewards/ev-rewards-claim-reward-verification-test-flow";
+export { EvRewardsBulkRewardScenarioTestFlow } from "./rewards/ev-rewards-bulk-reward-scenario-test-flow";
+
 // Instant rakeback reward flows
 export { InstantRakebackRewardTestFlow } from "./rewards/instant-rakeback-reward-test-flow";
 export { CasinoGameHouseEdgeTestFlow } from "./rewards/casino-game-house-edge-test-flow";

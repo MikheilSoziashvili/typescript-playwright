@@ -260,6 +260,10 @@ export const predefined = {
 		betAmount: 50,
 		multiplier: 50,
 	},
+	evRewards: {
+		rewardAmountCoins: 15000,
+		rewardAmount: 10,
+	},
 	originalGames: {
 		betAmountCoins: 150000,
 		betAmount: 100,

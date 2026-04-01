@@ -62,6 +62,9 @@ import { InstantRakebackRewardTestFlow } from "@test-flows/rewards/instant-rakeb
 import { CasinoGameHouseEdgeTestFlow } from "@test-flows/rewards/casino-game-house-edge-test-flow";
 import { CasinoGameRakebackTestFlow } from "@test-flows/rewards/casino-game-rakeback-test-flow";
 import { DiceApi } from "@api/games-api/dice-api";
+import { EvRewardsBulkRewardScenarioTestFlow } from "@test-flows/rewards/ev-rewards-bulk-reward-scenario-test-flow";
+import { EvRewardsBulkRewardSetupTestFlow } from "@test-flows/rewards/ev-rewards-bulk-reward-setup-test-flow";
+import { EvRewardsClaimRewardVerificationTestFlow } from "@test-flows/rewards/ev-rewards-claim-reward-verification-test-flow";
 import { KothPointsCalculationTestFlow } from "@test-flows/koth/koth-points-calculation-test-flow";
 import { OriginalsBetPlacementTestFlow } from "@test-flows/originals/originals-bet-placement-test-flow";
 
@@ -97,6 +100,7 @@ export type TestFlowsFixtures = {
 	verifyReloadUpdateLogicTestFlow: VerifyReloadUpdateLogicTestFlow;
 	limboAutobetTestFlow: LimboAutobetTestFlow;
 	streamerWithdrawalReviewTestFlow: StreamerWithdrawalReviewTestFlow;
+	evRewardsBulkRewardScenarioTestFlow: EvRewardsBulkRewardScenarioTestFlow;
 	instantRakebackRewardTestFlow: InstantRakebackRewardTestFlow;
 	casinoGameHouseEdgeTestFlow: CasinoGameHouseEdgeTestFlow;
 	casinoGameRakebackTestFlow: CasinoGameRakebackTestFlow;
@@ -297,6 +301,17 @@ export const testFlowsFixtures = base.extend<
 			new LimboAutobetTestFlow(
 				new LimboAutobetSetupFlow(browserSessionManager),
 				new LimboAutobetExecutionFlow(),
+			),
+		);
+	},
+	evRewardsBulkRewardScenarioTestFlow: async (
+		{ browserSessionManager },
+		use,
+	) => {
+		await use(
+			new EvRewardsBulkRewardScenarioTestFlow(
+				new EvRewardsBulkRewardSetupTestFlow(browserSessionManager),
+				new EvRewardsClaimRewardVerificationTestFlow(),
 			),
 		);
 	},

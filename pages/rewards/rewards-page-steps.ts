@@ -2,8 +2,10 @@ import { BasePageStep } from "@pages/base/base-page-step";
 import { step } from "decorators/step";
 import { RewardsPage } from "./rewards-page";
 import { RewardsRoyaltyUpRanks } from "@enums/rewards-royalty-up-ranks";
+import { RewardType } from "@enums/admin/reward-type";
 import { logger } from "@logger/logger";
-import { Locator } from "@playwright/test";
+import { parseCurrencyToNumber } from "@core/utils/utils";
+import { expect, Locator } from "@playwright/test";
 
 export class RewardsPageSteps extends BasePageStep<RewardsPage> {
 	public constructor(gamdomPage: RewardsPage) {
@@ -82,6 +84,21 @@ export class RewardsPageSteps extends BasePageStep<RewardsPage> {
 			reward,
 			totalAmount,
 		);
+	}
+
+	@step("Get reward amount")
+	public async getRewardAmount(
+		rewardType: RewardType.WEEKLY | RewardType.MONTHLY,
+	): Promise<number> {
+		await expect(
+			this.gamdomPage.map.getRewardAmount(rewardType),
+			`${rewardType} reward amount is not displayed`,
+		).toBeVisible();
+		const amount =
+			(await this.gamdomPage.map
+				.getRewardAmount(rewardType)
+				.textContent()) ?? "";
+		return parseCurrencyToNumber(amount);
 	}
 
 	@step("Navigate and verify banned user rewards view")

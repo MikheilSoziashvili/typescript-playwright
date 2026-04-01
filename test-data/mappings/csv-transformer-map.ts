@@ -19,6 +19,7 @@ import {
 	ReloadUpdateAfterPartialClaimCsvRecord,
 	JackpotContributionCsvRecord,
 	ReloadUpdateLogicCsvRecord,
+	SendWeeklyMonthlyRewardCsvRecord,
 	InstantRewardsRoyaltyUpLevelsCsvRecord,
 	CasinoGameInstantRewardsRoyaltyUpLevelsCsvRecord,
 } from "@dtos/csv";
@@ -123,6 +124,10 @@ import {
 	parseSokGamesMinBetAfterCurrencySwitchCsvRow,
 	SokGamesMinBetAfterCurrencySwitchCsvParsedRecord,
 } from "test-data/parsers/sok-games-min-bet-after-currency-switch-csv-parser";
+import {
+	parseSendWeeklyMonthlyRewardCsvRow,
+	SendWeeklyMonthlyRewardCsvParsedRecord,
+} from "test-data/parsers/send-weekly-monthly-reward-csv-parser";
 import {
 	parseInstantRewardsRoyaltyUpLevelsCsvRow,
 	InstantRewardsRoyaltyUpLevelsCsvParsedRecord,
@@ -246,6 +251,9 @@ export type CsvTransformerMapType = {
 		row: SokGamesMinBetAfterCurrencySwitchCsvRecord,
 	) => SokGamesMinBetAfterCurrencySwitchCsvParsedRecord;
 
+	[CsvFilesName.SEND_WEEKLY_MONTHLY_REWARD]: (
+		row: SendWeeklyMonthlyRewardCsvRecord,
+	) => SendWeeklyMonthlyRewardCsvParsedRecord;
 	[CsvFilesName.INSTANT_REWARDS_ROYALTY_UP_LEVELS]: (
 		row: InstantRewardsRoyaltyUpLevelsCsvRecord,
 	) => InstantRewardsRoyaltyUpLevelsCsvParsedRecord;
@@ -295,6 +303,8 @@ export const CsvTransformerMap: CsvTransformerMapType = {
 	[CsvFilesName.CHANGE_PASSWORD]: parseChangePasswordCsvRow,
 	[CsvFilesName.SOK_GAMES_MIN_BET_AFTER_CURRENCY_SWITCH]:
 		parseSokGamesMinBetAfterCurrencySwitchCsvRow,
+	[CsvFilesName.SEND_WEEKLY_MONTHLY_REWARD]:
+		parseSendWeeklyMonthlyRewardCsvRow,
 	[CsvFilesName.INSTANT_REWARDS_ROYALTY_UP_LEVELS]:
 		parseInstantRewardsRoyaltyUpLevelsCsvRow,
 	[CsvFilesName.CASINO_GAME_INSTANT_REWARDS_ROYALTY_UP_LEVELS]:

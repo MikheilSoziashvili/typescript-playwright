@@ -50,6 +50,10 @@ import { AdminActionRequest } from "@dtos/requests/gamdom-api/admin-action-reque
 import { AdminActionType } from "@enums/admin-action-types";
 import { BanReason } from "@enums/ban-reasons";
 import { API_DEFAULT_RETRY } from "@constants/api-default-retry";
+import { GetEvReportPeriodIdentifiersRequest } from "@dtos/requests/gamdom-api/get-ev-report-period-identifiers-request";
+import { BulkRewardResponse } from "@dtos/responses/gamdom-api/bulk-reward-response";
+import { GetEvReportPeriodIdentifiersResponse } from "@dtos/responses/gamdom-api/get-ev-report-period-identifiers-response";
+import { RewardType } from "@enums/admin/reward-type";
 
 export class GamdomApi extends BaseApi {
 	private gamdomDb: GamdomDb;
@@ -823,14 +827,40 @@ export class GamdomApi extends BaseApi {
 
 	public async bulkReward(
 		payload: BulkRewardRequest,
+		expectedStatus: HttpStatus = HttpStatus.OK,
 		_headers?: Record<string, string>,
-	): Promise<APIResponse> {
+	): Promise<BulkRewardResponse> {
 		const parameters = this.buildParameters(
 			ApiEndpoints.BULK_REWARD,
 			payload,
 			_headers,
 		);
-		return this.post(parameters);
+		const response = await this.post(parameters);
+		expect(
+			response.status(),
+			`bulkReward failed with status ${response.status()}: ${await response.text()}`,
+		).toBe(expectedStatus);
+		return response.json() as Promise<BulkRewardResponse>;
+	}
+
+	public async getEvReportPeriodIdentifiers(
+		periodType: RewardType,
+		_headers?: Record<string, string>,
+	): Promise<GetEvReportPeriodIdentifiersResponse> {
+		const payload: GetEvReportPeriodIdentifiersRequest = {
+			periodType: periodType,
+		};
+		const parameters = this.buildParameters(
+			ApiEndpoints.GET_EV_REPORT_PERIOD_IDENTIFIERS,
+			payload,
+			_headers,
+		);
+		const response = await this.post(parameters);
+		expect(
+			response.status(),
+			`getEvReportPeriodIdentifiers failed with status ${response.status()}: ${await response.text()}`,
+		).toBe(HttpStatus.OK);
+		return response.json() as Promise<GetEvReportPeriodIdentifiersResponse>;
 	}
 
 	public async getHourlyCryptoBalances(options?: {
