@@ -82,6 +82,7 @@ import { KothPage } from "./koth/koth-page";
 import { MaintenancePage } from "./maintenance/maintenance-page";
 import { Error404Page } from "./error-404-page/error-404-page";
 import { MinesGamePage } from "./mines-game-page/mines-game-page";
+import { FiatDepositModal } from "./modals/fiat-deposit-modal/fiat-deposit-modal";
 import { LiveSupportModal } from "./modals/live-support-intercom-modal/live-support-intercom-modal";
 import { LoginModal } from "./modals/login-modal/login-modal";
 import { NewRedirectModal } from "./modals/new-redirect-modal/new-redirect-modal";
@@ -235,6 +236,7 @@ export const ExternalPages = {
 };
 
 export const Modals = {
+	fiatDepositModal: FiatDepositModal,
 	tipUserModal: TipUserModal,
 	userProfileModal: UserProfileModal,
 	liveSupportModal: LiveSupportModal,

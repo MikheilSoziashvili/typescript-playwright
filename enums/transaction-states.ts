@@ -9,4 +9,6 @@ export enum TransactionState {
 	SEND_FAILED = "send_failed",
 	REVIEWING = "reviewing",
 	PENDING = "pending",
+	CLAIMED = "claimed",
+	INVALID_CODE = "invalid code",
 }

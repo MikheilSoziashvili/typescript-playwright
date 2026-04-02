@@ -49,4 +49,5 @@ export enum ApiEndpoints {
 	CASINO_GAMES_LIST = "/client-api/casino/games-list",
 	CASINO_GAMES_SEARCH = "/client-api/casino/games-search",
 	AML_TRIGGER_KYC_LEVEL = "/client-api/admin/aml/amlAdminTriggerUserKYCLevel",
+	GENERATE_GIFT_CARD = "/generateGiftCard",
 }

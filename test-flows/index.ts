@@ -106,3 +106,7 @@ export { CustomRewardKycTestFlow } from "./rewards/custom-reward-kyc-test-flow";
 export { PromoRewardHistoryTestFlow } from "./rewards/promo-reward-history-test-flow";
 export { TipRewardHistoryTestFlow } from "./rewards/tip-reward-history-test-flow";
 export { WeeklyMonthlyRewardTestFlow } from "./rewards/weekly-monthly-reward-test-flow";
+
+// Gift card flows
+export { GiftCardTransactionVerificationFlow } from "./gift-cards/gift-card-transaction-verification-test-flow";
+export { GiftCardTransactionScenarioFlow } from "./gift-cards/gift-card-transaction-scenario-test-flow";

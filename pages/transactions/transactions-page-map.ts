@@ -1,4 +1,5 @@
 import { BaseMap } from "@pages/base/base-map";
+import { TransactionState } from "@enums/transaction-states";
 import { Locator, Page } from "playwright";
 
 export class TransactionsMap extends BaseMap {
@@ -28,6 +29,19 @@ export class TransactionsMap extends BaseMap {
 				'[data-testid*="transactions-cell-"][data-testid$="_action"]',
 			)
 			.locator("button");
+	}
+
+	public depositTransactionRow(status: TransactionState): Locator {
+		return this.page
+			.locator('tr[data-testid^="deposit-transactions-row-"]')
+			.filter({ hasText: status });
+	}
+
+	public transactionDetailsButtonByStatus(status: TransactionState): Locator {
+		return this.depositTransactionRow(status).getByRole("button", {
+			name: "Details",
+			exact: true,
+		});
 	}
 
 	public get transactionStatus(): Locator {

@@ -76,6 +76,8 @@ import { TipRewardHistoryTestFlow } from "@test-flows/rewards/tip-reward-history
 import { WeeklyMonthlyRewardTestFlow } from "@test-flows/rewards/weekly-monthly-reward-test-flow";
 import { FeatureActivationV4TestFlow } from "@test-flows/feature-activation/feature-activation-v4-test-flow";
 import { WagerRequirementTestFlow } from "@test-flows/wager-requirement/wager-requirement-test-flow";
+import { GiftCardTransactionVerificationFlow } from "@test-flows/gift-cards/gift-card-transaction-verification-test-flow";
+import { GiftCardTransactionScenarioFlow } from "@test-flows/gift-cards/gift-card-transaction-scenario-test-flow";
 
 export type TestFlowsFixtures = {
 	plinkoBetTestFlow: PlinkoBetTestFlow;
@@ -124,6 +126,7 @@ export type TestFlowsFixtures = {
 	weeklyMonthlyRewardTestFlow: WeeklyMonthlyRewardTestFlow;
 	featureActivationV4TestFlow: FeatureActivationV4TestFlow;
 	wagerRequirementTestFlow: WagerRequirementTestFlow;
+	giftCardTransactionScenarioFlow: GiftCardTransactionScenarioFlow;
 };
 
 type RequiredTestFlowsFixtures = {
@@ -339,11 +342,17 @@ export const testFlowsFixtures = base.extend<
 			),
 		);
 	},
-
 	wagerRequirementTestFlow: async ({}, use) => {
 		await use(new WagerRequirementTestFlow());
 	},
-	
+	giftCardTransactionScenarioFlow: async ({ browserSessionManager }, use) => {
+		await use(
+			new GiftCardTransactionScenarioFlow(
+				browserSessionManager,
+				new GiftCardTransactionVerificationFlow(),
+			),
+		);
+	},
 	streamerWithdrawalReviewTestFlow: async (
 		{
 			browserSessionManager,

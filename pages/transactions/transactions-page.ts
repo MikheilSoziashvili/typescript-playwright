@@ -6,6 +6,7 @@ import { TransactionsSteps } from "./transactions-page-steps";
 import { TRANSACTIONS_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { BasePageNavigationParametersType } from "@core/types/types";
 import { waitUntil } from "@core/utils/utils";
+import { currencyToNumberPattern } from "@support/regex-patterns";
 import { step } from "decorators/step";
 import { TransactionState } from "@enums/transaction-states";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
@@ -46,6 +47,19 @@ export class TransactionsPage extends BasePage<TransactionsMap> {
 	@step("Click transaction details button")
 	public async clickTransactionDetailsButton(): Promise<void> {
 		await this.map.transactionDetailsButton.click();
+	}
+
+	@step("Click transaction details button for status")
+	public async clickTransactionDetailsButtonByStatus(
+		status: TransactionState,
+	): Promise<void> {
+		await this.map.transactionDetailsButtonByStatus(status).click();
+	}
+
+	@step("Get transaction fiat amount")
+	public async getTransactionFiatAmount(): Promise<string> {
+		const text = (await this.map.tipAmount.textContent()) ?? "";
+		return text.replace(currencyToNumberPattern, "");
 	}
 
 	@step("Get transaction status")

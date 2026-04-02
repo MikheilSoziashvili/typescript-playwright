@@ -1,3 +1,4 @@
+import { FiatDepositModal } from "@pages/modals/fiat-deposit-modal/fiat-deposit-modal";
 import { LiveSupportModal } from "@pages/modals/live-support-intercom-modal/live-support-intercom-modal";
 import { LoginModal } from "@pages/modals/login-modal/login-modal";
 import { PromoCodeModal } from "@pages/modals/promo-code-modal/promo-code-modal";
@@ -20,6 +21,7 @@ import { ChangePasswordModal } from "@pages/modals/change-password-modal/change-
 
 export type Modals = {
 	browserSessionManager: BrowserSessionManager;
+	fiatDepositModal: FiatDepositModal;
 	tipUserModal: TipUserModal;
 	userProfileModal: UserProfileModal;
 	liveSupportModal: LiveSupportModal;
@@ -42,6 +44,7 @@ export const modalsFixtures = base.extend<Modals>({
 		await use(manager);
 		await manager.cleanup();
 	},
+	fiatDepositModal: sessionAwarePage(FiatDepositModal),
 	tipUserModal: sessionAwarePage(TipUserModal),
 	userProfileModal: sessionAwarePage(UserProfileModal),
 	liveSupportModal: sessionAwarePage(LiveSupportModal),

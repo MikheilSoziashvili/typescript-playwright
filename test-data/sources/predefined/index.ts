@@ -301,4 +301,8 @@ export const predefined = {
 		dragTargetY: 500,
 		message: "Roll over the wager to withdraw funds",
 	},
+	giftCards: {
+		defaultValue: "10",
+		defaultQuantity: "1000",
+	},
 };
