@@ -1,0 +1,8 @@
+search_queries,search_input,action,result,expected_state
+empty field,,Enter,country list is closed,list_closed
+"Special characters (e.g. - )",-,,A list of countries whose names contain - . (e.g Timor - Liste),list_visible
+"Special characters (e.g. symbol(  ))","(",,A list of countries whose names are specified in (). (e.g Virgin Islands (British)),list_visible
+"Full country name (e.g Italy)",Italy,,The exact country name is displayed (Italy),list_visible
+"Partial country name (e.g. first 3 characters)",Ita,,A list of countries whose names contain the entered characters in the same order is displayed,list_visible
+"Full country name with a typo (e.g. Andora)",Andora,,The list is hidden and the search input field remains visible with the entered value.,list_empty
+"Special characters (e.g. ! ? ^ % $ # * /)","!?^%$#*/",,The list is hidden and the search input field remains visible with the entered value.,list_empty

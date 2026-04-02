@@ -1,3 +1,5 @@
+import { CountrySelectorState } from "@enums/country-selector-state";
+import { KeyboardKey } from "@enums/keyboard";
 import { BasePageStep } from "@pages/base/base-page-step";
 import { WalletModal } from "./wallet-modal";
 import { step } from "decorators/step";
@@ -159,6 +161,35 @@ export class WalletModalSteps extends BasePageStep<WalletModal> {
 	private async getVaultAmountMinusOne(): Promise<number> {
 		const rawAmountText = await this.gamdomPage.getVaultWalletAmount();
 		return parseFloat(rawAmountText) - 1;
+	}
+
+	@step("Search for country and verify result")
+	public async searchCountryAndVerify(
+		searchInput: string,
+		action: KeyboardKey | "",
+		expectedState: CountrySelectorState,
+	): Promise<void> {
+		if (searchInput) {
+			await this.gamdomPage.typeInCountrySearch(searchInput);
+		}
+		if (action) {
+			await this.gamdomPage.pressKeyInCountrySearch(action);
+		}
+
+		const assertByState: Record<CountrySelectorState, () => Promise<void>> = {
+			[CountrySelectorState.LIST_CLOSED]: () =>
+				this.gamdomPage.assertThat().countrySelectorDropdownIsClosed(),
+			[CountrySelectorState.LIST_EMPTY]: () =>
+				this.gamdomPage
+					.assertThat()
+					.countrySelectorListIsEmptyWithSearchInputVisible(searchInput),
+			[CountrySelectorState.LIST_VISIBLE]: () =>
+				this.gamdomPage
+					.assertThat()
+					.countrySelectorListShowsCountries(searchInput),
+		};
+
+		await assertByState[expectedState]();
 	}
 
 	@step("Open withdraw tab and verify crypto currency method presence")

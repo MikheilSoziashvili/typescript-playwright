@@ -10,6 +10,7 @@ import { step } from "decorators/step";
 import { Cryptocurrency, CryptoTicker } from "@enums/cryptocurrencies";
 import { expect } from "@playwright/test";
 import { CountryCodeISO3166 } from "@enums/country-codes-iso3166";
+import { KeyboardKey } from "@enums/keyboard";
 import { Toast } from "@pages/components/toast/toast";
 import { WithdrawalSpeed } from "@enums/withdrawal-speeds";
 import { TransactionType } from "@enums/transaction-types";
@@ -216,6 +217,21 @@ export class WalletModal extends BasePage<WalletModalMap> {
 	public async selectDepositNetwork(network: string): Promise<void> {
 		await this.map.networkDropdown.click();
 		await this.map.networkDropdownOption(network).click();
+	}
+
+	@step("Open country selector")
+	public async openCountrySelector(): Promise<void> {
+		await this.map.withdrawCountryDropdownOption.click();
+	}
+
+	@step("Type in country search field")
+	public async typeInCountrySearch(text: string): Promise<void> {
+		await this.map.countrySearchInput.pressSequentially(text);
+	}
+
+	@step("Press key in country search field")
+	public async pressKeyInCountrySearch(key: KeyboardKey): Promise<void> {
+		await this.map.countrySearchInput.press(key);
 	}
 
 	@step("Select withdraw country")

@@ -153,6 +153,20 @@ export class WalletModalMap extends BaseMap {
 		return this.page.getByTestId("country-selector-trigger-btn");
 	}
 
+	public get countrySearchInput(): Locator {
+		return this.page.getByTestId(
+			"wallet-left-panel-country-selector-desktop-desktop-select-search-input",
+		);
+	}
+
+	public get countryDropdownOptions(): Locator {
+		return this.page
+			.getByRole("dialog")
+			.locator(
+				'[data-testid^="wallet-left-panel-country-selector-desktop-option-"]',
+			);
+	}
+
 	public withdrawCountryDropdownOptions(optionValue: string): Locator {
 		return this.page.getByTestId(
 			`wallet-left-panel-country-selector-desktop-option-${optionValue}`,

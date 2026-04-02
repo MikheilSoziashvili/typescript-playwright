@@ -53,6 +53,7 @@ import { UserInfoSendNotificationCsv } from "@dtos/csv/user-info-send-notificati
 import { PhoneNumberValidationCsv } from "@dtos/csv/phone-number-validation-csv";
 import { EmailAddressValidationCsv } from "@dtos/csv/email-address-validation-csv";
 import { UsernameValidationCsv } from "@dtos/csv/username-validation-csv";
+import { WalletCountrySelectorSearchCsv } from "@dtos/csv/wallet-country-selector-search-csv";
 import { CsvFilesName } from "@enums/csv-file-name";
 
 export type CsvDtoMap = {
@@ -110,4 +111,5 @@ export type CsvDtoMap = {
 	[CsvFilesName.PHONE_NUMBER_VALIDATION]: PhoneNumberValidationCsv;
 	[CsvFilesName.EMAIL_ADDRESS_VALIDATION]: EmailAddressValidationCsv;
 	[CsvFilesName.USERNAME_VALIDATION]: UsernameValidationCsv;
+	[CsvFilesName.WALLET_COUNTRY_SELECTOR_SEARCH]: WalletCountrySelectorSearchCsv;
 };

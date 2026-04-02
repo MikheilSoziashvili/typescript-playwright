@@ -107,7 +107,9 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 		if (country === CountryCodeISO3166.TURKEY) {
 			await this.checkElementsAreVisible([
 				this.gamdomPage.map.bankPaymentMethod(BankPaymentMethod.HAVALE),
-				this.gamdomPage.map.bankPaymentMethod(BankPaymentMethod.HAVALE1),
+				this.gamdomPage.map.bankPaymentMethod(
+					BankPaymentMethod.HAVALE1,
+				),
 				this.gamdomPage.map.bankPaymentMethod(BankPaymentMethod.PAYIXI),
 				this.gamdomPage.map.bankPaymentMethod(BankPaymentMethod.PAPARA),
 			]);
@@ -193,8 +195,10 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 		expectedPresence: boolean,
 		type: TransactionType,
 	): Promise<void> {
-		const paymentMethodLocator =
-			this.gamdomPage.map.cryptoPaymentMethod(type, cryptoCurrency);
+		const paymentMethodLocator = this.gamdomPage.map.cryptoPaymentMethod(
+			type,
+			cryptoCurrency,
+		);
 
 		if (expectedPresence) {
 			await this.checkElementsAreVisible(
@@ -217,6 +221,55 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 		expect(actualFeeInUsd).toBe(expectedFeeInUsd);
 	}
 
+	@step("Country selector dropdown is open")
+	public async countrySelectorDropdownIsOpen(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.countrySearchInput,
+		]);
+	}
+
+	@step("Country selector dropdown is closed")
+	public async countrySelectorDropdownIsClosed(): Promise<void> {
+		await this.checkElementsAreNotVisible([
+			this.gamdomPage.map.countrySearchInput,
+		]);
+	}
+
+	@step("Country selector list shows matching countries")
+	public async countrySelectorListShowsCountries(
+		searchInput: string,
+	): Promise<void> {
+		await expect(
+			this.gamdomPage.map.countryDropdownOptions,
+			`Country dropdown should show at least one result for "${searchInput}"`,
+		).not.toHaveCount(0);
+		await expect(
+			this.gamdomPage.map.countryDropdownOptions.filter({
+				hasNotText: searchInput,
+			}),
+			`All visible country options should contain "${searchInput}"`,
+		).toHaveCount(0);
+	}
+
+	@step("Country selector list is empty and search input remains visible")
+	public async countrySelectorListIsEmptyWithSearchInputVisible(
+		searchValue: string,
+	): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.countrySearchInput,
+		]);
+		await this.checkElementsHaveValue([
+			{
+				locator: this.gamdomPage.map.countrySearchInput,
+				expectedValue: searchValue,
+			},
+		]);
+		await expect(
+			this.gamdomPage.map.countryDropdownOptions,
+			`Country dropdown should show no results for "${searchValue}"`,
+		).toHaveCount(0);
+	}
+
 	@step("Verify deposit tab is not visible for banned user")
 	public async depositTabIsNotVisible(): Promise<void> {
 		await this.checkElementsAreNotVisible([
@@ -232,7 +285,7 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 		]);
 	}
 
-		@step("Verify only Withdraw and Vault tabs are visible")
+	@step("Verify only Withdraw and Vault tabs are visible")
 	public async onlyWithdrawAndVaultTabsAreVisible(): Promise<void> {
 		await this.checkElementsAreVisible([
 			this.gamdomPage.map.withdrawTabButton,
