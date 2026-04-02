@@ -34,4 +34,22 @@ export class HelpPageAsserter extends BaseAsserter<HelpPage> {
 			await this.gamdomPage.map.helpPageContent.innerText();
 		expect(actualTermsOfServiceContainerText).not.toContain(expectedText);
 	}
+
+	@step("Verify provably fair link by game name")
+	public async verifyProvablyFairLinkByGameName(
+		gameName: string,
+	): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.provablyFairLinkByGameName(gameName),
+		]);
+	}
+
+	@step("Verify sample code section by game name is visible")
+	public async verifySampleCodeSectionByGameNameIsVisible(
+		gameName: string,
+	): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.sampleCodeSectionByGameName(gameName),
+		]);
+	}
 }

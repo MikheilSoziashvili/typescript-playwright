@@ -31,4 +31,20 @@ export class HelpPageMap extends BaseMap {
 			`${placeholderText}-tab`,
 		);
 	}
+
+	public get howToVerifySection(): Locator {
+		return this.helpPageContent.locator(
+			`//h2[normalize-space()="How to verify"]`,
+		);
+	}
+
+	public sampleCodeSectionByGameName(gameName: string): Locator {
+		return this.howToVerifySection.locator(
+			`xpath=./following-sibling::div[contains(., "${gameName}")]`,
+		);
+	}
+
+	public provablyFairLinkByGameName(gameName: string): Locator {
+		return this.sampleCodeSectionByGameName(gameName).locator(`a`);
+	}
 }

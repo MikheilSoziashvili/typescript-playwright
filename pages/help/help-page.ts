@@ -29,4 +29,9 @@ export class HelpPage extends BasePage<HelpPageMap> {
 			endpoint: { paths: [helpPageEndpoint] },
 		});
 	}
+
+	@step("Go to provably fair page per game")
+	public async goToProvablyFairPagePerGame(gameName: string): Promise<void> {
+		await this.map.provablyFairLinkByGameName(gameName).click();
+	}
 }

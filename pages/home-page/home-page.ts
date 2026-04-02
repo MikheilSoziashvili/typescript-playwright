@@ -135,6 +135,11 @@ export class HomePage extends BasePage<HomePageMap> {
 		await this.map.walletButton.hover();
 	}
 
+	@step("Hover on originals nav button")
+	public async hoverOnOriginalsNavButton(): Promise<void> {
+		await this.map.originalsNavButton.hover();
+	}
+
 	@step("Click carousel active slide")
 	public async clickCarouselActiveSlide(): Promise<void> {
 		await this.map.bannerCarouselActiveSlide.click();

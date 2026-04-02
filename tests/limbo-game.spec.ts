@@ -1,8 +1,17 @@
+import { CODESANDBOX_DOMAIN } from "@constants/domains";
+import {
+	HELP_FAIR_PAGE_ENDPOINT,
+	LIMBO_GAME_PAGE_ENDPOINT,
+} from "@constants/page-endpoints";
 import { testDetails } from "@core/helpers/test-details-helper";
 import { LimboBetTestData } from "@dtos/test-data";
 import { CsvFilesName } from "@enums/csv-file-name";
+import { FooterLinkPlaceholder } from "@enums/footer-link-placeholders";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
+import { LimboOgMeta } from "@enums/limbo/limbo-og-meta";
+import { OriginalGame } from "@enums/original-games";
+import { OgProperties } from "@enums/playwright/htmlOgProperties";
 import { TestTag } from "@enums/test-tags";
 import { TestUserRole } from "@enums/test-user-roles";
 import { test } from "@fixtures/fixtures";
@@ -80,3 +89,61 @@ test.describe(
 			});
 	},
 );
+
+test.describe("Limbo footer, meta info and provably fair tests", () => {
+	test(
+		"[ENG-12028] Verify 'Limbo' redirection from Footer section redirects to game page",
+		testDetails()
+			.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.LIMBO)
+			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+			.apply(),
+		async ({ homePage, footer }) => {
+			await homePage.navigate();
+			await footer.openFooterLinkByPlaceholder(OriginalGame.Limbo);
+			await footer
+				.assertThat()
+				.waitForAndVerifyCurrentUrlIs(LIMBO_GAME_PAGE_ENDPOINT, false);
+		},
+	);
+
+	test(
+		"[ENG-12028] Verify 'Limbo' meta info",
+		testDetails()
+			.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.LIMBO)
+			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+			.apply(),
+		async ({ limboGamePage }) => {
+			await limboGamePage.navigate();
+			await limboGamePage
+				.assertThat()
+				.verifyOgPropertiesValues(
+					[OgProperties.OG_TITLE, OgProperties.OG_DESCRIPTION],
+					[LimboOgMeta.OG_TITLE, LimboOgMeta.OG_DESCRIPTION],
+				);
+		},
+	);
+
+	test(
+		"[ENG-12028] Verify 'Provably Fair' redirection from Footer section redirects",
+		testDetails()
+			.withTags(JiraComponent.GAMDOM_ORIGINALS, JiraComponent.LIMBO)
+			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+			.apply(),
+		async ({ homePage, footer, helpPage, limboGamePage }) => {
+			await homePage.navigate();
+			await footer.openFooterLinkByPlaceholder(
+				FooterLinkPlaceholder.PROVABLY_FAIR,
+			);
+			await footer
+				.assertThat()
+				.waitForAndVerifyCurrentUrlIs(HELP_FAIR_PAGE_ENDPOINT, false);
+			await helpPage
+				.assertThat()
+				.verifySampleCodeSectionByGameNameIsVisible(OriginalGame.Limbo);
+			await helpPage.goToProvablyFairPagePerGame(OriginalGame.Limbo);
+			await limboGamePage
+				.assertThat()
+				.verifyNewTabUrlParts([CODESANDBOX_DOMAIN]);
+		},
+	);
+});

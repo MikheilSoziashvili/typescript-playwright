@@ -183,6 +183,17 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		);
 	}
 
+	@step("Originals game in subnav visual correct")
+	public async originalsGameInSubnavVisualCorrect(
+		game: string,
+		testInfo: TestInfo,
+	): Promise<void> {
+		await this.checkElementVisualCorrect(
+			testInfo,
+			this.gamdomPage.map.originalsGameFromSubNav(game),
+		);
+	}
+
 	@step("Verify koth currency is centered")
 	public async verifyKothCurrencyIsCentered(): Promise<void> {
 		const currencyContainer =

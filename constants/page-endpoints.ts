@@ -56,3 +56,4 @@ export const SPORTS_BLOG_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/SportsBlogAdmin
 export const LIMBO_GAME_PAGE_ENDPOINT = "/limbo";
 export const BLACKJACK_GAME_PAGE_ENDPOINT = "/blackjack";
 export const ERROR_404_PAGE_ENDPOINT = "/404";
+export const HELP_FAIR_PAGE_ENDPOINT = "/help/fair";
