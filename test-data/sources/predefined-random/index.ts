@@ -33,4 +33,10 @@ export const predefinedRandom = {
 			length: 3,
 		}),
 	},
+	rewardPromoCampaigns: {
+		cashCampaignName: generateRandomString({ length: 5 }),
+		cashCampaignCode: generateRandomString({ length: 7 }),
+		freeSpinsCampaignName: generateRandomString({ length: 5 }),
+		freeSpinsCampaignCode: generateRandomString({ length: 7 }),
+	},
 };

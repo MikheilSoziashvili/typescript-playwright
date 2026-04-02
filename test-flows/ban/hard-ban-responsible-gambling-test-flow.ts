@@ -133,7 +133,6 @@ export class HardBanResponsibleGamblingTestFlow extends BaseTestFlow {
 		await waitUntil(
 			async () => {
 				try {
-					await regularUser.page.reload();
 					await regularUser.pages.homePage
 						.assertThat()
 						.isTopHardBannedBannerDisplayed();

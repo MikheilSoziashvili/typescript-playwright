@@ -1,3 +1,4 @@
+import { CustomRewardType } from "@enums/admin/custom-reward-type";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { RoyaltyUpLevelRanksCsvParsedRecord } from "test-data/parsers/royalty-up-level-ranks-csv-parser";
 import { testData } from "test-data/test-data-manager";
@@ -13,4 +14,15 @@ export class RewardsDomainData {
 			file: CsvFilesName.ROYALTY_UP_LEVEL_RANKS,
 		});
 	}
+
+	public readonly tipTypes = [
+		{
+			tipType: "giveaway",
+			rewardType: CustomRewardType.GIVEAWAY,
+		},
+		{
+			tipType: "deposit bonus",
+			rewardType: CustomRewardType.DEPOSIT_BONUS,
+		},
+	];
 }

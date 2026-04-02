@@ -67,6 +67,12 @@ import { EvRewardsBulkRewardSetupTestFlow } from "@test-flows/rewards/ev-rewards
 import { EvRewardsClaimRewardVerificationTestFlow } from "@test-flows/rewards/ev-rewards-claim-reward-verification-test-flow";
 import { KothPointsCalculationTestFlow } from "@test-flows/koth/koth-points-calculation-test-flow";
 import { OriginalsBetPlacementTestFlow } from "@test-flows/originals/originals-bet-placement-test-flow";
+import { CustomRewardHappyPathTestFlow } from "@test-flows/rewards/custom-reward-happy-path-test-flow";
+import { CustomRewardCancelTestFlow } from "@test-flows/rewards/custom-reward-cancel-test-flow";
+import { CustomRewardKycTestFlow } from "@test-flows/rewards/custom-reward-kyc-test-flow";
+import { PromoRewardHistoryTestFlow } from "@test-flows/rewards/promo-reward-history-test-flow";
+import { TipRewardHistoryTestFlow } from "@test-flows/rewards/tip-reward-history-test-flow";
+import { WeeklyMonthlyRewardTestFlow } from "@test-flows/rewards/weekly-monthly-reward-test-flow";
 
 export type TestFlowsFixtures = {
 	plinkoBetTestFlow: PlinkoBetTestFlow;
@@ -106,6 +112,12 @@ export type TestFlowsFixtures = {
 	casinoGameRakebackTestFlow: CasinoGameRakebackTestFlow;
 	originalsBetPlacementTestFlow: OriginalsBetPlacementTestFlow;
 	kothPointsCalculationTestFlow: KothPointsCalculationTestFlow;
+	customRewardHappyPathTestFlow: CustomRewardHappyPathTestFlow;
+	customRewardCancelTestFlow: CustomRewardCancelTestFlow;
+	customRewardKycTestFlow: CustomRewardKycTestFlow;
+	promoRewardHistoryTestFlow: PromoRewardHistoryTestFlow;
+	tipRewardHistoryTestFlow: TipRewardHistoryTestFlow;
+	weeklyMonthlyRewardTestFlow: WeeklyMonthlyRewardTestFlow;
 };
 
 type RequiredTestFlowsFixtures = {
@@ -365,5 +377,23 @@ export const testFlowsFixtures = base.extend<
 				originalsBetFlow,
 			),
 		);
+	},
+	customRewardHappyPathTestFlow: async ({}, use) => {
+		await use(new CustomRewardHappyPathTestFlow());
+	},
+	customRewardCancelTestFlow: async ({}, use) => {
+		await use(new CustomRewardCancelTestFlow());
+	},
+	customRewardKycTestFlow: async ({}, use) => {
+		await use(new CustomRewardKycTestFlow());
+	},
+	promoRewardHistoryTestFlow: async ({}, use) => {
+		await use(new PromoRewardHistoryTestFlow());
+	},
+	tipRewardHistoryTestFlow: async ({}, use) => {
+		await use(new TipRewardHistoryTestFlow());
+	},
+	weeklyMonthlyRewardTestFlow: async ({}, use) => {
+		await use(new WeeklyMonthlyRewardTestFlow());
 	},
 });

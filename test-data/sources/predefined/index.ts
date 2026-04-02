@@ -272,4 +272,30 @@ export const predefined = {
 	casinoGames: {
 		betCount: 1,
 	},
+	customRewards: {
+		initialAmount: "$0.00",
+		amount: "$1.00",
+		amountCoins: 1,
+	},
+	royaltyUpRewards: {
+		royaltyUpAmount: "$5.00",
+		instantRewardAmount: "$5.00",
+		userBeXpBronze3: 15000000,
+		betAmount: 5000,
+		autoCashoutMultiplier: 2,
+	},
+	tipRewards: {
+		tipAmount: 1,
+		amount: "$1.00",
+	},
+	weeklyMonthlyRewards: {
+		weeklyRewardCoins: 1500,
+		weeklyAmount: "$1.00",
+		monthlyRewardCoins: 1500,
+		monthlyAmount: "$1.00",
+	},
+	promoCampaigns: {
+		promoAmount: "$100.00",
+		freeSpinsValue: "10×$0.10",
+	},
 };

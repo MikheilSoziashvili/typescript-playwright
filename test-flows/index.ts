@@ -91,3 +91,11 @@ export { EvRewardsBulkRewardScenarioTestFlow } from "./rewards/ev-rewards-bulk-r
 export { InstantRakebackRewardTestFlow } from "./rewards/instant-rakeback-reward-test-flow";
 export { CasinoGameHouseEdgeTestFlow } from "./rewards/casino-game-house-edge-test-flow";
 export { CasinoGameRakebackTestFlow } from "./rewards/casino-game-rakeback-test-flow";
+
+// Custom reward history flows
+export { CustomRewardHappyPathTestFlow } from "./rewards/custom-reward-happy-path-test-flow";
+export { CustomRewardCancelTestFlow } from "./rewards/custom-reward-cancel-test-flow";
+export { CustomRewardKycTestFlow } from "./rewards/custom-reward-kyc-test-flow";
+export { PromoRewardHistoryTestFlow } from "./rewards/promo-reward-history-test-flow";
+export { TipRewardHistoryTestFlow } from "./rewards/tip-reward-history-test-flow";
+export { WeeklyMonthlyRewardTestFlow } from "./rewards/weekly-monthly-reward-test-flow";

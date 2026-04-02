@@ -814,7 +814,9 @@ export class GamdomApi extends BaseApi {
 			}
 		}
 
-		const payload: ChangeRankRewardConfigsRequest = { rankIdToRewardConfigs };
+		const payload: ChangeRankRewardConfigsRequest = {
+			rankIdToRewardConfigs,
+		};
 		const parameters = this.buildParameters(
 			ApiEndpoints.CHANGE_RANK_REWARD_CONFIGS,
 			payload,

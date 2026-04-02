@@ -1,15 +1,7 @@
 import { BrowserUserSession } from "@core/browser-session-mngmt";
 import { AuthenticatedUser } from "@core/facades/gamdom-api-db/interfaces";
-import { buildTipUserSubTitle } from "@core/helpers/asserter-helpers/text-asserters";
 import { testDetails } from "@core/helpers/test-details-helper";
-import {
-	createPngImagePath,
-	deleteFilesWithFilePaths,
-	generateRandomString,
-	getCookieHeader,
-	setAuthenticationCookies,
-} from "@core/utils/utils";
-import { BulkRewardTestData, RegisterTestData } from "@dtos/test-data";
+import { setAuthenticationCookies } from "@core/utils/utils";
 import { CustomRewardType } from "@enums/admin/custom-reward-type";
 import { RewardStatus } from "@enums/admin/reward-status";
 import { RewardType } from "@enums/admin/reward-type";
@@ -17,23 +9,13 @@ import { RewardButton } from "@enums/admin/rewards";
 import { RewardsSource } from "@enums/admin/rewards-source";
 import { UserInfoTabs } from "@enums/admin/user-info-tabs";
 import { EvRewardTypes } from "@enums/ev-reward-types";
-import { UserClasses } from "@enums/db/user-classes";
-import { UserTags } from "@enums/db/user-tags";
 import { JiraComponent } from "@enums/jira/jira-components";
 import { JiraUser } from "@enums/jira/jira-users";
-import { NotificationSubTitle } from "@enums/notification-subtitles";
-import { NotificationTitle } from "@enums/notification-titles";
 import { TestUserRole } from "@enums/test-user-roles";
-import { storageStateNewSuperAdminUserDB } from "@fixtures/auth-fixtures";
 import { test } from "@fixtures/fixtures";
-import { HomePage } from "@pages/home-page/home-page";
-import { WalletModal } from "@pages/modals/wallet/wallet-modal";
-import { RewardsPage } from "@pages/rewards/rewards-page";
-import { VerificationPage } from "@pages/verification/verification-page";
-import { getISOWeek, getMonth, getYear } from "date-fns";
-import { testData } from "test-data/test-data-manager";
-import { CsvFilesName } from "@enums/csv-file-name";
 import { TestTag } from "@enums/test-tags";
+import { CsvFilesName } from "@enums/csv-file-name";
+import { testData } from "test-data/test-data-manager";
 
 test.describe(
 	"User info - Rewards History - Custom rewards",
@@ -41,725 +23,252 @@ test.describe(
 		.withTags(JiraComponent.REWARDS, JiraComponent.ADMIN_PANEL)
 		.apply(),
 	() => {
-		const initialAmount = "$0.00";
-		const amount = "$1.00";
-
-		test.use(storageStateNewSuperAdminUserDB());
-
 		test(
 			`[ENG-7179] Custom rewards - reload`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
+			testDetails()
+				.withAuthor(JiraUser.NIKOLAY_GENOV)
+				.withTags(TestTag.ACCEPTANCE)
+				.apply(),
 			async ({
-				gamdomApi,
-				gamdomDb,
-				browser,
-				userInfoAdminPage,
-				userInfoRewardsAdminPage,
-				userInfoRewardsHistoryAdminPage,
-				testDataObject,
+				browserSessionManager,
+				customRewardHappyPathTestFlow,
+				testDataPredefined,
 			}) => {
-				const newUserData = testDataObject.register.random();
-				await gamdomDb.createNewUser(newUserData);
-				const userCookie = await gamdomApi.authenticateWithExistingUser(
-					newUserData.username,
-					newUserData.password,
+				const customRewardsData = testDataPredefined.data.customRewards;
+
+				const adminSession = await browserSessionManager.loginAs(
+					TestUserRole.SUPERADMIN,
+					{ reuseContext: true },
 				);
-
-				// Create a new browser context for the user
-				const userContext = await browser.newContext();
-				const userPage = await userContext.newPage();
-				await setAuthenticationCookies(userPage, userCookie);
-				const userHomePage = new HomePage(userPage);
-				await userHomePage.navigate();
-
-				await userInfoAdminPage
-					.steps()
-					.navigateAndShowUserDetails(newUserData.username);
-
-				await userInfoAdminPage.clickUserInfoTab(UserInfoTabs.Rewards);
-
-				await userInfoRewardsAdminPage
-					.assertThat()
-					.newCustomRewardButtonVisible();
-
-				// Set custom reward for reload
-				await userInfoRewardsAdminPage
-					.steps()
-					.setCustomReward(CustomRewardType.RELOAD);
-
-				await userInfoRewardsAdminPage
-					.assertThat()
-					.rewardVisibleInSection(
-						RewardStatus.PENDING,
-						CustomRewardType.RELOAD,
-						amount,
-					);
-
-				await userInfoAdminPage.clickUserInfoTab(
-					UserInfoTabs.RewardHistory,
+				const userSession = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
 				);
+				const targetUsername =
+					userSession.getAuthenticatedUser().user.username;
 
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardsHistoryTableVisible();
+				await userSession.pages.homePage.navigate();
 
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardHistoryTableColumnsAreVisible();
-
-				// Assert that the reward is visible in the history
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardStatusIs(
-						RewardsSource.REWARDS,
-						CustomRewardType.RELOAD,
-						initialAmount,
-						RewardStatus.PENDING,
-					);
-
-				const rewardsPage = new RewardsPage(userPage);
-				await rewardsPage.navigate();
-
-				// Assert that the reward is visible and can be activated
-				await rewardsPage
-					.assertThat()
-					.rewardIsVisibleAndCanBeActivated(
-						CustomRewardType.RELOADS,
-						RewardButton.ACTIVATE,
-					);
-
-				// Activate the reward
-				await rewardsPage.clickOnRewardButton(
-					CustomRewardType.RELOAD,
-					RewardButton.ACTIVATE,
-				);
-
-				await rewardsPage
-					.assertThat()
-					.rewardCanBeClaimed(
-						CustomRewardType.RELOAD,
-						RewardButton.CLAIM,
-						amount,
-					);
-
-				await userInfoRewardsHistoryAdminPage.refresh();
-
-				// Assert that the reward status is active after activation
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardStatusIs(
-						RewardsSource.REWARDS,
-						CustomRewardType.RELOAD,
-						initialAmount,
-						RewardStatus.ACTIVE,
-					);
-
-				// Claim the reward
-				await rewardsPage.clickOnRewardButton(
-					CustomRewardType.RELOAD,
-					RewardButton.CLAIM,
-				);
-				await rewardsPage
-					.assertThat()
-					.rewardIsClaimedAndActive(
-						CustomRewardType.RELOAD,
-						RewardButton.AVAILABLE_IN,
-					);
-
-				await userInfoRewardsHistoryAdminPage.refresh();
-
-				// Assert that the reward status is Active after claiming
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardStatusIs(
-						RewardsSource.REWARDS,
-						CustomRewardType.RELOAD,
-						amount,
-						RewardStatus.ACTIVE,
-					);
-
-				await userInfoAdminPage.clickUserInfoTab(UserInfoTabs.Rewards);
-
-				// Revoke the reward
-				await userInfoRewardsAdminPage
-					.steps()
-					.clickRevokeRewardButton(
-						RewardStatus.ACTIVE,
-						CustomRewardType.RELOAD,
-					);
-
-				await userInfoAdminPage.clickUserInfoTab(
-					UserInfoTabs.RewardHistory,
-				);
-
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardsHistoryTableVisible();
-
-				// Assert that the reward status is Canceled after revoking
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardStatusIs(
-						RewardsSource.REWARDS,
-						CustomRewardType.RELOAD,
-						amount,
-						RewardStatus.CANCELED,
-					);
-
-				await userContext.close();
+				await customRewardHappyPathTestFlow.executeReloadLifecycle({
+					adminSession: adminSession,
+					userSession: userSession,
+					targetUsername: targetUsername,
+					rewardType: CustomRewardType.RELOAD,
+					rewardLabel: CustomRewardType.RELOAD,
+					amount: customRewardsData.amount,
+					initialAmount: customRewardsData.initialAmount,
+				});
 			},
 		);
 
 		test(
 			`[ENG-7179] Custom rewards - vip`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
+			testDetails()
+				.withAuthor(JiraUser.NIKOLAY_GENOV)
+				.withTags(TestTag.ACCEPTANCE)
+				.apply(),
 			async ({
-				gamdomApi,
-				gamdomDb,
-				browser,
-				userInfoAdminPage,
-				userInfoRewardsAdminPage,
-				userInfoRewardsHistoryAdminPage,
-				testDataObject,
+				browserSessionManager,
+				customRewardHappyPathTestFlow,
+				testDataPredefined,
 			}) => {
-				const newUserData = testDataObject.register.random();
-				await gamdomDb.createNewUser(newUserData);
-				const userCookie = await gamdomApi.authenticateWithExistingUser(
-					newUserData.username,
-					newUserData.password,
+				const customRewardsData = testDataPredefined.data.customRewards;
+
+				const adminSession = await browserSessionManager.loginAs(
+					TestUserRole.SUPERADMIN,
+					{ reuseContext: true },
 				);
-
-				// Create a new browser context for the user
-				const userContext = await browser.newContext();
-				const userPage = await userContext.newPage();
-				await setAuthenticationCookies(userPage, userCookie);
-				const userHomePage = new HomePage(userPage);
-				await userHomePage.navigate();
-
-				await userInfoAdminPage
-					.steps()
-					.navigateAndShowUserDetails(newUserData.username);
-
-				await userInfoAdminPage.clickUserInfoTab(UserInfoTabs.Rewards);
-
-				await userInfoRewardsAdminPage
-					.assertThat()
-					.newCustomRewardButtonVisible();
-
-				// Set custom reward for VIP
-				await userInfoRewardsAdminPage
-					.steps()
-					.setCustomReward(CustomRewardType.VIP);
-
-				await userInfoRewardsAdminPage
-					.assertThat()
-					.rewardVisibleInSection(
-						RewardStatus.PENDING,
-						CustomRewardType.VIP,
-						amount,
-					);
-
-				await userInfoAdminPage.clickUserInfoTab(
-					UserInfoTabs.RewardHistory,
+				const userSession = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
 				);
+				const targetUsername =
+					userSession.getAuthenticatedUser().user.username;
 
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardsHistoryTableVisible();
+				await userSession.pages.homePage.navigate();
 
-				// Assert that the reward is visible in the history
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardStatusIs(
-						RewardsSource.REWARDS,
-						CustomRewardType.VIP,
-						amount,
-						RewardStatus.PENDING,
-					);
-
-				const rewardsPage = new RewardsPage(userPage);
-				await rewardsPage.navigate();
-
-				// Assert that the reward is visible and can be activated
-				await rewardsPage
-					.assertThat()
-					.rewardCanBeClaimed(
-						CustomRewardType.VIP,
-						RewardButton.CLAIM,
-						amount,
-					);
-
-				// Claim the reward
-				await rewardsPage.clickOnRewardButton(
-					CustomRewardType.VIP,
-					RewardButton.CLAIM,
-				);
-
-				await userInfoRewardsHistoryAdminPage.refresh();
-
-				// Assert that the reward status is Claimed after claiming
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardStatusIs(
-						RewardsSource.REWARDS,
-						CustomRewardType.VIP,
-						amount,
-						RewardStatus.CLAIMED,
-					);
-
-				await userContext.close();
+				await customRewardHappyPathTestFlow.executeVipLifecycle({
+					adminSession: adminSession,
+					userSession: userSession,
+					targetUsername: targetUsername,
+					rewardType: CustomRewardType.VIP,
+					rewardLabel: CustomRewardType.VIP,
+					amount: customRewardsData.amount,
+				});
 			},
 		);
 
 		test(
 			`[ENG-7179] Custom rewards - vip - cancel`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
+			testDetails()
+				.withAuthor(JiraUser.NIKOLAY_GENOV)
+				.withTags(TestTag.ACCEPTANCE)
+				.apply(),
 			async ({
-				gamdomDb,
-				userInfoAdminPage,
-				userInfoRewardsAdminPage,
-				userInfoRewardsHistoryAdminPage,
-				testDataObject,
+				browserSessionManager,
+				customRewardCancelTestFlow,
+				testDataPredefined,
 			}) => {
-				const newUserData = testDataObject.register.random();
-				await gamdomDb.createNewUser(newUserData);
+				const customRewardsData = testDataPredefined.data.customRewards;
 
-				await userInfoAdminPage
-					.steps()
-					.navigateAndShowUserDetails(newUserData.username);
-
-				await userInfoAdminPage.clickUserInfoTab(UserInfoTabs.Rewards);
-
-				await userInfoRewardsAdminPage
-					.assertThat()
-					.newCustomRewardButtonVisible();
-
-				// Set custom reward for VIP
-				await userInfoRewardsAdminPage
-					.steps()
-					.setCustomReward(CustomRewardType.VIP);
-
-				// Assert that the reward is visible in the section
-				await userInfoRewardsAdminPage
-					.assertThat()
-					.rewardVisibleInSection(
-						RewardStatus.PENDING,
-						CustomRewardType.VIP,
-						amount,
-					);
-
-				// Revoke the reward
-				await userInfoRewardsAdminPage
-					.steps()
-					.clickRevokeRewardButton(
-						RewardStatus.PENDING,
-						CustomRewardType.VIP,
-					);
-
-				await userInfoAdminPage.clickUserInfoTab(
-					UserInfoTabs.RewardHistory,
+				const adminSession = await browserSessionManager.loginAs(
+					TestUserRole.SUPERADMIN,
+					{ reuseContext: true },
 				);
+				const userSession = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
+				);
+				const targetUsername =
+					userSession.getAuthenticatedUser().user.username;
 
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardsHistoryTableVisible();
-
-				// Assert that the reward status is Canceled after revoking
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardStatusIs(
-						RewardsSource.REWARDS,
-						CustomRewardType.VIP,
-						amount,
-						RewardStatus.CANCELED,
-					);
+				await customRewardCancelTestFlow.executeCancel({
+					adminSession: adminSession,
+					targetUsername: targetUsername,
+					rewardType: CustomRewardType.VIP,
+					rewardLabel: CustomRewardType.VIP,
+					amount: customRewardsData.amount,
+					initialStatus: RewardStatus.PENDING,
+				});
 			},
 		);
 
 		test(
 			`[ENG-7179] Custom rewards - xp challenge`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
+			testDetails()
+				.withAuthor(JiraUser.NIKOLAY_GENOV)
+				.withTags(TestTag.ACCEPTANCE)
+				.apply(),
 			async ({
-				gamdomApi,
-				gamdomDb,
-				browser,
-				userInfoAdminPage,
-				userInfoRewardsAdminPage,
-				userInfoRewardsHistoryAdminPage,
-				testDataObject,
+				browserSessionManager,
+				customRewardHappyPathTestFlow,
+				testDataPredefined,
 			}) => {
-				const newUserData = testDataObject.register.random();
-				await gamdomDb.createNewUser(newUserData);
-				const userCookie = await gamdomApi.authenticateWithExistingUser(
-					newUserData.username,
-					newUserData.password,
+				const customRewardsData = testDataPredefined.data.customRewards;
+
+				const adminSession = await browserSessionManager.loginAs(
+					TestUserRole.SUPERADMIN,
+					{ reuseContext: true },
 				);
-
-				// Create a new browser context for the user
-				const userContext = await browser.newContext();
-				const userPage = await userContext.newPage();
-				await setAuthenticationCookies(userPage, userCookie);
-				const userHomePage = new HomePage(userPage);
-				await userHomePage.navigate();
-
-				await userInfoAdminPage
-					.steps()
-					.navigateAndShowUserDetails(newUserData.username);
-
-				await userInfoAdminPage.clickUserInfoTab(UserInfoTabs.Rewards);
-
-				await userInfoRewardsAdminPage
-					.assertThat()
-					.newCustomRewardButtonVisible();
-
-				// Set custom reward for XP Challenge
-				await userInfoRewardsAdminPage
-					.steps()
-					.setCustomReward(CustomRewardType.XP_CHALLENGE, 0);
-
-				await userInfoRewardsAdminPage
-					.assertThat()
-					.rewardVisibleInSection(
-						RewardStatus.PENDING,
-						CustomRewardType.XP_CHALLENGE_LABEL,
-						amount,
-					);
-
-				await userInfoAdminPage.clickUserInfoTab(
-					UserInfoTabs.RewardHistory,
+				const userSession = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
 				);
+				const targetUsername =
+					userSession.getAuthenticatedUser().user.username;
 
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardsHistoryTableVisible();
+				await userSession.pages.homePage.navigate();
 
-				// Assert that the reward is visible in the history
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardStatusIs(
-						RewardsSource.REWARDS,
-						CustomRewardType.XP_CHALLENGE_LABEL,
-						amount,
-						RewardStatus.PENDING,
-					);
-
-				const rewardsPage = new RewardsPage(userPage);
-				await rewardsPage.navigate();
-
-				// Assert that the reward is visible and can be activated
-				await rewardsPage
-					.assertThat()
-					.rewardIsVisibleAndCanBeActivated(
-						CustomRewardType.XP_CHALLENGE_LABEL,
-						RewardButton.ACTIVATE,
-					);
-
-				// Activate the reward
-				await rewardsPage.clickOnRewardButton(
-					CustomRewardType.XP_CHALLENGE_LABEL,
-					RewardButton.ACTIVATE,
+				await customRewardHappyPathTestFlow.executeXpChallengeLifecycle(
+					{
+						adminSession: adminSession,
+						userSession: userSession,
+						targetUsername: targetUsername,
+						rewardType: CustomRewardType.XP_CHALLENGE,
+						rewardLabel: CustomRewardType.XP_CHALLENGE_LABEL,
+						amount: customRewardsData.amount,
+						evRequired: 0,
+					},
 				);
-
-				// Assert that the reward can be claimed
-				await rewardsPage
-					.assertThat()
-					.rewardCanBeClaimed(
-						CustomRewardType.XP_CHALLENGE_LABEL,
-						RewardButton.CLAIM,
-						amount,
-					);
-
-				await userInfoRewardsHistoryAdminPage.refresh();
-
-				// Assert that the reward status is Active after activation
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardStatusIs(
-						RewardsSource.REWARDS,
-						CustomRewardType.XP_CHALLENGE_LABEL,
-						amount,
-						RewardStatus.ACTIVE,
-					);
-
-				// Claim the reward
-				await rewardsPage.clickOnRewardButton(
-					CustomRewardType.XP_CHALLENGE_LABEL,
-					RewardButton.CLAIM,
-				);
-
-				await userInfoRewardsHistoryAdminPage.refresh();
-
-				// Assert that the reward status is Claimed after claiming
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardStatusIs(
-						RewardsSource.REWARDS,
-						CustomRewardType.XP_CHALLENGE_LABEL,
-						amount,
-						RewardStatus.CLAIMED,
-					);
-
-				await userContext.close();
 			},
 		);
 
 		test(
 			`[ENG-7179] Custom rewards - xp challenge - cancel`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
+			testDetails()
+				.withAuthor(JiraUser.NIKOLAY_GENOV)
+				.withTags(TestTag.ACCEPTANCE)
+				.apply(),
 			async ({
-				gamdomDb,
-				userInfoAdminPage,
-				userInfoRewardsAdminPage,
-				userInfoRewardsHistoryAdminPage,
-				testDataObject,
+				browserSessionManager,
+				customRewardCancelTestFlow,
+				testDataPredefined,
 			}) => {
-				const newUserData = testDataObject.register.random();
-				await gamdomDb.createNewUser(newUserData);
+				const customRewardsData = testDataPredefined.data.customRewards;
 
-				await userInfoAdminPage
-					.steps()
-					.navigateAndShowUserDetails(newUserData.username);
-
-				await userInfoAdminPage.clickUserInfoTab(UserInfoTabs.Rewards);
-
-				await userInfoRewardsAdminPage
-					.assertThat()
-					.newCustomRewardButtonVisible();
-
-				// Set custom reward for XP Challenge
-				await userInfoRewardsAdminPage
-					.steps()
-					.setCustomReward(CustomRewardType.XP_CHALLENGE, 0);
-
-				// Assert that the reward is visible in the section
-				await userInfoRewardsAdminPage
-					.assertThat()
-					.rewardVisibleInSection(
-						RewardStatus.PENDING,
-						CustomRewardType.XP_CHALLENGE_LABEL,
-						amount,
-					);
-
-				// Revoke the reward
-				await userInfoRewardsAdminPage
-					.steps()
-					.clickRevokeRewardButton(
-						RewardStatus.PENDING,
-						CustomRewardType.XP_CHALLENGE_LABEL,
-					);
-
-				await userInfoAdminPage.clickUserInfoTab(
-					UserInfoTabs.RewardHistory,
+				const adminSession = await browserSessionManager.loginAs(
+					TestUserRole.SUPERADMIN,
+					{ reuseContext: true },
 				);
+				const userSession = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
+				);
+				const targetUsername =
+					userSession.getAuthenticatedUser().user.username;
 
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardsHistoryTableVisible();
-
-				// Assert that the reward status is Canceled after revoking
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardStatusIs(
-						RewardsSource.REWARDS,
-						CustomRewardType.XP_CHALLENGE_LABEL,
-						amount,
-						RewardStatus.CANCELED,
-					);
+				await customRewardCancelTestFlow.executeCancel({
+					adminSession: adminSession,
+					targetUsername: targetUsername,
+					rewardType: CustomRewardType.XP_CHALLENGE,
+					rewardLabel: CustomRewardType.XP_CHALLENGE_LABEL,
+					amount: customRewardsData.amount,
+					initialStatus: RewardStatus.PENDING,
+					evRequired: 0,
+				});
 			},
 		);
 
 		test(
 			`[ENG-7179] Custom rewards - kyc verification`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
+			testDetails()
+				.withAuthor(JiraUser.NIKOLAY_GENOV)
+				.withTags(TestTag.ACCEPTANCE)
+				.apply(),
 			async ({
-				gamdomApi,
-				gamdomDb,
-				browser,
-				userInfoAdminPage,
-				userInfoRewardsAdminPage,
-				userInfoRewardsHistoryAdminPage,
-				testDataObject,
+				browserSessionManager,
+				customRewardKycTestFlow,
+				testDataPredefined,
 			}) => {
-				const newUserData = testDataObject.register.random();
-				await gamdomDb.createNewUser(newUserData);
-				const userCookie = await gamdomApi.authenticateWithExistingUser(
-					newUserData.username,
-					newUserData.password,
+				const customRewardsData = testDataPredefined.data.customRewards;
+
+				const adminSession = await browserSessionManager.loginAs(
+					TestUserRole.SUPERADMIN,
+					{ reuseContext: true },
 				);
-
-				// Create a new browser context for the user
-				const userContext = await browser.newContext();
-				const userPage = await userContext.newPage();
-				await setAuthenticationCookies(userPage, userCookie);
-				const userHomePage = new HomePage(userPage);
-				await userHomePage.navigate();
-
-				await userInfoAdminPage
-					.steps()
-					.navigateAndShowUserDetails(newUserData.username);
-
-				await userInfoAdminPage.clickUserInfoTab(UserInfoTabs.Rewards);
-
-				await userInfoRewardsAdminPage
-					.assertThat()
-					.newCustomRewardButtonVisible();
-
-				// Set custom reward for KYC Verification
-				await userInfoRewardsAdminPage
-					.steps()
-					.setCustomReward(CustomRewardType.KYC_VERIFICATION);
-
-				await userInfoRewardsAdminPage
-					.assertThat()
-					.rewardVisibleInSection(
-						RewardStatus.ACTIVE,
-						CustomRewardType.KYC_VERIFICATION_LABEL,
-						amount,
-					);
-
-				await userInfoAdminPage.clickUserInfoTab(
-					UserInfoTabs.RewardHistory,
+				const userSession = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
 				);
+				const targetUsername =
+					userSession.getAuthenticatedUser().user.username;
 
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardsHistoryTableVisible();
+				await userSession.pages.homePage.navigate();
 
-				// Assert that the reward is visible in the history
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardStatusIs(
-						RewardsSource.REWARDS,
-						CustomRewardType.KYC_VERIFICATION_LABEL,
-						amount,
-						RewardStatus.ACTIVE,
-					);
-
-				const rewardsPage = new RewardsPage(userPage);
-				await rewardsPage.navigate();
-
-				// Assert that the reward is visible and can be activated
-				await rewardsPage
-					.assertThat()
-					.rewardIsVisibleAndCanBeActivated(
-						CustomRewardType.KYC_VERIFICATION_LABEL,
-						amount,
-					);
-
-				// Activate the reward
-				await rewardsPage.clickOnRewardButton(
-					CustomRewardType.KYC_VERIFICATION_LABEL,
-					amount,
-				);
-
-				const verificationPage = new VerificationPage(userPage);
-				// Fill in the KYC Level 1 form
-				await verificationPage.fillInKycLevel1Form();
-
-				const notification = userHomePage.getNotification();
-				await notification
-					.assertThat()
-					.titleIs(NotificationTitle.KYC_VERIFIED);
-
-				await notification
-					.assertThat()
-					.subTitleIs(NotificationSubTitle.KYC_LEVEL_ONE_VERIFIED);
-
-				await rewardsPage.navigate();
-
-				// Assert that the reward can be claimed after KYC verification
-				await rewardsPage
-					.assertThat()
-					.rewardCanBeClaimed(
-						CustomRewardType.KYC_VERIFICATION_LABEL,
-						RewardButton.CLAIM,
-						amount,
-					);
-
-				// Claim the reward
-				await rewardsPage.clickOnRewardButton(
-					CustomRewardType.KYC_VERIFICATION_LABEL,
-					RewardButton.CLAIM,
-				);
-
-				await userInfoRewardsHistoryAdminPage.refresh();
-
-				// Assert that the reward status is Claimed after claiming
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardStatusIs(
-						RewardsSource.REWARDS,
-						CustomRewardType.KYC_VERIFICATION_LABEL,
-						amount,
-						RewardStatus.CLAIMED,
-					);
-
-				await userContext.close();
+				await customRewardKycTestFlow.executeKycLifecycle({
+					adminSession: adminSession,
+					userSession: userSession,
+					targetUsername: targetUsername,
+					amount: customRewardsData.amount,
+				});
 			},
 		);
 
 		test(
 			`[ENG-7179] Custom rewards - kyc verification - cancel`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
+			testDetails()
+				.withAuthor(JiraUser.NIKOLAY_GENOV)
+				.withTags(TestTag.ACCEPTANCE)
+				.apply(),
 			async ({
-				gamdomDb,
-				userInfoAdminPage,
-				userInfoRewardsAdminPage,
-				userInfoRewardsHistoryAdminPage,
-				testDataObject,
+				browserSessionManager,
+				customRewardCancelTestFlow,
+				testDataPredefined,
 			}) => {
-				const newUserData = testDataObject.register.random();
-				await gamdomDb.createNewUser(newUserData);
+				const customRewardsData = testDataPredefined.data.customRewards;
 
-				await userInfoAdminPage
-					.steps()
-					.navigateAndShowUserDetails(newUserData.username);
-
-				await userInfoAdminPage.clickUserInfoTab(UserInfoTabs.Rewards);
-
-				await userInfoRewardsAdminPage
-					.assertThat()
-					.newCustomRewardButtonVisible();
-
-				// Set custom reward for KYC Verification
-				await userInfoRewardsAdminPage
-					.steps()
-					.setCustomReward(CustomRewardType.KYC_VERIFICATION);
-
-				// Assert that the reward is visible in the section
-				await userInfoRewardsAdminPage
-					.assertThat()
-					.rewardVisibleInSection(
-						RewardStatus.ACTIVE,
-						CustomRewardType.KYC_VERIFICATION_LABEL,
-						amount,
-					);
-
-				// Revoke the reward
-				await userInfoRewardsAdminPage
-					.steps()
-					.clickRevokeRewardButton(
-						RewardStatus.ACTIVE,
-						CustomRewardType.KYC_VERIFICATION_LABEL,
-					);
-
-				await userInfoAdminPage.clickUserInfoTab(
-					UserInfoTabs.RewardHistory,
+				const adminSession = await browserSessionManager.loginAs(
+					TestUserRole.SUPERADMIN,
+					{ reuseContext: true },
 				);
+				const userSession = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
+				);
+				const targetUsername =
+					userSession.getAuthenticatedUser().user.username;
 
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardsHistoryTableVisible();
-
-				// Assert that the reward status is Canceled after revoking
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardStatusIs(
-						RewardsSource.REWARDS,
-						CustomRewardType.KYC_VERIFICATION_LABEL,
-						amount,
-						RewardStatus.CANCELED,
-					);
+				await customRewardCancelTestFlow.executeCancel({
+					adminSession: adminSession,
+					targetUsername: targetUsername,
+					rewardType: CustomRewardType.KYC_VERIFICATION,
+					rewardLabel: CustomRewardType.KYC_VERIFICATION_LABEL,
+					amount: customRewardsData.amount,
+					initialStatus: RewardStatus.ACTIVE,
+				});
 			},
 		);
 	},
@@ -771,177 +280,83 @@ test.describe(
 		.withTags(JiraComponent.REWARDS, JiraComponent.ADMIN_PANEL)
 		.apply(),
 	() => {
-		let qrCode2FAImagePath: string;
-		const ammount = "$100.00";
-
-		const cashCampaignName = generateRandomString({ length: 5 });
-		const cashCampaignCode = generateRandomString({ length: 7 });
-		const freeSpinsCampaignName = generateRandomString({ length: 5 });
-		const freeSpinsCampaignCode = generateRandomString({ length: 7 });
-
-		test.afterEach(async () => {
-			await deleteFilesWithFilePaths([qrCode2FAImagePath]);
-		});
-
-		test.use(storageStateNewSuperAdminUserDB());
-
 		test(
 			`[ENG-7179] Rewards history - Promo code - cash`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
+			testDetails()
+				.withAuthor(JiraUser.NIKOLAY_GENOV)
+				.withTags(TestTag.ACCEPTANCE)
+				.apply(),
 			async ({
-				gamdomApi,
-				gamdomDb,
-				browser,
-				userInfoAdminPage,
-				userInfoRewardsHistoryAdminPage,
-				settingsPage,
-				promoCampaignsAdminPage,
-				promoCodeModal,
-				twoFactorAuthModal,
-				testDataObject,
+				browserSessionManager,
+				promoRewardHistoryTestFlow,
+				testDataPredefined,
+				testDataPredefinedRandom,
 			}) => {
-				const newUserData = testDataObject.register.random();
-				qrCode2FAImagePath = createPngImagePath();
-				await gamdomDb.createNewUser(newUserData);
-				const userCookie = await gamdomApi.authenticateWithExistingUser(
-					newUserData.username,
-					newUserData.password,
+				const promoData = testDataPredefined.data.promoCampaigns;
+				const campaignData =
+					testDataPredefinedRandom.data.rewardPromoCampaigns;
+
+				const adminSession = await browserSessionManager.loginAs(
+					TestUserRole.SUPERADMIN,
+					{ reuseContext: true },
 				);
-
-				// Create a new browser context for the user
-				const userContext = await browser.newContext();
-				const userPage = await userContext.newPage();
-				await setAuthenticationCookies(userPage, userCookie);
-				const userHomePage = new HomePage(userPage);
-				await userHomePage.navigate();
-
-				//Create a new promo campaign
-				await settingsPage
-					.steps()
-					.navigateAndEnable2FaAuthentication(qrCode2FAImagePath);
-				await promoCampaignsAdminPage.navigate();
-				await promoCampaignsAdminPage.clickCreateCampaignButton();
-				await twoFactorAuthModal
-					.steps()
-					.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
-				await promoCodeModal
-					.steps()
-					.createDefaultCashPromoCodeSuccessfully(
-						cashCampaignName,
-						cashCampaignCode,
-					);
-
-				await userHomePage.navigateToWallet();
-
-				// Redeem the promo code
-				const walletModal = new WalletModal(userPage);
-				await walletModal
-					.steps()
-					.redeemPromoCodeSuccessfully(cashCampaignCode);
-
-				await userInfoAdminPage
-					.steps()
-					.navigateAndShowUserDetails(newUserData.username);
-
-				await userInfoAdminPage.clickUserInfoTab(
-					UserInfoTabs.RewardHistory,
+				const userSession = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
 				);
+				const targetUsername =
+					userSession.getAuthenticatedUser().user.username;
 
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardsHistoryTableVisible();
+				await userSession.pages.homePage.navigate();
 
-				// Assert that the reward is visible and claimed in the history
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardStatusIs(
-						RewardsSource.PROMO_CAMPAIGN_CASH,
-						CustomRewardType.CASH,
-						ammount,
-						RewardStatus.CLAIMED,
-					);
-
-				await userContext.close();
+				await promoRewardHistoryTestFlow.executeCashPromoRewardHistory({
+					adminSession: adminSession,
+					userSession: userSession,
+					targetUsername: targetUsername,
+					campaignName: campaignData.cashCampaignName,
+					campaignCode: campaignData.cashCampaignCode,
+					expectedAmount: promoData.promoAmount,
+				});
 			},
 		);
 
 		test(
 			`[ENG-7179] Rewards history - Promo code - free spins`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
+			testDetails()
+				.withAuthor(JiraUser.NIKOLAY_GENOV)
+				.withTags(TestTag.ACCEPTANCE)
+				.apply(),
 			async ({
-				gamdomApi,
-				gamdomDb,
-				browser,
-				userInfoAdminPage,
-				userInfoRewardsHistoryAdminPage,
-				settingsPage,
-				promoCampaignsAdminPage,
-				promoCodeModal,
-				twoFactorAuthModal,
-				testDataObject,
+				browserSessionManager,
+				promoRewardHistoryTestFlow,
+				testDataPredefined,
+				testDataPredefinedRandom,
 			}) => {
-				const newUserData = testDataObject.register.random();
-				qrCode2FAImagePath = createPngImagePath();
-				await gamdomDb.createNewUser(newUserData);
-				const userCookie = await gamdomApi.authenticateWithExistingUser(
-					newUserData.username,
-					newUserData.password,
+				const promoData = testDataPredefined.data.promoCampaigns;
+				const campaignData =
+					testDataPredefinedRandom.data.rewardPromoCampaigns;
+
+				const adminSession = await browserSessionManager.loginAs(
+					TestUserRole.SUPERADMIN,
+					{ reuseContext: true },
 				);
-
-				// Create a new browser context for the user
-				const userContext = await browser.newContext();
-				const userPage = await userContext.newPage();
-				await setAuthenticationCookies(userPage, userCookie);
-				const userHomePage = new HomePage(userPage);
-				await userHomePage.navigate();
-
-				// Create a new promo campaign
-				await settingsPage
-					.steps()
-					.navigateAndEnable2FaAuthentication(qrCode2FAImagePath);
-				await promoCampaignsAdminPage.navigate();
-				await promoCampaignsAdminPage.clickCreateCampaignButton();
-				await twoFactorAuthModal
-					.steps()
-					.generateAndEnter2FaCodeSuccessfully(qrCode2FAImagePath);
-				await promoCodeModal
-					.steps()
-					.createDefaultFreeSpinsPromoCodeSuccessfully(
-						freeSpinsCampaignName,
-						freeSpinsCampaignCode,
-					);
-
-				await userHomePage.navigateToWallet();
-
-				// Redeem the promo code
-				const walletModal = new WalletModal(userPage);
-				await walletModal
-					.steps()
-					.redeemPromoCodeSuccessfully(freeSpinsCampaignCode);
-
-				await userInfoAdminPage
-					.steps()
-					.navigateAndShowUserDetails(newUserData.username);
-
-				await userInfoAdminPage.clickUserInfoTab(
-					UserInfoTabs.RewardHistory,
+				const userSession = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
 				);
+				const targetUsername =
+					userSession.getAuthenticatedUser().user.username;
 
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardsHistoryTableVisible();
+				await userSession.pages.homePage.navigate();
 
-				// Assert that the reward is visible and active in the history
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardStatusIs(
-						RewardsSource.PROMO_CAMPAIGN_FREE_SPINS,
-						CustomRewardType.FREE_SPINS,
-						"10×$0.10",
-						RewardStatus.ACTIVE,
-					);
-
-				await userContext.close();
+				await promoRewardHistoryTestFlow.executeFreeSpinsPromoRewardHistory(
+					{
+						adminSession: adminSession,
+						userSession: userSession,
+						targetUsername: targetUsername,
+						campaignName: campaignData.freeSpinsCampaignName,
+						campaignCode: campaignData.freeSpinsCampaignCode,
+						expectedFreeSpinsValue: promoData.freeSpinsValue,
+					},
+				);
 			},
 		);
 	},
@@ -953,85 +368,46 @@ test.describe(
 		.withTags(JiraComponent.REWARDS, JiraComponent.ADMIN_PANEL)
 		.apply(),
 	() => {
-		let qrCode2FAImagePath: string;
-		const tipAmount = 1;
-		const amount = "$1.00";
+		testData()
+			.fromDomain()
+			.rewards.tipTypes.forEach(({ tipType, rewardType }) => {
+				test(
+					`[ENG-7179] Rewards history - Tip - ${tipType}`,
+					testDetails()
+						.withAuthor(JiraUser.NIKOLAY_GENOV)
+						.withTags(TestTag.ACCEPTANCE)
+						.apply(),
+					async ({
+						browserSessionManager,
+						tipRewardHistoryTestFlow,
+						testDataPredefined,
+					}) => {
+						const tipData = testDataPredefined.data.tipRewards;
 
-		const tipTypes = [
-			{
-				tipType: "giveaway",
-				rewardType: CustomRewardType.GIVEAWAY,
-			},
-			{
-				tipType: "deposit bonus",
-				rewardType: CustomRewardType.DEPOSIT_BONUS,
-			},
-		];
-
-		test.afterEach(async () => {
-			await deleteFilesWithFilePaths([qrCode2FAImagePath]);
-		});
-
-		test.use(storageStateNewSuperAdminUserDB());
-
-		tipTypes.forEach(({ tipType, rewardType }) => {
-			test(
-				`[ENG-7179] Rewards history - Tip - ${tipType}`,
-				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
-				async ({
-					infoAdminPage,
-					userInfoAdminPage,
-					userInfoRewardsHistoryAdminPage,
-					toast,
-					settingsPage,
-					gamdomDb,
-					testDataObject,
-				}) => {
-					const newUserData = testDataObject.register.random();
-					await gamdomDb.createNewUser(newUserData);
-					qrCode2FAImagePath = createPngImagePath();
-
-					//tip user with 2FA flow
-					await settingsPage
-						.steps()
-						.navigateAndEnable2FaAuthentication(qrCode2FAImagePath);
-					await userInfoAdminPage
-						.steps()
-						.navigateAndShowUserDetails(newUserData.username);
-					await infoAdminPage
-						.steps()
-						.tipUserWith2FaFlow(
-							tipAmount,
-							qrCode2FAImagePath,
-							tipType,
+						const adminSession =
+							await browserSessionManager.loginAs(
+								TestUserRole.SUPERADMIN,
+								{ reuseContext: true },
+							);
+						const userSession = await browserSessionManager.loginAs(
+							TestUserRole.REGULAR,
 						);
-					await toast.assertThat().subTitleIs(
-						buildTipUserSubTitle({
-							username: newUserData.username,
-							tipAmount: tipAmount,
-						}),
-					);
+						const targetUsername =
+							userSession.getAuthenticatedUser().user.username;
 
-					await userInfoAdminPage.clickUserInfoTab(
-						UserInfoTabs.RewardHistory,
-					);
-
-					await userInfoRewardsHistoryAdminPage
-						.assertThat()
-						.rewardsHistoryTableVisible();
-
-					// Assert that the reward is visible in the history
-					await userInfoRewardsHistoryAdminPage
-						.assertThat()
-						.rewardStatusIs(
-							RewardsSource.TIP,
-							rewardType,
-							amount,
-							RewardStatus.COMPLETED,
+						await tipRewardHistoryTestFlow.executeTipAndVerifyHistory(
+							{
+								adminSession: adminSession,
+								targetUsername: targetUsername,
+								tipAmount: tipData.tipAmount,
+								expectedAmount: tipData.amount,
+								tipType: tipType,
+								rewardType: rewardType,
+							},
 						);
-				},
-			);
-		});
+					},
+				);
+			});
 	},
 );
 
@@ -1041,9 +417,6 @@ test.describe(
 		.withTags(JiraComponent.REWARDS, JiraComponent.ADMIN_PANEL)
 		.apply(),
 	() => {
-		const royaltyUpAmount = "$5.00";
-		const instantRewardAmount = "$26.25";
-		const userBeXpBronze3 = 15000000;
 		let user: AuthenticatedUser;
 		let superAdminSession: BrowserUserSession;
 
@@ -1054,23 +427,29 @@ test.describe(
 				diceGamePage,
 				rewardsPage,
 				testDataObject,
+				testDataPredefined,
 				browserSessionManager,
 			}) => {
+				const royaltyData = testDataPredefined.data.royaltyUpRewards;
+
 				user = await gamdomApiDbFacade.createSingleUserDbAndAuth({
 					emailVerified: true,
-					startingXp: userBeXpBronze3 - 1,
+					startingXp: royaltyData.userBeXpBronze3 - 1,
 				});
 				await setAuthenticationCookies(page, user.cookie);
 
 				const betTestData = testDataObject.bet.build(
 					{ username: user.user.username },
-					{ betAmount: 5000, autoCashoutMultiplier: 2 },
+					{
+						betAmount: royaltyData.betAmount,
+						autoCashoutMultiplier:
+							royaltyData.autoCashoutMultiplier,
+					},
 				);
 				await diceGamePage.navigate();
 				await diceGamePage.rollDiceWithAmount(betTestData.betAmount);
 
 				await rewardsPage.navigate();
-				// Assert that the Instant and Royalty Up rewards are available
 				await rewardsPage
 					.assertThat()
 					.instantAndRoyaltyUpRewardsAreAvailable();
@@ -1087,8 +466,15 @@ test.describe(
 
 		test(
 			`[ENG-7179] Rewards history - Royalty up and instant`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
-			async ({ rewardsPage }) => {
+			testDetails()
+				.withAuthor(JiraUser.NIKOLAY_GENOV)
+				.withTags(TestTag.ACCEPTANCE)
+				.apply(),
+			async ({ rewardsPage, testDataPredefined }) => {
+				const royaltyData = testDataPredefined.data.royaltyUpRewards;
+				const royaltyUpAmount = royaltyData.royaltyUpAmount;
+				const instantRewardAmount = royaltyData.instantRewardAmount;
+
 				await superAdminSession.pages.userInfoAdminPage.clickUserInfoTab(
 					UserInfoTabs.RewardHistory,
 				);
@@ -1097,7 +483,6 @@ test.describe(
 					.assertThat()
 					.rewardsHistoryTableVisible();
 
-				// Assert that the Instant and Royalty Up rewards are visible in the history
 				await superAdminSession.pages.userInfoRewardsHistoryAdminPage
 					.assertThat()
 					.rewardStatusIs(
@@ -1116,13 +501,11 @@ test.describe(
 						RewardStatus.PENDING,
 					);
 
-				// Claim the Instant and Royalty Up rewards
 				await rewardsPage.claimReward(RewardType.INSTANT);
 				await rewardsPage.claimSingleRoyaltyUpReward();
 
 				await superAdminSession.pages.userInfoRewardsHistoryAdminPage.refresh();
 
-				// Assert that the Instant and Royalty Up rewards are Claimed in the history
 				await superAdminSession.pages.userInfoRewardsHistoryAdminPage
 					.assertThat()
 					.rewardStatusIs(
@@ -1145,12 +528,19 @@ test.describe(
 
 		test(
 			`[ENG-7179] Rewards history - Royalty up and instant - cancel`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
-			async () => {
+			testDetails()
+				.withAuthor(JiraUser.NIKOLAY_GENOV)
+				.withTags(TestTag.ACCEPTANCE)
+				.apply(),
+			async ({ testDataPredefined }) => {
+				const royaltyData = testDataPredefined.data.royaltyUpRewards;
+				const royaltyUpAmount = royaltyData.royaltyUpAmount;
+				const instantRewardAmount = royaltyData.instantRewardAmount;
+
 				await superAdminSession.pages.userInfoAdminPage.clickUserInfoTab(
 					UserInfoTabs.Rewards,
 				);
-				// Revoke the Instant and Royalty Up rewards
+
 				await superAdminSession.pages.userInfoRewardsAdminPage
 					.steps()
 					.clickRevokeRewardButton(
@@ -1172,7 +562,6 @@ test.describe(
 					.assertThat()
 					.rewardsHistoryTableVisible();
 
-				// Assert that the Instant and Royalty Up rewards are Canceled in the history
 				await superAdminSession.pages.userInfoRewardsHistoryAdminPage
 					.assertThat()
 					.rewardStatusIs(
@@ -1201,256 +590,81 @@ test.describe(
 		.withTags(JiraComponent.REWARDS, JiraComponent.ADMIN_PANEL)
 		.apply(),
 	() => {
-		test.use(storageStateNewSuperAdminUserDB());
-		const weeklyAmount = "$0.01";
-		const monthlyAmount = "$0.07";
-
 		test(
 			`[ENG-7179] Rewards history - Weekly reward`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
+			testDetails()
+				.withAuthor(JiraUser.NIKOLAY_GENOV)
+				.withTags(TestTag.ACCEPTANCE)
+				.apply(),
 			async ({
+				browserSessionManager,
 				gamdomApi,
-				gamdomDb,
-				browser,
-				userInfoAdminPage,
-				userInfoRewardsHistoryAdminPage,
-				testDataObject,
+				weeklyMonthlyRewardTestFlow,
+				testDataPredefined,
 			}) => {
-				const superAdminData = new RegisterTestData({
-					useGamdomEmailDomain: true,
+				const rewardData = testDataPredefined.data.weeklyMonthlyRewards;
+
+				const adminSession = await browserSessionManager.loginAs(
+					TestUserRole.EV_REWARDS_SYSTEM_SUPERADMIN_WITH_USER_INFO,
+					{ reuseContext: true },
+				);
+				const userSession = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
+				);
+				const targetUserId =
+					userSession.getAuthenticatedUser().user.userId;
+				const targetUsername =
+					userSession.getAuthenticatedUser().user.username;
+
+				await weeklyMonthlyRewardTestFlow.executeWeeklyRewardLifecycle({
+					adminSession: adminSession,
+					userSession: userSession,
+					targetUsername: targetUsername,
+					targetUserId: targetUserId,
+					gamdomApi: gamdomApi,
+					rewardCoins: rewardData.weeklyRewardCoins,
+					expectedAmount: rewardData.weeklyAmount,
 				});
-
-				await gamdomDb.createNewUser({
-					username: superAdminData.username,
-					password: superAdminData.password,
-					email: superAdminData.email,
-					tags: UserTags.SuperAdmin,
-					userClass: UserClasses.Admin,
-					emailVerified: true,
-				});
-				// Authenticate as super admin to get the cookie
-				const superAdminCookie = getCookieHeader(
-					await gamdomApi.authenticateWithExistingUser(
-						superAdminData.username,
-						superAdminData.password,
-					),
-				);
-
-				const newUserData = testDataObject.register.random();
-
-				await gamdomDb.createNewUser(newUserData);
-
-				// Get the user ID
-				const userId = (
-					await gamdomApi.getBasicInfo(
-						newUserData.username,
-						newUserData.password,
-					)
-				).user.id;
-
-				const year = getYear(new Date());
-				const week = getISOWeek(new Date());
-				const weekString = `weekly-${year}-W${String(week).padStart(
-					2,
-					"0",
-				)}`;
-
-				const rewardType = CustomRewardType.EV_REWARD;
-				const weeklyReward = [{ userId: userId, rewardCoins: 10 }];
-
-				// Create the bulk reward test data
-				const bulkRewardTestDataWeekly = new BulkRewardTestData(
-					rewardType,
-					weeklyReward,
-					weekString,
-				);
-
-				// Send the bulk reward request
-				await gamdomApi.bulkReward(bulkRewardTestDataWeekly, {
-					Cookie: superAdminCookie,
-				});
-
-				const userCookie = await gamdomApi.authenticateWithExistingUser(
-					newUserData.username,
-					newUserData.password,
-				);
-
-				// Create a new browser context for the user
-				const userContext = await browser.newContext();
-				const userPage = await userContext.newPage();
-				await setAuthenticationCookies(userPage, userCookie);
-
-				const rewardsPage = new RewardsPage(userPage);
-				await rewardsPage.navigate();
-
-				// Assert that the weekly reward is visible and available
-				await rewardsPage
-					.assertThat()
-					.weeklyRewardIsVisibleAndAvailable();
-
-				await userInfoAdminPage
-					.steps()
-					.navigateAndShowUserDetails(newUserData.username);
-
-				await userInfoAdminPage.clickUserInfoTab(
-					UserInfoTabs.RewardHistory,
-				);
-
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardsHistoryTableVisible();
-
-				// Assert that the weekly reward is visible in the history
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardStatusIs(
-						RewardsSource.REWARDS,
-						CustomRewardType.EV_REWARD_LABEL,
-						weeklyAmount,
-						RewardStatus.PENDING,
-					);
-
-				// Claim the weekly reward
-				await rewardsPage.claimReward(RewardType.WEEKLY);
-
-				await userInfoRewardsHistoryAdminPage.refresh();
-
-				// Assert that the weekly reward status is Claimed after claiming
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardStatusIs(
-						RewardsSource.REWARDS,
-						CustomRewardType.EV_REWARD_LABEL,
-						weeklyAmount,
-						RewardStatus.CLAIMED,
-					);
-
-				await userContext.close();
 			},
 		);
 
 		test(
 			`[ENG-7179] Rewards history - Monthly reward`,
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
+			testDetails()
+				.withAuthor(JiraUser.NIKOLAY_GENOV)
+				.withTags(TestTag.ACCEPTANCE)
+				.apply(),
 			async ({
+				browserSessionManager,
 				gamdomApi,
-				gamdomDb,
-				browser,
-				userInfoAdminPage,
-				userInfoRewardsHistoryAdminPage,
-				testDataObject,
+				weeklyMonthlyRewardTestFlow,
+				testDataPredefined,
 			}) => {
-				const superAdminData = new RegisterTestData({
-					useGamdomEmailDomain: true,
-				});
+				const rewardData = testDataPredefined.data.weeklyMonthlyRewards;
 
-				await gamdomDb.createNewUser({
-					username: superAdminData.username,
-					password: superAdminData.password,
-					email: superAdminData.email,
-					tags: UserTags.SuperAdmin,
-					userClass: UserClasses.Admin,
-					emailVerified: true,
-				});
-
-				// Authenticate as super admin to get the cookie
-				const superAdminCookie = getCookieHeader(
-					await gamdomApi.authenticateWithExistingUser(
-						superAdminData.username,
-						superAdminData.password,
-					),
+				const adminSession = await browserSessionManager.loginAs(
+					TestUserRole.EV_REWARDS_SYSTEM_SUPERADMIN_WITH_USER_INFO,
+					{ reuseContext: true },
 				);
-
-				const newUserData = testDataObject.register.random();
-
-				await gamdomDb.createNewUser(newUserData);
-
-				// Get the user ID
-				const userId = (
-					await gamdomApi.getBasicInfo(
-						newUserData.username,
-						newUserData.password,
-					)
-				).user.id;
-
-				const year = getYear(new Date());
-				const month = getMonth(new Date()) + 1;
-				const monthString = `monthly-${year}-${String(month).padStart(
-					2,
-					"0",
-				)}`;
-				const rewardType = CustomRewardType.EV_REWARD;
-
-				const monthlyReward = [{ userId: userId, rewardCoins: 100 }];
-
-				// Create the bulk reward test data
-				const bulkRewardTestDataMonthly = new BulkRewardTestData(
-					rewardType,
-					monthlyReward,
-					monthString,
+				const userSession = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
 				);
+				const targetUserId =
+					userSession.getAuthenticatedUser().user.userId;
+				const targetUsername =
+					userSession.getAuthenticatedUser().user.username;
 
-				// Send the bulk reward request
-				await gamdomApi.bulkReward(bulkRewardTestDataMonthly, {
-					Cookie: superAdminCookie,
-				});
-
-				const userCookie = await gamdomApi.authenticateWithExistingUser(
-					newUserData.username,
-					newUserData.password,
+				await weeklyMonthlyRewardTestFlow.executeMonthlyRewardLifecycle(
+					{
+						adminSession: adminSession,
+						userSession: userSession,
+						targetUsername: targetUsername,
+						targetUserId: targetUserId,
+						gamdomApi: gamdomApi,
+						rewardCoins: rewardData.monthlyRewardCoins,
+						expectedAmount: rewardData.monthlyAmount,
+					},
 				);
-
-				// Create a new browser context for the user
-				const userContext = await browser.newContext();
-				const userPage = await userContext.newPage();
-				await setAuthenticationCookies(userPage, userCookie);
-
-				const rewardsPage = new RewardsPage(userPage);
-				await rewardsPage.navigate();
-
-				// Assert that the monthly reward is visible and available
-				await rewardsPage
-					.assertThat()
-					.monthlyRewardIsVisibleAndAvailable();
-
-				await userInfoAdminPage
-					.steps()
-					.navigateAndShowUserDetails(newUserData.username);
-
-				await userInfoAdminPage.clickUserInfoTab(
-					UserInfoTabs.RewardHistory,
-				);
-
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardsHistoryTableVisible();
-
-				// Assert that the monthly reward is visible in the history
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardStatusIs(
-						RewardsSource.REWARDS,
-						CustomRewardType.EV_REWARD_LABEL,
-						monthlyAmount,
-						RewardStatus.PENDING,
-					);
-
-				// Claim the monthly reward
-				await rewardsPage.claimReward(RewardType.MONTHLY);
-
-				await userInfoRewardsHistoryAdminPage.refresh();
-
-				// Assert that the monthly reward status is Claimed after claiming
-				await userInfoRewardsHistoryAdminPage
-					.assertThat()
-					.rewardStatusIs(
-						RewardsSource.REWARDS,
-						CustomRewardType.EV_REWARD_LABEL,
-						monthlyAmount,
-						RewardStatus.CLAIMED,
-					);
-
-				await userContext.close();
 			},
 		);
 	},
@@ -1468,7 +682,10 @@ test.describe(
 	() => {
 		test(
 			`[ENG-11140] Create and claim xp_challenge reward`,
-			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
+			testDetails()
+				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+				.withTags(TestTag.ACCEPTANCE)
+				.apply(),
 			async ({
 				browserSessionManager,
 				testDataPredefined,
@@ -1515,7 +732,10 @@ test.describe(
 	() => {
 		test(
 			`[ENG-10167] Reload Reward creation and activation`,
-			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
+			testDetails()
+				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+				.withTags(TestTag.ACCEPTANCE)
+				.apply(),
 			async ({
 				browserSessionManager,
 				testDataPredefined,
@@ -1553,7 +773,10 @@ test.describe(
 
 		test(
 			`[ENG-10170] Change Reload Reward`,
-			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
+			testDetails()
+				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+				.withTags(TestTag.ACCEPTANCE)
+				.apply(),
 			async ({
 				browserSessionManager,
 				gamdomDb,
@@ -1589,7 +812,10 @@ test.describe(
 
 		test(
 			`[ENG-10269] Reload update - Skipped claims logic`,
-			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
+			testDetails()
+				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+				.withTags(TestTag.ACCEPTANCE)
+				.apply(),
 			async ({
 				browserSessionManager,
 				gamdomDb,
@@ -1666,7 +892,10 @@ test.describe(
 			.forEach((input) => {
 				test(
 					`[ENG-10259] Reload update logic after partial claim - Admin: ${input.adminExpected} | Client: ${input.clientExpected}`,
-					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
+					testDetails()
+						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+						.withTags(TestTag.ACCEPTANCE)
+						.apply(),
 					async ({
 						browserSessionManager,
 						gamdomDb,
@@ -1758,7 +987,10 @@ test.describe(
 			.forEach((input) => {
 				test(
 					`[ENG-10268] Reload update logic for: days: ${input.days} | dailyReward: ${input.dailyReward} | totalReward: ${input.totalReward}`,
-					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
+					testDetails()
+						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+						.withTags(TestTag.ACCEPTANCE)
+						.apply(),
 					async ({
 						browserSessionManager,
 						gamdomDb,
