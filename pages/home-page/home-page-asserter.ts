@@ -20,6 +20,9 @@ import * as Configuration from "configuration";
 import { Footer } from "@pages/components/footer/footer";
 import { HomePageSection } from "@enums/homepage-launch-locations";
 import { BannerMessages } from "@constants/banner-messages";
+import { ToastTitle } from "@enums/toast-titles";
+import { ToastSubTitle } from "@enums/toast-subtitles";
+import { DomEvent } from "@enums/playwright/dom-events";
 
 export class HomePageAsserter extends BaseAsserter<HomePage> {
 	public fromCsv: boolean;
@@ -110,19 +113,22 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		]);
 	}
 
-	@step("Verify that Create Account and Social buttons are disabled")
+	@step(
+		"Verify that Create Account and Social buttons show jurisdiction toast",
+	)
 	public async verifyTopBannerButtonsState(): Promise<void> {
-		const page = this.gamdomPage.page;
-
 		await this.checkElementsAreVisible([
-			this.gamdomPage.map.topBannerSignupButton,
+			this.gamdomPage.map.topBannerPlayNowButton,
 		]);
-		await this.checkElementsAreEnabled([
-			this.gamdomPage.map.topBannerSignupButton,
-		]);
-		const urlBeforeClick = page.url();
-		await this.gamdomPage.map.topBannerSignupButton.click();
-		expect(page.url()).toBe(urlBeforeClick);
+		await this.gamdomPage.map.topBannerPlayNowButton.dispatchEvent(
+			DomEvent.CLICK,
+		);
+		await this.gamdomPage.toast
+			.assertThat()
+			.toastMessageIs(
+				ToastTitle.SYSTEM,
+				ToastSubTitle.JURISDICTION_RESTRICTED,
+			);
 
 		const socialButtons = [
 			this.gamdomPage.map.topBannerSteamLoginButton,
@@ -131,22 +137,14 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		];
 
 		await this.checkElementsAreVisible(socialButtons);
-		await this.checkButtonsDoNotNavigateWhenClicked(socialButtons);
-	}
-
-	@step("Check buttons do not navigate when clicked")
-	public async checkButtonsDoNotNavigateWhenClicked(
-		socialButtons: Locator[],
-	): Promise<void> {
 		for (const button of socialButtons) {
-			if (await button.isEnabled()) {
-				const page = button.page();
-				const urlBefore = page.url();
-				await button.click();
-				expect(page.url()).toBe(urlBefore);
-			} else {
-				logger.info("Button is disabled, skipping click");
-			}
+			await button.dispatchEvent(DomEvent.CLICK);
+			await this.gamdomPage.toast
+				.assertThat()
+				.toastMessageIs(
+					ToastTitle.SYSTEM,
+					ToastSubTitle.JURISDICTION_RESTRICTED,
+				);
 		}
 	}
 

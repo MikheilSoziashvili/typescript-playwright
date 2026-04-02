@@ -3,6 +3,7 @@ export enum GeoblockedCountry {
 	BELGIUM = "Belgium",
 	NETHERLANDS = "Netherlands",
 	DENMARK = "Denmark",
+	ITALY = "Italy",
 }
 
 export enum SoftBlockedCountry {

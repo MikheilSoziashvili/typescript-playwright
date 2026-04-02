@@ -5,6 +5,7 @@ import {
 	DK_PROXY_CREDENTIALS,
 	ES_PROXY_CREDENTIALS,
 	FR_PROXY_CREDENTIALS,
+	IT_PROXY_CREDENTIALS,
 	NL_PROXY_CREDENTIALS,
 	PT_PROXY_CREDENTIALS,
 	SK_PROXY_CREDENTIALS,
@@ -27,6 +28,7 @@ export class GeoblockDomainData {
 		[GeoblockedCountry.BELGIUM, BE_PROXY_CREDENTIALS],
 		[GeoblockedCountry.NETHERLANDS, NL_PROXY_CREDENTIALS],
 		[GeoblockedCountry.DENMARK, DK_PROXY_CREDENTIALS],
+		[GeoblockedCountry.ITALY, IT_PROXY_CREDENTIALS],
 	]);
 
 	public readonly softBlockedCredentialsMap = new Map<
@@ -58,6 +60,7 @@ export class GeoblockDomainData {
 		GeoblockedCountry.BELGIUM,
 		GeoblockedCountry.NETHERLANDS,
 		GeoblockedCountry.DENMARK,
+		GeoblockedCountry.ITALY,
 	];
 
 	public readonly softBlockedCountries = [

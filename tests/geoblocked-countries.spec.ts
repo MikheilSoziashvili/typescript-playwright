@@ -92,8 +92,8 @@ for (const country of geoblockTestDataDomain.softBlockedCountries) {
 					await softblockModal.assertThat().isNotDisplayed();
 
 					await homePage.unauthenticatedHeader
-						.assertThat()
-						.isCreateAccountButtonDisabled();
+						.steps()
+						.clickCreateAccountAndVerifyJurisdictionToast();
 
 					await homePage.assertThat().verifyTopBannerButtonsState();
 
@@ -135,8 +135,8 @@ for (const country of geoblockTestDataDomain.softBlockedWithoutLoginCountries) {
 				await softblockModal.assertThat().isNotDisplayed();
 
 				await homePage.unauthenticatedHeader
-					.assertThat()
-					.isCreateAccountButtonDisabled();
+					.steps()
+					.clickCreateAccountAndVerifyJurisdictionToast();
 
 				await homePage.unauthenticatedHeader
 					.assertThat()

@@ -76,7 +76,7 @@ export class HomePageMap extends BaseMap {
 		return this.topBannerLocator.locator("button:has(i.icon-remove)");
 	}
 
-	public get topBannerSignupButton(): Locator {
+	public get topBannerPlayNowButton(): Locator {
 		return this.topBannerLocator.getByTestId("signup-center");
 	}
 

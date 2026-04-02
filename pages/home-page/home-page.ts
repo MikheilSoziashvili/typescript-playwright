@@ -16,13 +16,16 @@ import { WaitUntilState } from "@enums/wait-until-states";
 import { step } from "decorators/step";
 import { BoundingBoxCoordinate } from "@enums/bounding-box-coordinates";
 import { Notification } from "@pages/components/notification/notification";
+import { Toast } from "@pages/components/toast/toast";
 
 export class HomePage extends BasePage<HomePageMap> {
 	private readonly notification: Notification;
+	public readonly toast: Toast;
 
 	constructor(page: Page) {
 		super(page, new HomePageMap(page));
 		this.notification = new Notification(page);
+		this.toast = new Toast(page);
 	}
 
 	public override async navigate(
