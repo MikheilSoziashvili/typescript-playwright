@@ -1,4 +1,4 @@
-import { MailinatorApi } from "@api/mailinator-api";
+import { MailpitApi } from "@api/mailpit-api";
 import { RegisterTestDataParams } from "@core/interfaces";
 import { VisibilityResult } from "@core/types/types";
 import { generate2FACodeFromQRCodeImage, waitUntil } from "@core/utils/utils";
@@ -228,31 +228,24 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 	@step("Change password from email")
 	public async changePasswordFromEmail(
 		newPassword: string,
-		mailinatorApi: MailinatorApi,
-		domain: string,
-		inbox: string,
+		mailpitApi: MailpitApi,
+		email: string,
 		page: Page,
 		{ messageIndex = 1 }: { messageIndex?: number } = {},
 		subjectIncludes?: string,
-		timeout = Timeout.MEDIUM,
-		interval = Timeout.SHORT,
+		timeout = TimeoutSeconds.TEN,
+		interval = TimeoutSeconds.FIVE,
 	): Promise<void> {
-		const message = await mailinatorApi.pollForMessages(
-			domain,
-			inbox,
+		const message = await mailpitApi.pollForMessages(
+			email,
 			timeout,
 			interval,
 			messageIndex,
 			subjectIncludes,
 		);
-		const resetPasswordEmailId = message.id;
 
-		const emailLinks = await mailinatorApi.getEmailLinks(
-			domain,
-			inbox,
-			resetPasswordEmailId,
-		);
-		const changePasswordLink = emailLinks.links[0];
+		const links = await mailpitApi.getMessageLinks(message.ID);
+		const changePasswordLink = links[0];
 
 		await page.goto(changePasswordLink);
 		await this.gamdomPage.loginModal.setNewPassword(newPassword);
@@ -348,31 +341,24 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 	@step("Change password from email - v4")
 	public async changePasswordFromEmailV4(
 		newPassword: string,
-		mailinatorApi: MailinatorApi,
-		domain: string,
-		inbox: string,
+		mailpitApi: MailpitApi,
+		email: string,
 		page: Page,
 		{ messageIndex = 1 }: { messageIndex?: number } = {},
 		subjectIncludes?: string,
-		timeout = Timeout.MEDIUM,
-		interval = Timeout.SHORT,
+		timeout = TimeoutSeconds.TEN,
+		interval = TimeoutSeconds.FIVE,
 	): Promise<void> {
-		const message = await mailinatorApi.pollForMessages(
-			domain,
-			inbox,
+		const message = await mailpitApi.pollForMessages(
+			email,
 			timeout,
 			interval,
 			messageIndex,
 			subjectIncludes,
 		);
-		const resetPasswordEmailId = message.id;
 
-		const emailLinks = await mailinatorApi.getEmailLinks(
-			domain,
-			inbox,
-			resetPasswordEmailId,
-		);
-		const changePasswordLink = emailLinks.links[0];
+		const links = await mailpitApi.getMessageLinks(message.ID);
+		const changePasswordLink = links[0];
 
 		await page.goto(changePasswordLink);
 		await this.gamdomPage.loginModal.setNewPasswordV4(newPassword);

@@ -5,14 +5,14 @@ import { CrashApi } from "@api/games-api/crash-api";
 import { DiceApi } from "@api/games-api/dice-api";
 import { HiloApi } from "@api/games-api/hilo-api";
 import { RouletteApi } from "@api/games-api/roulette-api";
-import { MailinatorApi } from "@api/mailinator-api";
+import { MailpitApi } from "@api/mailpit-api";
 import { GamdomApiAsserter } from "@core/api/asserters/gamdom-api-asserter";
 import { test as base } from "@playwright/test";
 import * as Configuration from "../configuration";
 import { VeriffApi } from "@api/veriff-api";
 
 export type Apis = {
-	mailinatorApi: MailinatorApi;
+	mailpitApi: MailpitApi;
 	gamdomApi: GamdomApi;
 	gamdomCryptoApi: GamdomCryptoApi;
 	crashApi: CrashApi;
@@ -25,8 +25,8 @@ export type Apis = {
 };
 
 export const apisFixtures = base.extend<Apis>({
-	mailinatorApi: async ({}, use) => {
-		await use(new MailinatorApi(Configuration.mailinator));
+	mailpitApi: async ({}, use) => {
+		await use(new MailpitApi(Configuration.mailpit.baseUrl));
 	},
 	gamdomApi: async ({}, use) => {
 		await use(new GamdomApi());

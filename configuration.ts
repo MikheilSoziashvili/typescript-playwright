@@ -56,9 +56,8 @@ export const jira: Record<string, string> = {
 	username: asString(process.env.JIRA_USERNAME),
 	token: asString(process.env.JIRA_TOKEN),
 };
-export const mailinator: Record<string, string> = {
-	baseUrl: ConfiguraitonUrl.MAILINATOR,
-	apiKey: asString(process.env.MAILINATOR_API_KEY),
+export const mailpit = {
+	baseUrl: process.env.MAILPIT_BASE_URL ?? ConfiguraitonUrl.MAILPIT,
 };
 export const xray: Record<string, string> = {
 	baseUrl: ConfiguraitonUrl.XRAY,

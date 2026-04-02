@@ -8,7 +8,7 @@ import {
 	BlogPostsGenerator,
 	CasinoGamesGenerator,
 	ChatMessageGenerator,
-	MailinatorGenerator,
+	MailpitGenerator,
 	NewPasswordGenerator,
 	PromoCampaignCodesGenerator,
 	PromoCodesGenerators,
@@ -73,7 +73,7 @@ export class RandomDataSourceGenerator {
 		};
 	}
 
-	public get mailinator(): MailinatorGenerator {
+	public get mailpit(): MailpitGenerator {
 		return {
 			emailInbox: (overrideEmail?: string) =>
 				generateEmailAndInbox(overrideEmail),

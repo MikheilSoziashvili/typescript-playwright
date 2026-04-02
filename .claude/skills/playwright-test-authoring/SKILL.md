@@ -126,7 +126,7 @@ API-first preconditions use these clients (all accessible via fixtures or sessio
 | `HiloApi` | `hiloApi` | HiLo game bet placement |
 | `RouletteApi` | `rouletteApi` | Roulette game bet placement |
 | `PlinkoApi` | via `new PlinkoApi()` | Plinko game bet placement |
-| `MailinatorApi` | `mailinatorApi` | Email inbox, message retrieval, link extraction |
+| `MailpitApi` | `mailpitApi` | Email inbox, message retrieval, link extraction |
 | `VeriffApi` | `veriffApi` | KYC identity verification sessions |
 | `CoinGeckoApi` | `coingeckoApi` | Cryptocurrency price data |
 
@@ -371,7 +371,7 @@ yourPage: sessionAwarePage(YourPage),
 - Base classes: `pages/base/base-page.ts`, `base-map.ts`, `base-asserter.ts`, `base-page-step.ts`
 - Fixtures: `fixtures/fixtures.ts` (merges 18 modules)
 - Session management: `core/browser-session-mngmt.ts`
-- API clients: `api/gamdom-api.ts`, `api/games-api/`, `api/currency-api.ts`, `api/mailinator-api.ts`
+- API clients: `api/gamdom-api.ts`, `api/games-api/`, `api/currency-api.ts`, `api/mailpit-api.ts`
 - Facades: `core/facades/gamdom-api-db/gamdom-api-db-facade.ts`
 - Enums: `enums/` (TestTag, JiraComponent, JiraUser, BanReason, etc.)
 - Constants: `constants/page-endpoints.ts`

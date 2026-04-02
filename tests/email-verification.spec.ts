@@ -1,4 +1,3 @@
-import { MAILINATOR_DOMAIN } from "@constants/domains";
 import {
 	generateEmailAndInbox,
 	setAuthenticationCookies,
@@ -21,22 +20,20 @@ test.describe("Email Verification Tests", () => {
 	test(
 		"[ENG-1133] E-mail verification - new account",
 		testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
-		async ({ mailinatorApi, page, profilePage, gamdomApi }) => {
-			// reduce code duplication from 19-23 to be in a beforeEach (eventually take them out in another describe)
-			let { email, inbox } = generateEmailAndInbox();
+		async ({ mailpitApi, page, profilePage, gamdomApi }) => {
+			let { email } = generateEmailAndInbox();
 			const userData = new RegisterTestData({ email });
 
 			const cookie = await gamdomApi.authenticateWithNewUser(userData);
 			await setAuthenticationCookies(page, cookie);
 
-			({ email, inbox } = generateEmailAndInbox(userData.email));
+			({ email } = generateEmailAndInbox(userData.email));
 
 			await profilePage
 				.steps()
 				.verifyEmailAndCheckProfile(
-					mailinatorApi,
-					MAILINATOR_DOMAIN,
-					inbox,
+					mailpitApi,
+					email,
 					page,
 				);
 		},
@@ -45,14 +42,14 @@ test.describe("Email Verification Tests", () => {
 	test(
 		"[ENG-1121] E-mail verification",
 		testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
-		async ({ mailinatorApi, page, profilePage, gamdomApi }) => {
-			let { email, inbox } = generateEmailAndInbox();
+		async ({ mailpitApi, page, profilePage, gamdomApi }) => {
+			let { email } = generateEmailAndInbox();
 			const userData = new RegisterTestData({ email });
 
 			const cookie = await gamdomApi.authenticateWithNewUser(userData);
 			await setAuthenticationCookies(page, cookie);
 
-			({ email, inbox } = generateEmailAndInbox(userData.email));
+			({ email } = generateEmailAndInbox(userData.email));
 
 			await profilePage.navigate();
 			await profilePage.steps().completeVerificationFlow();
@@ -60,9 +57,8 @@ test.describe("Email Verification Tests", () => {
 			await profilePage
 				.steps()
 				.verifyEmailAndCheckProfile(
-					mailinatorApi,
-					MAILINATOR_DOMAIN,
-					inbox,
+					mailpitApi,
+					email,
 					page,
 					{ messageIndex: 2 },
 				);
@@ -72,7 +68,7 @@ test.describe("Email Verification Tests", () => {
 	test(
 		"[ENG-1132] E-mail verification - changing e-mail",
 		testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
-		async ({ gamdomApiDbFacade, mailinatorApi, page, profilePage }) => {
+		async ({ gamdomApiDbFacade, mailpitApi, page, profilePage }) => {
 			const { email } = generateEmailAndInbox();
 			const newEmailData = generateEmailAndInbox();
 
@@ -91,9 +87,8 @@ test.describe("Email Verification Tests", () => {
 			await profilePage
 				.steps()
 				.verifyEmailAndCheckProfile(
-					mailinatorApi,
-					MAILINATOR_DOMAIN,
-					newEmailData.inbox,
+					mailpitApi,
+					newEmailData.email,
 					page,
 				);
 		},
@@ -106,15 +101,15 @@ test.describe("Email Verification Tests", () => {
 			.withJiraBugTickets("ENG-13989")
 			.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 			.apply(),
-		async ({ browserSessionManager, mailinatorApi, testDataRandom }) => {
+		async ({ browserSessionManager, mailpitApi, testDataRandom }) => {
 			test.fixme(isScheduledRun);
+			const { email: userEmail } = testDataRandom.data.mailpit.emailInbox();
 			const regularUserEmailNotVerified =
 				await browserSessionManager.loginAs(TestUserRole.REGULAR, {
 					reuseContext: true,
 					regularUserOptions: {
 						emailVerified: false,
-						email: testDataRandom.data.mailinator.emailInbox()
-							.email,
+						email: userEmail,
 					},
 				});
 
@@ -135,16 +130,11 @@ test.describe("Email Verification Tests", () => {
 				.steps()
 				.resendVerificationWithdrawEmailSuccessfully();
 
-			const { inbox } = testDataRandom.data.mailinator.emailInbox(
-				regularUserEmailNotVerified.authenticatedUser?.user.email,
-			);
-
 			await regularUserEmailNotVerified.pages.profilePage
 				.steps()
 				.verifyEmail(
-					mailinatorApi,
-					MAILINATOR_DOMAIN,
-					inbox,
+					mailpitApi,
+					userEmail,
 					regularUserEmailNotVerified.page,
 				);
 

@@ -14,7 +14,7 @@ export interface CasinoGamesGenerator {
 	playerName(): string;
 }
 
-export interface MailinatorGenerator {
+export interface MailpitGenerator {
 	emailInbox(overrideEmail?: string): { email: string; inbox: string };
 }
 

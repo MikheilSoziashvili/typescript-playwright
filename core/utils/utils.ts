@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import { GamdomApi } from "@api/gamdom-api";
 import { WICKED_GAMES_AUTH } from "@constants/auth-casino-game-providers";
 import { DEFAULT_CURRENCY, DEFAULT_MULTIPLIER } from "@constants/defaults";
-import { MAILINATOR_DOMAIN, TEAMGAMDOM_DOMAIN } from "@constants/domains";
+import { MAILPIT_DOMAIN, TEAMGAMDOM_DOMAIN } from "@constants/domains";
 import { AUTH_PATH } from "@constants/file-paths";
 import { PRODUCTION_BASE_URL } from "@constants/page-urls";
 import { JsonData, WaitUntilOptions } from "@core/interfaces";
@@ -445,14 +445,12 @@ export function generateEmailAndInbox(overrideEmail?: string): {
 	email: string;
 	inbox: string;
 } {
-	const email = `${
-		overrideEmail
-			? overrideEmail
-			: generateRandomString({
-					prefix: "gmdverify",
-					length: 10,
-				})
-	}@${MAILINATOR_DOMAIN}`;
+	const email = overrideEmail
+		? overrideEmail
+		: `${generateRandomString({
+				prefix: "autotest",
+				length: 5,
+			})}@${MAILPIT_DOMAIN}`;
 	const inbox = email.split("@")[0];
 
 	return { email, inbox };

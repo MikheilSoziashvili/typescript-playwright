@@ -13,7 +13,7 @@ export enum ToastSubTitle {
 	AUTOBET_FINISHED = "Autobet finished!",
 	LIMBO_AUTOBET_FINISHED = "Autobet Finished",
 	BET_TOO_HIGH = "Bet too high!",
-	PASSWORD_CHANGED = "You have successfully changed your password. Have fun and good luck",
+	PASSWORD_CHANGED = "You have successfully changed your password. Have fun and good luck!",
 	CHANGE_CAMPAIGN_STATUS = "Successfully changed status for campaign",
 	PROMO_CODE_REDEEMED = "Promo code has been redeemed.",
 	PROMO_CODE_ERROR_MESSAGE = "Promo has ended or is inactive.",

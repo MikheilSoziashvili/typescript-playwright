@@ -197,7 +197,7 @@ test.use(storageStateUserAPI(username));          // 4 spec files
 | `external-pages-fixtures.ts` | External integrations (Steam, Google) |
 | `components-fixtures.ts` | Toast, header, footer, chat, datepicker |
 | `modal-fixtures.ts` | Wallet, login, register modals |
-| `api-fixtures.ts` | GamdomApi, GamdomCryptoApi, MailinatorApi, etc. |
+| `api-fixtures.ts` | GamdomApi, GamdomCryptoApi, MailpitApi, etc. |
 | `auth-fixtures.ts` | Storage state factory functions |
 | `test-data-fixtures.ts` | testData sources (predefined, random, domain, object) |
 | `db-fixtures.ts` | GamdomDb instance |

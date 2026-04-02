@@ -1,4 +1,3 @@
-import { MAILINATOR_DOMAIN } from "@constants/domains";
 import { testDetails } from "@core/helpers/test-details-helper";
 import {
 	generateEmailAndInbox,
@@ -36,7 +35,7 @@ test.describe("Password tests", () => {
 						passwordChangeExecutionTestFlow,
 						browserSessionManager,
 						profilePage,
-						mailinatorApi,
+						mailpitApi,
 						page,
 						changePasswordModal,
 						toast,
@@ -46,7 +45,7 @@ test.describe("Password tests", () => {
 								{
 									browserSessionManager,
 									profilePage,
-									mailinatorApi,
+									mailpitApi,
 									page,
 									changePasswordModal,
 								},
@@ -73,7 +72,7 @@ test.describe("Password tests", () => {
 				gamdomApiDbFacade,
 				homePage,
 				profilePage,
-				mailinatorApi,
+				mailpitApi,
 				page,
 				toast,
 			}) => {
@@ -99,9 +98,8 @@ test.describe("Password tests", () => {
 					.steps()
 					.changePasswordFromEmail(
 						newUserPassword,
-						mailinatorApi,
-						MAILINATOR_DOMAIN,
-						emailDetails.inbox,
+						mailpitApi,
+						emailDetails.email,
 						page,
 						{ messageIndex: 1 },
 						"Password Reset",
@@ -131,7 +129,7 @@ test.describe("Password reset - v4", () => {
 			.withTags(TestTag.V4, JiraComponent.PASSWORD_RESET, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.RALUCA_ARITON)
 			.apply(),
-		async ({ browserSessionManager, mailinatorApi, page }) => {
+		async ({ browserSessionManager, mailpitApi, page }) => {
 			let emailDetails = generateEmailAndInbox();
 
 			const newUserPassword = testData()
@@ -159,9 +157,8 @@ test.describe("Password reset - v4", () => {
 				.steps()
 				.changePasswordFromEmailV4(
 					newUserPassword,
-					mailinatorApi,
-					MAILINATOR_DOMAIN,
-					emailDetails.inbox,
+					mailpitApi,
+					emailDetails.email,
 					page,
 					{ messageIndex: 1 },
 					"Password Reset",

@@ -48,7 +48,6 @@ jobs:
             GOOGLE_AUTH_SECRET: ${{ secrets.GOOGLE_AUTH_SECRET }}
             OXYLABS_USER: ${{ secrets.OXYLABS_USER }}
             OXYLABS_PASSWORD: ${{ secrets.OXYLABS_PASSWORD }}
-            MAILINATOR_API_KEY: ${{ secrets.MAILINATOR_API_KEY }}
             E2E_HOT_WALLET_CONFIG_ADMIN_API_KEY: ${{ secrets.E2E_HOT_WALLET_CONFIG_ADMIN_API_KEY }}
             ENVIRONMENT_URL: ${{ inputs.environment == '' && vars.ENVIRONMENT_URL || inputs.environment }}
             SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}

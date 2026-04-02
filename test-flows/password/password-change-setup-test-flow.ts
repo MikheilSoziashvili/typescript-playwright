@@ -6,8 +6,7 @@ import {
 import { TestUserRole } from "@enums/test-user-roles";
 import { generateEmailAndInbox } from "@core/utils/utils";
 import { ProfilePage } from "@pages/profile/profile-page";
-import { MailinatorApi } from "@api/mailinator-api";
-import { MAILINATOR_DOMAIN } from "@constants/domains";
+import { MailpitApi } from "@api/mailpit-api";
 import { Page } from "@playwright/test";
 import { ChangePasswordModal } from "@pages/modals/change-password-modal/change-password-modal";
 
@@ -25,14 +24,14 @@ export class PasswordChangeSetupTestFlow extends BaseTestFlow {
 	public async setupPasswordChange(params: {
 		browserSessionManager: BrowserSessionManager;
 		profilePage: ProfilePage;
-		mailinatorApi: MailinatorApi;
+		mailpitApi: MailpitApi;
 		page: Page;
 		changePasswordModal: ChangePasswordModal;
 	}): Promise<PasswordChangeSetupResult> {
 		const {
 			browserSessionManager,
 			profilePage,
-			mailinatorApi,
+			mailpitApi,
 			page,
 			changePasswordModal,
 		} = params;
@@ -58,9 +57,8 @@ export class PasswordChangeSetupTestFlow extends BaseTestFlow {
 		await profilePage
 			.steps()
 			.verifyEmailAndProceedWithChangePassword(
-				mailinatorApi,
-				MAILINATOR_DOMAIN,
-				emailDetails.inbox,
+				mailpitApi,
+				emailDetails.email,
 				page,
 			);
 

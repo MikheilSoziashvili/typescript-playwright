@@ -77,7 +77,6 @@ jobs:
             GOOGLE_AUTH_SECRET: ${{ secrets.GOOGLE_AUTH_SECRET }}
             OXYLABS_USER: ${{ secrets.OXYLABS_USER }}
             OXYLABS_PASSWORD: ${{ secrets.OXYLABS_PASSWORD }}
-            MAILINATOR_API_KEY: ${{ secrets.MAILINATOR_API_KEY }}
             E2E_HOT_WALLET_CONFIG_ADMIN_API_KEY: ${{ secrets.E2E_HOT_WALLET_CONFIG_ADMIN_API_KEY }}
             AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
             AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -130,7 +129,6 @@ jobs:
             GOOGLE_AUTH_SECRET: ${{ secrets.GOOGLE_AUTH_SECRET }}
             OXYLABS_USER: ${{ secrets.OXYLABS_USER }}
             OXYLABS_PASSWORD: ${{ secrets.OXYLABS_PASSWORD }}
-            MAILINATOR_API_KEY: ${{ secrets.MAILINATOR_API_KEY }}
             E2E_HOT_WALLET_CONFIG_ADMIN_API_KEY: ${{ secrets.E2E_HOT_WALLET_CONFIG_ADMIN_API_KEY }}
             AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
             AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

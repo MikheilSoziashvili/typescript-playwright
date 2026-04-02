@@ -1,8 +1,8 @@
-import { MailinatorApi } from "@api/mailinator-api";
+import { MailpitApi } from "@api/mailpit-api";
 import { step } from "decorators/step";
 import { getRandomEmail, getRandomPhone } from "@core/utils/utils";
 import { ContactType } from "@enums/personal-info-types";
-import { Timeout } from "@enums/timeout";
+import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { BasePageStep } from "@pages/base/base-page-step";
 import { expect, Page } from "@playwright/test";
 import { ProfilePage } from "./profile-page";
@@ -65,49 +65,40 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 
 	@step("Verify email")
 	public async verifyEmail(
-		mailinatorApi: MailinatorApi,
-		domain: string,
-		inbox: string,
+		mailpitApi: MailpitApi,
+		email: string,
 		page: Page,
 		{ messageIndex = 1 }: { messageIndex?: number } = {},
-		timeout = Timeout.MEDIUM,
-		interval = Timeout.SHORT,
+		timeout = TimeoutSeconds.TEN,
+		interval = TimeoutSeconds.FIVE,
 	): Promise<void> {
-		const message = await mailinatorApi.pollForMessages(
-			domain,
-			inbox,
+		const message = await mailpitApi.pollForMessages(
+			email,
 			timeout,
 			interval,
 			messageIndex,
 		);
-		const verificationEmailId = message.id;
 
-		const emailLinks = await mailinatorApi.getEmailLinks(
-			domain,
-			inbox,
-			verificationEmailId,
-		);
-		const verificationLink = emailLinks.links[0];
+		const links = await mailpitApi.getMessageLinks(message.ID);
+		const verificationLink = links[0];
 
 		await page.goto(verificationLink);
 	}
 
 	@step("Verify email and check profile")
 	public async verifyEmailAndCheckProfile(
-		mailinatorApi: MailinatorApi,
-		domain: string,
-		inbox: string,
+		mailpitApi: MailpitApi,
+		email: string,
 		page: Page,
 		{ messageIndex = 1 }: { messageIndex?: number } = {},
-		timeout = Timeout.MEDIUM,
-		interval = Timeout.SHORT,
+		timeout = TimeoutSeconds.TEN,
+		interval = TimeoutSeconds.FIVE,
 	): Promise<void> {
 		await this.verifyEmail(
-			mailinatorApi,
-			domain,
-			inbox,
+			mailpitApi,
+			email,
 			page,
-			{ messageIndex },
+			{ messageIndex: messageIndex },
 			timeout,
 			interval,
 		);
@@ -118,31 +109,24 @@ export class ProfilePageSteps extends BasePageStep<ProfilePage> {
 
 	@step("Verify email and proceed with change password")
 	public async verifyEmailAndProceedWithChangePassword(
-		mailinatorApi: MailinatorApi,
-		domain: string,
-		inbox: string,
+		mailpitApi: MailpitApi,
+		email: string,
 		page: Page,
 		{ messageIndex = 1 }: { messageIndex?: number } = {},
 		subjectIncludes?: string,
-		timeout = Timeout.MEDIUM,
-		interval = Timeout.SHORT,
+		timeout = TimeoutSeconds.TEN,
+		interval = TimeoutSeconds.FIVE,
 	): Promise<void> {
-		const message = await mailinatorApi.pollForMessages(
-			domain,
-			inbox,
+		const message = await mailpitApi.pollForMessages(
+			email,
 			timeout,
 			interval,
 			messageIndex,
 			subjectIncludes,
 		);
-		const changePasswordEmailId = message.id;
 
-		const emailLinks = await mailinatorApi.getEmailLinks(
-			domain,
-			inbox,
-			changePasswordEmailId,
-		);
-		const changePasswordLink = emailLinks.links[0];
+		const links = await mailpitApi.getMessageLinks(message.ID);
+		const changePasswordLink = links[0];
 
 		await page.goto(changePasswordLink);
 	}

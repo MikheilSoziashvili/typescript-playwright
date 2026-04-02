@@ -62,7 +62,7 @@ Make sure you have the following installed:
 │   ├── gamdom-api.ts                             # Gamdom API Client
 │   ├── jira-api-payloads.ts                      # JIRA API payloads
 │   ├── jira-api.ts                               # JIRA API Client
-│   ├── mailinator-api.ts                         # Mailinator API Client
+│   ├── mailpit-api.ts                             # Mailpit API Client
 │   ├── xray-api.ts                               # XRay API Client
 ├── configuration.ts                              # Project configuration settings
 ├── constants                                     # Constants used throughout the project
@@ -288,8 +288,8 @@ APIs are used to bypass the need for direct UI interaction. This approach makes 
 
 #### External Services
 
-Integration with external services like **[Mailinator](https://www.mailinator.com/api)** and **proxy servers** is implemented to enhance testing capabilities.
-**Mailinator** is used for handling temporary email addresses, allowing to easily manage and verify email-based workflows.
+Integration with external services like **Mailpit** and **proxy servers** is implemented to enhance testing capabilities.
+**Mailpit** is used for handling temporary email addresses, allowing to easily manage and verify email-based workflows.
 **Proxy servers** are utilized to simulate different network conditions and IP addresses, ensuring our tests cover a wide range of real-world scenarios.
 
 #### CODEOWNERS - Default Pull Request reviewers
