@@ -174,20 +174,7 @@ For each component name returned from the Jira issue, check whether a matching e
 
 **4d — Detect auth pattern and page coverage (run in parallel with 4a–4c):**
 
-**Auth detection** — scan all step Actions for login/session language and resolve to `TestUserRole`:
-
-| Step text pattern | Resolved session |
-|---|---|
-| "login as regular / standard / player user" | `loginAs(TestUserRole.REGULAR)` |
-| "login as regular user with [X] balance/coins" | `loginAs(TestUserRole.REGULAR, { regularUserOptions: { amount: X } })` |
-| "login as superadmin / super admin" | `loginAs(TestUserRole.SUPERADMIN, { reuseContext: true })` |
-| "login as user info admin" | `loginAs(TestUserRole.ADMIN_USER_INFO_ADMIN, { reuseContext: true })` |
-| "login as crypto admin" | `loginAs(TestUserRole.ADMIN_CRYPTOSUPADMIN, { reuseContext: true })` |
-| "login as streamer" | `loginAs(TestUserRole.REGULAR, { regularUserOptions: { tags: [UserTags.Streamer] } })` |
-| "User A" + "User B" in different steps | 2 sessions — dual `loginAs()` |
-| Admin steps + user steps combined | 2 sessions — admin first with `reuseContext: true` |
-
-Determine: **how many sessions**, **which roles**, **which is first**.
+**Auth detection** — scan all step Actions for login/session language and resolve to `TestUserRole` using the mappings in `xray-step-vocabulary.md` § Auth / Session. Determine: **how many sessions**, **which roles**, **which is first**.
 
 **Page coverage check** — for each UI surface mentioned in step Actions:
 
@@ -199,7 +186,7 @@ grep -r "{PageName}" /Users/svetoslavlazarov/e2e/pages/index.ts 2>/dev/null
 
 Produce a coverage table:
 - ✅ POM exists → note fixture key
-- ❌ No POM → flag as "needs MCP inspection in /implement-test"
+- ❌ No POM → flag as "needs playwright-cli inspection in /implement-test"
 
 **Step translation draft** — for each step, produce a one-line framework call using the patterns from the `xray-step-vocabulary` rule. Mark unresolvable steps explicitly.
 
@@ -279,7 +266,7 @@ No dataset — this test uses hardcoded or no data.
 ### Page Coverage
 | Step Mentions | POM Exists | Fixture Key | Action |
 | --- | --- | --- | --- |
-| {page name from step} | ✅ / ❌ | `{fixtureKey}` or — | Ready / Needs MCP inspection |
+| {page name from step} | ✅ / ❌ | `{fixtureKey}` or — | Ready / Needs playwright-cli inspection |
 
 ### Step Translations
 | # | Xray Action | Framework Call |

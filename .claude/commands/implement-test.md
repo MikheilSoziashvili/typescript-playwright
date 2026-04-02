@@ -1,6 +1,6 @@
 # /implement-test
 
-Read an existing scaffold `.md` file and implement the full test — POMs (with live MCP inspection for missing ones), flows (if needed), and spec.
+Read an existing scaffold `.md` file and implement the full test — POMs (with live playwright-cli inspection for missing ones), flows (if needed), and spec.
 
 ## Usage
 
@@ -28,6 +28,7 @@ CLAUDE.md
 .claude/rules/xray-step-vocabulary.md
 .claude/rules/anti-patterns.md
 .claude/skills/mcp-selector-authoring.md
+.claude/skills/playwright-cli/SKILL.md
 ```
 
 Do not skip this step. These files define selector methodology, POM structure, spec patterns, auth patterns, and what to avoid — all of which directly affect the generated code.
@@ -57,7 +58,7 @@ Read the scaffold file (prefer folder path; use flat file if that's what exists)
 - Dataset information (CSV files, if any)
 - `Framework Analysis` section if present (Sessions Required, Page Coverage, Step Translations — use as starting point for Step 2c)
 
-**Attachment awareness:** if a step has an `Attachments` cell pointing to `./step-{N}-{M}.png`, that image is available at `tests/{TEST_KEY}-scaffold/step-{N}-{M}.png`. During MCP inspection (Step 3), reference these screenshots to understand which UI elements to target — they show the expected UI state at that step.
+**Attachment awareness:** if a step has an `Attachments` cell pointing to `./step-{N}-{M}.png`, that image is available at `tests/{TEST_KEY}-scaffold/step-{N}-{M}.png`. During playwright-cli inspection (Step 3), reference these screenshots to understand which UI elements to target — they show the expected UI state at that step.
 
 ---
 
@@ -81,7 +82,7 @@ find /Users/svetoslavlazarov/e2e/test-flows -name "*.ts" | xargs grep -l "{keywo
 **2b — Classify each page as:**
 - **Covered** — POM and/or flow exists that handles this step's interaction → note the fixture name, use it directly
 - **Partially covered** — POM exists but is missing specific locators/methods needed for this test → note what's missing, extend in Step 3
-- **Not covered** — No POM exists → proceed to Step 3 to create it via MCP inspection
+- **Not covered** — No POM exists → proceed to Step 3 to create it via playwright-cli inspection
 
 ---
 
@@ -103,7 +104,7 @@ Produce an internal **translation table** — one row per step — that Steps 5 
 
 ---
 
-### Step 3 — Create missing POMs via Playwright MCP inspection
+### Step 3 — Create missing POMs via playwright-cli inspection
 
 For each page classified as "Not covered" or "Partially covered" in Step 2:
 
@@ -117,34 +118,12 @@ Full URL: `{environment_url}{/path}`
 If any scaffold step has an attachment screenshot (`tests/{TEST_KEY}-scaffold/step-{N}-{M}.png`), review it before navigating — it shows the expected UI state and helps identify which elements to target.
 
 **3b — Ask the user which view to inspect** (if not obvious from context):
-_"I'll inspect `{PageName}` via Playwright MCP. Should I use the superadmin view or the regular user view?"_
+_"I'll inspect `{PageName}` via playwright-cli. Should I use the superadmin view or the regular user view?"_
 Different roles see different elements — confirm before navigating.
 
-**3c — Set staging auth and navigate:**
+**3c — Authenticate and navigate:** Follow `mcp-selector-authoring.md` Step 0 (Layer 1 for OAuth proxy bypass, Layer 2 if the page requires a logged-in Gamdom user).
 
-Read the JWT token via Bash, then inject + navigate in one `browser_run_code` call:
-
-```bash
-grep OAUTH2_JWT /Users/svetoslavlazarov/e2e/.env | cut -d'"' -f2
-```
-
-```javascript
-// browser_run_code — async (page) => {} wrapper is REQUIRED
-async (page) => {
-    const jwt = 'PASTE_TOKEN_HERE';
-    await page.context().setExtraHTTPHeaders({ Authorization: `Bearer ${jwt}` });
-    await page.goto('{environment_url}{/path}', { waitUntil: 'domcontentloaded' });
-    return page.url();
-}
-```
-
-**If you land on Google's sign-in page:** the header is now set on the context — call `browser_navigate` again with the same URL. It succeeds on the second attempt.
-
-**If the page requires a logged-in Gamdom user** (not just proxy bypass): after navigation, log in via the Gamdom UI using predefined staging credentials from the `mcp-selector-authoring` skill (all accounts use password `password`).
-
-**3d — Inspect the page:**
-
-Invoke the `mcp-selector-authoring` skill for the complete inspection procedure (snapshot → Container → Content → Role → locator priority → FALLBACK annotation).
+**3d — Inspect the page:** Follow `mcp-selector-authoring.md` Steps 1–2 for the complete inspection procedure (snapshot → Container → Content → Role → selector priority).
 
 **Only inspect the elements needed for THIS test's steps.** Do not exhaustively map every element on the page.
 
@@ -228,6 +207,6 @@ Tell the user:
 
 1. Files created/modified (paths), grouped by: POMs created, flows created, spec file
 2. Locator strategy used for each new POM (any last-resort CSS class selectors that should be revisited once the frontend adds data-testid)
-3. Any UI areas that could not be reliably mapped during MCP inspection (flag for manual review)
+3. Any UI areas that could not be reliably mapped during playwright-cli inspection (flag for manual review)
 4. The `CsvFilesName` enum entry to add (if dataset)
 5. Run check: `npx tsc --noEmit --pretty` to confirm compilation

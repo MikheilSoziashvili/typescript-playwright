@@ -126,14 +126,9 @@ public get loginModal(): LoginModal {
 }
 ```
 
-## Locator strategy (preferred order)
+## Locator strategy
 
-1. `page.getByTestId("...")` — primary
-2. `parent.getByTestId("...")` — scoped
-3. `page.locator("css", { hasText: "..." })` — with text filter
-4. `.filter({ has: page.locator(...) })` — filtered
-5. `.nth(index)` — positional
-6. XPath — last resort
+See `mcp-selectors.md` for the full 7-level priority table. In brief: `getByTestId` > `getByRole` > content filters > CSS attributes > last-resort CSS class/XPath.
 
 ## Creating a new Page Object
 
@@ -146,24 +141,9 @@ public get loginModal(): LoginModal {
 
 ## Asserter methods — always use base-asserter wrappers
 
-Never call raw `expect()` directly inside asserter methods for element state checks. Always use the `BaseAsserter` wrapper methods — they add consistent step labelling and options support:
+In asserter files, never call raw `expect()` for element state checks — always use `BaseAsserter` wrapper methods. See `base-asserter-methods.md` for the full mapping table and custom message conventions.
 
-| Raw `expect()` (❌ avoid) | `BaseAsserter` method (✅ use) |
-|---|---|
-| `expect(el).toBeVisible()` | `checkElementsAreVisible([el])` |
-| `expect(el).not.toBeVisible()` | `checkElementsAreNotVisible([el])` |
-| `expect(el).toBeHidden()` | `checkElementsAreHidden([el])` |
-| `expect(el).toBeEnabled()` | `checkElementsAreEnabled([el])` |
-| `expect(el).toBeDisabled()` | `checkElementsAreDisabled([el])` |
-| `expect(el).toHaveText(t)` | `checkElementsHaveText([{ locator: el, expectedText: t }])` |
-| `expect(el).toContainText(t)` | `checkElementsContainText([{ locator: el, expectedText: t }])` |
-| `expect(el).toHaveValue(v)` | `checkElementsHaveValue([{ locator: el, expectedValue: v }])` |
-| `expect(el).toBeEmpty()` | `checkElementsAreEmpty([el])` |
-| `expect(el).not.toBeEmpty()` | `checkElementsAreNotEmpty([el])` |
-| `expect(el).toBeChecked()` / `.not.toBeChecked()` | `assertCheckedState([{ locator: el, checked: bool }])` |
-| `expect(el).toBeEnabled()` / `.toBeDisabled()` with label | `assertEnabledState([{ locator: el, enabled: bool, label }])` |
-
-Raw `expect()` is still correct for non-element assertions (numeric comparisons, string equality, counts, etc.) and inside `verifyElementIsCentered` / `expectLocatorInside` / visual checks that don't map to the above.
+Raw `expect()` is still correct for non-element assertions (numeric comparisons, string equality, counts, etc.).
 
 ## Rules
 
@@ -171,10 +151,9 @@ Raw `expect()` is still correct for non-element assertions (numeric comparisons,
 - Assertions ONLY in asserter files
 - Never mix concerns across the four files
 - `@step()` required on all public methods (enforced by `yarn lint:step-decorators`)
-- In asserter methods, always use `BaseAsserter` wrapper methods over raw `expect()` for element state checks (see table above)
 
 ## AI-Assisted Workflow
 
 When creating a new POM as part of a test implementation:
-- Use `/implement-test {TEST_KEY}` — reads the scaffold `.md`, detects pages without POMs, navigates to staging via Playwright MCP, snapshots the DOM, builds real selectors, and scaffolds all 4 files + fixture automatically
+- Use `/implement-test {TEST_KEY}` — reads the scaffold `.md`, detects pages without POMs, navigates to staging via playwright-cli, snapshots the DOM, builds real selectors, and scaffolds all 4 files + fixture automatically
 - Use the `pom-scaffold` skill for the full file skeletons and generation procedure when scaffolding standalone

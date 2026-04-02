@@ -58,7 +58,7 @@ Playwright
 - **Asserter class**: pure assertion methods (no actions)
 - **Page class**: pure action methods (no assertions)
 
-## MCP Page Inspection
+## Page Inspection (playwright-cli)
 
 - **Always ask which user type** before logging in to inspect a page: superadmin, default user1, or newly created DB user with specific tags
 - Different users see different elements — never assume user type
@@ -113,26 +113,11 @@ To override any auto-mapped value (component, author, tags), specify it explicit
 
 ## Playwright Config
 
-| Setting               | Value                                                                     |
-| --------------------- | ------------------------------------------------------------------------- |
-| Test timeout          | 3 min                                                                     |
-| Expect/Action timeout | 25s                                                                       |
-| Navigation timeout    | 40s                                                                       |
-| slowMo                | 300ms                                                                     |
-| Viewport              | 1920x1080                                                                 |
-| Retries               | 1 (CI) / 0 (local)                                                        |
-| Workers               | 1 (CI) / auto (local)                                                     |
-| Trace/Video           | retain-on-failure                                                         |
-| Projects              | `chromium` (parallel) + `chromium-sequential` (serial, `@sequential` tag) |
+Timeouts: test 3min, expect/action 25s, navigation 40s, slowMo 300ms. Viewport 1920×1080. Retries: 1 (CI) / 0 (local). Workers: 1 (CI) / auto (local). Trace/Video: retain-on-failure. Projects: `chromium` (parallel) + `chromium-sequential` (serial, `@sequential` tag).
 
 ## CI/CD
 
-GitHub Actions on self-hosted runners:
-
-- `playwright.yml` — Main runner (nightly 3 AM + manual dispatch, 5-15 workers, S3 reports, Slack, JIRA)
-- `premerge.yml` — PR quality gates (ESLint + Prettier + step decorator check, then runs modified tests)
-- `detect-modified-tests.yml` — Git diff detection, runs new/modified specs with `--repeat-each=3`
-- `playwright-visual-images.yml` — Visual regression image management
+GitHub Actions on self-hosted runners: `playwright.yml` (nightly + manual, S3 reports, Slack, JIRA), `premerge.yml` (PR quality gates), `detect-modified-tests.yml` (runs modified specs ×3), `playwright-visual-images.yml` (visual regression).
 
 ## Tags
 
@@ -161,9 +146,9 @@ Pattern-specific rules with code examples are in `.claude/rules/`:
 - `api-and-db.md` — API client and database patterns
 - `anti-patterns.md` — What to avoid (project-specific)
 - `base-asserter-methods.md` — BaseAsserter utility methods and raw `expect()` replacements
-- `mcp-selectors.md` — MCP selector authoring rules (Container→Content→Role methodology)
+- `mcp-selectors.md` — playwright-cli selector authoring rules (Container→Content→Role methodology)
 
 Additional documentation:
 
-- `.claude/skills/mcp-selector-authoring.md` — Dual MCP skill workflow (Verdex + Playwright MCP)
-- `docs/dual-mcp-poc.md` — Dual MCP PoC documentation, auth strategies, and lessons learned
+- `.claude/skills/mcp-selector-authoring.md` — playwright-cli inspection workflow (auth, snapshot, eval, selector methodology)
+- `.claude/skills/playwright-cli/SKILL.md` — playwright-cli full command reference

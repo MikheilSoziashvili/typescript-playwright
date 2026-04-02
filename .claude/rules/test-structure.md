@@ -297,5 +297,5 @@ In parallel test runs, positional selectors on shared UI surfaces (chat, notific
 
 When implementing a test from a Jira/Xray ticket:
 1. `/xray-scaffold ENG-XXXXX` — fetches steps from Xray, creates `tests/ENG-XXXXX-scaffold.md`
-2. `/implement-test ENG-XXXXX` — reads the `.md`, checks for existing POMs, runs Playwright MCP inspection for any missing pages, creates POMs with real selectors, creates flows if needed, writes the spec
+2. `/implement-test ENG-XXXXX` — reads the `.md`, checks for existing POMs, runs playwright-cli inspection for any missing pages, creates POMs with real selectors, creates flows if needed, writes the spec
 3. `/pr-review` — automated code review before opening PR

@@ -41,27 +41,22 @@ If a page object already exists, extend it instead of creating a duplicate.
 
 ### Step 2b — Inspect the Page (if URL is known)
 
-**If a URL was provided** (either directly in the prompt or from a scaffold `.md`), run MCP inspection before writing any locators.
+**If a URL was provided** (either directly in the prompt or from a scaffold `.md`), run playwright-cli inspection before writing any locators.
 
 Do NOT guess or invent selectors. Always inspect the live page first:
 
-1. Set the OAuth2 JWT header before navigating to staging:
-   ```javascript
-   // mcp__playwright__browser_run_code
-   async (page) => {
-       const fs = require('fs');
-       const dotenv = require('dotenv');
-       const env = dotenv.parse(fs.readFileSync('/Users/svetoslavlazarov/e2e/.env'));
-       await page.context().setExtraHTTPHeaders({ Authorization: `Bearer ${env.OAUTH2_JWT}` });
-       await page.goto('{URL}', { waitUntil: 'domcontentloaded' });
-   }
+1. Read JWT and open a named session with OAuth2 header injected:
+   ```bash
+   grep OAUTH2_JWT /Users/svetoslavlazarov/e2e/.env | cut -d'"' -f2
+   playwright-cli -s=staging open --headed
+   playwright-cli -s=staging run-code "async page => { const jwt = 'PASTE_TOKEN'; await page.context().setExtraHTTPHeaders({ Authorization: \`Bearer \${jwt}\` }); await page.goto('{URL}', { waitUntil: 'domcontentloaded' }); }"
    ```
-2. Take `mcp__playwright__browser_snapshot()` to get the accessibility tree
-3. For each UI area: walk UP to find stable Container (preferring `data-testid`), filter by Content if needed, target Role
+2. Take a shallow snapshot: `playwright-cli -s=staging snapshot --depth=4`
+3. For each UI area: use `playwright-cli -s=staging eval "el => ..." {ref}` to walk UP to find stable Container (preferring `data-testid`), filter by Content if needed, target Role
 4. Build locators following this priority: `getByTestId` > `getByRole` > text filter > attribute selector > last-resort CSS/XPath (no comments on locators)
 5. Chain child getters through parent container getters — never scope directly from `this.page` when a container already exists
 
-**If no URL is provided:** generate the map file with `// TODO: replace with real locator — inspect the live page via Playwright MCP to get the actual selector` placeholders for each getter.
+**If no URL is provided:** generate the map file with `// TODO: replace with real locator — inspect the live page via playwright-cli to get the actual selector` placeholders for each getter.
 
 ### Step 3 — Generate Files
 
