@@ -116,10 +116,12 @@ import { TransactionsPage } from "./transactions/transactions-page";
 import { VerificationPage } from "./verification/verification-page";
 import { SweetBonanzaCandyLandPage } from "./casino-games/pragmatic-play-live/sweet-bonanza-candy-land/sweet-bonanza-candy-land-page";
 import { LimboGamePage } from "./limbo-game-page/limbo-game-page";
+import { AffiliatesInfoPage } from "./affiliates-info/affiliates-info-page";
 
 export const GamdomPages = {
 	homePage: HomePage,
 	affiliatesPage: AffiliatesPage,
+	affiliatesInfoPage: AffiliatesInfoPage,
 	settingsPage: SettingsPage,
 	rewardsPage: RewardsPage,
 	rewardsExplorePage: RewardsExplorePage,

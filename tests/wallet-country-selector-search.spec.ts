@@ -5,6 +5,7 @@ import { JiraUser } from "@enums/jira/jira-users";
 import { TestUserRole } from "@enums/test-user-roles";
 import { CsvFilesName } from "@enums/csv-file-name";
 import { testData } from "test-data/test-data-manager";
+import { TestTag } from "@enums/test-tags";
 
 test.describe("Wallet Country selector - Search field functionality", () => {
 	const rows = testData().fromCsvRaw({
@@ -16,17 +17,22 @@ test.describe("Wallet Country selector - Search field functionality", () => {
 			`[ENG-13584] Country selector search - ${row.search_queries}`,
 			testDetails()
 				.withAuthor(JiraUser.RALUCA_ARITON)
-				.withTags(JiraComponent.WALLET)
+				.withTags(JiraComponent.WALLET, TestTag.ACCEPTANCE)
 				.apply(),
-			async ({ browserSessionManager, homePage, walletModal }) => {
-				await browserSessionManager.loginAs(TestUserRole.REGULAR, {
-					reuseContext: true,
-				});
+			async ({ browserSessionManager }) => {
+				const user = await browserSessionManager.loginAs(
+					TestUserRole.REGULAR,
+					{
+						reuseContext: true,
+					},
+				);
 
-				await homePage.navigateToWallet();
-				await walletModal.openCountrySelector();
-				await walletModal.assertThat().countrySelectorDropdownIsOpen();
-				await walletModal
+				await user.pages.homePage.navigateToWallet();
+				await user.pages.walletModal.openCountrySelector();
+				await user.pages.walletModal
+					.assertThat()
+					.countrySelectorDropdownIsOpen();
+				await user.pages.walletModal
 					.steps()
 					.searchCountryAndVerify(
 						row.search_input,

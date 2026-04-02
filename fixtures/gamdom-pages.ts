@@ -1,6 +1,7 @@
 import { test as base } from "@playwright/test";
 import { HomePage } from "@pages/home-page/home-page";
 import { AffiliatesPage } from "@pages/affiliates/affiliates-page";
+import { AffiliatesInfoPage } from "@pages/affiliates-info/affiliates-info-page";
 import { RewardsPage } from "@pages/rewards/rewards-page";
 import { RewardsExplorePage } from "@pages/rewards/explore/rewards-explore-page";
 import { ProfilePage } from "@pages/profile/profile-page";
@@ -36,6 +37,7 @@ export type GamdomPages = {
 	browserSessionManager: BrowserSessionManager;
 	homePage: HomePage;
 	affiliatesPage: AffiliatesPage;
+	affiliatesInfoPage: AffiliatesInfoPage;
 	settingsPage: SettingsPage;
 	rewardsPage: RewardsPage;
 	rewardsExplorePage: RewardsExplorePage;
@@ -72,6 +74,7 @@ export const gamdomPagesFixtures = base.extend<GamdomPages>({
 	},
 	homePage: sessionAwarePage(HomePage),
 	affiliatesPage: sessionAwarePage(AffiliatesPage),
+	affiliatesInfoPage: sessionAwarePage(AffiliatesInfoPage),
 	settingsPage: sessionAwarePage(SettingsPage),
 	rewardsPage: sessionAwarePage(RewardsPage),
 	rewardsExplorePage: sessionAwarePage(RewardsExplorePage),
