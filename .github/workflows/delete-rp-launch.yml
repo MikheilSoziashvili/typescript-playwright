@@ -1,0 +1,33 @@
+name: Delete ReportPortal Launch
+
+on:
+    workflow_dispatch:
+        inputs:
+            launch_ids:
+                description: "Launch ID(s) to delete — comma-separated (e.g. 49 or 49,50,51)"
+                type: string
+                required: true
+
+jobs:
+    delete-launch:
+        name: Delete RP Launch(es)
+        runs-on: self-hosted-k8s
+        timeout-minutes: 60
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Set up Python
+              uses: actions/setup-python@v5
+              with:
+                  python-version: "3.11"
+
+            - name: Install dependencies
+              run: pip install requests
+
+            - name: Delete ReportPortal launch(es)
+              env:
+                  RP_API_KEY: ${{ secrets.RP_API_KEY }}
+                  RP_LAUNCH_IDS: ${{ inputs.launch_ids }}
+              run: python3 scripts/delete_rp_launch.py
