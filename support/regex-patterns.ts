@@ -115,3 +115,8 @@ export const htmlHrefLinkPattern = /href="(https?:\/\/[^"]+)"/g;
 // lobby-carousel-item-0-container-barrel-bonanza-alea15315
 // Captures the game name (e.g. "barrel-bonanza") from the data-testid.
 export const gameNameFromTestIdPattern = /\bcontainer-([a-z0-9-]+)-[^-]+$/i;
+
+export const promotionEndsAtDateTimePattern =
+	/^Ends at \d{1,2}:\d{2} (AM|PM) \d{2}\/\d{2}\/\d{4} GMT[+-]\d+$/;
+export const promotionEndedAtDateTimePattern =
+	/^Ended at \d{1,2}:\d{2} (AM|PM) \d{2}\/\d{2}\/\d{4} GMT[+-]\d+$/;

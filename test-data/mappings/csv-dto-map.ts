@@ -54,6 +54,7 @@ import { PhoneNumberValidationCsv } from "@dtos/csv/phone-number-validation-csv"
 import { EmailAddressValidationCsv } from "@dtos/csv/email-address-validation-csv";
 import { UsernameValidationCsv } from "@dtos/csv/username-validation-csv";
 import { WalletCountrySelectorSearchCsv } from "@dtos/csv/wallet-country-selector-search-csv";
+import { PromotionEndDateTimeFormatCsv } from "@dtos/csv/promotion-end-date-time-format-csv";
 import { CsvFilesName } from "@enums/csv-file-name";
 
 export type CsvDtoMap = {
@@ -112,4 +113,5 @@ export type CsvDtoMap = {
 	[CsvFilesName.EMAIL_ADDRESS_VALIDATION]: EmailAddressValidationCsv;
 	[CsvFilesName.USERNAME_VALIDATION]: UsernameValidationCsv;
 	[CsvFilesName.WALLET_COUNTRY_SELECTOR_SEARCH]: WalletCountrySelectorSearchCsv;
+	[CsvFilesName.PROMOTION_END_DATE_TIME_FORMAT]: PromotionEndDateTimeFormatCsv;
 };

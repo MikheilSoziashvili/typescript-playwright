@@ -14,6 +14,12 @@ export class PromotionsPageSteps extends BasePageStep<PromotionsPage> {
 		this.gamdomDb = new GamdomDb();
 	}
 
+	@step("Navigate to promotions page and verify it is loaded")
+	public async navigateAndVerifyPageIsLoaded(): Promise<void> {
+		await this.gamdomPage.navigate();
+		await this.gamdomPage.assertThat().promotionsPageIsLoaded();
+	}
+
 	@step("Activate and make duplicated promotions visible")
 	public async activateAndSetVisibleDuplicatedPromotions(
 		duplicatedPromotionTitle: string,

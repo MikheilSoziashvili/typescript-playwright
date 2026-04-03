@@ -5,6 +5,7 @@ import { PROMOTIONS_PAGE_ENDPOINT } from "@constants/page-endpoints";
 import { PromotionsPageMap } from "./promotions-page-map";
 import { PromotionsPageAsserter } from "./promotions-page-asserter";
 import { PromotionsPageSteps } from "./promotions-page-steps";
+import { step } from "decorators/step";
 
 export class PromotionsPage extends BasePage<PromotionsPageMap> {
 	public constructor(page: Page) {
@@ -26,5 +27,10 @@ export class PromotionsPage extends BasePage<PromotionsPageMap> {
 
 	public steps(): PromotionsPageSteps {
 		return new PromotionsPageSteps(this);
+	}
+
+	@step("Click on a promotion card by title")
+	public async clickPromotionCard(promotionTitle: string): Promise<void> {
+		await this.map.promotionCardByPromotionTitle(promotionTitle).click();
 	}
 }

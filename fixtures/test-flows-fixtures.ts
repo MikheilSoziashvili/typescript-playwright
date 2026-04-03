@@ -78,6 +78,7 @@ import { FeatureActivationV4TestFlow } from "@test-flows/feature-activation/feat
 import { WagerRequirementTestFlow } from "@test-flows/wager-requirement/wager-requirement-test-flow";
 import { GiftCardTransactionVerificationFlow } from "@test-flows/gift-cards/gift-card-transaction-verification-test-flow";
 import { GiftCardTransactionScenarioFlow } from "@test-flows/gift-cards/gift-card-transaction-scenario-test-flow";
+import { PromotionEndDateSetupFlow } from "@test-flows/promotions/promotion-end-date-setup-test-flow";
 
 export type TestFlowsFixtures = {
 	plinkoBetTestFlow: PlinkoBetTestFlow;
@@ -127,6 +128,7 @@ export type TestFlowsFixtures = {
 	featureActivationV4TestFlow: FeatureActivationV4TestFlow;
 	wagerRequirementTestFlow: WagerRequirementTestFlow;
 	giftCardTransactionScenarioFlow: GiftCardTransactionScenarioFlow;
+	promotionEndDateSetupFlow: PromotionEndDateSetupFlow;
 };
 
 type RequiredTestFlowsFixtures = {
@@ -350,6 +352,19 @@ export const testFlowsFixtures = base.extend<
 			new GiftCardTransactionScenarioFlow(
 				browserSessionManager,
 				new GiftCardTransactionVerificationFlow(),
+			),
+		);
+	},
+	promotionEndDateSetupFlow: async (
+		{ browserSessionManager, gamdomDb, testDataRandom, testDataPredefined },
+		use,
+	) => {
+		await use(
+			new PromotionEndDateSetupFlow(
+				browserSessionManager,
+				gamdomDb,
+				testDataRandom,
+				testDataPredefined,
 			),
 		);
 	},

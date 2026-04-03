@@ -58,6 +58,12 @@ export class PromotionsPageMap extends BaseMap {
 		);
 	}
 
+	public promotionEndDateTextByPromotionTitle(title: string): Locator {
+		return this.promotionCardByPromotionTitle(title).getByTestId(
+			"article-countdown",
+		);
+	}
+
 	public promotionLabelForPromotion(
 		promotionTitle: string,
 		label: string,

@@ -82,4 +82,5 @@ export enum CsvFilesName {
 	EMAIL_ADDRESS_VALIDATION = "ENG-11755-profile-email-address-field-validation.csv",
 	USERNAME_VALIDATION = "ENG-11754-profile-username-field-validation.csv",
 	WALLET_COUNTRY_SELECTOR_SEARCH = "ENG-13584-country-selector-search.csv",
+	PROMOTION_END_DATE_TIME_FORMAT = "ENG-11539-promotion-end-date-time-format.csv",
 }

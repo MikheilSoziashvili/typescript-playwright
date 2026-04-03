@@ -3,7 +3,7 @@ import { waitUntil } from "@core/utils/utils";
 import { TimeoutSeconds } from "@enums/timeout-seconds";
 import { step } from "decorators/step";
 import { PromotionsPage } from "./promotions-page";
-import { Locator } from "@playwright/test";
+import { expect, Locator } from "@playwright/test";
 import { Timeout } from "@enums/timeout";
 
 export class PromotionsPageAsserter extends BaseAsserter<PromotionsPage> {
@@ -79,6 +79,34 @@ export class PromotionsPageAsserter extends BaseAsserter<PromotionsPage> {
 				intervalSeconds: TimeoutSeconds.TWO,
 				timeoutSeconds: TimeoutSeconds.ONE_TWENTY,
 			},
+		);
+	}
+
+	@step("Verify that the promotion end date matches the expected format")
+	public async promotionEndDateMatchesFormat(
+		promotionTitle: string,
+		expectedFormat: RegExp,
+	): Promise<void> {
+		const endDateLocator =
+			this.gamdomPage.map.promotionEndDateTextByPromotionTitle(
+				promotionTitle,
+			);
+		const actualText = await endDateLocator.textContent();
+		await expect(
+			endDateLocator,
+			`Promotion "${promotionTitle}" end date should match format ${expectedFormat}, but got "${actualText}"`,
+		).toHaveText(expectedFormat);
+	}
+
+	@step("Verify promotion card is displayed with correct end date format")
+	public async promotionCardIsDisplayedWithEndDateFormat(
+		promotionTitle: string,
+		expectedFormat: RegExp,
+	): Promise<void> {
+		await this.promotionIsDisplayedInPromotionsPage(promotionTitle);
+		await this.promotionEndDateMatchesFormat(
+			promotionTitle,
+			expectedFormat,
 		);
 	}
 

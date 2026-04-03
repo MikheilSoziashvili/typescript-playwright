@@ -7,6 +7,7 @@ export { PromotionSetupFlow } from "./promotions/promotion-setup-test-flow";
 export { PromotionCreationFlow } from "./promotions/promotion-creation-test-flow";
 export { PromotionVisibilityVerificationFlow } from "./promotions/promotion-visibility-verification-test-flow";
 export { PromotionTestFlow } from "./promotions/promotion-test-flow";
+export { PromotionEndDateSetupFlow } from "./promotions/promotion-end-date-setup-test-flow";
 
 // Crypto flows - deposit
 export { CryptoAdminSetupTestFlow } from "./crypto/crypto-admin-setup-test-flow";

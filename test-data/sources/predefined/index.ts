@@ -1,7 +1,12 @@
 import { convertCoinsToUsd } from "@core/utils/utils";
 import { DateOffset } from "@enums/datetime/date-offset";
+import { PromotionStatuses } from "@enums/promotion-statuses";
 import { Wallet } from "@enums/wallets";
 import { rainAmount } from "global-setup";
+import {
+	promotionEndedAtDateTimePattern,
+	promotionEndsAtDateTimePattern,
+} from "@support/regex-patterns";
 
 export const predefined = {
 	admin: {
@@ -304,5 +309,17 @@ export const predefined = {
 	giftCards: {
 		defaultValue: "10",
 		defaultQuantity: "1000",
+	},
+	promotionEndDate: {
+		[PromotionStatuses.ACTIVE]: {
+			startDateOffset: -1,
+			endDateOffset: 5,
+			expectedFormat: promotionEndsAtDateTimePattern,
+		},
+		[PromotionStatuses.EXPIRED]: {
+			startDateOffset: -5,
+			endDateOffset: -1,
+			expectedFormat: promotionEndedAtDateTimePattern,
+		},
 	},
 };

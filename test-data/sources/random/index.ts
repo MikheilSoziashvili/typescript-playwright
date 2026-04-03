@@ -128,6 +128,11 @@ export class RandomDataSourceGenerator {
 						"promotion_",
 					length: 5,
 				}),
+			endDateFormatPromotionTitle: (promotionStatus: string) =>
+				generateRandomString({
+					prefix: `end_date_${promotionStatus.toLowerCase()}_`,
+					length: 5,
+				}),
 		};
 	}
 

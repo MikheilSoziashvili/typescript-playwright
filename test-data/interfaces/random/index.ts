@@ -34,6 +34,7 @@ export interface PromotionTitlesGenerator {
 		subCategory: string,
 		label: string,
 	): string;
+	endDateFormatPromotionTitle(promotionStatus: string): string;
 }
 
 export interface UsernameGenerator {

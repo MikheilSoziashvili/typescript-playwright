@@ -1486,6 +1486,16 @@ export class GamdomDb extends BaseDB {
 		);
 	}
 
+	public async clearPromotionPriorityByTitle(
+		title: string,
+	): Promise<QueryResultRow> {
+		return this.update(
+			DbTables.Promotions,
+			{ [PromotionColumns.Priority]: null },
+			`${PromotionColumns.Title} = '${title}'`,
+		);
+	}
+
 	public async setPromotionVisibleByTitle(
 		title: string,
 		isVisible: boolean,
@@ -1787,7 +1797,9 @@ export class GamdomDb extends BaseDB {
 		};
 
 		const definedMeta = Object.fromEntries(
-			Object.entries(metaFields).filter(([, v]) => v !== undefined && v !== null),
+			Object.entries(metaFields).filter(
+				([, v]) => v !== undefined && v !== null,
+			),
 		);
 
 		if (Object.keys(definedMeta).length > 0) {

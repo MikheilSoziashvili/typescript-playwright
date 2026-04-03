@@ -7,7 +7,7 @@ export class PromotionPageMap extends BaseMap {
 	}
 
 	public get promotionContainer(): Locator {
-		return this.page.getByTestId("promotion-details");
+		return this.page.getByTestId("promotion-details").first();
 	}
 
 	public get promotionHeaderContainer(): Locator {
@@ -30,6 +30,12 @@ export class PromotionPageMap extends BaseMap {
 	public get promotionRewardsRightBlockContainer(): Locator {
 		return this.promotionContainer.getByTestId(
 			"promotion-details-content-container",
+		);
+	}
+
+	public get promotionEndDateText(): Locator {
+		return this.promotionContainer.getByTestId(
+			"promotion-details-item-text",
 		);
 	}
 
