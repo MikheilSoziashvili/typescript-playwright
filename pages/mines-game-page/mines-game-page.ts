@@ -42,9 +42,17 @@ export class MinesGamePage extends BasePage<MinesGamePageMap> {
 	}
 
 	@step("Insert bet amount")
-	public async insertBet(betAmount: string | number): Promise<void> {
+	public async fillInBetAmount(betAmount: string | number): Promise<void> {
 		await this.map.waitForStableXPosition({ locator: this.map.betField });
 		await this.map.betField.fill(betAmount.toString());
+	}
+
+	@step("Type bet amount")
+	public async typeInBetAmount(betAmount: string): Promise<void> {
+		await this.map.waitForStableXPosition({
+			locator: this.map.betField,
+		});
+		await this.map.betField.pressSequentially(betAmount);
 	}
 
 	@step("Choose number of mines")

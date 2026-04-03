@@ -15,7 +15,7 @@ export class MinesGamePageSteps extends BasePageStep<MinesGamePage> {
 		minesBetData: MinesBetTestData,
 	): Promise<void> {
 		await this.gamdomPage.assertThat().insertBetFieldIsDisplayed();
-		await this.gamdomPage.insertBet(minesBetData.betAmount);
+		await this.gamdomPage.fillInBetAmount(minesBetData.betAmount);
 		await this.gamdomPage.chooseMinesNumber(minesBetData.minesNumber);
 	}
 
@@ -63,7 +63,7 @@ export class MinesGamePageSteps extends BasePageStep<MinesGamePage> {
 		onLossPercentage: number,
 	): Promise<void> {
 		await this.gamdomPage.openAutobetTab();
-		await this.gamdomPage.insertBet(minesBetData.betAmount);
+		await this.gamdomPage.fillInBetAmount(minesBetData.betAmount);
 		await this.gamdomPage.chooseMinesNumber(minesBetData.minesNumber);
 		await this.gamdomPage.configureAutobetIncreaseBy(
 			autobetsNumber,
@@ -80,7 +80,7 @@ export class MinesGamePageSteps extends BasePageStep<MinesGamePage> {
 		onLossPercentage?: number,
 	): Promise<void> {
 		await this.gamdomPage.openAutobetTab();
-		await this.gamdomPage.insertBet(minesBetData.betAmount);
+		await this.gamdomPage.fillInBetAmount(minesBetData.betAmount);
 		await this.gamdomPage.chooseMinesNumber(minesBetData.minesNumber);
 		await this.gamdomPage.configureAutobetIncreaseBy(
 			autobetsNumber,
@@ -186,7 +186,7 @@ export class MinesGamePageSteps extends BasePageStep<MinesGamePage> {
 			logger.info(
 				"No wins yet, restarting autobet to ensure at least one win...",
 			);
-			await this.gamdomPage.insertBet(betAmount);
+			await this.gamdomPage.fillInBetAmount(betAmount);
 			return {
 				isBombCaught: false,
 				currentBetAmount: betAmount,

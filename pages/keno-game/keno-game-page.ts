@@ -41,11 +41,19 @@ export class KenoGamePage extends BasePage<KenoGamePageMap> {
 	}
 
 	@step("Insert bet amount")
-	public async insertBet(betAmount: string | number): Promise<void> {
+	public async fillInBetAmount(betAmount: string | number): Promise<void> {
 		await this.map.waitForStableXPosition({
 			locator: this.map.betAmountInput,
 		});
 		await this.map.betAmountInput.fill(betAmount.toString());
+	}
+
+	@step("Type bet amount")
+	public async typeInBetAmount(betAmount: string): Promise<void> {
+		await this.map.waitForStableXPosition({
+			locator: this.map.betAmountInput,
+		});
+		await this.map.betAmountInput.pressSequentially(betAmount);
 	}
 
 	@step("Place a single bet with random tile")
@@ -141,7 +149,7 @@ export class KenoGamePage extends BasePage<KenoGamePageMap> {
 		onLossPercentage: number,
 	): Promise<void> {
 		await this.map.autobetSection.click();
-		await this.insertBet(betAmount);
+		await this.fillInBetAmount(betAmount);
 		await this.defineSliderValues(riskValue);
 		await this.map.autobetCount.fill(autobetCount.toString());
 		await this.map.increaseByOnWin.fill(onWinPercentage.toString());

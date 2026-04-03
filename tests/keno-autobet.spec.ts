@@ -9,7 +9,11 @@ test.describe("Keno tests", () => {
 	test(
 		`[ENG-5847] Keno - Stop Autobet actuates immediately`,
 		testDetails()
-			.withTags(JiraComponent.SOK_GAMES, JiraComponent.KENO, TestTag.ACCEPTANCE)
+			.withTags(
+				JiraComponent.SOK_GAMES,
+				JiraComponent.KENO,
+				TestTag.ACCEPTANCE,
+			)
 			.apply(),
 		async ({ kenoGamePage, userBalanceHandler }) => {
 			const betAmount = 1;
@@ -18,7 +22,7 @@ test.describe("Keno tests", () => {
 			const initialAccountBalance =
 				await userBalanceHandler.walletBalanceInFiatRounded();
 
-			await kenoGamePage.insertBet(betAmount);
+			await kenoGamePage.fillInBetAmount(betAmount);
 			await kenoGamePage.steps().startAutobet();
 			await kenoGamePage.steps().stopAutobet();
 

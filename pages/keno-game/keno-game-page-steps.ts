@@ -73,7 +73,7 @@ export class KenoGamePageSteps extends BasePageStep<KenoGamePage> {
 		betAmount: number,
 		options?: { riskValue?: number },
 	): Promise<void> {
-		await this.gamdomPage.insertBet(betAmount);
+		await this.gamdomPage.fillInBetAmount(betAmount);
 
 		if (options?.riskValue) {
 			await this.gamdomPage.defineSliderValues(options.riskValue);

@@ -204,9 +204,8 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 				},
 				getYourBetValue: () => mines.getYourBetValue(),
 				handlers: {
-					setBetAmount: (amount) => mines.insertBet(amount),
-					typeBetAmount: (amount) =>
-						mines.map.betField.pressSequentially(amount),
+					setBetAmount: (amount) => mines.fillInBetAmount(amount),
+					typeBetAmount: (amount) => mines.typeInBetAmount(amount),
 					pressMinButton: () => mines.pressMinButton(),
 					pressHalfButton: () => mines.pressHalfButton(),
 					pressMaxButton: () => mines.pressMaxButton(),
@@ -224,9 +223,8 @@ export class OriginalsPage extends BasePage<OriginalsMap> {
 					keno.assertThat().verifyRiskSliderActive(),
 				getYourBetValue: () => keno.getYourBetValue(),
 				handlers: {
-					setBetAmount: (amount) => keno.insertBet(amount),
-					typeBetAmount: (amount) =>
-						keno.map.betAmountInput.pressSequentially(amount),
+					setBetAmount: (amount) => keno.fillInBetAmount(amount),
+					typeBetAmount: (amount) => keno.typeInBetAmount(amount),
 					pressMinButton: () => keno.pressMinButton(),
 					pressHalfButton: () => keno.pressHalfButton(),
 					pressMaxButton: () => keno.pressMaxButton(),
