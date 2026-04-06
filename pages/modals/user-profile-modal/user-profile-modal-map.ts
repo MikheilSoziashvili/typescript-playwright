@@ -52,7 +52,7 @@ export class UserProfileModalMap extends BaseMap {
 
 	public get ignoreButton(): Locator {
 		return this.userProfileModalContainer.getByTestId(
-			"profileModalIgnoreButton",
+			"block-user-button",
 		);
 	}
 }

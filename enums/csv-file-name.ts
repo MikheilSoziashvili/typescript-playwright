@@ -46,7 +46,7 @@ export enum CsvFilesName {
 	PROMO_CODE_FAILED_REDEMPTION = "ENG-3979-error-messages-failed-redemption.csv",
 	PLINKO_TEST_DATA = "ENG-2844-plinko-test-data.csv",
 	VIP_USER_STATUS = "ENG-6827-chat-verify-diamond-icon-for-vip-users.csv",
-	ORIGINALS_SELF_EXCLUSION = "ENG-4422-originals-selfexclusion.csv",
+	ORIGINALS_SELF_EXCLUSION = "ENG-11763-originals-selfexclusion.csv",
 	EV_REWARD_FREE_SPINS_PROMOTION = "ENG-7499-ev-reward-free-spins-promotion.csv",
 	HOME_PAGE_BANNER_CAROUSEL = "ENG-1158-homepage-banner-carousel.csv",
 	CHAT_PIN_UNPIN = "ENG-7196-chat-pin-message-permissions.csv",

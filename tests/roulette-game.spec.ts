@@ -14,7 +14,7 @@ test.describe(
 	() => {
 		test.slow();
 		test(
-			"[ENG-264] Place a single bet on Roulette and try to win",
+			"[ENG-264] [ENG-15293] Place a single bet on Roulette and try to win",
 			testDetails()
 				.withTags(TestTag.SMOKE, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.NIKOLAY_GENOV)

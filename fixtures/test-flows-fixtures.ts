@@ -79,6 +79,8 @@ import { WagerRequirementTestFlow } from "@test-flows/wager-requirement/wager-re
 import { GiftCardTransactionVerificationFlow } from "@test-flows/gift-cards/gift-card-transaction-verification-test-flow";
 import { GiftCardTransactionScenarioFlow } from "@test-flows/gift-cards/gift-card-transaction-scenario-test-flow";
 import { PromotionEndDateSetupFlow } from "@test-flows/promotions/promotion-end-date-setup-test-flow";
+import { ChatIgnoreUserSetupFlow } from "@test-flows/chat/chat-ignore-user-setup-test-flow";
+import { ChatIgnoreUserScenarioFlow } from "@test-flows/chat/chat-ignore-user-scenario-test-flow";
 
 export type TestFlowsFixtures = {
 	plinkoBetTestFlow: PlinkoBetTestFlow;
@@ -129,6 +131,7 @@ export type TestFlowsFixtures = {
 	wagerRequirementTestFlow: WagerRequirementTestFlow;
 	giftCardTransactionScenarioFlow: GiftCardTransactionScenarioFlow;
 	promotionEndDateSetupFlow: PromotionEndDateSetupFlow;
+	chatIgnoreUserScenarioFlow: ChatIgnoreUserScenarioFlow;
 };
 
 type RequiredTestFlowsFixtures = {
@@ -436,5 +439,12 @@ export const testFlowsFixtures = base.extend<
 	},
 	weeklyMonthlyRewardTestFlow: async ({}, use) => {
 		await use(new WeeklyMonthlyRewardTestFlow());
+	},
+	chatIgnoreUserScenarioFlow: async ({ browserSessionManager }, use) => {
+		await use(
+			new ChatIgnoreUserScenarioFlow(
+				new ChatIgnoreUserSetupFlow(browserSessionManager),
+			),
+		);
 	},
 });

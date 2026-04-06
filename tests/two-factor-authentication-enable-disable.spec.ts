@@ -24,7 +24,7 @@ test.describe("Two-Factor Authentication login verification", () => {
 	test.use(storageStateNewUserDB());
 
 	test(
-		`[ENG-2539] - Enable and Disable Two-Factor Authentication`,
+		`[ENG-2539] [ENG-11770] - Enable and Disable Two-Factor Authentication`,
 		testDetails()
 			.withTags(JiraComponent.TWO_FA, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.IVAYLO_STOYCHEV)

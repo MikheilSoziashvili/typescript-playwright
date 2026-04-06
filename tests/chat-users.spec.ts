@@ -27,10 +27,11 @@ test.describe(
 					.fromCsvRaw({ file: CsvFilesName.VIP_USER_STATUS })
 					.forEach((input) => {
 						test(
-							`[ENG-6827] Chat - Verify diamond icon for user '${input.vipUserStatus}'`,
+							`[ENG-6827] [ENG-16875] Chat - Verify diamond icon for user '${input.vipUserStatus}'`,
 							testDetails()
 								.withAuthor(JiraUser.RALUCA_ARITON)
-								.withTags(TestTag.ACCEPTANCE).apply(),
+								.withTags(TestTag.ACCEPTANCE)
+								.apply(),
 							async ({
 								gamdomApiDbFacade,
 								gamdomDb,

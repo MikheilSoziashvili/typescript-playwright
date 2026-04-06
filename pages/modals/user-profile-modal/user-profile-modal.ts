@@ -22,4 +22,9 @@ export class UserProfileModal extends BaseModal<UserProfileModalMap> {
 			locator: this.map.userProfileUsername,
 		});
 	}
+
+	@step("Click ignore button")
+	public async clickIgnoreButton(): Promise<void> {
+		await this.map.ignoreButton.click();
+	}
 }

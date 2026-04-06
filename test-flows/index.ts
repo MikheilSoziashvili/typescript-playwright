@@ -111,3 +111,8 @@ export { WeeklyMonthlyRewardTestFlow } from "./rewards/weekly-monthly-reward-tes
 // Gift card flows
 export { GiftCardTransactionVerificationFlow } from "./gift-cards/gift-card-transaction-verification-test-flow";
 export { GiftCardTransactionScenarioFlow } from "./gift-cards/gift-card-transaction-scenario-test-flow";
+
+// Chat flows
+export { ChatIgnoreUserSetupFlow } from "./chat/chat-ignore-user-setup-test-flow";
+export { ChatIgnoreUserScenarioFlow } from "./chat/chat-ignore-user-scenario-test-flow";
+export type { IgnoreUserSetupResult } from "./chat/chat-ignore-user-setup-test-flow";
