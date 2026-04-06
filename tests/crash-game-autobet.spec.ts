@@ -20,8 +20,11 @@ test.describe(
 		test.slow();
 
 		test(
-			"[ENG-17872] Crash - Autobet",
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
+			"[ENG-13776] Crash - Autobet",
+			testDetails()
+				.withAuthor(JiraUser.NIKOLAY_GENOV)
+				.withTags(TestTag.ACCEPTANCE)
+				.apply(),
 			async ({
 				browserSessionManager,
 				crashGamePage,
@@ -56,7 +59,10 @@ test.describe(
 
 		test(
 			"[ENG-2663] Crash - Start Autobet button is active",
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
+			testDetails()
+				.withAuthor(JiraUser.NIKOLAY_GENOV)
+				.withTags(TestTag.ACCEPTANCE)
+				.apply(),
 			async ({
 				browserSessionManager,
 				crashGamePage,
@@ -78,7 +84,10 @@ test.describe(
 
 		test(
 			"[ENG-5847] Crash - Stop Autobet actuates immediately",
-			testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
+			testDetails()
+				.withAuthor(JiraUser.NIKOLAY_GENOV)
+				.withTags(TestTag.ACCEPTANCE)
+				.apply(),
 			async ({
 				browserSessionManager,
 				crashGamePage,
@@ -99,8 +108,11 @@ test.describe(
 
 		crashIncreaseBy.forEach((record) => {
 			test(
-				`[ENG-17872] Crash - Autobet - Increase by [${record.increaseBy}]`,
-				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV).withTags(TestTag.ACCEPTANCE).apply(),
+				`[ENG-13776] Crash - Autobet - Increase by [${record.increaseBy}]`,
+				testDetails()
+					.withAuthor(JiraUser.NIKOLAY_GENOV)
+					.withTags(TestTag.ACCEPTANCE)
+					.apply(),
 				async ({
 					browserSessionManager,
 					crashGamePage,

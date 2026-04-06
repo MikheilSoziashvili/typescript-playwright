@@ -91,7 +91,10 @@ test.describe("Royalty up rewards tests", () => {
 
 			test(
 				`[ENG-3712] Verify in-progress rank gain for '${inputData.game}' Originals game with '${inputData.betAmount}' bet, expected rank '${inputData.expectedInProgressRanks}', and claim all Royalty-Up rewards`,
-				testDetails().withAuthor(JiraUser.ANGEL_PETROV).withTags(TestTag.ACCEPTANCE).apply(),
+				testDetails()
+					.withAuthor(JiraUser.ANGEL_PETROV)
+					.withTags(TestTag.ACCEPTANCE)
+					.apply(),
 				async ({ rewardsPage, toast, originalsPage }) => {
 					test.fixme(
 						true,
@@ -147,7 +150,9 @@ test.describe("Royalty up rewards tests", () => {
 					testDetails()
 						.withTags(
 							JiraComponent.ROYALTY_UP,
-							JiraComponent.REWARDS, TestTag.ACCEPTANCE)
+							JiraComponent.REWARDS,
+							TestTag.ACCEPTANCE,
+						)
 						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 						.apply(),
 					async ({
@@ -178,11 +183,13 @@ test.describe("Royalty up rewards tests", () => {
 						);
 
 						await toast.assertThat().isDisplayed();
-						await toast.assertThat().titleIs(ToastTitle.SUCCESS, {
-							subTitle: buildRewardsRoyaltyUpRankSubTitle(
-								record.currentLevel,
-							),
-						});
+						await toast
+							.assertThat()
+							.titleIs(ToastTitle.CONGRATULATIONS, {
+								subTitle: buildRewardsRoyaltyUpRankSubTitle(
+									record.currentLevel,
+								),
+							});
 
 						await originalsPage.waitForGameRoundFinish(
 							OriginalGame.Dice,
@@ -314,7 +321,9 @@ test.describe("Royalty up rewards tests", () => {
 					testDetails()
 						.withTags(
 							JiraComponent.ROYALTY_UP,
-							JiraComponent.REWARDS, TestTag.ACCEPTANCE)
+							JiraComponent.REWARDS,
+							TestTag.ACCEPTANCE,
+						)
 						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 						.apply(),
 					async ({

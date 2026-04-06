@@ -44,9 +44,7 @@ export class RewardsPageMap extends BaseMap {
 	}
 
 	public get instantRakebackCard(): Locator {
-		return this.rewardsOffersList.getByTestId(
-			"rewardsCard-instant_rakeback",
-		);
+		return this.getRewardCard(RewardType.INSTANT);
 	}
 
 	public get instantRakebackClaimRewardButton(): Locator {
@@ -56,15 +54,13 @@ export class RewardsPageMap extends BaseMap {
 	}
 
 	public get instantRakebackLockedButton(): Locator {
-		return this.instantRakebackCard
-			.getByTestId("rewardsCardBottom-instant")
-			.locator('button:has-text("Locked")');
+		return this.instantRakebackCard.getByTestId("RakeBackItemButton").filter({
+			hasText: "Locked",
+		});
 	}
 
 	public get instantRakebackAmount(): Locator {
-		return this.instantRakebackCard
-			.getByTestId("rewardsAmount-instant_rakeback")
-			.locator("span.currency-amount");
+		return this.getRewardAmount(RewardType.INSTANT);
 	}
 
 	public royaltyUpRewardsItem(placeholderText: string): Locator {

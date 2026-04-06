@@ -16,7 +16,10 @@ test.describe(
 	() => {
 		test(
 			`[ENG-7849] Verify correct display of "Sign In" modal window`,
-			testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
+			testDetails()
+				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+				.withTags(TestTag.ACCEPTANCE)
+				.apply(),
 			async ({ homePage, loginModal }) => {
 				await homePage.navigateAndCheckTitle();
 				await homePage.unauthenticatedHeader.openLoginModal();
@@ -30,7 +33,10 @@ test.describe(
 				`[ENG-7849] Login with username using different user types: [${toJson(
 					user,
 				)}]`,
-				testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
+				testDetails()
+					.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+					.withTags(TestTag.ACCEPTANCE)
+					.apply(),
 				async ({ homePage }) => {
 					await homePage.navigateAndCheckTitle();
 
@@ -49,7 +55,10 @@ test.describe(
 			.forEach((user) => {
 				test(
 					`[ENG-7849] Login with ${user.username}`,
-					testDetails().withAuthor(JiraUser.IVAYLO_STOYCHEV).withTags(TestTag.ACCEPTANCE).apply(),
+					testDetails()
+						.withAuthor(JiraUser.IVAYLO_STOYCHEV)
+						.withTags(TestTag.ACCEPTANCE)
+						.apply(),
 					async ({ homePage }) => {
 						await homePage.navigateAndCheckTitle();
 
@@ -71,7 +80,9 @@ test.describe(
 			testDetails()
 				.withTags(
 					JiraComponent.FORGOT_PASSWORD,
-					JiraComponent.LOGIN_REGISTER, TestTag.ACCEPTANCE)
+					JiraComponent.LOGIN_REGISTER,
+					TestTag.ACCEPTANCE,
+				)
 				.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 				.apply(),
 			async ({ homePage, loginModal }) => {
@@ -98,7 +109,8 @@ test.describe(
 						`[ENG-9836] Login rejected for [Username: ${record.username}] and [Password: ${record.password}]`,
 						testDetails()
 							.withAuthor(JiraUser.RALUCA_ARITON)
-							.withTags(TestTag.ACCEPTANCE).apply(),
+							.withTags(TestTag.ACCEPTANCE)
+							.apply(),
 						async ({ homePage }) => {
 							await homePage.navigateAndCheckTitle();
 							await homePage.unauthenticatedHeader.openLoginModal();
@@ -121,7 +133,8 @@ test.describe(
 						`[ENG-9836] Login input validation for [Username: ${record.username}] and [Password: ${record.password}]`,
 						testDetails()
 							.withAuthor(JiraUser.RALUCA_ARITON)
-							.withTags(TestTag.ACCEPTANCE).apply(),
+							.withTags(TestTag.ACCEPTANCE)
+							.apply(),
 						async ({ homePage }) => {
 							await homePage.navigateAndCheckTitle();
 							await homePage.unauthenticatedHeader.openLoginModal();
@@ -147,7 +160,7 @@ test.describe(
 		});
 
 		test(
-			"[ENG-292] Login with steam user",
+			"[ENG-292] [ENG-9840] Login with steam user",
 			testDetails()
 				.withTags(TestTag.SMOKE, TestTag.ACCEPTANCE)
 				.withAuthor(JiraUser.NIKOLAY_GENOV)
@@ -190,7 +203,10 @@ test.describe(
 		Object.values(AuthenticationAction).forEach((method) => {
 			test(
 				`[ENG-4841] Verify social login options are visible from ${method} modal`,
-				testDetails().withAuthor(JiraUser.NIKOLAY_GENOV,).withTags(TestTag.ACCEPTANCE).apply(),
+				testDetails()
+					.withAuthor(JiraUser.NIKOLAY_GENOV)
+					.withTags(TestTag.ACCEPTANCE)
+					.apply(),
 				async ({ homePage }) => {
 					await homePage.navigateAndCheckTitle();
 
