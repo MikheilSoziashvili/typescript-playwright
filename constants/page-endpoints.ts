@@ -56,4 +56,31 @@ export const SPORTS_BLOG_PAGE_ENDPOINT = `${ADMIN_PAGE_ENDPOINT}/SportsBlogAdmin
 export const LIMBO_GAME_PAGE_ENDPOINT = "/limbo";
 export const BLACKJACK_GAME_PAGE_ENDPOINT = "/blackjack";
 export const ERROR_404_PAGE_ENDPOINT = "/404";
+export const CMS_BASE_ENDPOINT = "/_proxied/new-admin";
+export const CMS_COMPONENT_MANAGEMENT_ENDPOINT =
+	"/_proxied/new-admin/component-management";
+export const CMS_COMPONENT_MANAGEMENT_HOME_ENDPOINT =
+	"/_proxied/new-admin/component-management/home";
+export const CMS_COMPONENT_MANAGEMENT_CASINO_ENDPOINT =
+	"/_proxied/new-admin/component-management/casino";
+export const CMS_COMPONENT_MANAGEMENT_SPORTS_ENDPOINT =
+	"/_proxied/new-admin/component-management/sports";
+export const CMS_COMPONENT_MANAGEMENT_PROVIDERS_ENDPOINT =
+	"/_proxied/new-admin/component-management/providers";
+export const CMS_HOME_WELCOME_BANNER_ENDPOINT =
+	"/_proxied/new-admin/component-management/home/welcome-banner";
+export const CMS_HOME_CAROUSEL_ENDPOINT =
+	"/_proxied/new-admin/component-management/home/carousel";
+export const CMS_HOME_CASINO_SPORTS_ENDPOINT =
+	"/_proxied/new-admin/component-management/home/casino-sports";
+export const CMS_CASINO_GAME_CATEGORIES_ENDPOINT =
+	"/_proxied/new-admin/component-management/casino/game-categories";
+export const CMS_CASINO_THEMATIC_CAROUSEL_ENDPOINT =
+	"/_proxied/new-admin/component-management/casino/thematic-carousel";
+export const CMS_CASINO_CASINO_CAROUSEL_ENDPOINT =
+	"/_proxied/new-admin/component-management/casino/casino-carousel";
+export const CMS_PROVIDERS_CAROUSEL_ENDPOINT =
+	"/_proxied/new-admin/component-management/providers/providers-carousel";
+export const CMS_PROVIDERS_SLIDER_ENDPOINT =
+	"/_proxied/new-admin/component-management/providers/providers-slider";
 export const HELP_FAIR_PAGE_ENDPOINT = "/help/fair";

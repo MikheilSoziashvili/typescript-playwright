@@ -6,6 +6,7 @@ import {
 } from "@playwright/test";
 import { GamdomApiDbFacade } from "./facades/gamdom-api-db/gamdom-api-db-facade";
 import { setAuthenticationCookies } from "./utils/utils";
+import { CmsApi } from "@api/cms-api";
 import { AllGamdomPagesType, AllGamdomPages } from "@pages/index";
 import { AuthenticatedUser } from "./facades/gamdom-api-db/interfaces";
 import { TestUserRole } from "@enums/test-user-roles";
@@ -402,6 +403,18 @@ export class BrowserSessionManager {
 					});
 				await this.setUserWalletOptions(userAuth, options);
 				await setAuthenticationCookies(page, userAuth.cookie);
+				return userAuth;
+			}
+
+			case TestUserRole.CMS_SUPERADMIN: {
+				const userAuth =
+					await this.gamdomApiDbFacade.createSuperAdminUserDbAndAuth();
+				const cmsApi = new CmsApi();
+				const setCookie = await cmsApi.loginAsCmsAdmin(
+					userAuth.user.username,
+					userAuth.user.password,
+				);
+				await setAuthenticationCookies(page, setCookie);
 				return userAuth;
 			}
 

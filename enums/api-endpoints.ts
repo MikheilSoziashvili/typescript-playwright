@@ -45,4 +45,5 @@ export enum ApiEndpoints {
 	POCKET_DICE_PLACE_BET = "/_proxied/games/pocketDice/client-api/pocketDice/bet",
 	LIMBO_PLACE_BET = "/_proxied/games/limbo/client-api/limbo/bet",
 	BLACKJACK_PLACE_BET = "/_proxied/games/blackjack/client-api/blackjack/bet",
+	SAML_LOGIN = "/saml/login",
 }

@@ -19,6 +19,7 @@ import { reporterFixtures } from "./reportportal-fixtures";
 import { testFlowsFixtures } from "./test-flows-fixtures";
 import { retryFixtures } from "./retry-fixtures";
 import { apiErrorLogFixtures } from "./api-error-log-fixtures";
+import { cmsPagesFixtures } from "./cms-pages-fixtures";
 
 export const test = mergeTests(
 	gamdomPagesFixtures,
@@ -40,4 +41,5 @@ export const test = mergeTests(
 	testFlowsFixtures,
 	retryFixtures,
 	apiErrorLogFixtures,
+	cmsPagesFixtures,
 );
