@@ -147,7 +147,7 @@ test.describe("Rain tests", () => {
 	test(
 		"[ENG-2564] Tip rain - Require new 2FA code when IP of user changes",
 		testDetails()
-			.withTags(TestTag.SEQUENTIAL, JiraComponent.TWO_FA, JiraComponent.RAIN, TestTag.ACCEPTANCE)
+			.withTags(TestTag.SEQUENTIAL_PARALLEL, JiraComponent.TWO_FA, JiraComponent.RAIN, TestTag.ACCEPTANCE)
 			.withAuthor(JiraUser.ANGEL_PETROV)
 			.apply(),
 		async ({

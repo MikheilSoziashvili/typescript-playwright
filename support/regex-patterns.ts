@@ -71,7 +71,14 @@ export const normalizeDropdownValue = (value: string): string =>
 export const dropdownNormalizedPattern = (value: string): RegExp =>
 	new RegExp(normalizeDropdownValue(value), "i");
 
-export const sequentialTestPattern = new RegExp(TestTag.SEQUENTIAL, "i");
+export const sequentialTestPattern = new RegExp(
+	`${TestTag.SEQUENTIAL}(?!-)`,
+	"i",
+);
+export const sequentialParallelTestPattern = new RegExp(
+	TestTag.SEQUENTIAL_PARALLEL,
+	"i",
+);
 export const escapedNewlinePattern = /\\n/g;
 
 export const classNamePattern = (attributeValue: string): RegExp =>

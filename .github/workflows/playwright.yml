@@ -41,6 +41,18 @@ on:
                 description: "Custom command-line options for sequential tests"
                 type: string
                 required: false
+            run_sequential_parallel_tests:
+                description: "Run Sequential-Parallel tests"
+                type: choice
+                required: true
+                default: false
+                options:
+                    - false
+                    - true
+            custom_options_sequential_parallel:
+                description: "Custom command-line options for sequential-parallel tests"
+                type: string
+                required: false
             run_sequential_tests:
                 description: "Run Sequential tests"
                 type: choice
@@ -349,12 +361,16 @@ jobs:
             VERIFF_SECRET_2FA: ${{ secrets.VERIFF_SECRET_2FA }}
             TAG: ${{ github.event.client_payload.tag || (inputs.tag == '' && 'smoke') || inputs.tag }}
             SHARD_OPTION: --shard ${{ matrix.shard }}/${{ strategy.job-total }}
-            GREP_SEQUENTIAL_TESTS: --grep @sequential
-            INVERT_SEQUENTIAL_TESTS: --grep-invert @sequential
+            GREP_SEQUENTIAL_TESTS: "--grep @sequential(?!-)"
+            INVERT_SEQUENTIAL_TESTS: "--grep-invert @sequential(?!-)"
+            GREP_SEQUENTIAL_PARALLEL_TESTS: --grep @sequential-parallel
+            INVERT_SEQUENTIAL_PARALLEL_TESTS: --grep-invert @sequential-parallel
             GREP_V4_TESTS: --grep @v4
             INVERT_V4_TESTS: --grep-invert @v4
             PROJECT_CHROMIUM: --project=chromium
+            PROJECT_CHROMIUM_SEQUENTIAL_PARALLEL: --project=chromium-sequential-parallel
             CUSTOM_OPTIONS_CHROMIUM: ${{ github.event.client_payload.custom_options || inputs.custom_options_chromium }}
+            CUSTOM_OPTIONS_SEQUENTIAL_PARALLEL: ${{ inputs.custom_options_sequential_parallel }}
             CUSTOM_OPTIONS_SEQUENTIAL: ${{ inputs.custom_options_sequential }}
             PLAYWRIGHT_TEST: yarn playwright test
             WORKERS: ${{ github.event_name == 'schedule' && '--workers=15' || format('--workers={0}', inputs.workers || '15')}}
@@ -492,7 +508,7 @@ jobs:
                     $PLAYWRIGHT_TEST $GREP_V4_TESTS $WORKERS $SHARD_OPTION $PROJECT_CHROMIUM
                   else
                     echo "Running all tests except @v4 tests (enable_new_design_v4=false)"
-                    $PLAYWRIGHT_TEST $INVERT_SEQUENTIAL_TESTS $INVERT_V4_TESTS $WORKERS $SHARD_OPTION $PROJECT_CHROMIUM
+                    $PLAYWRIGHT_TEST $INVERT_SEQUENTIAL_TESTS $INVERT_SEQUENTIAL_PARALLEL_TESTS $INVERT_V4_TESTS $WORKERS $SHARD_OPTION $PROJECT_CHROMIUM
                   fi
 
             - name: Run Playwright tests (Manual trigger)
@@ -526,7 +542,7 @@ jobs:
                       $TEST_COMMAND $V4_OPTION $WORKERS $CUSTOM_OPTIONS_CHROMIUM $SHARD_OPTION $PROJECT_CHROMIUM
                     fi
                   else
-                    $TEST_COMMAND $INVERT_SEQUENTIAL_TESTS $V4_OPTION $WORKERS $SHARD_OPTION $PROJECT_CHROMIUM
+                    $TEST_COMMAND $INVERT_SEQUENTIAL_TESTS $INVERT_SEQUENTIAL_PARALLEL_TESTS $V4_OPTION $WORKERS $SHARD_OPTION $PROJECT_CHROMIUM
                   fi
 
             - name: Capture ReportPortal Launch ID
@@ -561,6 +577,60 @@ jobs:
                   echo "all-blob-report contents:"
                   ls -la ./all-blob-report || true
 
+            - name: Sequential Parallel Tests
+              if: always()
+              env:
+                  RP_LAUNCH_ID: ${{ env.RP_MERGE_LAUNCHES == 'true' && env.CAPTURED_RP_LAUNCH_ID || '' }}
+              run: |
+                  if [ ${{ github.event_name }} == 'schedule' ] || [ "${{ inputs.run_sequential_parallel_tests }}" == "true" ]; then
+                      echo "Running sequential-parallel tests (isolated from main suite, parallel within)..."
+
+                      if [ -n "$RP_LAUNCH_ID" ]; then
+                        echo "Reusing ReportPortal Launch ID: $RP_LAUNCH_ID"
+                      else
+                        echo "ReportPortal launch merging is disabled or no Launch ID available."
+                      fi
+
+                      V4_OPTION=""
+                      if [ "$ENABLE_NEW_DESIGN_V4" == "true" ]; then
+                          V4_OPTION="$GREP_V4_TESTS"
+                      else
+                          V4_OPTION="$INVERT_V4_TESTS"
+                      fi
+
+                      if [ -n "$CUSTOM_OPTIONS_SEQUENTIAL_PARALLEL" ]; then
+                        if echo "$CUSTOM_OPTIONS_SEQUENTIAL_PARALLEL" | grep -q "\-\-workers"; then
+                          $PLAYWRIGHT_TEST $V4_OPTION $CUSTOM_OPTIONS_SEQUENTIAL_PARALLEL $PROJECT_CHROMIUM_SEQUENTIAL_PARALLEL
+                        else
+                          $PLAYWRIGHT_TEST $V4_OPTION $WORKERS $CUSTOM_OPTIONS_SEQUENTIAL_PARALLEL $PROJECT_CHROMIUM_SEQUENTIAL_PARALLEL
+                        fi
+                      else
+                        $PLAYWRIGHT_TEST $V4_OPTION $WORKERS $PROJECT_CHROMIUM_SEQUENTIAL_PARALLEL
+                      fi
+                  else
+                      echo "Sequential-parallel tests are disabled for this run."
+                  fi
+
+            - name: Upload blob report to GitHub Actions Artifacts 2
+              if: ${{ always() && (github.event_name == 'schedule' || inputs.run_sequential_parallel_tests == 'true') }}
+              uses: actions/upload-artifact@v4
+              with:
+                  name: "all-blob-reports-2-${{ github.run_id }}-${{ matrix.shard }}"
+                  path: ./blob-report
+                  retention-days: 1
+
+            - name: Move blob report files into all-blob-report (sequential-parallel)
+              if: ${{ always() && (github.event_name == 'schedule' || inputs.run_sequential_parallel_tests == 'true') }}
+              run: |
+                  echo "Listing contents of blob-report before moving (sequential-parallel run):"
+                  ls -la ./blob-report || true
+
+                  mkdir -p ./all-blob-report
+                  find ./blob-report -mindepth 1 -maxdepth 1 -exec mv {} ./all-blob-report/ \;
+
+                  echo "all-blob-report contents:"
+                  ls -la ./all-blob-report || true
+
             - name: Sequential Tests (Global Settings)
               if: always()
               env:
@@ -568,7 +638,7 @@ jobs:
               run: |
                   if [ ${{ github.event_name }} == 'schedule' ] || [ "${{ inputs.run_sequential_tests }}" == "true" ]; then
                       echo "Running sequential tests that modify global platform settings..."
-                      
+
                       if [ -n "$RP_LAUNCH_ID" ]; then
                         echo "Reusing ReportPortal Launch ID: $RP_LAUNCH_ID"
                         echo "Sequential tests will be merged into the same ReportPortal launch."
@@ -589,11 +659,11 @@ jobs:
                       echo "Sequential tests are disabled for this run."
                   fi
 
-            - name: Upload blob report to GitHub Actions Artifacts 2
+            - name: Upload blob report to GitHub Actions Artifacts 3
               if: ${{ always() && (github.event_name == 'schedule' || inputs.run_sequential_tests == 'true') }}
               uses: actions/upload-artifact@v4
               with:
-                  name: "all-blob-reports-2-${{ github.run_id }}-${{ matrix.shard }}"
+                  name: "all-blob-reports-3-${{ github.run_id }}-${{ matrix.shard }}"
                   path: ./blob-report
                   retention-days: 1
 

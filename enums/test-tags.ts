@@ -7,6 +7,7 @@ export enum TestTag {
 	SPINS = "@spins",
 	FREE_SPINS = "@free-spins",
 	SEQUENTIAL = "@sequential",
+	SEQUENTIAL_PARALLEL = "@sequential-parallel",
 	HOMEPAGE = "@homepage",
 	GAME_PROVIDERS = "@game-providers",
 	ADMIN_PANEL = "@admin-panel",

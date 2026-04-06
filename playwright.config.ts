@@ -5,7 +5,10 @@ import {
 } from "@constants/reporter-constants";
 import { slackReporterConfig } from "@core/reporters/slack-reporter/slack-reporter";
 import { ReporterDescription, defineConfig } from "@playwright/test";
-import { sequentialTestPattern } from "@support/regex-patterns";
+import {
+	sequentialParallelTestPattern,
+	sequentialTestPattern,
+} from "@support/regex-patterns";
 import * as Configuration from "configuration";
 
 /** See https://playwright.dev/docs/test-configuration. */
@@ -230,7 +233,13 @@ export default defineConfig({
 		{
 			name: "chromium",
 			use: { browserName: "chromium" },
-			grepInvert: sequentialTestPattern,
+			grepInvert: [sequentialTestPattern, sequentialParallelTestPattern],
+		},
+		{
+			name: "chromium-sequential-parallel",
+			use: { browserName: "chromium" },
+			grep: sequentialParallelTestPattern,
+			fullyParallel: true,
 		},
 		{
 			name: "chromium-sequential",

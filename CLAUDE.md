@@ -113,7 +113,17 @@ To override any auto-mapped value (component, author, tags), specify it explicit
 
 ## Playwright Config
 
-Timeouts: test 3min, expect/action 25s, navigation 40s, slowMo 300ms. Viewport 1920×1080. Retries: 1 (CI) / 0 (local). Workers: 1 (CI) / auto (local). Trace/Video: retain-on-failure. Projects: `chromium` (parallel) + `chromium-sequential` (serial, `@sequential` tag).
+| Setting               | Value                                                                     |
+| --------------------- | ------------------------------------------------------------------------- |
+| Test timeout          | 3 min                                                                     |
+| Expect/Action timeout | 25s                                                                       |
+| Navigation timeout    | 40s                                                                       |
+| slowMo                | 300ms                                                                     |
+| Viewport              | 1920x1080                                                                 |
+| Retries               | 1 (CI) / 0 (local)                                                        |
+| Workers               | 1 (CI) / auto (local)                                                     |
+| Trace/Video           | retain-on-failure                                                         |
+| Projects              | `chromium` (parallel) + `chromium-sequential-parallel` (parallel, `@sequential-parallel` tag) + `chromium-sequential` (serial, `@sequential` tag) |
 
 ## CI/CD
 
@@ -121,7 +131,7 @@ GitHub Actions on self-hosted runners: `playwright.yml` (nightly + manual, S3 re
 
 ## Tags
 
-`@smoke` `@sequential` `@visual` `@originals` `@game-providers` `@admin-panel` `@chat` `@rewards` `@koth` `@free-spins` `@spins` `@v4` `@platform-bug` `@login` `@user-info` `@promo-codes` `@mines` `@plinko` `@keno` `@homepage`
+`@smoke` `@sequential` `@sequential-parallel` `@visual` `@originals` `@game-providers` `@admin-panel` `@chat` `@rewards` `@koth` `@free-spins` `@spins` `@v4` `@platform-bug` `@login` `@user-info` `@promo-codes` `@mines` `@plinko` `@keno` `@homepage`
 
 ## Known Patterns to Preserve
 

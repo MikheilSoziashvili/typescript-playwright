@@ -11,9 +11,8 @@ import { testData } from "test-data/test-data-manager";
 
 test.describe(
 	"[KOTH] Points calculation formula",
-	testDetails().withTags(JiraComponent.KOTH, TestTag.SEQUENTIAL).apply(),
+	testDetails().withTags(JiraComponent.KOTH, TestTag.SEQUENTIAL_PARALLEL).apply(),
 	() => {
-		test.describe.configure({ mode: "serial" });
 
 		test.beforeEach(async ({ browserSessionManager }) => {
 			const superAdmin = await browserSessionManager.loginAs(

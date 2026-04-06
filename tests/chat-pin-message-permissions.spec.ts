@@ -14,7 +14,7 @@ import { isScheduledRun } from "configuration";
 
 test.describe(
 	"Chat - pin, unpin and check permissions",
-	testDetails().withTags(TestTag.SEQUENTIAL, JiraComponent.CHAT).apply(),
+	testDetails().withTags(TestTag.SEQUENTIAL_PARALLEL, JiraComponent.CHAT).apply(),
 	() => {
 		testData()
 			.fromCsvParsed({ file: CsvFilesName.CHAT_PIN_UNPIN })

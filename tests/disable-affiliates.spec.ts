@@ -11,9 +11,9 @@ import { TestTag } from "@enums/test-tags";
 import { TestUserRole } from "@enums/test-user-roles";
 import { test } from "@fixtures/fixtures";
 
-test.describe.serial(
+test.describe(
 	"Affiliates - disable feature",
-	testDetails().withTags(TestTag.SEQUENTIAL).apply(),
+	testDetails().withTags(TestTag.SEQUENTIAL_PARALLEL).apply(),
 	() => {
 		let superadmin: BrowserUserSession;
 

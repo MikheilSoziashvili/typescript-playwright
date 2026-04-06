@@ -119,7 +119,7 @@ test.describe(
 			test(
 				`[ENG-12151] Crypto currencies - status column state`,
 				testDetails()
-					.withTags(TestTag.SEQUENTIAL, TestTag.ACCEPTANCE)
+					.withTags(TestTag.SEQUENTIAL_PARALLEL, TestTag.ACCEPTANCE)
 					.withAuthor(JiraUser.IVAYLO_STOYCHEV)
 					.apply(),
 				async ({ cryptoAdminPage }, testInfo) => {
