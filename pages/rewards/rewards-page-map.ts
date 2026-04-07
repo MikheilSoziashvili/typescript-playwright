@@ -59,6 +59,12 @@ export class RewardsPageMap extends BaseMap {
 		});
 	}
 
+	public get instantRakebackNotAvailableButton(): Locator {
+		return this.instantRakebackCard.getByTestId("RakeBackItemButton").filter({
+			hasText: "Not available yet",
+		});
+	}
+
 	public get instantRakebackAmount(): Locator {
 		return this.getRewardAmount(RewardType.INSTANT);
 	}
@@ -138,7 +144,7 @@ export class RewardsPageMap extends BaseMap {
 		);
 	}
 
-	public getRewardCard(type: RewardType): Locator {
+	public getRewardCard(type: RewardType.INSTANT | RewardType.WEEKLY | RewardType.MONTHLY): Locator {
 		const labelMap = {
 			instant_rakeback: "Instant",
 			weekly: "Weekly",
@@ -150,13 +156,13 @@ export class RewardsPageMap extends BaseMap {
 			.filter({ hasText: labelMap[type] });
 	}
 
-	public getRewardAmount(type: RewardType): Locator {
+	public getRewardAmount(type: RewardType.INSTANT | RewardType.WEEKLY | RewardType.MONTHLY): Locator {
 		return this.getRewardCard(type)
 			.getByTestId("RakeBackItemButton")
 			.locator(".currency-amount");
 	}
 
-	public getRewardClaimButton(type: RewardType): Locator {
+	public getRewardClaimButton(type: RewardType.INSTANT | RewardType.WEEKLY | RewardType.MONTHLY): Locator {
 		return this.getRewardCard(type).getByTestId("RakeBackItemButton");
 	}
 

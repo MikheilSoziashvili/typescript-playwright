@@ -53,7 +53,7 @@ export class PlinkoGamePage extends BasePage<PlinkoGamePageMap> {
 
 	@step("Type bet amount")
 	public async typeInBetAmount(betAmount: string): Promise<void> {
-		await this.map.waitForStableXPosition({
+		await this.map.waitForStableBoundingBox({
 			locator: this.map.betAmountInput,
 		});
 		await this.map.betAmountInput.pressSequentially(betAmount);

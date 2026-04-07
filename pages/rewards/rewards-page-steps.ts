@@ -4,6 +4,7 @@ import { ToastTitle } from "@enums/toast-titles";
 import { logger } from "@logger/logger";
 import { BasePageStep } from "@pages/base/base-page-step";
 import { expect, Locator } from "@playwright/test";
+import { parseCurrencyToNumber } from "@core/utils/utils";
 import { step } from "decorators/step";
 import { RewardsPage } from "./rewards-page";
 import { RewardType } from "@enums/admin/reward-type";

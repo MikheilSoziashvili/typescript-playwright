@@ -42,7 +42,7 @@ export class KenoGamePage extends BasePage<KenoGamePageMap> {
 
 	@step("Insert bet amount")
 	public async fillInBetAmount(betAmount: string | number): Promise<void> {
-		await this.map.waitForStableXPosition({
+		await this.map.waitForStableBoundingBox({
 			locator: this.map.betAmountInput,
 		});
 		await this.map.betAmountInput.fill(betAmount.toString());
@@ -50,7 +50,7 @@ export class KenoGamePage extends BasePage<KenoGamePageMap> {
 
 	@step("Type bet amount")
 	public async typeInBetAmount(betAmount: string): Promise<void> {
-		await this.map.waitForStableXPosition({
+		await this.map.waitForStableBoundingBox({
 			locator: this.map.betAmountInput,
 		});
 		await this.map.betAmountInput.pressSequentially(betAmount);

@@ -37,7 +37,7 @@ public get bannerCarousel(): Locator {
 	}
 
 	public get topBannerPlayNowButton(): Locator {
-		return this.topBannerLocator.getByTestId("signup-center");
+		return this.topBannerLocator.getByTestId("banners-login-signup-button");
 	}
 
 	private getTopBannerButton(index: number): Locator {

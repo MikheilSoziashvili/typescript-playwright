@@ -31,7 +31,7 @@ export class HelpPageMap extends BaseMap {
 	}
 
 	public get howToVerifySection(): Locator {
-		return this.helpPageContent.locator(
+		return this.helpPageContainer.locator(
 			`//h2[normalize-space()="How to verify"]`,
 		);
 	}

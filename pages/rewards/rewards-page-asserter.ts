@@ -127,12 +127,20 @@ export class RewardsPageAsserter extends BaseAsserter<RewardsPage> {
 			rakebackPercentage,
 			houseEdge,
 		);
-		await this.checkElementsHaveText([
-			{
-				locator: this.gamdomPage.map.instantRakebackAmount,
-				expectedText: buildAmountWithCurrency(reward),
-			},
-		]);
+		if (reward === 0) {
+			await this.checkElementsAreVisible(
+				[this.gamdomPage.map.instantRakebackNotAvailableButton],
+				undefined,
+				"Instant rakeback button should show 'Not available yet' when reward is zero",
+			);
+		} else {
+			await this.checkElementsHaveText([
+				{
+					locator: this.gamdomPage.map.instantRakebackAmount,
+					expectedText: buildAmountWithCurrency(reward),
+				},
+			]);
+		}
 	}
 
 	@step("Is royalty up rewards in progress")

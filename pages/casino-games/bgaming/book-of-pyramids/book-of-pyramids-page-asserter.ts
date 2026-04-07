@@ -29,7 +29,7 @@ export class BookOfPyramidsPageAsserter extends BaseAsserter<BookOfPyramidsPage>
 	public async spinButtonIsDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible(
 			[this.gamdomPage.map.launcherIframeElement],
-			Timeout.LONG,
+			Timeout.EXTRA_LONG,
 			"Launcher iframe is not displayed. Game is not yet loaded.",
 		);
 		await this.checkElementsAreVisible(
