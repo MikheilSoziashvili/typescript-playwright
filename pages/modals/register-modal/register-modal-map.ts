@@ -46,31 +46,15 @@ export class RegisterModalMap extends BaseMap {
 		return this.registerForm.getByTestId("sup-age-consent-chk");
 	}
 
-	public get newsAndOffersCheckboxContainer(): Locator {
-		return this.registerForm.getByTestId("sup-email-consent-chk");
-	}
-
 	public get termsOfServiceCheckbox(): Locator {
 		return this.termsOfServiceCheckboxContainer.getByTestId(
 			"sup-age-consent-chk-container",
 		);
 	}
 
-	public get newsAndOffersCheckbox(): Locator {
-		return this.newsAndOffersCheckboxContainer.getByTestId(
-			"sup-email-consent-chk-container",
-		);
-	}
-
-public get termsOfServiceCheckboxVisual(): Locator {
+	public get termsOfServiceCheckboxVisual(): Locator {
 		return this.termsOfServiceCheckboxContainer.getByTestId(
 			"sup-age-consent-chk-visual",
-		);
-	}
-
-	public get newsAndOffersCheckboxVisual(): Locator {
-		return this.newsAndOffersCheckboxContainer.getByTestId(
-			"sup-email-consent-chk-visual",
 		);
 	}
 

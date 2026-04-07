@@ -262,7 +262,7 @@ test.describe("Royalty up rewards tests", () => {
 				);
 
 				await toast.assertThat().isDisplayed();
-				await toast.assertThat().titleIs(ToastTitle.SUCCESS, {
+				await toast.assertThat().titleIs(ToastTitle.CONGRATULATIONS, {
 					subTitle: ToastSubTitle.ROYALTY_UP_STARTED,
 				});
 
@@ -275,7 +275,7 @@ test.describe("Royalty up rewards tests", () => {
 				);
 
 				await toast.assertThat().isDisplayed();
-				await toast.assertThat().titleIs(ToastTitle.SUCCESS, {
+				await toast.assertThat().titleIs(ToastTitle.CONGRATULATIONS, {
 					subTitle: buildRewardsRoyaltyUpRankSubTitle(
 						unrankedToBronze1.newLevel,
 					),

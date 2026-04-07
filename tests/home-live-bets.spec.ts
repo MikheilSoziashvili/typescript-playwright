@@ -14,7 +14,7 @@ test.describe("Live Bets section", () => {
 		"[ENG-4570] Verify the Total Bets in Live Bets",
 		testDetails()
 			.withTags(JiraComponent.HOMEPAGE, TestTag.ACCEPTANCE)
-			.withJiraBugTickets("7893")
+			.withJiraBugTickets("4555")
 			.withAuthor(JiraUser.NIKOLAY_GENOV)
 			.apply(),
 		async ({ diceGamePage, homePage }) => {

@@ -37,7 +37,6 @@ export class RegisterModalAsserter extends BaseAsserter<RegisterModal> {
 			this.gamdomPage.map.passwordContainer,
 			this.gamdomPage.map.emailContainer,
 			this.gamdomPage.map.termsOfServiceCheckbox,
-			this.gamdomPage.map.newsAndOffersCheckbox,
 			this.gamdomPage.map.startPlayingBtn,
 		]);
 	}

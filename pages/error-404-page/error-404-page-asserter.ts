@@ -19,5 +19,15 @@ export class Error404PageAsserter extends BaseAsserter<Error404Page> {
 			this.gamdomPage.map.error404Message,
 			this.gamdomPage.map.error404ReturnHomeButton,
 		]);
+		await this.checkElementsContainText([
+			{
+				locator: this.gamdomPage.map.error404Message,
+				expectedText: Error404PageContent.MESSAGE,
+			},
+			{
+				locator: this.gamdomPage.map.error404ReturnHomeButton,
+				expectedText: Error404PageContent.RETURN_HOME_BUTTON,
+			},
+		]);
 	}
 }

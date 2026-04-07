@@ -7,6 +7,6 @@ export class SupportPageMap extends BaseMap {
 	}
 
 	public get supportHeading(): Locator {
-		return this.page.locator("h5", { hasText: "Support" });
+		return this.page.getByRole("heading", { name: "Support", exact: true });
 	}
 }

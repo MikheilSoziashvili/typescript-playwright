@@ -49,10 +49,6 @@ export class WalletModalMap extends BaseMap {
 		);
 	}
 
-	public get vaultTabHeading(): Locator {
-		return this.vaultPanel.getByTestId("vault-wallet-title");
-	}
-
 	public get vaultPanel(): Locator {
 		return this.page.getByTestId("vault");
 	}

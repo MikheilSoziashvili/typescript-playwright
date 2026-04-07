@@ -1,6 +1,5 @@
 export const Error404PageContent = {
-	TITLE: "Error 404",
-	MESSAGE: "Oops, that page doesn't exist",
-	RETURN_HOME_BUTTON: "Return home",
+	MESSAGE: "Oops, It looks like this page doesn't exist, you can go back home",
+	RETURN_HOME_BUTTON: "Back to Gamdom",
 	URL_PATTERN: /\/404$/,
 } as const;

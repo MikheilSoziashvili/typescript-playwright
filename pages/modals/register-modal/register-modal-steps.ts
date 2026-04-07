@@ -13,11 +13,9 @@ export class RegisterModalSteps extends BaseModalStep<RegisterModal> {
 		registerData: RegisterTestData,
 		options: {
 			acceptTermsOfService?: boolean;
-			acceptNewsOffers?: boolean;
 		} = {},
 	): Promise<void> {
-		const { acceptTermsOfService = true, acceptNewsOffers = false } =
-			options;
+		const { acceptTermsOfService = true } = options;
 
 		await this.gamdomModal.map.usernameField.fill(registerData.username);
 		await this.gamdomModal.map.passwordField.fill(registerData.password);
@@ -29,15 +27,6 @@ export class RegisterModalSteps extends BaseModalStep<RegisterModal> {
 				.assertThat()
 				.waitUntilChecked(
 					this.gamdomModal.map.termsOfServiceCheckbox,
-				);
-		}
-
-		if (acceptNewsOffers) {
-			await this.gamdomModal.map.newsAndOffersCheckboxVisual.click();
-			await this.gamdomModal
-				.assertThat()
-				.waitUntilChecked(
-					this.gamdomModal.map.newsAndOffersCheckbox,
 				);
 		}
 	}

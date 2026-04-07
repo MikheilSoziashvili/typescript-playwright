@@ -21,8 +21,9 @@ export class WalletModalAsserter extends BaseAsserter<WalletModal> {
 	@step("Vault tab heading is displayed")
 	async vaultTabHeadingIsDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible(
-			[this.gamdomPage.map.vaultTabHeading],
+			[this.gamdomPage.map.vaultPanel, this.gamdomPage.map.depositButton],
 			Timeout.SHORT,
+			"Vault panel with Deposit tab should be visible after redirect",
 		);
 	}
 

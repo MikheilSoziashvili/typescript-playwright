@@ -1,4 +1,5 @@
 import { BasePage } from "@pages/base/base-page";
+import { expect } from "@playwright/test";
 import { Page } from "playwright";
 
 import { BasePageNavigationParametersType } from "@core/types/types";
@@ -74,11 +75,15 @@ export class PromotionAdminPage extends BasePage<PromotionAdminMap> {
 		promotionName: string,
 		visibility: VisibilityOptions,
 	): Promise<void> {
+		const container =
+			this.map.promotionVisibilityCheckboxContainerByPromotionTitle(promotionName);
 		const checkbox =
 			this.map.promotionVisibilityCheckboxByPromotionTitle(promotionName);
-		await this.map.toggleState(
-			checkbox,
-			visibility === VisibilityOptions.VISIBLE,
-		);
+		const shouldBeChecked = visibility === VisibilityOptions.VISIBLE;
+		const isChecked = await checkbox.isChecked();
+		if (isChecked !== shouldBeChecked) {
+			await container.click();
+			await expect.poll(async () => checkbox.isChecked()).toBe(shouldBeChecked);
+		}
 	}
 }

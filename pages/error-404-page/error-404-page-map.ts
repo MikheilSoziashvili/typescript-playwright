@@ -1,6 +1,5 @@
 import { Locator, Page } from "@playwright/test";
 import { BaseMap } from "@base/base-map";
-import { Error404PageContent } from "@constants/error-404-page-content";
 
 export class Error404PageMap extends BaseMap {
 	public constructor(page: Page) {
@@ -8,24 +7,18 @@ export class Error404PageMap extends BaseMap {
 	}
 
 	public get error404Page(): Locator {
-		return this.page.getByTestId("page-container-animate");
+		return this.page.getByTestId("error-404-main-container");
 	}
 
 	public get error404Title(): Locator {
-		return this.error404Page.locator(
-			`h1:has-text("${Error404PageContent.TITLE}")`,
-		);
+		return this.error404Page.locator("img");
 	}
 
 	public get error404Message(): Locator {
-		return this.error404Page.locator(
-			`h6:has-text("${Error404PageContent.MESSAGE}")`,
-		);
+		return this.error404Page.getByTestId("error-404-message");
 	}
 
 	public get error404ReturnHomeButton(): Locator {
-		return this.error404Page.locator(
-			`button:has-text("${Error404PageContent.RETURN_HOME_BUTTON}")`,
-		);
+		return this.error404Page.getByTestId("404-home-lnk");
 	}
 }

@@ -41,7 +41,6 @@ test.describe(
 					.steps()
 					.fillInCredentialsSuccessfully(registerData, {
 						acceptTermsOfService: true,
-						acceptNewsOffers: true,
 					});
 				await homePage.registerModal.clickStartPlayingBtn();
 
