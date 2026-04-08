@@ -27,4 +27,9 @@ export class AffiliatesInfoPage extends BasePage<AffiliatesInfoPageMap> {
 	public async clickJoinNow(): Promise<void> {
 		await this.map.joinNowButton.click();
 	}
+
+	@step("Click Download Templates button")
+	public async clickDownloadTemplates(): Promise<void> {
+		await this.map.downloadTemplatesButton.click();
+	}
 }

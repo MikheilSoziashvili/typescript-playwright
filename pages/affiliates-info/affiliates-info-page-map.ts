@@ -19,4 +19,16 @@ export class AffiliatesInfoPageMap extends BaseMap {
 	public get joinNowButton(): Locator {
 		return this.heroBannerWrapper.getByTestId("external-affiliates-v4-cta-button");
 	}
+
+	public get gamdomTemplatesTitle(): Locator {
+		return this.page.getByTestId("edge-title");
+	}
+
+	public get gamdomTemplatesDescription(): Locator {
+		return this.page.getByTestId("edge-description");
+	}
+
+	public get downloadTemplatesButton(): Locator {
+		return this.page.getByTestId("edge-download-button");
+	}
 }

@@ -11,4 +11,18 @@ export class AffiliatesInfoPageAsserter extends BaseAsserter<AffiliatesInfoPage>
 	public async pageIsDisplayed(): Promise<void> {
 		await this.checkElementsAreVisible([this.gamdomPage.map.heroTitle]);
 	}
+
+	@step("Check Gamdom Templates section is displayed")
+	public async gamdomTemplatesSectionIsDisplayed(): Promise<void> {
+		await this.checkElementsAreVisible([
+			this.gamdomPage.map.gamdomTemplatesTitle,
+			this.gamdomPage.map.gamdomTemplatesDescription,
+			this.gamdomPage.map.downloadTemplatesButton,
+		]);
+	}
+
+	@step("Check Download Templates opens Dropbox in new tab")
+	public async downloadTemplatesOpensDropbox(): Promise<void> {
+		await this.verifyNewTabUrlParts(["dropbox.com"]);
+	}
 }
