@@ -49,7 +49,7 @@ test.describe(
 		test(
 			"[ENG-13420] Download Gamdom Templates button opens Dropbox with banners and logos",
 			testDetails().withAuthor(JiraUser.RALUCA_ARITON).apply(),
-			async ({ affiliatesInfoPage }) => {
+			async ({ affiliatesInfoPage, dropboxApi }) => {
 				await affiliatesInfoPage.navigate();
 				await affiliatesInfoPage.assertThat().pageIsDisplayed();
 
@@ -57,10 +57,12 @@ test.describe(
 					.assertThat()
 					.gamdomTemplatesSectionIsDisplayed();
 
+				const dropboxUrl = await affiliatesInfoPage.steps().getDownloadTemplatesUrl();
 				await affiliatesInfoPage.clickDownloadTemplates();
 				await affiliatesInfoPage
 					.assertThat()
-					.downloadTemplatesOpensDropbox();
+					.downloadTemplatesOpensDropboxInNewTab();
+				await dropboxApi.checkUrlIsReachable(dropboxUrl);
 			},
 		);
 	},

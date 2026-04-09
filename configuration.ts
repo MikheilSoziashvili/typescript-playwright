@@ -12,7 +12,7 @@ import {
 } from "@core/types/types";
 import { asString, getFilePath } from "@core/utils/utils";
 import { Protocol } from "@enums/api/protocols";
-import { ConfiguraitonUrl } from "@enums/configuration-urls";
+import { ConfigurationUrl } from "@enums/configuration-urls";
 import { LogLevel } from "@enums/log-levels";
 import { SlackChannel } from "@enums/slack/slack-channels";
 import { Timeout } from "@enums/timeout";
@@ -57,16 +57,16 @@ export const slackBotTokens: Record<SlackChannel, string> = {
 	),
 };
 export const jira: Record<string, string> = {
-	baseUrl: ConfiguraitonUrl.JIRA,
+	baseUrl: ConfigurationUrl.JIRA,
 	projectKey: "ENG",
 	username: asString(process.env.JIRA_USERNAME),
 	token: asString(process.env.JIRA_TOKEN),
 };
 export const mailpit = {
-	baseUrl: process.env.MAILPIT_BASE_URL ?? ConfiguraitonUrl.MAILPIT,
+	baseUrl: process.env.MAILPIT_BASE_URL ?? ConfigurationUrl.MAILPIT,
 };
 export const xray: Record<string, string> = {
-	baseUrl: ConfiguraitonUrl.XRAY,
+	baseUrl: ConfigurationUrl.XRAY,
 	clientId: asString(process.env.XRAY_CLIENT_ID),
 	clientSecret: asString(process.env.XRAY_CLIENT_SECRET),
 };
@@ -76,8 +76,12 @@ export const hotWalletConfig = {
 };
 
 export const coingecko: Record<string, string> = {
-	baseUrl: ConfiguraitonUrl.COINGECKO,
+	baseUrl: ConfigurationUrl.COINGECKO,
 	apiKey: asString(process.env.COINGECKO_API_KEY),
+};
+
+export const dropbox: Record<string, string> = {
+	baseUrl: ConfigurationUrl.DROPBOX,
 };
 
 export const steam: Record<string, string> = {

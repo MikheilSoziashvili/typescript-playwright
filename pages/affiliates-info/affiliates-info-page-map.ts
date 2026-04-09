@@ -28,6 +28,10 @@ export class AffiliatesInfoPageMap extends BaseMap {
 		return this.page.getByTestId("edge-description");
 	}
 
+	public get downloadTemplatesLink(): Locator {
+		return this.page.locator("a", { has: this.page.getByTestId("edge-download-button") });
+	}
+
 	public get downloadTemplatesButton(): Locator {
 		return this.page.getByTestId("edge-download-button");
 	}

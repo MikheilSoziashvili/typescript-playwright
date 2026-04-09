@@ -18,7 +18,7 @@ import {
 } from "@core/types/types";
 import { RegisterTestData } from "@dtos/test-data";
 import { Protocol } from "@enums/api/protocols";
-import { ConfiguraitonUrl } from "@enums/configuration-urls";
+import { ConfigurationUrl } from "@enums/configuration-urls";
 import { Currency } from "@enums/currencies";
 import { CurrencySymbol } from "@enums/currenciesSymbols";
 import { UserTags } from "@enums/db/user-tags";
@@ -106,7 +106,7 @@ export async function parseXmlFile<T>(filePath: string): Promise<T> {
 }
 
 export function jiraIssueId(id: number | string, key = "ENG"): string {
-	return `${ConfiguraitonUrl.JIRA}/browse/${key}-${id}`;
+	return `${ConfigurationUrl.JIRA}/browse/${key}-${id}`;
 }
 
 export async function clearDirectoryContent(

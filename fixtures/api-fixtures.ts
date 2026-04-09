@@ -1,4 +1,5 @@
 import { CoinGeckoApi } from "@api/coingecko-api";
+import { DropboxApi } from "@api/dropbox-api";
 import { GamdomApi } from "@api/gamdom-api";
 import { GamdomCryptoApi } from "@api/gamdom-crypto-api";
 import { CrashApi } from "@api/games-api/crash-api";
@@ -12,6 +13,7 @@ import * as Configuration from "../configuration";
 import { VeriffApi } from "@api/veriff-api";
 
 export type Apis = {
+	dropboxApi: DropboxApi;
 	mailpitApi: MailpitApi;
 	gamdomApi: GamdomApi;
 	gamdomCryptoApi: GamdomCryptoApi;
@@ -25,6 +27,9 @@ export type Apis = {
 };
 
 export const apisFixtures = base.extend<Apis>({
+	dropboxApi: async ({}, use) => {
+		await use(new DropboxApi());
+	},
 	mailpitApi: async ({}, use) => {
 		await use(new MailpitApi(Configuration.mailpit.baseUrl));
 	},
