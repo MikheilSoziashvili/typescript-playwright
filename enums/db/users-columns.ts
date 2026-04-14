@@ -12,4 +12,5 @@ export enum UsersColumns {
 	PasswordHash = "password_hash",
 	Image = "image",
 	IsVip = "is_vip",
+	EmailConsent = "email_consent",
 }

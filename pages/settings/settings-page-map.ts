@@ -133,4 +133,16 @@ export class SettingsPageMap extends BaseMap {
 			"self-exclusion-active-panel-",
 		);
 	}
+
+	public get receiveNewsAndOffersRow(): Locator {
+		return this.page.getByTestId("receive-news-and-offers").locator("..");
+	}
+
+	public get receiveNewsAndOffersToggle(): Locator {
+		return this.receiveNewsAndOffersRow.getByRole("switch");
+	}
+
+	public get receiveNewsAndOffersToggleLabel(): Locator {
+		return this.receiveNewsAndOffersRow.locator("label");
+	}
 }

@@ -31,6 +31,32 @@ export class SettingsPageAsserter extends BaseAsserter<SettingsPage> {
 		]);
 	}
 
+	@step("Verify email_consent value in DB")
+	public async emailConsentInDbIs(
+		actual: boolean,
+		expected: boolean,
+	): Promise<void> {
+		await this.assertAllTruthy([
+			{
+				condition: actual === expected,
+				message: `email_consent in DB should be ${expected}`,
+			},
+		]);
+	}
+
+	@step("Verify Receive News and Offers toggle checked state")
+	public async receiveNewsAndOffersToggleIsChecked(
+		checked: boolean,
+	): Promise<void> {
+		await this.assertCheckedState([
+			{
+				locator: this.gamdomPage.map.receiveNewsAndOffersToggle,
+				checked: checked,
+				label: "Receive News and Offers toggle",
+			},
+		]);
+	}
+
 	@step("Verify self exclusion timer is displayed")
 	public async selfExclusionTimerDisplayed(
 		days: SelfExclusionDays,

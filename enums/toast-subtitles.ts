@@ -67,4 +67,6 @@ export enum ToastSubTitle {
 	PHONE_UPDATED_SUCCESSFULLY = "Phone updated successfully.",
 	INVALID_NUMBER_HAS_BEEN_USED = "Invalid number has been used",
 	USERNAME_UPDATED_SUCCESSFULLY = "Username updated successfully.",
+	SUBSCRIBED_TO_NEWS_AND_OFFERS = "Successfully subscribed to News and Offers.",
+	UNSUBSCRIBED_FROM_NEWS_AND_OFFERS = "Successfully unsubscribed to News and Offers.",
 }

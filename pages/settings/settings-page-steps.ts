@@ -2,7 +2,11 @@ import { Timeout } from "@enums/timeout";
 import { step } from "decorators/step";
 import { BasePageStep } from "@pages/base/base-page-step";
 import { Toast } from "@pages/components/toast/toast";
+import { ToastSubTitle } from "@enums/toast-subtitles";
+import { ToastTitle } from "@enums/toast-titles";
 import { expect } from "@playwright/test";
+import { UsersColumns } from "@enums/db/users-columns";
+import { GamdomDb } from "database/gamdom-db";
 import { SettingsPage } from "./settings-page";
 import { generate2FACodeFromQRCodeImage } from "@core/utils/utils";
 import { SelfExclusionDays } from "@enums/self-exlusion-days";
@@ -10,6 +14,26 @@ import { SelfExclusionDays } from "@enums/self-exlusion-days";
 export class SettingsPageSteps extends BasePageStep<SettingsPage> {
 	public constructor(gamdomPage: SettingsPage) {
 		super(gamdomPage);
+	}
+
+	@step("Toggle Receive News and Offers and verify")
+	public async toggleReceiveNewsAndOffersAndVerify(
+		checked: boolean,
+		gamdomDb: GamdomDb,
+		userId: number,
+	): Promise<void> {
+		const expectedSubTitle = checked
+			? ToastSubTitle.SUBSCRIBED_TO_NEWS_AND_OFFERS
+			: ToastSubTitle.UNSUBSCRIBED_FROM_NEWS_AND_OFFERS;
+		await this.gamdomPage.clickReceiveNewsAndOffersToggle();
+		await this.gamdomPage
+			.assertThat()
+			.receiveNewsAndOffersToggleIsChecked(checked);
+		await this.gamdomPage.toast.assertThat().toastMessageIs(ToastTitle.SUCCESS, expectedSubTitle);
+		await this.gamdomPage.toast.assertThat().isNotDisplayed({ subTitle: expectedSubTitle });
+		const [userRow] = await gamdomDb.getUserInfoById(userId);
+		const emailConsent = userRow[UsersColumns.EmailConsent] as boolean;
+		await this.gamdomPage.assertThat().emailConsentInDbIs(emailConsent, checked);
 	}
 
 	@step("Navigate and enable 2FA authentication")

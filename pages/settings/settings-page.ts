@@ -6,10 +6,14 @@ import { expect, Locator, Page } from "@playwright/test";
 import { SettingsPageAsserter } from "./settings-page-asserter";
 import { SettingsPageMap } from "./settings-page-map";
 import { SettingsPageSteps } from "./settings-page-steps";
+import { Toast } from "@pages/components/toast/toast";
 
 export class SettingsPage extends BasePage<SettingsPageMap> {
+	public toast: Toast;
+
 	public constructor(page: Page) {
 		super(page, new SettingsPageMap(page));
+		this.toast = new Toast(page);
 	}
 
 	public override async navigate(
@@ -59,6 +63,11 @@ export class SettingsPage extends BasePage<SettingsPageMap> {
 			await inputElement.click();
 			await inputElement.fill(code2FA[i]);
 		}
+	}
+
+	@step("Click Receive News and Offers toggle")
+	public async clickReceiveNewsAndOffersToggle(): Promise<void> {
+		await this.map.receiveNewsAndOffersToggleLabel.click();
 	}
 
 	@step("Click confirm button")
