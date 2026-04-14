@@ -169,6 +169,7 @@ export class HomePageAsserter extends BaseAsserter<HomePage> {
 		game: string,
 		testInfo: TestInfo,
 	): Promise<void> {
+		await this.gamdomPage.steps().navigateToGame(game);
 		await this.checkElementVisualCorrect(
 			testInfo,
 			this.gamdomPage.map.originalsGameFromSubNav(game),

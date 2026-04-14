@@ -201,6 +201,30 @@ export class HomePageSteps extends BasePageStep<HomePage> {
 		);
 	}
 
+	@step("Navigate originals subnav to game")
+	public async navigateToGame(game: string): Promise<void> {
+		await this.gamdomPage.map.originalsNavButton.hover();
+		await waitUntil(
+			async () => {
+				const isInActiveSlide =
+					await this.gamdomPage.isElementInActiveSlide(
+						this.gamdomPage.map.originalsGameFromSubNav(game),
+					);
+
+				if (isInActiveSlide) {
+					return true;
+				}
+
+				await this.gamdomPage.map.originalsSubNavNextButton.click();
+				return false;
+			},
+			{
+				errorMessage: `Game '${game}' not found in active subnav slide after scrolling`,
+				timeoutSeconds: TimeoutSeconds.THIRTY,
+			},
+		);
+	}
+
 	@step("Get all KOTH header currency amounts")
 	public async getAllKothHeaderCurrencyAmounts(): Promise<string[]> {
 		const amounts = (

@@ -658,6 +658,35 @@ export abstract class BasePage<T extends BaseMap> {
 	}
 
 	/**
+	 * Checks whether a given element resides inside the currently active Swiper slide.
+	 * Walks up the DOM from the element to its closest `.swiper-slide` ancestor
+	 * and verifies that it contains the active class name.
+	 *
+	 * @param element - The Playwright Locator of the element to check.
+	 * @param activeClassName - The CSS class that marks an active slide (default: "swiper-slide-active").
+	 * @returns `true` if the element is inside an active slide, `false` otherwise.
+	 */
+	@step("Check element is in active swiper slide")
+	public async isElementInActiveSlide(
+		element: Locator,
+		activeClassName: string = AttributesValues.SWIPER_SLIDE_ACTIVE,
+	): Promise<boolean> {
+		try {
+			const count = await element.count();
+			if (count === 0) {
+				return false;
+			}
+
+			return await element.evaluate((el, className) => {
+				const slide = el.closest(".swiper-slide");
+				return slide ? slide.classList.contains(className) : false;
+			}, activeClassName);
+		} catch {
+			return false;
+		}
+	}
+
+	/**
 	 * Find the index of the currently active (centered) slide in a Swiper slider
 	 * @param slideLocators - Array of locators for each slide element
 	 * @param activeClassName - The CSS class name that indicates an active slide (default: "swiper-slide-active")
